@@ -165,6 +165,18 @@ opts_chunk$set(
   comment=NA)
 @
 
+<<testing>>=
+mat <- round(matrix(c(0.9, 0.89, 200, 0.045, 2.0), c(1, 5)), 4)
+rownames(mat) <- "$y_{t-1}$"
+# colnames(mat) <- c("$R^2$", "$\\bar{R}^2$", "F-stat", "S.E.E", "DW")
+colnames(mat) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$", "DW")
+mat <- xtable(mat)
+@
+
+<<Test Print Sanitized Table, results='asis'>>=
+print(mat, sanitize.text.function = function(x){x})
+@
+
 <<loadData>>=
 fileName <- "data/USData.txt"
 
@@ -220,8 +232,8 @@ row.names(upperCD) <- "+ 95% CI"
 
 # Now create the data for a table.
 dataCD <- rbind(lowerCD, estCD, upperCD); dataCD
-colnames(dataCD)  <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCD <- xtable(dataCD, caption="U.S. Cobb-Douglas, 1980-2011", digit = c(4))
+colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
+tableCD <- xtable(dataCD, caption="U.S. Cobb-Douglas, 1980-2011", digit = c(4, 4, 2, 2, 1))
 @
 
 <<CD Results, results='asis'>>=
@@ -229,7 +241,7 @@ print(tableCD, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
-# print(tableCD, sanitize.text.function = function(x){x})
+# print(tableCD, caption.placement="top", sanitize.text.function = function(x){x})
 @
 
 \section{Cobb-Douglas With Q}
@@ -302,10 +314,10 @@ row.names(upperCDq) <- "+ 95% CI"
 # Now create the data for a table.
 dataCDq <- rbind(lowerCDq, estCDq, upperCDq); dataCDq
 colnames(dataCDq)  <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCDq <- xtable(dataCDq, caption="U.S. 1980-2011.", digit = c(4))
+tableCDq <- xtable(dataCDq, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
 
 dataAll <- rbind(estCD, estCDq); dataAll
-tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4))
+tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDq Results, results='asis'>>=
