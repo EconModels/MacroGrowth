@@ -7,4 +7,6 @@ USA
 
 This GitHub repository contains files and R analyses for an Energy Economics paper focusing on the best way to incorporate energy into economic growth models.
 
+This article for Energy Economics is being prepared in RStudio with Elsevier's elsarticle templates using knitr.
+
 --Matthew Kuperus Heun, 2013-01-18
