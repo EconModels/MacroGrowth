@@ -327,7 +327,7 @@ betaCICD <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 
 \begin{alltt}
 
 \hlcomment{# Combine all estimates and their confidence intervals into data frames with intelligent row names}
-estCD <- \hlfunctioncall{data.frame}(lambda = \hlfunctioncall{coef}(modelCD)[\hlstring{"lambda"}], alpha = \hlfunctioncall{coef}(modelCD)[\hlstring{"alpha"}], beta = beta, gamma = NA)
+estCD <- \hlfunctioncall{data.frame}(lambda = \hlfunctioncall{coef}(modelCD)[\hlstring{"lambda"}], alpha = \hlfunctioncall{coef}(modelCD)[\hlstring{"alpha"}], beta = beta, gamma = 0)
 \hlfunctioncall{row.names}(estCD) <- \hlstring{"Cobb-Douglas"}
 \hlcomment{#row.names(estCD) <- "Cobb-Douglas: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}$"}
 \hlcomment{ # The [1] subscripts pick off the lower confidence interval}
@@ -343,34 +343,37 @@ dataCD <- \hlfunctioncall{rbind}(lowerCD, estCD, upperCD); dataCD
 \begin{verbatim}
                lambda  alpha   beta gamma
 - 95% CI     0.008862 0.2124 0.6722    NA
-Cobb-Douglas 0.010256 0.2700 0.7300    NA
+Cobb-Douglas 0.010256 0.2700 0.7300     0
 + 95% CI     0.011645 0.3279 0.7878    NA
 \end{verbatim}
 \begin{alltt}
 \hlfunctioncall{colnames}(dataCD)  <- \hlfunctioncall{c}(\hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"}, \hlstring{"$\textbackslash{}\textbackslash{}gamma$"})
-tableCD  <- \hlfunctioncall{xtable}(dataCD)
+tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas, 1980-2011"}, digit = \hlfunctioncall{c}(4))
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning: provided 3 variables to replace 1 variables}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
 \begin{kframe}
 \begin{alltt}
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(dataCD), floating=FALSE)
+\hlfunctioncall{print}(tableCD, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 14:03:08 2013
-\begin{tabular}{rrrrl}
+% Fri Jan 18 14:38:05 2013
+\begin{table}[ht]
+\begin{center}
+\caption{U.S. Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
   \hline
  & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
   \hline
-- 95\% CI & 0.01 & 0.21 & 0.67 &  \\ 
-  Cobb-Douglas & 0.01 & 0.27 & 0.73 &  \\ 
-  + 95\% CI & 0.01 & 0.33 & 0.79 &  \\ 
+- 95\% CI & 0.0089 & 0.2124 & 0.6722 &  \\ 
+  Cobb-Douglas & 0.0103 & 0.2700 & 0.7300 & 0.0000 \\ 
+  + 95\% CI & 0.0116 & 0.3279 & 0.7878 &  \\ 
    \hline
 \end{tabular}
+\end{center}
+\end{table}
 \begin{kframe}\begin{alltt}
 \hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
 \hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
@@ -530,60 +533,61 @@ CobbDouglas with q 0.01049 0.2632 0.7157  0.0211
 \end{verbatim}
 \begin{alltt}
 \hlfunctioncall{colnames}(dataCDq)  <- \hlfunctioncall{c}(\hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"}, \hlstring{"$\textbackslash{}\textbackslash{}gamma$"})
-tableCDq <- \hlfunctioncall{xtable}(dataCDq)
+tableCDq <- \hlfunctioncall{xtable}(dataCDq, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4))
 
-dataAll <- \hlfunctioncall{rbind}(dataCD, dataCDq); dataAll
+dataAll <- \hlfunctioncall{rbind}(estCD, estCDq); dataAll
 \end{alltt}
 \begin{verbatim}
-                   $\\lambda$ $\\alpha$ $\\beta$ $\\gamma$
-- 95% CI             0.008862    0.2124   0.6722        NA
-Cobb-Douglas         0.010256    0.2700   0.7300        NA
-+ 95% CI             0.011645    0.3279   0.7878        NA
-- 95% CI1            0.008850    0.1858   0.5947   -0.1353
-CobbDouglas with q   0.010486    0.2632   0.7157    0.0211
-+ 95% CI1            0.012700    0.3283   0.8367    0.1775
+                    lambda  alpha   beta  gamma
+Cobb-Douglas       0.01026 0.2700 0.7300 0.0000
+CobbDouglas with q 0.01049 0.2632 0.7157 0.0211
 \end{verbatim}
+\begin{alltt}
+tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, All Models."}, digit = \hlfunctioncall{c}(4))
+\end{alltt}
 \end{kframe}
 \end{knitrout}
 
 
 \begin{kframe}
 \begin{alltt}
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(dataCDq), floating=FALSE)
+\hlfunctioncall{print}(tableCDq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 14:03:08 2013
+% Fri Jan 18 14:38:06 2013
+\begin{table}[ht]
+\begin{center}
+\caption{U.S. 1980-2011.}
 \begin{tabular}{rrrrr}
   \hline
  & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
   \hline
-- 95\% CI & 0.01 & 0.19 & 0.59 & -0.14 \\ 
-  CobbDouglas with q & 0.01 & 0.26 & 0.72 & 0.02 \\ 
-  + 95\% CI & 0.01 & 0.33 & 0.84 & 0.18 \\ 
+- 95\% CI & 0.0089 & 0.1858 & 0.5947 & -0.1353 \\ 
+  CobbDouglas with q & 0.0105 & 0.2632 & 0.7157 & 0.0211 \\ 
+  + 95\% CI & 0.0127 & 0.3283 & 0.8367 & 0.1775 \\ 
    \hline
 \end{tabular}
+\end{center}
+\end{table}
 \begin{kframe}\begin{alltt}
 \hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
 \hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
 \hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
 \hlcomment{# print(tableCDq, sanitize.text.function = function(x)\{x\})}
 
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(dataAll, floating=FALSE))
+\hlfunctioncall{print}(tableAll, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 14:03:08 2013
+% Fri Jan 18 14:38:06 2013
 \begin{table}[ht]
 \begin{center}
+\caption{U.S. 1980-2011, All Models.}
 \begin{tabular}{rrrrr}
   \hline
- & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+ & lambda & alpha & beta & gamma \\ 
   \hline
-- 95\% CI & 0.01 & 0.21 & 0.67 &  \\ 
-  Cobb-Douglas & 0.01 & 0.27 & 0.73 &  \\ 
-  + 95\% CI & 0.01 & 0.33 & 0.79 &  \\ 
-  - 95\% CI1 & 0.01 & 0.19 & 0.59 & -0.14 \\ 
-  CobbDouglas with q & 0.01 & 0.26 & 0.72 & 0.02 \\ 
-  + 95\% CI1 & 0.01 & 0.33 & 0.84 & 0.18 \\ 
+Cobb-Douglas & 0.0103 & 0.2700 & 0.7300 & 0.0000 \\ 
+  CobbDouglas with q & 0.0105 & 0.2632 & 0.7157 & 0.0211 \\ 
    \hline
 \end{tabular}
 \end{center}

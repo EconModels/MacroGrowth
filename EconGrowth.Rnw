@@ -208,7 +208,7 @@ betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gi
 coef(modelCD)
 
 # Combine all estimates and their confidence intervals into data frames with intelligent row names
-estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = NA)
+estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
 row.names(estCD) <- "Cobb-Douglas"
 #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
  # The [1] subscripts pick off the lower confidence interval
@@ -221,11 +221,11 @@ row.names(upperCD) <- "+ 95% CI"
 # Now create the data for a table.
 dataCD <- rbind(lowerCD, estCD, upperCD); dataCD
 colnames(dataCD)  <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCD  <- xtable(dataCD)
+tableCD <- xtable(dataCD, caption="U.S. Cobb-Douglas, 1980-2011", digit = c(4))
 @
 
 <<CD Results, results='asis'>>=
-print(xtable(dataCD), floating=FALSE)
+print(tableCD, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
@@ -302,19 +302,20 @@ row.names(upperCDq) <- "+ 95% CI"
 # Now create the data for a table.
 dataCDq <- rbind(lowerCDq, estCDq, upperCDq); dataCDq
 colnames(dataCDq)  <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCDq <- xtable(dataCDq)
+tableCDq <- xtable(dataCDq, caption="U.S. 1980-2011.", digit = c(4))
 
-dataAll <- rbind(dataCD, dataCDq); dataAll
+dataAll <- rbind(estCD, estCDq); dataAll
+tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4))
 @
 
 <<CDq Results, results='asis'>>=
-print(xtable(dataCDq), floating=FALSE)
+print(tableCDq, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
 # print(tableCDq, sanitize.text.function = function(x){x})
 
-print(xtable(dataAll, floating=FALSE))
+print(tableAll, caption.placement="top")
 @
 
 <<Combined Table, results='asis'>>=
