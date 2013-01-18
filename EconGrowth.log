@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  18 JAN 2013 13:40
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  18 JAN 2013 14:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -293,127 +293,128 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 195.
+LaTeX Font Info:    Try loading font information for U+msa on input line 198.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 195.
+LaTeX Font Info:    Try loading font information for U+msb on input line 198.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Package color Info: Redefining color shadecolor on input line 205.
+Package color Info: Redefining color shadecolor on input line 208.
 
-Overfull \hbox (60.77522pt too wide) in paragraph at lines 210--210
+Overfull \hbox (60.77522pt too wide) in paragraph at lines 213--213
 [][]\OT1/cmtt/m/n/12 ## dataTable is a poor name.  Name it after contents, unle
 ss this is the [][] 
  []
 
 
-Overfull \hbox (36.07521pt too wide) in paragraph at lines 211--211
+Overfull \hbox (36.07521pt too wide) in paragraph at lines 214--214
 [][]\OT1/cmtt/m/n/12 ## start of a script where this will be provided at the co
 mmand line.[][] 
  []
 
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 212.
-Package color Info: Redefining color shadecolor on input line 240.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 215.
 [1
 
 
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 243--243
+Package color Info: Redefining color shadecolor on input line 243.
+
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 246--246
 []\OT1/cmtt/m/n/12 lambdaGuess <- 0.0 []# guessing lambda = 0 means there is no
  technological progress.[][] 
  []
 
 
-Overfull \hbox (97.82524pt too wide) in paragraph at lines 244--244
+Overfull \hbox (97.82524pt too wide) in paragraph at lines 247--247
 []\OT1/cmtt/m/n/12 alphaGuess <- 0.3 []# a typical value for alpha, the coeffic
 ient on capital stock[][] 
  []
 
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 246
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 249
 .
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (221.32379pt too wide) in paragraph at lines 246--246
+Overfull \hbox (221.32379pt too wide) in paragraph at lines 249--249
 [][]\OT1/cmtt/m/n/12 # Runs a non-linear least squares fit to the data. We\TS1/
 cmtt/m/n/12 '\OT1/cmtt/m/n/12 ve replaced beta with 1-alpha for simplicity.[][]
  
  []
 
 
-Overfull \hbox (85.47523pt too wide) in paragraph at lines 247--247
+Overfull \hbox (85.47523pt too wide) in paragraph at lines 250--250
 []\OT1/cmtt/m/n/12 modelCD <- []nls[](iGDP ~ []exp[](lambda*iYear) * iCapStk^al
 pha * iLabor^(1 - alpha),[] 
  []
 
 
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 248--248
+Overfull \hbox (11.3752pt too wide) in paragraph at lines 251--251
 []               \OT1/cmtt/m/n/12 start=([]list[](lambda=lambdaGuess,alpha=alph
 aGuess)),[] 
  []
 
 
-Overfull \hbox (91.64873pt too wide) in paragraph at lines 251--251
+Overfull \hbox (91.64873pt too wide) in paragraph at lines 254--254
 [][]\OT1/cmtt/m/n/12 # Checks validity of the model. AIC stands for Akaike\TS1/
 cmtt/m/n/12 '\OT1/cmtt/m/n/12 s Information Criterion.[][] 
  []
 
 
-Overfull \hbox (54.60022pt too wide) in paragraph at lines 275--275
+Overfull \hbox (54.60022pt too wide) in paragraph at lines 278--278
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ exp(lambda * iYear) * iCapStk^alpha * iLabor
 ^(1 - alpha)[] 
  []
 
 
-Overfull \hbox (190.45029pt too wide) in paragraph at lines 277--277
+Overfull \hbox (190.45029pt too wide) in paragraph at lines 280--280
 []\OT1/cmtt/m/n/12 ciCD <- []confint[](modelCD, level = 0.95); ciCD []# Display
 s confidence intervals for the CD model.[][] 
  []
 
 
-Overfull \hbox (233.67531pt too wide) in paragraph at lines 291--291
+Overfull \hbox (233.67531pt too wide) in paragraph at lines 294--294
 []\OT1/cmtt/m/n/12 beta.est <- []deltaMethod[](modelCD, []"1 - alpha"[]); beta.
 est # Estimates beta and its standard []error[] (SE).[] 
  []
 
 
-Overfull \hbox (85.47523pt too wide) in paragraph at lines 299--299
+Overfull \hbox (85.47523pt too wide) in paragraph at lines 302--302
 []\OT1/cmtt/m/n/12 dofCD <- summaryCD$df[2]; dofCD []# Gives the degrees of fre
 edom for the model.[][] 
  []
 
 
-Overfull \hbox (326.30035pt too wide) in paragraph at lines 311--311
+Overfull \hbox (326.30035pt too wide) in paragraph at lines 314--314
 []\OT1/cmtt/m/n/12 betaCICD <- []with[](beta.est, Estimate + []c[](-1.0, 1.0) *
  tvalCD * SE); betaCICD []# Gives the confidence interval on beta.[][] 
  []
 
 
-Overfull \hbox (215.1503pt too wide) in paragraph at lines 326--326
+Overfull \hbox (215.1503pt too wide) in paragraph at lines 329--329
 [][]\OT1/cmtt/m/n/12 # Combine all estimates and their confidence intervals int
 o data frames with intelligent row names[][] 
  []
 
 
-Overfull \hbox (289.25034pt too wide) in paragraph at lines 327--327
+Overfull \hbox (289.25034pt too wide) in paragraph at lines 330--330
 []\OT1/cmtt/m/n/12 estCD <- []data.frame[](lambda = []coef[](modelCD)[[]"lambda
 "[]], alpha = []coef[](modelCD)[[]"alpha"[]], beta = beta, gamma = NA)[] 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 329
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 332
 .
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 329.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 332.
 
-Overfull \hbox (89.55038pt too wide) in paragraph at lines 329--329
+Overfull \hbox (89.55038pt too wide) in paragraph at lines 332--332
 [][]\OT1/cmtt/m/n/12 #row.names(estCD) <- "Cobb-Douglas: $y = e^\OMS/cmsy/m/n/1
 2 fnn\OT1/cmtt/m/n/12 lambda t\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 k^\OMS/cmsy/m/
 n/12 fnn\OT1/cmtt/m/n/12 alpha\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 l^\OMS/cmsy/m/
@@ -421,21 +422,21 @@ n/12 fnn\OT1/cmtt/m/n/12 beta\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 $"[][]
  []
 
 
-Overfull \hbox (326.30035pt too wide) in paragraph at lines 331--331
+Overfull \hbox (326.30035pt too wide) in paragraph at lines 334--334
 []\OT1/cmtt/m/n/12 lowerCD <- []data.frame[](lambda = ciCD[[]"lambda"[],[]"2.5%
 "[]], alpha = ciCD[[]"alpha"[], []"2.5%"[]], beta = betaCICD[1], gamma = NA)[] 
 
  []
 
 
-Overfull \hbox (338.65036pt too wide) in paragraph at lines 334--334
+Overfull \hbox (338.65036pt too wide) in paragraph at lines 337--337
 []\OT1/cmtt/m/n/12 upperCD <- []data.frame[](lambda = ciCD[[]"lambda"[],[]"97.5
 %"[]], alpha = ciCD[[]"alpha"[], []"97.5%"[]], beta = betaCICD[2], gamma = NA)[
 ] 
  []
 
 
-Overfull \hbox (65.55032pt too wide) in paragraph at lines 347--347
+Overfull \hbox (65.55032pt too wide) in paragraph at lines 350--350
 [][]\OT1/cmtt/m/n/12 colnames[](dataCD)  <- []c[]([]"$\OMS/cmsy/m/n/12 nn\OT1/c
 mtt/m/n/12 lambda$"[], []"$\OMS/cmsy/m/n/12 nn\OT1/cmtt/m/n/12 alpha$"[], []"$\
 OMS/cmsy/m/n/12 nn\OT1/cmtt/m/n/12 beta$"[], []"$\OMS/cmsy/m/n/12 nn\OT1/cmtt/m
@@ -443,129 +444,129 @@ OMS/cmsy/m/n/12 nn\OT1/cmtt/m/n/12 beta$"[], []"$\OMS/cmsy/m/n/12 nn\OT1/cmtt/m
  []
 
 [2] [3]
-Overfull \hbox (301.60034pt too wide) in paragraph at lines 372--372
+Overfull \hbox (301.60034pt too wide) in paragraph at lines 375--375
 [][]\OT1/cmtt/m/n/12 # According to http://cran.r-project.org/web/packages/xtab
 le/vignettes/xtableGallery.pdf, Section 3.1, I should [][] 
  []
 
 
-Overfull \hbox (252.20032pt too wide) in paragraph at lines 373--373
+Overfull \hbox (252.20032pt too wide) in paragraph at lines 376--376
 [][]\OT1/cmtt/m/n/12 # be able to use the "sanitize.text.function" parameter to
  allow markup in column headers. But this next[][] 
  []
 
-Package color Info: Redefining color shadecolor on input line 383.
-
-Overfull \hbox (128.70026pt too wide) in paragraph at lines 386--386
+Package color Info: Redefining color shadecolor on input line 386.
+[4]
+Overfull \hbox (128.70026pt too wide) in paragraph at lines 389--389
 [][]\OT1/cmtt/m/n/12 # lambdaGuess <- 0.0 # guessing lambda = 0 means there is 
 no technological progress.[][] 
  []
 
 
-Overfull \hbox (227.5003pt too wide) in paragraph at lines 391--391
+Overfull \hbox (227.5003pt too wide) in paragraph at lines 394--394
 [][]\OT1/cmtt/m/n/12 # modelCDQ <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha
  * iLabor^beta * iQ^(1.0 - alpha - beta), [][] 
  []
 
 
-Overfull \hbox (122.52525pt too wide) in paragraph at lines 392--392
+Overfull \hbox (122.52525pt too wide) in paragraph at lines 395--395
 [][]\OT1/cmtt/m/n/12 #                 start=(list(lambda=lambdaGuess,alpha=alp
 haGuess,beta=betaGuess)),[][] 
  []
 
 
-Overfull \hbox (147.22527pt too wide) in paragraph at lines 395--395
+Overfull \hbox (147.22527pt too wide) in paragraph at lines 398--398
 [][]\OT1/cmtt/m/n/12 # Reparameterize to ensure that we meet the constraint tha
 t alpha + beta + gamma = 1.0.[][] 
  []
 
 
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 402--402
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 405--405
 []\OT1/cmtt/m/n/12 lambdaGuess <- 0.0 []# guessing lambda = 0 means there is no
  technological progress.[][] 
  []
 
 
-Overfull \hbox (5.2002pt too wide) in paragraph at lines 406--406
+Overfull \hbox (5.2002pt too wide) in paragraph at lines 409--409
 []                            \OT1/cmtt/m/n/12 iCapStk^[]min[](a,b) * iLabor^[]
 abs[](b-a) *[] 
  []
 
 
-Overfull \hbox (60.77522pt too wide) in paragraph at lines 409--409
+Overfull \hbox (60.77522pt too wide) in paragraph at lines 412--412
 []  \OT1/cmtt/m/n/12 start = []list[](lambda=lambdaGuess, a=alphaGuess, b=alpha
 Guess+betaGuess),[] 
  []
 
 
-Overfull \hbox (313.94884pt too wide) in paragraph at lines 414--414
+Overfull \hbox (313.94884pt too wide) in paragraph at lines 417--417
 []\OT1/cmtt/m/n/12 aicCDq <- []AIC[](modelCDq, k=2); aicCDq []# Checks validity
  of the model. AIC stands for Akaike\TS1/cmtt/m/n/12 '\OT1/cmtt/m/n/12 s Inform
 ation Criterion[][] 
  []
 
 
-Overfull \hbox (60.77522pt too wide) in paragraph at lines 421--421
+Overfull \hbox (60.77522pt too wide) in paragraph at lines 424--424
 []\OT1/cmtt/m/n/12 summaryCDq <- []summary[](modelCDq); summaryCDq []# Gives th
 e nls summary table[][] 
  []
 
 
-Overfull \hbox (54.60022pt too wide) in paragraph at lines 437--437
+Overfull \hbox (54.60022pt too wide) in paragraph at lines 440--440
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iL
 abor^abs(b -[] 
  []
 
 
-Overfull \hbox (153.40027pt too wide) in paragraph at lines 440--440
+Overfull \hbox (153.40027pt too wide) in paragraph at lines 443--443
 [][]\OT1/cmtt/m/n/12 # Provides confidence intervals on lambda, a, and b. But, 
 we need CIs on alpha and beta.[][] 
  []
 
 
-Overfull \hbox (227.5003pt too wide) in paragraph at lines 461--461
+Overfull \hbox (227.5003pt too wide) in paragraph at lines 464--464
 []\OT1/cmtt/m/n/12 beta.est <- []deltaMethod[](modelCDq, []"b-a"[]); beta.est #
  Reports results for beta, because beta = b - a.[] 
  []
 
 
-Overfull \hbox (252.20032pt too wide) in paragraph at lines 468--468
+Overfull \hbox (252.20032pt too wide) in paragraph at lines 471--471
 []\OT1/cmtt/m/n/12 gamma.est <- []deltaMethod[](modelCDq, []"1-b"[]); gamma.est
  # Reports results for gamma, because gamma = 1 - b.[] 
  []
 
 
-Overfull \hbox (104.00024pt too wide) in paragraph at lines 477--477
+Overfull \hbox (104.00024pt too wide) in paragraph at lines 480--480
 []\OT1/cmtt/m/n/12 dofCDq <- summaryCDq$df[2]; dofCDq []# Gives the degrees of 
 freedom for the model.[][] 
  []
 
 
-Overfull \hbox (344.82536pt too wide) in paragraph at lines 489--489
+Overfull \hbox (344.82536pt too wide) in paragraph at lines 492--492
 []\OT1/cmtt/m/n/12 betaCICDq <- []with[](beta.est, Estimate + []c[](-1.0, 1.0) 
 * tvalCDq * SE); betaCICDq []# Gives the confidence interval on beta.[][] 
  []
 
 
-Overfull \hbox (369.52538pt too wide) in paragraph at lines 495--495
+Overfull \hbox (369.52538pt too wide) in paragraph at lines 498--498
 []\OT1/cmtt/m/n/12 gammaCICDq <- []with[](gamma.est, Estimate + []c[](-1.0, 1.0
 ) * tvalCDq * SE); gammaCICDq []# Gives the confidence interval on alpha.[][] 
  []
 
 
-Overfull \hbox (215.1503pt too wide) in paragraph at lines 502--502
+Overfull \hbox (215.1503pt too wide) in paragraph at lines 505--505
 [][]\OT1/cmtt/m/n/12 # Combine all estimates and their confidence intervals int
 o data frames with intelligent row names[][] 
  []
 
 
-Overfull \hbox (153.40027pt too wide) in paragraph at lines 503--503
+Overfull \hbox (153.40027pt too wide) in paragraph at lines 506--506
 []\OT1/cmtt/m/n/12 estCDq <- []data.frame[](lambda = lambda, alpha = alpha, bet
 a = beta, gamma = gamma); estCDq[] 
  []
 
 
-Overfull \hbox (206.17549pt too wide) in paragraph at lines 510--510
+Overfull \hbox (206.17549pt too wide) in paragraph at lines 513--513
 [][]\OT1/cmtt/m/n/12 #row.names(estCDq) <- "Cobb-Douglas with q: $y = e^\OMS/cm
 sy/m/n/12 fnn\OT1/cmtt/m/n/12 lambda t\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 k^\OMS
 /cmsy/m/n/12 fnn\OT1/cmtt/m/n/12 alpha\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 l^\OMS
@@ -575,254 +576,262 @@ cmsy/m/n/12 fnn\OT1/cmtt/m/n/12 gamma\OMS/cmsy/m/n/12 g\OT1/cmtt/m/n/12 $"[][]
  []
 
 
-Overfull \hbox (394.22539pt too wide) in paragraph at lines 513--513
+Overfull \hbox (394.22539pt too wide) in paragraph at lines 516--516
 []\OT1/cmtt/m/n/12 lowerCDq <- []data.frame[](lambda = ciCDq[[]"lambda"[],[]"2.
 5%"[]], alpha = ciCDq[[]"a"[], []"2.5%"[]], beta = betaCICDq[1], gamma = gammaC
 ICDq[1])[] 
  []
 
 
-Overfull \hbox (406.5754pt too wide) in paragraph at lines 516--516
+Overfull \hbox (406.5754pt too wide) in paragraph at lines 519--519
 []\OT1/cmtt/m/n/12 upperCDq <- []data.frame[](lambda = ciCDq[[]"lambda"[],[]"97
 .5%"[]], alpha = ciCDq[[]"a"[], []"97.5%"[]], beta = betaCICDq[2], gamma = gamm
 aCICDq[2])[] 
  []
 
 
-Overfull \hbox (71.72533pt too wide) in paragraph at lines 529--529
+Overfull \hbox (71.72533pt too wide) in paragraph at lines 532--532
 [][]\OT1/cmtt/m/n/12 colnames[](dataCDq)  <- []c[]([]"$\OMS/cmsy/m/n/12 nn\OT1/
 cmtt/m/n/12 lambda$"[], []"$\OMS/cmsy/m/n/12 nn\OT1/cmtt/m/n/12 alpha$"[], []"$
 \OMS/cmsy/m/n/12 nn\OT1/cmtt/m/n/12 beta$"[], []"$\OMS/cmsy/m/n/12 nn\OT1/cmtt/
 m/n/12 gamma$"[])[] 
  []
 
-[4] [5] [6] [7]
-Overfull \hbox (301.60034pt too wide) in paragraph at lines 563--563
+[5] [6] [7]
+Overfull \hbox (301.60034pt too wide) in paragraph at lines 566--566
 [][]\OT1/cmtt/m/n/12 # According to http://cran.r-project.org/web/packages/xtab
 le/vignettes/xtableGallery.pdf, Section 3.1, I should [][] 
  []
 
 
-Overfull \hbox (252.20032pt too wide) in paragraph at lines 564--564
+Overfull \hbox (252.20032pt too wide) in paragraph at lines 567--567
 [][]\OT1/cmtt/m/n/12 # be able to use the "sanitize.text.function" parameter to
  allow markup in column headers. But this next[][] 
  []
 
-Package color Info: Redefining color shadecolor on input line 597.
+Package color Info: Redefining color shadecolor on input line 600.
 
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 600--600
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 603--603
 []\OT1/cmtt/m/n/12 lambdaGuess <- 0.0 []# guessing lambda = 0 means there is no
  technological progress.[][] 
  []
 
 
-Overfull \hbox (208.9753pt too wide) in paragraph at lines 605--605
+Overfull \hbox (208.9753pt too wide) in paragraph at lines 608--608
 []\OT1/cmtt/m/n/12 modelCDX <- []nls[](iGDP ~ []exp[](lambda*iYear) * iCapStk^a
 lpha * iLabor^beta * iX^(1.0 - alpha - beta),[] 
  []
 
 
-Overfull \hbox (110.17525pt too wide) in paragraph at lines 606--606
+Overfull \hbox (110.17525pt too wide) in paragraph at lines 609--609
 []                \OT1/cmtt/m/n/12 start=([]list[](lambda=lambdaGuess,alpha=alp
 haGuess,beta=betaGuess)),[] 
  []
 
 
-Overfull \hbox (73.12523pt too wide) in paragraph at lines 627--627
+Overfull \hbox (73.12523pt too wide) in paragraph at lines 630--630
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ exp(lambda * iYear) * iCapStk^alpha * iLabor
 ^beta * iX^(1 -[] 
  []
 
 
-Overfull \hbox (85.47372pt too wide) in paragraph at lines 653--653
+Overfull \hbox (85.47372pt too wide) in paragraph at lines 656--656
 [][]\OT1/cmtt/m/n/12 # Checks validity of the model. AIC stands for Akaike\TS1/
 cmtt/m/n/12 '\OT1/cmtt/m/n/12 s Information Criterion[][] 
  []
 
 [8] [9]
-Package color Info: Redefining color shadecolor on input line 669.
+Package color Info: Redefining color shadecolor on input line 672.
 
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 672--672
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 675--675
 []\OT1/cmtt/m/n/12 lambdaGuess <- 0.0 []# guessing lambda = 0 means there is no
  technological progress.[][] 
  []
 
 
-Overfull \hbox (17.5502pt too wide) in paragraph at lines 677--677
+Overfull \hbox (17.5502pt too wide) in paragraph at lines 680--680
 [][]\OT1/cmtt/m/n/12 # Runs a non-linear least squares fit to the data with con
 straints[][] 
  []
 
 
-Overfull \hbox (208.9753pt too wide) in paragraph at lines 678--678
+Overfull \hbox (208.9753pt too wide) in paragraph at lines 681--681
 []\OT1/cmtt/m/n/12 modelCDU <- []nls[](iGDP ~ []exp[](lambda*iYear) * iCapStk^a
 lpha * iLabor^beta * iU^(1.0 - alpha - beta),[] 
  []
 
 
-Overfull \hbox (23.7252pt too wide) in paragraph at lines 680--680
+Overfull \hbox (23.7252pt too wide) in paragraph at lines 683--683
 []\OT1/cmtt/m/n/12 start = []list[](lambda=lambdaGuess, alpha=alphaGuess, beta=
 betaGuess),[] 
  []
 
 
-Overfull \hbox (73.12523pt too wide) in paragraph at lines 703--703
+Overfull \hbox (73.12523pt too wide) in paragraph at lines 706--706
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ exp(lambda * iYear) * iCapStk^alpha * iLabor
 ^beta * iU^(1 -[] 
  []
 
 [10]
-Package color Info: Redefining color shadecolor on input line 720.
+Package color Info: Redefining color shadecolor on input line 723.
 
-Overfull \hbox (85.47372pt too wide) in paragraph at lines 722--722
+Overfull \hbox (85.47372pt too wide) in paragraph at lines 725--725
 [][]\OT1/cmtt/m/n/12 # Checks validity of the model. AIC stands for Akaike\TS1/
 cmtt/m/n/12 '\OT1/cmtt/m/n/12 s Information Criterion[][] 
  []
 
-Package color Info: Redefining color shadecolor on input line 734.
-Package color Info: Redefining color shadecolor on input line 752.
+Package color Info: Redefining color shadecolor on input line 737.
 [11]
-Overfull \hbox (73.12523pt too wide) in paragraph at lines 754--754
+Package color Info: Redefining color shadecolor on input line 755.
+
+Overfull \hbox (73.12523pt too wide) in paragraph at lines 757--757
 [][]\OT1/cmtt/m/n/12 require[](car)  []# the methods in alr3 have been deprecat
 ed.  Use car instead.[][] 
  []
 
-Package color Info: Redefining color shadecolor on input line 780.
+Package color Info: Redefining color shadecolor on input line 783.
 
-Overfull \hbox (5.2002pt too wide) in paragraph at lines 783--783
+Overfull \hbox (5.2002pt too wide) in paragraph at lines 786--786
 []                            \OT1/cmtt/m/n/12 iCapStk^[]min[](a,b) * iLabor^[]
 abs[](b-a) *[] 
  []
 
 
-Overfull \hbox (60.77522pt too wide) in paragraph at lines 786--786
+Overfull \hbox (60.77522pt too wide) in paragraph at lines 789--789
 []\OT1/cmtt/m/n/12 start = []list[](lambda=lambdaGuess, a=alphaGuess, b=alphaGu
 ess + betaGuess),[] 
  []
 
 
-Overfull \hbox (208.9753pt too wide) in paragraph at lines 800--800
+Overfull \hbox (208.9753pt too wide) in paragraph at lines 803--803
 [][]\OT1/cmtt/m/n/12 with[]( []as.data.frame[]([]t[]([]coef[](modelCDUforced)))
 , []c[](alpha=[]min[](a,b), beta=[]abs[](b-a), gamma=1-[]max[](a,b)))[] 
  []
 
-Package color Info: Redefining color shadecolor on input line 811.
 [12]
-Package color Info: Redefining color shadecolor on input line 848.
+Package color Info: Redefining color shadecolor on input line 814.
+ [13]
+Package color Info: Redefining color shadecolor on input line 851.
 
-Overfull \hbox (221.3253pt too wide) in paragraph at lines 854--854
+Overfull \hbox (221.3253pt too wide) in paragraph at lines 857--857
 []\OT1/cmtt/m/n/12 lambda_LGuess <- 0.007 []#assuming no technical progress on 
 the labor-capital portion of the function[][] 
  []
 
 
-Overfull \hbox (178.10028pt too wide) in paragraph at lines 855--855
+Overfull \hbox (178.10028pt too wide) in paragraph at lines 858--858
 []\OT1/cmtt/m/n/12 lambda_EGuess <- 0.008 []#assuming no technical progress on 
 the energy portion of the function[][] 
  []
 
 
-Overfull \hbox (17.5502pt too wide) in paragraph at lines 857--857
+Overfull \hbox (17.5502pt too wide) in paragraph at lines 860--860
 [][]\OT1/cmtt/m/n/12 # Runs a non-linear least squares fit to the data with con
 straints[][] 
  []
 
 
-Overfull \hbox (190.45029pt too wide) in paragraph at lines 858--858
+Overfull \hbox (190.45029pt too wide) in paragraph at lines 861--861
 []\OT1/cmtt/m/n/12 modelCESQ <- []nls[](iGDP ~ ((1-zeta) * ([]exp[](lambda_L*iY
 ear) * iLabor^beta * iCapStk^(1-beta))^phi[] 
  []
 
 
-Overfull \hbox (54.60022pt too wide) in paragraph at lines 859--859
+Overfull \hbox (54.60022pt too wide) in paragraph at lines 862--862
 []                         \OT1/cmtt/m/n/12 + zeta*([]exp[](lambda_E*iYear) * i
 Q)^phi)^(1/phi),[] 
  []
 
 
-Overfull \hbox (36.07521pt too wide) in paragraph at lines 861--861
+Overfull \hbox (36.07521pt too wide) in paragraph at lines 864--864
 []\OT1/cmtt/m/n/12 control = []nls.control[](maxiter = 500, tol = 1e-06, minFac
 tor = 1/1024,[] 
  []
 
 
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 863--863
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 866--866
 []\OT1/cmtt/m/n/12 start = []list[](phi=phiGuess, beta=betaGuess, zeta=zetaGues
 s, lambda_L=lambda_LGuess,[] 
  []
 
 
-Overfull \hbox (36.07521pt too wide) in paragraph at lines 865--865
+Overfull \hbox (36.07521pt too wide) in paragraph at lines 868--868
 []\OT1/cmtt/m/n/12 lower = []list[](phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, la
 mbda_E=-Inf),[] 
  []
 
 
-Overfull \hbox (5.2002pt too wide) in paragraph at lines 866--866
+Overfull \hbox (5.2002pt too wide) in paragraph at lines 869--869
 []\OT1/cmtt/m/n/12 upper = []list[](phi=0, beta=1, zeta=1, lambda_L=Inf, lambda
 _E=Inf),[] 
  []
 
 
-Overfull \hbox (110.17525pt too wide) in paragraph at lines 888--888
+Overfull \hbox (110.17525pt too wide) in paragraph at lines 891--891
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ ((1 - zeta) * (exp(lambda_L * iYear) * iLabo
 r^beta * iCapStk^(1 -[] 
  []
 
 
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 888--888
+Overfull \hbox (11.3752pt too wide) in paragraph at lines 891--891
 []    \OT1/cmtt/m/n/12 beta))^phi + zeta * (exp(lambda_E * iYear) * iQ)^phi)^(1
 /phi)[] 
  []
 
-[13] <figure/unnamed-chunk-61.pdf, id=54, 325.215pt x 274.02374pt>
+[14] <figure/unnamed-chunk-61.pdf, id=64, 325.215pt x 274.02374pt>
 File: figure/unnamed-chunk-61.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-61.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-61.pdf used on input line 893.
+Package pdftex.def Info: figure/unnamed-chunk-61.pdf used on input line 896.
 (pdftex.def)             Requested size: 175.5043pt x 148.20476pt.
- [14]
-<figure/unnamed-chunk-62.pdf, id=58, 325.215pt x 274.02374pt>
+
+<figure/unnamed-chunk-62.pdf, id=65, 325.215pt x 274.02374pt>
 File: figure/unnamed-chunk-62.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-62.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-62.pdf used on input line 898.
+Package pdftex.def Info: figure/unnamed-chunk-62.pdf used on input line 901.
 (pdftex.def)             Requested size: 175.5043pt x 148.20476pt.
-
-<figure/unnamed-chunk-63.pdf, id=59, 325.215pt x 274.02374pt>
+ [15 <./figure/unnamed-chunk-61.pdf> <./figure/unnamed-chunk-62.pdf>]
+<figure/unnamed-chunk-63.pdf, id=79, 325.215pt x 274.02374pt>
 File: figure/unnamed-chunk-63.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-63.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-63.pdf used on input line 903.
+Package pdftex.def Info: figure/unnamed-chunk-63.pdf used on input line 906.
 (pdftex.def)             Requested size: 175.5043pt x 148.20476pt.
 
 No file EconGrowth.bbl.
-[15 <./figure/unnamed-chunk-61.pdf> <./figure/unnamed-chunk-62.pdf> <./figure/u
-nnamed-chunk-63.pdf>] (./EconGrowth.aux) ) 
+[16 <./figure/unnamed-chunk-63.pdf>] (./EconGrowth.aux) ) 
 Here is how much of TeX's memory you used:
- 2965 strings out of 493633
- 41072 string characters out of 3143378
- 110182 words of memory out of 3000000
- 6193 multiletter control sequences out of 15000+200000
- 11245 words of font info for 42 fonts, out of 3000000 for 9000
+ 2981 strings out of 493633
+ 41232 string characters out of 3143378
+ 106299 words of memory out of 3000000
+ 6205 multiletter control sequences out of 15000+200000
+ 13461 words of font info for 52 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  38i,9n,34p,320b,282s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2011/texmf-dist/f
-onts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2011/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmitt10.pfb></usr/local/texlive/2011/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/texmf-dist/font
-s/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2011/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type
-1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/
-public/cm-super/sftt1200.pfb>
-Output written on EconGrowth.pdf (15 pages, 149840 bytes).
+{/usr/local/texlive/20
+11/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/201
+1/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/local/texlive/2011
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2011/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2011/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2011/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2011/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2011/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2011/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2011/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2011/texmf-dist/font
+s/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2011/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
+e1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1
+/public/cm-super/sftt1200.pfb>
+Output written on EconGrowth.pdf (16 pages, 222815 bytes).
 PDF statistics:
- 112 PDF objects out of 1000 (max. 8388607)
- 78 compressed objects within 1 object stream
+ 144 PDF objects out of 1000 (max. 8388607)
+ 101 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

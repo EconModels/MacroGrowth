@@ -113,28 +113,31 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{}
+\title{Empirical Analysis of the Role of Energy in Economic Growth}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author{}
+\author[Calvin]{Caleb Reese}
+\author[Calvin]{Lucas Timmer}
+\author[Calvin]{Matthew Kuperus Heun \corref{cor1}}
+\ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
-\address{}
+\cortext[cor1]{Corresponding author}
+\address[Calvin]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
 
 \begin{abstract}
 %% Text of abstract
-
+*********** Add abstract ***********
 \end{abstract}
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-
+economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
-
 \end{keyword}
 
 \end{frontmatter}
