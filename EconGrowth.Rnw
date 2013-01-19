@@ -219,7 +219,7 @@ upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97
 row.names(upperCD) <- "+ 95% CI"
 
 # Now create the data for a table.
-dataCD <- rbind(lowerCD, estCD, upperCD); dataCD
+dataCD <- rbind(upperCD, estCD, lowerCD); dataCD
 colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
 tableCD <- xtable(dataCD, caption="U.S. Cobb-Douglas, 1980-2011", digit = c(4, 4, 2, 2, 1))
 @
@@ -327,7 +327,7 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   row.names(upperCDe) <- "+ 95% CI"
   
   # Now create the data for a table.
-  dataCDe <- rbind(lowerCDe, estCDe, upperCDe)
+  dataCDe <- rbind(upperCDe, estCDe, lowerCDe)
   print(dataCDe)
   
   return(dataCDe)
