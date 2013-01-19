@@ -165,18 +165,6 @@ opts_chunk$set(
   comment=NA)
 @
 
-<<testing>>=
-mat <- round(matrix(c(0.9, 0.89, 200, 0.045, 2.0), c(1, 5)), 4)
-rownames(mat) <- "$y_{t-1}$"
-# colnames(mat) <- c("$R^2$", "$\\bar{R}^2$", "F-stat", "S.E.E", "DW")
-colnames(mat) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$", "DW")
-mat <- xtable(mat)
-@
-
-<<Test Print Sanitized Table, results='asis'>>=
-print(mat, sanitize.text.function = function(x){x})
-@
-
 <<loadData>>=
 fileName <- "data/USData.txt"
 
@@ -191,7 +179,7 @@ names(dataTable)
 
 \section{Cobb-Douglas Without Energy}
 
-<<cobb-douglass>>=
+<<cobb-douglas>>=
 # Establish guess values for alpha and lambda.
 lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
 alphaGuess <- 0.3 # a typical value for alpha, the coefficient on capital stock
@@ -223,10 +211,10 @@ coef(modelCD)
 estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
 row.names(estCD) <- "Cobb-Douglas"
 #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
- # The [1] subscripts pick off the lower confidence interval
+# The [1] subscripts pick off the lower confidence interval
 lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
 row.names(lowerCD) <- "- 95% CI"
- # The [2] subscripts pick off the lower confidence interval
+# The [2] subscripts pick off the lower confidence interval
 upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97.5%"], beta = betaCICD[2], gamma = NA)
 row.names(upperCD) <- "+ 95% CI"
 
@@ -244,19 +232,119 @@ print(tableCD, caption.placement="top")
 # print(tableCD, caption.placement="top", sanitize.text.function = function(x){x})
 @
 
-\section{Cobb-Douglas With Q}
+\section{Cobb-Douglas With Energy}
+
+<<cobbDouglasEnergy function>>=
+###############################
+# This function fits the Cobb Douglas production function including energy to historical data
+# The functional form is
+#
+# iGDP = exp(lambda * itime) * iCapStk^alpha * iLabor^beta * iEnergy^gamma
+# 
+# iYear: time indexed to 0.0 at the first year [years since beginning of data set]
+# iGDP = time series GDP data indexed to 1.0 at the first year [-]
+# iCapStk = time series capital stock data indexed to 1.0 at the first year [-]
+# iLabor = time series labor data indexed to 1.0 at the first year [-]
+# iEnergy = time series energy data indexed to 1.0 at the first year [-]. 
+#      This may be any of heat (iQ), exergy (iX), or useful work (iU).
+# 
+# returns a data object containing three rows and 5 columns.
+#   col 1: lambda
+#   col 2: alpha
+#   col 3: beta
+#   col 4: gamma
+#   row 1: -95% CI for each parameter
+#   row 2: estimate for each parameter
+#   row 3: +95% CI for each parameter
+#
+# dataTable is the table to be used for this curve fit
+# iEnergy is the name of the column to be used for energy.
+#   This may be any of heat (iQ), exergy (iX), or useful work (iU).
+##
+cobbDouglasEnergy <- function(dataTable, iEnergy){
+  # Reparameterize to ensure that we meet the constraints:
+  # * alpha + beta + gamma = 1.0.
+  # * alpha, beta, and gamma are all between 0.0 and 1.0.
+  # To do this, we reparameterize as
+  # * 0 < a < 1
+  # * 0 < b < 1
+  # * alpha = min(a, b)
+  # * beta = b - a
+  # * gamma = 1 - max(a, b)
+  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.3 # a typical value for alpha
+  betaGuess <- 0.7 # a typical value for beta
+  modelCDe <- nls(iGDP ~ exp(lambda*iYear) * 
+                    iCapStk^min(a,b) * iLabor^abs(b-a) * 
+                    iQ^(1.0 - max(a,b)), 
+                  algorithm = "port",
+                  start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
+                  lower = list(lambda=-Inf, a=0, b=0),
+                  upper = list(lambda=Inf, a=1, b=1),
+                  data = dataTable)
+  aicCDe <- AIC(modelCDe, k=2); aicCDe # Checks validity of the model. AIC stands for Akaike's Information Criterion
+  
+  summaryCDe <- summary(modelCDe); summaryCDe # Gives the nls summary table
+  
+  # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.
+  ciCDe <- confint(modelCDe, level = 0.95); ciCDe
+  
+  a <- as.numeric(coef(modelCDe)["a"])
+  b <- as.numeric(coef(modelCDe)["b"])
+  lambda <- as.numeric(coef(modelCDe)["lambda"])
+  alpha <- a
+  beta <- b - a
+  gamma <- 1.0 - alpha - beta
+  
+  # Report results with SE
+  beta.est <- deltaMethod(modelCDe, "b-a"); beta.est # Reports results for beta, because beta = b - a.
+  gamma.est <- deltaMethod(modelCDe, "1-b"); gamma.est # Reports results for gamma, because gamma = 1 - b.
+  
+  # Now calculate confidence intervals.
+  dofCDe <- summaryCDe$df[2]; dofCDe # Gives the degrees of freedom for the model.
+  tvalCDe <- qt(0.975, df = dofCDe); tvalCDe
+  betaCICDe <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE); betaCICDe # Gives the confidence interval on beta.
+  gammaCICDe <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE); gammaCICDe # Gives the confidence interval on alpha.
+  
+  # Combine all estimates and their confidence intervals into data frames with intelligent row names
+  estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDe
+  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}e^{\\gamma}$"
+  row.names(estCDe) <- "CobbDouglas with e"
+  # The [1] subscripts pick off the lower confidence interval
+  lowerCDe <- data.frame(lambda = ciCDe["lambda","2.5%"], alpha = ciCDe["a", "2.5%"], beta = betaCICDe[1], gamma = gammaCICDe[1])
+  row.names(lowerCDe) <- "- 95% CI"
+  # The [2] subscripts pick off the lower confidence interval
+  upperCDe <- data.frame(lambda = ciCDe["lambda","97.5%"], alpha = ciCDe["a", "97.5%"], beta = betaCICDe[2], gamma = gammaCICDe[2])
+  row.names(upperCDe) <- "+ 95% CI"
+  
+  # Now create the data for a table.
+  dataCDe <- rbind(lowerCDe, estCDe, upperCDe); dataCDe
+  
+  return(dataCDe)
+}
+@
+
+\subsection{Cobb-Douglas with Q}
 
 <<cdq>>=
+
+dataCDe <- cobbDouglasEnergy(dataTable, dataTable["iQ"])
+
+tableCDe <- xtable(dataCDe, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
+
+
+print("********** Done with function call **************")
+
 # Establish guess values for alpha, beta, and lambda.
 # lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
 # alphaGuess <- 0.2 # a typical value for alpha
 # betaGuess <- 0.6 # a typical value for beta
-
+# 
 # Runs a non-linear least squares fit to the data.
 # modelCDQ <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iQ^(1.0 - alpha - beta), 
 #                 start=(list(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),
 #                 data=dataTable)
-
+# 
 # Reparameterize to ensure that we meet the constraint that alpha + beta + gamma = 1.0.
 # 0 < a < 1
 # 0 < b < 1
@@ -268,13 +356,13 @@ lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progres
 alphaGuess <- 0.2 # a typical value for alpha
 betaGuess <- 0.8 # a typical value for beta
 modelCDq <- nls(iGDP ~ exp(lambda*iYear) * 
-                            iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                            iQ^(1.0 - max(a,b)), 
-  algorithm = "port",
-  start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-	lower = list(lambda=-Inf, a=0, b=0),
-	upper = list(lambda=Inf, a=1, b=1),
-  data = dataTable)
+                  iCapStk^min(a,b) * iLabor^abs(b-a) * 
+                  iQ^(1.0 - max(a,b)), 
+                algorithm = "port",
+                start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
+                lower = list(lambda=-Inf, a=0, b=0),
+                upper = list(lambda=Inf, a=1, b=1),
+                data = dataTable)
 
 aicCDq <- AIC(modelCDq, k=2); aicCDq # Checks validity of the model. AIC stands for Akaike's Information Criterion
 
@@ -321,6 +409,8 @@ tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 
 @
 
 <<CDq Results, results='asis'>>=
+
+print(tableCDe, caption.placement="top")
 print(tableCDq, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
@@ -375,11 +465,11 @@ gammaGuess <- 0.01 # a nice low value
 
 # Runs a non-linear least squares fit to the data with constraints
 modelCDU <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iU^(1.0 - alpha - beta), 
-  algorithm="port",
-	start = list(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
-	lower = list(lambda=-Inf, alpha=0, beta=0),
-	upper = list(lambda=Inf, alpha=1, beta=1),
-  data=dataTable)
+                algorithm="port",
+                start = list(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
+                lower = list(lambda=-Inf, alpha=0, beta=0),
+                upper = list(lambda=Inf, alpha=1, beta=1),
+                data=dataTable)
 
 # Gives the nls summary table
 summary(modelCDU)
@@ -417,13 +507,13 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 <<>>=
 modelCDUforced <- nls(iGDP ~ exp(lambda*iYear) * 
-                            iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                            iU^(1.0 - max(a,b)), 
-  algorithm="port",
-	start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
-	lower = list(lambda=-Inf, a=0, b=0),
-	upper = list(lambda=Inf, a=1, b=1),
-  data=dataTable)
+                        iCapStk^min(a,b) * iLabor^abs(b-a) * 
+                        iU^(1.0 - max(a,b)), 
+                      algorithm="port",
+                      start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
+                      lower = list(lambda=-Inf, a=0, b=0),
+                      upper = list(lambda=Inf, a=1, b=1),
+                      data=dataTable)
 
 coef(summary(modelCDUforced))
 with( as.data.frame(t(coef(modelCDUforced))), c(alpha=min(a,b), beta=abs(b-a), gamma=1-max(a,b)))
@@ -456,14 +546,14 @@ lambda_EGuess <- 0.008 #assuming no technical progress on the energy portion of 
 # Runs a non-linear least squares fit to the data with constraints
 modelCESQ <- nls(iGDP ~ ((1-zeta) * (exp(lambda_L*iYear) * iLabor^beta * iCapStk^(1-beta))^phi 
                          + zeta*(exp(lambda_E*iYear) * iQ)^phi)^(1/phi), 
-  algorithm = "port",
-	control = nls.control(maxiter = 500, tol = 1e-06, minFactor = 1/1024, 
-                        printEval = FALSE, warnOnly = FALSE),
-	start = list(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
-               lambda_E=lambda_EGuess),
-	lower = list(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
-	upper = list(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
-  data=dataTable)
+                 algorithm = "port",
+                 control = nls.control(maxiter = 500, tol = 1e-06, minFactor = 1/1024, 
+                                       printEval = FALSE, warnOnly = FALSE),
+                 start = list(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
+                              lambda_E=lambda_EGuess),
+                 lower = list(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
+                 upper = list(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
+                 data=dataTable)
 
 # Gives the nls summary table
 summary(modelCESQ)

@@ -207,39 +207,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-mat <- \hlfunctioncall{round}(\hlfunctioncall{matrix}(\hlfunctioncall{c}(0.9, 0.89, 200, 0.045, 2.0), \hlfunctioncall{c}(1, 5)), 4)
-\hlfunctioncall{rownames}(mat) <- \hlstring{"$y_\{t-1\}$"}
-\hlcomment{# colnames(mat) <- c("$R^2$", "$\textbackslash{}\textbackslash{}bar\{R\}^2$", "F-stat", "S.E.E", "DW")}
-\hlfunctioncall{colnames}(mat) <- \hlfunctioncall{c}(\hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"}, \hlstring{"$\textbackslash{}\textbackslash{}gamma$"}, \hlstring{"DW"})
-mat <- \hlfunctioncall{xtable}(mat)
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(mat, sanitize.text.function = \hlfunctioncall{function}(x)\{x\})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 17:03:34 2013
-\begin{table}[ht]
-\begin{center}
-\begin{tabular}{rrrrrr}
-  \hline
- & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$ & DW \\ 
-  \hline
-$y_{t-1}$ & 0.90 & 0.89 & 200.00 & 0.04 & 2.00 \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
-
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
 fileName <- \hlstring{"data/USData.txt"}
 
 \hlcomment{# Read the data file as a table with a header.  }
@@ -363,10 +330,10 @@ betaCICD <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 
 estCD <- \hlfunctioncall{data.frame}(lambda = \hlfunctioncall{coef}(modelCD)[\hlstring{"lambda"}], alpha = \hlfunctioncall{coef}(modelCD)[\hlstring{"alpha"}], beta = beta, gamma = 0)
 \hlfunctioncall{row.names}(estCD) <- \hlstring{"Cobb-Douglas"}
 \hlcomment{#row.names(estCD) <- "Cobb-Douglas: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}$"}
-\hlcomment{ # The [1] subscripts pick off the lower confidence interval}
+\hlcomment{# The [1] subscripts pick off the lower confidence interval}
 lowerCD <- \hlfunctioncall{data.frame}(lambda = ciCD[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCD[\hlstring{"alpha"}, \hlstring{"2.5%"}], beta = betaCICD[1], gamma = NA) 
 \hlfunctioncall{row.names}(lowerCD) <- \hlstring{"- 95% CI"}
-\hlcomment{ # The [2] subscripts pick off the lower confidence interval}
+\hlcomment{# The [2] subscripts pick off the lower confidence interval}
 upperCD <- \hlfunctioncall{data.frame}(lambda = ciCD[\hlstring{"lambda"},\hlstring{"97.5%"}], alpha = ciCD[\hlstring{"alpha"}, \hlstring{"97.5%"}], beta = betaCICD[2], gamma = NA)
 \hlfunctioncall{row.names}(upperCD) <- \hlstring{"+ 95% CI"}
 
@@ -392,7 +359,7 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 \hlfunctioncall{print}(tableCD, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 17:03:35 2013
+% Fri Jan 18 21:30:55 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. Cobb-Douglas, 1980-2011}
@@ -416,21 +383,135 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 \end{kframe}
 
 
-\section{Cobb-Douglas With Q}
+\section{Cobb-Douglas With Energy}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcomment{###############################}
+\hlcomment{# This function fits the Cobb Douglas production function including energy to historical data}
+\hlcomment{# The functional form is}
+\hlcomment{#}
+\hlcomment{# iGDP = exp(lambda * itime) * iCapStk^alpha * iLabor^beta * iEnergy^gamma}
+\hlcomment{# }
+\hlcomment{# iYear: time indexed to 0.0 at the first year [years since beginning of data set]}
+\hlcomment{# iGDP = time series GDP data indexed to 1.0 at the first year [-]}
+\hlcomment{# iCapStk = time series capital stock data indexed to 1.0 at the first year [-]}
+\hlcomment{# iLabor = time series labor data indexed to 1.0 at the first year [-]}
+\hlcomment{# iEnergy = time series energy data indexed to 1.0 at the first year [-]. }
+\hlcomment{#      This may be any of heat (iQ), exergy (iX), or useful work (iU).}
+\hlcomment{# }
+\hlcomment{# returns a data object containing three rows and 5 columns.}
+\hlcomment{#   col 1: lambda}
+\hlcomment{#   col 2: alpha}
+\hlcomment{#   col 3: beta}
+\hlcomment{#   col 4: gamma}
+\hlcomment{#   row 1: -95% CI for each parameter}
+\hlcomment{#   row 2: estimate for each parameter}
+\hlcomment{#   row 3: +95% CI for each parameter}
+\hlcomment{#}
+\hlcomment{# dataTable is the table to be used for this curve fit}
+\hlcomment{# iEnergy is the name of the column to be used for energy.}
+\hlcomment{#   This may be any of heat (iQ), exergy (iX), or useful work (iU).}
+\hlcomment{##}
+cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
+\hlcomment{  # Reparameterize to ensure that we meet the constraints:}
+\hlcomment{  # * alpha + beta + gamma = 1.0.}
+\hlcomment{  # * alpha, beta, and gamma are all between 0.0 and 1.0.}
+\hlcomment{  # To do this, we reparameterize as}
+\hlcomment{  # * 0 < a < 1}
+\hlcomment{  # * 0 < b < 1}
+\hlcomment{  # * alpha = min(a, b)}
+\hlcomment{  # * beta = b - a}
+\hlcomment{  # * gamma = 1 - max(a, b)}
+  lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
+  alphaGuess <- 0.3 \hlcomment{# a typical value for alpha}
+  betaGuess <- 0.7 \hlcomment{# a typical value for beta}
+  modelCDe <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
+                    iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
+                    iQ^(1.0 - \hlfunctioncall{max}(a,b)), 
+                  algorithm = \hlstring{"port"},
+                  start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
+                  lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
+                  upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
+                  data = dataTable)
+  aicCDe <- \hlfunctioncall{AIC}(modelCDe, k=2); aicCDe \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
+  
+  summaryCDe <- \hlfunctioncall{summary}(modelCDe); summaryCDe \hlcomment{# Gives the nls summary table}
+  
+\hlcomment{  # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.}
+  ciCDe <- \hlfunctioncall{confint}(modelCDe, level = 0.95); ciCDe
+  
+  a <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"a"}])
+  b <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"b"}])
+  lambda <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"lambda"}])
+  alpha <- a
+  beta <- b - a
+  gamma <- 1.0 - alpha - beta
+  
+\hlcomment{  # Report results with SE}
+  beta.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"b-a"}); beta.est # Reports results for beta, because beta = b - a.
+  gamma.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"1-b"}); gamma.est # Reports results for gamma, because gamma = 1 - b.
+  
+\hlcomment{  # Now calculate confidence intervals.}
+  dofCDe <- summaryCDe$df[2]; dofCDe \hlcomment{# Gives the degrees of freedom for the model.}
+  tvalCDe <- \hlfunctioncall{qt}(0.975, df = dofCDe); tvalCDe
+  betaCICDe <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE); betaCICDe \hlcomment{# Gives the confidence interval on beta.}
+  gammaCICDe <- \hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE); gammaCICDe \hlcomment{# Gives the confidence interval on alpha.}
+  
+\hlcomment{  # Combine all estimates and their confidence intervals into data frames with intelligent row names}
+  estCDe <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDe
+\hlcomment{  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}e^\{\textbackslash{}\textbackslash{}gamma\}$"}
+  \hlfunctioncall{row.names}(estCDe) <- \hlstring{"CobbDouglas with e"}
+\hlcomment{  # The [1] subscripts pick off the lower confidence interval}
+  lowerCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"2.5%"}], beta = betaCICDe[1], gamma = gammaCICDe[1])
+  \hlfunctioncall{row.names}(lowerCDe) <- \hlstring{"- 95% CI"}
+\hlcomment{  # The [2] subscripts pick off the lower confidence interval}
+  upperCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"97.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"97.5%"}], beta = betaCICDe[2], gamma = gammaCICDe[2])
+  \hlfunctioncall{row.names}(upperCDe) <- \hlstring{"+ 95% CI"}
+  
+\hlcomment{  # Now create the data for a table.}
+  dataCDe <- \hlfunctioncall{rbind}(lowerCDe, estCDe, upperCDe); dataCDe
+  
+  \hlfunctioncall{return}(dataCDe)
+\}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\subsection{Cobb-Douglas with Q}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+
+dataCDe <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iQ"}])
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{alltt}
+
+tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+
+
+\hlfunctioncall{print}(\hlstring{"********** Done with function call **************"})
+\end{alltt}
+\begin{verbatim}
+[1] "********** Done with function call **************"
+\end{verbatim}
+\begin{alltt}
+
 \hlcomment{# Establish guess values for alpha, beta, and lambda.}
 \hlcomment{# lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.}
 \hlcomment{# alphaGuess <- 0.2 # a typical value for alpha}
 \hlcomment{# betaGuess <- 0.6 # a typical value for beta}
-
+\hlcomment{# }
 \hlcomment{# Runs a non-linear least squares fit to the data.}
 \hlcomment{# modelCDQ <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iQ^(1.0 - alpha - beta), }
 \hlcomment{#                 start=(list(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),}
 \hlcomment{#                 data=dataTable)}
-
+\hlcomment{# }
 \hlcomment{# Reparameterize to ensure that we meet the constraint that alpha + beta + gamma = 1.0.}
 \hlcomment{# 0 < a < 1}
 \hlcomment{# 0 < b < 1}
@@ -442,13 +523,13 @@ lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technologi
 alphaGuess <- 0.2 \hlcomment{# a typical value for alpha}
 betaGuess <- 0.8 \hlcomment{# a typical value for beta}
 modelCDq <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
-                            iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                            iQ^(1.0 - \hlfunctioncall{max}(a,b)), 
-  algorithm = \hlstring{"port"},
-  start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-	lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
-	upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
-  data = dataTable)
+                  iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
+                  iQ^(1.0 - \hlfunctioncall{max}(a,b)), 
+                algorithm = \hlstring{"port"},
+                start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
+                lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
+                upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
+                data = dataTable)
 
 aicCDq <- \hlfunctioncall{AIC}(modelCDq, k=2); aicCDq \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
 \end{alltt}
@@ -584,10 +665,30 @@ tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, 
 
 \begin{kframe}
 \begin{alltt}
+
+\hlfunctioncall{print}(tableCDe, caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 18 21:30:56 2013
+\begin{table}[ht]
+\begin{center}
+\caption{U.S. 1980-2011.}
+\begin{tabular}{rrrrr}
+  \hline
+ & lambda & alpha & beta & gamma \\ 
+  \hline
+- 95\% CI & 0.0089 & 0.19 & 0.59 & -0.135 \\ 
+  CobbDouglas with e & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
+  + 95\% CI & 0.0127 & 0.33 & 0.84 & 0.177 \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
 \hlfunctioncall{print}(tableCDq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 17:03:36 2013
+% Fri Jan 18 21:30:56 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. 1980-2011.}
@@ -611,7 +712,7 @@ tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, 
 \hlfunctioncall{print}(tableAll, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 17:03:36 2013
+% Fri Jan 18 21:30:56 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. 1980-2011, All Models.}
@@ -716,11 +817,11 @@ gammaGuess <- 0.01 \hlcomment{# a nice low value}
 
 \hlcomment{# Runs a non-linear least squares fit to the data with constraints}
 modelCDU <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * iCapStk^alpha * iLabor^beta * iU^(1.0 - alpha - beta), 
-  algorithm=\hlstring{"port"},
-	start = \hlfunctioncall{list}(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
-	lower = \hlfunctioncall{list}(lambda=-Inf, alpha=0, beta=0),
-	upper = \hlfunctioncall{list}(lambda=Inf, alpha=1, beta=1),
-  data=dataTable)
+                algorithm=\hlstring{"port"},
+                start = \hlfunctioncall{list}(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
+                lower = \hlfunctioncall{list}(lambda=-Inf, alpha=0, beta=0),
+                upper = \hlfunctioncall{list}(lambda=Inf, alpha=1, beta=1),
+                data=dataTable)
 
 \hlcomment{# Gives the nls summary table}
 \hlfunctioncall{summary}(modelCDU)
@@ -820,13 +921,13 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 modelCDUforced <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
-                            iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                            iU^(1.0 - \hlfunctioncall{max}(a,b)), 
-  algorithm=\hlstring{"port"},
-	start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
-	lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
-	upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
-  data=dataTable)
+                        iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
+                        iU^(1.0 - \hlfunctioncall{max}(a,b)), 
+                      algorithm=\hlstring{"port"},
+                      start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
+                      lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
+                      upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
+                      data=dataTable)
 
 \hlfunctioncall{coef}(\hlfunctioncall{summary}(modelCDUforced))
 \end{alltt}
@@ -897,14 +998,14 @@ lambda_EGuess <- 0.008 \hlcomment{#assuming no technical progress on the energy 
 \hlcomment{# Runs a non-linear least squares fit to the data with constraints}
 modelCESQ <- \hlfunctioncall{nls}(iGDP ~ ((1-zeta) * (\hlfunctioncall{exp}(lambda_L*iYear) * iLabor^beta * iCapStk^(1-beta))^phi 
                          + zeta*(\hlfunctioncall{exp}(lambda_E*iYear) * iQ)^phi)^(1/phi), 
-  algorithm = \hlstring{"port"},
-	control = \hlfunctioncall{nls.control}(maxiter = 500, tol = 1e-06, minFactor = 1/1024, 
-                        printEval = FALSE, warnOnly = FALSE),
-	start = \hlfunctioncall{list}(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
-               lambda_E=lambda_EGuess),
-	lower = \hlfunctioncall{list}(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
-	upper = \hlfunctioncall{list}(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
-  data=dataTable)
+                 algorithm = \hlstring{"port"},
+                 control = \hlfunctioncall{nls.control}(maxiter = 500, tol = 1e-06, minFactor = 1/1024, 
+                                       printEval = FALSE, warnOnly = FALSE),
+                 start = \hlfunctioncall{list}(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
+                              lambda_E=lambda_EGuess),
+                 lower = \hlfunctioncall{list}(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
+                 upper = \hlfunctioncall{list}(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
+                 data=dataTable)
 
 \hlcomment{# Gives the nls summary table}
 \hlfunctioncall{summary}(modelCESQ)
