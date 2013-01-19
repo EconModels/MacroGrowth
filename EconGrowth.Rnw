@@ -271,23 +271,27 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   # * alpha = min(a, b)
   # * beta = b - a
   # * gamma = 1 - max(a, b)
+  energyName = names(iEnergy) #grabs the name of the energy column
   lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.3 # a typical value for alpha
   betaGuess <- 0.7 # a typical value for beta
   modelCDe <- nls(iGDP ~ exp(lambda*iYear) * 
                     iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                    iQ^(1.0 - max(a,b)), 
+                    iEnergy^(1.0 - max(a,b)), 
                   algorithm = "port",
                   start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
                   lower = list(lambda=-Inf, a=0, b=0),
                   upper = list(lambda=Inf, a=1, b=1),
                   data = dataTable)
-  aicCDe <- AIC(modelCDe, k=2); aicCDe # Checks validity of the model. AIC stands for Akaike's Information Criterion
+  aicCDe <- AIC(modelCDe, k=2) # Checks validity of the model. AIC stands for Akaike's Information Criterion
+  print(aicCDe)
   
-  summaryCDe <- summary(modelCDe); summaryCDe # Gives the nls summary table
+  summaryCDe <- summary(modelCDe) # Gives the nls summary table
+  print(summaryCDe)
   
   # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.
-  ciCDe <- confint(modelCDe, level = 0.95); ciCDe
+  ciCDe <- confint(modelCDe, level = 0.95)
+  print(ciCDe)
   
   a <- as.numeric(coef(modelCDe)["a"])
   b <- as.numeric(coef(modelCDe)["b"])
@@ -297,19 +301,24 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   gamma <- 1.0 - alpha - beta
   
   # Report results with SE
-  beta.est <- deltaMethod(modelCDe, "b-a"); beta.est # Reports results for beta, because beta = b - a.
-  gamma.est <- deltaMethod(modelCDe, "1-b"); gamma.est # Reports results for gamma, because gamma = 1 - b.
+  beta.est <- deltaMethod(modelCDe, "b-a") # Reports results for beta, because beta = b - a.
+  gamma.est <- deltaMethod(modelCDe, "1-b") # Reports results for gamma, because gamma = 1 - b.
   
   # Now calculate confidence intervals.
-  dofCDe <- summaryCDe$df[2]; dofCDe # Gives the degrees of freedom for the model.
-  tvalCDe <- qt(0.975, df = dofCDe); tvalCDe
-  betaCICDe <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE); betaCICDe # Gives the confidence interval on beta.
-  gammaCICDe <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE); gammaCICDe # Gives the confidence interval on alpha.
+  dofCDe <- summaryCDe$df[2] # Gives the degrees of freedom for the model.
+  print(dofCDe)
+  tvalCDe <- qt(0.975, df = dofCDe)
+  print(tvalCDe)
+  betaCICDe <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE) # Gives the confidence interval on beta.
+  print(betaCICDe)
+  gammaCICDe <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE) # Gives the confidence interval on alpha.
+  print(gammaCICDe)
   
   # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDe
+  estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
+  print(estCDe);
   #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}e^{\\gamma}$"
-  row.names(estCDe) <- "CobbDouglas with e"
+  row.names(estCDe) <- paste("Cobb-Douglas with ", energyName, sep="")
   # The [1] subscripts pick off the lower confidence interval
   lowerCDe <- data.frame(lambda = ciCDe["lambda","2.5%"], alpha = ciCDe["a", "2.5%"], beta = betaCICDe[1], gamma = gammaCICDe[1])
   row.names(lowerCDe) <- "- 95% CI"
@@ -318,7 +327,8 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   row.names(upperCDe) <- "+ 95% CI"
   
   # Now create the data for a table.
-  dataCDe <- rbind(lowerCDe, estCDe, upperCDe); dataCDe
+  dataCDe <- rbind(lowerCDe, estCDe, upperCDe)
+  print(dataCDe)
   
   return(dataCDe)
 }
@@ -327,136 +337,53 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
 \subsection{Cobb-Douglas with Q}
 
 <<cdq>>=
-
 dataCDe <- cobbDouglasEnergy(dataTable, dataTable["iQ"])
-
 tableCDe <- xtable(dataCDe, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
-
-
-print("********** Done with function call **************")
-
-# Establish guess values for alpha, beta, and lambda.
-# lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-# alphaGuess <- 0.2 # a typical value for alpha
-# betaGuess <- 0.6 # a typical value for beta
-# 
-# Runs a non-linear least squares fit to the data.
-# modelCDQ <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iQ^(1.0 - alpha - beta), 
-#                 start=(list(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),
-#                 data=dataTable)
-# 
-# Reparameterize to ensure that we meet the constraint that alpha + beta + gamma = 1.0.
-# 0 < a < 1
-# 0 < b < 1
-# alpha = min(a, b)
-# beta = b - a
-# gamma = 1 - max(a, b)
-
-lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-alphaGuess <- 0.2 # a typical value for alpha
-betaGuess <- 0.8 # a typical value for beta
-modelCDq <- nls(iGDP ~ exp(lambda*iYear) * 
-                  iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                  iQ^(1.0 - max(a,b)), 
-                algorithm = "port",
-                start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-                lower = list(lambda=-Inf, a=0, b=0),
-                upper = list(lambda=Inf, a=1, b=1),
-                data = dataTable)
-
-aicCDq <- AIC(modelCDq, k=2); aicCDq # Checks validity of the model. AIC stands for Akaike's Information Criterion
-
-summaryCDq <- summary(modelCDq); summaryCDq # Gives the nls summary table
-
-# Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.
-ciCDq <- confint(modelCDq, level = 0.95); ciCDq 
-
-a <- as.numeric(coef(modelCDq)["a"])
-b <- as.numeric(coef(modelCDq)["b"])
-lambda <- as.numeric(coef(modelCDq)["lambda"])
-alpha <- a
-beta <- b - a
-gamma <- 1.0 - alpha - beta
-
-# Report results with SE
-beta.est <- deltaMethod(modelCDq, "b-a"); beta.est # Reports results for beta, because beta = b - a.
-gamma.est <- deltaMethod(modelCDq, "1-b"); gamma.est # Reports results for gamma, because gamma = 1 - b.
-
-# Now calculate confidence intervals.
-dofCDq <- summaryCDq$df[2]; dofCDq # Gives the degrees of freedom for the model.
-tvalCDq <- qt(0.975, df = dofCDq); tvalCDq
-betaCICDq <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCDq * SE); betaCICDq # Gives the confidence interval on beta.
-gammaCICDq <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCDq * SE); gammaCICDq # Gives the confidence interval on alpha.
-
-# Combine all estimates and their confidence intervals into data frames with intelligent row names
-estCDq <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDq
-#row.names(estCDq) <- "Cobb-Douglas with q: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}q^{\\gamma}$"
-row.names(estCDq) <- "CobbDouglas with q"
-# The [1] subscripts pick off the lower confidence interval
-lowerCDq <- data.frame(lambda = ciCDq["lambda","2.5%"], alpha = ciCDq["a", "2.5%"], beta = betaCICDq[1], gamma = gammaCICDq[1])
-row.names(lowerCDq) <- "- 95% CI"
-# The [2] subscripts pick off the lower confidence interval
-upperCDq <- data.frame(lambda = ciCDq["lambda","97.5%"], alpha = ciCDq["a", "97.5%"], beta = betaCICDq[2], gamma = gammaCICDq[2])
-row.names(upperCDq) <- "+ 95% CI"
-
-# Now create the data for a table.
-dataCDq <- rbind(lowerCDq, estCDq, upperCDq); dataCDq
-colnames(dataCDq)  <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCDq <- xtable(dataCDq, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
-
-dataAll <- rbind(estCD, estCDq); dataAll
-tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))
+#estCDe <- dataCDe[2]
+#dataAll <- rbind(estCD, estCDe); dataAll
+#tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDq Results, results='asis'>>=
 
 print(tableCDe, caption.placement="top")
-print(tableCDq, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
-# print(tableCDq, sanitize.text.function = function(x){x})
+# print(tableCDe, sanitize.text.function = function(x){x})
 
-print(tableAll, caption.placement="top")
+#print(tableAll, caption.placement="top")
 @
 
-<<Combined Table, results='asis'>>=
-
-@
-
-\section{Cobb-Douglas With X}
+\subsection{Cobb-Douglas With X}
 
 <<cdx>>=
-# Establish guess values for alpha, beta, and lambda.
-lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-alphaGuess <- 0.2 # a typical value for alpha
-betaGuess <- 0.6 # a typical value for beta
-
-# Runs a non-linear least squares fit to the data.
-modelCDX <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iX^(1.0 - alpha - beta), 
-                start=(list(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),
-                data=dataTable)
-
-# Gives the nls summary table
-summary(modelCDX)
-confint(modelCDX, level = 0.95)
-
-# Calculate gamma and report it.
-alpha <- coef(modelCDX)["alpha"] 
-beta <- coef(modelCDX)["beta"] 
-gamma <- as.numeric(1.0 - alpha - beta)
-c(coef(modelCDX),gamma=gamma)
-
-# Checks validity of the model. AIC stands for Akaike's Information Criterion
-AIC(modelCDX, k=2)
+dataCDx <- cobbDouglasEnergy(dataTable, dataTable["iX"])
+tableCDx <- xtable(dataCDx, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
 @
 
-\section{Cobb-Douglas With U}
+<<CDx Results, results='asis'>>=
+print(tableCDx, caption.placement="top")
+@
+
+\subsection{Cobb-Douglas With U}
+
+<<cdu>>=
+dataCDu <- cobbDouglasEnergy(dataTable, dataTable["iU"])
+tableCDu <- xtable(dataCDu, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
+@
+
+<<CDu Results, results='asis'>>=
+print(tableCDu, caption.placement="top")
+@
+
+
+
 
 An issue arrises in this example because contraining $\alpha$ and $\beta$ is not sufficient to 
 guarantee that $\gamma$ is properly constrained.
 
-<<cdu>>=
+<<cduold>>=
 # Establish guess values for alpha, beta, and lambda.
 lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
 alphaGuess <- 0.2 # a typical value for alpha

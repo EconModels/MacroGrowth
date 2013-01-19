@@ -359,7 +359,7 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 \hlfunctioncall{print}(tableCD, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 21:30:55 2013
+% Fri Jan 18 22:11:08 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. Cobb-Douglas, 1980-2011}
@@ -424,23 +424,27 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
 \hlcomment{  # * alpha = min(a, b)}
 \hlcomment{  # * beta = b - a}
 \hlcomment{  # * gamma = 1 - max(a, b)}
+  energyName = \hlfunctioncall{names}(iEnergy) \hlcomment{#grabs the name of the energy column}
   lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
   alphaGuess <- 0.3 \hlcomment{# a typical value for alpha}
   betaGuess <- 0.7 \hlcomment{# a typical value for beta}
   modelCDe <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
                     iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                    iQ^(1.0 - \hlfunctioncall{max}(a,b)), 
+                    iEnergy^(1.0 - \hlfunctioncall{max}(a,b)), 
                   algorithm = \hlstring{"port"},
                   start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
                   lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
                   upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
                   data = dataTable)
-  aicCDe <- \hlfunctioncall{AIC}(modelCDe, k=2); aicCDe \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
+  aicCDe <- \hlfunctioncall{AIC}(modelCDe, k=2) \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
+  \hlfunctioncall{print}(aicCDe)
   
-  summaryCDe <- \hlfunctioncall{summary}(modelCDe); summaryCDe \hlcomment{# Gives the nls summary table}
+  summaryCDe <- \hlfunctioncall{summary}(modelCDe) \hlcomment{# Gives the nls summary table}
+  \hlfunctioncall{print}(summaryCDe)
   
 \hlcomment{  # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.}
-  ciCDe <- \hlfunctioncall{confint}(modelCDe, level = 0.95); ciCDe
+  ciCDe <- \hlfunctioncall{confint}(modelCDe, level = 0.95)
+  \hlfunctioncall{print}(ciCDe)
   
   a <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"a"}])
   b <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"b"}])
@@ -450,19 +454,24 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
   gamma <- 1.0 - alpha - beta
   
 \hlcomment{  # Report results with SE}
-  beta.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"b-a"}); beta.est # Reports results for beta, because beta = b - a.
-  gamma.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"1-b"}); gamma.est # Reports results for gamma, because gamma = 1 - b.
+  beta.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"b-a"}) # Reports results for beta, because beta = b - a.
+  gamma.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"1-b"}) # Reports results for gamma, because gamma = 1 - b.
   
 \hlcomment{  # Now calculate confidence intervals.}
-  dofCDe <- summaryCDe$df[2]; dofCDe \hlcomment{# Gives the degrees of freedom for the model.}
-  tvalCDe <- \hlfunctioncall{qt}(0.975, df = dofCDe); tvalCDe
-  betaCICDe <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE); betaCICDe \hlcomment{# Gives the confidence interval on beta.}
-  gammaCICDe <- \hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE); gammaCICDe \hlcomment{# Gives the confidence interval on alpha.}
+  dofCDe <- summaryCDe$df[2] \hlcomment{# Gives the degrees of freedom for the model.}
+  \hlfunctioncall{print}(dofCDe)
+  tvalCDe <- \hlfunctioncall{qt}(0.975, df = dofCDe)
+  \hlfunctioncall{print}(tvalCDe)
+  betaCICDe <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE) \hlcomment{# Gives the confidence interval on beta.}
+  \hlfunctioncall{print}(betaCICDe)
+  gammaCICDe <- \hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE) \hlcomment{# Gives the confidence interval on alpha.}
+  \hlfunctioncall{print}(gammaCICDe)
   
 \hlcomment{  # Combine all estimates and their confidence intervals into data frames with intelligent row names}
-  estCDe <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDe
+  estCDe <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
+  \hlfunctioncall{print}(estCDe);
 \hlcomment{  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}e^\{\textbackslash{}\textbackslash{}gamma\}$"}
-  \hlfunctioncall{row.names}(estCDe) <- \hlstring{"CobbDouglas with e"}
+  \hlfunctioncall{row.names}(estCDe) <- \hlfunctioncall{paste}(\hlstring{"Cobb-Douglas with "}, energyName, sep=\hlstring{""})
 \hlcomment{  # The [1] subscripts pick off the lower confidence interval}
   lowerCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"2.5%"}], beta = betaCICDe[1], gamma = gammaCICDe[1])
   \hlfunctioncall{row.names}(lowerCDe) <- \hlstring{"- 95% CI"}
@@ -471,7 +480,8 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
   \hlfunctioncall{row.names}(upperCDe) <- \hlstring{"+ 95% CI"}
   
 \hlcomment{  # Now create the data for a table.}
-  dataCDe <- \hlfunctioncall{rbind}(lowerCDe, estCDe, upperCDe); dataCDe
+  dataCDe <- \hlfunctioncall{rbind}(lowerCDe, estCDe, upperCDe)
+  \hlfunctioncall{print}(dataCDe)
   
   \hlfunctioncall{return}(dataCDe)
 \}
@@ -485,65 +495,13 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-
 dataCDe <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iQ"}])
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{alltt}
-
-tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
-
-
-\hlfunctioncall{print}(\hlstring{"********** Done with function call **************"})
-\end{alltt}
-\begin{verbatim}
-[1] "********** Done with function call **************"
-\end{verbatim}
-\begin{alltt}
-
-\hlcomment{# Establish guess values for alpha, beta, and lambda.}
-\hlcomment{# lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.}
-\hlcomment{# alphaGuess <- 0.2 # a typical value for alpha}
-\hlcomment{# betaGuess <- 0.6 # a typical value for beta}
-\hlcomment{# }
-\hlcomment{# Runs a non-linear least squares fit to the data.}
-\hlcomment{# modelCDQ <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iQ^(1.0 - alpha - beta), }
-\hlcomment{#                 start=(list(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),}
-\hlcomment{#                 data=dataTable)}
-\hlcomment{# }
-\hlcomment{# Reparameterize to ensure that we meet the constraint that alpha + beta + gamma = 1.0.}
-\hlcomment{# 0 < a < 1}
-\hlcomment{# 0 < b < 1}
-\hlcomment{# alpha = min(a, b)}
-\hlcomment{# beta = b - a}
-\hlcomment{# gamma = 1 - max(a, b)}
-
-lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
-alphaGuess <- 0.2 \hlcomment{# a typical value for alpha}
-betaGuess <- 0.8 \hlcomment{# a typical value for beta}
-modelCDq <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
-                  iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                  iQ^(1.0 - \hlfunctioncall{max}(a,b)), 
-                algorithm = \hlstring{"port"},
-                start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-                lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
-                upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
-                data = dataTable)
-
-aicCDq <- \hlfunctioncall{AIC}(modelCDq, k=2); aicCDq \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
 \end{alltt}
 \begin{verbatim}
 [1] -161.1
-\end{verbatim}
-\begin{alltt}
-
-summaryCDq <- \hlfunctioncall{summary}(modelCDq); summaryCDq \hlcomment{# Gives the nls summary table}
-\end{alltt}
-\begin{verbatim}
 
 Formula: iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iLabor^abs(b - 
-    a) * iQ^(1 - max(a, b))
+    a) * iEnergy^(1 - max(a, b))
 
 Parameters:
        Estimate Std. Error t value Pr(>|t|)
@@ -555,11 +513,6 @@ Residual standard error: 0.0181 on 29 degrees of freedom
 
 Algorithm "port", convergence message: relative convergence (4) 
 \end{verbatim}
-\begin{alltt}
-
-\hlcomment{# Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.}
-ciCDq <- \hlfunctioncall{confint}(modelCDq, level = 0.95); ciCDq 
-\end{alltt}
 
 
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
@@ -567,97 +520,22 @@ ciCDq <- \hlfunctioncall{confint}(modelCDq, level = 0.95); ciCDq
 lambda 0.00885 0.0127
 a      0.18580 0.3283
 b      0.82175     NA
-\end{verbatim}
-\begin{alltt}
-
-a <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDq)[\hlstring{"a"}])
-b <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDq)[\hlstring{"b"}])
-lambda <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDq)[\hlstring{"lambda"}])
-alpha <- a
-beta <- b - a
-gamma <- 1.0 - alpha - beta
-
-\hlcomment{# Report results with SE}
-beta.est <- \hlfunctioncall{deltaMethod}(modelCDq, \hlstring{"b-a"}); beta.est # Reports results for beta, because beta = b - a.
-\end{alltt}
-\begin{verbatim}
-      Estimate      SE
-b - a   0.7157 0.05916
-\end{verbatim}
-\begin{alltt}
-gamma.est <- \hlfunctioncall{deltaMethod}(modelCDq, \hlstring{"1-b"}); gamma.est # Reports results for gamma, because gamma = 1 - b.
-\end{alltt}
-\begin{verbatim}
-      Estimate      SE
-1 - b   0.0211 0.07647
-\end{verbatim}
-\begin{alltt}
-
-\hlcomment{# Now calculate confidence intervals.}
-dofCDq <- summaryCDq$df[2]; dofCDq \hlcomment{# Gives the degrees of freedom for the model.}
-\end{alltt}
-\begin{verbatim}
 [1] 29
-\end{verbatim}
-\begin{alltt}
-tvalCDq <- \hlfunctioncall{qt}(0.975, df = dofCDq); tvalCDq
-\end{alltt}
-\begin{verbatim}
 [1] 2.045
-\end{verbatim}
-\begin{alltt}
-betaCICDq <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDq * SE); betaCICDq \hlcomment{# Gives the confidence interval on beta.}
-\end{alltt}
-\begin{verbatim}
 [1] 0.5947 0.8367
-\end{verbatim}
-\begin{alltt}
-gammaCICDq <- \hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDq * SE); gammaCICDq \hlcomment{# Gives the confidence interval on alpha.}
-\end{alltt}
-\begin{verbatim}
 [1] -0.1353  0.1775
-\end{verbatim}
-\begin{alltt}
-
-\hlcomment{# Combine all estimates and their confidence intervals into data frames with intelligent row names}
-estCDq <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma); estCDq
-\end{alltt}
-\begin{verbatim}
    lambda  alpha   beta  gamma
 1 0.01049 0.2632 0.7157 0.0211
+                      lambda  alpha   beta   gamma
+- 95% CI             0.00885 0.1858 0.5947 -0.1353
+Cobb-Douglas with iQ 0.01049 0.2632 0.7157  0.0211
++ 95% CI             0.01270 0.3283 0.8367  0.1775
 \end{verbatim}
 \begin{alltt}
-\hlcomment{#row.names(estCDq) <- "Cobb-Douglas with q: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}q^\{\textbackslash{}\textbackslash{}gamma\}$"}
-\hlfunctioncall{row.names}(estCDq) <- \hlstring{"CobbDouglas with q"}
-\hlcomment{# The [1] subscripts pick off the lower confidence interval}
-lowerCDq <- \hlfunctioncall{data.frame}(lambda = ciCDq[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCDq[\hlstring{"a"}, \hlstring{"2.5%"}], beta = betaCICDq[1], gamma = gammaCICDq[1])
-\hlfunctioncall{row.names}(lowerCDq) <- \hlstring{"- 95% CI"}
-\hlcomment{# The [2] subscripts pick off the lower confidence interval}
-upperCDq <- \hlfunctioncall{data.frame}(lambda = ciCDq[\hlstring{"lambda"},\hlstring{"97.5%"}], alpha = ciCDq[\hlstring{"a"}, \hlstring{"97.5%"}], beta = betaCICDq[2], gamma = gammaCICDq[2])
-\hlfunctioncall{row.names}(upperCDq) <- \hlstring{"+ 95% CI"}
-
-\hlcomment{# Now create the data for a table.}
-dataCDq <- \hlfunctioncall{rbind}(lowerCDq, estCDq, upperCDq); dataCDq
-\end{alltt}
-\begin{verbatim}
-                    lambda  alpha   beta   gamma
-- 95% CI           0.00885 0.1858 0.5947 -0.1353
-CobbDouglas with q 0.01049 0.2632 0.7157  0.0211
-+ 95% CI           0.01270 0.3283 0.8367  0.1775
-\end{verbatim}
-\begin{alltt}
-\hlfunctioncall{colnames}(dataCDq)  <- \hlfunctioncall{c}(\hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"}, \hlstring{"$\textbackslash{}\textbackslash{}gamma$"})
-tableCDq <- \hlfunctioncall{xtable}(dataCDq, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
-
-dataAll <- \hlfunctioncall{rbind}(estCD, estCDq); dataAll
-\end{alltt}
-\begin{verbatim}
-                    lambda  alpha   beta  gamma
-Cobb-Douglas       0.01026 0.2700 0.7300 0.0000
-CobbDouglas with q 0.01049 0.2632 0.7157 0.0211
-\end{verbatim}
-\begin{alltt}
-tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, All Models."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+\hlcomment{#estCDe <- dataCDe[2]}
+\hlcomment{#dataAll <- rbind(estCD, estCDe); dataAll}
+\hlcomment{#tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -669,7 +547,7 @@ tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, 
 \hlfunctioncall{print}(tableCDe, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 21:30:56 2013
+% Fri Jan 18 22:11:08 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. 1980-2011.}
@@ -678,26 +556,7 @@ tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, 
  & lambda & alpha & beta & gamma \\ 
   \hline
 - 95\% CI & 0.0089 & 0.19 & 0.59 & -0.135 \\ 
-  CobbDouglas with e & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
-  + 95\% CI & 0.0127 & 0.33 & 0.84 & 0.177 \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tableCDq, caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 21:30:56 2013
-\begin{table}[ht]
-\begin{center}
-\caption{U.S. 1980-2011.}
-\begin{tabular}{rrrrr}
-  \hline
- & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
-  \hline
-- 95\% CI & 0.0089 & 0.19 & 0.59 & -0.135 \\ 
-  CobbDouglas with q & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
+  Cobb-Douglas with iQ & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
   + 95\% CI & 0.0127 & 0.33 & 0.84 & 0.177 \\ 
    \hline
 \end{tabular}
@@ -707,21 +566,77 @@ tableAll <- \hlfunctioncall{xtable}(dataAll, caption=\hlstring{"U.S. 1980-2011, 
 \hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
 \hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
 \hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
-\hlcomment{# print(tableCDq, sanitize.text.function = function(x)\{x\})}
+\hlcomment{# print(tableCDe, sanitize.text.function = function(x)\{x\})}
 
-\hlfunctioncall{print}(tableAll, caption.placement=\hlstring{"top"})
+\hlcomment{#print(tableAll, caption.placement="top")}
+\end{alltt}
+\end{kframe}
+
+
+\subsection{Cobb-Douglas With X}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+dataCDx <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iX"}])
+\end{alltt}
+\begin{verbatim}
+[1] -161.4
+
+Formula: iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iLabor^abs(b - 
+    a) * iEnergy^(1 - max(a, b))
+
+Parameters:
+       Estimate Std. Error t value Pr(>|t|)
+lambda  0.01071    0.00105   10.16  4.6e-11
+a       0.25689    0.03666    7.01  1.0e-07
+b       0.95700    0.07467   12.82  1.8e-13
+
+Residual standard error: 0.018 on 29 degrees of freedom
+
+Algorithm "port", convergence message: relative convergence (4) 
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
+           2.5%   97.5%
+lambda 0.008902 0.01287
+a      0.182137 0.32622
+b      0.803506      NA
+[1] 29
+[1] 2.045
+[1] 0.5791 0.8211
+[1] -0.1097  0.1957
+   lambda  alpha   beta gamma
+1 0.01071 0.2569 0.7001 0.043
+                       lambda  alpha   beta   gamma
+- 95% CI             0.008902 0.1821 0.5791 -0.1097
+Cobb-Douglas with iX 0.010714 0.2569 0.7001  0.0430
++ 95% CI             0.012867 0.3262 0.8211  0.1957
+\end{verbatim}
+\begin{alltt}
+tableCDx <- \hlfunctioncall{xtable}(dataCDx, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{print}(tableCDx, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 18 21:30:56 2013
+% Fri Jan 18 22:11:09 2013
 \begin{table}[ht]
 \begin{center}
-\caption{U.S. 1980-2011, All Models.}
+\caption{U.S. 1980-2011.}
 \begin{tabular}{rrrrr}
   \hline
  & lambda & alpha & beta & gamma \\ 
   \hline
-Cobb-Douglas & 0.0103 & 0.27 & 0.73 & 0.000 \\ 
-  CobbDouglas with q & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
+- 95\% CI & 0.0089 & 0.18 & 0.58 & -0.110 \\ 
+  Cobb-Douglas with iX & 0.0107 & 0.26 & 0.70 & 0.043 \\ 
+  + 95\% CI & 0.0129 & 0.33 & 0.82 & 0.196 \\ 
    \hline
 \end{tabular}
 \end{center}
@@ -729,79 +644,35 @@ Cobb-Douglas & 0.0103 & 0.27 & 0.73 & 0.000 \\
 
 
 
-
-
-
-\section{Cobb-Douglas With X}
+\subsection{Cobb-Douglas With U}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcomment{# Establish guess values for alpha, beta, and lambda.}
-lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
-alphaGuess <- 0.2 \hlcomment{# a typical value for alpha}
-betaGuess <- 0.6 \hlcomment{# a typical value for beta}
-
-\hlcomment{# Runs a non-linear least squares fit to the data.}
-modelCDX <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * iCapStk^alpha * iLabor^beta * iX^(1.0 - alpha - beta), 
-                start=(\hlfunctioncall{list}(lambda=lambdaGuess,alpha=alphaGuess,beta=betaGuess)),
-                data=dataTable)
-
-\hlcomment{# Gives the nls summary table}
-\hlfunctioncall{summary}(modelCDX)
-\end{alltt}
-\begin{verbatim}
-
-Formula: iGDP ~ exp(lambda * iYear) * iCapStk^alpha * iLabor^beta * iX^(1 - 
-    alpha - beta)
-
-Parameters:
-       Estimate Std. Error t value Pr(>|t|)
-lambda  0.01071    0.00105   10.16  4.6e-11
-alpha   0.25689    0.03666    7.01  1.0e-07
-beta    0.70011    0.05916   11.83  1.3e-12
-
-Residual standard error: 0.018 on 29 degrees of freedom
-
-Number of iterations to convergence: 4 
-Achieved convergence tolerance: 2.88e-06 
-\end{verbatim}
-\begin{alltt}
-\hlfunctioncall{confint}(modelCDX, level = 0.95)
+dataCDu <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iU"}])
 \end{alltt}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
-           2.5%   97.5%
-lambda 0.008559 0.01287
-alpha  0.182137 0.33181
-beta   0.578423 0.82111
-\end{verbatim}
-\begin{alltt}
-
-\hlcomment{# Calculate gamma and report it.}
-alpha <- \hlfunctioncall{coef}(modelCDX)[\hlstring{"alpha"}] 
-beta <- \hlfunctioncall{coef}(modelCDX)[\hlstring{"beta"}] 
-gamma <- \hlfunctioncall{as.numeric}(1.0 - alpha - beta)
-\hlfunctioncall{c}(\hlfunctioncall{coef}(modelCDX),gamma=gamma)
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: Missing value or an infinity produced when evaluating the model}}\begin{alltt}
+tableCDu <- \hlfunctioncall{xtable}(dataCDu, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
 \end{alltt}
-\begin{verbatim}
- lambda   alpha    beta   gamma 
-0.01071 0.25689 0.70011 0.04300 
-\end{verbatim}
-\begin{alltt}
 
-\hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
-\hlfunctioncall{AIC}(modelCDX, k=2)
-\end{alltt}
-\begin{verbatim}
-[1] -161.4
-\end{verbatim}
-\end{kframe}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: object 'dataCDu' not found}}\end{kframe}
 \end{knitrout}
 
 
-\section{Cobb-Douglas With U}
+\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{print}(tableCDu, caption.placement=\hlstring{"top"})
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'tableCDu' not found}}\end{kframe}
+
+
+
+
 
 An issue arrises in this example because contraining $\alpha$ and $\beta$ is not sufficient to 
 guarantee that $\gamma$ is properly constrained.
