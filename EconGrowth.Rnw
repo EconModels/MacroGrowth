@@ -165,63 +165,84 @@ opts_chunk$set(
   comment=NA)
 @
 
-<<loadData>>=
-fileName <- "data/USData.txt"
 
-# Read the data file as a table with a header.  
-## dataTable is a poor name.  Name it after contents, unless this is the 
-## start of a script where this will be provided at the command line.
-dataTable <- read.table(fileName, header = TRUE)
-
-# Identifies the header names associated with dataTable
-names(dataTable)
+<<Load Data>>=
+#################################
+# This function loads data given a country name.
+#
+# countryName = the name of the country for which data is to be loaded. The file names is assumed to be 
+#   named <countryName>Data.txt. The file is assumed to exist in a subfolder of this project called "data".
+#
+# returns a matrix with the data that has been loaded
+##
+loadData <- function(countryName){
+  # Read the data file as a table with a header.  
+  fileName <- paste("data/", countryName, "Data.txt", sep="")
+  dataTable <- read.table(fileName, header = TRUE)
+  # Identifies the header names associated with dataTable
+  names(dataTable)
+  return(dataTable)
+}
 @
 
 \section{Cobb-Douglas Without Energy}
 
 <<cobb-douglas>>=
-# Establish guess values for alpha and lambda.
-lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-alphaGuess <- 0.3 # a typical value for alpha, the coefficient on capital stock
 
-# Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-               start=(list(lambda=lambdaGuess,alpha=alphaGuess)),
-               data=dataTable)
+cobbDouglas <- function(countryName){
+  
+  # Load the data that we need.
+  dataTable <- loadData(countryName)
+  
+  # Establish guess values for alpha and lambda.
+  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.3 # a typical value for alpha, the coefficient on capital stock
+  
+  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
+  modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
+                 start=(list(lambda=lambdaGuess,alpha=alphaGuess)),
+                 data=dataTable)
+  
+  # Checks validity of the model. AIC stands for Akaike's Information Criterion.
+  aicCD  <- AIC(modelCD, k=2); aicCD
+  
+  summaryCD <- summary(modelCD) # Gives the nls summary table.
+  print(summaryCD)
+  ciCD <- confint(modelCD, level = 0.95); ciCD # Displays confidence intervals for the CD model.
+  
+  # Calculate beta and its confidence interval and report it.
+  alpha <- as.numeric(coef(modelCD)["alpha"])
+  beta <- 1.0 - alpha
+  beta.est <- deltaMethod(modelCD, "1 - alpha"); beta.est # Estimates beta and its standard error (SE).
+  # Now calculate a confidence interval on beta
+  dofCD <- summaryCD$df[2]; dofCD # Gives the degrees of freedom for the model.
+  tvalCD <- qt(0.975, df = dofCD); tvalCD
+  betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.
+  
+  coef(modelCD)
+  
+  # Combine all estimates and their confidence intervals into data frames with intelligent row names
+  estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
+  row.names(estCD) <- "Cobb-Douglas"
+  #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
+  # The [1] subscripts pick off the lower confidence interval
+  lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
+  row.names(lowerCD) <- "- 95% CI"
+  # The [2] subscripts pick off the lower confidence interval
+  upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97.5%"], beta = betaCICD[2], gamma = NA)
+  row.names(upperCD) <- "+ 95% CI"
+  
+  # Now create the data for a table.
+  dataCD <- rbind(upperCD, estCD, lowerCD); dataCD
+  colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
+  tableCD <- xtable(dataCD, caption=paste(countryName, " Cobb-Douglas, 1980-2011", sep=""), digit = c(4, 4, 2, 2, 1))
+  return(tableCD)
+}
 
-# Checks validity of the model. AIC stands for Akaike's Information Criterion.
-aicCD  <- AIC(modelCD, k=2); aicCD
+tableCD <- cobbDouglas("US")
 
-summaryCD <- summary(modelCD) # Gives the nls summary table.
-print(summaryCD)
-ciCD <- confint(modelCD, level = 0.95); ciCD # Displays confidence intervals for the CD model.
-
-# Calculate beta and its confidence interval and report it.
-alpha <- as.numeric(coef(modelCD)["alpha"])
-beta <- 1.0 - alpha
-beta.est <- deltaMethod(modelCD, "1 - alpha"); beta.est # Estimates beta and its standard error (SE).
-# Now calculate a confidence interval on beta
-dofCD <- summaryCD$df[2]; dofCD # Gives the degrees of freedom for the model.
-tvalCD <- qt(0.975, df = dofCD); tvalCD
-betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.
-
-coef(modelCD)
-
-# Combine all estimates and their confidence intervals into data frames with intelligent row names
-estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
-row.names(estCD) <- "Cobb-Douglas"
-#row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
-# The [1] subscripts pick off the lower confidence interval
-lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
-row.names(lowerCD) <- "- 95% CI"
-# The [2] subscripts pick off the lower confidence interval
-upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97.5%"], beta = betaCICD[2], gamma = NA)
-row.names(upperCD) <- "+ 95% CI"
-
-# Now create the data for a table.
-dataCD <- rbind(upperCD, estCD, lowerCD); dataCD
-colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-tableCD <- xtable(dataCD, caption="U.S. Cobb-Douglas, 1980-2011", digit = c(4, 4, 2, 2, 1))
+countries <- c("US", "CN")
+tablesCD <- apply(countries, 1, cobbDouglas)
 @
 
 <<CD Results, results='asis'>>=
@@ -261,11 +282,16 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 #   row 2: estimate for each parameter
 #   row 3: +95% CI for each parameter
 #
-# dataTable is the table to be used for this curve fit
-# iEnergy is the name of the column to be used for energy.
-#   This may be any of heat (iQ), exergy (iX), or useful work (iU).
+# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# energyColumnName is the name of the column to be used for energy.
+#   This may be any of heat ("iQ"), exergy ("iX"), or useful work ("iU").
+# energyString is the string to be used in table captions reprsenting the type of energy. Typically, "q", "x", or "u"
 ##
-cobbDouglasEnergy <- function(dataTable, energyColumnName, energyString){
+cobbDouglasEnergy <- function(countryName, energyColumnName, energyString){
+  
+  # Load the data that we need.
+  dataTable <- loadData(countryName)
+  
   # Reparameterize to ensure that we meet the constraints:
   # * alpha + beta + gamma = 1.0.
   # * alpha, beta, and gamma are all between 0.0 and 1.0.
@@ -275,7 +301,7 @@ cobbDouglasEnergy <- function(dataTable, energyColumnName, energyString){
   # * alpha = min(a, b)
   # * beta = b - a
   # * gamma = 1 - max(a, b)
-  iEnergy <- dataTable[energyColumnName] #grabs the energy column
+  iEnergy <- dataTable[energyColumnName] #grabs the desired energy column
   lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.3 # a typical value for alpha
   betaGuess <- 0.7 # a typical value for beta
@@ -341,9 +367,11 @@ cobbDouglasEnergy <- function(dataTable, energyColumnName, energyString){
 \subsection{Cobb-Douglas with Q}
 
 <<cdq>>=
-dataCDq <- cobbDouglasEnergy(dataTable, "iQ", "q")
+countryName <- "US"
+energyColumn <- "iQ"; energyString <- "q"
+dataCDq <- cobbDouglasEnergy(countryName, energyColumn, energyString)
 # TODO Develop a better caption for the table based on the data automatically.
-tableCDq <- xtable(dataCDq, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
+tableCDq <- xtable(dataCDq, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
 #estCDe <- dataCDe[2]
 #dataAll <- rbind(estCD, estCDe); dataAll
 #tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))
@@ -363,8 +391,9 @@ print(tableCDq, caption.placement="top")
 \subsection{Cobb-Douglas With X}
 
 <<cdx>>=
-dataCDx <- cobbDouglasEnergy(dataTable, "iX", "x")
-tableCDx <- xtable(dataCDx, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
+energyColumn <- "iX"; energyString <- "x"
+dataCDx <- cobbDouglasEnergy(countryName, energyColumn, energyString)
+tableCDx <- xtable(dataCDx, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDx Results, results='asis'>>=
@@ -374,8 +403,9 @@ print(tableCDx, caption.placement="top")
 \subsection{Cobb-Douglas With U}
 
 <<cdu>>=
-dataCDu <- cobbDouglasEnergy(dataTable, "iU", "U")
-tableCDu <- xtable(dataCDu, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
+energyColumn <- "iU"; energySTring <- "u"
+dataCDu <- cobbDouglasEnergy(countryName, energyColumn, energyString)
+tableCDu <- xtable(dataCDu, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDu Results, results='asis'>>=
