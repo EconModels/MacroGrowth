@@ -145,7 +145,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 % \linenumbers
 %% main text
 
-
 <<setup,include=FALSE>>=
 require(knitr)
 require(lattice)
@@ -170,8 +169,9 @@ opts_chunk$set(
 #################################
 # This function loads data given a country name.
 #
-# countryName = the name of the country for which data is to be loaded. The file names is assumed to be 
-#   named <countryName>Data.txt. The file is assumed to exist in a subfolder of this project called "data".
+# countryName = a string of the 2-digit code for the country for which data is to be loaded. 
+#   The file name from which data will be loaded is assumed to be of the form 
+#   "<countryName>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
 #
 # returns a matrix with the data that has been loaded
 ##
@@ -180,7 +180,7 @@ loadData <- function(countryName){
   fileName <- paste("data/", countryName, "Data.txt", sep="")
   dataTable <- read.table(fileName, header = TRUE)
   # Identifies the header names associated with dataTable
-  names(dataTable)
+  print(names(dataTable))
   return(dataTable)
 }
 @
@@ -204,10 +204,11 @@ cobbDouglas <- function(countryName){
                  data=dataTable)
   
   # Checks validity of the model. AIC stands for Akaike's Information Criterion.
-  aicCD  <- AIC(modelCD, k=2); aicCD
+  aicCD  <- AIC(modelCD, k=2)
+  #print(aicCD)
   
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-  print(summaryCD)
+  #print(summaryCD)
   ciCD <- confint(modelCD, level = 0.95); ciCD # Displays confidence intervals for the CD model.
   
   # Calculate beta and its confidence interval and report it.
@@ -219,10 +220,11 @@ cobbDouglas <- function(countryName){
   tvalCD <- qt(0.975, df = dofCD); tvalCD
   betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.
   
-  coef(modelCD)
+  #print(coef(modelCD))
   
   # Combine all estimates and their confidence intervals into data frames with intelligent row names
   estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
+  #print(estCD)
   row.names(estCD) <- "Cobb-Douglas"
   #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
   # The [1] subscripts pick off the lower confidence interval
@@ -233,16 +235,20 @@ cobbDouglas <- function(countryName){
   row.names(upperCD) <- "+ 95% CI"
   
   # Now create the data for a table.
-  dataCD <- rbind(upperCD, estCD, lowerCD); dataCD
+  dataCD <- rbind(upperCD, estCD, lowerCD)
+  #print(dataCD)
   colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
   tableCD <- xtable(dataCD, caption=paste(countryName, " Cobb-Douglas, 1980-2011", sep=""), digit = c(4, 4, 2, 2, 1))
+  #print(tableCD)
   return(tableCD)
 }
 
 tableCD <- cobbDouglas("US")
+print(tableCD)
 
 countries <- c("US", "CN")
-tablesCD <- apply(countries, 1, cobbDouglas)
+tablesCD <- lapply(countries, cobbDouglas)
+#tablesCD <- sapply(countries, cobbDouglas, USE.NAMES = TRUE)
 @
 
 <<CD Results, results='asis'>>=
