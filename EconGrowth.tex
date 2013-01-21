@@ -359,7 +359,7 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 \hlfunctioncall{print}(tableCD, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jan 19 11:07:42 2013
+% Sun Jan 20 19:12:16 2013
 \begin{table}[ht]
 \begin{center}
 \caption{U.S. Cobb-Douglas, 1980-2011}
@@ -384,6 +384,10 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 
 
 \section{Cobb-Douglas With Energy}
+
+We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
+
+\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -414,7 +418,7 @@ tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"U.S. Cobb-Douglas,
 \hlcomment{# iEnergy is the name of the column to be used for energy.}
 \hlcomment{#   This may be any of heat (iQ), exergy (iX), or useful work (iU).}
 \hlcomment{##}
-cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
+cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, energyColumnName, energyString)\{
 \hlcomment{  # Reparameterize to ensure that we meet the constraints:}
 \hlcomment{  # * alpha + beta + gamma = 1.0.}
 \hlcomment{  # * alpha, beta, and gamma are all between 0.0 and 1.0.}
@@ -424,7 +428,7 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
 \hlcomment{  # * alpha = min(a, b)}
 \hlcomment{  # * beta = b - a}
 \hlcomment{  # * gamma = 1 - max(a, b)}
-  energyName = \hlfunctioncall{names}(iEnergy) \hlcomment{#grabs the name of the energy column}
+  iEnergy <- dataTable[energyColumnName] \hlcomment{#grabs the energy column}
   lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
   alphaGuess <- 0.3 \hlcomment{# a typical value for alpha}
   betaGuess <- 0.7 \hlcomment{# a typical value for beta}
@@ -471,7 +475,7 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
   estCDe <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
   \hlfunctioncall{print}(estCDe);
 \hlcomment{  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}e^\{\textbackslash{}\textbackslash{}gamma\}$"}
-  \hlfunctioncall{row.names}(estCDe) <- \hlfunctioncall{paste}(\hlstring{"Cobb-Douglas with "}, energyName, sep=\hlstring{""})
+  \hlfunctioncall{row.names}(estCDe) <- \hlfunctioncall{paste}(\hlstring{"C-D with "}, energyString, sep=\hlstring{""})
 \hlcomment{  # The [1] subscripts pick off the lower confidence interval}
   lowerCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"2.5%"}], beta = betaCICDe[1], gamma = gammaCICDe[1])
   \hlfunctioncall{row.names}(lowerCDe) <- \hlstring{"- 95% CI"}
@@ -495,7 +499,7 @@ cobbDouglasEnergy <- \hlfunctioncall{function}(dataTable, iEnergy)\{
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-dataCDe <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iQ"}])
+dataCDq <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, \hlstring{"iQ"}, \hlstring{"q"})
 \end{alltt}
 \begin{verbatim}
 [1] -161.1
@@ -526,13 +530,14 @@ b      0.82175     NA
 [1] -0.1353  0.1775
    lambda  alpha   beta  gamma
 1 0.01049 0.2632 0.7157 0.0211
-                      lambda  alpha   beta   gamma
-+ 95% CI             0.01270 0.3283 0.8367  0.1775
-Cobb-Douglas with iQ 0.01049 0.2632 0.7157  0.0211
-- 95% CI             0.00885 0.1858 0.5947 -0.1353
+            lambda  alpha   beta   gamma
++ 95% CI   0.01270 0.3283 0.8367  0.1775
+C-D with q 0.01049 0.2632 0.7157  0.0211
+- 95% CI   0.00885 0.1858 0.5947 -0.1353
 \end{verbatim}
 \begin{alltt}
-tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+\hlcomment{# TODO Develop a better caption for the table based on the data automatically.}
+tableCDq <- \hlfunctioncall{xtable}(dataCDq, caption=\hlstring{"U.S., 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
 \hlcomment{#estCDe <- dataCDe[2]}
 \hlcomment{#dataAll <- rbind(estCD, estCDe); dataAll}
 \hlcomment{#tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))}
@@ -544,19 +549,19 @@ tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."
 \begin{kframe}
 \begin{alltt}
 
-\hlfunctioncall{print}(tableCDe, caption.placement=\hlstring{"top"})
+\hlfunctioncall{print}(tableCDq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jan 19 11:07:43 2013
+% Sun Jan 20 19:12:17 2013
 \begin{table}[ht]
 \begin{center}
-\caption{U.S. 1980-2011.}
+\caption{U.S., 1980-2011.}
 \begin{tabular}{rrrrr}
   \hline
  & lambda & alpha & beta & gamma \\ 
   \hline
 + 95\% CI & 0.0127 & 0.33 & 0.84 & 0.177 \\ 
-  Cobb-Douglas with iQ & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
+  C-D with q & 0.0105 & 0.26 & 0.72 & 0.021 \\ 
   - 95\% CI & 0.0089 & 0.19 & 0.59 & -0.135 \\ 
    \hline
 \end{tabular}
@@ -578,7 +583,7 @@ tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlstring{"U.S. 1980-2011."
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-dataCDx <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iX"}])
+dataCDx <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, \hlstring{"iX"}, \hlstring{"x"})
 \end{alltt}
 \begin{verbatim}
 [1] -161.4
@@ -609,13 +614,13 @@ b      0.803506      NA
 [1] -0.1097  0.1957
    lambda  alpha   beta gamma
 1 0.01071 0.2569 0.7001 0.043
-                       lambda  alpha   beta   gamma
-+ 95% CI             0.012867 0.3262 0.8211  0.1957
-Cobb-Douglas with iX 0.010714 0.2569 0.7001  0.0430
-- 95% CI             0.008902 0.1821 0.5791 -0.1097
+             lambda  alpha   beta   gamma
++ 95% CI   0.012867 0.3262 0.8211  0.1957
+C-D with x 0.010714 0.2569 0.7001  0.0430
+- 95% CI   0.008902 0.1821 0.5791 -0.1097
 \end{verbatim}
 \begin{alltt}
-tableCDx <- \hlfunctioncall{xtable}(dataCDx, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+tableCDx <- \hlfunctioncall{xtable}(dataCDx, caption=\hlstring{"U.S., 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -626,16 +631,16 @@ tableCDx <- \hlfunctioncall{xtable}(dataCDx, caption=\hlstring{"U.S. 1980-2011."
 \hlfunctioncall{print}(tableCDx, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jan 19 11:07:44 2013
+% Sun Jan 20 19:12:17 2013
 \begin{table}[ht]
 \begin{center}
-\caption{U.S. 1980-2011.}
+\caption{U.S., 1980-2011.}
 \begin{tabular}{rrrrr}
   \hline
  & lambda & alpha & beta & gamma \\ 
   \hline
 + 95\% CI & 0.0129 & 0.33 & 0.82 & 0.196 \\ 
-  Cobb-Douglas with iX & 0.0107 & 0.26 & 0.70 & 0.043 \\ 
+  C-D with x & 0.0107 & 0.26 & 0.70 & 0.043 \\ 
   - 95\% CI & 0.0089 & 0.18 & 0.58 & -0.110 \\ 
    \hline
 \end{tabular}
@@ -649,12 +654,12 @@ tableCDx <- \hlfunctioncall{xtable}(dataCDx, caption=\hlstring{"U.S. 1980-2011."
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-dataCDu <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, dataTable[\hlstring{"iU"}])
+dataCDu <- \hlfunctioncall{cobbDouglasEnergy}(dataTable, \hlstring{"iU"}, \hlstring{"U"})
 \end{alltt}
 
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{Error: Missing value or an infinity produced when evaluating the model}}\begin{alltt}
-tableCDu <- \hlfunctioncall{xtable}(dataCDu, caption=\hlstring{"U.S. 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
+tableCDu <- \hlfunctioncall{xtable}(dataCDu, caption=\hlstring{"U.S., 1980-2011."}, digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
 \end{alltt}
 
 
@@ -670,189 +675,6 @@ tableCDu <- \hlfunctioncall{xtable}(dataCDu, caption=\hlstring{"U.S. 1980-2011."
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'tableCDu' not found}}\end{kframe}
 
-
-
-
-
-An issue arrises in this example because contraining $\alpha$ and $\beta$ is not sufficient to 
-guarantee that $\gamma$ is properly constrained.
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# Establish guess values for alpha, beta, and lambda.}
-lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
-alphaGuess <- 0.2 \hlcomment{# a typical value for alpha}
-betaGuess <- 0.6 \hlcomment{# a typical value for beta}
-gammaGuess <- 0.01 \hlcomment{# a nice low value}
-
-\hlcomment{# Runs a non-linear least squares fit to the data with constraints}
-modelCDU <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * iCapStk^alpha * iLabor^beta * iU^(1.0 - alpha - beta), 
-                algorithm=\hlstring{"port"},
-                start = \hlfunctioncall{list}(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
-                lower = \hlfunctioncall{list}(lambda=-Inf, alpha=0, beta=0),
-                upper = \hlfunctioncall{list}(lambda=Inf, alpha=1, beta=1),
-                data=dataTable)
-
-\hlcomment{# Gives the nls summary table}
-\hlfunctioncall{summary}(modelCDU)
-\end{alltt}
-\begin{verbatim}
-
-Formula: iGDP ~ exp(lambda * iYear) * iCapStk^alpha * iLabor^beta * iU^(1 - 
-    alpha - beta)
-
-Parameters:
-       Estimate Std. Error t value Pr(>|t|)
-lambda  0.00920    0.00129    7.11  1.2e-06
-alpha   0.32389    0.07187    4.51  0.00027
-beta    0.71425    0.07641    9.35  2.5e-08
-
-Residual standard error: 0.00994 on 18 degrees of freedom
-
-Algorithm "port", convergence message: relative convergence (4) 
-  (11 observations deleted due to missingness)
-\end{verbatim}
-\begin{alltt}
-\hlfunctioncall{confint}(modelCDU, level = 0.95)
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
-          2.5%   97.5%
-lambda 0.00649 0.01192
-alpha  0.17289 0.47457
-beta   0.55373 0.87481
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
-\hlfunctioncall{AIC}(modelCDU, k=2)
-\end{alltt}
-\begin{verbatim}
-[1] -129.3
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-The problem here is that $\hat \gamma < 0$.
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# Calculate gamma and report it.}
-alpha <- \hlfunctioncall{coef}(modelCDU)[\hlstring{"alpha"}] 
-beta <- \hlfunctioncall{coef}(modelCDU)[\hlstring{"beta"}] 
-gamma <- \hlfunctioncall{as.numeric}(1.0 - alpha - beta)
-\hlfunctioncall{c}(\hlfunctioncall{coef}(modelCDU), gamma=gamma)
-\end{alltt}
-\begin{verbatim}
-   lambda     alpha      beta     gamma 
- 0.009203  0.323887  0.714248 -0.038135 
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-Our $\hat\gamma$ is not much below $0$.  Let's compute the standard error.
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{require}(car)  \hlcomment{# the methods in alr3 have been deprecated.  Use car instead.}
-gamma.est <- \hlfunctioncall{deltaMethod}(modelCDU, \hlstring{"1-alpha-beta"}); gamma.est
-\end{alltt}
-\begin{verbatim}
-                 Estimate      SE
-1 - alpha - beta -0.03813 0.03055
-\end{verbatim}
-\begin{alltt}
-\hlcomment{# crude CI (using 2 as a rough estimate for critical value)}
-\hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1,1) * 2 * SE)
-\end{alltt}
-\begin{verbatim}
-[1] -0.09924  0.02297
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-So no real cause for concern: our data don't convince us that the real $\gamma$ is different from $0$.
-
-\subsection{Forcing $\gamma\ge0$}
-
-We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
-
-\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-modelCDUforced <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
-                        iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                        iU^(1.0 - \hlfunctioncall{max}(a,b)), 
-                      algorithm=\hlstring{"port"},
-                      start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
-                      lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
-                      upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
-                      data=dataTable)
-
-\hlfunctioncall{coef}(\hlfunctioncall{summary}(modelCDUforced))
-\end{alltt}
-\begin{verbatim}
-       Estimate Std. Error t value  Pr(>|t|)
-lambda 0.009299   0.001349   6.893 1.908e-06
-a      0.318805   0.074953   4.253 4.780e-04
-b      1.000000   0.031938  31.310 3.765e-17
-\end{verbatim}
-\begin{alltt}
-\hlfunctioncall{with}( \hlfunctioncall{as.data.frame}(\hlfunctioncall{t}(\hlfunctioncall{coef}(modelCDUforced))), \hlfunctioncall{c}(alpha=\hlfunctioncall{min}(a,b), beta=\hlfunctioncall{abs}(b-a), gamma=1-\hlfunctioncall{max}(a,b)))
-\end{alltt}
-\begin{verbatim}
- alpha   beta  gamma 
-0.3188 0.6812 0.0000 
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-But the naive delta method to calculate significance information fails because R doesn't know how to calculate the derivatives for the minimum and maximum functions.  So we need to be clever, using the fact that we know now that $a < b$:
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# alpha = a}
-\hlfunctioncall{deltaMethod}( modelCDUforced, \hlstring{"a"})
-\end{alltt}
-\begin{verbatim}
-  Estimate      SE
-a   0.3188 0.07495
-\end{verbatim}
-\begin{alltt}
-\hlcomment{# beta = b - a}
-\hlfunctioncall{deltaMethod}( modelCDUforced, \hlstring{"b-a"})
-\end{alltt}
-\begin{verbatim}
-      Estimate      SE
-b - a   0.6812 0.07972
-\end{verbatim}
-\begin{alltt}
-\hlcomment{# gamma = 1-b}
-\hlfunctioncall{deltaMethod}( modelCDUforced, \hlstring{"1-b"})
-\end{alltt}
-\begin{verbatim}
-      Estimate      SE
-1 - b        0 0.03194
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-So this seems to give us what we want for this case:  We have parameter estimates and standard errors subject to all of our constraints.  
-
-It may be that we can avoid using min and max and just
-use $a$, $b-a$ and $1-b$.  If that works, then this generalizes fairly easily to any number of parameters that must be bounded by 0 and 1 and sum to 1.  (Else we have to ``sort'' the dummy parameters first, which is OK but makes the coding a bit uglier.)
 
 \section{CES With Q}
 
@@ -902,17 +724,17 @@ Algorithm "port", convergence message: relative convergence (4)
 \hlfunctioncall{xyplot}( \hlfunctioncall{resid}(modelCESQ) ~ \hlfunctioncall{fitted}(modelCESQ) )
 \end{alltt}
 \end{kframe}
-\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-61} 
+\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-11} 
 \begin{kframe}\begin{alltt}
 \hlfunctioncall{histogram}( ~\hlfunctioncall{resid}(modelCESQ) )
 \end{alltt}
 \end{kframe}
-\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-62} 
+\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-12} 
 \begin{kframe}\begin{alltt}
 \hlfunctioncall{qqmath}( ~\hlfunctioncall{resid}(modelCESQ) )
 \end{alltt}
 \end{kframe}
-\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-63} 
+\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/unnamed-chunk-13} 
 
 \end{knitrout}
 

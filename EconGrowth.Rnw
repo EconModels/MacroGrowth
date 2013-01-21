@@ -234,6 +234,10 @@ print(tableCD, caption.placement="top")
 
 \section{Cobb-Douglas With Energy}
 
+We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
+
+\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
+
 <<cobbDouglasEnergy function>>=
 ###############################
 # This function fits the Cobb Douglas production function including energy to historical data
@@ -261,7 +265,7 @@ print(tableCD, caption.placement="top")
 # iEnergy is the name of the column to be used for energy.
 #   This may be any of heat (iQ), exergy (iX), or useful work (iU).
 ##
-cobbDouglasEnergy <- function(dataTable, iEnergy){
+cobbDouglasEnergy <- function(dataTable, energyColumnName, energyString){
   # Reparameterize to ensure that we meet the constraints:
   # * alpha + beta + gamma = 1.0.
   # * alpha, beta, and gamma are all between 0.0 and 1.0.
@@ -271,7 +275,7 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   # * alpha = min(a, b)
   # * beta = b - a
   # * gamma = 1 - max(a, b)
-  energyName = names(iEnergy) #grabs the name of the energy column
+  iEnergy <- dataTable[energyColumnName] #grabs the energy column
   lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.3 # a typical value for alpha
   betaGuess <- 0.7 # a typical value for beta
@@ -318,7 +322,7 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
   estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
   print(estCDe);
   #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}e^{\\gamma}$"
-  row.names(estCDe) <- paste("Cobb-Douglas with ", energyName, sep="")
+  row.names(estCDe) <- paste("C-D with ", energyString, sep="")
   # The [1] subscripts pick off the lower confidence interval
   lowerCDe <- data.frame(lambda = ciCDe["lambda","2.5%"], alpha = ciCDe["a", "2.5%"], beta = betaCICDe[1], gamma = gammaCICDe[1])
   row.names(lowerCDe) <- "- 95% CI"
@@ -337,8 +341,9 @@ cobbDouglasEnergy <- function(dataTable, iEnergy){
 \subsection{Cobb-Douglas with Q}
 
 <<cdq>>=
-dataCDe <- cobbDouglasEnergy(dataTable, dataTable["iQ"])
-tableCDe <- xtable(dataCDe, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
+dataCDq <- cobbDouglasEnergy(dataTable, "iQ", "q")
+# TODO Develop a better caption for the table based on the data automatically.
+tableCDq <- xtable(dataCDq, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
 #estCDe <- dataCDe[2]
 #dataAll <- rbind(estCD, estCDe); dataAll
 #tableAll <- xtable(dataAll, caption="U.S. 1980-2011, All Models.", digit = c(4, 4, 2, 2, 3))
@@ -346,7 +351,7 @@ tableCDe <- xtable(dataCDe, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
 
 <<CDq Results, results='asis'>>=
 
-print(tableCDe, caption.placement="top")
+print(tableCDq, caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
@@ -358,8 +363,8 @@ print(tableCDe, caption.placement="top")
 \subsection{Cobb-Douglas With X}
 
 <<cdx>>=
-dataCDx <- cobbDouglasEnergy(dataTable, dataTable["iX"])
-tableCDx <- xtable(dataCDx, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
+dataCDx <- cobbDouglasEnergy(dataTable, "iX", "x")
+tableCDx <- xtable(dataCDx, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDx Results, results='asis'>>=
@@ -369,96 +374,13 @@ print(tableCDx, caption.placement="top")
 \subsection{Cobb-Douglas With U}
 
 <<cdu>>=
-dataCDu <- cobbDouglasEnergy(dataTable, dataTable["iU"])
-tableCDu <- xtable(dataCDu, caption="U.S. 1980-2011.", digit = c(4, 4, 2, 2, 3))
+dataCDu <- cobbDouglasEnergy(dataTable, "iU", "U")
+tableCDu <- xtable(dataCDu, caption="U.S., 1980-2011.", digit = c(4, 4, 2, 2, 3))
 @
 
 <<CDu Results, results='asis'>>=
 print(tableCDu, caption.placement="top")
 @
-
-
-
-
-An issue arrises in this example because contraining $\alpha$ and $\beta$ is not sufficient to 
-guarantee that $\gamma$ is properly constrained.
-
-<<cduold>>=
-# Establish guess values for alpha, beta, and lambda.
-lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-alphaGuess <- 0.2 # a typical value for alpha
-betaGuess <- 0.6 # a typical value for beta
-gammaGuess <- 0.01 # a nice low value
-
-# Runs a non-linear least squares fit to the data with constraints
-modelCDU <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^beta * iU^(1.0 - alpha - beta), 
-                algorithm="port",
-                start = list(lambda=lambdaGuess, alpha=alphaGuess, beta=betaGuess),
-                lower = list(lambda=-Inf, alpha=0, beta=0),
-                upper = list(lambda=Inf, alpha=1, beta=1),
-                data=dataTable)
-
-# Gives the nls summary table
-summary(modelCDU)
-confint(modelCDU, level = 0.95)
-@
-
-<<>>=
-# Checks validity of the model. AIC stands for Akaike's Information Criterion
-AIC(modelCDU, k=2)
-@
-
-The problem here is that $\hat \gamma < 0$.
-<<>>=
-# Calculate gamma and report it.
-alpha <- coef(modelCDU)["alpha"] 
-beta <- coef(modelCDU)["beta"] 
-gamma <- as.numeric(1.0 - alpha - beta)
-c(coef(modelCDU), gamma=gamma)
-@
-
-Our $\hat\gamma$ is not much below $0$.  Let's compute the standard error.
-<<>>=
-require(car)  # the methods in alr3 have been deprecated.  Use car instead.
-gamma.est <- deltaMethod(modelCDU, "1-alpha-beta"); gamma.est
-# crude CI (using 2 as a rough estimate for critical value)
-with(gamma.est, Estimate + c(-1,1) * 2 * SE)
-@
-So no real cause for concern: our data don't convince us that the real $\gamma$ is different from $0$.
-
-\subsection{Forcing $\gamma\ge0$}
-
-We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
-
-\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
-
-<<>>=
-modelCDUforced <- nls(iGDP ~ exp(lambda*iYear) * 
-                        iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                        iU^(1.0 - max(a,b)), 
-                      algorithm="port",
-                      start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess + betaGuess),
-                      lower = list(lambda=-Inf, a=0, b=0),
-                      upper = list(lambda=Inf, a=1, b=1),
-                      data=dataTable)
-
-coef(summary(modelCDUforced))
-with( as.data.frame(t(coef(modelCDUforced))), c(alpha=min(a,b), beta=abs(b-a), gamma=1-max(a,b)))
-@
-But the naive delta method to calculate significance information fails because R doesn't know how to calculate the derivatives for the minimum and maximum functions.  So we need to be clever, using the fact that we know now that $a < b$:
-<<>>=
-# alpha = a
-deltaMethod( modelCDUforced, "a")
-# beta = b - a
-deltaMethod( modelCDUforced, "b-a")
-# gamma = 1-b
-deltaMethod( modelCDUforced, "1-b")
-@
-
-So this seems to give us what we want for this case:  We have parameter estimates and standard errors subject to all of our constraints.  
-
-It may be that we can avoid using min and max and just
-use $a$, $b-a$ and $1-b$.  If that works, then this generalizes fairly easily to any number of parameters that must be bounded by 0 and 1 and sum to 1.  (Else we have to ``sort'' the dummy parameters first, which is OK but makes the coding a bit uglier.)
 
 \section{CES With Q}
 
