@@ -145,6 +145,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 % \linenumbers
 %% main text
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Caleb, put your LaTeX code here.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 <<setup, include=FALSE>>=
 require(knitr)
 require(lattice)
