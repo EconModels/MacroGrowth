@@ -180,10 +180,10 @@ energyTypes <- c(Q = "Q", X = "X", U = "U")
 <<Load Data, include=FALSE>>=
 #################################
 # This function loads data given a country name.
+# The file name from which data will be loaded is assumed to be of the form 
+# "<countryName>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
 #
-# countryName = a string of the 2-digit code for the country for which data is to be loaded. 
-#   The file name from which data will be loaded is assumed to be of the form 
-#   "<countryName>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
+# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
 #
 # returns a matrix with the data that has been loaded
 ##
@@ -205,7 +205,7 @@ loadData <- function(countryName){
 # Calculates parameter estimates and confidence intervals
 # for the Cobb-Douglas production function given a country.
 #
-# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
 #
 # returns a vector of data for the Cobb-Douglas model. 
 # First item is the +95% CI on all parameters
@@ -265,7 +265,7 @@ cobbDouglasData <- function(countryName){
 }
 
 ####################################
-# Creates a LaTeX printable table from the data. This function first calls cobbDouglasData.
+# Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.
 #
 # countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
 #
@@ -323,13 +323,12 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 #   row 3: +95% CI for each parameter
 #
 # countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyColumnName is the name of the column to be used for energy.
-#   This may be any of heat ("iQ"), exergy ("iX"), or useful work ("iU").
-# energyString is the string to be used in table captions reprsenting the type of energy. Typically, "q", "x", or "u"
+# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"
 ##
-cobbDouglasEnergyData <- function(countryName, energyString){
+cobbDouglasEnergyData <- function(countryName, energyType){
   
-  energyColumnName  <- paste("i", energyString, sep="")
+  print(countryName)
+  energyColumnName  <- paste("i", energyType, sep="")
   #print(energyColumnName)
   
   # Load the data that we need.
@@ -360,7 +359,7 @@ cobbDouglasEnergyData <- function(countryName, energyString){
   #print(aicCDe)
   
   summaryCDe <- summary(modelCDe) # Gives the nls summary table
-  #print(summaryCDe)
+  print(summaryCDe)
   
   # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.
   ciCDe <- confint(modelCDe, level = ciLevel)
@@ -391,7 +390,7 @@ cobbDouglasEnergyData <- function(countryName, energyString){
   estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
   #print(estCDe);
   #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}e^{\\gamma}$"
-  row.names(estCDe) <- paste("C-D with ", energyString, sep="")
+  row.names(estCDe) <- paste("C-D with ", energyType, sep="")
   # The [1] subscripts pick off the lower confidence interval
   lowerCDe <- data.frame(lambda = ciCDe["lambda","2.5%"], alpha = ciCDe["a", "2.5%"], beta = betaCICDe[1], gamma = gammaCICDe[1])
   row.names(lowerCDe) <- "- 95% CI"
@@ -405,18 +404,24 @@ cobbDouglasEnergyData <- function(countryName, energyString){
   return(dataCDe)
 }
 
+####################################
+# Creates a LaTeX printable table from the CES data. This function first calls cobbDouglasEnergyData.
+#
+# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"
+#
+# returns a printable LaTeX table from xtable.
+##
 cobbDouglasEnergyTable <- function(countryName, energyType){
   dataCDe <- cobbDouglasEnergyData(countryName, energyType)
   tableCDe <- xtable(dataCDe, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
   return(tableCDe)
 }
-
-
 @
 
-\subsection{Cobb-Douglas with Q}
+\subsection{Cobb-Douglas with $Q$}
 
-<<CDe analysis>>=
+<<CDq analysis>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDqTables <- lapply(countries, cobbDouglasEnergyTable, energyType="Q")
 @
@@ -432,36 +437,34 @@ print(CDqTables[["ZA"]], caption.placement="top")
 #print(tableAll, caption.placement="top")
 @
 
-\subsection{Cobb-Douglas With X}
+\subsection{Cobb-Douglas With $X$}
 
-<<cdx>>=
-energyColumn <- "iX"; energyString <- "x"
-dataCDx <- cobbDouglasEnergy(countryName, energyColumn, energyString)
-tableCDx <- xtable(dataCDx, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
+<<CDx analysis>>=
+# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
+CDxTables <- lapply(countries, cobbDouglasEnergyTable, energyType="X")
 @
 
 <<CDx Results, results='asis'>>=
-print(tableCDx, caption.placement="top")
+print(CDxTables[["US"]], caption.placement="top")
+print(CDxTables[["ZA"]], caption.placement="top")
 @
 
-\subsection{Cobb-Douglas With U}
+\subsection{Cobb-Douglas With $U$}
 
-<<cdu>>=
-energyColumn <- "iU"; energySTring <- "u"
-dataCDu <- cobbDouglasEnergy(countryName, energyColumn, energyString)
-tableCDu <- xtable(dataCDu, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
+<<CDu analysis>>=
+CDuTables <- lapply(countries, cobbDouglasEnergyTable, energyType="U")
 @
 
 <<CDu Results, results='asis'>>=
-print(tableCDu, caption.placement="top")
+print(CDuTables[["US"]], caption.placement="top")
+print(CDuTables[["ZA"]], caption.placement="top")
 @
 
-\section{CES With Q}
+\section{CES}
 
 <<CES function>>=
-
-ces <- function(countryName, energyColumnName, energyString){
-  
+cesData <- function(countryName, energyType){
+  energyColumnName <- paste("i", energyType, sep="")
   # Load the data that we need.
   dataTable <- loadData(countryName)
     
@@ -513,7 +516,7 @@ ces <- function(countryName, energyColumnName, energyString){
   estCES <- data.frame(phi = coef(modelCES)["phi"], alpha = alpha, 
                        beta = coef(modelCES)["beta"], zeta = coef(modelCES)["zeta"], 
                        lambda_L = coef(modelCES)["lambda_L"], lambda_E = coef(modelCES)["lambda_E"])
-  row.names(estCES) <- paste("CES with ", energyString, sep="")
+  row.names(estCES) <- paste("CES with ", energyType, sep="")
   #print(estCES)  
   # The [1] subscripts pick off the lower confidence interval
   lowerCES <- data.frame(phi = ciCES["phi","2.5%"], alpha = alphaCICES[1], 
@@ -535,17 +538,35 @@ ces <- function(countryName, energyColumnName, energyString){
   #histogram( ~resid(modelCESQ) )
   #qqmath( ~resid(modelCESQ) )
 }
+
+####################################
+# Creates a LaTeX printable table from the CES data. This function first calls cesData.
+#
+# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"
+#
+# returns a printable LaTeX table from xtable.
+##
+cesTable <- function(countryName, energyType){
+  dataCESe <- cesData(countryName, energyType)
+  tableCESq <- xtable(dataCESe, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 1, 2, 2, 6, 5, 5))
+}
 @
 
-<<CES with Q>>=
+\subsection{CES with $Q$}
+<<CESq analysisQ>>=
 countryName <- "US"
-energyColumn <- "iQ"; energyString <- "q"
-dataCESq <- ces(countryName, energyColumn, energyString)
-tableCESq <- xtable(dataCESq, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 1, 2, 2, 6, 5, 5))
+energyType <- "Q"
+tableCESq <- cesTable(countryName, energyType)
+
+#CESqTables <- lapply(countries, cesTable, energyType="Q")
 @
 
 <<CESq Results, results='asis'>>=
 print(tableCESq, caption.placement="top")
+
+#print(CESqTables[["US"]], caption.placement="top")
+#print(CESqTables[["ZA"]], caption.placement="top")
 @
 
 %% The Appendices part is started with the command \appendix;
