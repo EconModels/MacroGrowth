@@ -160,7 +160,7 @@ options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
   tidy=FALSE,
-  fig.width=4.5,
+  fig.width=4,
   fig.height=3.8,
   out.width=".45\\textwidth",
   out.height=".38\\textwidth",
@@ -170,7 +170,7 @@ opts_chunk$set(
 ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
 # List of countries
-countries <- c(US = "US", ZA = "ZA")
+countries <- c(US="US", UK="UK", JP="JP", ZA = "ZA", CN="CN", IR="IR", SA="SA", TZ="TZ", ZM="ZM")
 # List of energy types
 energyTypes <- c(Q = "Q", X = "X", U = "U")
 @
@@ -194,6 +194,21 @@ loadData <- function(countryName){
   #print(names(dataTable))
   return(dataTable)
 }
+@
+
+<<creategraph>>=
+
+createCountryGraph <- function(countryName){
+  dataTable <- loadData(countryName)
+  graph <- xyplot(iGDP ~ iYear, data=dataTable)
+  return(graph)
+}
+
+#graph <- createCountryGraph("US")
+print(createCountryGraph("US"))
+
+
+
 @
 
 \section{Cobb-Douglas Without Energy}
@@ -223,7 +238,10 @@ cobbDouglasData <- function(countryName){
   
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-                 start=(list(lambda=lambdaGuess,alpha=alphaGuess)),
+#                 algorithm = "port",
+                 start = list(lambda=lambdaGuess, alpha=alphaGuess),
+#                 lower = list(lambda=-Inf, alpha=0),
+#                 upper = list(lambda=Inf, alpha=1),
                  data=dataTable)
   
   # Checks validity of the model. AIC stands for Akaike's Information Criterion.
@@ -285,7 +303,15 @@ tablesCD <- lapply(countries, cobbDouglasTable)
 
 <<CD Results, results='asis'>>=
 print(tablesCD[["US"]], caption.placement="top")
+print(tablesCD[["UK"]], caption.placement="top")
+print(tablesCD[["JP"]], caption.placement="top")
 print(tablesCD[["ZA"]], caption.placement="top")
+print(tablesCD[["CN"]], caption.placement="top")
+print(tablesCD[["SA"]], caption.placement="top")
+print(tablesCD[["IR"]], caption.placement="top")
+print(tablesCD[["TZ"]], caption.placement="top")
+print(tablesCD[["ZM"]], caption.placement="top")
+
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
 # be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
 # line is not working at the present time. --MKH, 18 Jan 2012.
@@ -298,7 +324,7 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-<<cobbDouglasEnergy function>>=
+<<cobbDouglasEnergy function, include=TRUE, echo=FALSE>>=
 ###############################
 # This function fits the Cobb Douglas production function including energy to historical data
 # The functional form is
@@ -366,6 +392,8 @@ cobbDouglasEnergyData <- function(countryName, energyType){
   
   a <- as.numeric(coef(modelCDe)["a"])
   b <- as.numeric(coef(modelCDe)["b"])
+  print(a)
+  print(b)
   lambda <- as.numeric(coef(modelCDe)["lambda"])
   alpha <- a
   beta <- b - a
@@ -420,12 +448,12 @@ cobbDouglasEnergyTable <- function(countryName, energyType){
 
 \subsection{Cobb-Douglas with $Q$}
 
-<<CDq analysis>>=
+<<CDq analysis, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDqTables <- lapply(countries, cobbDouglasEnergyTable, energyType="Q")
 @
 
-<<CDq Results, results='asis'>>=
+<<CDq Results, results='asis', echo=TRUE, eval=FALSE>>=
 print(CDqTables[["US"]], caption.placement="top")
 print(CDqTables[["ZA"]], caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
@@ -438,23 +466,23 @@ print(CDqTables[["ZA"]], caption.placement="top")
 
 \subsection{Cobb-Douglas With $X$}
 
-<<CDx analysis>>=
+<<CDx analysis, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDxTables <- lapply(countries, cobbDouglasEnergyTable, energyType="X")
 @
 
-<<CDx Results, results='asis'>>=
+<<CDx Results, results='asis', eval=FALSE>>=
 print(CDxTables[["US"]], caption.placement="top")
 print(CDxTables[["ZA"]], caption.placement="top")
 @
 
 \subsection{Cobb-Douglas With $U$}
 
-<<CDu analysis>>=
+<<CDu analysis, eval=FALSE>>=
 CDuTables <- lapply(countries, cobbDouglasEnergyTable, energyType="U")
 @
 
-<<CDu Results, results='asis'>>=
+<<CDu Results, results='asis', eval=FALSE>>=
 print(CDuTables[["US"]], caption.placement="top")
 print(CDuTables[["ZA"]], caption.placement="top")
 @

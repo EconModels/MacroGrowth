@@ -210,6 +210,29 @@ Caleb, put your LaTeX code here.
 
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+
+createCountryGraph <- \hlfunctioncall{function}(countryName)\{
+  dataTable <- \hlfunctioncall{loadData}(countryName)
+  graph <- \hlfunctioncall{xyplot}(iGDP ~ iYear, data=dataTable)
+  \hlfunctioncall{return}(graph)
+\}
+
+\hlcomment{#graph <- createCountryGraph("US")}
+\hlfunctioncall{print}(\hlfunctioncall{createCountryGraph}(\hlstring{"US"}))
+\end{alltt}
+\end{kframe}
+\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/creategraph} 
+\begin{kframe}\begin{alltt}
+
+
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
 \section{Cobb-Douglas Without Energy}
 
 \begin{knitrout}
@@ -239,7 +262,10 @@ cobbDouglasData <- \hlfunctioncall{function}(countryName)\{
   
 \hlcomment{  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.}
   modelCD <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-                 start=(\hlfunctioncall{list}(lambda=lambdaGuess,alpha=alphaGuess)),
+\hlcomment{#                 algorithm = "port",}
+                 start = \hlfunctioncall{list}(lambda=lambdaGuess, alpha=alphaGuess),
+\hlcomment{#                 lower = list(lambda=-Inf, alpha=0),}
+\hlcomment{#                 upper = list(lambda=Inf, alpha=1),}
                  data=dataTable)
   
 \hlcomment{  # Checks validity of the model. AIC stands for Akaike's Information Criterion.}
@@ -307,7 +333,21 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: could not find function "deltaMethod"}}\end{kframe}
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\end{kframe}
 \end{knitrout}
 
 
@@ -315,14 +355,176 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \begin{alltt}
 \hlfunctioncall{print}(tablesCD[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'tablesCD' not found}}\begin{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{US Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0116 & 0.34 & 0.79 &  \\ 
+  CD & 0.0102 & 0.27 & 0.73 & 0.0 \\ 
+  - 95\% CI & 0.0087 & 0.21 & 0.66 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"UK"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{UK Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0303 & 1.12 & 1.24 &  \\ 
+  CD & 0.0097 & 0.44 & 0.56 & 0.0 \\ 
+  - 95\% CI & -0.0104 & -0.25 & -0.13 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"JP"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{JP Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0081 & 0.61 & 0.56 &  \\ 
+  CD & 0.0048 & 0.52 & 0.48 & 0.0 \\ 
+  - 95\% CI & 0.0014 & 0.44 & 0.39 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
 \hlfunctioncall{print}(tablesCD[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{ZA Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0022 & 0.73 & 0.54 &  \\ 
+  CD & 0.0008 & 0.60 & 0.40 & 0.0 \\ 
+  - 95\% CI & -0.0007 & 0.46 & 0.26 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"CN"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{CN Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0779 & 1.32 & 0.89 &  \\ 
+  CD & 0.0188 & 0.71 & 0.29 & 0.0 \\ 
+  - 95\% CI & -0.0405 & 0.11 & -0.32 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"SA"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{SA Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & -0.0087 & 0.68 & 0.78 &  \\ 
+  CD & -0.0123 & 0.45 & 0.55 & 0.0 \\ 
+  - 95\% CI & -0.0159 & 0.21 & 0.32 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"IR"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{IR Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0045 & 0.70 & 0.51 &  \\ 
+  CD & 0.0039 & 0.60 & 0.40 & 0.0 \\ 
+  - 95\% CI & 0.0032 & 0.49 & 0.30 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"TZ"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{TZ Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0068 & 0.95 & 0.50 &  \\ 
+  CD & 0.0015 & 0.73 & 0.27 & 0.0 \\ 
+  - 95\% CI & -0.0039 & 0.50 & 0.05 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
+\hlfunctioncall{print}(tablesCD[[\hlstring{"ZM"}]], caption.placement=\hlstring{"top"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:52 2013
+\begin{table}[ht]
+\begin{center}
+\caption{ZM Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0280 & 1.57 & -0.25 &  \\ 
+  CD & 0.0249 & 1.41 & -0.41 & 0.0 \\ 
+  - 95\% CI & 0.0218 & 1.25 & -0.57 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'tablesCD' not found}}\begin{alltt}
 \hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
 \hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
 \hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
@@ -337,129 +539,7 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{###############################}
-\hlcomment{# This function fits the Cobb Douglas production function including energy to historical data}
-\hlcomment{# The functional form is}
-\hlcomment{#}
-\hlcomment{# iGDP = exp(lambda * itime) * iCapStk^alpha * iLabor^beta * iEnergy^gamma}
-\hlcomment{# }
-\hlcomment{# iYear: time indexed to 0.0 at the first year [years since beginning of data set]}
-\hlcomment{# iGDP = time series GDP data indexed to 1.0 at the first year [-]}
-\hlcomment{# iCapStk = time series capital stock data indexed to 1.0 at the first year [-]}
-\hlcomment{# iLabor = time series labor data indexed to 1.0 at the first year [-]}
-\hlcomment{# iEnergy = time series energy data indexed to 1.0 at the first year [-]. }
-\hlcomment{#      This may be any of heat (iQ), exergy (iX), or useful work (iU).}
-\hlcomment{# }
-\hlcomment{# returns a data object containing three rows and 5 columns.}
-\hlcomment{#   col 1: lambda}
-\hlcomment{#   col 2: alpha}
-\hlcomment{#   col 3: beta}
-\hlcomment{#   col 4: gamma}
-\hlcomment{#   row 1: -95% CI for each parameter}
-\hlcomment{#   row 2: estimate for each parameter}
-\hlcomment{#   row 3: +95% CI for each parameter}
-\hlcomment{#}
-\hlcomment{# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"}
-\hlcomment{# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"}
-\hlcomment{##}
-cobbDouglasEnergyData <- \hlfunctioncall{function}(countryName, energyType)\{
-  
-  \hlfunctioncall{print}(countryName)
-  energyColumnName  <- \hlfunctioncall{paste}(\hlstring{"i"}, energyType, sep=\hlstring{""})
-\hlcomment{  #print(energyColumnName)}
-  
-\hlcomment{  # Load the data that we need.}
-  dataTable <- \hlfunctioncall{loadData}(countryName)
-  
-\hlcomment{  # Reparameterize to ensure that we meet the constraints:}
-\hlcomment{  # * alpha + beta + gamma = 1.0.}
-\hlcomment{  # * alpha, beta, and gamma are all between 0.0 and 1.0.}
-\hlcomment{  # To do this, we reparameterize as}
-\hlcomment{  # * 0 < a < 1}
-\hlcomment{  # * 0 < b < 1}
-\hlcomment{  # * alpha = min(a, b)}
-\hlcomment{  # * beta = b - a}
-\hlcomment{  # * gamma = 1 - max(a, b)}
-  iEnergy <- dataTable[energyColumnName] \hlcomment{#grabs the desired energy column}
-  lambdaGuess <- 0.0 \hlcomment{# guessing lambda = 0 means there is no technological progress.}
-  alphaGuess <- 0.3 \hlcomment{# a typical value for alpha}
-  betaGuess <- 0.7 \hlcomment{# a typical value for beta}
-  modelCDe <- \hlfunctioncall{nls}(iGDP ~ \hlfunctioncall{exp}(lambda*iYear) * 
-                    iCapStk^\hlfunctioncall{min}(a,b) * iLabor^\hlfunctioncall{abs}(b-a) * 
-                    iEnergy^(1.0 - \hlfunctioncall{max}(a,b)), 
-                  algorithm = \hlstring{"port"},
-                  start = \hlfunctioncall{list}(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-                  lower = \hlfunctioncall{list}(lambda=-Inf, a=0, b=0),
-                  upper = \hlfunctioncall{list}(lambda=Inf, a=1, b=1),
-                  data = dataTable)
-  aicCDe <- \hlfunctioncall{AIC}(modelCDe, k=2) \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
-\hlcomment{  #print(aicCDe)}
-  
-  summaryCDe <- \hlfunctioncall{summary}(modelCDe) \hlcomment{# Gives the nls summary table}
-  \hlfunctioncall{print}(summaryCDe)
-  
-\hlcomment{  # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.}
-  ciCDe <- \hlfunctioncall{confint}(modelCDe, level = ciLevel)
-\hlcomment{  #print(ciCDe)}
-  
-  a <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"a"}])
-  b <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"b"}])
-  lambda <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCDe)[\hlstring{"lambda"}])
-  alpha <- a
-  beta <- b - a
-  gamma <- 1.0 - alpha - beta
-  
-\hlcomment{  # Report results with SE}
-  beta.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"b-a"}) # Reports results for beta, because beta = b - a.
-  gamma.est <- \hlfunctioncall{deltaMethod}(modelCDe, \hlstring{"1-b"}) # Reports results for gamma, because gamma = 1 - b.
-  
-\hlcomment{  # Now calculate confidence intervals.}
-  dofCDe <- summaryCDe$df[2] \hlcomment{# Gives the degrees of freedom for the model.}
-\hlcomment{  #print(dofCDe)}
-  tvalCDe <- \hlfunctioncall{qt}(ciHalfLevel, df = dofCDe)
-\hlcomment{  #print(tvalCDe)}
-  betaCICDe <- \hlfunctioncall{with}(beta.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE) \hlcomment{# Gives the confidence interval on beta.}
-\hlcomment{  #print(betaCICDe)}
-  gammaCICDe <- \hlfunctioncall{with}(gamma.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCDe * SE) \hlcomment{# Gives the confidence interval on alpha.}
-\hlcomment{  #print(gammaCICDe)}
-  
-\hlcomment{  # Combine all estimates and their confidence intervals into data frames with intelligent row names}
-  estCDe <- \hlfunctioncall{data.frame}(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
-\hlcomment{  #print(estCDe);}
-\hlcomment{  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^\{\textbackslash{}\textbackslash{}lambda t\}k^\{\textbackslash{}\textbackslash{}alpha\}l^\{\textbackslash{}\textbackslash{}beta\}e^\{\textbackslash{}\textbackslash{}gamma\}$"}
-  \hlfunctioncall{row.names}(estCDe) <- \hlfunctioncall{paste}(\hlstring{"C-D with "}, energyType, sep=\hlstring{""})
-\hlcomment{  # The [1] subscripts pick off the lower confidence interval}
-  lowerCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"2.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"2.5%"}], beta = betaCICDe[1], gamma = gammaCICDe[1])
-  \hlfunctioncall{row.names}(lowerCDe) <- \hlstring{"- 95% CI"}
-\hlcomment{  # The [2] subscripts pick off the lower confidence interval}
-  upperCDe <- \hlfunctioncall{data.frame}(lambda = ciCDe[\hlstring{"lambda"},\hlstring{"97.5%"}], alpha = ciCDe[\hlstring{"a"}, \hlstring{"97.5%"}], beta = betaCICDe[2], gamma = gammaCICDe[2])
-  \hlfunctioncall{row.names}(upperCDe) <- \hlstring{"+ 95% CI"}
-  
-\hlcomment{  # Now create the data for a table.}
-  dataCDe <- \hlfunctioncall{rbind}(upperCDe, estCDe, lowerCDe)
-\hlcomment{  #print(dataCDe)}
-  \hlfunctioncall{return}(dataCDe)
-\}
 
-\hlcomment{####################################}
-\hlcomment{# Creates a LaTeX printable table from the CES data. This function first calls cobbDouglasEnergyData.}
-\hlcomment{#}
-\hlcomment{# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"}
-\hlcomment{# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"}
-\hlcomment{#}
-\hlcomment{# returns a printable LaTeX table from xtable.}
-\hlcomment{##}
-cobbDouglasEnergyTable <- \hlfunctioncall{function}(countryName, energyType)\{
-  dataCDe <- \hlfunctioncall{cobbDouglasEnergyData}(countryName, energyType)
-  tableCDe <- \hlfunctioncall{xtable}(dataCDe, caption=\hlfunctioncall{paste}(countryName, \hlstring{", 1980-2011."}, sep=\hlstring{""}), digit = \hlfunctioncall{c}(4, 4, 2, 2, 3))
-  \hlfunctioncall{return}(tableCDe)
-\}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
 \subsection{Cobb-Douglas with $Q$}
@@ -470,42 +550,14 @@ cobbDouglasEnergyTable <- \hlfunctioncall{function}(countryName, energyType)\{
 \hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
 CDqTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"Q"})
 \end{alltt}
-\begin{verbatim}
-[1] "US"
-
-Formula: iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iLabor^abs(b - 
-    a) * iEnergy^(1 - max(a, b))
-
-Parameters:
-       Estimate Std. Error t value Pr(>|t|)
-lambda  0.01019    0.00116    8.82  1.1e-09
-a       0.27304    0.04034    6.77  2.0e-07
-b       0.99641    0.08259   12.06  8.0e-13
-
-Residual standard error: 0.0192 on 29 degrees of freedom
-
-Algorithm "port", convergence message: relative convergence (4) 
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: could not find function "deltaMethod"}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
 \begin{kframe}
 \begin{alltt}
 \hlfunctioncall{print}(CDqTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDqTables' not found}}\begin{alltt}
 \hlfunctioncall{print}(CDqTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDqTables' not found}}\begin{alltt}
 \hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
 \hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
 \hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
@@ -524,42 +576,16 @@ Algorithm "port", convergence message: relative convergence (4)
 \hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
 CDxTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"X"})
 \end{alltt}
-\begin{verbatim}
-[1] "US"
-
-Formula: iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iLabor^abs(b - 
-    a) * iEnergy^(1 - max(a, b))
-
-Parameters:
-       Estimate Std. Error t value Pr(>|t|)
-lambda  0.01030    0.00117    8.84  1.0e-09
-a       0.27004    0.04031    6.70  2.4e-07
-b       0.98697    0.08244   11.97  9.6e-13
-
-Residual standard error: 0.0192 on 29 degrees of freedom
-
-Algorithm "port", convergence message: relative convergence (4) 
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: could not find function "deltaMethod"}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
 \begin{kframe}
 \begin{alltt}
 \hlfunctioncall{print}(CDxTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDxTables' not found}}\begin{alltt}
 \hlfunctioncall{print}(CDxTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDxTables' not found}}\end{kframe}
+\end{kframe}
 
 
 \subsection{Cobb-Douglas With $U$}
@@ -569,27 +595,16 @@ Algorithm "port", convergence message: relative convergence (4)
 \begin{alltt}
 CDuTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"U"})
 \end{alltt}
-\begin{verbatim}
-[1] "US"
-\end{verbatim}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: Missing value or an infinity produced when evaluating the model}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
 \begin{kframe}
 \begin{alltt}
 \hlfunctioncall{print}(CDuTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDuTables' not found}}\begin{alltt}
 \hlfunctioncall{print}(CDuTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'CDuTables' not found}}\end{kframe}
+\end{kframe}
 
 
 \section{CES}
@@ -719,16 +734,22 @@ Algorithm "port", convergence message: relative convergence (4)
 
 
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
-             2.5%     97.5%
-phi            NA -10.29084
-beta     0.514667   0.66537
-zeta           NA        NA
-lambda_L 0.006428        NA
-lambda_E 0.000715   0.01247
+             2.5%      97.5%
+phi            NA -10.290831
+beta     0.514667   0.665371
+zeta           NA         NA
+lambda_L 0.006428   0.009152
+lambda_E 0.000715   0.012468
+         Estimate      SE
+1 - beta   0.3911 0.03453
+[1] 27
+[1] 0.3202 0.4619
+              phi  alpha   beta      zeta lambda_L lambda_E
++ 95% CI   -10.29 0.4619 0.6654        NA 0.009152 0.012468
+CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
+- 95% CI       NA 0.3202 0.5147        NA 0.006428 0.000715
 \end{verbatim}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: could not find function "deltaMethod"}}\begin{alltt}
+\begin{alltt}
 
 \hlcomment{#CESqTables <- lapply(countries, cesTable, energyType="Q")}
 \end{alltt}
@@ -740,9 +761,23 @@ lambda_E 0.000715   0.01247
 \begin{alltt}
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error: object 'tableCESq' not found}}\begin{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Fri Jan 25 16:40:53 2013
+\begin{table}[ht]
+\begin{center}
+\caption{US, 1980-2011.}
+\begin{tabular}{rrrrrrr}
+  \hline
+ & phi & alpha & beta & zeta & lambda\_L & lambda\_E \\ 
+  \hline
++ 95\% CI & -10.3 & 0.46 & 0.67 &  & 0.00915 & 0.01247 \\ 
+  CES with Q & -39.6 & 0.39 & 0.61 & 0.000002 & 0.00798 & 0.00857 \\ 
+  - 95\% CI &  & 0.32 & 0.51 &  & 0.00643 & 0.00071 \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{kframe}\begin{alltt}
 
 \hlcomment{#print(CESqTables[["US"]], caption.placement="top")}
 \hlcomment{#print(CESqTables[["ZA"]], caption.placement="top")}
