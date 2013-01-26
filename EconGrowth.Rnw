@@ -200,15 +200,16 @@ loadData <- function(countryName){
 
 createCountryInputGraph <- function(countryName){
   dataTable <- loadData(countryName)
-  graph <- xyplot(iGDP+iQ+iX+iU ~ iYear, data=dataTable,
+  graph <- xyplot(iGDP+iQ+iX+iCapStk+iLabor ~ iYear, data=dataTable,
                   type="l",
-                  scales=list(cex=1.5, tck=-1),
+                  scales=list(cex=1.0, tck=-0.5),
                   ylab="Indexed (1980=1)",
-                  auto.key=list(columns=1))
+                  auto.key=list(columns=1, x=0.0, y=0.98))
   return(graph)
 }
 
 createCountryInputGraph("US")
+lapply(countries, createCountryInputGraph)
 
 
 
