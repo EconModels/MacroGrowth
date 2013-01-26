@@ -214,17 +214,20 @@ Caleb, put your LaTeX code here.
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 
-createCountryGraph <- \hlfunctioncall{function}(countryName)\{
+createCountryInputGraph <- \hlfunctioncall{function}(countryName)\{
   dataTable <- \hlfunctioncall{loadData}(countryName)
-  graph <- \hlfunctioncall{xyplot}(iGDP ~ iYear, data=dataTable)
+  graph <- \hlfunctioncall{xyplot}(iGDP+iQ+iX+iU ~ iYear, data=dataTable,
+                  type=\hlstring{"l"},
+                  scales=\hlfunctioncall{list}(cex=1.5, tck=-1),
+                  ylab=\hlstring{"\hlfunctioncall{Indexed} (1980=1)"},
+                  auto.key=\hlfunctioncall{list}(columns=1))
   \hlfunctioncall{return}(graph)
 \}
 
-\hlcomment{#graph <- createCountryGraph("US")}
-\hlfunctioncall{print}(\hlfunctioncall{createCountryGraph}(\hlstring{"US"}))
+\hlfunctioncall{createCountryInputGraph}(\hlstring{"US"})
 \end{alltt}
 \end{kframe}
-\includegraphics[width=.45\textwidth,height=.38\textwidth]{figure/creategraph} 
+\includegraphics[width=\maxwidth]{figure/creategraph} 
 \begin{kframe}\begin{alltt}
 
 
@@ -356,7 +359,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US Cobb-Douglas, 1980-2011}
@@ -375,7 +378,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"UK"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{UK Cobb-Douglas, 1980-2011}
@@ -394,7 +397,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"JP"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{JP Cobb-Douglas, 1980-2011}
@@ -413,7 +416,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{ZA Cobb-Douglas, 1980-2011}
@@ -432,7 +435,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"CN"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{CN Cobb-Douglas, 1980-2011}
@@ -451,7 +454,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"SA"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{SA Cobb-Douglas, 1980-2011}
@@ -470,7 +473,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"IR"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{IR Cobb-Douglas, 1980-2011}
@@ -489,7 +492,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"TZ"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{TZ Cobb-Douglas, 1980-2011}
@@ -508,7 +511,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \hlfunctioncall{print}(tablesCD[[\hlstring{"ZM"}]], caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:52 2013
+% Fri Jan 25 21:45:27 2013
 \begin{table}[ht]
 \begin{center}
 \caption{ZM Cobb-Douglas, 1980-2011}
@@ -762,7 +765,7 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Jan 25 16:40:53 2013
+% Fri Jan 25 21:45:28 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US, 1980-2011.}
