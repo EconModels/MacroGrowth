@@ -213,7 +213,7 @@ Caleb, put your LaTeX code here.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
-\includegraphics[width=\maxwidth]{figure/Lattice_Factors_Graph} \caption[Factors of Production for All Countries]{Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)\label{fig:Lattice Factors Graph}}
+\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[Factors of Production for All Countries]{Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)\label{fig:Factors Lattice Graph}}
 \end{figure}
 
 
@@ -374,6 +374,88 @@ cobbDouglasData <- \hlfunctioncall{function}(countryName)\{
   \hlfunctioncall{return}(dataCD)
 \}
 
+\hlcomment{############}
+\hlcomment{# Creates a row for the Cobb Douglas parameters table}
+\hlcomment{##}
+cobbDouglasCountryRow <- \hlfunctioncall{function}(countryName)\{
+  dataCD <- \hlfunctioncall{cobbDouglasData}(countryName)
+\hlcomment{  # Create CI ranges}
+  out <- \hlfunctioncall{cbind}(countryName, 
+               dataCD[\hlstring{"- 95% CI"}, \hlstring{"lambda"}], dataCD[\hlstring{"CD"}, \hlstring{"lambda"}], dataCD[\hlstring{"+ 95% CI"}, \hlstring{"lambda"}],
+               dataCD[\hlstring{"- 95% CI"}, \hlstring{"alpha"}],  dataCD[\hlstring{"CD"}, \hlstring{"alpha"}],  dataCD[\hlstring{"+ 95% CI"}, \hlstring{"alpha"}],
+               dataCD[\hlstring{"- 95% CI"}, \hlstring{"beta"}],   dataCD[\hlstring{"CD"}, \hlstring{"beta"}],   dataCD[\hlstring{"+ 95% CI"}, \hlstring{"beta"}])
+  
+  \hlfunctioncall{return}(out)
+\}
+
+cobbDouglasParamsTable <- \hlfunctioncall{function}()\{
+  dataCD <- \hlfunctioncall{rbind}(\hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"US"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"UK"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"JP"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"CN"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"ZA"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"SA"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"IR"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"TZ"}),
+                \hlfunctioncall{cobbDouglasCountryRow}(\hlstring{"ZM"}))
+  \hlfunctioncall{colnames}(dataCD) <- \hlfunctioncall{c}(\hlstring{""}, \hlstring{"-95% CI"}, \hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"+95% CI"}, 
+                        \hlstring{"-95% CI"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"},  \hlstring{"+95% CI"},
+                        \hlstring{"-95% CI"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"},   \hlstring{"+95% CI"})
+  \hlfunctioncall{rownames}(dataCD) <- countries
+  \hlfunctioncall{print}(\hlstring{"************** Trying to print dataCD **********************"})
+\hlcomment{#   print(class(dataCD))}
+\hlcomment{#   print(dataCD)}
+  tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlstring{"Cobb-Douglas, 1980-2011 or 1991-2011"}, digit = \hlfunctioncall{c}(1,1, 4,4,4, 4,4,4, 4,4,4))
+\hlcomment{  #print(tableCD)}
+  \hlfunctioncall{return}(tableCD)
+\}
+\hlfunctioncall{cobbDouglasParamsTable}()
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
+[1] "************** Trying to print dataCD **********************"
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:01 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rllllllllll}
+  \hline
+ & V1 & -95\% CI & \$$\backslash$lambda\$ & +95\% CI & -95\% CI & \$$\backslash$alpha\$ & +95\% CI & -95\% CI & \$$\backslash$beta\$ & +95\% CI \\ 
+  \hline
+US & US & 0.00867713811541703 & 0.0101554649771947 & 0.0116267632506195 & 0.213128596976903 & 0.274182451792623 & 0.335458612778305 & 0.664533917792339 & 0.725817548207377 & 0.787101178622416 \\ 
+  UK & UK & -0.0104339533284891 & 0.0097166097229806 & 0.0302750369133842 & -0.245055231216114 & 0.444076431841734 & 1.119149013819 & -0.126474527059773 & 0.555923568158266 & 1.23832166337631 \\ 
+  JP & JP & 0.00144591559700194 & 0.00479965989492084 & 0.00814370765620374 & 0.438683000650998 & 0.524479565440321 & 0.610262287761187 & 0.389778460820941 & 0.475520434559679 & 0.561262408298418 \\ 
+  CN & CN & -0.0405221051255718 & 0.0187921739305594 & 0.0779058376028465 & 0.108505956239368 & 0.712431541207713 & 1.31814921490484 & -0.319614564678439 & 0.287568458792287 & 0.894751482263012 \\ 
+  ZA & ZA & -0.000717427211566538 & 0.000771177746585204 & 0.00222325751849382 & 0.461441497491662 & 0.597466553596658 & 0.733549304597543 & 0.264697791730982 & 0.402533446403342 & 0.540369101075701 \\ 
+  SA & SA & -0.0159263027425623 & -0.0123103576408377 & -0.00873591015395777 & 0.214820434186193 & 0.448455179197524 & 0.68279397709528 & 0.319930296839117 & 0.551544820802476 & 0.783159344765835 \\ 
+  IR & IR & 0.0031544365568454 & 0.00385069982960034 & 0.00453844391610371 & 0.49113172479408 & 0.596672406132716 & 0.702639779772847 & 0.297079321606455 & 0.403327593867284 & 0.509575866128113 \\ 
+  TZ & TZ & -0.00391419988823917 & 0.00149948729754192 & 0.00678367569691732 & 0.504166911618199 & 0.726578989422795 & 0.951643458591323 & 0.0490171189358977 & 0.273421010577205 & 0.497824902218513 \\ 
+  ZM & ZM & 0.0217845209774593 & 0.0249136301557912 & 0.0280398287326144 & 1.24947924633067 & 1.41002169368921 & 1.5728851355369 & -0.57145350717947 & -0.410021693689214 & -0.248589880198959 \\ 
+   \hline
+\end{tabular}
+\caption{Cobb-Douglas, 1980-2011 or 1991-2011}
+\end{center}
+\end{table}
+\end{verbatim}
+\begin{alltt}
+
 \hlcomment{####################################}
 \hlcomment{# Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.}
 \hlcomment{#}
@@ -381,7 +463,7 @@ cobbDouglasData <- \hlfunctioncall{function}(countryName)\{
 \hlcomment{#}
 \hlcomment{# returns a printable LaTeX table from xtable.}
 \hlcomment{##}
-cobbDouglasTable <- \hlfunctioncall{function}(countryName)\{
+cobbDouglasCountryTable <- \hlfunctioncall{function}(countryName)\{
   dataCD <- \hlfunctioncall{cobbDouglasData}(countryName) 
   \hlfunctioncall{colnames}(dataCD) <- \hlfunctioncall{c}(\hlstring{"$\textbackslash{}\textbackslash{}lambda$"}, \hlstring{"$\textbackslash{}\textbackslash{}alpha$"}, \hlstring{"$\textbackslash{}\textbackslash{}beta$"}, \hlstring{"$\textbackslash{}\textbackslash{}gamma$"})
   tableCD <- \hlfunctioncall{xtable}(dataCD, caption=\hlfunctioncall{paste}(countryName, \hlstring{" Cobb-Douglas, 1980-2011"}, sep=\hlstring{""}), digit = \hlfunctioncall{c}(4, 4, 2, 2, 1))
@@ -396,7 +478,7 @@ cobbDouglasTable <- \hlfunctioncall{function}(countryName)\{
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
+tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasCountryTable)
 \end{alltt}
 
 
@@ -420,12 +502,31 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{knitrout}
 
 
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+[1] "************** Trying to print dataCD **********************"
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
+\begin{table}[ht]
+\begin{center}
+\caption{Cobb-Douglas, 1980-2011 or 1991-2011}
+\begin{tabular}{rllllllllll}
+  \hline
+ & V1 & -95\% CI & \$$\backslash$lambda\$ & +95\% CI & -95\% CI & \$$\backslash$alpha\$ & +95\% CI & -95\% CI & \$$\backslash$beta\$ & +95\% CI \\ 
+  \hline
+US & US & 0.00867713811541703 & 0.0101554649771947 & 0.0116267632506195 & 0.213128596976903 & 0.274182451792623 & 0.335458612778305 & 0.664533917792339 & 0.725817548207377 & 0.787101178622416 \\ 
+  UK & UK & -0.0104339533284891 & 0.0097166097229806 & 0.0302750369133842 & -0.245055231216114 & 0.444076431841734 & 1.119149013819 & -0.126474527059773 & 0.555923568158266 & 1.23832166337631 \\ 
+  JP & JP & 0.00144591559700194 & 0.00479965989492084 & 0.00814370765620374 & 0.438683000650998 & 0.524479565440321 & 0.610262287761187 & 0.389778460820941 & 0.475520434559679 & 0.561262408298418 \\ 
+  CN & CN & -0.0405221051255718 & 0.0187921739305594 & 0.0779058376028465 & 0.108505956239368 & 0.712431541207713 & 1.31814921490484 & -0.319614564678439 & 0.287568458792287 & 0.894751482263012 \\ 
+  ZA & ZA & -0.000717427211566538 & 0.000771177746585204 & 0.00222325751849382 & 0.461441497491662 & 0.597466553596658 & 0.733549304597543 & 0.264697791730982 & 0.402533446403342 & 0.540369101075701 \\ 
+  SA & SA & -0.0159263027425623 & -0.0123103576408377 & -0.00873591015395777 & 0.214820434186193 & 0.448455179197524 & 0.68279397709528 & 0.319930296839117 & 0.551544820802476 & 0.783159344765835 \\ 
+  IR & IR & 0.0031544365568454 & 0.00385069982960034 & 0.00453844391610371 & 0.49113172479408 & 0.596672406132716 & 0.702639779772847 & 0.297079321606455 & 0.403327593867284 & 0.509575866128113 \\ 
+  TZ & TZ & -0.00391419988823917 & 0.00149948729754192 & 0.00678367569691732 & 0.504166911618199 & 0.726578989422795 & 0.951643458591323 & 0.0490171189358977 & 0.273421010577205 & 0.497824902218513 \\ 
+  ZM & ZM & 0.0217845209774593 & 0.0249136301557912 & 0.0280398287326144 & 1.24947924633067 & 1.41002169368921 & 1.5728851355369 & -0.57145350717947 & -0.410021693689214 & -0.248589880198959 \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US Cobb-Douglas, 1980-2011}
@@ -440,11 +541,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"UK"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{UK Cobb-Douglas, 1980-2011}
@@ -459,11 +557,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"JP"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{JP Cobb-Douglas, 1980-2011}
@@ -478,30 +573,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
-\begin{table}[ht]
-\begin{center}
-\caption{ZA Cobb-Douglas, 1980-2011}
-\begin{tabular}{rrrrr}
-  \hline
- & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
-  \hline
-+ 95\% CI & 0.0022 & 0.73 & 0.54 &  \\ 
-  CD & 0.0008 & 0.60 & 0.40 & 0.0 \\ 
-  - 95\% CI & -0.0007 & 0.46 & 0.26 &  \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"CN"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{CN Cobb-Douglas, 1980-2011}
@@ -516,11 +589,24 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"SA"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
+\begin{table}[ht]
+\begin{center}
+\caption{ZA Cobb-Douglas, 1980-2011}
+\begin{tabular}{rrrrr}
+  \hline
+ & \$$\backslash$lambda\$ & \$$\backslash$alpha\$ & \$$\backslash$beta\$ & \$$\backslash$gamma\$ \\ 
+  \hline
++ 95\% CI & 0.0022 & 0.73 & 0.54 &  \\ 
+  CD & 0.0008 & 0.60 & 0.40 & 0.0 \\ 
+  - 95\% CI & -0.0007 & 0.46 & 0.26 &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{SA Cobb-Douglas, 1980-2011}
@@ -535,11 +621,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"IR"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{IR Cobb-Douglas, 1980-2011}
@@ -554,11 +637,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"TZ"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{TZ Cobb-Douglas, 1980-2011}
@@ -573,11 +653,8 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
-\hlfunctioncall{print}(tablesCD[[\hlstring{"ZM"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:57 2013
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jan 27 16:43:02 2013
 \begin{table}[ht]
 \begin{center}
 \caption{ZM Cobb-Douglas, 1980-2011}
@@ -592,14 +669,7 @@ tablesCD <- \hlfunctioncall{lapply}(countries, cobbDouglasTable)
 \end{tabular}
 \end{center}
 \end{table}
-\begin{kframe}\begin{alltt}
 
-\hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
-\hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
-\hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
-\hlcomment{# print(tableCD, caption.placement="top", sanitize.text.function = function(x)\{x\})}
-\end{alltt}
-\end{kframe}
 
 
 \section{Cobb-Douglas With Energy}
@@ -831,7 +901,7 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jan 27 15:20:58 2013
+% Sun Jan 27 16:43:03 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US, 1980-2011.}

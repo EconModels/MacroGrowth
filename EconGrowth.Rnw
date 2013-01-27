@@ -170,7 +170,7 @@ opts_chunk$set(
 ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
 # List of countries
-countries <- c(US="US", UK="UK", JP="JP", ZA = "ZA", CN="CN", IR="IR", SA="SA", TZ="TZ", ZM="ZM")
+countries <- c(US="US", UK="UK", JP="JP", CN="CN", ZA = "ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 # List of energy types
 energyTypes <- c(Q = "Q", X = "X", U = "U")
 @
@@ -196,7 +196,7 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors of Production Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)", echo=FALSE>>=
+<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)", echo=FALSE>>=
 createFactorsLatticeGraph <- function(countryName){
   dataTable <- loadData(countryName)
   graphType <- "l"
@@ -226,7 +226,7 @@ createFactorsLatticeGraph <- function(countryName){
 createFactorsLatticeGraph("All") #Reads data from the "AllData.txt" file.
 @
 
-<<graphs>>=
+<<Country Factors Graph>>=
 createCountryFactorsGraph <- function(countryName){
   dataTable <- loadData(countryName)
   graphType <- "l"
@@ -374,6 +374,43 @@ cobbDouglasData <- function(countryName){
   return(dataCD)
 }
 
+############
+# Creates a row for the Cobb Douglas parameters table
+##
+cobbDouglasCountryRow <- function(countryName){
+  dataCD <- cobbDouglasData(countryName)
+  # Create CI ranges
+  out <- cbind(countryName, 
+               dataCD["- 95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+ 95% CI", "lambda"],
+               dataCD["- 95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+ 95% CI", "alpha"],
+               dataCD["- 95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+ 95% CI", "beta"])
+  
+  return(out)
+}
+
+cobbDouglasParamsTable <- function(){
+  dataCD <- rbind(cobbDouglasCountryRow("US"),
+                cobbDouglasCountryRow("UK"),
+                cobbDouglasCountryRow("JP"),
+                cobbDouglasCountryRow("CN"),
+                cobbDouglasCountryRow("ZA"),
+                cobbDouglasCountryRow("SA"),
+                cobbDouglasCountryRow("IR"),
+                cobbDouglasCountryRow("TZ"),
+                cobbDouglasCountryRow("ZM"))
+  colnames(dataCD) <- c("", "-95% CI", "$\\lambda$", "+95% CI", 
+                        "-95% CI", "$\\alpha$",  "+95% CI",
+                        "-95% CI", "$\\beta$",   "+95% CI")
+  rownames(dataCD) <- countries
+  print("************** Trying to print dataCD **********************")
+#   print(class(dataCD))
+#   print(dataCD)
+  tableCD <- xtable(dataCD, caption="Cobb-Douglas, 1980-2011 or 1991-2011", digit = c(1,1, 4,4,4, 4,4,4, 4,4,4))
+  #print(tableCD)
+  return(tableCD)
+}
+cobbDouglasParamsTable()
+
 ####################################
 # Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.
 #
@@ -381,7 +418,7 @@ cobbDouglasData <- function(countryName){
 #
 # returns a printable LaTeX table from xtable.
 ##
-cobbDouglasTable <- function(countryName){
+cobbDouglasCountryTable <- function(countryName){
   dataCD <- cobbDouglasData(countryName) 
   colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
   tableCD <- xtable(dataCD, caption=paste(countryName, " Cobb-Douglas, 1980-2011", sep=""), digit = c(4, 4, 2, 2, 1))
@@ -391,15 +428,18 @@ cobbDouglasTable <- function(countryName){
 @
 
 <<CD Analysis>>=
-tablesCD <- lapply(countries, cobbDouglasTable)
+tablesCD <- lapply(countries, cobbDouglasCountryTable)
 @
 
-<<CD Results, results='asis'>>=
+<<CD Results, results='asis', echo=FALSE>>=
+print(cobbDouglasParamsTable(), caption.placement="top")
+
+
 print(tablesCD[["US"]], caption.placement="top")
 print(tablesCD[["UK"]], caption.placement="top")
 print(tablesCD[["JP"]], caption.placement="top")
-print(tablesCD[["ZA"]], caption.placement="top")
 print(tablesCD[["CN"]], caption.placement="top")
+print(tablesCD[["ZA"]], caption.placement="top")
 print(tablesCD[["SA"]], caption.placement="top")
 print(tablesCD[["IR"]], caption.placement="top")
 print(tablesCD[["TZ"]], caption.placement="top")
