@@ -196,20 +196,53 @@ loadData <- function(countryName){
 }
 @
 
-<<creategraph>>=
+<<graphs>>=
 
-createCountryInputGraph <- function(countryName){
+createCountryFactorsGraph <- function(countryName){
   dataTable <- loadData(countryName)
-  graph <- xyplot(iGDP+iQ+iX+iCapStk+iLabor ~ iYear, data=dataTable,
+  lineSpec <- list(lty=c(1, 5, 2, 4), #line type
+                   col=c("black", "black", "black", "black"), #line colors
+                   lwd=c(1, 1, 1, 1)) #line widths
+  graph <- xyplot(iCapStk+iLabor+iQ+iX ~ iYear, data=dataTable,
+                  key=list(text=list(c("k", "l", "q", "x")),
+                           type="l",
+                           lines=lineSpec,
+                           columns=1, x=0.0, y=0.98),
                   type="l",
-                  scales=list(cex=1.0, tck=-0.5),
-                  ylab="Indexed (1980=1)",
-                  auto.key=list(columns=1, x=0.0, y=0.98))
+                  par.settings = list(superpose.line = lineSpec),
+                  scales=list(cex=1.0, #controls text size on scales
+                              tck=-0.5), #controls tick mark length
+                  ylab="Indexed (1980=1)")
   return(graph)
 }
 
-createCountryInputGraph("US")
-lapply(countries, createCountryInputGraph)
+createGDPComparisonGraph <- function(countryName){
+  dataTable <- loadData(countryName)
+  colors <- c("black", "black", "black", "black", "black") #line and point colors
+  lineSpec <- list(lty=c(1, 1, 5, 2, 4), #line type
+                   col=colors,
+                   lwd=c(0, 1, 1, 1, 1)) #line widths. 0 suppresses the line for historical GDP.
+  pointSpec <- list(col=colors)
+  graph <- xyplot(iGDP ~ iYear, data=dataTable,
+                  key=list(text=list(c("GDP")),
+                           type="b",
+                           lines=lineSpec,
+                           columns=1, x=0.0, y=0.98),
+                  type="b",
+                  par.settings = list(superpose.line = lineSpec),
+                  scales=list(cex=1.0, #controls text size on scales
+                              tck=-0.5), #controls tick mark length
+                  ylab="Indexed (1980=1)")
+  return(graph)
+
+                    
+}
+
+createGDPComparisonGraph("US")
+
+#createCountryFactorsGraph("US")
+#lapply(countries, createCountryFactorsGraph)
+
 
 
 
