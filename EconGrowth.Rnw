@@ -226,7 +226,7 @@ createFactorsLatticeGraph <- function(countryName){
 createFactorsLatticeGraph("All") #Reads data from the "AllData.txt" file.
 @
 
-<<Country Factors Graph>>=
+<<Country Factors Graph, echo=FALSE>>=
 createCountryFactorsGraph <- function(countryName){
   dataTable <- loadData(countryName)
   graphType <- "l"
@@ -246,67 +246,11 @@ createCountryFactorsGraph <- function(countryName){
                   ylab="Indexed (1980=1)")
   return(graph)
 }
-
-createGDPComparisonGraph <- function(countryName){
-  dataTable <- loadData(countryName)
-  graphType <- "l"
-  lineTypes <- c(1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(1) #line widths
-  colors <- c("black") #line and point colors
-  lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
-  graph <- xyplot(iGDP ~ Year, data=dataTable,
-                  key=list(text=list(c("GDP")),
-                           type=graphType,
-                           lines=lineSpec,
-                           columns=1, x=0.0, y=0.98),
-                  type=graphType,
-                  par.settings = list(superpose.line = lineSpec),
-                  scales=list(cex=1.0, #controls text size on scales
-                              tck=-0.5), #controls tick mark length
-                  ylab="Indexed (1980=1)")
-  return(graph)
-}
-
-
-# createGDPComparisonGraph <- function(countryName){
-#   dataTable <- loadData(countryName)
-#   graphType <- "l"
-#   colors <- c("black", "black", "black", "black") #line and point colors
-#   lineWidths <- c(1, 1, 1, 1) #line widths
-#   lineTypes <- c(1, 5, 2, 4) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-#   lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
-#   pointSpec <- list(col=colors)
-#   graph <- xyplot(iGDP ~ iYear, data=dataTable,
-#                   key=list(text=list(c("GDP")),
-#                            type=graphType,
-#                            lines=lineSpec,
-#                            columns=1, x=0.0, y=0.98),
-#                   type=graphType,
-#                   par.settings = list(superpose.line = lineSpec),
-# #                                      superpose.symbol = pointSpec),
-#                   scales=list(cex=1.0, #controls text size on scales
-#                               tck=-0.5), #controls tick mark length
-#                   ylab="Indexed (1980=1)")
-#   return(graph)
-# 
-#                     
-# }
-
-
-
-#createGDPComparisonGraph("US")
-
-#createCountryFactorsGraph("US")
-#lapply(countries, createCountryFactorsGraph)
-
-
-
-
 @
 
 \section{Cobb-Douglas Without Energy}
 
-<<cobb-douglas>>=
+<<cobb-douglas, echo=FALSE>>=
 
 #################################################
 # Calculates parameter estimates and confidence intervals
@@ -380,11 +324,9 @@ cobbDouglasData <- function(countryName){
 cobbDouglasCountryRow <- function(countryName){
   dataCD <- cobbDouglasData(countryName)
   # Create CI ranges
-  out <- cbind(countryName, 
-               dataCD["- 95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+ 95% CI", "lambda"],
+  out <- cbind(dataCD["- 95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+ 95% CI", "lambda"],
                dataCD["- 95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+ 95% CI", "alpha"],
                dataCD["- 95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+ 95% CI", "beta"])
-  
   return(out)
 }
 
@@ -398,18 +340,16 @@ cobbDouglasParamsTable <- function(){
                 cobbDouglasCountryRow("IR"),
                 cobbDouglasCountryRow("TZ"),
                 cobbDouglasCountryRow("ZM"))
-  colnames(dataCD) <- c("", "-95% CI", "$\\lambda$", "+95% CI", 
-                        "-95% CI", "$\\alpha$",  "+95% CI",
-                        "-95% CI", "$\\beta$",   "+95% CI")
+  colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
+                        " ", "$\\alpha$",  " ",
+                        " ", "$\\beta$",   " ")
   rownames(dataCD) <- countries
-  print("************** Trying to print dataCD **********************")
-#   print(class(dataCD))
-#   print(dataCD)
-  tableCD <- xtable(dataCD, caption="Cobb-Douglas, 1980-2011 or 1991-2011", digit = c(1,1, 4,4,4, 4,4,4, 4,4,4))
-  #print(tableCD)
+  tableCD <- xtable(dataCD, 
+                    caption="Cobb-Douglas parameters for 1980-2011 (developed nations) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence bounds to left and right.)", 
+                    digit = c(1, 4,4,4, 2,2,2, 2,2,2),
+                    align = "r|ccc|ccc|ccc")
   return(tableCD)
 }
-cobbDouglasParamsTable()
 
 ####################################
 # Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.
@@ -427,28 +367,8 @@ cobbDouglasCountryTable <- function(countryName){
 }
 @
 
-<<CD Analysis>>=
-tablesCD <- lapply(countries, cobbDouglasCountryTable)
-@
-
 <<CD Results, results='asis', echo=FALSE>>=
-print(cobbDouglasParamsTable(), caption.placement="top")
-
-
-print(tablesCD[["US"]], caption.placement="top")
-print(tablesCD[["UK"]], caption.placement="top")
-print(tablesCD[["JP"]], caption.placement="top")
-print(tablesCD[["CN"]], caption.placement="top")
-print(tablesCD[["ZA"]], caption.placement="top")
-print(tablesCD[["SA"]], caption.placement="top")
-print(tablesCD[["IR"]], caption.placement="top")
-print(tablesCD[["TZ"]], caption.placement="top")
-print(tablesCD[["ZM"]], caption.placement="top")
-
-# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
-# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
-# line is not working at the present time. --MKH, 18 Jan 2012.
-# print(tableCD, caption.placement="top", sanitize.text.function = function(x){x})
+print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
 \section{Cobb-Douglas With Energy}
