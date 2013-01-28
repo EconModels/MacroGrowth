@@ -122,7 +122,7 @@
 
 \author[Calvin]{Caleb Reese}
 \author[Calvin]{Lucas Timmer}
-\author[Calvin]{Matthew Kuperus Heun \corref{cor1}}
+\author[Calvin]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
 \cortext[cor1]{Corresponding author}
@@ -162,8 +162,6 @@ opts_chunk$set(
   tidy=FALSE,
   fig.width=6,
   fig.height=4,
-#  out.width=".45\\textwidth",
-#  out.height=".38\\textwidth",
   comment=NA)
 
 # Statistical significance levels. We'll work with 95% CIs
@@ -196,13 +194,34 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)", echo=FALSE>>=
-createFactorsLatticeGraph <- function(countryName){
+<<Country Factors Graph, echo=FALSE>>=
+createCountryFactorsGraph <- function(countryName){
   dataTable <- loadData(countryName)
   graphType <- "l"
   lineTypes <- c(1, 5, 2, 4, 6) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(1, 1, 1, 1, 1) #line widths
   colors <- c("black", "black", "black", "black", "black") #line and point colors
+  lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
+  graph <- xyplot(iCapStk+iLabor+iQ+iX+iU ~ Year, data=dataTable,
+                  type=graphType,
+                  par.settings = list(superpose.line = lineSpec),
+                  key=list(text=list(c("k", "l", "q", "x", "u")),
+                           type=graphType,
+                           lines=lineSpec,
+                           columns=1, x=0.0, y=0.98),
+                  scales=list(cex=1.0, #controls text size on scales
+                              tck=-0.5), #controls tick mark length
+                  ylab="Indexed (1980=1)")
+  return(graph)
+}
+@
+<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)", echo=FALSE>>=
+createFactorsLatticeGraph <- function(countryName){
+  dataTable <- loadData(countryName)
+  graphType <- "l"
+  lineTypes <- c(1, 5, 2, 4, 3) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(2, 2, 1, 1, 1) #line widths
+  colors <- c("black", "black", "red", "blue", "black") #line and point colors
   lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
   graph <- xyplot(iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
                   index.cond=list(c(7,6,3,1,8,5,4,2,9)), #orders the panels. Default is alphabetical.
@@ -224,28 +243,6 @@ createFactorsLatticeGraph <- function(countryName){
   return(graph)
 }
 createFactorsLatticeGraph("All") #Reads data from the "AllData.txt" file.
-@
-
-<<Country Factors Graph, echo=FALSE>>=
-createCountryFactorsGraph <- function(countryName){
-  dataTable <- loadData(countryName)
-  graphType <- "l"
-  lineTypes <- c(1, 5, 2, 4, 6) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(1, 1, 1, 1, 1) #line widths
-  colors <- c("black", "black", "black", "black", "black") #line and point colors
-  lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
-  graph <- xyplot(iCapStk+iLabor+iQ+iX+iU ~ Year, data=dataTable,
-                  type=graphType,
-                  par.settings = list(superpose.line = lineSpec),
-                  key=list(text=list(c("k", "l", "q", "x", "u")),
-                           type=graphType,
-                           lines=lineSpec,
-                           columns=1, x=0.0, y=0.98),
-                  scales=list(cex=1.0, #controls text size on scales
-                              tck=-0.5), #controls tick mark length
-                  ylab="Indexed (1980=1)")
-  return(graph)
-}
 @
 
 \section{Cobb-Douglas Without Energy}
@@ -318,6 +315,21 @@ cobbDouglasData <- function(countryName){
   return(dataCD)
 }
 
+####################################
+# Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.
+#
+# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
+#
+# returns a printable LaTeX table from xtable.
+##
+cobbDouglasCountryTable <- function(countryName){
+  dataCD <- cobbDouglasData(countryName) 
+  colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
+  tableCD <- xtable(dataCD, caption=paste(countryName, " Cobb-Douglas, 1980-2011", sep=""), digit = c(4, 4, 2, 2, 1))
+  #print(tableCD)
+  return(tableCD)  
+}
+
 ############
 # Creates a row for the Cobb Douglas parameters table
 ##
@@ -349,21 +361,6 @@ cobbDouglasParamsTable <- function(){
                     digit = c(1, 4,4,4, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc")
   return(tableCD)
-}
-
-####################################
-# Creates a LaTeX printable table from the Cobb Douglas data. This function first calls cobbDouglasData.
-#
-# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
-#
-# returns a printable LaTeX table from xtable.
-##
-cobbDouglasCountryTable <- function(countryName){
-  dataCD <- cobbDouglasData(countryName) 
-  colnames(dataCD) <- c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$")
-  tableCD <- xtable(dataCD, caption=paste(countryName, " Cobb-Douglas, 1980-2011", sep=""), digit = c(4, 4, 2, 2, 1))
-  #print(tableCD)
-  return(tableCD)  
 }
 @
 
