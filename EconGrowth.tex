@@ -215,7 +215,7 @@ Caleb, put your LaTeX code here.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
-\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies]{GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)\label{fig:Factors Lattice Graph}}
+\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies]{GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)\label{fig:Factors_Lattice_Graph}}
 \end{figure}
 
 
@@ -228,7 +228,7 @@ Caleb, put your LaTeX code here.
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Wed Jan 30 09:41:21 2013
+% Wed Jan 30 10:52:22 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas parameters for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence bounds to left and right.)}
@@ -250,6 +250,74 @@ US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\
 \end{center}
 \end{table}
 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+usModel <- \hlfunctioncall{cobbDouglasModel}(\hlstring{"US"})
+coefs <- \hlfunctioncall{coef}(usModel)
+\hlfunctioncall{print}(\hlfunctioncall{coef}(usModel))
+\end{alltt}
+\begin{verbatim}
+ lambda   alpha 
+0.01016 0.27418 
+\end{verbatim}
+\begin{alltt}
+usPred <- \hlfunctioncall{predict}(usModel)
+\hlfunctioncall{class}(usPred)
+\end{alltt}
+\begin{verbatim}
+[1] "numeric"
+\end{verbatim}
+\begin{alltt}
+\hlfunctioncall{print}(usPred)
+\end{alltt}
+\begin{verbatim}
+ [1] 1.000 1.021 1.026 1.057 1.119 1.162 1.196 1.244 1.296 1.348 1.375
+[12] 1.383 1.408 1.458 1.520 1.579 1.628 1.702 1.772 1.844 1.912 1.941
+[23] 1.963 1.997 2.058 2.128 2.204 2.260 2.281 2.215 2.241 2.323
+\end{verbatim}
+\begin{alltt}
+\hlfunctioncall{data.frame}(usPred)
+\end{alltt}
+\begin{verbatim}
+   usPred
+1   1.000
+2   1.021
+3   1.026
+4   1.057
+5   1.119
+6   1.162
+7   1.196
+8   1.244
+9   1.296
+10  1.348
+11  1.375
+12  1.383
+13  1.408
+14  1.458
+15  1.520
+16  1.579
+17  1.628
+18  1.702
+19  1.772
+20  1.844
+21  1.912
+22  1.941
+23  1.963
+24  1.997
+25  2.058
+26  2.128
+27  2.204
+28  2.260
+29  2.281
+30  2.215
+31  2.241
+32  2.323
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \section{Cobb-Douglas With Energy}
@@ -481,7 +549,7 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Wed Jan 30 09:41:22 2013
+% Wed Jan 30 10:52:24 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US, 1980-2011.}

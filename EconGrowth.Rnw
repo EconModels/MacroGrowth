@@ -215,7 +215,7 @@ createCountryFactorsGraph <- function(countryName){
   return(graph)
 }
 @
-<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE>>=
+<<Factors_Lattice_Graph, fig.width=6.5, fig.height=7.5, fig.cap="GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE>>=
 createFactorsLatticeGraph <- function(countryName){
   dataTable <- loadData(countryName)
   graphType <- "b"
@@ -249,21 +249,10 @@ createFactorsLatticeGraph("All") #Reads data from the "AllData.txt" file.
 \section{Cobb-Douglas Without Energy}
 
 <<cobb-douglas, echo=FALSE>>=
-
-#################################################
-# Calculates parameter estimates and confidence intervals
-# for the Cobb-Douglas production function given a country.
-#
-# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-#
-# returns a vector of data for the Cobb-Douglas model. 
-# First item is the +95% CI on all parameters
-# Second item contains the parameter estimates
-# Third item is the -95% CI on all parameters
-# Each row has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
+####################
+# Returns an nls Cobb-Douglas model for the country specified
 ##
-cobbDouglasData <- function(countryName){
-  
+cobbDouglasModel <- function(countryName){
   # Load the data that we need.
   dataTable <- loadData(countryName)
   
@@ -278,6 +267,23 @@ cobbDouglasData <- function(countryName){
 #                 lower = list(lambda=-Inf, alpha=0),
 #                 upper = list(lambda=Inf, alpha=1),
                  data=dataTable)
+  return(modelCD)
+}
+
+#################################################
+# Calculates parameter estimates and confidence intervals
+# for the Cobb-Douglas production function given a country.
+#
+# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+#
+# returns a vector of data for the Cobb-Douglas model. 
+# First item is the +95% CI on all parameters
+# Second item contains the parameter estimates
+# Third item is the -95% CI on all parameters
+# Each row has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
+##
+cobbDouglasData <- function(countryName){
+  modelCD <- cobbDouglasModel(countryName)
   
   # Checks validity of the model. AIC stands for Akaike's Information Criterion.
   aicCD  <- AIC(modelCD, k=2)
@@ -343,6 +349,9 @@ cobbDouglasCountryRow <- function(countryName){
   return(out)
 }
 
+############################
+# Aggregates the Cobb-Douglas results into a big data table
+##
 cobbDouglasParamsTable <- function(){
   dataCD <- rbind(cobbDouglasCountryRow("US"),
                 cobbDouglasCountryRow("UK"),
@@ -367,6 +376,17 @@ cobbDouglasParamsTable <- function(){
 
 <<CD Results, results='asis', echo=FALSE>>=
 print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
+@
+
+<<CD Lattice Graph>>=
+usModel <- cobbDouglasModel("US")
+coefs <- coef(usModel)
+print(coef(usModel))
+usPred <- predict(usModel)
+class(usPred)
+print(usPred)
+data.frame(usPred)
+
 @
 
 \section{Cobb-Douglas With Energy}
