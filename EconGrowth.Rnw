@@ -215,24 +215,29 @@ createCountryFactorsGraph <- function(countryName){
   return(graph)
 }
 @
-<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="Factors of Production for All Countries. (China's indexed capital stock rises to $k = 9.2$ in 2011.)", echo=FALSE>>=
+<<Factors Lattice Graph, fig.width=6.5, fig.height=7.5, fig.cap="GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE>>=
 createFactorsLatticeGraph <- function(countryName){
   dataTable <- loadData(countryName)
-  graphType <- "l"
-  lineTypes <- c(1, 5, 2, 4, 3) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(2, 2, 1, 1, 1) #line widths
-  colors <- c("black", "black", "red", "blue", "black") #line and point colors
-  lineSpec <- list(lty=lineTypes, lwd=lineWidths, col=colors)
-  graph <- xyplot(iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
+  graphType <- "b"
+  lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths
+  colors <- c("black", "black", "black", "red", "blue", "black") #line and point colors
+  #symbols <- c("o", "", "", "", "", "")
+  symbols <- c(1, NA_integer_, NA_integer_, NA_integer_, NA_integer_, NA_integer_)  
+  lineSpec <- list(lty=lineTypes, lwd=lineWidths)
+  graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
                   index.cond=list(c(7,6,3,1,8,5,4,2,9)), #orders the panels. Default is alphabetical.
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   type=graphType,
                   layout=c(3,3),
-                  par.settings = list(superpose.line = lineSpec),
-                  key=list(text=list(c("k", "l", "q", "x", "u")),
+                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+                  pch = symbols, col.symbol = colors, #Controls symbol parameters
+                  key=list(text=list(c("y", "k", "l", "q", "x", "u")),
                            type=graphType,
                            cex=0.85,
                            lines=lineSpec,
+                           pch=symbols,
+                           col=colors,
                            columns=1, x=0.01, y=0.95),
                   scales=list(cex=0.75, #controls text size on scales
                               tck=-0.5, #controls tick mark length
