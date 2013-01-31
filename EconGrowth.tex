@@ -210,8 +210,6 @@ Caleb, put your LaTeX code here.
 
 
 
-
-
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
@@ -228,7 +226,7 @@ Caleb, put your LaTeX code here.
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Wed Jan 30 22:51:25 2013
+% Thu Jan 31 15:18:15 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas parameters for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence bounds to left and right.)}
@@ -253,290 +251,12 @@ US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-usModel <- \hlfunctioncall{cobbDouglasModel}(\hlstring{"US"})
-\hlcomment{# print(coef(usModel))}
-usPred <- \hlfunctioncall{predict}(usModel) \hlcomment{#See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r}
-\hlcomment{#print(usPred)}
-\hlfunctioncall{data.frame}(usPred)
-\end{alltt}
-\begin{verbatim}
-   usPred
-1   1.000
-2   1.021
-3   1.026
-4   1.057
-5   1.119
-6   1.162
-7   1.196
-8   1.244
-9   1.296
-10  1.348
-11  1.375
-12  1.383
-13  1.408
-14  1.458
-15  1.520
-16  1.579
-17  1.628
-18  1.702
-19  1.772
-20  1.844
-21  1.912
-22  1.941
-23  1.963
-24  1.997
-25  2.058
-26  2.128
-27  2.204
-28  2.260
-29  2.281
-30  2.215
-31  2.241
-32  2.323
-\end{verbatim}
-\begin{alltt}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
-\hlcomment{# allData <- loadData("All")}
-\hlcomment{# predictions <- cobbDouglasPredictionsColumn()}
-\hlcomment{# allData <- cbind(allData, predictions)}
-\hlcomment{# }
-\hlcomment{# print(allData)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+\includegraphics[width=\maxwidth]{figure/CD_Lattice_Graph} \caption[Cobb-Douglas (without energy) results]{Cobb-Douglas (without energy) results.\label{fig:CD_Lattice_Graph}}
+\end{figure}
 
 
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-    predGDP
-1    1.0000
-2    1.0206
-3    1.0260
-4    1.0574
-5    1.1188
-6    1.1617
-7    1.1960
-8    1.2438
-9    1.2959
-10   1.3479
-11   1.3747
-12   1.3831
-13   1.4078
-14   1.4579
-15   1.5203
-16   1.5790
-17   1.6283
-18   1.7016
-19   1.7716
-20   1.8440
-21   1.9118
-22   1.9406
-23   1.9632
-24   1.9971
-25   2.0579
-26   2.1281
-27   2.2039
-28   2.2598
-29   2.2806
-30   2.2146
-31   2.2410
-32   2.3234
-33   1.0000
-34   0.9917
-35   0.9988
-36   1.0134
-37   1.0516
-38   1.0850
-39   1.1125
-40   1.1559
-41   1.2165
-42   1.2748
-43   1.3089
-44   1.3079
-45   1.3146
-46   1.3321
-47   1.3702
-48   1.4093
-49   1.4477
-50   1.4962
-51   1.5457
-52   1.5965
-53   1.6418
-54   1.6943
-55   1.7365
-56   1.7840
-57   1.8393
-58   1.8986
-59   1.9551
-60   2.0204
-61   2.0744
-62   2.0753
-63   2.1175
-64   2.1507
-65   1.0000
-66   1.0341
-67   1.0675
-68   1.1023
-69   1.1362
-70   1.1669
-71   1.2030
-72   1.2440
-73   1.2962
-74   1.3463
-75   1.4004
-76   1.4489
-77   1.4862
-78   1.5076
-79   1.5401
-80   1.5772
-81   1.6141
-82   1.6410
-83   1.6477
-84   1.6528
-85   1.6774
-86   1.6836
-87   1.6845
-88   1.7023
-89   1.7261
-90   1.7432
-91   1.7679
-92   1.7838
-93   1.7840
-94   1.7526
-95   1.7641
-96   1.7440
-97   1.0000
-98   1.0975
-99   1.2235
-100  1.3647
-101  1.5167
-102  1.6811
-103  1.8553
-104  2.0466
-105  2.2459
-106  2.4723
-107  2.6961
-108  2.9711
-109  3.2927
-110  3.6207
-111  4.0117
-112  4.4483
-113  4.9207
-114  5.4276
-115  6.0583
-116  6.7711
-117  1.0000
-118  1.0099
-119  1.0264
-120  1.0732
-121  1.1213
-122  1.1238
-123  1.1582
-124  1.1761
-125  1.2075
-126  1.2210
-127  1.2402
-128  1.2634
-129  1.2996
-130  1.3643
-131  1.4082
-132  1.4839
-133  1.5783
-134  1.6682
-135  1.7175
-136  1.7616
-137  1.0000
-138  1.0411
-139  1.0691
-140  1.0932
-141  1.1105
-142  1.1084
-143  1.0905
-144  1.0967
-145  1.1211
-146  1.1406
-147  1.1748
-148  1.2125
-149  1.2863
-150  1.3501
-151  1.3953
-152  1.4590
-153  1.5323
-154  1.6186
-155  1.6435
-156  1.6990
-157  1.7406
-158  1.0000
-159  1.0178
-160  1.0454
-161  1.0538
-162  1.0717
-163  1.0899
-164  1.1390
-165  1.1857
-166  1.2278
-167  1.2926
-168  1.3538
-169  1.4234
-170  1.5165
-171  1.6318
-172  1.7109
-173  1.7735
-174  1.8569
-175  1.8944
-176  1.9799
-177  2.0761
-178  2.1548
-179  1.0000
-180  1.0639
-181  1.1155
-182  1.1713
-183  1.2042
-184  1.2333
-185  1.2610
-186  1.2943
-187  1.3360
-188  1.3816
-189  1.4377
-190  1.5055
-191  1.5879
-192  1.6755
-193  1.7869
-194  1.9203
-195  2.0749
-196  2.2377
-197  2.4150
-198  2.6023
-199  2.8013
-200  1.0000
-201  0.9708
-202  0.9669
-203  0.9380
-204  0.9327
-205  0.9256
-206  0.9514
-207  1.0057
-208  1.1091
-209  1.1221
-210  1.1656
-211  1.2052
-212  1.2585
-213  1.2987
-214  1.3548
-215  1.4198
-216  1.4976
-217  1.5886
-218  1.6883
-219  1.8248
-220  1.9983
-\end{verbatim}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: arguments imply differing number of rows: 222, 220}}\end{kframe}
 \end{knitrout}
 
 
@@ -555,7 +275,7 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
-CDqTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"Q"})
+CDqTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"Q"})
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -581,7 +301,7 @@ CDqTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyTy
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
-CDxTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"X"})
+CDxTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"X"})
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -600,7 +320,7 @@ CDxTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyTy
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-CDuTables <- \hlfunctioncall{lapply}(countries, cobbDouglasEnergyTable, energyType=\hlstring{"U"})
+CDuTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"U"})
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -758,7 +478,7 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \end{verbatim}
 \begin{alltt}
 
-\hlcomment{#CESqTables <- lapply(countries, cesTable, energyType="Q")}
+\hlcomment{#CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -769,7 +489,7 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Wed Jan 30 22:51:27 2013
+% Thu Jan 31 15:18:16 2013
 \begin{table}[ht]
 \begin{center}
 \caption{US, 1980-2011.}
