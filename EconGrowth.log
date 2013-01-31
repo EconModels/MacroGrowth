@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  30 JAN 2013 20:56
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  30 JAN 2013 22:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -323,1696 +323,320 @@ igure/Factors_Lattice_Graph.pdf>]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 258.
 
-Overfull \hbox (233.67531pt too wide) in paragraph at lines 261--261
+Overfull \hbox (233.67531pt too wide) in paragraph at lines 260--260
 []\OT1/cmtt/m/n/12 usPred <- []predict[](usModel) []#See http://stackoverflow.c
 om/questions/9918807/how-get-plot-from-nls-in-r[][] 
  []
 
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]    \OT1/cmtt/m/n/12 Year iYear   iGDP iLabor iCapStk     iQ     iX     iU Co
-untry[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 1   1980     0 1.0000 1.0000  1.0000 1.0000 1.0000 1.0000   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 2   1981     1 1.0254 1.0021  1.0322 0.9768 0.9764 0.9617   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 3   1982     2 1.0055 0.9872  1.0551 0.9389 0.9379 0.9148   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 4   1983     3 1.0509 1.0049  1.0829 0.9337 0.9327 0.9116   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 5   1984     4 1.1264 1.0556  1.1253 0.9799 0.9790 0.9657   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 6   1985     5 1.1730 1.0797  1.1718 0.9790 0.9782 0.9782   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 7   1986     6 1.2137 1.0924  1.2172 0.9818 0.9808 0.9712   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 8   1987     7 1.2525 1.1220  1.2608 1.0134 1.0126 1.0051   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 9   1988     8 1.3040 1.1555  1.3054 1.0590 1.0582 1.0732   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 10  1989     9 1.3506 1.1874  1.3511 1.0915 1.0897 1.1328   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 11  1990    10 1.3759 1.1894  1.3927 1.0973 1.0948 1.1516   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 12  1991    11 1.3727 1.1726  1.4246 1.0970 1.0941 1.1389   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 13  1992    12 1.4193 1.1736  1.4612 1.1126 1.1098 1.1874   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 14  1993    13 1.4598 1.2010  1.5048 1.1340 1.1312 1.1996   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 15  1994    14 1.5192 1.2386  1.5570 1.1561 1.1532 1.2387   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 16  1995    15 1.5574 1.2691  1.6155 1.1816 1.1779 1.2920   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 17  1996    16 1.6157 1.2850  1.6848 1.2200 1.2164 1.3335   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 18  1997    17 1.6877 1.3226  1.7662 1.2303 1.2271 1.3523   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 19  1998    18 1.7612 1.3511  1.8634 1.2384 1.2353 1.3669   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 20  1999    19 1.8462 1.3775  1.9745 1.2584 1.2550 1.4091   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 21  2000    20 1.9226 1.3959  2.0955 1.2848 1.2816 1.3964   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 22  2001    21 1.9434 1.3788  2.2033 1.2548 1.2516     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 23  2002    22 1.9786 1.3609  2.2927 1.2779 1.2739     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 24  2003    23 2.0289 1.3538  2.3844 1.2806 1.2769     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 25  2004    24 2.0992 1.3690  2.4885 1.3018 1.2981     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 26  2005    25 2.1637 1.3901  2.6029 1.3036 1.2997     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 27  2006    26 2.2212 1.4155  2.7162 1.2960 1.2916     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 28  2007    27 2.2637 1.4253  2.8158 1.3178 1.3132     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 29  2008    28 2.2561 1.4099  2.8877 1.2874 1.2819     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 30  2009    29 2.1774 1.3323  2.9041 1.2307 1.2239     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 31  2010    30 2.2434 1.3318  2.9249 1.2710 1.2647     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 32  2011    31 2.2823 1.3742  2.9597 1.2586 1.2508     NA   
-   US[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 33  1980     0 1.0000 1.0000  1.0000 1.0000 1.0000 1.0000   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 34  1981     1 0.9868 0.9541  1.0184 0.9607 0.9599 0.9725   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 35  1982     2 1.0074 0.9334  1.0407 0.9489 0.9473 0.9069   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 36  1983     3 1.0439 0.9234  1.0663 0.9531 0.9509 0.9521   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 37  1984     4 1.0718 0.9466  1.0990 0.9374 0.9331 1.0317   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 38  1985     5 1.1104 0.9598  1.1339 0.9824 0.9789 1.0175   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 39  1986     6 1.1549 0.9630  1.1687 1.0053 1.0024 1.0315   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 40  1987     7 1.2076 0.9848  1.2120 1.0173 1.0145 1.1298   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 41  1988     8 1.2684 1.0214  1.2709 1.0199 1.0161 1.1561   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 42  1989     9 1.2974 1.0503  1.3343 1.0447 1.0404 1.1731   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 43  1990    10 1.3075 1.0475  1.3900 1.0496 1.0448 1.2083   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 44  1991    11 1.2893 1.0051  1.4296 1.0726 1.0676 1.1603   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 45  1992    12 1.2911 0.9774  1.4653 1.0474 1.0410 1.2362   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 46  1993    13 1.3198 0.9663  1.4981 1.0593 1.0509 1.2455   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 47  1994    14 1.3763 0.9798  1.5348 1.0655 1.0563 1.4084   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 48  1995    15 1.4183 0.9931  1.5732 1.0623 1.0519 1.4071   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 49  1996    16 1.4593 1.0021  1.6167 1.1283 1.1167 1.4547   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 50  1997    17 1.5092 1.0190  1.6683 1.0963 1.0838 1.4218   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 51  1998    18 1.5672 1.0273  1.7385 1.1004 1.0872 1.4527   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 52  1999    19 1.6244 1.0365  1.8091 1.1026 1.0885 1.4201   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 53  2000    20 1.6969 1.0389  1.8797 1.0955 1.0815 1.4983   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 54  2001    21 1.7503 1.0489  1.9506 1.1173 1.1032     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 55  2002    22 1.7968 1.0460  2.0239 1.1051 1.0904     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 56  2003    23 1.8602 1.0499  2.0944 1.1122 1.0982     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 57  2004    24 1.9151 1.0593  2.1707 1.1144 1.1008     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 58  2005    25 1.9551 1.0720  2.2471 1.1153 1.1017     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 59  2006    26 2.0061 1.0778  2.3327 1.1029 1.0899     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 60  2007    27 2.0756 1.0868  2.4320 1.0609 1.0479     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 61  2008    28 2.0527 1.0914  2.5117 1.0494 1.0360     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 62  2009    29 1.9629 1.0597  2.5523 0.9990 0.9838     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 63  2010    30 2.0040 1.0649  2.5969 1.0153 1.0003     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 64  2011    31 2.0171 1.0634  2.6358 0.9669 0.9518     NA   
-   UK[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 65  1980     0 1.0000 1.0000  1.0000 1.0000 1.0000 1.0000   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 66  1981     1 1.0293 1.0030  1.0536 1.0001 0.9998 0.9624   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 67  1982     2 1.0578 1.0087  1.1034 0.9730 0.9710 0.9176   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 68  1983     3 1.0748 1.0222  1.1481 0.9547 0.9510 0.9101   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 69  1984     4 1.1084 1.0319  1.1949 1.0393 1.0367 0.9869   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 70  1985     5 1.1647 1.0290  1.2489 1.0439 1.0397 0.9950   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 71  1986     6 1.1992 1.0332  1.3068 1.0464 1.0415 0.9891   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 72  1987     7 1.2447 1.0400  1.3722 1.0787 1.0734 1.0168   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 73  1988     8 1.3289 1.0531  1.4539 1.1391 1.1351 1.0744   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 74  1989     9 1.3992 1.0554  1.5462 1.1774 1.1737 1.1009   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 75  1990    10 1.4719 1.0587  1.6473 1.2402 1.2371 1.1523   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 76  1991    11 1.5209 1.0559  1.7466 1.2748 1.2710 1.1769   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 77  1992    12 1.5333 1.0451  1.8342 1.2783 1.2745 1.1505   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 78  1993    13 1.5360 1.0200  1.9101 1.2933 1.2881 1.1599   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 79  1994    14 1.5492 1.0163  1.9775 1.3434 1.3398 1.2008   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 80  1995    15 1.5791 1.0208  2.0417 1.3836 1.3792 1.2375   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 81  1996    16 1.6211 1.0223  2.1111 1.4058 1.4013 1.2441   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 82  1997    17 1.6472 1.0137  2.1754 1.4318 1.4265 1.2796   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 83  1998    18 1.6125 0.9899  2.2197 1.4101 1.4036 1.2463   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 84  1999    19 1.6112 0.9669  2.2603 1.4364 1.4317 1.2612   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 85  2000    20 1.6472 0.9683  2.2994 1.4497 1.4454 1.2732   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 86  2001    21 1.6530 0.9513  2.3313 1.4360 1.4316     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 87  2002    22 1.6577 0.9336  2.3517 1.4262 1.4227     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 88  2003    23 1.6862 0.9356  2.3713 1.4231 1.4213     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 89  2004    24 1.7256 0.9447  2.3900 1.4564 1.4541     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 90  2005    25 1.7478 0.9459  2.4089 1.4525 1.4494     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 91  2006    26 1.7772 0.9547  2.4294 1.4642 1.4602     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 92  2007    27 1.8157 0.9541  2.4489 1.4436 1.4407     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 93  2008    28 1.7962 0.9401  2.4587 1.3966 1.3927     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 94  2009    29 1.6969 0.9005  2.4489 1.3225 1.3155     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 95  2010    30 1.7726 0.9067  2.4397 1.3873 1.3815     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 96  2011    31 1.7598     NA  2.4320 1.3182 1.3156     NA   
-   JP[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 97  1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 98  1992     1 1.1420 1.0258  1.0985 1.0356 1.0366     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 99  1993     2 1.3019 1.0377  1.2404 1.1039 1.1109     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 100 1994     3 1.4724 1.0501  1.4015 1.1878 1.2025     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 101 1995     4 1.6329 1.0615  1.5763 1.2123 1.2276     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 102 1996     5 1.7962 1.0727  1.7664 1.2396 1.2565     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 103 1997     6 1.9633 1.0838  1.9675 1.3058 1.3298     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 104 1998     7 2.1164 1.0944  2.1906 1.2877 1.3073     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 105 1999     8 2.2772 1.1039  2.4224 1.2716 1.2873     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 106 2000     9 2.4685 1.1277  2.6767 1.2703 1.2822     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 107 2001    10 2.6734 1.1206  2.9517 1.3336 1.3521     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 108 2002    11 2.9167 1.1431  3.2685 1.4993 1.5349     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 109 2003    12 3.2084 1.1654  3.6489 1.7220 1.7815     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 110 2004    13 3.5324 1.1563  4.0735 2.0815 2.1830     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 111 2005    14 3.9316 1.1782  4.5471 2.2471 2.3645     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 112 2006    15 4.4309 1.2000  5.0820 2.3911 2.5214     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 113 2007    16 5.0601 1.2063  5.6910 2.5309 2.6764     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 114 2008    17 5.5458 1.2108  6.3512 2.7533 2.9220     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 115 2009    18 6.0561 1.2169  7.2033 2.9489 3.1387     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 116 2010    19 6.6845 1.2381  8.1442 3.3926 3.6274     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 117 2011    20 7.3013     NA  9.1896 3.7111 3.9776     NA   
-   CN[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 118 1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 119 1992     1 0.9786 1.0211  1.0012 1.0229 1.0232     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 120 1993     2 0.9907 1.0597  1.0019 1.0228 1.0226     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 121 1994     3 1.0227 1.1704  1.0084 1.1113 1.1103     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 122 1995     4 1.0546 1.2757  1.0227 1.1294 1.1270     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 123 1996     5 1.1000 1.2423  1.0436 1.1437 1.1420     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 124 1997     6 1.1291 1.2909  1.0683 1.2329 1.2323     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 125 1998     7 1.1350 1.2885  1.0960 1.1784 1.1763     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 126 1999     8 1.1617 1.3403  1.1139 1.2262 1.2249     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 127 2000     9 1.2100 1.3387  1.1343 1.2584 1.2576     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 128 2001    10 1.2431 1.3506  1.1560 1.2739 1.2737     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 129 2002    11 1.2887 1.3694  1.1798 1.2477 1.2460     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 130 2003    12 1.3267 1.4076  1.2126 1.3375 1.3377     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 131 2004    13 1.3871 1.5013  1.2579 1.4192 1.4193     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 132 2005    14 1.4603 1.5185  1.3144 1.4029 1.4023     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 133 2006    15 1.5422 1.5982  1.3845 1.4428 1.4414     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 134 2007    16 1.6268 1.6966  1.4726 1.4988 1.4963     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 135 2008    17 1.6866 1.7563  1.5763 1.5387 1.5367     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 136 2009    18 1.6613 1.7141  1.6803 1.4780 1.4758     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 137 2010    19 1.7095 1.6557  1.7923 1.5004 1.4994     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 138 2011    20 1.7625     NA  1.9066 1.5383 1.5402     NA   
-   ZA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 139 1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 140 1992     1 1.0463 1.0492  1.0599 1.0553 1.0553     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 141 1993     2 1.0466 1.0792  1.1165 1.0984 1.0982     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 142 1994     3 1.0535 1.1059  1.1703 1.1317 1.1313     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 143 1995     4 1.0556 1.1257  1.2188 1.1168 1.1160     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 144 1996     5 1.0914 1.1208  1.2543 1.1945 1.1939     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 145 1997     6 1.1197 1.0884  1.2888 1.2642 1.2638     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 146 1998     7 1.1514 1.0968  1.3289 1.3114 1.3113     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 147 1999     8 1.1428 1.1337  1.3774 1.3287 1.3288     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 148 2000     9 1.1984 1.1607  1.4293 1.3986 1.3985     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 149 2001    10 1.2049 1.2172  1.4799 1.4779 1.4776     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 150 2002    11 1.2065 1.2836  1.5290 1.5490 1.5485     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 151 2003    12 1.2989 1.4080  1.6000 1.6407 1.6397     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 152 2004    13 1.3673 1.5176  1.6705 1.7614 1.7599     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 153 2005    14 1.4432 1.5717  1.7699 1.8632 1.8614     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 154 2006    15 1.4888 1.6458  1.8990 1.9187 1.9166     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 155 2007    16 1.5188 1.7179  2.0655 2.0012 1.9996     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 156 2008    17 1.5830 1.7884  2.2830 2.1347 2.1330     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 157 2009    18 1.5856 1.7941  2.4183 2.1067 2.1051     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 158 2010    19 1.6590 1.8635  2.5547 1.9178 1.9096     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 159 2011    20 1.7712 1.9066  2.6944 2.7388 2.7406     NA   
-   SA[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 160 1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 161 1992     1 1.0425 0.9923  1.0287 1.0355 1.0358     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 162 1993     2 1.0261 1.0258  1.0452 1.0686 1.0689     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 163 1994     3 1.0225 1.0326  1.0479 1.1368 1.1377     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 164 1995     4 1.0496 1.0677  1.0471 1.1794 1.1797     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 165 1996     5 1.1241 1.0762  1.0644 1.2217 1.2214     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 166 1997     6 1.1622 1.1451  1.0918 1.3648 1.3651     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 167 1998     7 1.1940 1.2058  1.1206 1.4154 1.4144     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 168 1999     8 1.2171 1.2475  1.1536 1.4927 1.4909     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 169 2000     9 1.2797 1.3428  1.1887 1.5540 1.5511     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 170 2001    10 1.3267 1.4047  1.2379 1.6620 1.6583     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 171 2002    11 1.4264 1.4662  1.2995 1.8149 1.8108     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 172 2003    12 1.5279 1.5670  1.3728 1.9104 1.9054     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 173 2004    13 1.6056 1.7123  1.4524 1.9856 1.9790     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 174 2005    14 1.6798 1.7569  1.5353 2.2649 2.2580     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 175 2006    15 1.7788 1.7594  1.6185 2.3667 2.3611     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 176 2007    16 1.9180 1.8045  1.7074 2.4251 2.4189     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 177 2008    17 1.9621 1.7369  1.8002 2.4982 2.4960     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 178 2009    18 1.9974 1.7804  1.8939 2.7790 2.7763     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 179 2010    19 2.0555 1.8470  1.9876 2.6340 2.6238     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 180 2011    20 2.0971 1.8676  2.0861 3.0449 3.0448     NA   
-   IR[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 181 1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 182 1992     1 1.0059 1.0211  1.0783 1.0310 1.0364     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 183 1993     2 1.0180 1.0556  1.1342 1.0704 1.0771     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 184 1994     3 1.0340 1.1100  1.1878 1.0643 1.0385     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 185 1995     4 1.0708 1.1436  1.2178 1.0797 1.0424     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 186 1996     5 1.1196 1.1756  1.2428 1.1121 1.0720     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 187 1997     6 1.1590 1.2065  1.2664 1.1053 1.0455     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 188 1998     7 1.2020 1.2211  1.3040 1.1548 1.1080     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 189 1999     8 1.2603 1.2516  1.3468 1.1892 1.1422     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 190 2000     9 1.3224 1.2833  1.3944 1.2041 1.1463     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 191 2001    10 1.4017 1.3164  1.4558 1.2881 1.2521     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 192 2002    11 1.5021 1.3685  1.5255 1.3549 1.3238     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 193 2003    12 1.6055 1.4230  1.6143 1.3880 1.3437     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 194 2004    13 1.7312 1.4616  1.7172 1.4427 1.4050     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 195 2005    14 1.8588 1.5020  1.8532 1.5215 1.5025     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 196 2006    15 1.9841 1.5443  2.0209 1.5621 1.5409     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 197 2007    16 2.1259 1.5885  2.2198 1.6875 1.6998     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 198 2008    17 2.2840 1.6349  2.4314 1.7563 1.7766     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 199 2009    18 2.4215 1.6836  2.6653 1.8280 1.8560     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 200 2010    19 2.5907 1.7345  2.9149 1.9348 1.9882     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 201 2011    20 2.7564 1.7878  3.1830 2.0288 2.1001     NA   
-   TZ[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 202 1991     0 1.0000 1.0000  1.0000 1.0000 1.0000     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 203 1992     1 0.9827 1.0254  0.9692 1.0367 1.0401     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 204 1993     2 1.0494 1.0539  0.9566 0.9919 0.9852     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 205 1994     3 0.9589 1.0974  0.9314 0.9638 0.9473     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 206 1995     4 0.9318 1.1260  0.9180 0.9815 0.9636     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 207 1996     5 0.9966 1.2100  0.9155 0.9591 0.9322     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 208 1997     6 1.0294 1.2621  0.9291 1.0287 1.0025     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 209 1998     7 1.0104 1.3351  0.9650 1.0042 0.9673     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 210 1999     8 1.0328 1.3521  1.0201 0.9994 0.9585     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 211 2000     9 1.0697 1.3869  1.0181 1.0018 0.9569     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 212 2001    10 1.1221 1.3801  1.0260 1.0356 0.9952     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 213 2002    11 1.1592 1.4070  1.0379 1.0539 1.0124     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 214 2003    12 1.2183 1.4183  1.0541 1.0812 1.0412     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 215 2004    13 1.2839 1.4513  1.0659 1.0903 1.0475     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 216 2005    14 1.3525 1.4644  1.0819 1.1387 1.0993     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 217 2006    15 1.4365 1.5012  1.1066 1.1973 1.1573     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 218 2007    16 1.5256 1.5402  1.1382 1.1953 1.1505     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 219 2008    17 1.6123 1.5816  1.1745 1.2013 1.1531     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 220 2009    18 1.7155 1.6256  1.2152 1.2507 1.2019     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 221 2010    19 1.8461 1.6515  1.2668 1.2690 1.2196     NA   
-   ZM[] 
- []
-
-
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 767--767
-[]\OT1/cmtt/m/n/12 222 2011    20 1.9716 1.7216  1.3440 1.3110 1.2591     NA   
-   ZM[] 
- []
-
-[3] [4]
-Underfull \vbox (badness 10000) detected at line 768
+[3]
+Package color Info: Redefining color shadecolor on input line 313.
+ [4]
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 [5]
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 [6]
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 [7]
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 [8]
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
 
-Underfull \vbox (badness 10000) detected at line 768
+Underfull \vbox (badness 10000) detected at line 539
  []
 
-[9] [10]
-Underfull \vbox (badness 10000) detected at line 768
- []
+[9]
+Package color Info: Redefining color shadecolor on input line 555.
 
-
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-[11]
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-[12]
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-[13]
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-[14]
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-
-Underfull \vbox (badness 10000) detected at line 768
- []
-
-[15]
-Package color Info: Redefining color shadecolor on input line 784.
-
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 786--786
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 557--557
 [][]\OT1/cmtt/m/n/12 # Note that the anlaysis of ZA is taking a long time here.
  Need to figure out why.[][] 
  []
 
 
-Overfull \hbox (42.25021pt too wide) in paragraph at lines 787--787
+Overfull \hbox (42.25021pt too wide) in paragraph at lines 558--558
 []\OT1/cmtt/m/n/12 CDqTables <- []lapply[](countries, cobbDouglasEnergyTable, e
 nergyType=[]"Q"[])[] 
  []
 
 
-Overfull \hbox (301.60034pt too wide) in paragraph at lines 797--797
+Overfull \hbox (301.60034pt too wide) in paragraph at lines 568--568
 [][]\OT1/cmtt/m/n/12 # According to http://cran.r-project.org/web/packages/xtab
 le/vignettes/xtableGallery.pdf, Section 3.1, I should [][] 
  []
 
 
-Overfull \hbox (252.20032pt too wide) in paragraph at lines 798--798
+Overfull \hbox (252.20032pt too wide) in paragraph at lines 569--569
 [][]\OT1/cmtt/m/n/12 # be able to use the "sanitize.text.function" parameter to
  allow markup in column headers. But this next[][] 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 800
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 571
 .
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 800.
-Package color Info: Redefining color shadecolor on input line 810.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 571.
+Package color Info: Redefining color shadecolor on input line 581.
 
-[16]
-Overfull \hbox (116.35025pt too wide) in paragraph at lines 812--812
+Overfull \hbox (116.35025pt too wide) in paragraph at lines 583--583
 [][]\OT1/cmtt/m/n/12 # Note that the anlaysis of ZA is taking a long time here.
  Need to figure out why.[][] 
  []
 
 
-Overfull \hbox (42.25021pt too wide) in paragraph at lines 813--813
+Overfull \hbox (42.25021pt too wide) in paragraph at lines 584--584
 []\OT1/cmtt/m/n/12 CDxTables <- []lapply[](countries, cobbDouglasEnergyTable, e
 nergyType=[]"X"[])[] 
  []
 
-Package color Info: Redefining color shadecolor on input line 830.
+[10]
+Package color Info: Redefining color shadecolor on input line 601.
 
-Overfull \hbox (42.25021pt too wide) in paragraph at lines 832--832
+Overfull \hbox (42.25021pt too wide) in paragraph at lines 603--603
 []\OT1/cmtt/m/n/12 CDuTables <- []lapply[](countries, cobbDouglasEnergyTable, e
 nergyType=[]"U"[])[] 
  []
 
-Package color Info: Redefining color shadecolor on input line 849.
+Package color Info: Redefining color shadecolor on input line 620.
 
-Overfull \hbox (36.07521pt too wide) in paragraph at lines 856--856
+Overfull \hbox (36.07521pt too wide) in paragraph at lines 627--627
 [][]  \OT1/cmtt/m/n/12 # Establish guess values for phi beta, zeta, lambda_L an
 d lambda_E.[][] 
  []
 
 
-Overfull \hbox (11.3752pt too wide) in paragraph at lines 858--858
+Overfull \hbox (11.3752pt too wide) in paragraph at lines 629--629
 []  \OT1/cmtt/m/n/12 betaGuess <- 0.5 []# a typical value for []beta[] (exponen
 t on labor)[][] 
  []
 
 
-Overfull \hbox (233.67531pt too wide) in paragraph at lines 860--860
+Overfull \hbox (233.67531pt too wide) in paragraph at lines 631--631
 []  \OT1/cmtt/m/n/12 lambda_LGuess <- 0.007 []#assuming no technical progress o
 n the labor-capital portion of the function[][] 
  []
 
 
-Overfull \hbox (190.45029pt too wide) in paragraph at lines 861--861
+Overfull \hbox (190.45029pt too wide) in paragraph at lines 632--632
 []  \OT1/cmtt/m/n/12 lambda_EGuess <- 0.008 []#assuming no technical progress o
 n the energy portion of the function[][] 
  []
 
 
-Overfull \hbox (29.9002pt too wide) in paragraph at lines 863--863
+Overfull \hbox (29.9002pt too wide) in paragraph at lines 634--634
 [][]  \OT1/cmtt/m/n/12 # Runs a non-linear least squares fit to the data with c
 onstraints[][] 
  []
 
 
-Overfull \hbox (196.62529pt too wide) in paragraph at lines 864--864
+Overfull \hbox (196.62529pt too wide) in paragraph at lines 635--635
 []  \OT1/cmtt/m/n/12 modelCES <- []nls[](iGDP ~ ((1-zeta) * ([]exp[](lambda_L*i
 Year) * iCapStk^(1-beta) * iLabor^beta)^phi[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 865--865
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 636--636
 []                           \OT1/cmtt/m/n/12 + zeta*([]exp[](lambda_E*iYear) *
  iQ)^phi)^(1/phi),[] 
  []
 
 
-Overfull \hbox (153.40027pt too wide) in paragraph at lines 867--867
+Overfull \hbox (153.40027pt too wide) in paragraph at lines 638--638
 []                   \OT1/cmtt/m/n/12 control = []nls.control[](maxiter = 500, 
 tol = 1e-06, minFactor = 1/1024,[] 
  []
 
 
-Overfull \hbox (91.65024pt too wide) in paragraph at lines 868--868
+Overfull \hbox (91.65024pt too wide) in paragraph at lines 639--639
 []                                         \OT1/cmtt/m/n/12 printEval = FALSE, 
 warnOnly = FALSE),[] 
  []
 
 
-Overfull \hbox (233.67531pt too wide) in paragraph at lines 869--869
+Overfull \hbox (233.67531pt too wide) in paragraph at lines 640--640
 []                   \OT1/cmtt/m/n/12 start = []list[](phi=phiGuess, beta=betaG
 uess, zeta=zetaGuess, lambda_L=lambda_LGuess,[] 
  []
 
 
-Overfull \hbox (153.40027pt too wide) in paragraph at lines 871--871
+Overfull \hbox (153.40027pt too wide) in paragraph at lines 642--642
 []                   \OT1/cmtt/m/n/12 lower = []list[](phi=-Inf, beta=0, zeta=0
 , lambda_L=-Inf, lambda_E=-Inf),[] 
  []
 
 
-Overfull \hbox (122.52525pt too wide) in paragraph at lines 872--872
+Overfull \hbox (122.52525pt too wide) in paragraph at lines 643--643
 []                   \OT1/cmtt/m/n/12 upper = []list[](phi=0, beta=1, zeta=1, l
 ambda_L=Inf, lambda_E=Inf),[] 
  []
 
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 875
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 646
 .
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (276.89882pt too wide) in paragraph at lines 875--875
+Overfull \hbox (276.89882pt too wide) in paragraph at lines 646--646
 []  \OT1/cmtt/m/n/12 aicCES <- []AIC[](modelCES, k=2) []# Checks validity of th
 e model. AIC stands for Akaike\TS1/cmtt/m/n/12 '\OT1/cmtt/m/n/12 s Information 
 Criterion[][] 
  []
 
 
-Overfull \hbox (270.72533pt too wide) in paragraph at lines 882--882
+Overfull \hbox (270.72533pt too wide) in paragraph at lines 653--653
 [][]  \OT1/cmtt/m/n/12 # Provides confidence intervals on phi, beta, zeta, lamb
 da_L, and lambda_E. But, we need the CI on alpha.[][] 
  []
 
 
-Overfull \hbox (196.62529pt too wide) in paragraph at lines 889--889
+Overfull \hbox (196.62529pt too wide) in paragraph at lines 660--660
 []  \OT1/cmtt/m/n/12 alpha.est <- []deltaMethod[](modelCES, []"1 - beta"[]) # E
 stimates alpha and its standard []error[] (SE).[] 
  []
 
 
-Overfull \hbox (141.05026pt too wide) in paragraph at lines 897--897
+Overfull \hbox (141.05026pt too wide) in paragraph at lines 668--668
 []  \OT1/cmtt/m/n/12 alphaCICES <- []with[](alpha.est, Estimate + []c[](-1.0, 1
 .0) * tvalCES * SE) []# CI on alpha.[][] 
  []
 
 
-Overfull \hbox (17.5502pt too wide) in paragraph at lines 901--901
+Overfull \hbox (17.5502pt too wide) in paragraph at lines 672--672
 []  \OT1/cmtt/m/n/12 estCES <- []data.frame[](phi = []coef[](modelCES)[[]"phi"[
 ]], alpha = alpha,[] 
  []
 
 
-Overfull \hbox (128.70026pt too wide) in paragraph at lines 902--902
+Overfull \hbox (128.70026pt too wide) in paragraph at lines 673--673
 []                       \OT1/cmtt/m/n/12 beta = []coef[](modelCES)[[]"beta"[]]
 , zeta = []coef[](modelCES)[[]"zeta"[]],[] 
  []
 
 
-Overfull \hbox (227.5003pt too wide) in paragraph at lines 903--903
+Overfull \hbox (227.5003pt too wide) in paragraph at lines 674--674
 []                       \OT1/cmtt/m/n/12 lambda_L = []coef[](modelCES)[[]"lamb
 da_L"[]], lambda_E = []coef[](modelCES)[[]"lambda_E"[]])[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 907--907
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 678--678
 []  \OT1/cmtt/m/n/12 lowerCES <- []data.frame[](phi = ciCES[[]"phi"[],[]"2.5%"[
 ]], alpha = alphaCICES[1],[] 
  []
 
 
-Overfull \hbox (128.70026pt too wide) in paragraph at lines 908--908
+Overfull \hbox (128.70026pt too wide) in paragraph at lines 679--679
 []                         \OT1/cmtt/m/n/12 beta = ciCES[[]"beta"[], []"2.5%"[]
 ], zeta = ciCES[[]"zeta"[], []"2.5%"[]],[] 
  []
 
 
-Overfull \hbox (227.5003pt too wide) in paragraph at lines 909--909
+Overfull \hbox (227.5003pt too wide) in paragraph at lines 680--680
 []                         \OT1/cmtt/m/n/12 lambda_L = ciCES[[]"lambda_L"[], []
 "2.5%"[]], lambda_E = ciCES[[]"lambda_E"[], []"2.5%"[]])[] 
  []
 
 
-Overfull \hbox (73.12523pt too wide) in paragraph at lines 912--912
+Overfull \hbox (73.12523pt too wide) in paragraph at lines 683--683
 []  \OT1/cmtt/m/n/12 upperCES <- []data.frame[](phi = ciCES[[]"phi"[],[]"97.5%"
 []], alpha = alphaCICES[2],[] 
  []
 
 
-Overfull \hbox (141.05026pt too wide) in paragraph at lines 913--913
+Overfull \hbox (141.05026pt too wide) in paragraph at lines 684--684
 []                         \OT1/cmtt/m/n/12 beta = ciCES[[]"beta"[], []"97.5%"[
 ]], zeta = ciCES[[]"zeta"[], []"97.5%"[]],[] 
  []
 
 
-Overfull \hbox (239.85031pt too wide) in paragraph at lines 914--914
+Overfull \hbox (239.85031pt too wide) in paragraph at lines 685--685
 []                         \OT1/cmtt/m/n/12 lambda_L = ciCES[[]"lambda_L"[], []
 "97.5%"[]], lambda_E = ciCES[[]"lambda_E"[], []"97.5%"[]])[] 
  []
 
 
-Overfull \hbox (147.22527pt too wide) in paragraph at lines 928--928
+Overfull \hbox (147.22527pt too wide) in paragraph at lines 699--699
 [][]\OT1/cmtt/m/n/12 # Creates a LaTeX printable table from the CES data. This 
 function first calls cesData.[][] 
  []
 
 
-Overfull \hbox (208.9753pt too wide) in paragraph at lines 930--930
+Overfull \hbox (208.9753pt too wide) in paragraph at lines 701--701
 [][]\OT1/cmtt/m/n/12 # countryName is a string containint the 2-letter abbrevia
 tion for the country, e.g. "US" or "CN"[][] 
  []
 
 
-Overfull \hbox (307.77534pt too wide) in paragraph at lines 931--931
+Overfull \hbox (307.77534pt too wide) in paragraph at lines 702--702
 [][]\OT1/cmtt/m/n/12 # energyType is a string to be used in table captions repr
 senting the type of energy. Typically, "Q", "X", or "U"[][] 
  []
 
 
-Overfull \hbox (320.12535pt too wide) in paragraph at lines 937--937
+Overfull \hbox (320.12535pt too wide) in paragraph at lines 708--708
 []  \OT1/cmtt/m/n/12 tableCESq <- []xtable[](dataCESe, caption=[]paste[](countr
 yName, []", 1980-2011."[], sep=[]""[]), digit = []c[](4, 1, 2, 2, 6, 5, 5))[] 
  []
 
-[17]
-Underfull \vbox (badness 10000) detected at line 940
+[11]
+Underfull \vbox (badness 10000) detected at line 711
  []
 
 
-Underfull \vbox (badness 10000) detected at line 940
+Underfull \vbox (badness 10000) detected at line 711
  []
 
-[18]
-Package color Info: Redefining color shadecolor on input line 946.
- [19]
-Overfull \hbox (73.12523pt too wide) in paragraph at lines 969--969
+[12]
+Package color Info: Redefining color shadecolor on input line 717.
+ [13]
+Overfull \hbox (73.12523pt too wide) in paragraph at lines 740--740
 []\OT1/cmtt/m/n/12 Formula: iGDP ~ ((1 - zeta) * (exp(lambda_L * iYear) * iCapS
 tk^(1 - beta) *[] 
  []
 
 
-Overfull \hbox (48.42522pt too wide) in paragraph at lines 969--969
+Overfull \hbox (48.42522pt too wide) in paragraph at lines 740--740
 []    \OT1/cmtt/m/n/12 iLabor^beta)^phi + zeta * (exp(lambda_E * iYear) * iQ)^p
 hi)^(1/phi)[] 
  []
 
-[20]
+[14]
 No file EconGrowth.bbl.
-[21] (./EconGrowth.aux) ) 
+[15] (./EconGrowth.aux) ) 
 Here is how much of TeX's memory you used:
  2971 strings out of 493633
  40827 string characters out of 3143378
- 179801 words of memory out of 3000000
+ 107740 words of memory out of 3000000
  6199 multiletter control sequences out of 15000+200000
  13124 words of font info for 51 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 38i,9n,39p,496b,266s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,9n,34p,496b,266s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm
 -super/cm-super-ts1.enc}</usr/local/texlive/2011/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
@@ -2031,10 +655,10 @@ y8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti1
 fb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pf
 b></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb
 ></usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on EconGrowth.pdf (21 pages, 242578 bytes).
+Output written on EconGrowth.pdf (15 pages, 234430 bytes).
 PDF statistics:
- 148 PDF objects out of 1000 (max. 8388607)
- 104 compressed objects within 2 object streams
+ 128 PDF objects out of 1000 (max. 8388607)
+ 91 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
