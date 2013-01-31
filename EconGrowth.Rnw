@@ -270,6 +270,29 @@ cobbDouglasModel <- function(countryName){
   return(modelCD)
 }
 
+#########################
+# Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
+# Returns a data.frame with the predictions.
+##
+cobbDouglasPredictions <- function(countryName){
+  model <- cobbDouglasModel(countryName)
+  coefs <- coef(usModel)
+  pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
+  return(data.frame(pred))
+}
+
+#########################
+# Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
+# that corresponds to the AllData.txt file.
+##
+cobbDouglasPredictionsColumn <- function(){
+  preds <- lapply(countries, cobbDouglasPredictions)
+  out <- rbind(preds[["US"]], preds[["UK"]], preds[["JP"]], preds[["CN"]], preds[["ZA"]], preds[["SA"]], preds[["IR"]], preds[["TZ"]], preds[["ZM"]])
+  colnames(out) <- c("predGDP")
+  print(out)
+  return(out)
+}
+
 #################################################
 # Calculates parameter estimates and confidence intervals
 # for the Cobb-Douglas production function given a country.
@@ -381,12 +404,17 @@ print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.funct
 <<CD Lattice Graph>>=
 usModel <- cobbDouglasModel("US")
 coefs <- coef(usModel)
-print(coef(usModel))
-usPred <- predict(usModel)
+# print(coef(usModel))
+usPred <- predict(usModel) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
 class(usPred)
-print(usPred)
+#print(usPred)
 data.frame(usPred)
 
+allData <- loadData("All")
+predictions <- cobbDouglasPredictionsColumn()
+allData <- cbind(allData, predictions)
+
+print(allData)
 @
 
 \section{Cobb-Douglas With Energy}
