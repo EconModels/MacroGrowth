@@ -373,43 +373,47 @@ cobbDouglasCountryRow <- function(countryName){
   return(out)
 }
 
+###########################################
+# Creates a number of rows in a data.frame that contain information 
+# about the coefficients of a Cobb-Douglas model for countryName.
+# Each parameter has its own row with confidence intervals.
+# The country name is in a column. Which parameter is involved is
+# also in a column.
+# 
+# The return type is a data.frame.
+##
 cobbDouglasCountryRowsForParamsGraph <- function(countryName){
   dataCD <- cobbDouglasData(countryName)
   #Create three rows, one for each parameter.
-  lambdaRow <- cbind(dataCD["- 95% CI", "lambda"], 
+  lambdaRow <- cbind(countryName,
+                     "lambda",
+                     dataCD["- 95% CI", "lambda"], 
                      dataCD["CD", "lambda"], 
-                     dataCD["+ 95% CI", "lambda"], 
-                     countryName, 
-                     "lambda")
-  alphaRow <- cbind(dataCD["- 95% CI", "alpha"],
+                     dataCD["+ 95% CI", "lambda"])
+  alphaRow <- cbind(countryName, 
+                    "alpha",
+                    dataCD["- 95% CI", "alpha"],
                     dataCD["CD", "alpha"],  
-                    dataCD["+ 95% CI", "alpha"],
-                    countryName,
-                    "alpha")
-  betaRow <- cbind(dataCD["- 95% CI", "beta"],   
+                    dataCD["+ 95% CI", "alpha"])
+  betaRow <- cbind(countryName, 
+                   "beta",
+                   dataCD["- 95% CI", "beta"],   
                    dataCD["CD", "beta"],   
-                   dataCD["+ 95% CI", "beta"],
-                   countryName,
-                   "beta")
-  #Now combine into a table
+                   dataCD["+ 95% CI", "beta"])
+  #Now combine into a table. table is a matrix, not a data.frame.
   table <- rbind(lambdaRow, alphaRow, betaRow)
-  colnames(table) <- c("- 95% CI", "value", "+ 95% CI", "country", "parameter")
-  return(table)
+  #Set names for the columns
+  colnames(table) <- c("country", "parameter", "lowerCI", "value", "upperCI")
+  #Convert the matrix to a data.frame and return it.
+  return(data.frame(table))
 }
 
 ############################
 # Aggregates the Cobb-Douglas results into a big data table
 ##
 cobbDouglasParamsTable <- function(){
-  dataCD <- rbind(cobbDouglasCountryRow("US"),
-                cobbDouglasCountryRow("UK"),
-                cobbDouglasCountryRow("JP"),
-                cobbDouglasCountryRow("CN"),
-                cobbDouglasCountryRow("ZA"),
-                cobbDouglasCountryRow("SA"),
-                cobbDouglasCountryRow("IR"),
-                cobbDouglasCountryRow("TZ"),
-                cobbDouglasCountryRow("ZM"))
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow))
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ")
@@ -417,7 +421,7 @@ cobbDouglasParamsTable <- function(){
   tableCD <- xtable(dataCD, 
                     caption="Cobb-Douglas parameters for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence bounds to left and right.)", 
                     digit = c(1, 4,4,4, 2,2,2, 2,2,2),
-                    align = "r|ccc|ccc|ccc")
+                    align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
 }
 @
@@ -428,22 +432,28 @@ print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.funct
 
 <<CD_Params_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) model parameters.">>=
 createCDParamsGraph <- function(){
-  # Create the data table that we want. This table has the following columns
-  # -95% CI, value, +95% CI, country abbrev, parameter (lambda, alpha, or beta)
-  dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
-  
+  # Create a data table with the following columns:
+  # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
+  dataTable <- do.call("rbind", 
+                       lapply(countryAbbrevs, 
+                              cobbDouglasCountryRowsForParamsGraph))
+  print(class(dataTable))
   print(dataTable)
-  
-  graph <- segplot(value ~ country | parameter, centers=value, data=dataTable)  
+  # Make a graph. I want the following:
+  ### two-letter country abbreviation on the horizontal axis
+  ### dots for the values of each parameter
+  ### error bars to the top and bottom of the dots representing the 95% CI
+  ### three panels, one for each parameter (lambda, alpha, and beta)
+  #
+  # Note that "segplot" is in the "latticeExtra" package.
+  # But, at this point, I obtain the following error:
+  # "Error:  range not meaningful for factors"
+  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                   data = dataTable, 
+                   centers = value)
   return(graph)
-
-  
-    
 }
-
 createCDParamsGraph()
-
-
 @
 
 <<CD_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) results.", echo=FALSE, eval=FALSE>>=
@@ -610,12 +620,12 @@ cobbDouglasEnergyTable <- function(countryName, energyType){
 
 \subsection{Cobb-Douglas with $Q$}
 
-<<CDq analysis, eval=FALSE>>=
+<<CDq analysis, echo=FALSE, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDqTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="Q")
 @
 
-<<CDq Results, results='asis', echo=TRUE, eval=FALSE>>=
+<<CDq Results, results='asis', echo=FALSE, eval=FALSE>>=
 print(CDqTables[["US"]], caption.placement="top")
 print(CDqTables[["ZA"]], caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
@@ -628,30 +638,30 @@ print(CDqTables[["ZA"]], caption.placement="top")
 
 \subsection{Cobb-Douglas With $X$}
 
-<<CDx analysis, eval=FALSE>>=
+<<CDx analysis, echo=FALSE, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDxTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="X")
 @
 
-<<CDx Results, results='asis', eval=FALSE>>=
+<<CDx Results, results='asis', echo=FALSE, eval=FALSE>>=
 print(CDxTables[["US"]], caption.placement="top")
 print(CDxTables[["ZA"]], caption.placement="top")
 @
 
 \subsection{Cobb-Douglas With $U$}
 
-<<CDu analysis, eval=FALSE>>=
+<<CDu analysis, echo=FALSE, eval=FALSE>>=
 CDuTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="U")
 @
 
-<<CDu Results, results='asis', eval=FALSE>>=
+<<CDu Results, results='asis', echo=FALSE, eval=FALSE>>=
 print(CDuTables[["US"]], caption.placement="top")
 print(CDuTables[["ZA"]], caption.placement="top")
 @
 
 \section{CES}
 
-<<CES function>>=
+<<CES function, echo=FALSE, eval=FALSE>>=
 cesData <- function(countryName, energyType){
   energyColumnName <- paste("i", energyType, sep="")
   # Load the data that we need.
@@ -743,7 +753,7 @@ cesTable <- function(countryName, energyType){
 @
 
 \subsection{CES with $Q$}
-<<CESq analysisQ, eval=FALSE>>=
+<<CESq analysisQ, echo=FALSE, eval=FALSE>>=
 countryName <- "US"
 energyType <- "Q"
 tableCESq <- cesTable(countryName, energyType)
@@ -751,7 +761,7 @@ tableCESq <- cesTable(countryName, energyType)
 #CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")
 @
 
-<<CESq Results, results='asis', eval=FALSE>>=
+<<CESq Results, results='asis', echo=FALSE, eval=FALSE>>=
 print(tableCESq, caption.placement="top")
 
 #print(CESqTables[["US"]], caption.placement="top")

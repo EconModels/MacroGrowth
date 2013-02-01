@@ -225,19 +225,27 @@ Caleb, put your LaTeX code here.
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 createCDParamsGraph <- \hlfunctioncall{function}()\{
-\hlcomment{  # Create the data table that we want. This table has the following columns}
-\hlcomment{  # -95% CI, value, +95% CI, country abbrev, parameter (lambda, alpha, or beta)}
-  dataTable <- \hlfunctioncall{do.call}(\hlstring{"rbind"}, \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
-  
+\hlcomment{  # Create a data table with the following columns:}
+\hlcomment{  # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI}
+  dataTable <- \hlfunctioncall{do.call}(\hlstring{"rbind"}, 
+                       \hlfunctioncall{lapply}(countryAbbrevs, 
+                              cobbDouglasCountryRowsForParamsGraph))
+  \hlfunctioncall{print}(\hlfunctioncall{class}(dataTable))
   \hlfunctioncall{print}(dataTable)
-  
-  graph <- \hlfunctioncall{segplot}(value ~ country | parameter, centers=value, data=dataTable)  
+\hlcomment{  # Make a graph. I want the following:}
+\hlcomment{  ### two-letter country abbreviation on the horizontal axis}
+\hlcomment{  ### dots for the values of each parameter}
+\hlcomment{  ### error bars to the top and bottom of the dots representing the 95% CI}
+\hlcomment{  ### three panels, one for each parameter (lambda, alpha, and beta)}
+\hlcomment{  #}
+\hlcomment{  # Note that "segplot" is in the "latticeExtra" package.}
+\hlcomment{  # But, at this point, I obtain the following error:}
+\hlcomment{  # "Error:  range not meaningful for factors"}
+  graph <- \hlfunctioncall{segplot}(country ~ upperCI + lowerCI | parameter, 
+                   data = dataTable, 
+                   centers = value)
   \hlfunctioncall{return}(graph)
-
-  
-    
 \}
-
 \hlfunctioncall{createCDParamsGraph}()
 \end{alltt}
 
@@ -259,69 +267,67 @@ createCDParamsGraph <- \hlfunctioncall{function}()\{
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
 
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
-      - 95% CI                value                 
- [1,] "0.00867713811541703"   "0.0101554649771947"  
- [2,] "0.213128596976903"     "0.274182451792623"   
- [3,] "0.664533917792339"     "0.725817548207377"   
- [4,] "-0.0104339533284891"   "0.0097166097229806"  
- [5,] "-0.245055231216114"    "0.444076431841734"   
- [6,] "-0.126474527059773"    "0.555923568158266"   
- [7,] "0.00214925937049534"   "0.00517407901182134" 
- [8,] "0.437044349900555"     "0.515630717914427"   
- [9,] "0.405869151146723"     "0.484369282085573"   
-[10,] "-0.0405221051255718"   "0.0187921739305594"  
-[11,] "0.108505956239368"     "0.712431541207713"   
-[12,] "-0.319614564678439"    "0.287568458792287"   
-[13,] "-0.000717427211566538" "0.000771177746585204"
-[14,] "0.461441497491662"     "0.597466553596658"   
-[15,] "0.264697791730982"     "0.402533446403342"   
-[16,] "-0.0159263027425623"   "-0.0123103576408377" 
-[17,] "0.214820434186193"     "0.448455179197524"   
-[18,] "0.319930296839117"     "0.551544820802476"   
-[19,] "0.0031544365568454"    "0.00385069982960034" 
-[20,] "0.49113172479408"      "0.596672406132716"   
-[21,] "0.297079321606455"     "0.403327593867284"   
-[22,] "-0.00391419988823917"  "0.00149948729754192" 
-[23,] "0.504166911618199"     "0.726578989422795"   
-[24,] "0.0490171189358977"    "0.273421010577205"   
-[25,] "0.0217845209774593"    "0.0249136301557912"  
-[26,] "1.24947924633067"      "1.41002169368921"    
-[27,] "-0.57145350717947"     "-0.410021693689214"  
-      + 95% CI               country parameter
- [1,] "0.0116267632506195"   "US"    "lambda" 
- [2,] "0.335458612778305"    "US"    "alpha"  
- [3,] "0.787101178622416"    "US"    "beta"   
- [4,] "0.0302750369133842"   "UK"    "lambda" 
- [5,] "1.119149013819"       "UK"    "alpha"  
- [6,] "1.23832166337631"     "UK"    "beta"   
- [7,] "0.0081926858312227"   "JP"    "lambda" 
- [8,] "0.594141371854355"    "JP"    "alpha"  
- [9,] "0.562869413024423"    "JP"    "beta"   
-[10,] "0.0779058376028465"   "CN"    "lambda" 
-[11,] "1.31814921490484"     "CN"    "alpha"  
-[12,] "0.894751482263012"    "CN"    "beta"   
-[13,] "0.00222325751849382"  "ZA"    "lambda" 
-[14,] "0.733549304597543"    "ZA"    "alpha"  
-[15,] "0.540369101075701"    "ZA"    "beta"   
-[16,] "-0.00873591015395777" "SA"    "lambda" 
-[17,] "0.68279397709528"     "SA"    "alpha"  
-[18,] "0.783159344765835"    "SA"    "beta"   
-[19,] "0.00453844391610371"  "IR"    "lambda" 
-[20,] "0.702639779772847"    "IR"    "alpha"  
-[21,] "0.509575866128113"    "IR"    "beta"   
-[22,] "0.00678367569691732"  "TZ"    "lambda" 
-[23,] "0.951643458591323"    "TZ"    "alpha"  
-[24,] "0.497824902218513"    "TZ"    "beta"   
-[25,] "0.0280398287326144"   "ZM"    "lambda" 
-[26,] "1.5728851355369"      "ZM"    "alpha"  
-[27,] "-0.248589880198959"   "ZM"    "beta"   
+[1] "data.frame"
+     country parameter               lowerCI                value
+US.1      US    lambda   0.00867713811541703   0.0101554649771947
+US.2      US     alpha     0.213128596976903    0.274182451792623
+US.3      US      beta     0.664533917792339    0.725817548207377
+UK.1      UK    lambda   -0.0104339533284891   0.0097166097229806
+UK.2      UK     alpha    -0.245055231216114    0.444076431841734
+UK.3      UK      beta    -0.126474527059773    0.555923568158266
+JP.1      JP    lambda   0.00214925937049534  0.00517407901182134
+JP.2      JP     alpha     0.437044349900555    0.515630717914427
+JP.3      JP      beta     0.405869151146723    0.484369282085573
+CN.1      CN    lambda   -0.0405221051255718   0.0187921739305594
+CN.2      CN     alpha     0.108505956239368    0.712431541207713
+CN.3      CN      beta    -0.319614564678439    0.287568458792287
+ZA.1      ZA    lambda -0.000717427211566538 0.000771177746585204
+ZA.2      ZA     alpha     0.461441497491662    0.597466553596658
+ZA.3      ZA      beta     0.264697791730982    0.402533446403342
+SA.1      SA    lambda   -0.0159263027425623  -0.0123103576408377
+SA.2      SA     alpha     0.214820434186193    0.448455179197524
+SA.3      SA      beta     0.319930296839117    0.551544820802476
+IR.1      IR    lambda    0.0031544365568454  0.00385069982960034
+IR.2      IR     alpha      0.49113172479408    0.596672406132716
+IR.3      IR      beta     0.297079321606455    0.403327593867284
+TZ.1      TZ    lambda  -0.00391419988823917  0.00149948729754192
+TZ.2      TZ     alpha     0.504166911618199    0.726578989422795
+TZ.3      TZ      beta    0.0490171189358977    0.273421010577205
+ZM.1      ZM    lambda    0.0217845209774593   0.0249136301557912
+ZM.2      ZM     alpha      1.24947924633067     1.41002169368921
+ZM.3      ZM      beta     -0.57145350717947   -0.410021693689214
+                  upperCI
+US.1   0.0116267632506195
+US.2    0.335458612778305
+US.3    0.787101178622416
+UK.1   0.0302750369133842
+UK.2       1.119149013819
+UK.3     1.23832166337631
+JP.1   0.0081926858312227
+JP.2    0.594141371854355
+JP.3    0.562869413024423
+CN.1   0.0779058376028465
+CN.2     1.31814921490484
+CN.3    0.894751482263012
+ZA.1  0.00222325751849382
+ZA.2    0.733549304597543
+ZA.3    0.540369101075701
+SA.1 -0.00873591015395777
+SA.2     0.68279397709528
+SA.3    0.783159344765835
+IR.1  0.00453844391610371
+IR.2    0.702639779772847
+IR.3    0.509575866128113
+TZ.1  0.00678367569691732
+TZ.2    0.951643458591323
+TZ.3    0.497824902218513
+ZM.1   0.0280398287326144
+ZM.2      1.5728851355369
+ZM.3   -0.248589880198959
 \end{verbatim}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: invalid 'envir' argument}}\begin{alltt}
-
-\end{alltt}
-\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: range not meaningful for factors}}\end{kframe}
 \end{knitrout}
 
 
@@ -339,189 +345,38 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \subsection{Cobb-Douglas with $Q$}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
-CDqTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"Q"})
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(CDqTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\hlfunctioncall{print}(CDqTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
-\hlcomment{# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should }
-\hlcomment{# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next}
-\hlcomment{# line is not working at the present time. --MKH, 18 Jan 2012.}
-\hlcomment{# print(tableCDe, sanitize.text.function = function(x)\{x\})}
 
-\hlcomment{#print(tableAll, caption.placement="top")}
-\end{alltt}
-\end{kframe}
+
 
 
 \subsection{Cobb-Douglas With $X$}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcomment{# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.}
-CDxTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"X"})
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(CDxTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\hlfunctioncall{print}(CDxTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}
+
+
 
 
 \subsection{Cobb-Douglas With $U$}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-CDuTables <- \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasEnergyTable, energyType=\hlstring{"U"})
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(CDuTables[[\hlstring{"US"}]], caption.placement=\hlstring{"top"})
-\hlfunctioncall{print}(CDuTables[[\hlstring{"ZA"}]], caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}
+
+
 
 
 \section{CES}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-cesData <- \hlfunctioncall{function}(countryName, energyType)\{
-  energyColumnName <- \hlfunctioncall{paste}(\hlstring{"i"}, energyType, sep=\hlstring{""})
-\hlcomment{  # Load the data that we need.}
-  dataTable <- \hlfunctioncall{loadData}(countryName)
-    
-\hlcomment{  # Establish guess values for phi beta, zeta, lambda_L and lambda_E.}
-  phiGuess <- -20
-  betaGuess <- 0.5 \hlcomment{# a typical value for \hlfunctioncall{beta} (exponent on labor)}
-  zetaGuess <- 0.0004 \hlcomment{# a small value}
-  lambda_LGuess <- 0.007 \hlcomment{#assuming no technical progress on the labor-capital portion of the function}
-  lambda_EGuess <- 0.008 \hlcomment{#assuming no technical progress on the energy portion of the function}
-  
-\hlcomment{  # Runs a non-linear least squares fit to the data with constraints}
-  modelCES <- \hlfunctioncall{nls}(iGDP ~ ((1-zeta) * (\hlfunctioncall{exp}(lambda_L*iYear) * iCapStk^(1-beta) * iLabor^beta)^phi 
-                           + zeta*(\hlfunctioncall{exp}(lambda_E*iYear) * iQ)^phi)^(1/phi), 
-                   algorithm = \hlstring{"port"},
-                   control = \hlfunctioncall{nls.control}(maxiter = 500, tol = 1e-06, minFactor = 1/1024, 
-                                         printEval = FALSE, warnOnly = FALSE),
-                   start = \hlfunctioncall{list}(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
-                                lambda_E=lambda_EGuess),
-                   lower = \hlfunctioncall{list}(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
-                   upper = \hlfunctioncall{list}(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
-                   data=dataTable)
 
-  aicCES <- \hlfunctioncall{AIC}(modelCES, k=2) \hlcomment{# Checks validity of the model. AIC stands for Akaike's Information Criterion}
-  \hlfunctioncall{print}(aicCES)
-
-\hlcomment{  # Gives the nls summary table}
-  summaryCES <- \hlfunctioncall{summary}(modelCES) \hlcomment{# Gives the nls summary table}
-  \hlfunctioncall{print}(summaryCES)
-  
-\hlcomment{  # Provides confidence intervals on phi, beta, zeta, lambda_L, and lambda_E. But, we need the CI on alpha.}
-  ciCES <- \hlfunctioncall{confint}(modelCES, level = ciLevel)
-  \hlfunctioncall{print}(ciCES)
-  
-\hlcomment{  # Get the estimate for alpha}
-  beta <- \hlfunctioncall{as.numeric}(\hlfunctioncall{coef}(modelCES)[\hlstring{"beta"}])
-  alpha <- 1.0 - beta
-  alpha.est <- \hlfunctioncall{deltaMethod}(modelCES, \hlstring{"1 - beta"}) # Estimates alpha and its standard \hlfunctioncall{error} (SE).
-  \hlfunctioncall{print}(alpha.est) 
-  
-\hlcomment{  # Now calculate a confidence interval on alpha}
-  dofCES <- summaryCES$df[2]
-  \hlfunctioncall{print}(dofCES) \hlcomment{# Gives the degrees of freedom for the model.}
-  tvalCES <- \hlfunctioncall{qt}(ciHalfLevel, df = dofCES); tvalCES
-\hlcomment{  # Get confidence intervals for each parameter in the model}
-  alphaCICES <- \hlfunctioncall{with}(alpha.est, Estimate + \hlfunctioncall{c}(-1.0, 1.0) * tvalCES * SE) \hlcomment{# CI on alpha.}
-  \hlfunctioncall{print}(alphaCICES) 
-
-\hlcomment{  # Assemble the data into data frames for the table.}
-  estCES <- \hlfunctioncall{data.frame}(phi = \hlfunctioncall{coef}(modelCES)[\hlstring{"phi"}], alpha = alpha, 
-                       beta = \hlfunctioncall{coef}(modelCES)[\hlstring{"beta"}], zeta = \hlfunctioncall{coef}(modelCES)[\hlstring{"zeta"}], 
-                       lambda_L = \hlfunctioncall{coef}(modelCES)[\hlstring{"lambda_L"}], lambda_E = \hlfunctioncall{coef}(modelCES)[\hlstring{"lambda_E"}])
-  \hlfunctioncall{row.names}(estCES) <- \hlfunctioncall{paste}(\hlstring{"CES with "}, energyType, sep=\hlstring{""})
-\hlcomment{  #print(estCES)  }
-\hlcomment{  # The [1] subscripts pick off the lower confidence interval}
-  lowerCES <- \hlfunctioncall{data.frame}(phi = ciCES[\hlstring{"phi"},\hlstring{"2.5%"}], alpha = alphaCICES[1], 
-                         beta = ciCES[\hlstring{"beta"}, \hlstring{"2.5%"}], zeta = ciCES[\hlstring{"zeta"}, \hlstring{"2.5%"}],
-                         lambda_L = ciCES[\hlstring{"lambda_L"}, \hlstring{"2.5%"}], lambda_E = ciCES[\hlstring{"lambda_E"}, \hlstring{"2.5%"}])
-  \hlfunctioncall{row.names}(lowerCES) <- \hlstring{"- 95% CI"}
-\hlcomment{  # The [2] subscripts pick off the lower confidence interval}
-  upperCES <- \hlfunctioncall{data.frame}(phi = ciCES[\hlstring{"phi"},\hlstring{"97.5%"}], alpha = alphaCICES[2], 
-                         beta = ciCES[\hlstring{"beta"}, \hlstring{"97.5%"}], zeta = ciCES[\hlstring{"zeta"}, \hlstring{"97.5%"}],
-                         lambda_L = ciCES[\hlstring{"lambda_L"}, \hlstring{"97.5%"}], lambda_E = ciCES[\hlstring{"lambda_E"}, \hlstring{"97.5%"}])
-  \hlfunctioncall{row.names}(upperCES) <- \hlstring{"+ 95% CI"}
-  
-\hlcomment{  # Now create the data for a table.}
-  dataCES <- \hlfunctioncall{rbind}(upperCES, estCES, lowerCES)
-  \hlfunctioncall{print}(dataCES)
-  \hlfunctioncall{return}(dataCES)
-
-\hlcomment{  #xyplot( resid(modelCESQ) ~ fitted(modelCESQ) )}
-\hlcomment{  #histogram( ~resid(modelCESQ) )}
-\hlcomment{  #qqmath( ~resid(modelCESQ) )}
-\}
-
-\hlcomment{####################################}
-\hlcomment{# Creates a LaTeX printable table from the CES data. This function first calls cesData.}
-\hlcomment{#}
-\hlcomment{# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"}
-\hlcomment{# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"}
-\hlcomment{#}
-\hlcomment{# returns a printable LaTeX table from xtable.}
-\hlcomment{##}
-cesTable <- \hlfunctioncall{function}(countryName, energyType)\{
-  dataCESe <- \hlfunctioncall{cesData}(countryName, energyType)
-  tableCESq <- \hlfunctioncall{xtable}(dataCESe, caption=\hlfunctioncall{paste}(countryName, \hlstring{", 1980-2011."}, sep=\hlstring{""}), digit = \hlfunctioncall{c}(4, 1, 2, 2, 6, 5, 5))
-\}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
 \subsection{CES with $Q$}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-countryName <- \hlstring{"US"}
-energyType <- \hlstring{"Q"}
-tableCESq <- \hlfunctioncall{cesTable}(countryName, energyType)
-
-\hlcomment{#CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 
-\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
 
-\hlcomment{#print(CESqTables[["US"]], caption.placement="top")}
-\hlcomment{#print(CESqTables[["ZA"]], caption.placement="top")}
-\end{alltt}
-\end{kframe}
+
 
 
 %% The Appendices part is started with the command \appendix;
