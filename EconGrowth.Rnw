@@ -439,6 +439,7 @@ createCDParamsGraph <- function(){
                               cobbDouglasCountryRowsForParamsGraph))
   print(class(dataTable))
   print(dataTable)
+  print(str(dataTable))
   # Make a graph. I want the following:
   ### two-letter country abbreviation on the horizontal axis
   ### dots for the values of each parameter
@@ -451,6 +452,10 @@ createCDParamsGraph <- function(){
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                    data = dataTable, 
                    centers = value)
+  segplot(reorder(factor(county), rate.male) ~ LCL95.male + UCL95.male, 
+          data = subset(USCancerRates, state == "Washington"), 
+          draw.bands = FALSE, 
+          centers = rate.male)
   return(graph)
 }
 createCDParamsGraph()
