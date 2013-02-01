@@ -273,73 +273,48 @@ createCDParamsGraph <- \hlfunctioncall{function}()\{
 
 {\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
 [1] "data.frame"
-     country parameter               lowerCI                value
-US.1      US    lambda   0.00867713811541703   0.0101554649771947
-US.2      US     alpha     0.213128596976903    0.274182451792623
-US.3      US      beta     0.664533917792339    0.725817548207377
-UK.1      UK    lambda   -0.0104339533284891   0.0097166097229806
-UK.2      UK     alpha    -0.245055231216114    0.444076431841734
-UK.3      UK      beta    -0.126474527059773    0.555923568158266
-JP.1      JP    lambda   0.00214925937049534  0.00517407901182134
-JP.2      JP     alpha     0.437044349900555    0.515630717914427
-JP.3      JP      beta     0.405869151146723    0.484369282085573
-CN.1      CN    lambda   -0.0405221051255718   0.0187921739305594
-CN.2      CN     alpha     0.108505956239368    0.712431541207713
-CN.3      CN      beta    -0.319614564678439    0.287568458792287
-ZA.1      ZA    lambda -0.000717427211566538 0.000771177746585204
-ZA.2      ZA     alpha     0.461441497491662    0.597466553596658
-ZA.3      ZA      beta     0.264697791730982    0.402533446403342
-SA.1      SA    lambda   -0.0159263027425623  -0.0123103576408377
-SA.2      SA     alpha     0.214820434186193    0.448455179197524
-SA.3      SA      beta     0.319930296839117    0.551544820802476
-IR.1      IR    lambda    0.0031544365568454  0.00385069982960034
-IR.2      IR     alpha      0.49113172479408    0.596672406132716
-IR.3      IR      beta     0.297079321606455    0.403327593867284
-TZ.1      TZ    lambda  -0.00391419988823917  0.00149948729754192
-TZ.2      TZ     alpha     0.504166911618199    0.726578989422795
-TZ.3      TZ      beta    0.0490171189358977    0.273421010577205
-ZM.1      ZM    lambda    0.0217845209774593   0.0249136301557912
-ZM.2      ZM     alpha      1.24947924633067     1.41002169368921
-ZM.3      ZM      beta     -0.57145350717947   -0.410021693689214
-                  upperCI
-US.1   0.0116267632506195
-US.2    0.335458612778305
-US.3    0.787101178622416
-UK.1   0.0302750369133842
-UK.2       1.119149013819
-UK.3     1.23832166337631
-JP.1   0.0081926858312227
-JP.2    0.594141371854355
-JP.3    0.562869413024423
-CN.1   0.0779058376028465
-CN.2     1.31814921490484
-CN.3    0.894751482263012
-ZA.1  0.00222325751849382
-ZA.2    0.733549304597543
-ZA.3    0.540369101075701
-SA.1 -0.00873591015395777
-SA.2     0.68279397709528
-SA.3    0.783159344765835
-IR.1  0.00453844391610371
-IR.2    0.702639779772847
-IR.3    0.509575866128113
-TZ.1  0.00678367569691732
-TZ.2    0.951643458591323
-TZ.3    0.497824902218513
-ZM.1   0.0280398287326144
-ZM.2      1.5728851355369
-ZM.3   -0.248589880198959
+     country parameter    lowerCI      value   upperCI
+US.1      US    lambda  0.0086771  0.0101555  0.011627
+US.2      US     alpha  0.2131286  0.2741825  0.335459
+US.3      US      beta  0.6645339  0.7258175  0.787101
+UK.1      UK    lambda -0.0104340  0.0097166  0.030275
+UK.2      UK     alpha -0.2450552  0.4440764  1.119149
+UK.3      UK      beta -0.1264745  0.5559236  1.238322
+JP.1      JP    lambda  0.0021493  0.0051741  0.008193
+JP.2      JP     alpha  0.4370443  0.5156307  0.594141
+JP.3      JP      beta  0.4058692  0.4843693  0.562869
+CN.1      CN    lambda -0.0405221  0.0187922  0.077906
+CN.2      CN     alpha  0.1085060  0.7124315  1.318149
+CN.3      CN      beta -0.3196146  0.2875685  0.894751
+ZA.1      ZA    lambda -0.0007174  0.0007712  0.002223
+ZA.2      ZA     alpha  0.4614415  0.5974666  0.733549
+ZA.3      ZA      beta  0.2646978  0.4025334  0.540369
+SA.1      SA    lambda -0.0159263 -0.0123104 -0.008736
+SA.2      SA     alpha  0.2148204  0.4484552  0.682794
+SA.3      SA      beta  0.3199303  0.5515448  0.783159
+IR.1      IR    lambda  0.0031544  0.0038507  0.004538
+IR.2      IR     alpha  0.4911317  0.5966724  0.702640
+IR.3      IR      beta  0.2970793  0.4033276  0.509576
+TZ.1      TZ    lambda -0.0039142  0.0014995  0.006784
+TZ.2      TZ     alpha  0.5041669  0.7265790  0.951643
+TZ.3      TZ      beta  0.0490171  0.2734210  0.497825
+ZM.1      ZM    lambda  0.0217845  0.0249136  0.028040
+ZM.2      ZM     alpha  1.2494792  1.4100217  1.572885
+ZM.3      ZM      beta -0.5714535 -0.4100217 -0.248590
 'data.frame':	27 obs. of  5 variables:
  $ country  : Factor w/ 9 levels "US","UK","JP",..: 1 1 1 2 2 2 3 3 3 4 ...
- $ parameter: Factor w/ 3 levels "alpha","beta",..: 3 1 2 3 1 2 3 1 2 3 ...
- $ lowerCI  : Factor w/ 27 levels "0.00867713811541703",..: 1 2 3 4 6 5 7 9 8 10 ...
- $ value    : Factor w/ 27 levels "0.0101554649771947",..: 1 2 3 4 5 6 7 9 8 10 ...
- $ upperCI  : Factor w/ 27 levels "0.0116267632506195",..: 1 2 3 4 5 6 7 9 8 10 ...
+ $ parameter: Factor w/ 3 levels "lambda","alpha",..: 1 2 3 1 2 3 1 2 3 1 ...
+ $ lowerCI  : num  0.00868 0.21313 0.66453 -0.01043 -0.24506 ...
+ $ value    : num  0.01016 0.27418 0.72582 0.00972 0.44408 ...
+ $ upperCI  : num  0.0116 0.3355 0.7871 0.0303 1.1191 ...
 NULL
 \end{verbatim}
+\end{kframe}\begin{figure}[]
+
+\includegraphics[width=\maxwidth]{figure/CD_Params_Graph} \caption[Cobb-Douglas (without energy) model parameters]{Cobb-Douglas (without energy) model parameters.\label{fig:CD_Params_Graph}}
+\end{figure}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error: range not meaningful for factors}}\end{kframe}
 \end{knitrout}
 
 

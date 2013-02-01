@@ -308,15 +308,11 @@ cobbDouglasPredictionsColumn <- function(){
 ##
 cobbDouglasData <- function(countryName){
   modelCD <- cobbDouglasModel(countryName)
-  
   # Checks validity of the model. AIC stands for Akaike's Information Criterion.
   aicCD  <- AIC(modelCD, k=2)
-  #print(aicCD)
-  
   summaryCD <- summary(modelCD) # Gives the nls summary table.
   #print(summaryCD)
-  ciCD <- confint(modelCD, level = ciLevel); ciCD # Displays confidence intervals for the CD model.
-  
+  ciCD <- confint(modelCD, level = ciLevel); ciCD # Calculates confidence intervals for the CD model.
   # Calculate beta and its confidence interval and report it.
   alpha <- as.numeric(coef(modelCD)["alpha"])
   beta <- 1.0 - alpha
@@ -324,10 +320,7 @@ cobbDouglasData <- function(countryName){
   # Now calculate a confidence interval on beta
   dofCD <- summaryCD$df[2]; dofCD # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD); tvalCD
-  betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.
-  
-  #print(coef(modelCD))
-  
+  betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
   # Combine all estimates and their confidence intervals into data frames with intelligent row names
   estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
   #print(estCD)
@@ -335,14 +328,12 @@ cobbDouglasData <- function(countryName){
   #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
   # The [1] subscripts pick off the lower confidence interval
   lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
-  row.names(lowerCD) <- "- 95% CI"
+  row.names(lowerCD) <- "-95% CI"
   # The [2] subscripts pick off the lower confidence interval
   upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97.5%"], beta = betaCICD[2], gamma = NA)
-  row.names(upperCD) <- "+ 95% CI"
-  
+  row.names(upperCD) <- "+95% CI"
   # Now create the data for a table.
   dataCD <- rbind(upperCD, estCD, lowerCD)
-  #print(dataCD)
   return(dataCD)
 }
 
@@ -367,9 +358,9 @@ cobbDouglasCountryTable <- function(countryName){
 cobbDouglasCountryRow <- function(countryName){
   dataCD <- cobbDouglasData(countryName)
   # Create CI ranges
-  out <- cbind(dataCD["- 95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+ 95% CI", "lambda"],
-               dataCD["- 95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+ 95% CI", "alpha"],
-               dataCD["- 95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+ 95% CI", "beta"])
+  out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
+               dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
+               dataCD["-95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+95% CI", "beta"])
   return(out)
 }
 
@@ -384,28 +375,24 @@ cobbDouglasCountryRow <- function(countryName){
 ##
 cobbDouglasCountryRowsForParamsGraph <- function(countryName){
   dataCD <- cobbDouglasData(countryName)
-  #Create three rows, one for each parameter.
-  lambdaRow <- cbind(countryName,
-                     "lambda",
-                     dataCD["- 95% CI", "lambda"], 
-                     dataCD["CD", "lambda"], 
-                     dataCD["+ 95% CI", "lambda"])
-  alphaRow <- cbind(countryName, 
-                    "alpha",
-                    dataCD["- 95% CI", "alpha"],
-                    dataCD["CD", "alpha"],  
-                    dataCD["+ 95% CI", "alpha"])
-  betaRow <- cbind(countryName, 
-                   "beta",
-                   dataCD["- 95% CI", "beta"],   
-                   dataCD["CD", "beta"],   
-                   dataCD["+ 95% CI", "beta"])
-  #Now combine into a table. table is a matrix, not a data.frame.
+  #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
+  lambdaRow <- data.frame(country = countryName, 
+                          parameter = "lambda", 
+                          lowerCI = dataCD["-95% CI", "lambda"], 
+                          value = dataCD["CD", "lambda"], 
+                          upperCI = dataCD["+95% CI", "lambda"])
+  alphaRow <- data.frame(country = countryName, 
+                         parameter = "alpha",
+                         lowerCI = dataCD["-95% CI", "alpha"],
+                         value = dataCD["CD", "alpha"],  
+                         upperCI = dataCD["+95% CI", "alpha"])
+  betaRow <- data.frame(country = countryName, 
+                        parameter = "beta",
+                        lowerCI = dataCD["-95% CI", "beta"],
+                        value = dataCD["CD", "beta"], 
+                        upperCI = dataCD["+95% CI", "beta"])
   table <- rbind(lambdaRow, alphaRow, betaRow)
-  #Set names for the columns
-  colnames(table) <- c("country", "parameter", "lowerCI", "value", "upperCI")
-  #Convert the matrix to a data.frame and return it.
-  return(data.frame(table))
+  return(table)
 }
 
 ############################
