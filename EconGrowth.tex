@@ -210,14 +210,7 @@ Caleb, put your LaTeX code here.
 
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
-\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies]{GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)\label{fig:Factors_Lattice_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 \section{Cobb-Douglas Without Energy}
@@ -225,39 +218,114 @@ Caleb, put your LaTeX code here.
 
 
 
-% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jan 31 15:18:15 2013
-\begin{table}[ht]
-\begin{center}
-\caption{Cobb-Douglas parameters for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence bounds to left and right.)}
-\begin{tabular}{r|ccc|ccc|ccc}
-  \hline
- &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   \\ 
-  \hline
-US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\ 
-  UK & -0.0104 & 0.0097 & 0.0303 & -0.25 & 0.44 & 1.12 & -0.13 & 0.56 & 1.24 \\ 
-  JP & 0.0021 & 0.0052 & 0.0082 & 0.44 & 0.52 & 0.59 & 0.41 & 0.48 & 0.56 \\ 
-  CN & -0.0405 & 0.0188 & 0.0779 & 0.11 & 0.71 & 1.32 & -0.32 & 0.29 & 0.89 \\ 
-  ZA & -0.0007 & 0.0008 & 0.0022 & 0.46 & 0.60 & 0.73 & 0.26 & 0.40 & 0.54 \\ 
-  SA & -0.0159 & -0.0123 & -0.0087 & 0.21 & 0.45 & 0.68 & 0.32 & 0.55 & 0.78 \\ 
-  IR & 0.0032 & 0.0039 & 0.0045 & 0.49 & 0.60 & 0.70 & 0.30 & 0.40 & 0.51 \\ 
-  TZ & -0.0039 & 0.0015 & 0.0068 & 0.50 & 0.73 & 0.95 & 0.05 & 0.27 & 0.50 \\ 
-  ZM & 0.0218 & 0.0249 & 0.0280 & 1.25 & 1.41 & 1.57 & -0.57 & -0.41 & -0.25 \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
 
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+createCDParamsGraph <- \hlfunctioncall{function}()\{
+\hlcomment{  # Create the data table that we want. This table has the following columns}
+\hlcomment{  # -95% CI, value, +95% CI, country abbrev, parameter (lambda, alpha, or beta)}
+  dataTable <- \hlfunctioncall{do.call}(\hlstring{"rbind"}, \hlfunctioncall{lapply}(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
+  
+  \hlfunctioncall{print}(dataTable)
+  
+  graph <- \hlfunctioncall{segplot}(value ~ country | parameter, centers=value, data=dataTable)  
+  \hlfunctioncall{return}(graph)
 
-\includegraphics[width=\maxwidth]{figure/CD_Lattice_Graph} \caption[Cobb-Douglas (without energy) results]{Cobb-Douglas (without energy) results.\label{fig:CD_Lattice_Graph}}
-\end{figure}
+  
+    
+\}
+
+\hlfunctioncall{createCDParamsGraph}()
+\end{alltt}
 
 
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
+      - 95% CI                value                 
+ [1,] "0.00867713811541703"   "0.0101554649771947"  
+ [2,] "0.213128596976903"     "0.274182451792623"   
+ [3,] "0.664533917792339"     "0.725817548207377"   
+ [4,] "-0.0104339533284891"   "0.0097166097229806"  
+ [5,] "-0.245055231216114"    "0.444076431841734"   
+ [6,] "-0.126474527059773"    "0.555923568158266"   
+ [7,] "0.00214925937049534"   "0.00517407901182134" 
+ [8,] "0.437044349900555"     "0.515630717914427"   
+ [9,] "0.405869151146723"     "0.484369282085573"   
+[10,] "-0.0405221051255718"   "0.0187921739305594"  
+[11,] "0.108505956239368"     "0.712431541207713"   
+[12,] "-0.319614564678439"    "0.287568458792287"   
+[13,] "-0.000717427211566538" "0.000771177746585204"
+[14,] "0.461441497491662"     "0.597466553596658"   
+[15,] "0.264697791730982"     "0.402533446403342"   
+[16,] "-0.0159263027425623"   "-0.0123103576408377" 
+[17,] "0.214820434186193"     "0.448455179197524"   
+[18,] "0.319930296839117"     "0.551544820802476"   
+[19,] "0.0031544365568454"    "0.00385069982960034" 
+[20,] "0.49113172479408"      "0.596672406132716"   
+[21,] "0.297079321606455"     "0.403327593867284"   
+[22,] "-0.00391419988823917"  "0.00149948729754192" 
+[23,] "0.504166911618199"     "0.726578989422795"   
+[24,] "0.0490171189358977"    "0.273421010577205"   
+[25,] "0.0217845209774593"    "0.0249136301557912"  
+[26,] "1.24947924633067"      "1.41002169368921"    
+[27,] "-0.57145350717947"     "-0.410021693689214"  
+      + 95% CI               country parameter
+ [1,] "0.0116267632506195"   "US"    "lambda" 
+ [2,] "0.335458612778305"    "US"    "alpha"  
+ [3,] "0.787101178622416"    "US"    "beta"   
+ [4,] "0.0302750369133842"   "UK"    "lambda" 
+ [5,] "1.119149013819"       "UK"    "alpha"  
+ [6,] "1.23832166337631"     "UK"    "beta"   
+ [7,] "0.0081926858312227"   "JP"    "lambda" 
+ [8,] "0.594141371854355"    "JP"    "alpha"  
+ [9,] "0.562869413024423"    "JP"    "beta"   
+[10,] "0.0779058376028465"   "CN"    "lambda" 
+[11,] "1.31814921490484"     "CN"    "alpha"  
+[12,] "0.894751482263012"    "CN"    "beta"   
+[13,] "0.00222325751849382"  "ZA"    "lambda" 
+[14,] "0.733549304597543"    "ZA"    "alpha"  
+[15,] "0.540369101075701"    "ZA"    "beta"   
+[16,] "-0.00873591015395777" "SA"    "lambda" 
+[17,] "0.68279397709528"     "SA"    "alpha"  
+[18,] "0.783159344765835"    "SA"    "beta"   
+[19,] "0.00453844391610371"  "IR"    "lambda" 
+[20,] "0.702639779772847"    "IR"    "alpha"  
+[21,] "0.509575866128113"    "IR"    "beta"   
+[22,] "0.00678367569691732"  "TZ"    "lambda" 
+[23,] "0.951643458591323"    "TZ"    "alpha"  
+[24,] "0.497824902218513"    "TZ"    "beta"   
+[25,] "0.0280398287326144"   "ZM"    "lambda" 
+[26,] "1.5728851355369"      "ZM"    "alpha"  
+[27,] "-0.248589880198959"   "ZM"    "beta"   
+\end{verbatim}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: invalid 'envir' argument}}\begin{alltt}
+
+\end{alltt}
+\end{kframe}
 \end{knitrout}
+
+
+
 
 
 \section{Cobb-Douglas With Energy}
@@ -439,44 +507,6 @@ cesTable <- \hlfunctioncall{function}(countryName, energyType)\{
 countryName <- \hlstring{"US"}
 energyType <- \hlstring{"Q"}
 tableCESq <- \hlfunctioncall{cesTable}(countryName, energyType)
-\end{alltt}
-\begin{verbatim}
-[1] -194
-
-Formula: iGDP ~ ((1 - zeta) * (exp(lambda_L * iYear) * iCapStk^(1 - beta) * 
-    iLabor^beta)^phi + zeta * (exp(lambda_E * iYear) * iQ)^phi)^(1/phi)
-
-Parameters:
-          Estimate Std. Error t value Pr(>|t|)
-phi      -3.96e+01   2.43e+01   -1.63   0.1144
-beta      6.09e-01   3.45e-02   17.64  2.4e-16
-zeta      2.09e-06   1.32e-05    0.16   0.8758
-lambda_L  7.98e-03   6.68e-04   11.95  2.8e-12
-lambda_E  8.57e-03   2.48e-03    3.45   0.0018
-
-Residual standard error: 0.0105 on 27 degrees of freedom
-
-Algorithm "port", convergence message: relative convergence (4) 
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Waiting for profiling to be done...}}\begin{verbatim}
-             2.5%      97.5%
-phi            NA -10.290831
-beta     0.514667   0.665371
-zeta           NA         NA
-lambda_L 0.006428   0.009152
-lambda_E 0.000715   0.012468
-         Estimate      SE
-1 - beta   0.3911 0.03453
-[1] 27
-[1] 0.3202 0.4619
-              phi  alpha   beta      zeta lambda_L lambda_E
-+ 95% CI   -10.29 0.4619 0.6654        NA 0.009152 0.012468
-CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
-- 95% CI       NA 0.3202 0.5147        NA 0.006428 0.000715
-\end{verbatim}
-\begin{alltt}
 
 \hlcomment{#CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")}
 \end{alltt}
@@ -487,24 +517,6 @@ CES with Q -39.64 0.3911 0.6089 2.085e-06 0.007979 0.008570
 \begin{kframe}
 \begin{alltt}
 \hlfunctioncall{print}(tableCESq, caption.placement=\hlstring{"top"})
-\end{alltt}
-\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jan 31 15:18:16 2013
-\begin{table}[ht]
-\begin{center}
-\caption{US, 1980-2011.}
-\begin{tabular}{rrrrrrr}
-  \hline
- & phi & alpha & beta & zeta & lambda\_L & lambda\_E \\ 
-  \hline
-+ 95\% CI & -10.3 & 0.46 & 0.67 &  & 0.00915 & 0.01247 \\ 
-  CES with Q & -39.6 & 0.39 & 0.61 & 0.000002 & 0.00798 & 0.00857 \\ 
-  - 95\% CI &  & 0.32 & 0.51 &  & 0.00643 & 0.00071 \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
-\begin{kframe}\begin{alltt}
 
 \hlcomment{#print(CESqTables[["US"]], caption.placement="top")}
 \hlcomment{#print(CESqTables[["ZA"]], caption.placement="top")}

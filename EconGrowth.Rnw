@@ -151,6 +151,7 @@ Caleb, put your LaTeX code here.
 <<setup, include=FALSE>>=
 require(knitr)
 require(lattice)
+require(latticeExtra)
 require(ggplot2)
 require(car)
 require(mosaic)
@@ -209,19 +210,19 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE>>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE, eval=FALSE>>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "black", "red", "blue", "black") #line and symbol colors
+  colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
   symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
   graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
                   type = graphType,
                   index.cond = list(countryOrderForGraphs), #orders the panels.
                   layout = layoutSpec, 
-                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"),
+                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
@@ -372,6 +373,30 @@ cobbDouglasCountryRow <- function(countryName){
   return(out)
 }
 
+cobbDouglasCountryRowsForParamsGraph <- function(countryName){
+  dataCD <- cobbDouglasData(countryName)
+  #Create three rows, one for each parameter.
+  lambdaRow <- cbind(dataCD["- 95% CI", "lambda"], 
+                     dataCD["CD", "lambda"], 
+                     dataCD["+ 95% CI", "lambda"], 
+                     countryName, 
+                     "lambda")
+  alphaRow <- cbind(dataCD["- 95% CI", "alpha"],
+                    dataCD["CD", "alpha"],  
+                    dataCD["+ 95% CI", "alpha"],
+                    countryName,
+                    "alpha")
+  betaRow <- cbind(dataCD["- 95% CI", "beta"],   
+                   dataCD["CD", "beta"],   
+                   dataCD["+ 95% CI", "beta"],
+                   countryName,
+                   "beta")
+  #Now combine into a table
+  table <- rbind(lambdaRow, alphaRow, betaRow)
+  colnames(table) <- c("- 95% CI", "value", "+ 95% CI", "country", "parameter")
+  return(table)
+}
+
 ############################
 # Aggregates the Cobb-Douglas results into a big data table
 ##
@@ -397,11 +422,31 @@ cobbDouglasParamsTable <- function(){
 }
 @
 
-<<CD Results, results='asis', echo=FALSE>>=
+<<CD Params Table, results='asis', echo=FALSE, eval=FALSE>>=
 print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
-<<CD_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) results.", echo=FALSE>>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) model parameters.">>=
+createCDParamsGraph <- function(){
+  # Create the data table that we want. This table has the following columns
+  # -95% CI, value, +95% CI, country abbrev, parameter (lambda, alpha, or beta)
+  dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
+  
+  print(dataTable)
+  
+  graph <- segplot(value ~ country | parameter, centers=value, data=dataTable)  
+  return(graph)
+
+  
+    
+}
+
+createCDParamsGraph()
+
+
+@
+
+<<CD_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) results.", echo=FALSE, eval=FALSE>>=
 createCDLatticeGraph <- function(){
   dataTable <- loadData("All") #Grab the raw data
   predictions <- cobbDouglasPredictionsColumn() #Get the predictions from the models
@@ -415,7 +460,7 @@ createCDLatticeGraph <- function(){
                   type=graphType,
                   index.cond=list(countryOrderForGraphs), #orders the panels.
                   layout=layoutSpec, #indicates a 3x3 arrangement of panels.
-                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"),
+                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
@@ -441,7 +486,7 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-<<cobbDouglasEnergy function, include=TRUE, echo=FALSE>>=
+<<cobbDouglasEnergy function, include=TRUE, echo=FALSE, eval=FALSE>>=
 ###############################
 # This function fits the Cobb Douglas production function including energy to historical data
 # The functional form is
@@ -698,7 +743,7 @@ cesTable <- function(countryName, energyType){
 @
 
 \subsection{CES with $Q$}
-<<CESq analysisQ>>=
+<<CESq analysisQ, eval=FALSE>>=
 countryName <- "US"
 energyType <- "Q"
 tableCESq <- cesTable(countryName, energyType)
@@ -706,7 +751,7 @@ tableCESq <- cesTable(countryName, energyType)
 #CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")
 @
 
-<<CESq Results, results='asis'>>=
+<<CESq Results, results='asis', eval=FALSE>>=
 print(tableCESq, caption.placement="top")
 
 #print(CESqTables[["US"]], caption.placement="top")
