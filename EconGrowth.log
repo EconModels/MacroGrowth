@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  2 FEB 2013 00:11
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  2 FEB 2013 09:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -327,44 +327,43 @@ Labor^abs(b -      a) * iEnergy^(1 - max(a, b))[]
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2 <./figure/Factors_Lattice_Graph.pdf>]
 Package color Info: Redefining color shadecolor on input line 287.
- [3]
+
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 306.
+               Default added (so using `tbp') on input line 287.
 
-<figure/CD_Params_Graph.pdf, id=33, 469.755pt x 252.945pt>
+<figure/CD_Params_Graph.pdf, id=28, 469.755pt x 252.945pt>
 File: figure/CD_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_Params_Graph.pdf>
-Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 308.
+Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 289.
 (pdftex.def)             Requested size: 390.0pt x 209.99832pt.
-Package color Info: Redefining color shadecolor on input line 316.
+Package color Info: Redefining color shadecolor on input line 297.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 316.
+               Default added (so using `tbp') on input line 297.
 
-<figure/CD_Lattice_Graph.pdf, id=34, 469.755pt x 542.025pt>
+<figure/CD_Lattice_Graph.pdf, id=29, 469.755pt x 542.025pt>
 File: figure/CD_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_Lattice_Graph.pdf>
-Package pdftex.def Info: figure/CD_Lattice_Graph.pdf used on input line 318.
+Package pdftex.def Info: figure/CD_Lattice_Graph.pdf used on input line 299.
 (pdftex.def)             Requested size: 390.0pt x 449.99641pt.
 
 No file EconGrowth.bbl.
-[4 <./figure/CD_Params_Graph.pdf>] [5 <./figure/CD_Lattice_Graph.pdf>]
+[3] [4 <./figure/CD_Params_Graph.pdf>] [5 <./figure/CD_Lattice_Graph.pdf>]
 (./EconGrowth.aux) ) 
 Here is how much of TeX's memory you used:
- 2947 strings out of 493633
- 40246 string characters out of 3143378
- 95322 words of memory out of 3000000
- 6180 multiletter control sequences out of 15000+200000
- 12827 words of font info for 50 fonts, out of 3000000 for 9000
+ 2945 strings out of 493633
+ 40223 string characters out of 3143378
+ 96322 words of memory out of 3000000
+ 6179 multiletter control sequences out of 15000+200000
+ 12659 words of font info for 49 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  38i,9n,34p,512b,246s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmitt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmmi10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmmi12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/
@@ -378,10 +377,10 @@ b></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb
 ></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb><
 /usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></
 usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on EconGrowth.pdf (5 pages, 228710 bytes).
+Output written on EconGrowth.pdf (5 pages, 223620 bytes).
 PDF statistics:
- 103 PDF objects out of 1000 (max. 8388607)
- 73 compressed objects within 1 object stream
+ 99 PDF objects out of 1000 (max. 8388607)
+ 70 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -148,7 +148,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 Caleb, put your LaTeX code here.
 
 
-<<setup, include=FALSE, echo=FALSE>>=
+<<setup, echo=FALSE, message=FALSE>>=
 require(knitr)
 require(lattice)
 require(latticeExtra)
@@ -161,17 +161,22 @@ options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
   tidy=FALSE,
-  comment=NA)
+  comment=NA,
+  echo=FALSE,    #Turns off code echo for all chunks. Set TRUE on an individual chunk to see it.
+  message=FALSE) #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
 
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
 # List of countries
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
+countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
-
+# List of energy types
+energyTypes <- c(Q="Q", X="X", U="U")
+########### Several global parameters for graphs. Set here and use below to ensure consistent appearance of graphs.
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. "1" means first alphabetically.
-# So, this list sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
+# The following list sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
 countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9)
 # Full page lattice plot sizes and other parameters
 layoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
@@ -183,12 +188,10 @@ keyXLoc <- 0.01 #x position of the key
 keyYLoc <- 0.95 #y position of the key
 scaleTextSize <- 0.75 #75% of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
-# List of energy types
-energyTypes <- c(Q="Q", X="X", U="U")
 @
 
 
-<<Load Data, include=FALSE, echo=FALSE>>=
+<<Load Data>>=
 #################################
 # This function loads data given a country name.
 # The file name from which data will be loaded is assumed to be of the form 
@@ -208,7 +211,7 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", echo=FALSE>>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -242,7 +245,7 @@ createFactorsLatticeGraph()
 
 \section{Cobb-Douglas Without Energy}
 
-<<cobb-douglas, echo=FALSE>>=
+<<cobb-douglas>>=
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
@@ -437,11 +440,11 @@ cobbDouglasParamsTable <- function(){
 }
 @
 
-<<CD Params Table, results='asis', echo=FALSE>>=
+<<CD Params Table, results='asis'>>=
 print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", echo=FALSE>>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph <- function(){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
@@ -476,7 +479,7 @@ createCDParamsGraph <- function(){
 createCDParamsGraph()
 @
 
-<<CD_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) results.", echo=FALSE>>=
+<<CD_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas (without energy) results.">>=
 createCDLatticeGraph <- function(){
   dataTable <- loadData("All") #Grab the raw data
   predictions <- cobbDouglasPredictionsColumn() #Get the predictions from the models
@@ -516,7 +519,7 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-<<cobbDouglasEnergy function, include=TRUE, echo=FALSE, eval=FALSE>>=
+<<cobbDouglasEnergy function, eval=FALSE>>=
 ###############################
 # This function fits the Cobb Douglas production function including energy to historical data
 # The functional form is
@@ -640,12 +643,12 @@ cobbDouglasEnergyTable <- function(countryName, energyType){
 
 \subsection{Cobb-Douglas with $Q$}
 
-<<CDq analysis, echo=FALSE, eval=FALSE>>=
+<<CDq analysis, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDqTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="Q")
 @
 
-<<CDq Results, results='asis', echo=FALSE, eval=FALSE>>=
+<<CDq Results, results='asis', eval=FALSE>>=
 print(CDqTables[["US"]], caption.placement="top")
 print(CDqTables[["ZA"]], caption.placement="top")
 # According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
@@ -658,30 +661,30 @@ print(CDqTables[["ZA"]], caption.placement="top")
 
 \subsection{Cobb-Douglas With $X$}
 
-<<CDx analysis, echo=FALSE, eval=FALSE>>=
+<<CDx analysis, eval=FALSE>>=
 # Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
 CDxTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="X")
 @
 
-<<CDx Results, results='asis', echo=FALSE, eval=FALSE>>=
+<<CDx Results, results='asis', eval=FALSE>>=
 print(CDxTables[["US"]], caption.placement="top")
 print(CDxTables[["ZA"]], caption.placement="top")
 @
 
 \subsection{Cobb-Douglas With $U$}
 
-<<CDu analysis, echo=FALSE, eval=FALSE>>=
+<<CDu analysis, eval=FALSE>>=
 CDuTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="U")
 @
 
-<<CDu Results, results='asis', echo=FALSE, eval=FALSE>>=
+<<CDu Results, results='asis', eval=FALSE>>=
 print(CDuTables[["US"]], caption.placement="top")
 print(CDuTables[["ZA"]], caption.placement="top")
 @
 
 \section{CES}
 
-<<CES function, echo=FALSE, eval=FALSE>>=
+<<CES function, eval=FALSE>>=
 cesData <- function(countryName, energyType){
   energyColumnName <- paste("i", energyType, sep="")
   # Load the data that we need.
@@ -752,10 +755,6 @@ cesData <- function(countryName, energyType){
   dataCES <- rbind(upperCES, estCES, lowerCES)
   print(dataCES)
   return(dataCES)
-
-  #xyplot( resid(modelCESQ) ~ fitted(modelCESQ) )
-  #histogram( ~resid(modelCESQ) )
-  #qqmath( ~resid(modelCESQ) )
 }
 
 ####################################
@@ -773,7 +772,7 @@ cesTable <- function(countryName, energyType){
 @
 
 \subsection{CES with $Q$}
-<<CESq analysisQ, echo=FALSE, eval=FALSE>>=
+<<CESq analysisQ, eval=FALSE>>=
 countryName <- "US"
 energyType <- "Q"
 tableCESq <- cesTable(countryName, energyType)
@@ -781,7 +780,7 @@ tableCESq <- cesTable(countryName, energyType)
 #CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")
 @
 
-<<CESq Results, results='asis', echo=FALSE, eval=FALSE>>=
+<<CESq Results, results='asis', eval=FALSE>>=
 print(tableCESq, caption.placement="top")
 
 #print(CESqTables[["US"]], caption.placement="top")
