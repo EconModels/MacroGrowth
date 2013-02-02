@@ -417,7 +417,7 @@ cobbDouglasParamsTable <- function(){
 print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=3.0, fig.cap="Cobb-Douglas (without energy) model parameters.", echo=FALSE>>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters.", echo=FALSE>>=
 createCDParamsGraph <- function(){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
@@ -427,15 +427,22 @@ createCDParamsGraph <- function(){
                    data = dataTable, 
                    centers = value, #identifies where the dots should be placed
                    draw.bands = FALSE, #provides nicer error bars
-                   horizontal = FALSE, #makes error bars vertical
+                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
                    layout = c(3,1), #3 column, 1 row
                    strip = strip.custom(bg="white"), #Sets strip parameters
-                   scales=list(cex=scaleTextSize, #controls text size on scales.
-                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                               y=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0), #tick mark locations on y axis
-                                      relation="free")), #allow free relations of axis limits?
-                   ylim=list(c(-0.1,0.2), c(-0.5, 1.5), c(-0.5, 1.5)) #y axis limits
-                   ) 
+                   col = "black", #Sets line color to black
+                   lwd = 1, #Sets line width to 1.0
+                   ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
+                   scales = list(cex=scaleTextSize, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 y=list(relation="free",                        #allow each axis to be different
+                                        at=list(c(0.0, 0.05, 0.1),   #tick mark locations on y axis
+                                                c(0.0, 0.5, 1.0), 
+                                                c(0.0, 0.5, 1.0)
+                                                )
+                                        )
+                                 )
+                   )
   return(graph)
 }
 createCDParamsGraph()
