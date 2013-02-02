@@ -286,8 +286,7 @@ cobbDouglasPredictions <- function(countryName){
 # that corresponds, row for row, with the AllData.txt file.
 ##
 cobbDouglasPredictionsColumn <- function(){
-  preds <- lapply(countryAbbrevs, cobbDouglasPredictions)
-  out <- rbind(preds[["US"]], preds[["UK"]], preds[["JP"]], preds[["CN"]], preds[["ZA"]], preds[["SA"]], preds[["IR"]], preds[["TZ"]], preds[["ZM"]])
+  out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions)) #rbinds all the predictions together
   colnames(out) <- c("predGDP")
   return(out)
 }
@@ -309,7 +308,6 @@ cobbDouglasData <- function(countryName){
   # Checks validity of the model. AIC stands for Akaike's Information Criterion.
   aicCD  <- AIC(modelCD, k=2)
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-  #print(summaryCD)
   ciCD <- confint(modelCD, level = ciLevel); ciCD # Calculates confidence intervals for the CD model.
   # Calculate beta and its confidence interval and report it.
   alpha <- as.numeric(coef(modelCD)["alpha"])
@@ -321,9 +319,7 @@ cobbDouglasData <- function(countryName){
   betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
   # Combine all estimates and their confidence intervals into data frames with intelligent row names
   estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
-  #print(estCD)
   row.names(estCD) <- "CD"
-  #row.names(estCD) <- "Cobb-Douglas: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}$"
   # The [1] subscripts pick off the lower confidence interval
   lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
   row.names(lowerCD) <- "-95% CI"
@@ -400,7 +396,7 @@ cobbDouglasParamsTable <- function(){
 print(cobbDouglasParamsTable(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters.", echo=FALSE>>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", echo=FALSE>>=
 createCDParamsGraph <- function(){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
