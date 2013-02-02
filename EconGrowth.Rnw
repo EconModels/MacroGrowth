@@ -245,33 +245,76 @@ createFactorsLatticeGraph()
 <<cobb-douglas, echo=FALSE>>=
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
+# Give an energyType ("Q", "X", or "U") if you want to include an energy term
 ##
-cobbDouglasModel <- function(countryName){
-  dataTable <- loadData(countryName) #Load the data that we need.
-  # Establish guess values for alpha and lambda.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.7 #0.7 gives good results for all countries.
-  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-                 data=dataTable, 
-                 start = list(lambda=lambdaGuess, alpha=alphaGuess),
-                 algorithm = "port",
-                 lower = list(lambda=-Inf, alpha=0), #constraints on lambda and alpha
-                 upper = list(lambda=Inf, alpha=1)
-                 )
-  return(modelCD)
+cobbDouglasModel <- function(countryAbbrev, energyType){
+  dataTable <- loadData(countryAbbrev) #Load the data that we need.
+  
+  betaGuess <- 0.3 #if needed
+  #Run the non-linear least squares fit to the data.
+  if (missing(energyType)){
+    # No energy term
+    # Establish guess values for alpha and lambda.
+    lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+    alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+    # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
+    modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
+                   data=dataTable, 
+                   algorithm = "port",
+                   start = list(lambda=lambdaGuess, alpha=alphaGuess),
+                   lower = list(lambda=-Inf, alpha=0), #constraints on lambda and alpha
+                   upper = list(lambda=Inf, alpha=1))
+    return(modelCD)
+  } else {
+    energyColumnName <- paste("i", energyType, sep="")
+    iEnergy <- dataTable[energyColumnName] #grabs the desired energy column
+    # Reparameterize to ensure that we meet the constraints:
+    # * alpha + beta + gamma = 1.0.
+    # * alpha, beta, and gamma are all between 0.0 and 1.0.
+    # To do this, we reparameterize as
+    # * 0 < a < 1
+    # * 0 < b < 1
+    # * alpha = min(a, b)
+    # * beta = b - a
+    # * gamma = 1 - max(a, b)
+    # Establish guess values for lambda, alpha, and beta.
+    lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+    alphaGuess <- 0.4 
+    betaGuess <- 1.0 - alphaGuess
+    aGuess <- alphaGuess
+    bGuess <- alphaGuess + betaGuess - 0.05
+    modelCDe <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEnergy^(1.0 - max(a,b)), 
+                    data = dataTable,
+                    algorithm = "port",
+                    start = list(lambda=lambdaGuess, a=aGuess, b=bGuess),
+                    lower = list(lambda=-Inf, a=0, b=0),
+                    upper = list(lambda= Inf, a=1, b=1),
+                    control = nls.control(maxiter = 200, 
+                                          tol = 1e-05, 
+                                          minFactor = 1/1024, 
+                                          printEval=TRUE, 
+                                          warnOnly=TRUE))
+    return(modelCDe)
+  }
 }
+#print(lapply(countryAbbrevs, cobbDouglasModel, energyType="Q"))
+model <- cobbDouglasModel(countryAbbrev="ZM", energyType="Q")
+print(model)
+print(model$convInfo)
+#print(lapply(countryAbbrevs, cobbDouglasModel))
+
+
 
 #########################
 # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
 # Returns a data.frame with the predictions.
 ##
-cobbDouglasPredictions <- function(countryName){
-  model <- cobbDouglasModel(countryName)
+cobbDouglasPredictions <- function(countryAbbrev, energyType){
+  model <- cobbDouglasModel(countryAbbrev, energyType)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # There are two countries which do not have labor data for 2011. Need to add a "NA" for 2011 for those countries.
-  if (countryName == "CN" || countryName == "ZA"){
+  if (countryAbbrev == "CN" || countryAbbrev == "ZA"){
     dfNA <- data.frame(NA)
     colnames(dfNA) <- "pred" #Need to give it the same name so that we can apply rbind
     df <- rbind(df, dfNA)
@@ -283,8 +326,12 @@ cobbDouglasPredictions <- function(countryName){
 # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
 # that corresponds, row for row, with the AllData.txt file.
 ##
-cobbDouglasPredictionsColumn <- function(){
-  out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions)) #rbinds all the predictions together
+cobbDouglasPredictionsColumn <- function(energyType){
+  if (missing(energyType)){
+    out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions)) #rbinds all the predictions together
+  } else {
+    out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType))
+  }
   colnames(out) <- c("predGDP")
   return(out)
 }

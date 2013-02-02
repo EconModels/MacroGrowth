@@ -222,11 +222,44 @@ Caleb, put your LaTeX code here.
 
 \section{Cobb-Douglas Without Energy}
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\color{warningcolor}{Warning: Convergence failure: false convergence (8)}}\begin{verbatim}
+Nonlinear regression model
+  model:  iGDP ~ exp(lambda * iYear) * iCapStk^min(a, b) * iLabor^abs(b -      a) * iEnergy^(1 - max(a, b)) 
+   data:  dataTable 
+ lambda       a       b 
+0.00877 0.54436 0.88424 
+ residual sum-of-squares: 0.262
+
+Algorithm "port", convergence message: false convergence (8) 
+$isConv
+[1] FALSE
+
+$finIter
+[1] 3
+
+$finTol
+[1] -1.9
+
+$nEval
+function gradient 
+      44        3 
+
+$stopCode
+[1] 8
+
+$stopMessage
+[1] "false convergence (8)"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri Feb  1 22:25:51 2013
+% Sat Feb  2 00:11:20 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas parameters for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
