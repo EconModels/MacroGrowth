@@ -247,20 +247,18 @@ createFactorsLatticeGraph()
 # Returns an nls Cobb-Douglas model for the country specified
 ##
 cobbDouglasModel <- function(countryName){
-  # Load the data that we need.
-  dataTable <- loadData(countryName)
-  
+  dataTable <- loadData(countryName) #Load the data that we need.
   # Establish guess values for alpha and lambda.
-  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.3 # a typical value for alpha, the coefficient on capital stock
-  
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.7 #0.7 gives good results for all countries.
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-#                 algorithm = "port",
+                 data=dataTable, 
                  start = list(lambda=lambdaGuess, alpha=alphaGuess),
-#                 lower = list(lambda=-Inf, alpha=0),
-#                 upper = list(lambda=Inf, alpha=1),
-                 data=dataTable)
+                 algorithm = "port",
+                 lower = list(lambda=-Inf, alpha=0), #constraints on lambda and alpha
+                 upper = list(lambda=Inf, alpha=1)
+                 )
   return(modelCD)
 }
 
