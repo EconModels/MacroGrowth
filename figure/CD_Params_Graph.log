@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  3 FEB 2013 22:37
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  4 FEB 2013 14:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -493,7 +493,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 180.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Overfull \hbox (79.75pt too wide) in paragraph at lines 390--390
+Overfull \hbox (79.75pt too wide) in paragraph at lines 368--368
 [][] 
  []
 
@@ -502,17 +502,17 @@ Preview: Tightpage 0 0 0 0
 Non-PDF special ignored!
 Non-PDF special ignored!] (./CD_Params_Graph.aux) ) 
 Here is how much of TeX's memory you used:
- 10881 strings out of 493633
- 202548 string characters out of 3143378
- 250132 words of memory out of 3000000
- 13950 multiletter control sequences out of 15000+200000
+ 10874 strings out of 493633
+ 202398 string characters out of 3143378
+ 247295 words of memory out of 3000000
+ 13943 multiletter control sequences out of 15000+200000
  8975 words of font info for 34 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  56i,7n,55p,406b,635s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/local/texlive/2011/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on CD_Params_Graph.pdf (1 page, 24077 bytes).
+Output written on CD_Params_Graph.pdf (1 page, 23697 bytes).
 PDF statistics:
  19 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream

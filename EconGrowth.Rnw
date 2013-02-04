@@ -213,7 +213,7 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)", eval=FALSE>>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -247,7 +247,7 @@ createFactorsLatticeGraph()
 
 \section{Cobb-Douglas Without Energy}
 
-<<cobb-douglas>>=
+<<cobb-douglas functions>>=
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
@@ -291,14 +291,14 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     alphaGuess <- 0.9
     betaGuess <- 1.0 - alphaGuess
     aGuess <- alphaGuess
-    bGuess <- alphaGuess + betaGuess - 0.05
+    bGuess <- alphaGuess + betaGuess
     # Now actually do the fit, using the column name "iEToFit".
     modelCDe <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b)), 
                     data = dataTable,
                     start = list(lambda=lambdaGuess, a=aGuess, b=bGuess),
                     control = nls.control(maxiter = 200, 
                                           tol = 1e-05, 
-                                          minFactor = 1/4096, 
+                                          minFactor = 1/1024, 
                                           printEval=FALSE, #Tells whether to print details of curve fit process.
                                           warnOnly=TRUE),
                     #Include the next 3 lines to fit with constraints.
@@ -338,7 +338,6 @@ cobbDouglasPredictionsColumn <- function(energyType){
   } else {
     out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType))
     colnames(out) <- c(paste("predGDP", energyType, sep=""))
-    print(colnames(out))
   }
   return(out)
 }
@@ -359,7 +358,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
 cobbDouglasData <- function(countryName, energyType){
   modelCD <- cobbDouglasModel(countryName, energyType)
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-  ciCD <- confint(modelCD, level = ciLevel); ciCD # Calculates confidence intervals for the CD model.
+  ciCD <- confint(modelCD, level = ciLevel)  # Calculates confidence intervals for the CD model.
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD)
   if (missing(energyType)){
@@ -380,30 +379,49 @@ cobbDouglasData <- function(countryName, energyType){
     upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["alpha", "97.5%"], beta=betaCICD[2], gamma=NA)
     row.names(upperCD) <- "+95% CI"
   } else {
+#     print("")
+#     print(paste("In cobbDouglasData:", countryName, energyType))
+#     print("summaryCD:")
+#     print(paste("    df:", summaryCD$df))
+#     print(paste("    sigma:", summaryCD$sigma))
+#     print("    coeffs: ")
+#     print(summaryCD$coefficients)
+#     print("ciCD:")
+#     print(ciCD)
     #Cobb-Douglas with energy
     a <- as.numeric(coef(modelCD)["a"])
     b <- as.numeric(coef(modelCD)["b"])
-    print(a)
-    print(b)
+#     print(paste("a =", a))
+#     print(paste("b =", b))
     lambda <- as.numeric(coef(modelCD)["lambda"])
     alpha <- a
     beta <- b - a
     gamma <- 1.0 - b
     # Report results with SE
     beta.est <- deltaMethod(modelCD, "b-a") # Reports results for beta, because beta = b - a.
+#     print("beta.est = b-a")
+#     print(beta.est)
     gamma.est <- deltaMethod(modelCD, "1-b") # Reports results for gamma, because gamma = 1 - b.
+#     print("gamma.est = 1 - b")
+#     print(gamma.est)
     # Now calculate confidence intervals.
+#     print(paste("dofCD =", dofCD))
+#     print(paste("tvalCD =", tvalCD))
     betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.
+#     print("betaCICD:")
+#     print(betaCICD)
     gammaCICD <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on gamma.
+#     print("gammaCICD:")
+#     print(gammaCICD)
     # Combine all estimates and their confidence intervals into data frames with intelligent row names
     estCD <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
     row.names(estCD) <- "CDe"
     # The [1] subscripts pick off the lower confidence interval
     lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["a", "2.5%"], beta=betaCICD[1], gamma=gammaCICD[1])
-    row.names(lowerCD) <- "- 95% CI"
+    row.names(lowerCD) <- "-95% CI"
     # The [2] subscripts pick off the lower confidence interval
     upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["a", "97.5%"], beta=betaCICD[2], gamma=gammaCICD[2])
-    row.names(upperCD) <- "+ 95% CI"
+    row.names(upperCD) <- "+95% CI"
   }
   # Now create the data for a table.
   dataCD <- rbind(upperCD, estCD, lowerCD)
@@ -411,7 +429,7 @@ cobbDouglasData <- function(countryName, energyType){
 }
 
 ############
-# Creates a row for the Cobb Douglas parameters table
+# Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
 ##
 cobbDouglasCountryRow <- function(countryName, energyType){
   dataCD <- cobbDouglasData(countryName, energyType)
@@ -437,25 +455,44 @@ cobbDouglasCountryRow <- function(countryName, energyType){
 # 
 # The return type is a data.frame.
 ##
-cobbDouglasCountryRowsForParamsGraph <- function(countryName){
-  dataCD <- cobbDouglasData(countryName)
+cobbDouglasCountryRowsForParamsGraph <- function(countryName, energyType){
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
+  if (missing(energyType)){
+    valueRow <- "CD"
+    dataCD <- cobbDouglasData(countryName)
+  } else {
+    valueRow <- "CDe"
+    dataCD <- cobbDouglasData(countryName, energyType)
+  }
+  # These rows are common to the "with" and "without" energy cases.
   lambdaRow <- data.frame(country = countryName, 
                           parameter = "lambda", 
                           lowerCI = dataCD["-95% CI", "lambda"], 
-                          value = dataCD["CD", "lambda"], 
+                          value = dataCD[valueRow, "lambda"], 
                           upperCI = dataCD["+95% CI", "lambda"])
   alphaRow <- data.frame(country = countryName, 
                          parameter = "alpha",
                          lowerCI = dataCD["-95% CI", "alpha"],
-                         value = dataCD["CD", "alpha"],  
+                         value = dataCD[valueRow, "alpha"],  
                          upperCI = dataCD["+95% CI", "alpha"])
   betaRow <- data.frame(country = countryName, 
                         parameter = "beta",
                         lowerCI = dataCD["-95% CI", "beta"],
-                        value = dataCD["CD", "beta"], 
+                        value = dataCD[valueRow, "beta"], 
                         upperCI = dataCD["+95% CI", "beta"])
-  table <- rbind(lambdaRow, alphaRow, betaRow)
+  if (missing(energyType)){
+    table <- rbind(lambdaRow, alphaRow, betaRow)
+  } else {
+#     print("In not missing energyType")
+#     print(dataCD)
+    gammaRow <- data.frame(country = countryName, 
+                           parameter = "gamma",
+                           lowerCI = dataCD["-95% CI", "gamma"],
+                           value = dataCD[valueRow, "gamma"], 
+                           upperCI = dataCD["+95% CI", "gamma"])
+#     print(gammaRow)
+    table <- rbind(lambdaRow, alphaRow, betaRow, gammaRow)
+  }
   return(table)
 }
 
@@ -477,7 +514,7 @@ cobbDouglasParamsTableNoEnergy <- function(){
 }
 
 ############################
-# Aggregates the Cobb-Douglas results into a big data table. With energy.
+# Aggregates the Cobb-Douglas results into a big data table for the given energyType.
 ##
 cobbDouglasParamsTableWithEnergy <- function(energyType){
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
@@ -488,57 +525,84 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
                         " ", "$\\gamma$",  " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption=paste("Cobb-Douglas (with ", energyType, ") for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    caption=paste("Cobb-Douglas (with $", tolower(energyType), "$) for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                     digit = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
 }
-@
 
-<<CD_Params_Table_No_E, results='asis'>>=
-print(cobbDouglasParamsTableNoEnergy(), caption.placement="top", sanitize.colnames.function = identity)
-@
-
-<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph <- function(){
+#############################
+# Creates a graph with confidene intervals for the Cobb-Douglas model for the given energyType
+##
+createCDParamsGraph <- function(energyType){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-  dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
-
-  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                   data = dataTable, 
-                   centers = value, #identifies where the dots should be placed
-                   draw.bands = FALSE, #provides nicer error bars
-                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
-                   layout = c(3,1), #3 column, 1 row
-                   strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$"),  #sets labels in strip 
-                                        bg="white"), #sets background color in strip
-                   col = "black", #Sets line color to black
-                   lwd = 1, #Sets line width to 1.0
-                   ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
-                   scales = list(cex=scaleTextSize, #controls text size on scales.
-                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                                 x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                 y=list(relation="free", #allow each axis to be different
-                                        at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
-                                                c(0.0, 0.5, 1.0), 
-                                                c(0.0, 0.5, 1.0)
-                                                )
-                                        )
-                                 )
-                   )
+  if (missing(energyType)){
+    dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
+    graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                     data = dataTable, 
+                     centers = value, #identifies where the dots should be placed
+                     draw.bands = FALSE, #provides nicer error bars
+                     horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                     layout = c(2,2), #2 column, 2 row
+#                     index.cond = list(2,3,1), #orders the panels as alpha, beta, lambda, gamma
+                     strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$"), #sets labels in strip 
+                                          bg="white"), #sets background color in strip
+                     col = "black", #Sets line color to black
+                     lwd = 1, #Sets line width to 1.0
+                     ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
+                     scales = list(cex=scaleTextSize, #controls text size on scales.
+                                   tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                   x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                   y=list(relation="free", #allow each axis to be different
+                                          at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
+                                                  c(0.0, 0.5, 1.0), 
+                                                  c(0.0, 0.5, 1.0)
+                                                  )
+                                          )
+                                   )
+                     )
+   } else {
+     dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
+     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                      data = dataTable, 
+                      centers = value, #identifies where the dots should be placed
+                      draw.bands = FALSE, #provides nicer error bars
+                      horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                      layout = c(2,2), #2 column, 2 row
+#                      index.cond = list(2,3,1,4), #orders the panels as alpha, beta, lambda, gamma
+                      #set labels and bg color in strip
+                      strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$"),  
+                                           bg="white"),
+                      col = "black", #Sets line color to black
+                      lwd = 1, #Sets line width to 1.0
+                      ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
+                      scales = list(cex=scaleTextSize, #controls text size on scales.
+                                    tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                    x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                    y=list(relation="free", #allow each axis to be different
+                                           at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
+                                                   c(0.0, 0.5, 1.0), 
+                                                   c(0.0, 0.5, 1.0),
+                                                   c(0.0, 0.5, 1.0)
+                                                   )
+                                           )
+                                    )
+                      )
+   }
   return(graph)
 }
-createCDParamsGraph()
-@
 
-<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas results.">>=
+##############################
+# Creates a graph that plots predicted GDP as lines and GDP data as open circles.
+##
 createCDLatticeGraph <- function(){
   dataTable <- loadData("All") #Grab the raw data
   predictions <- cobbDouglasPredictionsColumn() #Get the predictions from the CD model without energy
   predictionsQ <- cobbDouglasPredictionsColumn("Q") #Predictions with Q
   predictionsX <- cobbDouglasPredictionsColumn("X") #Predictions with X
-  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX) #Now add the predictions column to the data. Column name = "predGDP".
+  #Now add the predictions columns to the data.
+  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX) 
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 5, 6) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
@@ -560,14 +624,25 @@ createCDLatticeGraph <- function(){
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              y=list(relation="free", #allow each axis to be different
-                                     at=c(1,2,3,4,5,6,7,8,9,10))), #tick mark locations
-#                  ylim=c(0.5,3), #y axis limits
+                              y=list(relation="free", #allows each axis to be different
+                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
+                                     )
+                              ), 
                   ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
-      
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
+@
+
+<<CD_Params_Table, results='asis', eval=FALSE>>=
+print(cobbDouglasParamsTableNoEnergy(), caption.placement="top", sanitize.colnames.function = identity, size="\\tiny")
+@
+
+<<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph()
+@
+
+<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
 @
 
@@ -577,172 +652,17 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-<<CD_Params_Table_Q, results='asis'>>=
-print(cobbDouglasParamsTableWithEnergy("Q"), caption.placement="top", sanitize.colnames.function = identity)
-@
-
-
-<<cobbDouglasEnergy function, eval=FALSE>>=
-###############################
-# This function fits the Cobb Douglas production function including energy to historical data
-# The functional form is
-#
-# iGDP = exp(lambda * itime) * iCapStk^alpha * iLabor^beta * iEnergy^gamma
-# 
-# iYear: time indexed to 0.0 at the first year [years since beginning of data set]
-# iGDP = time series GDP data indexed to 1.0 at the first year [-]
-# iCapStk = time series capital stock data indexed to 1.0 at the first year [-]
-# iLabor = time series labor data indexed to 1.0 at the first year [-]
-# iEnergy = time series energy data indexed to 1.0 at the first year [-]. 
-#      This may be any of heat (iQ), exergy (iX), or useful work (iU).
-# 
-# returns a data object containing three rows and 5 columns.
-#   col 1: lambda
-#   col 2: alpha
-#   col 3: beta
-#   col 4: gamma
-#   row 1: -95% CI for each parameter
-#   row 2: estimate for each parameter
-#   row 3: +95% CI for each parameter
-#
-# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"
-##
-cobbDouglasEnergyData <- function(countryName, energyType){
-  
-  #print(countryName)
-  energyColumnName  <- paste("i", energyType, sep="")
-  #print(energyColumnName)
-  
-  # Load the data that we need.
-  dataTable <- loadData(countryName)
-  
-  # Reparameterize to ensure that we meet the constraints:
-  # * alpha + beta + gamma = 1.0.
-  # * alpha, beta, and gamma are all between 0.0 and 1.0.
-  # To do this, we reparameterize as
-  # * 0 < a < 1
-  # * 0 < b < 1
-  # * alpha = min(a, b)
-  # * beta = b - a
-  # * gamma = 1 - max(a, b)
-  iEnergy <- dataTable[energyColumnName] #grabs the desired energy column
-  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.3 # a typical value for alpha
-  betaGuess <- 0.7 # a typical value for beta
-  modelCDe <- nls(iGDP ~ exp(lambda*iYear) * 
-                    iCapStk^min(a,b) * iLabor^abs(b-a) * 
-                    iEnergy^(1.0 - max(a,b)), 
-                  algorithm = "port",
-                  start = list(lambda=lambdaGuess, a=alphaGuess, b=alphaGuess+betaGuess),
-                  lower = list(lambda=-Inf, a=0, b=0),
-                  upper = list(lambda=Inf, a=1, b=1),
-                  data = dataTable)
-  aicCDe <- AIC(modelCDe, k=2) # Checks validity of the model. AIC stands for Akaike's Information Criterion
-  #print(aicCDe)
-  
-  summaryCDe <- summary(modelCDe) # Gives the nls summary table
-  #print(summaryCDe)
-  
-  # Provides confidence intervals on lambda, a, and b. But, we need CIs on alpha and beta.
-  ciCDe <- confint(modelCDe, level = ciLevel)
-  #print(ciCDe)
-  
-  a <- as.numeric(coef(modelCDe)["a"])
-  b <- as.numeric(coef(modelCDe)["b"])
-  #print(a)
-  #print(b)
-  lambda <- as.numeric(coef(modelCDe)["lambda"])
-  alpha <- a
-  beta <- b - a
-  gamma <- 1.0 - alpha - beta
-  
-  # Report results with SE
-  beta.est <- deltaMethod(modelCDe, "b-a") # Reports results for beta, because beta = b - a.
-  gamma.est <- deltaMethod(modelCDe, "1-b") # Reports results for gamma, because gamma = 1 - b.
-  
-  # Now calculate confidence intervals.
-  dofCDe <- summaryCDe$df[2] # Gives the degrees of freedom for the model.
-  #print(dofCDe)
-  tvalCDe <- qt(ciHalfLevel, df = dofCDe)
-  #print(tvalCDe)
-  betaCICDe <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE) # Gives the confidence interval on beta.
-  #print(betaCICDe)
-  gammaCICDe <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCDe * SE) # Gives the confidence interval on alpha.
-  #print(gammaCICDe)
-  
-  # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estCDe <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
-  #print(estCDe);
-  #row.names(estCDe) <- "Cobb-Douglas with e: $y = e^{\\lambda t}k^{\\alpha}l^{\\beta}e^{\\gamma}$"
-  row.names(estCDe) <- paste("C-D with ", energyType, sep="")
-  # The [1] subscripts pick off the lower confidence interval
-  lowerCDe <- data.frame(lambda = ciCDe["lambda","2.5%"], alpha = ciCDe["a", "2.5%"], beta = betaCICDe[1], gamma = gammaCICDe[1])
-  row.names(lowerCDe) <- "- 95% CI"
-  # The [2] subscripts pick off the lower confidence interval
-  upperCDe <- data.frame(lambda = ciCDe["lambda","97.5%"], alpha = ciCDe["a", "97.5%"], beta = betaCICDe[2], gamma = gammaCICDe[2])
-  row.names(upperCDe) <- "+ 95% CI"
-  
-  # Now create the data for a table.
-  dataCDe <- rbind(upperCDe, estCDe, lowerCDe)
-  #print(dataCDe)
-  return(dataCDe)
-}
-
-####################################
-# Creates a LaTeX printable table from the CES data. This function first calls cobbDouglasEnergyData.
-#
-# countryName is a string containint the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyType is a string to be used in table captions reprsenting the type of energy. Typically, "Q", "X", or "U"
-#
-# returns a printable LaTeX table from xtable.
-##
-cobbDouglasEnergyTable <- function(countryName, energyType){
-  dataCDe <- cobbDouglasEnergyData(countryName, energyType)
-  tableCDe <- xtable(dataCDe, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 4, 2, 2, 3))
-  return(tableCDe)
-}
-@
-
 \subsection{Cobb-Douglas with $Q$}
 
-<<CDq analysis, eval=FALSE>>=
-# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
-CDqTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="Q")
+<<CDq_Params_Table, results='asis'>>=
+print(cobbDouglasParamsTableWithEnergy("Q"), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny")
 @
 
-<<CDq Results, results='asis', eval=FALSE>>=
-print(CDqTables[["US"]], caption.placement="top")
-print(CDqTables[["ZA"]], caption.placement="top")
-# According to http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf, Section 3.1, I should 
-# be able to use the "sanitize.text.function" parameter to allow markup in column headers. But this next
-# line is not working at the present time. --MKH, 18 Jan 2012.
-# print(tableCDe, sanitize.text.function = function(x){x})
-
-#print(tableAll, caption.placement="top")
-@
-
-\subsection{Cobb-Douglas With $X$}
-
-<<CDx analysis, eval=FALSE>>=
-# Note that the anlaysis of ZA is taking a long time here. Need to figure out why.
-CDxTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="X")
-@
-
-<<CDx Results, results='asis', eval=FALSE>>=
-print(CDxTables[["US"]], caption.placement="top")
-print(CDxTables[["ZA"]], caption.placement="top")
-@
-
-\subsection{Cobb-Douglas With $U$}
-
-<<CDu analysis, eval=FALSE>>=
-CDuTables <- lapply(countryAbbrevs, cobbDouglasEnergyTable, energyType="U")
-@
-
-<<CDu Results, results='asis', eval=FALSE>>=
-print(CDuTables[["US"]], caption.placement="top")
-print(CDuTables[["ZA"]], caption.placement="top")
+<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createCDParamsGraph("Q")
 @
 
 \section{CES}

@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  4 FEB 2013 14:58
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  4 FEB 2013 10:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**CD_GDP_Lattice_Graph.tikz
-(./CD_GDP_Lattice_Graph.tikz
+**CDq_Params_Graph1.tikz
+(./CDq_Params_Graph1.tikz
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
@@ -98,7 +98,7 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 \@sep=\skip43
 \@@sep=\skip44
 
-(./CD_GDP_Lattice_Graph.spl)
+(./CDq_Params_Graph1.spl)
 (/usr/local/texlive/2011/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip45
@@ -107,7 +107,7 @@ LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count94
 )
 \splwrite=\write3
-\openout3 = `CD_GDP_Lattice_Graph.spl'.
+\openout3 = `CDq_Params_Graph1.spl'.
 
 \appnamewidth=\dimen109
 )
@@ -405,8 +405,8 @@ Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
 ))
-(./CD_GDP_Lattice_Graph.aux)
-\openout1 = `CD_GDP_Lattice_Graph.aux'.
+(./CDq_Params_Graph1.aux)
+\openout1 = `CDq_Params_Graph1.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
 LaTeX Font Info:    ... okay on input line 77.
@@ -484,29 +484,38 @@ e
 ABD: EveryShipout initializing macros
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
+LaTeX Font Info:    Try loading font information for U+msa on input line 161.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 161.
 
-Overfull \hbox (79.75pt too wide) in paragraph at lines 1793--1793
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+Overfull \hbox (79.75pt too wide) in paragraph at lines 333--333
 [][] 
  []
 
 Preview: Tightpage 0 0 0 0
 [1{/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 Non-PDF special ignored!
-Non-PDF special ignored!] (./CD_GDP_Lattice_Graph.aux) ) 
+Non-PDF special ignored!] (./CDq_Params_Graph1.aux) ) 
 Here is how much of TeX's memory you used:
- 11637 strings out of 493633
- 217737 string characters out of 3143378
- 364217 words of memory out of 3000000
- 14725 multiletter control sequences out of 15000+200000
- 4628 words of font info for 17 fonts, out of 3000000 for 9000
+ 10853 strings out of 493633
+ 202016 string characters out of 3143378
+ 242886 words of memory out of 3000000
+ 13922 multiletter control sequences out of 15000+200000
+ 8975 words of font info for 34 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 56i,7n,55p,411b,586s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/local/texlive/201
-1/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on CD_GDP_Lattice_Graph.pdf (1 page, 44668 bytes).
+ 56i,7n,55p,408b,635s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/local/texlive/2011/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
+Output written on CDq_Params_Graph1.pdf (1 page, 21568 bytes).
 PDF statistics:
- 15 PDF objects out of 1000 (max. 8388607)
- 10 compressed objects within 1 object stream
+ 19 PDF objects out of 1000 (max. 8388607)
+ 13 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
