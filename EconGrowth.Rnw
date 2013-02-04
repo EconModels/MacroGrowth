@@ -327,25 +327,6 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-print("US"); print(cobbDouglasPredictions("US", "Q"))
-print("UK"); print(cobbDouglasPredictions("UK", "Q"))
-print("JP"); print(cobbDouglasPredictions("JP", "Q"))
-print("CN"); print(cobbDouglasPredictions("CN", "Q"))
-print("ZA"); print(cobbDouglasPredictions("ZA", "Q"))
-print("SA"); print(cobbDouglasPredictions("SA", "Q"))
-print("IR"); print(cobbDouglasPredictions("IR", "Q"))
-print("TZ"); print(cobbDouglasPredictions("TZ", "Q"))
-print("ZM"); print(cobbDouglasPredictions("ZM", "Q"))
-
-
-
-
-
-
-
-
-
-
 #########################
 # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
 # that corresponds, row for row, with the AllData.txt file.
@@ -367,6 +348,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
 # for the Cobb-Douglas production function given a country.
 #
 # countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# energyType is a string, one of "Q", "X", or "U"
 #
 # returns a vector of data for the Cobb-Douglas model. 
 # First item is the +95% CI on all parameters
@@ -374,29 +356,55 @@ cobbDouglasPredictionsColumn <- function(energyType){
 # Third item is the -95% CI on all parameters
 # Each row has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
 ##
-cobbDouglasData <- function(countryName){
-  modelCD <- cobbDouglasModel(countryName)
-  # Checks validity of the model. AIC stands for Akaike's Information Criterion.
-  aicCD  <- AIC(modelCD, k=2)
+cobbDouglasData <- function(countryName, energyType){
+  modelCD <- cobbDouglasModel(countryName, energyType)
   summaryCD <- summary(modelCD) # Gives the nls summary table.
   ciCD <- confint(modelCD, level = ciLevel); ciCD # Calculates confidence intervals for the CD model.
-  # Calculate beta and its confidence interval and report it.
-  alpha <- as.numeric(coef(modelCD)["alpha"])
-  beta <- 1.0 - alpha
-  beta.est <- deltaMethod(modelCD, "1 - alpha"); beta.est # Estimates beta and its standard error (SE).
-  # Now calculate a confidence interval on beta
-  dofCD <- summaryCD$df[2]; dofCD # Gives the degrees of freedom for the model.
-  tvalCD <- qt(ciHalfLevel, df = dofCD); tvalCD
-  betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
-  # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estCD <- data.frame(lambda = coef(modelCD)["lambda"], alpha = coef(modelCD)["alpha"], beta = beta, gamma = 0)
-  row.names(estCD) <- "CD"
-  # The [1] subscripts pick off the lower confidence interval
-  lowerCD <- data.frame(lambda = ciCD["lambda","2.5%"], alpha = ciCD["alpha", "2.5%"], beta = betaCICD[1], gamma = NA) 
-  row.names(lowerCD) <- "-95% CI"
-  # The [2] subscripts pick off the lower confidence interval
-  upperCD <- data.frame(lambda = ciCD["lambda","97.5%"], alpha = ciCD["alpha", "97.5%"], beta = betaCICD[2], gamma = NA)
-  row.names(upperCD) <- "+95% CI"
+  dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
+  tvalCD <- qt(ciHalfLevel, df = dofCD)
+  if (missing(energyType)){
+    #Cobb-Douglas without energy
+    alpha <- as.numeric(coef(modelCD)["alpha"])
+    beta <- 1.0 - alpha
+    beta.est <- deltaMethod(modelCD, "1 - alpha") # Estimates beta and its standard error (SE).
+    # Calculate beta and its confidence interval and report it.
+    # Now calculate a confidence interval on beta
+    betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
+    # Combine all estimates and their confidence intervals into data frames with intelligent row names
+    estCD <- data.frame(lambda=coef(modelCD)["lambda"], alpha=coef(modelCD)["alpha"], beta=beta, gamma=0)
+    row.names(estCD) <- "CD"
+    # The [1] subscripts pick off the lower confidence interval
+    lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["alpha", "2.5%"], beta=betaCICD[1], gamma=NA) 
+    row.names(lowerCD) <- "-95% CI"
+    # The [2] subscripts pick off the lower confidence interval
+    upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["alpha", "97.5%"], beta=betaCICD[2], gamma=NA)
+    row.names(upperCD) <- "+95% CI"
+  } else {
+    #Cobb-Douglas with energy
+    a <- as.numeric(coef(modelCD)["a"])
+    b <- as.numeric(coef(modelCD)["b"])
+    print(a)
+    print(b)
+    lambda <- as.numeric(coef(modelCD)["lambda"])
+    alpha <- a
+    beta <- b - a
+    gamma <- 1.0 - b
+    # Report results with SE
+    beta.est <- deltaMethod(modelCD, "b-a") # Reports results for beta, because beta = b - a.
+    gamma.est <- deltaMethod(modelCD, "1-b") # Reports results for gamma, because gamma = 1 - b.
+    # Now calculate confidence intervals.
+    betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.
+    gammaCICD <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on gamma.
+    # Combine all estimates and their confidence intervals into data frames with intelligent row names
+    estCD <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
+    row.names(estCD) <- "CDe"
+    # The [1] subscripts pick off the lower confidence interval
+    lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["a", "2.5%"], beta=betaCICD[1], gamma=gammaCICD[1])
+    row.names(lowerCD) <- "- 95% CI"
+    # The [2] subscripts pick off the lower confidence interval
+    upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["a", "97.5%"], beta=betaCICD[2], gamma=gammaCICD[2])
+    row.names(upperCD) <- "+ 95% CI"
+  }
   # Now create the data for a table.
   dataCD <- rbind(upperCD, estCD, lowerCD)
   return(dataCD)
@@ -405,12 +413,18 @@ cobbDouglasData <- function(countryName){
 ############
 # Creates a row for the Cobb Douglas parameters table
 ##
-cobbDouglasCountryRow <- function(countryName){
-  dataCD <- cobbDouglasData(countryName)
-  # Create CI ranges
-  out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
-               dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
-               dataCD["-95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+95% CI", "beta"])
+cobbDouglasCountryRow <- function(countryName, energyType){
+  dataCD <- cobbDouglasData(countryName, energyType)
+  if (missing(energyType)){
+    out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
+                 dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
+                 dataCD["-95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+95% CI", "beta"])
+  } else {
+    out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CDe", "lambda"], dataCD["+95% CI", "lambda"],
+                 dataCD["-95% CI", "alpha"],  dataCD["CDe", "alpha"],  dataCD["+95% CI", "alpha"],
+                 dataCD["-95% CI", "beta"],   dataCD["CDe", "beta"],   dataCD["+95% CI", "beta"],
+                 dataCD["-95% CI", "gamma"],  dataCD["CDe", "gamma"],  dataCD["+95% CI", "gamma"])
+  }
   return(out)
 }
 
@@ -446,7 +460,7 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryName){
 }
 
 ############################
-# Aggregates the Cobb-Douglas results into a big data table
+# Aggregates the Cobb-Douglas results into a big data table. No energy.
 ##
 cobbDouglasParamsTableNoEnergy <- function(){
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
@@ -461,13 +475,31 @@ cobbDouglasParamsTableNoEnergy <- function(){
                     align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
 }
+
+############################
+# Aggregates the Cobb-Douglas results into a big data table. With energy.
+##
+cobbDouglasParamsTableWithEnergy <- function(energyType){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
+  colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
+                        " ", "$\\alpha$",  " ",
+                        " ", "$\\beta$",   " ",
+                        " ", "$\\gamma$",  " ")
+  rownames(dataCD) <- countryAbbrevs
+  tableCD <- xtable(dataCD, 
+                    caption=paste("Cobb-Douglas (with ", energyType, ") for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    digit = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
+                    align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
+  return(tableCD)
+}
 @
 
-<<CD Params Table, results='asis'>>=
+<<CD_Params_Table_No_E, results='asis'>>=
 print(cobbDouglasParamsTableNoEnergy(), caption.placement="top", sanitize.colnames.function = identity)
 @
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=FALSE>>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=3.5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph <- function(){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
@@ -544,6 +576,11 @@ createCDLatticeGraph()
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
+
+<<CD_Params_Table_Q, results='asis'>>=
+print(cobbDouglasParamsTableWithEnergy("Q"), caption.placement="top", sanitize.colnames.function = identity)
+@
+
 
 <<cobbDouglasEnergy function, eval=FALSE>>=
 ###############################
