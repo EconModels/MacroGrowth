@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  4 FEB 2013 14:58
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  4 FEB 2013 15:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -484,16 +484,16 @@ e
 ABD: EveryShipout initializing macros
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
-LaTeX Font Info:    Try loading font information for U+msa on input line 1973.
+LaTeX Font Info:    Try loading font information for U+msa on input line 2085.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 1973.
+LaTeX Font Info:    Try loading font information for U+msb on input line 2085.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Overfull \hbox (79.75pt too wide) in paragraph at lines 2050--2050
+Overfull \hbox (79.75pt too wide) in paragraph at lines 2162--2162
 [][] 
  []
 
@@ -502,17 +502,17 @@ Preview: Tightpage 0 0 0 0
 Non-PDF special ignored!
 Non-PDF special ignored!] (./Factors_Lattice_Graph.aux) ) 
 Here is how much of TeX's memory you used:
- 11966 strings out of 493633
- 224038 string characters out of 3143378
- 368198 words of memory out of 3000000
- 15035 multiletter control sequences out of 15000+200000
+ 11967 strings out of 493633
+ 224059 string characters out of 3143378
+ 376385 words of memory out of 3000000
+ 15036 multiletter control sequences out of 15000+200000
  8975 words of font info for 34 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  56i,7n,55p,412b,633s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/local/texlive/20
 11/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/201
 1/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on Factors_Lattice_Graph.pdf (1 page, 54046 bytes).
+Output written on Factors_Lattice_Graph.pdf (1 page, 55549 bytes).
 PDF statistics:
  19 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream

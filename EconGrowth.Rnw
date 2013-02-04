@@ -213,7 +213,7 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies. (China's indexed GDP and indexed capital stock rise to $y = 7.3$ and $k = 9.2$ in 2011.)">>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies.">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -237,8 +237,11 @@ createFactorsLatticeGraph <- function(){
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              y=list(at=c(1,2,3,4,5,6,7,8,9,10))), #tick mark locations
-                  ylim=c(0.5,4.5), #y axis limits
+                              y=list(relation="free", #allows each axis to be different
+                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
+                                     )
+                              ),
+                  ylim=list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)), #y axis limits
                   xlab="", ylab="Indexed (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
@@ -535,9 +538,10 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
 # Creates a graph with confidene intervals for the Cobb-Douglas model for the given energyType
 ##
 createCDParamsGraph <- function(energyType){
-  # Create a data table with the following columns:
-  # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
+  
   if (missing(energyType)){
+    # Create a data table with the following columns:
+    # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
     dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                      data = dataTable, 
@@ -545,7 +549,7 @@ createCDParamsGraph <- function(energyType){
                      draw.bands = FALSE, #provides nicer error bars
                      horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
                      layout = c(2,2), #2 column, 2 row
-#                     index.cond = list(2,3,1), #orders the panels as alpha, beta, lambda, gamma
+                     index.cond = list(c(2,3,1)), #orders the panels as alpha, beta, lambda, gamma
                      strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$"), #sets labels in strip 
                                           bg="white"), #sets background color in strip
                      col = "black", #Sets line color to black
@@ -563,6 +567,8 @@ createCDParamsGraph <- function(energyType){
                                    )
                      )
    } else {
+     # Create a data table with the following columns:
+     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
      dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
      graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                       data = dataTable, 
@@ -570,7 +576,7 @@ createCDParamsGraph <- function(energyType){
                       draw.bands = FALSE, #provides nicer error bars
                       horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
                       layout = c(2,2), #2 column, 2 row
-#                      index.cond = list(2,3,1,4), #orders the panels as alpha, beta, lambda, gamma
+                      index.cond = list(c(2,3,1,4)), #orders the panels as alpha, beta, lambda, gamma
                       #set labels and bg color in strip
                       strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$"),  
                                            bg="white"),
@@ -663,6 +669,17 @@ print(cobbDouglasParamsTableWithEnergy("Q"),
 
 <<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 createCDParamsGraph("Q")
+@
+
+<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createCDParamsGraph("X")
+@
+
+<<CDx_Params_Table, results='asis'>>=
+print(cobbDouglasParamsTableWithEnergy("X"), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny")
 @
 
 \section{CES}
