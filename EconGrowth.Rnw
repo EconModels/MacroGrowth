@@ -152,6 +152,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
+\item Heun: Add $u$ parameter table and graph
 \item Heun: Add covariance metrics.
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
       \begin{itemize}

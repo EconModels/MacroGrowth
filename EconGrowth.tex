@@ -207,6 +207,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
+\item Heun: Add $u$ parameter table and graph
 \item Heun: Add covariance metrics.
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
       \begin{itemize}
@@ -258,7 +259,7 @@ The Cobb-Douglas model without energy is given by
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 14:32:13 2013
+% Tue Feb  5 15:56:09 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -316,7 +317,7 @@ The Cobb-Douglas model with energy is given by
 The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 14:32:19 2013
+% Tue Feb  5 15:56:15 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -498,7 +499,7 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 14:32:34 2013
+% Tue Feb  5 15:56:31 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -584,7 +585,7 @@ Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 14:32:38 2013
+% Tue Feb  5 15:56:35 2013
 \begin{table}[ht]
 \begin{center}
 \caption{AIC values for all models.}

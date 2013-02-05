@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 FEB 2013 14:32
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 FEB 2013 15:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -323,198 +323,198 @@ Missing character: There is no ™ in font cmr12!
 
 
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Package color Info: Redefining color shadecolor on input line 238.
+Package color Info: Redefining color shadecolor on input line 239.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 238.
+               Default added (so using `tbp') on input line 239.
 
 <figure/Factors_Lattice_Graph.pdf, id=19, 469.74997pt x 542.01997pt>
 File: figure/Factors_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/Factors_Lattice_Graph.pdf>
 Package pdftex.def Info: figure/Factors_Lattice_Graph.pdf used on input line 24
-0.
+1.
 (pdftex.def)             Requested size: 390.0pt x 450.02533pt.
-Package color Info: Redefining color shadecolor on input line 291.
+Package color Info: Redefining color shadecolor on input line 292.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 291.
+               Default added (so using `tbp') on input line 292.
 
 <figure/CD_Params_Graph.pdf, id=20, 469.74997pt x 361.35pt>
 File: figure/CD_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_Params_Graph.pdf>
-Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 293.
+Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 294.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
  [2] [3 <./figure/Factors_Lattice_Graph.pdf>]
 [4 <./figure/CD_Params_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 349.
+Package color Info: Redefining color shadecolor on input line 350.
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 352--353
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 353--354
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 354--355
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 355--356
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 356--357
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 357--358
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 358--359
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 359--360
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 360--361
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 361--362
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 362--363
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 363--364
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 364--365
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 365--366
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 366--367
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 367--368
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 368--369
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 369--370
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 370--371
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 371--372
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 372--373
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 373--374
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 374--375
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 375--376
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 376--377
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 377--378
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 378--379
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 379--380
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 380--381
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 381--382
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 382--383
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 383--384
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 384--385
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 385--386
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 386--387
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 387--388
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 388--389
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 389--390
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 390--391
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 391--392
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 392--393
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 393--394
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 394--395
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 395--396
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 396--397
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 397--398
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 400--401
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 401--402
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 402--403
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 403--404
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 404--405
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 405--406
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 406--407
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 407--408
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 408--408
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 409--409
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
@@ -522,215 +522,215 @@ f 0.000976562[]
 [5]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 408.
+               Default added (so using `tbp') on input line 409.
 
 <figure/CDq_Params_Graph.pdf, id=57, 469.74997pt x 361.35pt>
 File: figure/CDq_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CDq_Params_Graph.pdf>
-Package pdftex.def Info: figure/CDq_Params_Graph.pdf used on input line 410.
+Package pdftex.def Info: figure/CDq_Params_Graph.pdf used on input line 411.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
-Package color Info: Redefining color shadecolor on input line 420.
+Package color Info: Redefining color shadecolor on input line 421.
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 423--424
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 424--425
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 425--426
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 426--427
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 427--428
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 428--429
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 429--430
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 430--431
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 431--432
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 432--433
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 433--434
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 434--435
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 435--436
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 436--437
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 437--438
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 438--439
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 439--440
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 440--441
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 441--442
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 442--443
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 443--444
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 444--445
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 445--446
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 446--447
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 447--448
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 448--449
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 449--450
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 450--451
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 451--452
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 452--453
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 453--454
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 454--455
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 455--456
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 456--457
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 457--458
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 458--459
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 459--460
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 460--461
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 461--462
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 462--463
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 463--464
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 464--465
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 465--466
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 466--467
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 467--468
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 468--469
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 469--470
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 470--471
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 471--472
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 472--473
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 473--474
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 474--475
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 475--476
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 476--477
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 477--478
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 478--479
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 479--480
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 480--481
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 481--482
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 482--483
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 483--484
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 484--485
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 485--486
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 486--487
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 487--488
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 488--489
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 489--489
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 490--490
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
@@ -738,60 +738,60 @@ f 0.000976562[]
 [6 <./figure/CDq_Params_Graph.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 489.
+               Default added (so using `tbp') on input line 490.
 
 <figure/CDx_Params_Graph.pdf, id=68, 469.74997pt x 361.35pt>
 File: figure/CDx_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CDx_Params_Graph.pdf>
-Package pdftex.def Info: figure/CDx_Params_Graph.pdf used on input line 491.
+Package pdftex.def Info: figure/CDx_Params_Graph.pdf used on input line 492.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
-Package color Info: Redefining color shadecolor on input line 533.
+Package color Info: Redefining color shadecolor on input line 534.
  [7] [8 <./figure/CDx_Params_Graph.pdf>]
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 536--537
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 537--538
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 538--539
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 539--540
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 540--541
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 541--542
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 542--543
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 543--544
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 544--545
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 545--546
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 546--546
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 547--547
 []\OT1/cmtt/m/n/12 Warning: step factor 0.000488281 reduced below 'minFactor' o
 f 0.000976562[] 
  []
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 546.
+               Default added (so using `tbp') on input line 547.
 
 <figure/CD_GDP_Lattice_Graph.pdf, id=83, 469.74997pt x 542.01997pt>
 File: figure/CD_GDP_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_GDP_Lattice_Graph.pdf>
-Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 548
+Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 549
 .
 (pdftex.def)             Requested size: 390.0pt x 450.02533pt.
 
@@ -826,7 +826,7 @@ fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2011/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2011/texmf-dist/font
 s/type1/public/cm-super/sfrm1200.pfb>
-Output written on EconGrowth.pdf (11 pages, 299365 bytes).
+Output written on EconGrowth.pdf (11 pages, 299405 bytes).
 PDF statistics:
  160 PDF objects out of 1000 (max. 8388607)
  121 compressed objects within 2 object streams
