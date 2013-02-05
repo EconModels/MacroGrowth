@@ -58,6 +58,8 @@
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
 
+\usepackage{soul} %Provides strikethrough text
+
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers after \end{frontmatter}.
@@ -113,7 +115,7 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Empirical Analysis of the Role of Energy in Economic Growth}
+\title{An Empirical Analysis of the Role of Energy in Economic Growth}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -145,7 +147,25 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 % \linenumbers
 %% main text
 
+**************** To Do List ********************
+\begin{itemize}
+\item Reese: Add text from Word verson of paper to the LaTeX version.
+\item \st{Heun: Create a table of AIC values for each fit.}
+\item Heun: Add $u$ preductions for Cobb-Douglas
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows 
+      \begin{itemize}
+      \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
+      \item ZM: lower bound on $\lambda$
+      \end{itemize}
+\item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
+\item Heun: Add CES production function fits
+\item Heun: Add Linex production function fits
+\item Heun: Add $k$, $l$, $q$, $x$, and $u$ fits ONLY
+\end{itemize}
+*************************************************
+
 Caleb, put your LaTeX code here.
+
 
 
 <<setup, echo=FALSE, message=FALSE>>=
@@ -164,10 +184,10 @@ opts_chunk$set(
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
-  warning=FALSE, #Tells whether to show warnings.
+  warning=TRUE, #Tells whether to show warnings.
   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
-  cache=FALSE,
+  cache=TRUE,
   echo=FALSE,    #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
   message=FALSE) #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
 
@@ -216,6 +236,8 @@ loadData <- function(countryName){
   return(dataTable)
 }
 @
+
+\section{The Facts}
 
 Figure \ref{fig:Factors_Lattice_Graph} shows the ``facts'' as they are known.
 
@@ -518,7 +540,7 @@ cobbDouglasParamsTableNoEnergy <- function(){
   tableCD <- xtable(dataCD, 
                     caption="Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
                     label="tab:CD_Parameters_No_Energy",
-                    digit = c(1, 4,4,4, 2,2,2, 2,2,2),
+                    digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
 }
@@ -537,7 +559,7 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
   tableCD <- xtable(dataCD, 
                     caption=paste("Cobb-Douglas (with $", tolower(energyType), "$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                     label=paste("tab:CD_Parameters_With_", energyType, sep=""),
-                    digit = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
+                    digits = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
 }
@@ -836,6 +858,48 @@ print(tableCESq, caption.placement="top")
 \subsection{LINEX with $X$}
 
 \subsection{LINEX with $U$}
+
+\section{Goodness of Fit}
+
+<<AIC_Analysis>>=
+###############################
+# Creates a xtable object that holds the AIC values for each parameter estimation that we include.
+##
+createAICTable <- function(){
+  # Cobb-Douglas
+  models <- lapply(countryAbbrevs, cobbDouglasModel)
+  aicCD <- data.frame(lapply(models, AIC))
+  rownames(aicCD) <- "CD"
+  # Cobb-Douglas with Q
+  models <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
+  aicCDq <- data.frame(lapply(models, AIC))
+  rownames(aicCDq) <- "CD$q$"
+  # Cobb-Douglas with X
+  models <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
+  aicCDx <- data.frame(lapply(models, AIC))
+  rownames(aicCDx) <- "CD$x$"
+  # Create the data.frame table
+  out <- rbind(aicCD, aicCDq, aicCDx) 
+  # Create the xtable with caption and label
+  out <- xtable(out, 
+                caption="AIC values for all models.", 
+                label="tab:AICTable", 
+                digits=1 #Only one number after the decimal place
+                )
+  return(out)
+}
+@
+
+We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
+
+<<AIC_Table, results='asis', label="AIC_Table">>=
+print(createAICTable(), 
+      caption.placement="top", 
+      sanitize.rownames.function = identity)
+      
+@
+
+The AIC results show *****************.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
