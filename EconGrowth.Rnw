@@ -164,7 +164,11 @@ opts_chunk$set(
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
-  echo=FALSE,    #Turns off code echo for all chunks. Set TRUE on an individual chunk to see it.
+  warning=FALSE, #Tells whether to show warnings.
+  #Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
+  cache=FALSE,
+  echo=FALSE,    #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
   message=FALSE) #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
 
 # Statistical significance levels. We'll work with 95% CIs
@@ -213,7 +217,9 @@ loadData <- function(countryName){
 }
 @
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies.">>=
+Figure \ref{fig:Factors_Lattice_Graph} shows the ``facts'' as they are known.
+
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -510,7 +516,8 @@ cobbDouglasParamsTableNoEnergy <- function(){
                         " ", "$\\beta$",   " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption="Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                    caption="Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                    label="tab:CD_Parameters_No_Energy",
                     digit = c(1, 4,4,4, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
@@ -528,7 +535,8 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
                         " ", "$\\gamma$",  " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption=paste("Cobb-Douglas (with $", tolower(energyType), "$) for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    caption=paste("Cobb-Douglas (with $", tolower(energyType), "$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    label=paste("tab:CD_Parameters_With_", energyType, sep=""),
                     digit = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableCD)
@@ -567,36 +575,36 @@ createCDParamsGraph <- function(energyType){
                                    )
                      )
    } else {
-     # Create a data table with the following columns:
-     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-     dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
-     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                      data = dataTable, 
-                      centers = value, #identifies where the dots should be placed
-                      draw.bands = FALSE, #provides nicer error bars
-                      horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
-                      layout = c(2,2), #2 column, 2 row
-                      index.cond = list(c(2,3,1,4)), #orders the panels as alpha, beta, lambda, gamma
-                      #set labels and bg color in strip
-                      strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$"),  
-                                           bg="white"),
-                      col = "black", #Sets line color to black
-                      lwd = 1, #Sets line width to 1.0
-                      ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
-                      scales = list(cex=scaleTextSize, #controls text size on scales.
-                                    tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                                    x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                    y=list(relation="free", #allow each axis to be different
-                                           at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
-                                                   c(0.0, 0.5, 1.0), 
-                                                   c(0.0, 0.5, 1.0),
-                                                   c(0.0, 0.5, 1.0)
-                                                   )
-                                           )
-                                    )
-                      )
+    # Create a data table with the following columns:
+    # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
+    dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
+    graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                     data = dataTable, 
+                     centers = value, #identifies where the dots should be placed
+                     draw.bands = FALSE, #provides nicer error bars
+                     horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                     layout = c(2,2), #2 column, 2 row
+                     index.cond = list(c(2,3,1,4)), #orders the panels as alpha, beta, lambda, gamma
+                     #set labels and bg color in strip
+                     strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$"),  
+                                          bg="white"),
+                     col = "black", #Sets line color to black
+                     lwd = 1, #Sets line width to 1.0
+                     ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
+                     scales = list(cex=scaleTextSize, #controls text size on scales.
+                                   tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                   x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                   y=list(relation="free", #allow each axis to be different
+                                          at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
+                                                  c(0.0, 0.5, 1.0), 
+                                                  c(0.0, 0.5, 1.0),
+                                                  c(0.0, 0.5, 1.0)
+                                                  )
+                                          )
+                                   )
+                     )
    }
-  return(graph)
+   return(graph)
 }
 
 ##############################
@@ -622,7 +630,7 @@ createCDLatticeGraph <- function(){
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "No energy", "With q", "With x")),
+                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$")),
                            type=graphType,
                            cex=keyTextSize, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
@@ -640,16 +648,22 @@ createCDLatticeGraph <- function(){
 }
 @
 
-<<CD_Params_Table, results='asis', eval=FALSE>>=
+The Cobb-Douglas model without energy is given by
+
+\begin{equation} \label{eq:CD_No_Energy}
+  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
+\end{equation}
+
+Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
+
+<<CD_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableNoEnergy(), caption.placement="top", sanitize.colnames.function = identity, size="\\tiny")
 @
 
+Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
+
 <<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph()
-@
-
-<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas results.">>=
-createCDLatticeGraph()
 @
 
 \section{Cobb-Douglas With Energy}
@@ -658,7 +672,17 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-\subsection{Cobb-Douglas with $Q$}
+The Cobb-Douglas model with energy is given by
+
+\begin{equation} \label{eq:CD_With_Energy}
+  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
+\end{equation}
+
+\noindent where $e$ can be any of thermal energy ($q$), exergy ($x$), or useful work ($u$).
+
+\subsection{Cobb-Douglas with $q$}
+
+The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
 <<CDq_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("Q"), 
@@ -667,19 +691,33 @@ print(cobbDouglasParamsTableWithEnergy("Q"),
       size="\\tiny")
 @
 
+Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
+
 <<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 createCDParamsGraph("Q")
 @
 
+The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
+
 <<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 createCDParamsGraph("X")
 @
+
+Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 <<CDx_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("X"), 
       caption.placement="top", 
       sanitize.colnames.function = identity, 
       size="\\tiny")
+@
+
+\subsection{Cobb-Douglas Comparisons}
+
+Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
+
+<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas results.">>=
+createCDLatticeGraph()
 @
 
 \section{CES}
@@ -786,6 +824,18 @@ print(tableCESq, caption.placement="top")
 #print(CESqTables[["US"]], caption.placement="top")
 #print(CESqTables[["ZA"]], caption.placement="top")
 @
+
+\subsection{CES with $X$}
+
+\subsection{CES with $U$}
+
+\section{LINEX}
+
+\subsection{LINEX with $Q$}
+
+\subsection{LINEX with $X$}
+
+\subsection{LINEX with $U$}
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections

@@ -210,10 +210,12 @@ Caleb, put your LaTeX code here.
 
 
 
+Figure \ref{fig:Factors_Lattice_Graph} shows the ``facts'' as they are known.
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
-\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[The facts]{The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$) for all economies.\label{fig:Factors_Lattice_Graph}}
+\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[The facts]{The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).\label{fig:Factors_Lattice_Graph}}
 \end{figure}
 
 
@@ -225,36 +227,48 @@ Caleb, put your LaTeX code here.
 
 
 
+The Cobb-Douglas model without energy is given by
+
+\begin{equation} \label{eq:CD_No_Energy}
+  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
+\end{equation}
+
+Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
+
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Mon Feb  4 22:07:40 2013
+\begin{table}[ht]
+\begin{center}
+\caption{Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:CD_Parameters_No_Energy}
+{\tiny
+\begin{tabular}{r|ccc|ccc|ccc}
+  \hline
+ &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   \\ 
+  \hline
+US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\ 
+  UK & -0.0104 & 0.0097 & 0.0303 & -0.25 & 0.44 & 1.12 & -0.13 & 0.56 & 1.24 \\ 
+  JP & 0.0021 & 0.0052 & 0.0082 & 0.44 & 0.52 & 0.59 & 0.41 & 0.48 & 0.56 \\ 
+  CN & -0.0405 & 0.0188 & 0.0779 & 0.11 & 0.71 & 1.32 & -0.32 & 0.29 & 0.89 \\ 
+  ZA & -0.0007 & 0.0008 & 0.0022 & 0.46 & 0.60 & 0.73 & 0.26 & 0.40 & 0.54 \\ 
+  SA & -0.0159 & -0.0123 & -0.0087 & 0.21 & 0.45 & 0.68 & 0.32 & 0.55 & 0.78 \\ 
+  IR & 0.0032 & 0.0039 & 0.0045 & 0.49 & 0.60 & 0.70 & 0.30 & 0.40 & 0.51 \\ 
+  TZ & -0.0039 & 0.0015 & 0.0068 & 0.50 & 0.73 & 0.95 & 0.05 & 0.27 & 0.50 \\ 
+  ZM & 0.0218 & 0.0249 & 0.0280 & 1.25 & 1.41 & 1.57 & -0.57 & -0.41 & -0.25 \\ 
+   \hline
+\end{tabular}
+}
+\end{center}
+\end{table}
 
 
+
+Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
 \includegraphics[width=\maxwidth]{figure/CD_Params_Graph} \caption[Cobb-Douglas (without energy) model parameters]{Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CD_Params_Graph}}
-\end{figure}
-
-
-\end{knitrout}
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}\end{kframe}\begin{figure}[]
-
-\includegraphics[width=\maxwidth]{figure/CD_GDP_Lattice_Graph} \caption[Cobb-Douglas results]{Cobb-Douglas results.\label{fig:CD_GDP_Lattice_Graph}}
 \end{figure}
 
 
@@ -267,13 +281,24 @@ We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameteriz
 
 \[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
 
-\subsection{Cobb-Douglas with $Q$}
+The Cobb-Douglas model with energy is given by
+
+\begin{equation} \label{eq:CD_With_Energy}
+  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
+\end{equation}
+
+\noindent where $e$ can be any of thermal energy ($q$), exergy ($x$), or useful work ($u$).
+
+\subsection{Cobb-Douglas with $q$}
+
+The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Feb  4 15:21:10 2013
+% Mon Feb  4 22:07:48 2013
 \begin{table}[ht]
 \begin{center}
-\caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:CD_Parameters_With_Q}
 {\tiny
 \begin{tabular}{r|ccc|ccc|ccc|ccc}
   \hline
@@ -296,67 +321,10 @@ US & 0.0078 & 0.0102 & 0.0126 & 0.19 & 0.27 & 0.36 & 0.59 & 0.72 & 0.85 & -0.17 
 
 
 
+Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
+
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: number of iterations exceeded maximum of 200}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}\end{kframe}\begin{figure}[]
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
 \includegraphics[width=\maxwidth]{figure/CDq_Params_Graph} \caption[Cobb-Douglas (with $q$) model parameters]{Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CDq_Params_Graph}}
 \end{figure}
@@ -365,77 +333,10 @@ US & 0.0078 & 0.0102 & 0.0126 & 0.19 & 0.27 & 0.36 & 0.59 & 0.72 & 0.85 & -0.17 
 \end{knitrout}
 
 
+The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
+
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}
-
-{\ttfamily\noindent\color{warningcolor}{Warning: step factor 0.000488281 reduced below 'minFactor' of 0.000976562}}\end{kframe}\begin{figure}[]
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
 
 \includegraphics[width=\maxwidth]{figure/CDx_Params_Graph} \caption[Cobb-Douglas (with $x$) model parameters]{Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CDx_Params_Graph}}
 \end{figure}
@@ -444,11 +345,14 @@ US & 0.0078 & 0.0102 & 0.0126 & 0.19 & 0.27 & 0.36 & 0.59 & 0.72 & 0.85 & -0.17 
 \end{knitrout}
 
 
+Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
+
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Feb  4 15:21:25 2013
+% Mon Feb  4 22:08:03 2013
 \begin{table}[ht]
 \begin{center}
-\caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP) or 1991-2011 (others). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:CD_Parameters_With_X}
 {\tiny
 \begin{tabular}{r|ccc|ccc|ccc|ccc}
   \hline
@@ -471,6 +375,20 @@ US & 0.0079 & 0.0103 & 0.0127 & 0.19 & 0.27 & 0.35 & 0.59 & 0.72 & 0.85 & -0.16 
 
 
 
+\subsection{Cobb-Douglas Comparisons}
+
+Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[]
+
+\includegraphics[width=\maxwidth]{figure/CD_GDP_Lattice_Graph} \caption[Cobb-Douglas results]{Cobb-Douglas results.\label{fig:CD_GDP_Lattice_Graph}}
+\end{figure}
+
+
+\end{knitrout}
+
+
 \section{CES}
 
 
@@ -482,6 +400,18 @@ US & 0.0079 & 0.0103 & 0.0127 & 0.19 & 0.27 & 0.35 & 0.59 & 0.72 & 0.85 & -0.16 
 
 
 
+
+\subsection{CES with $X$}
+
+\subsection{CES with $U$}
+
+\section{LINEX}
+
+\subsection{LINEX with $Q$}
+
+\subsection{LINEX with $X$}
+
+\subsection{LINEX with $U$}
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
