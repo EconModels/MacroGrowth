@@ -125,10 +125,12 @@
 \author[Calvin]{Caleb Reese}
 \author[Calvin]{Lucas Timmer}
 \author[Calvin]{Matthew Kuperus Heun\corref{cor1}}
+\author[Stellenbosch]{Martin de Wit}
 \ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
 \cortext[cor1]{Corresponding author}
 \address[Calvin]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[Stellenbosch]{ Stellenbosch University, School of Public Leadership, P.O. Box 610, Bellville 7535, South Africa}
 
 \begin{abstract}
 %% Text of abstract
