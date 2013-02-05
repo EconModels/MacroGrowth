@@ -206,8 +206,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item \st{Heun: Create a table of AIC values for each fit.}
-\item Heun: Add $u$ preductions for Cobb-Douglas
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows 
+\item \st{Heun: Add $u$ predictions for Cobb-Douglas}
+\item Heun: Add covariance metrics.
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
@@ -215,12 +216,11 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
 \item Heun: Add CES production function fits
 \item Heun: Add Linex production function fits
-\item Heun: Add $k$, $l$, $q$, $x$, and $u$ fits ONLY
+\item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
 \end{itemize}
 *************************************************
 
 Caleb, put your LaTeX code here.
-
 
 
 
@@ -258,7 +258,7 @@ The Cobb-Douglas model without energy is given by
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 11:34:25 2013
+% Tue Feb  5 14:32:13 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -301,7 +301,7 @@ Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for 
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
-\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
+$a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b)$
 
 The Cobb-Douglas model with energy is given by
 
@@ -316,7 +316,7 @@ The Cobb-Douglas model with energy is given by
 The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 11:34:32 2013
+% Tue Feb  5 14:32:19 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -498,7 +498,7 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 11:34:47 2013
+% Tue Feb  5 14:32:34 2013
 \begin{table}[ht]
 \begin{center}
 \caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -584,7 +584,7 @@ Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Tue Feb  5 12:55:44 2013
+% Tue Feb  5 14:32:38 2013
 \begin{table}[ht]
 \begin{center}
 \caption{AIC values for all models.}
@@ -596,6 +596,7 @@ We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values
 CD & -159.4 & -92.4 & -126.8 & -38.0 & -66.5 & -75.8 & -81.1 & -44.4 & -67.9 \\ 
   CD$q$ & -157.4 & -113.2 & -126.5 & -36.0 & -63.7 & -86.4 & -79.1 & -52.5 & -35.1 \\ 
   CD$x$ & -157.5 & -113.7 & -126.4 & -36.0 & -65.0 & -86.3 & -79.1 & -70.9 & -40.4 \\ 
+  CD$u$ & -128.2 & -92.9 & -79.6 &  &  &  &  &  &  \\ 
    \hline
 \end{tabular}
 \end{center}

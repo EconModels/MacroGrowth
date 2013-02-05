@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.6.2-92-0ad2792 on 2013-02-05 11:34:48
+% Created by tikzDevice version 0.6.2-92-0ad2792 on 2013-02-05 14:32:35
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[preprint,authoryear,12pt]{elsarticle}
@@ -42,6 +42,8 @@
 \usepackage{amssymb}
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
+
+\usepackage{soul} %Provides strikethrough text
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -183,7 +185,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (158.36,436.79) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] ( 47.70,357.44) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] ( 47.70,357.44) --
 	( 51.27,358.71) --
 	( 54.84,359.05) --
 	( 58.41,361.00) --
@@ -217,7 +219,7 @@
 	(158.36,439.33);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] ( 47.70,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] ( 47.70,357.44) --
 	( 51.27,358.71) --
 	( 54.84,359.04) --
 	( 58.41,360.98) --
@@ -251,7 +253,7 @@
 	(158.36,439.33);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] ( 47.70,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] ( 47.70,357.44) --
 	( 51.27,358.69) --
 	( 54.84,359.01) --
 	( 58.41,360.94) --
@@ -283,6 +285,29 @@
 	(151.22,432.57) --
 	(154.79,434.27) --
 	(158.36,439.33);
+\definecolor[named]{drawColor}{rgb}{1.00,0.55,0.00}
+
+\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] ( 47.70,357.44) --
+	( 51.27,358.93) --
+	( 54.84,359.50) --
+	( 58.41,361.48) --
+	( 61.98,365.10) --
+	( 65.55,367.80) --
+	( 69.12,370.06) --
+	( 72.69,372.93) --
+	( 76.26,375.91) --
+	( 79.83,378.91) --
+	( 83.40,380.56) --
+	( 86.97,381.19) --
+	( 90.54,382.55) --
+	( 94.11,385.62) --
+	( 97.68,389.34) --
+	(101.25,392.80) --
+	(104.82,395.81) --
+	(108.39,400.41) --
+	(111.96,404.91) --
+	(115.53,409.49) --
+	(119.10,414.11);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
@@ -410,7 +435,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (304.16,420.38) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (193.50,357.44) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (193.50,357.44) --
 	(197.07,356.93) --
 	(200.64,357.37) --
 	(204.21,358.27) --
@@ -444,7 +469,7 @@
 	(304.16,428.64);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (193.50,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (193.50,357.44) --
 	(197.07,356.15) --
 	(200.64,356.46) --
 	(204.21,357.61) --
@@ -478,7 +503,7 @@
 	(304.16,423.50);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (193.50,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (193.50,357.44) --
 	(197.07,356.13) --
 	(200.64,356.43) --
 	(204.21,357.59) --
@@ -510,6 +535,29 @@
 	(297.02,419.22) --
 	(300.59,423.41) --
 	(304.16,423.40);
+\definecolor[named]{drawColor}{rgb}{1.00,0.55,0.00}
+
+\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (193.50,357.44) --
+	(197.07,356.67) --
+	(200.64,357.40) --
+	(204.21,358.09) --
+	(207.78,360.52) --
+	(211.35,363.04) --
+	(214.92,364.89) --
+	(218.49,367.52) --
+	(222.06,371.78) --
+	(225.63,375.84) --
+	(229.20,377.80) --
+	(232.77,377.46) --
+	(236.34,377.16) --
+	(239.91,378.28) --
+	(243.48,380.28) --
+	(247.05,383.28) --
+	(250.62,385.85) --
+	(254.19,389.65) --
+	(257.76,392.85) --
+	(261.33,396.57) --
+	(264.90,399.14);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
@@ -629,7 +677,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (449.96,404.46) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (339.30,357.44) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (339.30,357.44) --
 	(342.87,359.55) --
 	(346.44,361.62) --
 	(350.01,363.77) --
@@ -663,7 +711,7 @@
 	(449.96,403.48);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (339.30,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (339.30,357.44) --
 	(342.87,359.74) --
 	(346.44,362.21) --
 	(350.01,364.74) --
@@ -697,7 +745,7 @@
 	(449.96,403.76);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (339.30,357.44) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (339.30,357.44) --
 	(342.87,359.73) --
 	(346.44,362.19) --
 	(350.01,364.71) --
@@ -729,6 +777,29 @@
 	(442.82,404.52) --
 	(446.39,404.63) --
 	(449.96,403.74);
+\definecolor[named]{drawColor}{rgb}{1.00,0.55,0.00}
+
+\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (339.30,357.44) --
+	(342.87,360.14) --
+	(346.44,362.75) --
+	(350.01,364.83) --
+	(353.58,366.02) --
+	(357.15,368.00) --
+	(360.72,370.39) --
+	(364.29,372.78) --
+	(367.86,375.69) --
+	(371.43,379.11) --
+	(375.00,382.56) --
+	(378.57,385.95) --
+	(382.14,389.08) --
+	(385.71,390.82) --
+	(389.28,392.31) --
+	(392.85,393.86) --
+	(396.42,395.83) --
+	(399.99,396.94) --
+	(403.56,397.54) --
+	(407.13,397.42) --
+	(410.70,397.96);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
@@ -834,7 +905,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (158.36,313.31) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] ( 86.97,201.91) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] ( 86.97,201.91) --
 	( 90.54,203.63) --
 	( 94.11,205.86) --
 	( 97.68,208.36) --
@@ -856,7 +927,7 @@
 	(154.79,303.94);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] ( 86.97,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] ( 86.97,201.91) --
 	( 90.54,203.61) --
 	( 94.11,205.85) --
 	( 97.68,208.36) --
@@ -878,7 +949,7 @@
 	(154.79,303.90);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] ( 86.97,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] ( 86.97,201.91) --
 	( 90.54,203.61) --
 	( 94.11,205.85) --
 	( 97.68,208.35) --
@@ -983,7 +1054,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (304.16,249.09) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (232.77,201.91) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (232.77,201.91) --
 	(236.34,202.52) --
 	(239.91,203.54) --
 	(243.48,206.44) --
@@ -1005,7 +1076,7 @@
 	(300.59,249.04);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (232.77,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (232.77,201.91) --
 	(236.34,203.05) --
 	(239.91,203.37) --
 	(243.48,206.95) --
@@ -1027,7 +1098,7 @@
 	(300.59,249.69);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (232.77,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (232.77,201.91) --
 	(236.34,203.04) --
 	(239.91,203.34) --
 	(243.48,206.85) --
@@ -1132,7 +1203,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (449.96,310.59) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (378.57,201.91) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (378.57,201.91) --
 	(382.14,205.87) --
 	(385.71,209.05) --
 	(389.28,212.51) --
@@ -1155,7 +1226,7 @@
 	(449.96,313.37);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (378.57,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (378.57,201.91) --
 	(382.14,205.47) --
 	(385.71,208.76) --
 	(389.28,210.35) --
@@ -1178,7 +1249,7 @@
 	(449.96,311.58);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (378.57,201.91) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (378.57,201.91) --
 	(382.14,204.87) --
 	(385.71,208.46) --
 	(389.28,206.31) --
@@ -1304,7 +1375,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (158.36, 94.10) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] ( 86.97, 46.38) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] ( 86.97, 46.38) --
 	( 90.54, 48.92) --
 	( 94.11, 50.65) --
 	( 97.68, 52.14) --
@@ -1327,7 +1398,7 @@
 	(158.36, 92.20);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] ( 86.97, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] ( 86.97, 46.38) --
 	( 90.54, 48.86) --
 	( 94.11, 50.55) --
 	( 97.68, 51.89) --
@@ -1350,7 +1421,7 @@
 	(158.36, 95.27);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] ( 86.97, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] ( 86.97, 46.38) --
 	( 90.54, 48.86) --
 	( 94.11, 50.55) --
 	( 97.68, 51.90) --
@@ -1468,7 +1539,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (304.16,114.26) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (232.77, 46.38) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (232.77, 46.38) --
 	(236.34, 47.48) --
 	(239.91, 49.18) --
 	(243.48, 49.71) --
@@ -1491,7 +1562,7 @@
 	(304.16,117.83);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (232.77, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (232.77, 46.38) --
 	(236.34, 47.49) --
 	(239.91, 49.17) --
 	(243.48, 49.75) --
@@ -1514,7 +1585,7 @@
 	(304.16,117.93);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (232.77, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (232.77, 46.38) --
 	(236.34, 47.49) --
 	(239.91, 49.17) --
 	(243.48, 49.76) --
@@ -1640,7 +1711,7 @@
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (449.96,106.50) circle (  2.11);
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (378.57, 46.38) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (378.57, 46.38) --
 	(382.14, 44.57) --
 	(385.71, 44.32) --
 	(389.28, 42.54) --
@@ -1663,7 +1734,7 @@
 	(449.96,108.15);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (378.57, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (378.57, 46.38) --
 	(382.14, 47.06) --
 	(385.71, 46.85) --
 	(389.28, 46.34) --
@@ -1686,7 +1757,7 @@
 	(449.96,106.79);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (378.57, 46.38) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (378.57, 46.38) --
 	(382.14, 47.00) --
 	(385.71, 46.66) --
 	(389.28, 45.97) --
@@ -1733,7 +1804,7 @@
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
 
-\path[] ( 44.13,441.32) rectangle (141.37,480.98);
+\path[] ( 44.13,431.40) rectangle (141.37,480.98);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
@@ -1761,6 +1832,12 @@
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
+\definecolor[named]{drawColor}{rgb}{1.00,0.55,0.00}
+
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.85] at ( 50.01,432.85) {With $u$};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
 \path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (106.13,476.02) circle (  2.56);
@@ -1773,22 +1850,29 @@
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (106.13,466.11) --
+\path[draw=drawColor,line width= 0.8pt,line join=round,line cap=round] (106.13,466.11) --
 	(135.50,466.11);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
 \definecolor[named]{drawColor}{rgb}{1.00,0.00,0.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 7pt off 3pt ,line join=round,line cap=round] (106.13,456.19) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 4pt off 4pt ,line join=round,line cap=round] (106.13,456.19) --
 	(135.50,456.19);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,1.00}
 
-\path[draw=drawColor,line width= 0.4pt,dash pattern=on 2pt off 2pt on 6pt off 2pt ,line join=round,line cap=round] (106.13,446.28) --
+\path[draw=drawColor,line width= 0.4pt,dash pattern=on 1pt off 3pt on 4pt off 3pt ,line join=round,line cap=round] (106.13,446.28) --
 	(135.50,446.28);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (469.75,542.02);
+\definecolor[named]{drawColor}{rgb}{1.00,0.55,0.00}
+
+\path[draw=drawColor,line width= 0.4pt,line join=round,line cap=round] (106.13,436.36) --
+	(135.50,436.36);
 \end{scope}
 \end{tikzpicture}
 

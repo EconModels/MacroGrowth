@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 FEB 2013 11:34
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 FEB 2013 14:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -405,35 +405,47 @@ Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
 ))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/soul/soul.sty
+Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
+\SOUL@word=\toks28
+\SOUL@lasttoken=\toks29
+\SOUL@cmds=\toks30
+\SOUL@buffer=\toks31
+\SOUL@token=\toks32
+\SOUL@spaceskip=\skip47
+\SOUL@ttwidth=\dimen154
+\SOUL@uldp=\dimen155
+\SOUL@ulht=\dimen156
+)
 (./CDq_Params_Graph.aux)
 \openout1 = `CDq_Params_Graph.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
 
 (/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count115
-\scratchdimen=\dimen154
+\scratchdimen=\dimen157
 \scratchbox=\box41
 \nofMPsegments=\count116
 \nofMParguments=\count117
-\everyMPshowfont=\toks28
+\everyMPshowfont=\toks33
 \MPscratchCnt=\count118
-\MPscratchDim=\dimen155
+\MPscratchDim=\dimen158
 \MPnumerator=\count119
 \makeMPintoPDFobject=\count120
-\everyMPtoPDFconversion=\toks29
+\everyMPtoPDFconversion=\toks34
 ) (/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/04/22 v0.16 Utilities of pdfTeX for LuaTeX (HO)
 
@@ -484,16 +496,16 @@ e
 ABD: EveryShipout initializing macros
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
-LaTeX Font Info:    Try loading font information for U+msa on input line 178.
+LaTeX Font Info:    Try loading font information for U+msa on input line 180.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 178.
+LaTeX Font Info:    Try loading font information for U+msb on input line 180.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Overfull \hbox (79.75pt too wide) in paragraph at lines 441--441
+Overfull \hbox (79.75pt too wide) in paragraph at lines 443--443
 [][] 
  []
 
@@ -502,17 +514,17 @@ Preview: Tightpage 0 0 0 0
 Non-PDF special ignored!
 Non-PDF special ignored!] (./CDq_Params_Graph.aux) ) 
 Here is how much of TeX's memory you used:
- 10893 strings out of 493633
- 202782 string characters out of 3143378
- 254543 words of memory out of 3000000
- 13962 multiletter control sequences out of 15000+200000
- 8975 words of font info for 34 fonts, out of 3000000 for 9000
+ 11062 strings out of 493633
+ 204888 string characters out of 3143378
+ 258962 words of memory out of 3000000
+ 14126 multiletter control sequences out of 15000+200000
+ 9288 words of font info for 35 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  56i,7n,55p,407b,635s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/local/texlive/2011/te
 xmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on CDq_Params_Graph.pdf (1 page, 24890 bytes).
+Output written on CDq_Params_Graph.pdf (1 page, 24891 bytes).
 PDF statistics:
  19 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream

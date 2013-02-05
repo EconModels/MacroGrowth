@@ -151,8 +151,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item \st{Heun: Create a table of AIC values for each fit.}
-\item Heun: Add $u$ preductions for Cobb-Douglas
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows 
+\item \st{Heun: Add $u$ predictions for Cobb-Douglas}
+\item Heun: Add covariance metrics.
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
@@ -160,7 +161,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
 \item Heun: Add CES production function fits
 \item Heun: Add Linex production function fits
-\item Heun: Add $k$, $l$, $q$, $x$, and $u$ fits ONLY
+\item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
 \end{itemize}
 *************************************************
 
@@ -187,7 +188,7 @@ opts_chunk$set(
   warning=TRUE, #Tells whether to show warnings.
   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
-  cache=TRUE,
+  cache=FALSE,
   echo=FALSE,    #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
   message=FALSE) #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
 
@@ -215,7 +216,6 @@ keyYLoc <- 0.95 #y position of the key
 scaleTextSize <- 1.0 #0.75 #75% of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
-
 
 <<Load Data>>=
 #################################
@@ -346,16 +346,37 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
 # Returns a data.frame with the predictions.
 ##
 cobbDouglasPredictions <- function(countryAbbrev, energyType){
+  # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
+  if (!missing(energyType)){
+    # Consider this replacement only if energyType has been specified.
+    if (energyType == "U" && (countryAbbrev == "CN" || countryAbbrev == "ZA" || countryAbbrev == "SA" 
+                              || countryAbbrev == "IR" || countryAbbrev == "TZ" || countryAbbrev == "ZM")){
+      #Return a column of NAs if the above conditions have been met.
+      nRows <- 21 # All of these countries need 21 rows.
+      df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+      colnames(df) <- "pred"
+      return(df)
+    }
+  }
   model <- cobbDouglasModel(countryAbbrev, energyType)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
-  # There are two countries which do not have labor data for 2011. Need to add a "NA" for 2011 for those countries.
-  if (countryAbbrev == "CN" || countryAbbrev == "ZA"){
-    dfNA <- data.frame(NA)
-    colnames(dfNA) <- "pred" #Need to give it the same name so that we can apply rbind
-    df <- rbind(df, dfNA)
-  }
+  # Pad with rows as necessary
+  df <- padRows(countryAbbrev, df)
   return(df)
+}
+  
+#####################
+# This function adds NA rows to a data.frame to ensure that the df is the same length as the country data set
+##
+padRows <- function(countryAbbrev, df){
+  nRowsData <- nrow(loadData(countryAbbrev)) #Gets number of rows in data set
+  nRowsDF <- nrow(df)
+  nRowsToAdd <- nRowsData - nRowsDF
+  nCol <- ncol(df)
+  dfToAppend <- as.data.frame(matrix(NA, ncol=nCol, nrow=nRowsToAdd))
+  colnames(dfToAppend) <- colnames(df)
+  return(rbind(df, dfToAppend))
 }
 
 #########################
@@ -634,17 +655,18 @@ createCDParamsGraph <- function(energyType){
 ##
 createCDLatticeGraph <- function(){
   dataTable <- loadData("All") #Grab the raw data
-  predictions <- cobbDouglasPredictionsColumn() #Get the predictions from the CD model without energy
-  predictionsQ <- cobbDouglasPredictionsColumn("Q") #Predictions with Q
-  predictionsX <- cobbDouglasPredictionsColumn("X") #Predictions with X
+  predictions <- cobbDouglasPredictionsColumn()     #Predictions from CD without energy
+  predictionsQ <- cobbDouglasPredictionsColumn("Q") #Predictions from CD with Q
+  predictionsX <- cobbDouglasPredictionsColumn("X") #Predictions from CD with X
+  predictionsU <- cobbDouglasPredictionsColumn("U") #Predictions from CD with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX) 
+  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 5, 6) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "red", "blue") #line and symbol colors
-  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX ~ Year | Country, data=dataTable,
+  lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "red", "blue", "darkorange") #line and symbol colors
+  symbols <- c(1, NA, NA, NA, NA)  #NA gives no symbol.
+  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=list(countryOrderForGraphs), #orders the panels.
                   layout=layoutSpec, #indicates a 3x3 arrangement of panels.
@@ -652,7 +674,7 @@ createCDLatticeGraph <- function(){
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$")),
+                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
                            type=graphType,
                            cex=keyTextSize, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
@@ -692,7 +714,7 @@ createCDParamsGraph()
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
-\[ a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b) \]
+$a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b)$
 
 The Cobb-Douglas model with energy is given by
 
@@ -863,7 +885,7 @@ print(tableCESq, caption.placement="top")
 
 <<AIC_Analysis>>=
 ###############################
-# Creates a xtable object that holds the AIC values for each parameter estimation that we include.
+# Creates an xtable object that holds the AIC values for each parameter estimation that we include.
 ##
 createAICTable <- function(){
   # Cobb-Douglas
@@ -878,14 +900,17 @@ createAICTable <- function(){
   models <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
   aicCDx <- data.frame(lapply(models, AIC))
   rownames(aicCDx) <- "CD$x$"
+  # Cobb-Douglas with U
+  models <- c(cobbDouglasModel("US", "U"), cobbDouglasModel("UK", "U"), cobbDouglasModel("JP", "U"))
+  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
+                  UK=AIC(cobbDouglasModel("UK", "U")), 
+                  JP=AIC(cobbDouglasModel("JP", "U")),
+                  CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
+  rownames(aicCDu) <- "CD$u$"
   # Create the data.frame table
-  out <- rbind(aicCD, aicCDq, aicCDx) 
+  out <- rbind(aicCD, aicCDq, aicCDx, aicCDu) 
   # Create the xtable with caption and label
-  out <- xtable(out, 
-                caption="AIC values for all models.", 
-                label="tab:AICTable", 
-                digits=1 #Only one number after the decimal place
-                )
+  out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
   return(out)
 }
 @
