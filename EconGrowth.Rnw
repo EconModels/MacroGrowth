@@ -59,6 +59,7 @@
 %% \usepackage{amsthm}
 
 \usepackage{soul} %Provides strikethrough text
+\usepackage{float} %Allows precise positioning of tables and figures within the text
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -124,8 +125,8 @@
 
 \author[Calvin]{Caleb Reese}
 \author[Calvin]{Lucas Timmer}
-\author[Calvin]{Matthew Kuperus Heun\corref{cor1}}
 \author[Stellenbosch]{Martin de Wit}
+\author[Calvin]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
 \cortext[cor1]{Corresponding author}
@@ -156,7 +157,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
 \item Heun: Add $u$ parameter table and graph
 \item Heun: Add covariance metrics.
+\item Heun: Add acknowledgements (Dad, Pruim)
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
+\item Heun: move tables to an appendix at the end.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
@@ -188,6 +191,7 @@ opts_chunk$set(
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
+  eval=TRUE,
   warning=TRUE, #Tells whether to show warnings.
   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
@@ -220,23 +224,52 @@ scaleTextSize <- 1.0 #0.75 #75% of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
 
-<<Load Data>>=
+<<Data, eval=TRUE>>=
 #################################
-# This function loads data given a country name.
+# This function loads data given a country abbreviation.
 # The file name from which data will be loaded is assumed to be of the form 
-# "<countryName>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
+# "<countryAbbrev>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
 #
-# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
 #
-# returns a matrix with the data that has been loaded
+# returns a data.frame with the data that has been loaded
 ##
-loadData <- function(countryName){
+loadData <- function(countryAbbrev){
   # Read the data file as a table with a header.  
-  fileName <- paste("data/", countryName, "Data.txt", sep="")
+  fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
   dataTable <- read.table(fileName, header = TRUE)
   # Identifies the header names associated with dataTable
   #print(names(dataTable))
   return(dataTable)
+}
+
+###############################
+# Tells whether we have data for this combination of country and energy type.
+# a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
+#
+# returns logical value (TRUE or FALSE)
+##
+haveData <- function(countryAbbrev, energyType){
+  # The design here is to go through several cases where data is unavailable and
+  # return FALSE. If we make it through all of those cases, we'll return TRUE.
+  if (!(countryAbbrev %in% countryAbbrevs)){
+    # If we don't know the country, we don't have data
+    return(FALSE)
+  }
+  if (missing(energyType) || is.na(energyType)){
+    # If we don't want energy included, we have data for all known countries. We need to check this case
+    # first, BEFORE doing various checks on the energyType.
+    return(TRUE)
+  }
+  if (!(energyType %in% energyTypes)){
+    # If we want to include energy, we know only a few types. So, return false if we don't know the energy type.
+    return(FALSE)
+  }
+  if (energyType == "U" && (!(countryAbbrev %in% countryAbbrevsU))){
+    # We have U data for only a few countries.
+    return(FALSE)
+  }
+  return(TRUE)
 }
 @
 
@@ -281,7 +314,7 @@ createFactorsLatticeGraph()
 
 \section{Cobb-Douglas Without Energy}
 
-<<cobb-douglas functions>>=
+<<cobb-douglas functions, eval=TRUE>>=
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
@@ -352,9 +385,9 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!missing(energyType)){
     # Consider this replacement only if energyType has been specified.
-    if (energyType == "U" && (countryAbbrev == "CN" || countryAbbrev == "ZA" || countryAbbrev == "SA" 
-                              || countryAbbrev == "IR" || countryAbbrev == "TZ" || countryAbbrev == "ZM")){
-      #Return a column of NAs if the above conditions have been met.
+    if (!(haveData(countryAbbrev, energyType))){
+      #If we don't have data for this combination of countryAbbrev and energyType, 
+      # return a column of NAs if the above conditions have been met.
       nRows <- 21 # All of these countries need 21 rows.
       df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
       colnames(df) <- "pred"
@@ -404,14 +437,25 @@ cobbDouglasPredictionsColumn <- function(energyType){
 # countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
 # energyType is a string, one of "Q", "X", or "U"
 #
-# returns a vector of data for the Cobb-Douglas model. 
-# First item is the +95% CI on all parameters
-# Second item contains the parameter estimates
-# Third item is the -95% CI on all parameters
-# Each row has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
+# returns a data.frame of data for the Cobb-Douglas model. 
+# First row is the +95% CI on all parameters
+# Second row contains the parameter estimates
+# Third row is the -95% CI on all parameters
+# Each column has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
 ##
-cobbDouglasData <- function(countryName, energyType){
-  modelCD <- cobbDouglasModel(countryName, energyType)
+cobbDouglasData <- function(countryAbbrev, energyType){
+  #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
+  if (!haveData(countryAbbrev, energyType)){
+    #Return a column of NAs if the above conditions have been met.
+    nRows <- 3 # +95% CI, CDe, and -95% CI.
+    nCols <- 4 # lambda, alpha, beta, and gamma
+    df <- as.data.frame(matrix(NA, ncol = nCols, nrow = nRows))
+    colnames(df) <- c("lambda", "alpha", "beta", "gamma")
+    rownames(df) <- c("+95% CI", "CDe", "-95% CI")
+    return(df)
+  }
+  # We have a combination of country and energy type for which we have data.
+  modelCD <- cobbDouglasModel(countryAbbrev, energyType)
   summaryCD <- summary(modelCD) # Gives the nls summary table.
   ciCD <- confint(modelCD, level = ciLevel)  # Calculates confidence intervals for the CD model.
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
@@ -472,13 +516,19 @@ cobbDouglasData <- function(countryName, energyType){
     estCD <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
     row.names(estCD) <- "CDe"
     # The [1] subscripts pick off the lower confidence interval
-    lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["a", "2.5%"], beta=betaCICD[1], gamma=gammaCICD[1])
+    lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], 
+                          alpha=ciCD["a", "2.5%"], 
+                          beta=betaCICD[1], 
+                          gamma=gammaCICD[1])
     row.names(lowerCD) <- "-95% CI"
-    # The [2] subscripts pick off the lower confidence interval
-    upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["a", "97.5%"], beta=betaCICD[2], gamma=gammaCICD[2])
+    # The [2] subscripts pick off the upper confidence interval
+    upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], 
+                          alpha=ciCD["a", "97.5%"], 
+                          beta=betaCICD[2], 
+                          gamma=gammaCICD[2])
     row.names(upperCD) <- "+95% CI"
   }
-  # Now create the data for a table.
+  # Now create the data for a table and return it
   dataCD <- rbind(upperCD, estCD, lowerCD)
   return(dataCD)
 }
@@ -701,12 +751,6 @@ The Cobb-Douglas model without energy is given by
   y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
 \end{equation}
 
-Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
-
-<<CD_Params_Table, results='asis'>>=
-print(cobbDouglasParamsTableNoEnergy(), caption.placement="top", sanitize.colnames.function = identity, size="\\tiny")
-@
-
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
 <<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
@@ -729,35 +773,20 @@ The Cobb-Douglas model with energy is given by
 
 \subsection{Cobb-Douglas with $q$}
 
-The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
-
-<<CDq_Params_Table, results='asis'>>=
-print(cobbDouglasParamsTableWithEnergy("Q"), 
-      caption.placement="top", 
-      sanitize.colnames.function = identity, 
-      size="\\tiny")
-@
-
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
-<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("Q")
 @
 
 The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
 
-<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("X")
 @
 
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
-<<CDx_Params_Table, results='asis'>>=
-print(cobbDouglasParamsTableWithEnergy("X"), 
-      caption.placement="top", 
-      sanitize.colnames.function = identity, 
-      size="\\tiny")
-@
 
 \subsection{Cobb-Douglas Comparisons}
 
@@ -929,12 +958,62 @@ print(createAICTable(),
 
 The AIC results show *****************.
 
+\section{Conclusion}
+
+****************** Add conclusion here. *********************
+
+\section{Acknowledgements}
+
+The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and assistance with the statistical analyses presented herein.
+
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix
-
 %% \section{}
 %% \label{}
+
+\appendix
+\section{Tabular Results}
+
+Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
+
+<<CD_Params_Table, results='asis'>>=
+print(cobbDouglasParamsTableNoEnergy(), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny", 
+      table.placement="H")
+@
+
+The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
+
+<<CDq_Params_Table, results='asis'>>=
+print(cobbDouglasParamsTableWithEnergy("Q"), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+@
+
+Table \ref{tab:CD_Parameters_With_X} gives the parameters for the Cobb-Douglas model with exergy ($x$).
+
+<<CDx_Params_Table, results='asis'>>=
+print(cobbDouglasParamsTableWithEnergy("X"), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+@
+
+The Cobb-Douglas (with useful work, $u$) parameters are given in Table \ref{tab:CD_Parameters_With_U}.
+
+<<CDu_Params_Table, results='asis', eval=TRUE>>=
+print(cobbDouglasParamsTableWithEnergy("U"), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+@
 
 %% References
 %%

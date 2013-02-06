@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  5 FEB 2013 16:00
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  6 FEB 2013 10:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -417,35 +417,43 @@ Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@uldp=\dimen155
 \SOUL@ulht=\dimen156
 )
+(/usr/local/texlive/2011/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count115
+\float@exts=\toks33
+\float@box=\box41
+\@float@everytoks=\toks34
+\@floatcapt=\box42
+)
 (./Factors_Lattice_Graph.aux)
 \openout1 = `Factors_Lattice_Graph.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
 
 (/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count115
+\scratchcounter=\count116
 \scratchdimen=\dimen157
-\scratchbox=\box41
-\nofMPsegments=\count116
-\nofMParguments=\count117
-\everyMPshowfont=\toks33
-\MPscratchCnt=\count118
+\scratchbox=\box43
+\nofMPsegments=\count117
+\nofMParguments=\count118
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count119
 \MPscratchDim=\dimen158
-\MPnumerator=\count119
-\makeMPintoPDFobject=\count120
-\everyMPtoPDFconversion=\toks34
+\MPnumerator=\count120
+\makeMPintoPDFobject=\count121
+\everyMPtoPDFconversion=\toks36
 ) (/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/04/22 v0.16 Utilities of pdfTeX for LuaTeX (HO)
 
@@ -496,16 +504,16 @@ e
 ABD: EveryShipout initializing macros
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
-LaTeX Font Info:    Try loading font information for U+msa on input line 2087.
+LaTeX Font Info:    Try loading font information for U+msa on input line 2088.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 2087.
+LaTeX Font Info:    Try loading font information for U+msb on input line 2088.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Overfull \hbox (79.75pt too wide) in paragraph at lines 2164--2164
+Overfull \hbox (79.75pt too wide) in paragraph at lines 2165--2165
 [][] 
  []
 
@@ -514,10 +522,10 @@ Preview: Tightpage 0 0 0 0
 Non-PDF special ignored!
 Non-PDF special ignored!] (./Factors_Lattice_Graph.aux) ) 
 Here is how much of TeX's memory you used:
- 12136 strings out of 493633
- 226165 string characters out of 3143378
- 379804 words of memory out of 3000000
- 15200 multiletter control sequences out of 15000+200000
+ 12193 strings out of 493633
+ 226924 string characters out of 3143378
+ 381161 words of memory out of 3000000
+ 15253 multiletter control sequences out of 15000+200000
  9288 words of font info for 35 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  56i,7n,55p,412b,633s stack positions out of 5000i,500n,10000p,200000b,50000s
