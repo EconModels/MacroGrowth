@@ -150,28 +150,30 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 % \linenumbers
 %% main text
 
-**************** To Do List ********************
+\section*{To-do List}
 \begin{itemize}
 \item Reese: Add text from Word verson of paper to the LaTeX version.
-\item \st{Heun: Create a table of AIC values for each fit.}
-\item \st{Heun: Add $u$ predictions for Cobb-Douglas}
-\item Heun: Add $u$ parameter table and graph
-\item Heun: Add covariance metrics.
-\item Heun: Add acknowledgements (Dad, Pruim)
+\item Heun: Deal with missing covariance numbers when columns have unequal length.
+\item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
+\item Heun: Add CES production function fits
+\item Heun: Add Linex production function fits
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
-\item Heun: move tables to an appendix at the end.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
-\item Heun: Add CES production function fits
-\item Heun: Add Linex production function fits
-\item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
+\item \st{Heun: Create a table of AIC values for each fit.}
+\item \st{Heun: Add $u$ predictions for Cobb-Douglas}
+\item \st{Heun: move tables to an appendix at the end.}
+\item \st{Heun: Add acknowledgements (Dad, Pruim)}
+\item \st{Heun: Add $u$ parameter table and graph}
+\item \st{Heun: Add covariance metrics.}
 \end{itemize}
-*************************************************
 
-Caleb, put your LaTeX code here.
+\section{Introduction}
+
+*********** Caleb, put your LaTeX code here. *************
 
 
 
@@ -192,7 +194,7 @@ opts_chunk$set(
   tidy=FALSE,
   comment=NA,
   eval=TRUE,
-  warning=TRUE, #Tells whether to show warnings.
+  warning=FALSE, #Tells whether to show warnings.
   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
   cache=FALSE,
@@ -238,8 +240,6 @@ loadData <- function(countryAbbrev){
   # Read the data file as a table with a header.  
   fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
   dataTable <- read.table(fileName, header = TRUE)
-  # Identifies the header names associated with dataTable
-  #print(names(dataTable))
   return(dataTable)
 }
 
@@ -270,6 +270,30 @@ haveData <- function(countryAbbrev, energyType){
     return(FALSE)
   }
   return(TRUE)
+}
+
+##############################
+# Returns an xtable of covariance information for the specified country.
+##
+covarianceTable <- function(countryAbbrev){
+  data <- loadData(countryAbbrev)
+  # Grab only the data we want.
+  dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX)
+  names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
+  if (countryAbbrev %in% countryAbbrevsU){
+    # Add U data only if we have it.
+    dataForCovar <- cbind(dataForCovar, data$iU)
+    names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
+  }
+  covarResults <- cor(dataForCovar)
+  colnames(covarResults) <- names
+  rownames(covarResults) <- names
+  covarXtable <- xtable(covarResults, 
+                      caption=paste("Covariance table for ", countryAbbrev, "economy."), 
+                      label=paste("tab:Covar_", countryAbbrev, sep=""))
+                      # digits = c(1, 4,4,4, 2,2,2, 2,2,2),
+                      # align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns)
+  return(covarXtable)
 }
 @
 
@@ -311,6 +335,8 @@ createFactorsLatticeGraph <- function(){
 }
 createFactorsLatticeGraph()
 @
+
+Figure \ref{Factors_Lattice_Graph} shows that GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other quite closely. Covariances among these variables are quite high as shown in Tables \ref{tab:Covar_US} through \ref{tab:Covar_ZM} show.
 
 \section{Cobb-Douglas Without Energy}
 
@@ -771,7 +797,7 @@ The Cobb-Douglas model with energy is given by
 
 \noindent where $e$ can be any of thermal energy ($q$), exergy ($x$), or useful work ($u$).
 
-\subsection{Cobb-Douglas with $q$}
+\subsection{Cobb-Douglas with thermal energy ($q$)}
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
@@ -779,14 +805,23 @@ Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for
 createCDParamsGraph("Q")
 @
 
+\subsection{Cobb-Douglas with exergy ($x$)}
+
 The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
+
+Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 <<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("X")
 @
 
-Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
+\subsection{Cobb-Douglas with useful work ($u$)}
 
+Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
+
+<<CDu_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph("U")
+@
 
 \subsection{Cobb-Douglas Comparisons}
 
@@ -962,7 +997,7 @@ The AIC results show *****************.
 
 ****************** Add conclusion here. *********************
 
-\section{Acknowledgements}
+\section*{Acknowledgements}
 
 The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and assistance with the statistical analyses presented herein.
 
@@ -974,6 +1009,84 @@ The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Mich
 
 \appendix
 \section{Tabular Results}
+
+\subsection{Covariances}
+
+The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
+
+<<Covar_Table_US, results='asis'>>=
+print(covarianceTable("US"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_UK, results='asis'>>=
+print(covarianceTable("UK"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_JP, results='asis'>>=
+print(covarianceTable("JP"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_CN, results='asis'>>=
+print(covarianceTable("CN"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_ZA, results='asis'>>=
+print(covarianceTable("ZA"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_SA, results='asis'>>=
+print(covarianceTable("SA"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_IR, results='asis'>>=
+print(covarianceTable("IR"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_TZ, results='asis'>>=
+print(covarianceTable("TZ"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+<<Covar_Table_ZM, results='asis'>>=
+print(covarianceTable("ZM"), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      table.placement="H")
+@
+
+\subsection{Model Parameters}
 
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
@@ -1007,13 +1120,15 @@ print(cobbDouglasParamsTableWithEnergy("X"),
 
 The Cobb-Douglas (with useful work, $u$) parameters are given in Table \ref{tab:CD_Parameters_With_U}.
 
-<<CDu_Params_Table, results='asis', eval=TRUE>>=
+<<CDu_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("U"), 
       caption.placement="top", 
       sanitize.colnames.function = identity, 
       size="\\tiny",
       table.placement="H")
 @
+
+
 
 %% References
 %%
