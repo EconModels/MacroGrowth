@@ -297,11 +297,11 @@ covarianceTable <- function(countryAbbrev){
 }
 @
 
-\section{The Facts}
+\section{Historical Data}
 
-Figure \ref{fig:Factors_Lattice_Graph} shows the ``facts'' as they are known.
+Figure \ref{fig:Factors_Lattice_Graph} shows historical data. GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other closely. Covariances among these variables are rather high as shown in Tables \ref{tab:Covar_US} through \ref{tab:Covar_ZM}.
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -336,7 +336,20 @@ createFactorsLatticeGraph <- function(){
 createFactorsLatticeGraph()
 @
 
-Figure \ref{Factors_Lattice_Graph} shows that GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other quite closely. Covariances among these variables are quite high as shown in Tables \ref{tab:Covar_US} through \ref{tab:Covar_ZM} show.
+\section{Single-factor Models}
+
+<<single-factor functions, eval=TRUE>>=
+
+@
+
+We begin by fitting single-factor economic models of the form
+
+\begin{equation} \label{eq:Single_Factor_Generic}
+  y = a^{\lambda (t-t_0)}f^{m}
+\end{equation}
+
+\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$ and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, and $\gamma$ for $q$, $x$, or $u$.
+
 
 \section{Cobb-Douglas Without Energy}
 
@@ -779,7 +792,7 @@ The Cobb-Douglas model without energy is given by
 
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph()
 @
 
@@ -801,7 +814,7 @@ The Cobb-Douglas model with energy is given by
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
-<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("Q")
 @
 
@@ -811,7 +824,7 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
-<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("X")
 @
 
@@ -819,7 +832,7 @@ createCDParamsGraph("X")
 
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
-<<CDu_Params_Graph, fig.width=figWidth, fig.height=5, fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDu_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("U")
 @
 
@@ -827,7 +840,7 @@ createCDParamsGraph("U")
 
 Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
 
-<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.cap="Cobb-Douglas results.">>=
+<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
 @
 
