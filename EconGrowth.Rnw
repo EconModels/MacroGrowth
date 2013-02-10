@@ -290,7 +290,7 @@ covarianceTable <- function(countryAbbrev){
   rownames(covarResults) <- names
   covarXtable <- xtable(covarResults, 
                       caption=paste("Covariance table for ", countryAbbrev, "economy."), 
-                      label=paste("tab:Covar_", countryAbbrev, sep=""))
+                      label=paste("tab:Covariance_", countryAbbrev, sep=""))
                       # digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                       # align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns)
   return(covarXtable)
@@ -299,7 +299,7 @@ covarianceTable <- function(countryAbbrev){
 
 \section{Historical Data}
 
-Figure \ref{fig:Factors_Lattice_Graph} shows historical data. GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other closely. Covariances among these variables are rather high as shown in Tables \ref{tab:Covar_US} through \ref{tab:Covar_ZM}.
+Figure \ref{fig:Factors_Lattice_Graph} shows historical data. GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other closely. Covariances among these variables are rather high as shown in Tables \ref{tab:iance_US} through \ref{tab:Covariance_ZM}.
 
 <<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
@@ -1027,7 +1027,7 @@ The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Mich
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
-<<Covar_Table_US, results='asis'>>=
+<<Covariance_Table_US, results='asis'>>=
 print(covarianceTable("US"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1035,7 +1035,7 @@ print(covarianceTable("US"),
                       table.placement="H")
 @
 
-<<Covar_Table_UK, results='asis'>>=
+<<Covariance_Table_UK, results='asis'>>=
 print(covarianceTable("UK"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1043,7 +1043,7 @@ print(covarianceTable("UK"),
                       table.placement="H")
 @
 
-<<Covar_Table_JP, results='asis'>>=
+<<Covariance_Table_JP, results='asis'>>=
 print(covarianceTable("JP"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1051,7 +1051,7 @@ print(covarianceTable("JP"),
                       table.placement="H")
 @
 
-<<Covar_Table_CN, results='asis'>>=
+<<Covariance_Table_CN, results='asis'>>=
 print(covarianceTable("CN"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1059,7 +1059,7 @@ print(covarianceTable("CN"),
                       table.placement="H")
 @
 
-<<Covar_Table_ZA, results='asis'>>=
+<<Covariance_Table_ZA, results='asis'>>=
 print(covarianceTable("ZA"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1067,7 +1067,7 @@ print(covarianceTable("ZA"),
                       table.placement="H")
 @
 
-<<Covar_Table_SA, results='asis'>>=
+<<Covariance_Table_SA, results='asis'>>=
 print(covarianceTable("SA"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1075,7 +1075,7 @@ print(covarianceTable("SA"),
                       table.placement="H")
 @
 
-<<Covar_Table_IR, results='asis'>>=
+<<Covariance_Table_IR, results='asis'>>=
 print(covarianceTable("IR"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1083,7 +1083,7 @@ print(covarianceTable("IR"),
                       table.placement="H")
 @
 
-<<Covar_Table_TZ, results='asis'>>=
+<<Covariance_Table_TZ, results='asis'>>=
 print(covarianceTable("TZ"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,
@@ -1091,7 +1091,7 @@ print(covarianceTable("TZ"),
                       table.placement="H")
 @
 
-<<Covar_Table_ZM, results='asis'>>=
+<<Covariance_Table_ZM, results='asis'>>=
 print(covarianceTable("ZM"), 
                       caption.placement="top", 
                       sanitize.rownames.function = identity,

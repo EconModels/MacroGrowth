@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  9 FEB 2013 21:56
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  9 FEB 2013 22:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -331,8 +331,10 @@ Missing character: There is no ™ in font cmr12!
 
 
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Package color Info: Redefining color shadecolor on input line 246.
 
+LaTeX Warning: Reference `tab:iance_US' on page 2 undefined on input line 243.
+
+Package color Info: Redefining color shadecolor on input line 246.
 <figure/Factors_Lattice_Graph.pdf, id=19, 469.74997pt x 542.01997pt>
 File: figure/Factors_Lattice_Graph.pdf Graphic file (type pdf)
 
@@ -387,35 +389,39 @@ Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 357
  [7 <./figure/CDu_Params_Graph.pdf>]
 [8 <./figure/CD_GDP_Lattice_Graph.pdf>] [9] [10] [11] [12]
 No file EconGrowth.bbl.
-[13] (./EconGrowth.aux) ) 
+[13] (./EconGrowth.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3212 strings out of 493633
- 44005 string characters out of 3143378
+ 3213 strings out of 493633
+ 44064 string characters out of 3143378
  112389 words of memory out of 3000000
- 6434 multiletter control sequences out of 15000+200000
+ 6435 multiletter control sequences out of 15000+200000
  13140 words of font info for 50 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  38i,9n,34p,384b,273s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm
--super/cm-super-ts1.enc}</usr/local/texlive/2011/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmmi12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmmi8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr17.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8
-.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.
-pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pf
-b></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><
-/usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></
-usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></us
-r/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr
-/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on EconGrowth.pdf (13 pages, 308410 bytes).
+{/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
+}</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
+usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/lo
+cal/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loca
+l/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/
+texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
+live/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
+e/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
+/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2
+011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/201
+1/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2011
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2011/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2011/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2011/tex
+mf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on EconGrowth.pdf (13 pages, 308628 bytes).
 PDF statistics:
  171 PDF objects out of 1000 (max. 8388607)
  130 compressed objects within 2 object streams
