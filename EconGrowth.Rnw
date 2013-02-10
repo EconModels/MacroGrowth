@@ -153,7 +153,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item Reese: Add text from Word verson of paper to the LaTeX version.
-\iten Heun: Add setup variables for figure height and width where not already included.
+\item Heun: Add setup variables for figure height and width where not already included.
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
 \item Heun: Add CES production function fits
@@ -191,11 +191,13 @@ trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
+  # ********************************************************************************************************
+  eval=TRUE,
+  # ********************************************************************************************************
+  warning=FALSE, #Tells whether to show warnings.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
-  eval=TRUE,
-  warning=FALSE, #Tells whether to show warnings.
   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (cache=TRUE).
   cache=FALSE,
@@ -273,6 +275,63 @@ haveData <- function(countryAbbrev, energyType){
   return(TRUE)
 }
 
+#####################
+# This function adds NA rows to the end of a data.frame to ensure that the df is 
+# the same length as the country data set
+# returns a modified version of df that includes the padded rows filled with "NA".
+##
+padRows <- function(countryAbbrev, df){
+  nRowsData <- nrow(loadData(countryAbbrev)) #Gets number of rows in data set
+  nRowsDF <- nrow(df)
+  nRowsToAdd <- nRowsData - nRowsDF
+  nCol <- ncol(df)
+  dfToAppend <- as.data.frame(matrix(NA, ncol=nCol, nrow=nRowsToAdd))
+  colnames(dfToAppend) <- colnames(df)
+  return(rbind(df, dfToAppend))
+}
+
+##############################
+# Returns an integer representing the column index for some data
+# dataTable the data.frame in which you want to change column names
+# factor should be a string and one of Year, Y, K, L, Q, X, or U
+##
+columnIndex <- function(dataTable, factor){
+  if (factor == "Year"){
+    colName <- "iYear"
+  } else if (factor == "Y"){
+    colName <- "iGDP"
+  } else if (factor == "K"){
+    colName <- "iCapStk"
+  } else if (factor == "L"){
+    colName <- "iLabor"
+  } else if (factor == "Q"){
+    colName <- "iQ"
+  } else if (factor == "X"){
+    colName <- "iX"
+  } else if (factor == "U"){
+    colName <- "iU"
+  } else {
+    print(paste("Unknown factor:", factor, "in colIndex. Terminating execution."))
+    quit()
+  }
+  # Get the desired column index.
+  colIndex <- which(names(dataTable) %in% colName) #Find index of desired column
+  return(colIndex)  
+}
+
+##############################
+# Replaces a column name with the given string
+# dataTable the data.frame that you're working with
+# factor should be a string and one of Year, Y, K, L, Q, X, or U
+# newName should be a string and the desired new name of the column
+# returns dataTable with a new name for one of its factor column.
+##
+replaceColName <- function(dataTable, factor, newName){
+  colIndex <- columnIndex(dataTable, factor)
+  colnames(dataTable)[colIndex] <- newName #Change desired column name to newName
+  return(dataTable)
+}
+
 ##############################
 # Returns an xtable of covariance information for the specified country.
 ##
@@ -300,9 +359,9 @@ covarianceTable <- function(countryAbbrev){
 
 \section{Historical Data}
 
-Figure \ref{fig:Factors_Lattice_Graph} shows historical data. GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$) track each other closely. Covariances among these variables are rather high as shown in Tables \ref{tab:iance_US} through \ref{tab:Covariance_ZM}.
+Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Facotrs of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="The facts. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -340,6 +399,109 @@ createFactorsLatticeGraph()
 \section{Single-factor Models}
 
 <<single-factor functions, eval=TRUE>>=
+####################
+# Returns an nls single-factor model for the country and factor specified.
+# factor should be one of "K", "L", "Q", "X", or "U".
+##
+singleFactorModel <- function(countryAbbrev, factor){
+  dataTable <- loadData(countryAbbrev) #Load the data that we need.
+  # We'll change the name of the desired column to "f"
+  dataTable <- replaceColName(dataTable, factor, "f")
+  # Now do the fit.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  mGuess <- 0.5
+  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
+  modelSF <- nls(iGDP ~ exp(lambda*iYear) * f^m, 
+                 data=dataTable, 
+                 start = list(lambda=lambdaGuess, m=mGuess)
+                 )
+  return(modelSF)
+}
+
+#########################
+# Takes the single-factor fitted models and creates per-country predictions for them.
+# Returns a data.frame with the predictions.
+##
+singleFactorPredictions <- function(countryAbbrev, factor){
+  # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
+  if (factor == "U"){
+    if (!(haveData(countryAbbrev, factor))){
+      #If we don't have data for this combination of countryAbbrev and energyType, 
+      # return a column of NAs if the above conditions have been met.
+      nRows <- 21 # All of these countries need 21 rows.
+      df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+      colnames(df) <- "pred"
+      return(df)
+    }
+  }
+  model <- singleFactorModel(countryAbbrev, factor)
+  pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
+  df <- data.frame(pred)
+  # Pad with rows as necessary
+  df <- padRows(countryAbbrev, df)
+  return(df)
+}
+
+#########################
+# Takes the single-factor fitted models and creates a single column of predicted GDP values
+# that corresponds, row for row, with the AllData.txt file.
+##
+singleFactorPredictionsColumn <- function(factor){
+  out <- do.call("rbind", lapply(countryAbbrevs, singleFactorPredictions, factor=factor))
+  colnames(out) <- c(paste("predGDP", factor, sep=""))
+  return(out)
+}
+
+##############################
+# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+# data as open circles.
+##
+createSFLatticeGraph <- function(){
+  dataTable <- loadData("All") #Grab the raw data
+  predictionsK <- singleFactorPredictionsColumn("K") #Predictions from SF with K
+  predictionsL <- singleFactorPredictionsColumn("L") #Predictions from SF with L
+  predictionsQ <- singleFactorPredictionsColumn("Q") #Predictions from SF with Q
+  predictionsX <- singleFactorPredictionsColumn("X") #Predictions from SF with X
+  predictionsU <- singleFactorPredictionsColumn("U") #Predictions from SF with U
+  #Now add the predictions columns to the data.
+  dataTable <- cbind(dataTable, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU) 
+  graphType <- "b" #b is for both line and symbol
+  lineTypes <- c(0, 1, 2, 4, 1, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 1, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "red", "blue", "darkorange", "darkgreen") #line and symbol colors
+  symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
+  graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+                  type=graphType,
+                  index.cond=list(countryOrderForGraphs), #orders the panels.
+                  layout=layoutSpec, #indicates a 3x3 arrangement of panels.
+                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
+                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+                  pch = symbols, col.symbol = colors, #Controls symbol parameters
+                  key=list(text=list(c("Actual", "With $k$", "With $l$", "With $q$", "With $x$", "With $u$")),
+                           type=graphType,
+                           cex=keyTextSize, #controls size of text in the key
+                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+                           pch=symbols, col=colors, #controls symbol (plot characters) types
+                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+                  scales=list(cex=scaleTextSize, #controls text size on scales.
+                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              y=list(relation="free", #allows each axis to be different
+                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
+                                     )
+                              ), 
+                  ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
+                  xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
+  return(graph)
+}
+
+# print(singleFactorPredictions("US", "K"))
+# print(singleFactorPredictionsColumn("K"))
+# print(singleFactorPredictionsColumn("L"))
+# print(singleFactorPredictionsColumn("Q"))
+# print(singleFactorPredictionsColumn("X"))
+# print(singleFactorPredictionsColumn("U"))
+# print(createSFLatticeGraph())
 
 @
 
@@ -351,6 +513,9 @@ We begin by fitting single-factor economic models of the form
 
 \noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$ and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, and $\gamma$ for $q$, $x$, or $u$.
 
+<<SF_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Single-factor results.">>=
+createSFLatticeGraph()
+@
 
 \section{Cobb-Douglas Without Energy}
 
@@ -381,9 +546,7 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     # We need to do the Cobb-Douglas fit with the desired energy data.
     # To achieve the correct fit, we'll change the name of the desired column
     # to "iEToFit" and use "iEToFit" in the nls function. 
-    energyColumnName <- paste("i", energyType, sep="") #Energy term desired in the Cobb-Douglas equation.
-    eColIndex <- which(names(dataTable) %in% energyColumnName) #Find index of desired column
-    colnames(dataTable)[eColIndex] <- "iEToFit" #Change desired column name to "iEToFit"
+    dataTable <- replaceColName(dataTable, energyType, "iEToFit")
     # Reparameterize to ensure that we meet the constraints:
     # * alpha + beta + gamma = 1.0.
     # * alpha, beta, and gamma are all between 0.0 and 1.0.
@@ -442,19 +605,6 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
   
-#####################
-# This function adds NA rows to a data.frame to ensure that the df is the same length as the country data set
-##
-padRows <- function(countryAbbrev, df){
-  nRowsData <- nrow(loadData(countryAbbrev)) #Gets number of rows in data set
-  nRowsDF <- nrow(df)
-  nRowsToAdd <- nRowsData - nRowsDF
-  nCol <- ncol(df)
-  dfToAppend <- as.data.frame(matrix(NA, ncol=nCol, nrow=nRowsToAdd))
-  colnames(dfToAppend) <- colnames(df)
-  return(rbind(df, dfToAppend))
-}
-
 #########################
 # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
 # that corresponds, row for row, with the AllData.txt file.

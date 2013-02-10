@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  10 FEB 2013 16:41
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  10 FEB 2013 16:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**CDq_Params_Graph.tikz
-(./CDq_Params_Graph.tikz
+**single-factor_functions.tikz
+(./single-factor_functions.tikz
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
@@ -98,7 +98,6 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 \@sep=\skip43
 \@@sep=\skip44
 
-(./CDq_Params_Graph.spl)
 (/usr/local/texlive/2011/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip45
@@ -107,7 +106,7 @@ LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count94
 )
 \splwrite=\write3
-\openout3 = `CDq_Params_Graph.spl'.
+\openout3 = `single-factor_functions.spl'.
 
 \appnamewidth=\dimen109
 )
@@ -425,8 +424,8 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks34
 \@floatcapt=\box42
 )
-(./CDq_Params_Graph.aux)
-\openout1 = `CDq_Params_Graph.aux'.
+No file single-factor_functions.aux.
+\openout1 = `single-factor_functions.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 80.
 LaTeX Font Info:    ... okay on input line 80.
@@ -440,7 +439,6 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 80.
 LaTeX Font Info:    ... okay on input line 80.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 80.
 LaTeX Font Info:    ... okay on input line 80.
-
 (/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count116
@@ -504,35 +502,35 @@ e
 ABD: EveryShipout initializing macros
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
-LaTeX Font Info:    Try loading font information for U+msa on input line 181.
+LaTeX Font Info:    Try loading font information for U+msa on input line 2064.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 181.
+LaTeX Font Info:    Try loading font information for U+msb on input line 2064.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Overfull \hbox (79.75pt too wide) in paragraph at lines 444--444
+Overfull \hbox (115.89pt too wide) in paragraph at lines 2135--2135
 [][] 
  []
 
 Preview: Tightpage 0 0 0 0
 [1{/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 Non-PDF special ignored!
-Non-PDF special ignored!] (./CDq_Params_Graph.aux) ) 
+Non-PDF special ignored!] (./single-factor_functions.aux) ) 
 Here is how much of TeX's memory you used:
- 11119 strings out of 493633
- 205647 string characters out of 3143378
- 260319 words of memory out of 3000000
- 14179 multiletter control sequences out of 15000+200000
+ 12194 strings out of 493633
+ 226938 string characters out of 3143378
+ 378760 words of memory out of 3000000
+ 15258 multiletter control sequences out of 15000+200000
  9288 words of font info for 35 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 56i,7n,55p,407b,635s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/local/texlive/2011/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on CDq_Params_Graph.pdf (1 page, 24891 bytes).
+ 56i,7n,55p,414b,633s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/local/texlive/
+2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2
+011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
+Output written on single-factor_functions.pdf (1 page, 55576 bytes).
 PDF statistics:
  19 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream
