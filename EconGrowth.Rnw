@@ -153,6 +153,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item Reese: Add text from Word verson of paper to the LaTeX version.
+\iten Heun: Add setup variables for figure height and width where not already included.
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
 \item Heun: Add CES production function fits
