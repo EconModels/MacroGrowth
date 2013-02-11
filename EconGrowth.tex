@@ -212,22 +212,22 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Add single factor fits
       \begin{itemize}
-      \item \st{GDP comparison graph}
       \item parameter graphs ($\lambda$ and $m$) for each country
       \item parameter tables for each country in the appendix
+      \item \st{GDP comparison graph}
       \item \st{AIC rows in the AIC table}
       \end{itemize}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item GDP comparison graph
-      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
 \item Heun: Add Linex production function fits
       \begin{itemize}
       \item GDP comparison graph
-      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
@@ -266,14 +266,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/Factors_Lattice_Graph} \caption[Historical data]{Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).\label{fig:Factors_Lattice_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -293,14 +286,7 @@ We begin by fitting single-factor economic models of the form
 
 Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/SF_GDP_Lattice_Graph} \caption[Single-factor results]{Single-factor results.\label{fig:SF_GDP_Lattice_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -318,14 +304,7 @@ The Cobb-Douglas model without energy is given by
 
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/CD_Params_Graph} \caption[Cobb-Douglas (without energy) model parameters]{Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CD_Params_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 \section{Cobb-Douglas Models With Energy (CDe)}
@@ -346,14 +325,7 @@ The Cobb-Douglas model with energy is given by
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/CDq_Params_Graph} \caption[Cobb-Douglas (with $q$) model parameters]{Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CDq_Params_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 \subsection{Cobb-Douglas with exergy ($x$)}
@@ -362,42 +334,21 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/CDx_Params_Graph} \caption[Cobb-Douglas (with $x$) model parameters]{Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CDx_Params_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 \subsection{Cobb-Douglas with useful work ($u$)}
 
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/CDu_Params_Graph} \caption[Cobb-Douglas (with $u$) model parameters]{Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\% confidence intervals.\label{fig:CDu_Params_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 \subsection{Cobb-Douglas Comparisons}
 
 Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
-\includegraphics[width=\maxwidth]{figure/CD_GDP_Lattice_Graph} \caption[Cobb-Douglas results]{Cobb-Douglas results.\label{fig:CD_GDP_Lattice_Graph}}
-\end{figure}
-
-
-\end{knitrout}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -459,7 +410,7 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for US.}
@@ -481,7 +432,7 @@ $y$ & 1.00 & 0.99 & 0.95 & 0.95 & 0.95 &  \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for UK.}
@@ -503,7 +454,7 @@ $y$ & 1.00 & 0.99 & 0.89 & 0.53 & 0.47 &  \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for JP.}
@@ -525,7 +476,7 @@ $y$ & 1.00 & 0.98 & -0.62 & 0.96 & 0.96 &  \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for CN.}
@@ -546,7 +497,7 @@ $y$ & 1.00 & 1.00 &  & 0.99 & 0.99 \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for ZA.}
@@ -567,7 +518,7 @@ $y$ & 1.00 & 0.96 &  & 0.97 & 0.97 \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for SA.}
@@ -588,7 +539,7 @@ $y$ & 1.00 & 0.99 & 0.99 & 0.97 & 0.97 \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for IR.}
@@ -609,7 +560,7 @@ $y$ & 1.00 & 0.99 & 0.97 & 0.99 & 0.99 \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for TZ.}
@@ -630,7 +581,7 @@ $y$ & 1.00 & 0.99 & 0.98 & 1.00 & 1.00 \\
 \end{center}
 \end{table}
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:27 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
 \caption{Covariance table for ZM.}
@@ -658,123 +609,109 @@ $y$ & 1.00 & 0.98 & 0.88 & 0.98 & 0.96 \\
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
+\subsection{Single-factor Models}
+
+Tables \ref{} below provide tabular results for single-factor models.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:28 2013
+% Mon Feb 11 12:12:36 2013
 \begin{table}[H]
 \begin{center}
-\caption{Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
-\label{tab:CD_Parameters_No_Energy}
+\caption{Single-factor model (with $k$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:SF_Parameters_With_K}
 {\tiny
-\begin{tabular}{r|ccc|ccc|ccc}
+\begin{tabular}{r|ccc|ccc}
   \hline
- &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   \\ 
+ &   & $\lambda$ &   &   & $\alpha$ &   \\ 
   \hline
-US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\ 
-  UK & -0.0104 & 0.0097 & 0.0303 & -0.25 & 0.44 & 1.12 & -0.13 & 0.56 & 1.24 \\ 
-  JP & 0.0021 & 0.0052 & 0.0082 & 0.44 & 0.52 & 0.59 & 0.41 & 0.48 & 0.56 \\ 
-  CN & -0.0405 & 0.0188 & 0.0779 & 0.11 & 0.71 & 1.32 & -0.32 & 0.29 & 0.89 \\ 
-  ZA & -0.0007 & 0.0008 & 0.0022 & 0.46 & 0.60 & 0.73 & 0.26 & 0.40 & 0.54 \\ 
-  SA & -0.0159 & -0.0123 & -0.0087 & 0.21 & 0.45 & 0.68 & 0.32 & 0.55 & 0.78 \\ 
-  IR & 0.0032 & 0.0039 & 0.0045 & 0.49 & 0.60 & 0.70 & 0.30 & 0.40 & 0.51 \\ 
-  TZ & -0.0039 & 0.0015 & 0.0068 & 0.50 & 0.73 & 0.95 & 0.05 & 0.27 & 0.50 \\ 
-  ZM & 0.0218 & 0.0249 & 0.0280 & 1.25 & 1.41 & 1.57 & -0.57 & -0.41 & -0.25 \\ 
+US & 0.0006 & 0.0154 & 0.0300 & -0.02 & 0.38 & 0.78 \\ 
+  UK & -0.0326 & -0.0099 & 0.0126 & 0.39 & 1.09 & 1.80 \\ 
+  JP & -0.0046 & -0.0014 & 0.0017 & 0.59 & 0.67 & 0.76 \\ 
+  CN & -0.0074 & 0.0644 & 0.1360 & -0.33 & 0.32 & 0.98 \\ 
+  ZA & 0.0143 & 0.0187 & 0.0231 & 0.18 & 0.35 & 0.51 \\ 
+  SA & -0.0102 & 0.0019 & 0.0138 & 0.26 & 0.51 & 0.77 \\ 
+  IR & 0.0115 & 0.0182 & 0.0248 & 0.38 & 0.57 & 0.77 \\ 
+  TZ & -0.0017 & 0.0098 & 0.0212 & 0.50 & 0.72 & 0.94 \\ 
+  ZM & 0.0099 & 0.0128 & 0.0156 & 1.23 & 1.49 & 1.75 \\ 
    \hline
 \end{tabular}
 }
 \end{center}
 \end{table}
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Mon Feb 11 12:12:37 2013
+\begin{table}[H]
+\begin{center}
+\caption{Single-factor model (with $l$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:SF_Parameters_With_L}
+{\tiny
+\begin{tabular}{r|ccc|ccc}
+  \hline
+ &   & $\lambda$ &   &   & $\beta$ &   \\ 
+  \hline
+US & 0.0177 & 0.0194 & 0.0211 & 0.65 & 0.79 & 0.92 \\ 
+  UK & 0.0223 & 0.0234 & 0.0245 & 0.33 & 0.78 & 1.24 \\ 
+  JP & 0.0260 & 0.0268 & 0.0276 & 1.75 & 2.03 & 2.31 \\ 
+  CN & 0.0762 & 0.0947 & 0.1135 & -1.19 & 0.46 & 2.08 \\ 
+  ZA & 0.0204 & 0.0350 & 0.0496 & -0.73 & -0.25 & 0.22 \\ 
+  SA & 0.0028 & 0.0087 & 0.0144 & 0.36 & 0.54 & 0.73 \\ 
+  IR & 0.0108 & 0.0250 & 0.0391 & -0.06 & 0.36 & 0.77 \\ 
+  TZ & -0.1038 & 0.0450 & 0.1977 & -5.21 & 0.06 & 5.20 \\ 
+  ZM & 0.0735 & 0.1000 & 0.1281 & -3.65 & -2.64 & -1.69 \\ 
+   \hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Mon Feb 11 12:12:37 2013
+\begin{table}[H]
+\begin{center}
+\caption{Single-factor model (with $q$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
+\label{tab:SF_Parameters_With_Q}
+{\tiny
+\begin{tabular}{r|ccc|ccc}
+  \hline
+ &   & $\lambda$ &   &   & $\gamma$ &   \\ 
+  \hline
+US & 0.0190 & 0.0212 & 0.0234 & 0.63 & 0.86 & 1.08 \\ 
+  UK & 0.0230 & 0.0238 & 0.0246 & 0.29 & 0.51 & 0.73 \\ 
+  JP & 0.0056 & 0.0090 & 0.0122 & 0.74 & 0.96 & 1.18 \\ 
+  CN & 0.0932 & 0.0997 & 0.1061 & -0.10 & 0.00 & 0.11 \\ 
+  ZA & 0.0172 & 0.0329 & 0.0486 & -0.90 & -0.23 & 0.43 \\ 
+  SA & 0.0009 & 0.0122 & 0.0233 & 0.05 & 0.31 & 0.57 \\ 
+  IR & -0.0312 & -0.0016 & 0.0276 & 0.18 & 0.71 & 1.25 \\ 
+  TZ & -0.0085 & -0.0012 & 0.0060 & 1.27 & 1.49 & 1.71 \\ 
+  ZM & -0.0001 & 0.0042 & 0.0084 & 1.73 & 2.10 & 2.48 \\ 
+   \hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+\begin{kframe}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{Error: error in evaluating the argument 'x' in selecting a method for function 'print': Error in prof\$getProfile() : \\\ \ step factor 0.000488281 reduced below 'minFactor' of 0.000976562\\Calls: singleFactorParamsTable ... confint.nls -> profile -> profile.nls -> <Anonymous>}}\end{kframe}
+
+
+\subsection{Cobb-Douglas Models}
+
+Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
+
 
 
 
 The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
-% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:33 2013
-\begin{table}[H]
-\begin{center}
-\caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
-\label{tab:CD_Parameters_With_Q}
-{\tiny
-\begin{tabular}{r|ccc|ccc|ccc|ccc}
-  \hline
- &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   &   & $\gamma$ &   \\ 
-  \hline
-US & 0.0078 & 0.0102 & 0.0126 & 0.19 & 0.27 & 0.36 & 0.59 & 0.72 & 0.85 & -0.17 & 0.00 & 0.17 \\ 
-  UK & 0.0075 & 0.0228 & 0.0382 & -0.52 & -0.00 & 0.52 & 0.07 & 0.56 & 1.04 & 0.28 & 0.44 & 0.61 \\ 
-  JP & 0.0019 & 0.0049 & 0.0079 & 0.45 & 0.57 & 0.70 & 0.42 & 0.55 & 0.67 & -0.31 & -0.12 & 0.07 \\ 
-  CN & -0.0087 & 0.0133 & 0.0872 & -0.02 & 0.78 & 0.85 & -0.48 & 0.24 & 0.96 & -0.15 & -0.02 & 0.11 \\ 
-  ZA &  & 0.0048 & 0.0054 & 0.35 & 0.43 &  & -0.54 & 0.00 & 0.54 & -0.02 & 0.57 & 1.17 \\ 
-  SA & -0.0165 & -0.0137 & -0.0109 & 0.17 & 0.36 & 0.54 & 0.21 & 0.40 & 0.60 & 0.11 & 0.24 & 0.37 \\ 
-  IR & -0.0026 & 0.0033 & 0.0092 & 0.43 & 0.59 & 0.74 & 0.18 & 0.39 & 0.59 & -0.25 & 0.03 & 0.31 \\ 
-  TZ & 0.0044 & 0.0057 & 0.0095 & 0.31 & 0.44 & 0.71 & -0.43 & -0.00 & 0.43 & 0.12 & 0.56 & 1.00 \\ 
-  ZM &  & 0.0197 & 0.0208 & 0.54 & 0.66 & 0.78 & -0.40 & 0.00 & 0.40 & -0.74 & 0.34 & 1.42 \\ 
-   \hline
-\end{tabular}
-}
-\end{center}
-\end{table}
 
 
 
 Table \ref{tab:CD_Parameters_With_X} gives the parameters for the Cobb-Douglas model with exergy ($x$).
 
-% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:37 2013
-\begin{table}[H]
-\begin{center}
-\caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
-\label{tab:CD_Parameters_With_X}
-{\tiny
-\begin{tabular}{r|ccc|ccc|ccc|ccc}
-  \hline
- &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   &   & $\gamma$ &   \\ 
-  \hline
-US & 0.0079 & 0.0103 & 0.0127 & 0.19 & 0.27 & 0.35 & 0.59 & 0.72 & 0.85 & -0.16 & 0.01 & 0.18 \\ 
-  UK & 0.0080 & 0.0232 & 0.0385 & -0.52 & -0.01 & 0.51 & 0.07 & 0.55 & 1.04 & 0.29 & 0.45 & 0.62 \\ 
-  JP & 0.0019 & 0.0049 & 0.0080 & 0.45 & 0.57 & 0.69 & 0.42 & 0.54 & 0.67 & -0.30 & -0.11 & 0.08 \\ 
-  CN & -0.0078 & 0.0140 & 0.0869 & -0.01 & 0.77 & 1.00 & -0.47 & 0.25 & 0.96 & -0.14 & -0.01 & 0.11 \\ 
-  ZA &  & 0.0047 & 0.0054 & 0.36 & 0.44 &  & -0.51 & 0.00 & 0.51 & 0.00 & 0.56 & 1.13 \\ 
-  SA & -0.0164 & -0.0136 & -0.0108 & 0.17 & 0.36 & 0.54 & 0.21 & 0.41 & 0.60 & 0.11 & 0.23 & 0.36 \\ 
-  IR & -0.0025 & 0.0033 & 0.0090 & 0.43 & 0.59 & 0.74 & 0.19 & 0.39 & 0.59 & -0.25 & 0.03 & 0.30 \\ 
-  TZ & 0.0119 & 0.0173 & 0.0227 & -0.39 & -0.16 & 0.19 & -0.14 & 0.01 & 0.15 & 0.81 & 1.15 & 1.50 \\ 
-  ZM &  & 0.0199 & 0.0209 & 0.58 & 0.69 & 0.79 & -0.31 & -0.00 & 0.31 & -0.49 & 0.31 & 1.10 \\ 
-   \hline
-\end{tabular}
-}
-\end{center}
-\end{table}
 
 
 
 The Cobb-Douglas (with useful work, $u$) parameters are given in Table \ref{tab:CD_Parameters_With_U}.
 
-% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:38 2013
-\begin{table}[H]
-\begin{center}
-\caption{Cobb-Douglas (with $u$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
-\label{tab:CD_Parameters_With_U}
-{\tiny
-\begin{tabular}{r|ccc|ccc|ccc|ccc}
-  \hline
- &   & $\lambda$ &   &   & $\alpha$ &   &   & $\beta$ &   &   & $\gamma$ &   \\ 
-  \hline
-US & 0.0058 & 0.0086 & 0.0113 & 0.20 & 0.36 & 0.51 & 0.54 & 0.70 & 0.87 & -0.13 & -0.06 & 0.01 \\ 
-  UK & 0.0065 & 0.0166 & 0.0268 & -0.04 & 0.30 & 0.63 & 0.43 & 0.79 & 1.15 & -0.28 & -0.09 & 0.10 \\ 
-  JP & -0.0220 & -0.0087 & 0.0121 & 0.39 & 0.86 &  & -0.17 & 0.28 & 0.72 & -0.33 & -0.14 & 0.05 \\ 
-  CN &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-  ZA &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-  SA &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-  IR &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-  TZ &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-  ZM &  &  &  &  &  &  &  &  &  &  &  &  \\ 
-   \hline
-\end{tabular}
-}
-\end{center}
-\end{table}
 
 
 
@@ -788,31 +725,6 @@ US & 0.0058 & 0.0086 & 0.0113 & 0.20 & 0.36 & 0.51 & 0.54 & 0.70 & 0.87 & -0.13 
 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
-% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:52:39 2013
-\begin{table}[H]
-\begin{center}
-\caption{AIC values for all models.}
-\label{tab:AICTable}
-{\tiny
-\begin{tabular}{rrrrrrrrrr}
-  \hline
- & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\ 
-  \hline
-SF$k$ & -73.1 & -89.6 & -103.6 & -35.8 & -69.0 & -71.0 & -65.3 & -45.0 & -60.9 \\ 
-  SF$l$ & -126.2 & -91.6 & -98.2 & -32.6 & -52.1 & -80.9 & -45.5 & -18.2 & -38.0 \\ 
-  SF$q$ & -104.5 & -98.0 & -73.9 & -34.6 & -54.9 & -63.3 & -49.4 & -70.5 & -61.5 \\ 
-  SF$x$ & -105.1 & -98.8 & -72.5 & -34.6 & -54.9 & -63.1 & -49.3 & -71.4 & -61.7 \\ 
-  SF$u$ & -83.6 & -76.5 & -43.1 &  &  &  &  &  &  \\ 
-  CD & -159.4 & -92.4 & -126.8 & -38.0 & -66.5 & -75.8 & -81.1 & -44.4 & -67.9 \\ 
-  CD$q$ & -157.4 & -113.2 & -126.5 & -36.0 & -63.7 & -86.4 & -79.1 & -52.5 & -35.1 \\ 
-  CD$x$ & -157.5 & -113.7 & -126.4 & -36.0 & -65.0 & -86.3 & -79.1 & -70.9 & -40.4 \\ 
-  CD$u$ & -128.2 & -92.9 & -79.6 &  &  &  &  &  &  \\ 
-   \hline
-\end{tabular}
-}
-\end{center}
-\end{table}
 
 
 

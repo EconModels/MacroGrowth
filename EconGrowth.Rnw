@@ -157,22 +157,22 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Add single factor fits
       \begin{itemize}
-      \item \st{GDP comparison graph}
       \item parameter graphs ($\lambda$ and $m$) for each country
       \item parameter tables for each country in the appendix
+      \item \st{GDP comparison graph}
       \item \st{AIC rows in the AIC table}
       \end{itemize}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item GDP comparison graph
-      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
 \item Heun: Add Linex production function fits
       \begin{itemize}
       \item GDP comparison graph
-      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
@@ -215,7 +215,7 @@ options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -234,12 +234,12 @@ ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
-# List of energy types
-energyTypes <- c(Q="Q", X="X", U="U")
+energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
+factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 ########### Several global parameters for graphs. Set here and use below to ensure consistent appearance of graphs.
-# Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. "1" means first alphabetically.
-# The following list sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
-countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9)
+# Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
+# "1" means first alphabetically.
+countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9) # Sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
 # Full page lattice plot sizes and other parameters
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
 figWidth <- 6.5             #Inches
@@ -271,12 +271,39 @@ loadData <- function(countryAbbrev){
 }
 
 ###############################
-# Tells whether we have data for this combination of country and energy type.
+# Tells whether we have data for this combination of country and energy type for a single-factor curve fit.
+#
+# returns logical value (TRUE or FALSE)
+##
+haveDataSF <- function(countryAbbrev, factor){
+  # The design here is to go through several cases where data is unavailable and
+  # return FALSE. If we make it through all of those cases, we'll return TRUE.
+  if (!(countryAbbrev %in% countryAbbrevs)){
+    # If we don't know the country, we don't have data
+    return(FALSE)
+  }
+  if (missing(factor) || is.na(factor)){
+    # If we don't have a factor, we don't have data.
+    return(FALSE)
+  }
+  if (!(factor %in% factors)){
+    # If we don't know the factor, we don't have data
+    return(FALSE)
+  }
+  if (factor == "U" && (!(countryAbbrev %in% countryAbbrevsU))){
+    # We have U data for only a few countries.
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
+###############################
+# Tells whether we have data for this combination of country and energy type for a Cobb-Douglas curve fit.
 # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
 #
 # returns logical value (TRUE or FALSE)
 ##
-haveData <- function(countryAbbrev, energyType){
+haveDataCD <- function(countryAbbrev, energyType){
   # The design here is to go through several cases where data is unavailable and
   # return FALSE. If we make it through all of those cases, we'll return TRUE.
   if (!(countryAbbrev %in% countryAbbrevs)){
@@ -464,15 +491,13 @@ singleFactorModel <- function(countryAbbrev, factor){
 ##
 singleFactorPredictions <- function(countryAbbrev, factor){
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
-  if (factor == "U"){
-    if (!(haveData(countryAbbrev, factor))){
-      #If we don't have data for this combination of countryAbbrev and energyType, 
-      # return a column of NAs if the above conditions have been met.
-      nRows <- 21 # All of these countries need 21 rows.
-      df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
-      colnames(df) <- "pred"
-      return(df)
-    }
+  if (!(haveDataSF(countryAbbrev, factor))){
+    #If we don't have data for this combination of countryAbbrev and energyType, 
+    # return a column of NAs if the above conditions have been met.
+    nRows <- 21 # All of these countries need 21 rows.
+    df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+    colnames(df) <- "pred"
+    return(df)
   }
   model <- singleFactorModel(countryAbbrev, factor)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
@@ -533,6 +558,109 @@ createSFLatticeGraph <- function(){
                   ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
+}
+
+#################################################
+# Calculates parameter estimates and confidence intervals
+# for the single factor production function for a given a country.
+#
+# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# factor is a string, one of "K", "L", "Q", "X", or "U"
+#
+# returns a data.frame of data for the Cobb-Douglas model. 
+# First row is the +95% CI on all parameters
+# Second row contains the parameter estimates
+# Third row is the -95% CI on all parameters
+# Each column has names: lambda and m corresponding to the parameters in the model.
+##
+singleFactorData <- function(countryAbbrev, factor){
+  #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
+  if (!haveDataSF(countryAbbrev, factor)){
+    #Return a column of NAs if we don't have data for this factor
+    nRows <- 3 # +95% CI, SF, and -95% CI.
+    nCols <- 2 # lambda, m
+    df <- as.data.frame(matrix(NA, ncol = nCols, nrow = nRows))
+    colnames(df) <- c("lambda", "m")
+    rownames(df) <- c("+95% CI", "SF", "-95% CI")
+    return(df)
+  }
+  # We have a combination of country and factor for which we have data.
+  modelSF <- singleFactorModel(countryAbbrev, factor)
+  summarySF <- summary(modelSF) # Gives the nls summary table.
+  ciSF <- confint(modelSF, level = ciLevel)  # Calculates confidence intervals for the SF model.
+  dofSF <- summarySF$df[2] # Gives the degrees of freedom for the model.
+  tvalSF <- qt(ciHalfLevel, df = dofSF)
+#   print("")
+#   print(paste("In singleFactorData:", countryAbbrev, factor))
+#   print("summarySF:")
+#   print(paste("    df:", summarySF$df))
+#   print(paste("    sigma:", summarySF$sigma))
+#   print("    coeffs: ")
+#   print(summarySF$coefficients)
+#   print("ciSF:")
+#   print(ciSF)
+  #Single factor model
+  lambda <- as.numeric(coef(modelSF)["lambda"])
+  m <- as.numeric(coef(modelSF)["m"])
+  # Combine all estimates and their confidence intervals into data frames with intelligent row names
+  estSF <- data.frame(lambda = lambda, m = m)
+  row.names(estSF) <- "SF"
+  # The [1] subscripts pick off the lower confidence interval
+  lowerSF <- data.frame(lambda=ciSF["lambda","2.5%"], 
+                        m=ciSF["m", "2.5%"])
+  row.names(lowerSF) <- "-95% CI"
+  # The [2] subscripts pick off the upper confidence interval
+  upperSF <- data.frame(lambda=ciSF["lambda","97.5%"], 
+                        m=ciSF["m", "97.5%"])
+  row.names(upperSF) <- "+95% CI"
+  # Now create the data for a table and return it
+  dataSF <- rbind(upperSF, estSF, lowerSF)
+  return(dataSF)
+}
+
+############
+# Creates a row for the single factor parameters table for the given country (2-letter code) and factor.
+##
+singleFactorCountryRow <- function(countryAbbrev, factor){
+ dataSF <- singleFactorData(countryAbbrev, factor)
+ out <- cbind(dataSF["-95% CI", "lambda"], dataSF["SF", "lambda"], dataSF["+95% CI", "lambda"],
+              dataSF["-95% CI", "m"],  dataSF["SF", "m"],  dataSF["+95% CI", "m"])
+ return(out)
+}
+
+############################
+# Aggregates the single-factor results into a big data table for the given factor.
+##
+singleFactorParamsTable <- function(factor){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataSF <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRow, factor=factor))
+  if (factor == "K"){
+    factorString <- "$\\alpha$"
+  } else if (factor == "L"){
+    factorString <- "$\\beta$"
+  } else {
+    factorString <- "$\\gamma$"
+  }
+  colnames(dataSF) <- c(" ", "$\\lambda$", " ", 
+                        " ", factorString,  " ")
+  rownames(dataSF) <- countryAbbrevs
+  tableSF <- xtable(dataSF, 
+                    caption=paste("Single-factor model (with $", tolower(factor), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    label=paste("tab:SF_Parameters_With_", factor, sep=""),
+                    digits = c(1, 4,4,4, 2,2,2),
+                    align = "r|ccc|ccc") #Sets alignment of the numbers in the columns
+  return(tableSF)
+}
+
+###############################
+# Prints a covariance table for countryAbbrev
+##
+printSingleFactorParamsTable <- function(factor){
+  print(singleFactorParamsTable(factor),
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny", 
+      table.placement="H")
 }
 @
 
@@ -623,7 +751,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!missing(energyType)){
     # Consider this replacement only if energyType has been specified.
-    if (!(haveData(countryAbbrev, energyType))){
+    if (!(haveDataCD(countryAbbrev, energyType))){
       #If we don't have data for this combination of countryAbbrev and energyType, 
       # return a column of NAs if the above conditions have been met.
       nRows <- 21 # All of these countries need 21 rows.
@@ -659,7 +787,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
 # Calculates parameter estimates and confidence intervals
 # for the Cobb-Douglas production function given a country.
 #
-# countryName is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
 # energyType is a string, one of "Q", "X", or "U"
 #
 # returns a data.frame of data for the Cobb-Douglas model. 
@@ -670,7 +798,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
 ##
 cobbDouglasData <- function(countryAbbrev, energyType){
   #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
-  if (!haveData(countryAbbrev, energyType)){
+  if (!haveDataCD(countryAbbrev, energyType)){
     #Return a column of NAs if the above conditions have been met.
     nRows <- 3 # +95% CI, CDe, and -95% CI.
     nCols <- 4 # lambda, alpha, beta, and gamma
@@ -704,7 +832,7 @@ cobbDouglasData <- function(countryAbbrev, energyType){
     row.names(upperCD) <- "+95% CI"
   } else {
 #     print("")
-#     print(paste("In cobbDouglasData:", countryName, energyType))
+#     print(paste("In cobbDouglasData:", countryAbbrev, energyType))
 #     print("summaryCD:")
 #     print(paste("    df:", summaryCD$df))
 #     print(paste("    sigma:", summaryCD$sigma))
@@ -761,8 +889,8 @@ cobbDouglasData <- function(countryAbbrev, energyType){
 ############
 # Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
 ##
-cobbDouglasCountryRow <- function(countryName, energyType){
-  dataCD <- cobbDouglasData(countryName, energyType)
+cobbDouglasCountryRow <- function(countryAbbrev, energyType){
+  dataCD <- cobbDouglasData(countryAbbrev, energyType)
   if (missing(energyType)){
     out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
                  dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
@@ -837,7 +965,7 @@ cobbDouglasParamsTableNoEnergy <- function(){
                         " ", "$\\beta$",   " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption="Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                    caption="Cobb-Douglas model (without energy) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
                     label="tab:CD_Parameters_No_Energy",
                     digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
@@ -856,7 +984,7 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
                         " ", "$\\gamma$",  " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption=paste("Cobb-Douglas (with $", tolower(energyType), "$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    caption=paste("Cobb-Douglas model (with $", tolower(energyType), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                     label=paste("tab:CD_Parameters_With_", energyType, sep=""),
                     digits = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
@@ -1182,7 +1310,9 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
-<<Print_Covariance_Tables, results='asis'>>=
+<<Print_Covariance_Tables, results='asis', eval=TRUE>>=
+#I wish I could say this, but I get bogus "$US" strings appearing in the LaTeX output.
+#lapply(countryAbbrevs, printCovarTable)
 printCovarTable("US")
 printCovarTable("UK")
 printCovarTable("JP")
@@ -1198,6 +1328,22 @@ printCovarTable("ZM")
 \section{Model Parameters}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Single-factor Models}
+
+Tables \ref{} below provide tabular results for single-factor models.
+
+<<SF_Params_Tables, results='asis', eval=TRUE>>=
+# print(singleFactorParamsTable("Q"),
+#      caption.placement="top", 
+#      sanitize.colnames.function = identity, 
+#      size="\\tiny", 
+#      table.placement="H")
+#printSingleFactorParamsTable("Q")
+lapply(factors, printSingleFactorParamsTable)
+@
+
+\subsection{Cobb-Douglas Models}
 
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
