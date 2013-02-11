@@ -197,9 +197,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 *********** Caleb, put your LaTeX code here. *************
 
-Added some text here to see what changes.
-Adding more text after adding more file types to .gitignore.
-
 <<setup, echo=FALSE, message=FALSE>>=
 require(knitr)
 require(lattice)
