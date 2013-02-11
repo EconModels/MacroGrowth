@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  11 FEB 2013 12:12
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  11 FEB 2013 14:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -330,49 +330,78 @@ Missing character: There is no ™ in font cmr12!
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no ™ in font cmr12!
+ [2]
+Package color Info: Redefining color shadecolor on input line 270.
 
+<figure/Factors_Lattice_Graph.pdf, id=22, 469.74997pt x 542.01997pt>
+File: figure/Factors_Lattice_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig:Factors_Lattice_Graph' on page 2 undefined on inp
-ut line 267.
+<use figure/Factors_Lattice_Graph.pdf>
+Package pdftex.def Info: figure/Factors_Lattice_Graph.pdf used on input line 27
+2.
+(pdftex.def)             Requested size: 390.0pt x 450.02533pt.
+ [3] [4 <./figure/Factors_Lattice_Graph.pdf>]
+Package color Info: Redefining color shadecolor on input line 297.
+ <figure/SF_GDP_Lattice_Graph.pdf, id=41, 469.74997pt x 542.01997pt>
+File: figure/SF_GDP_Lattice_Graph.pdf Graphic file (type pdf)
 
-[2]
+<use figure/SF_GDP_Lattice_Graph.pdf>
+Package pdftex.def Info: figure/SF_GDP_Lattice_Graph.pdf used on input line 299
+.
+(pdftex.def)             Requested size: 390.0pt x 450.02533pt.
+ [5] [6 <./figure/SF_GDP_Lattice_Graph.pdf>]
+Package color Info: Redefining color shadecolor on input line 322.
+ <figure/CD_Params_Graph.pdf, id=57, 469.74997pt x 361.35pt>
+File: figure/CD_Params_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig:SF_GDP_Lattice_Graph' on page 3 undefined on inpu
-t line 287.
+<use figure/CD_Params_Graph.pdf>
+Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 324.
+(pdftex.def)             Requested size: 390.0pt x 300.01967pt.
+Package color Info: Redefining color shadecolor on input line 350.
 
+<figure/CDq_Params_Graph.pdf, id=58, 469.74997pt x 361.35pt>
+File: figure/CDq_Params_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig:CD_Params_Graph' on page 3 undefined on input lin
-e 305.
+<use figure/CDq_Params_Graph.pdf>
+Package pdftex.def Info: figure/CDq_Params_Graph.pdf used on input line 352.
+(pdftex.def)             Requested size: 390.0pt x 300.01967pt.
+ [7 <./figure/CD_Params_Graph.pdf>]
+Package color Info: Redefining color shadecolor on input line 366.
 
+<figure/CDx_Params_Graph.pdf, id=71, 469.74997pt x 361.35pt>
+File: figure/CDx_Params_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig:CDq_Params_Graph' on page 3 undefined on input li
-ne 326.
+<use figure/CDx_Params_Graph.pdf>
+Package pdftex.def Info: figure/CDx_Params_Graph.pdf used on input line 368.
+(pdftex.def)             Requested size: 390.0pt x 300.01967pt.
+ [8 <./figure/CDq_Params_Graph.pdf>]
+Package color Info: Redefining color shadecolor on input line 380.
 
+<figure/CDu_Params_Graph.pdf, id=82, 469.74997pt x 361.35pt>
+File: figure/CDu_Params_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `tab:CD_Parameters_With_X' on page 3 undefined on inpu
-t line 333.
+<use figure/CDu_Params_Graph.pdf>
+Package pdftex.def Info: figure/CDu_Params_Graph.pdf used on input line 382.
+(pdftex.def)             Requested size: 390.0pt x 300.01967pt.
+ [9 <./figure/CDx_Params_Graph.pdf>]
+Package color Info: Redefining color shadecolor on input line 394.
 
-[3]
+<figure/CD_GDP_Lattice_Graph.pdf, id=93, 469.74997pt x 542.01997pt>
+File: figure/CD_GDP_Lattice_Graph.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig:CDx_Params_Graph' on page 4 undefined on input li
-ne 335.
+<use figure/CD_GDP_Lattice_Graph.pdf>
+Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 396
+.
+(pdftex.def)             Requested size: 390.0pt x 450.02533pt.
+ [10 <./figure/CDu_Params_Graph.pdf>]
+[11 <./figure/CD_GDP_Lattice_Graph.pdf>] [12] [13]
 
+LaTeX Warning: Reference `' on page 14 undefined on input line 663.
 
-LaTeX Warning: Reference `fig:CDu_Params_Graph' on page 4 undefined on input li
-ne 342.
-
-
-LaTeX Warning: Reference `fig:CD_GDP_Lattice_Graph' on page 4 undefined on inpu
-t line 349.
-
-[4] [5]
-
-LaTeX Warning: Reference `' on page 6 undefined on input line 614.
-
-[6]
+[14]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 693.
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 693
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 742.
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 742
 .
  (/usr/local/texlive/2011/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
@@ -380,48 +409,29 @@ File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 
 LaTeX Font Warning: Font shape `TS1/cmtt/bx/n' undefined
 (Font)              using `TS1/cmtt/m/n' instead
-(Font)              for symbol `textdollar' on input line 693.
+(Font)              for symbol `textdollar' on input line 742.
 
 
-Overfull \hbox (17.5502pt too wide) in paragraph at lines 693--693
+Overfull \hbox (17.5502pt too wide) in paragraph at lines 742--742
 []\OT1/cmtt/m/n/12 Error: error in evaluating the argument 'x' in selecting a m
 ethod
  []
 
 
-Overfull \hbox (5.2002pt too wide) in paragraph at lines 693--693
+Overfull \hbox (5.2002pt too wide) in paragraph at lines 742--742
 \OT1/cmtt/m/n/12 step factor 0.000488281 reduced below 'minFactor' of 0.0009765
 62 
  []
 
 
-Overfull \hbox (66.95023pt too wide) in paragraph at lines 693--693
+Overfull \hbox (66.95023pt too wide) in paragraph at lines 742--742
 \OT1/cmtt/m/n/12 Calls: singleFactorParamsTable ... confint.nls -> profile -> p
 rofile.nls
  []
 
-
-LaTeX Warning: Reference `tab:CD_Parameters_No_Energy' on page 7 undefined on i
-nput line 698.
-
-[7]
-
-LaTeX Warning: Reference `tab:CD_Parameters_With_Q' on page 8 undefined on inpu
-t line 703.
-
-
-LaTeX Warning: Reference `tab:CD_Parameters_With_X' on page 8 undefined on inpu
-t line 708.
-
-
-LaTeX Warning: Reference `tab:CD_Parameters_With_U' on page 8 undefined on inpu
-t line 713.
-
-
-LaTeX Warning: Reference `tab:AICTable' on page 8 undefined on input line 726.
-
+[15] [16]
 No file EconGrowth.bbl.
-[8] (./EconGrowth.aux)
+[17] (./EconGrowth.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -430,10 +440,10 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3202 strings out of 493633
- 43753 string characters out of 3143378
- 109305 words of memory out of 3000000
- 6427 multiletter control sequences out of 15000+200000
+ 3242 strings out of 493633
+ 44884 string characters out of 3143378
+ 118430 words of memory out of 3000000
+ 6458 multiletter control sequences out of 15000+200000
  13606 words of font info for 52 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  38i,9n,34p,481b,278s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -458,10 +468,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2011/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2011/texm
 f-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2011/texmf-
 dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on EconGrowth.pdf (8 pages, 236309 bytes).
+Output written on EconGrowth.pdf (17 pages, 356852 bytes).
 PDF statistics:
- 112 PDF objects out of 1000 (max. 8388607)
- 81 compressed objects within 1 object stream
+ 199 PDF objects out of 1000 (max. 8388607)
+ 151 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
