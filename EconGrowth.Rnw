@@ -197,7 +197,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 *********** Caleb, put your LaTeX code here. *************
 
-
+Added some text here to see what changes.
 
 <<setup, echo=FALSE, message=FALSE>>=
 require(knitr)

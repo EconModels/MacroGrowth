@@ -2,3 +2,13 @@
 .Rhistory
 .RData
 /cache
+
+#
+# Files created by LaTeX
+#
+*.pdf
+*.log
+*.gz
+*.tikz
+EconGrowth-concordance.tex
+EconGrowth-tikzDictionary
