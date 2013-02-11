@@ -155,9 +155,27 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item Heun: Add setup variables for figure height and width where not already included.
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
-\item Heun: Add $k$, $l$, $q$, $x$, and $u$ ONLY fits
+\item Heun: Add single factor fits
+      \begin{itemize}
+      \item \st{GDP comparison graph}
+      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter tables for each country in the appendix
+      \item \st{AIC rows in the AIC table}
+      \end{itemize}
 \item Heun: Add CES production function fits
+      \begin{itemize}
+      \item GDP comparison graph
+      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter tables for each country in the appendix
+      \item AIC rows in the AIC table
+      \end{itemize}
 \item Heun: Add Linex production function fits
+      \begin{itemize}
+      \item GDP comparison graph
+      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item parameter tables for each country in the appendix
+      \item AIC rows in the AIC table
+      \end{itemize}
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
@@ -172,7 +190,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item \st{Heun: Add covariance metrics.}
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 *********** Caleb, put your LaTeX code here. *************
 
@@ -218,9 +238,10 @@ energyTypes <- c(Q="Q", X="X", U="U")
 # The following list sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
 countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9)
 # Full page lattice plot sizes and other parameters
-layoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
-figWidth <- 6.5 #Inches
-figHeight <- 7.5 #Inches
+ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
+figWidth <- 6.5             #Inches
+ninePanelGraphHeight <- 7.5 #Inches
+parameterGraphHeight <- 5   #Inches
 keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
 keyXLoc <- 0.01 #x position of the key
@@ -357,11 +378,13 @@ covarianceTable <- function(countryAbbrev){
 }
 @
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Historical Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Facotrs of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Factors_Lattice_Graph, fig.width=figWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
   dataTable <- loadData("All")
   graphType <- "b" #b is for both line and symbol
@@ -372,7 +395,7 @@ createFactorsLatticeGraph <- function(){
   graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
                   type = graphType,
                   index.cond = list(countryOrderForGraphs), #orders the panels.
-                  layout = layoutSpec, 
+                  layout = ninePanelLayoutSpec, 
                   strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
@@ -396,7 +419,9 @@ createFactorsLatticeGraph <- function(){
 createFactorsLatticeGraph()
 @
 
-\section{Single-factor Models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single-factor Models (SF)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<single-factor functions, eval=TRUE>>=
 ####################
@@ -466,14 +491,14 @@ createSFLatticeGraph <- function(){
   #Now add the predictions columns to the data.
   dataTable <- cbind(dataTable, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 2, 4, 1, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 1, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "red", "blue", "darkorange", "darkgreen") #line and symbol colors
+  lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
   symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
   graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=list(countryOrderForGraphs), #orders the panels.
-                  layout=layoutSpec, #indicates a 3x3 arrangement of panels.
+                  layout=ninePanelLayoutSpec, #indicates a 3x3 arrangement of panels.
                   strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
@@ -494,15 +519,6 @@ createSFLatticeGraph <- function(){
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
-
-# print(singleFactorPredictions("US", "K"))
-# print(singleFactorPredictionsColumn("K"))
-# print(singleFactorPredictionsColumn("L"))
-# print(singleFactorPredictionsColumn("Q"))
-# print(singleFactorPredictionsColumn("X"))
-# print(singleFactorPredictionsColumn("U"))
-# print(createSFLatticeGraph())
-
 @
 
 We begin by fitting single-factor economic models of the form
@@ -511,13 +527,17 @@ We begin by fitting single-factor economic models of the form
   y = a^{\lambda (t-t_0)}f^{m}
 \end{equation}
 
-\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$ and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, and $\gamma$ for $q$, $x$, or $u$.
+\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, or $u$.
 
-<<SF_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Single-factor results.">>=
+Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
+
+<<SF_GDP_Lattice_Graph, fig.width=figWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
 @
 
-\section{Cobb-Douglas Without Energy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cobb-Douglas Models Without Energy (CD)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<cobb-douglas functions, eval=TRUE>>=
 ####################
@@ -912,7 +932,7 @@ createCDLatticeGraph <- function(){
   graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=list(countryOrderForGraphs), #orders the panels.
-                  layout=layoutSpec, #indicates a 3x3 arrangement of panels.
+                  layout=ninePanelLayoutSpec, #indicates a 3x3 arrangement of panels.
                   strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
@@ -933,6 +953,7 @@ createCDLatticeGraph <- function(){
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
+
 @
 
 The Cobb-Douglas model without energy is given by
@@ -943,11 +964,11 @@ The Cobb-Douglas model without energy is given by
 
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
-<<CD_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CD_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph()
 @
 
-\section{Cobb-Douglas With Energy}
+\section{Cobb-Douglas Models With Energy (CDe)}
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
@@ -965,7 +986,7 @@ The Cobb-Douglas model with energy is given by
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
-<<CDq_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDq_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("Q")
 @
 
@@ -975,7 +996,7 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
-<<CDx_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDx_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("X")
 @
 
@@ -983,7 +1004,7 @@ createCDParamsGraph("X")
 
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
-<<CDu_Params_Graph, fig.width=figWidth, fig.height=5, fig.pos="H", fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDu_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph("U")
 @
 
@@ -991,11 +1012,13 @@ createCDParamsGraph("U")
 
 Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
 
-<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=figHeight, fig.pos="H", fig.cap="Cobb-Douglas results.">>=
+<<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
 @
 
-\section{CES}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{CES Models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<CES function, eval=FALSE>>=
 cesData <- function(countryName, energyType){
@@ -1085,6 +1108,7 @@ cesTable <- function(countryName, energyType){
 @
 
 \subsection{CES with $Q$}
+
 <<CESq analysisQ, eval=FALSE>>=
 countryName <- "US"
 energyType <- "Q"
@@ -1104,7 +1128,9 @@ print(tableCESq, caption.placement="top")
 
 \subsection{CES with $U$}
 
-\section{LINEX}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{LINEX Models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{LINEX with $Q$}
 
@@ -1112,58 +1138,17 @@ print(tableCESq, caption.placement="top")
 
 \subsection{LINEX with $U$}
 
-\section{Goodness of Fit}
-
-<<AIC_Analysis>>=
-###############################
-# Creates an xtable object that holds the AIC values for each parameter estimation that we include.
-##
-createAICTable <- function(){
-  # Cobb-Douglas
-  models <- lapply(countryAbbrevs, cobbDouglasModel)
-  aicCD <- data.frame(lapply(models, AIC))
-  rownames(aicCD) <- "CD"
-  # Cobb-Douglas with Q
-  models <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
-  aicCDq <- data.frame(lapply(models, AIC))
-  rownames(aicCDq) <- "CD$q$"
-  # Cobb-Douglas with X
-  models <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
-  aicCDx <- data.frame(lapply(models, AIC))
-  rownames(aicCDx) <- "CD$x$"
-  # Cobb-Douglas with U
-  models <- c(cobbDouglasModel("US", "U"), cobbDouglasModel("UK", "U"), cobbDouglasModel("JP", "U"))
-  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
-                  UK=AIC(cobbDouglasModel("UK", "U")), 
-                  JP=AIC(cobbDouglasModel("JP", "U")),
-                  CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
-  rownames(aicCDu) <- "CD$u$"
-  # Create the data.frame table
-  out <- rbind(aicCD, aicCDq, aicCDx, aicCDu) 
-  # Create the xtable with caption and label
-  out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
-  return(out)
-}
-@
-
-We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
-
-<<AIC_Table, results='asis', label="AIC_Table">>=
-print(createAICTable(), 
-      caption.placement="top", 
-      sanitize.rownames.function = identity)
-      
-@
-
-The AIC results show *****************.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ****************** Add conclusion here. *********************
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and assistance with the statistical analyses presented herein.
+Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and invaluable assistance with the statistical analyses presented herein.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
@@ -1171,10 +1156,14 @@ The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Mich
 %% \section{}
 %% \label{}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
-\section{Tabular Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Covariances}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Covariance Tables}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
@@ -1250,7 +1239,10 @@ print(covarianceTable("ZM"),
                       table.placement="H")
 @
 
-\subsection{Model Parameters}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Parameters}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
@@ -1292,6 +1284,72 @@ print(cobbDouglasParamsTableWithEnergy("U"),
       table.placement="H")
 @
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Goodness of fit}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<AIC_Table_Functions>>=
+###############################
+# Creates an xtable object that holds the AIC values for each parameter estimation that we include.
+##
+createAICTable <- function(){
+  # Single-factor with K
+  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K")
+  aicSFk <- data.frame(lapply(sfKModels, AIC))
+  rownames(aicSFk) <- "SF$k$"
+  # Single-factor with L
+  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L")
+  aicSFl <- data.frame(lapply(sfLModels, AIC))
+  rownames(aicSFl) <- "SF$l$"
+  # Single-factor with Q
+  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q")
+  aicSFq <- data.frame(lapply(sfQModels, AIC))
+  rownames(aicSFq) <- "SF$q$"
+  # Single-factor with X
+  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X")
+  aicSFx <- data.frame(lapply(sfXModels, AIC))
+  rownames(aicSFx) <- "SF$x$"
+  # Single-factor with U
+  aicSFu <- cbind(US=AIC(singleFactorModel("US", "U")), 
+                  UK=AIC(singleFactorModel("UK", "U")), 
+                  JP=AIC(singleFactorModel("JP", "U")),
+                  CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
+  rownames(aicSFu) <- "SF$u$"
+  # Cobb-Douglas models
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel)
+  aicCD <- data.frame(lapply(cdModels, AIC))
+  rownames(aicCD) <- "CD"
+  # Cobb-Douglas with Q
+  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
+  aicCDq <- data.frame(lapply(cdQModels, AIC))
+  rownames(aicCDq) <- "CD$q$"
+  # Cobb-Douglas with X
+  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
+  aicCDx <- data.frame(lapply(cdXModels, AIC))
+  rownames(aicCDx) <- "CD$x$"
+  # Cobb-Douglas with U
+  cdUModels <- c(cobbDouglasModel("US", "U"), cobbDouglasModel("UK", "U"), cobbDouglasModel("JP", "U"))
+  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
+                  UK=AIC(cobbDouglasModel("UK", "U")), 
+                  JP=AIC(cobbDouglasModel("JP", "U")),
+                  CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
+  rownames(aicCDu) <- "CD$u$"
+  # Create the data.frame table
+  out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, aicCD, aicCDq, aicCDx, aicCDu) 
+  # Create the xtable with caption and label
+  out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
+  return(out)
+}
+@
+
+We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
+
+<<AIC_Table, results='asis', label="AIC_Table", eval=TRUE>>=
+print(createAICTable(), 
+      caption.placement="top", 
+      sanitize.rownames.function = identity)
+@
 
 
 %% References
