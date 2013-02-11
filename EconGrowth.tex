@@ -231,12 +231,13 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
+\item Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
 \item \st{Heun: move tables to an appendix at the end.}
@@ -263,7 +264,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section{Historical Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Facotrs of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
+Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
@@ -458,11 +459,12 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  US economy.}
+\caption{Covariance table for US.}
 \label{tab:Covariance_US}
+{\tiny
 \begin{tabular}{rrrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ & $u$ \\ 
@@ -475,17 +477,19 @@ $y$ & 1.00 & 0.99 & 0.95 & 0.95 & 0.95 &  \\
   $u$ &  &  &  &  &  & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  UK economy.}
+\caption{Covariance table for UK.}
 \label{tab:Covariance_UK}
+{\tiny
 \begin{tabular}{rrrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ & $u$ \\ 
@@ -498,17 +502,19 @@ $y$ & 1.00 & 0.99 & 0.89 & 0.53 & 0.47 &  \\
   $u$ &  &  &  &  &  & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  JP economy.}
+\caption{Covariance table for JP.}
 \label{tab:Covariance_JP}
+{\tiny
 \begin{tabular}{rrrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ & $u$ \\ 
@@ -521,17 +527,19 @@ $y$ & 1.00 & 0.98 & -0.62 & 0.96 & 0.96 &  \\
   $u$ &  &  &  &  &  & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  CN economy.}
+\caption{Covariance table for CN.}
 \label{tab:Covariance_CN}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -543,17 +551,19 @@ $y$ & 1.00 & 1.00 &  & 0.99 & 0.99 \\
   $x$ & 0.99 & 0.99 &  & 1.00 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  ZA economy.}
+\caption{Covariance table for ZA.}
 \label{tab:Covariance_ZA}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -565,17 +575,19 @@ $y$ & 1.00 & 0.96 &  & 0.97 & 0.97 \\
   $x$ & 0.97 & 0.89 &  & 1.00 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  SA economy.}
+\caption{Covariance table for SA.}
 \label{tab:Covariance_SA}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -587,17 +599,19 @@ $y$ & 1.00 & 0.99 & 0.99 & 0.97 & 0.97 \\
   $x$ & 0.97 & 0.95 & 0.95 & 1.00 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  IR economy.}
+\caption{Covariance table for IR.}
 \label{tab:Covariance_IR}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -609,17 +623,19 @@ $y$ & 1.00 & 0.99 & 0.97 & 0.99 & 0.99 \\
   $x$ & 0.99 & 0.98 & 0.97 & 1.00 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  TZ economy.}
+\caption{Covariance table for TZ.}
 \label{tab:Covariance_TZ}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -631,17 +647,19 @@ $y$ & 1.00 & 0.99 & 0.98 & 1.00 & 1.00 \\
   $x$ & 1.00 & 0.99 & 0.97 & 1.00 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:42 2013
+% Sun Feb 10 22:47:16 2013
 \begin{table}[H]
 \begin{center}
-\caption{Covariance table for  ZM economy.}
+\caption{Covariance table for ZM.}
 \label{tab:Covariance_ZM}
+{\tiny
 \begin{tabular}{rrrrrr}
   \hline
  & $y$ & $k$ & $l$ & $q$ & $x$ \\ 
@@ -653,6 +671,7 @@ $y$ & 1.00 & 0.98 & 0.88 & 0.98 & 0.96 \\
   $x$ & 0.96 & 0.94 & 0.79 & 0.99 & 1.00 \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 
@@ -666,7 +685,7 @@ $y$ & 1.00 & 0.98 & 0.88 & 0.98 & 0.96 \\
 Table \ref{tab:CD_Parameters_No_Energy} gives the parameters for the Cobb-Douglas model without energy.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:43 2013
+% Sun Feb 10 22:47:17 2013
 \begin{table}[H]
 \begin{center}
 \caption{Cobb-Douglas (without energy) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -696,7 +715,7 @@ US & 0.0087 & 0.0102 & 0.0116 & 0.21 & 0.27 & 0.34 & 0.66 & 0.73 & 0.79 \\
 The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:47 2013
+% Sun Feb 10 22:47:22 2013
 \begin{table}[H]
 \begin{center}
 \caption{Cobb-Douglas (with $q$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -726,7 +745,7 @@ US & 0.0078 & 0.0102 & 0.0126 & 0.19 & 0.27 & 0.36 & 0.59 & 0.72 & 0.85 & -0.17 
 Table \ref{tab:CD_Parameters_With_X} gives the parameters for the Cobb-Douglas model with exergy ($x$).
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:51 2013
+% Sun Feb 10 22:47:26 2013
 \begin{table}[H]
 \begin{center}
 \caption{Cobb-Douglas (with $x$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -756,7 +775,7 @@ US & 0.0079 & 0.0103 & 0.0127 & 0.19 & 0.27 & 0.35 & 0.59 & 0.72 & 0.85 & -0.16 
 The Cobb-Douglas (with useful work, $u$) parameters are given in Table \ref{tab:CD_Parameters_With_U}.
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:53 2013
+% Sun Feb 10 22:47:27 2013
 \begin{table}[H]
 \begin{center}
 \caption{Cobb-Douglas (with $u$) for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\% confidence interval bounds to left and right.)}
@@ -794,11 +813,12 @@ US & 0.0058 & 0.0086 & 0.0113 & 0.20 & 0.36 & 0.51 & 0.54 & 0.70 & 0.87 & -0.13 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Feb 10 22:10:53 2013
-\begin{table}[ht]
+% Sun Feb 10 22:47:28 2013
+\begin{table}[H]
 \begin{center}
 \caption{AIC values for all models.}
 \label{tab:AICTable}
+{\tiny
 \begin{tabular}{rrrrrrrrrr}
   \hline
  & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\ 
@@ -814,6 +834,7 @@ SF$k$ & -73.1 & -89.6 & -103.6 & -35.8 & -69.0 & -71.0 & -65.3 & -45.0 & -60.9 \
   CD$u$ & -128.2 & -92.9 & -79.6 &  &  &  &  &  &  \\ 
    \hline
 \end{tabular}
+}
 \end{center}
 \end{table}
 

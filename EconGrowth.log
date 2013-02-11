@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  10 FEB 2013 22:10
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  10 FEB 2013 22:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -331,103 +331,103 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no ™ in font cmr12!
  [2]
-Package color Info: Redefining color shadecolor on input line 269.
+Package color Info: Redefining color shadecolor on input line 270.
 
 <figure/Factors_Lattice_Graph.pdf, id=22, 469.74997pt x 542.01997pt>
 File: figure/Factors_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/Factors_Lattice_Graph.pdf>
 Package pdftex.def Info: figure/Factors_Lattice_Graph.pdf used on input line 27
-1.
+2.
 (pdftex.def)             Requested size: 390.0pt x 450.02533pt.
  [3] [4 <./figure/Factors_Lattice_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 296.
+Package color Info: Redefining color shadecolor on input line 297.
  <figure/SF_GDP_Lattice_Graph.pdf, id=41, 469.74997pt x 542.01997pt>
 File: figure/SF_GDP_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/SF_GDP_Lattice_Graph.pdf>
-Package pdftex.def Info: figure/SF_GDP_Lattice_Graph.pdf used on input line 298
+Package pdftex.def Info: figure/SF_GDP_Lattice_Graph.pdf used on input line 299
 .
 (pdftex.def)             Requested size: 390.0pt x 450.02533pt.
  [5] [6 <./figure/SF_GDP_Lattice_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 321.
+Package color Info: Redefining color shadecolor on input line 322.
  <figure/CD_Params_Graph.pdf, id=57, 469.74997pt x 361.35pt>
 File: figure/CD_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_Params_Graph.pdf>
-Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 323.
+Package pdftex.def Info: figure/CD_Params_Graph.pdf used on input line 324.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
-Package color Info: Redefining color shadecolor on input line 349.
+Package color Info: Redefining color shadecolor on input line 350.
 
 <figure/CDq_Params_Graph.pdf, id=58, 469.74997pt x 361.35pt>
 File: figure/CDq_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CDq_Params_Graph.pdf>
-Package pdftex.def Info: figure/CDq_Params_Graph.pdf used on input line 351.
+Package pdftex.def Info: figure/CDq_Params_Graph.pdf used on input line 352.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
  [7 <./figure/CD_Params_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 365.
+Package color Info: Redefining color shadecolor on input line 366.
 
 <figure/CDx_Params_Graph.pdf, id=71, 469.74997pt x 361.35pt>
 File: figure/CDx_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CDx_Params_Graph.pdf>
-Package pdftex.def Info: figure/CDx_Params_Graph.pdf used on input line 367.
+Package pdftex.def Info: figure/CDx_Params_Graph.pdf used on input line 368.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
  [8 <./figure/CDq_Params_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 379.
+Package color Info: Redefining color shadecolor on input line 380.
 
 <figure/CDu_Params_Graph.pdf, id=82, 469.74997pt x 361.35pt>
 File: figure/CDu_Params_Graph.pdf Graphic file (type pdf)
 
 <use figure/CDu_Params_Graph.pdf>
-Package pdftex.def Info: figure/CDu_Params_Graph.pdf used on input line 381.
+Package pdftex.def Info: figure/CDu_Params_Graph.pdf used on input line 382.
 (pdftex.def)             Requested size: 390.0pt x 300.01967pt.
  [9 <./figure/CDx_Params_Graph.pdf>]
-Package color Info: Redefining color shadecolor on input line 393.
+Package color Info: Redefining color shadecolor on input line 394.
 
 <figure/CD_GDP_Lattice_Graph.pdf, id=93, 469.74997pt x 542.01997pt>
 File: figure/CD_GDP_Lattice_Graph.pdf Graphic file (type pdf)
 
 <use figure/CD_GDP_Lattice_Graph.pdf>
-Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 395
+Package pdftex.def Info: figure/CD_GDP_Lattice_Graph.pdf used on input line 396
 .
 (pdftex.def)             Requested size: 390.0pt x 450.02533pt.
  [10 <./figure/CDu_Params_Graph.pdf>]
 [11 <./figure/CD_GDP_Lattice_Graph.pdf>] [12] [13] [14] [15]
 No file EconGrowth.bbl.
-[16] [17] (./EconGrowth.aux) ) 
+[16] (./EconGrowth.aux) ) 
 Here is how much of TeX's memory you used:
  3218 strings out of 493633
  44243 string characters out of 3143378
- 114397 words of memory out of 3000000
+ 113397 words of memory out of 3000000
  6439 multiletter control sequences out of 15000+200000
  13140 words of font info for 50 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  38i,9n,34p,387b,278s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2011/texmf-dist/fonts/enc/dvi
-ps/cm-super/cm-super-ts1.enc}</usr/local/texlive/2011/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmr12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr17.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-sy10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y7.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8
-.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.
-pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.p
-fb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb
-></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-</usr/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on EconGrowth.pdf (17 pages, 340519 bytes).
+{/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm
+-super/cm-super-ts1.enc}</usr/local/texlive/2011/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmbx12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmmi10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmmi12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmmi8.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr12.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr17.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8
+.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.
+pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pf
+b></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+</usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><
+/usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></
+usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></us
+r/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr
+/local/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on EconGrowth.pdf (16 pages, 341850 bytes).
 PDF statistics:
- 191 PDF objects out of 1000 (max. 8388607)
- 145 compressed objects within 2 object streams
+ 188 PDF objects out of 1000 (max. 8388607)
+ 143 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

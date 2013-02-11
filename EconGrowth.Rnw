@@ -176,12 +176,13 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email but have not heard a response.
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
+\item Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
 \item \st{Heun: move tables to an appendix at the end.}
@@ -206,7 +207,9 @@ require(ggplot2)
 require(car)
 require(mosaic)
 require(xtable)
-require(tikzDevice) #See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
+# tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
+require(tikzDevice) 
 trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=FALSE)
@@ -214,7 +217,7 @@ opts_chunk$set(
   # ********************************************************************************************************
   eval=TRUE,
   # ********************************************************************************************************
-  warning=FALSE, #Tells whether to show warnings.
+  warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
@@ -246,11 +249,11 @@ keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
 keyXLoc <- 0.01 #x position of the key
 keyYLoc <- 0.95 #y position of the key
-scaleTextSize <- 1.0 #0.75 #75% of normal size
+scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
 
-<<Data, eval=TRUE>>=
+<<Data Functions, eval=TRUE>>=
 #################################
 # This function loads data given a country abbreviation.
 # The file name from which data will be loaded is assumed to be of the form 
@@ -370,11 +373,23 @@ covarianceTable <- function(countryAbbrev){
   colnames(covarResults) <- names
   rownames(covarResults) <- names
   covarXtable <- xtable(covarResults, 
-                      caption=paste("Covariance table for ", countryAbbrev, "economy."), 
+                      caption=paste("Covariance table for ", countryAbbrev, ".", sep=""), 
                       label=paste("tab:Covariance_", countryAbbrev, sep=""))
                       # digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                       # align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns)
   return(covarXtable)
+}
+
+###############################
+# Prints a covariance table for countryAbbrev
+##
+printCovarTable <- function(countryAbbrev){
+  print(covarianceTable(countryAbbrev), 
+                      caption.placement="top", 
+                      sanitize.rownames.function = identity,
+                      sanitize.colnames.function = identity,
+                      size="\\tiny",
+                      table.placement="H")
 }
 @
 
@@ -382,7 +397,7 @@ covarianceTable <- function(countryAbbrev){
 \section{Historical Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Facotrs of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
+Figure \ref{fig:Factors_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
 <<Factors_Lattice_Graph, fig.width=figWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createFactorsLatticeGraph <- function(){
@@ -1168,75 +1183,39 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
 <<Covariance_Table_US, results='asis'>>=
-print(covarianceTable("US"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("US")
 @
 
 <<Covariance_Table_UK, results='asis'>>=
-print(covarianceTable("UK"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("UK")
 @
 
 <<Covariance_Table_JP, results='asis'>>=
-print(covarianceTable("JP"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("JP")
 @
 
 <<Covariance_Table_CN, results='asis'>>=
-print(covarianceTable("CN"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("CN")
 @
 
 <<Covariance_Table_ZA, results='asis'>>=
-print(covarianceTable("ZA"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("ZA")
 @
 
 <<Covariance_Table_SA, results='asis'>>=
-print(covarianceTable("SA"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("SA")
 @
 
 <<Covariance_Table_IR, results='asis'>>=
-print(covarianceTable("IR"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("IR")
 @
 
 <<Covariance_Table_TZ, results='asis'>>=
-print(covarianceTable("TZ"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("TZ")
 @
 
 <<Covariance_Table_ZM, results='asis'>>=
-print(covarianceTable("ZM"), 
-                      caption.placement="top", 
-                      sanitize.rownames.function = identity,
-                      sanitize.colnames.function = identity,
-                      table.placement="H")
+printCovarTable("ZM")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1345,10 +1324,12 @@ createAICTable <- function(){
 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
-<<AIC_Table, results='asis', label="AIC_Table", eval=TRUE>>=
+<<AIC_Table, results='asis', label="AIC_Table">>=
 print(createAICTable(), 
       caption.placement="top", 
-      sanitize.rownames.function = identity)
+      sanitize.rownames.function = identity,
+      size="\\tiny",
+      table.placement="H")
 @
 
 
