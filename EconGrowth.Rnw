@@ -1182,39 +1182,15 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
-<<Covariance_Table_US, results='asis'>>=
+<<Print_Covariance_Tables, results='asis'>>=
 printCovarTable("US")
-@
-
-<<Covariance_Table_UK, results='asis'>>=
 printCovarTable("UK")
-@
-
-<<Covariance_Table_JP, results='asis'>>=
 printCovarTable("JP")
-@
-
-<<Covariance_Table_CN, results='asis'>>=
 printCovarTable("CN")
-@
-
-<<Covariance_Table_ZA, results='asis'>>=
 printCovarTable("ZA")
-@
-
-<<Covariance_Table_SA, results='asis'>>=
 printCovarTable("SA")
-@
-
-<<Covariance_Table_IR, results='asis'>>=
 printCovarTable("IR")
-@
-
-<<Covariance_Table_TZ, results='asis'>>=
 printCovarTable("TZ")
-@
-
-<<Covariance_Table_ZM, results='asis'>>=
 printCovarTable("ZM")
 @
 
