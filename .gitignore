@@ -10,5 +10,7 @@
 *.log
 *.gz
 *.tikz
+*.aux
 EconGrowth-concordance.tex
 EconGrowth-tikzDictionary
+EconGrowth.tex
