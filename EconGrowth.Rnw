@@ -158,7 +158,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Add single factor fits
       \begin{itemize}
       \item parameter graphs ($\lambda$ and $m$) for each country
-      \item parameter tables for each country in the appendix
+      \item \st{parameter tables for each country in the appendix}
       \item \st{GDP comparison graph}
       \item \st{AIC rows in the AIC table}
       \end{itemize}
@@ -213,7 +213,7 @@ options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -647,6 +647,34 @@ singleFactorParamsTable <- function(factor){
   return(tableSF)
 }
 
+###########################################
+# Creates a number of rows in a data.frame that contain information 
+# about the coefficients of a single factor model for countryAbbrev.
+# Each parameter has its own row with confidence intervals.
+# The country name is in a column. Which parameter is involved is
+# also in a column.
+# 
+# The return type is a data.frame.
+##
+singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor){
+  #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
+  dataSF <- singleFactorData(countryAbbrev, factor)
+  valueRow <- "SF"
+  # Create rows for each parameter
+  lambdaRow <- data.frame(country = countryAbbrev, 
+                          parameter = "lambda", 
+                          lowerCI = dataSF["-95% CI", "lambda"], 
+                          value = dataSF[valueRow, "lambda"], 
+                          upperCI = dataSF["+95% CI", "lambda"])
+  mRow <- data.frame(country = countryAbbrev, 
+                     parameter = "m",
+                     lowerCI = dataSF["-95% CI", "m"],
+                     value = dataSF[valueRow, "m"],  
+                     upperCI = dataSF["+95% CI", "m"])
+  table <- rbind(lambdaRow, mRow)
+  return(table)
+}
+
 ###############################
 # Prints a covariance table for countryAbbrev
 ##
@@ -657,6 +685,64 @@ printSingleFactorParamsTable <- function(factor){
       size="\\tiny", 
       table.placement="H")
 }
+
+#############################
+# Creates a graph with confidene intervals for the single-factor model for the given factor
+##
+createSFParamsGraph <- function(factor){
+  # Create a data table with the following columns:
+  # country abbrev, parameter (lambda or m), -95% CI, value, +95% CI
+  dataTable <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRowsForParamsGraph, factor=factor))
+print(dataTable)
+#   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+#                    data = dataTable, 
+#                    centers = value, #identifies where the dots should be placed
+#                    draw.bands = FALSE, #provides nicer error bars
+#                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+#                    layout = c(2,1), #2 column, 1 row
+#                    index.cond = list(c(1,2)), #orders the panels as lambda, m
+#                    #set labels and bg color in strip
+#                    strip = strip.custom(factor.levels=c("$\\lambda$", "$m"),  
+#                                         bg="white"),
+#                    col = "black", #Sets line color to black
+#                    lwd = 1, #Sets line width to 1.0
+#                    ylim = list(c(-0.05, 0.1), c(-0.5, 1.5)), #y axis limits
+#                    scales = list(cex=scaleTextSize, #controls text size on scales.
+#                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+#                                  y=list(relation="free", #allow each axis to be different
+#                                         at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
+#                                                 c(0.0, 0.5, 1.0)
+#                                         )
+#                                  )
+#                    )
+#   )  
+  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                   data = dataTable,
+                   centers = value, #identifies where the dots should be placed
+                   draw.bands = FALSE, #provides nicer error bars
+                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                   layout = c(2,1), #2 column, 1 row
+                   col = "black", #Sets line color to black
+                   lwd = 1, #Sets line width to 1.0
+                   strip = strip.custom(bg="white", factor.levels=c("$\\lambda$", "$m$")),
+                   ylim = list(c(-0.05, 0.1), c(-0.5, 1.5)), #y axis limits
+                   scales = list(cex=scaleTextSize, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                 y=list(relation="free", #allow each axis to be different
+                                        at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
+                                                c(0.0, 0.5, 1.0)
+                                                )
+                                        )
+                                 )
+                   )
+  
+  return(graph)
+}
+
+createSFParamsGraph("L")
+
 @
 
 We begin by fitting single-factor economic models of the form
