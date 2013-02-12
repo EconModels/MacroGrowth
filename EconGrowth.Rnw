@@ -474,7 +474,13 @@ singleFactorModel <- function(countryAbbrev, factor){
   dataTable <- replaceColName(dataTable, factor, "f")
   # Now do the fit.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  mGuess <- 0.5
+  # Some economies need different guesses
+  if (countryAbbrev == "IR" && factor == "X"){
+    mGuess <- 0.7
+  } else {
+    # This works for every other combination of country and factor.
+    mGuess <- 0.5
+  }
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   modelSF <- nls(iGDP ~ exp(lambda*iYear) * f^m, 
                  data=dataTable, 
@@ -588,15 +594,6 @@ singleFactorData <- function(countryAbbrev, factor){
   ciSF <- confint(modelSF, level = ciLevel)  # Calculates confidence intervals for the SF model.
   dofSF <- summarySF$df[2] # Gives the degrees of freedom for the model.
   tvalSF <- qt(ciHalfLevel, df = dofSF)
-#   print("")
-#   print(paste("In singleFactorData:", countryAbbrev, factor))
-#   print("summarySF:")
-#   print(paste("    df:", summarySF$df))
-#   print(paste("    sigma:", summarySF$sigma))
-#   print("    coeffs: ")
-#   print(summarySF$coefficients)
-#   print("ciSF:")
-#   print(ciSF)
   #Single factor model
   lambda <- as.numeric(coef(modelSF)["lambda"])
   m <- as.numeric(coef(modelSF)["m"])
@@ -1151,7 +1148,7 @@ createCDParamsGraph("U")
 
 \subsection{Cobb-Douglas Comparisons}
 
-Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $Q$, and with $x$) to historical data.
+Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $q$, with $x$, and with $u$) to historical data.
 
 <<CD_GDP_Lattice_Graph, fig.width=figWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
@@ -1308,7 +1305,7 @@ Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
-<<Print_Covariance_Tables, results='asis', eval=TRUE>>=
+<<Print_Covariance_Tables, results='asis'>>=
 #I wish I could say this, but I get bogus "$US" strings appearing in the LaTeX output.
 #lapply(countryAbbrevs, printCovarTable)
 printCovarTable("US")
@@ -1329,16 +1326,16 @@ printCovarTable("ZM")
 
 \subsection{Single-factor Models}
 
-Tables \ref{} below provide tabular results for single-factor models.
+The following tables provide tabular results for single-factor models.
 
-<<SF_Params_Tables, results='asis', eval=TRUE>>=
-# print(singleFactorParamsTable("Q"),
-#      caption.placement="top", 
-#      sanitize.colnames.function = identity, 
-#      size="\\tiny", 
-#      table.placement="H")
-#printSingleFactorParamsTable("Q")
-lapply(factors, printSingleFactorParamsTable)
+<<SF_Params_Tables, results='asis'>>=
+#I wish I could say this, but I get bogus K [1]” strings appearing in the LaTeX output.
+#lapply(factors, printSingleFactorParamsTable)
+printSingleFactorParamsTable("K")
+printSingleFactorParamsTable("L")
+printSingleFactorParamsTable("Q")
+printSingleFactorParamsTable("X")
+printSingleFactorParamsTable("U")
 @
 
 \subsection{Cobb-Douglas Models}
@@ -1353,7 +1350,7 @@ print(cobbDouglasParamsTableNoEnergy(),
       table.placement="H")
 @
 
-The Cobb-Douglas (with thermal energy, $q$) parameters are given in Table \ref{tab:CD_Parameters_With_Q}.
+The following tables provide tabular results for Cobb-Douglas models with various energy terms.
 
 <<CDq_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("Q"), 
@@ -1363,8 +1360,6 @@ print(cobbDouglasParamsTableWithEnergy("Q"),
       table.placement="H")
 @
 
-Table \ref{tab:CD_Parameters_With_X} gives the parameters for the Cobb-Douglas model with exergy ($x$).
-
 <<CDx_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("X"), 
       caption.placement="top", 
@@ -1372,8 +1367,6 @@ print(cobbDouglasParamsTableWithEnergy("X"),
       size="\\tiny",
       table.placement="H")
 @
-
-The Cobb-Douglas (with useful work, $u$) parameters are given in Table \ref{tab:CD_Parameters_With_U}.
 
 <<CDu_Params_Table, results='asis'>>=
 print(cobbDouglasParamsTableWithEnergy("U"), 
