@@ -157,7 +157,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Add single factor fits
       \begin{itemize}
-      \item parameter graphs ($\lambda$ and $m$) for each country
+      \item correct sizes for parameter graphs for each country
+      \item \st{parameter graphs ($\lambda$ and $m$) for each country}
       \item \st{parameter tables for each country in the appendix}
       \item \st{GDP comparison graph}
       \item \st{AIC rows in the AIC table}
