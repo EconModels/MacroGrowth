@@ -11,6 +11,7 @@
 *.gz
 *.tikz
 *.aux
+*.spl
 EconGrowth-concordance.tex
 EconGrowth-tikzDictionary
 EconGrowth.tex

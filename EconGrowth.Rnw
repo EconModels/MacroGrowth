@@ -693,30 +693,6 @@ createSFParamsGraph <- function(factor){
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda or m), -95% CI, value, +95% CI
   dataTable <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRowsForParamsGraph, factor=factor))
-print(dataTable)
-#   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-#                    data = dataTable, 
-#                    centers = value, #identifies where the dots should be placed
-#                    draw.bands = FALSE, #provides nicer error bars
-#                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
-#                    layout = c(2,1), #2 column, 1 row
-#                    index.cond = list(c(1,2)), #orders the panels as lambda, m
-#                    #set labels and bg color in strip
-#                    strip = strip.custom(factor.levels=c("$\\lambda$", "$m"),  
-#                                         bg="white"),
-#                    col = "black", #Sets line color to black
-#                    lwd = 1, #Sets line width to 1.0
-#                    ylim = list(c(-0.05, 0.1), c(-0.5, 1.5)), #y axis limits
-#                    scales = list(cex=scaleTextSize, #controls text size on scales.
-#                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-#                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-#                                  y=list(relation="free", #allow each axis to be different
-#                                         at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
-#                                                 c(0.0, 0.5, 1.0)
-#                                         )
-#                                  )
-#                    )
-#   )  
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                    data = dataTable,
                    centers = value, #identifies where the dots should be placed
@@ -740,9 +716,6 @@ print(dataTable)
   
   return(graph)
 }
-
-createSFParamsGraph("L")
-
 @
 
 We begin by fitting single-factor economic models of the form
@@ -752,6 +725,29 @@ We begin by fitting single-factor economic models of the form
 \end{equation}
 
 \noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, or $u$.
+
+<<SFk_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createSFParamsGraph("K")
+@
+
+<<SFl_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createSFParamsGraph("L")
+@
+
+<<SFq_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createSFParamsGraph("Q")
+@
+
+<<SFx_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createSFParamsGraph("X")
+@
+
+<<SFu_Params_Graph, fig.width=figWidth, fig.height=parameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createSFParamsGraph("U")
+@
+
+
+
 
 Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
 
