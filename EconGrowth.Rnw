@@ -131,7 +131,7 @@
 
 \cortext[cor1]{Corresponding author}
 \address[Calvin]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
-\address[Stellenbosch]{ Stellenbosch University, School of Public Leadership, P.O. Box 610, Bellville 7535, South Africa}
+\address[Stellenbosch]{Stellenbosch University, Faculty of Economics and Management Sciences, School of Public Leadership, P.O. Box 610, Bellville 7535, South Africa}
 
 \begin{abstract}
 %% Text of abstract
@@ -183,7 +183,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item ZM: lower bound on $\lambda$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
-\item Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.
+\item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
 \item \st{Heun: move tables to an appendix at the end.}
@@ -239,20 +239,32 @@ factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
 # "1" means first alphabetically.
 countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9) # Sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
-# Full page lattice plot sizes and other parameters
+maxWidth <- 6.5 #Inches
+# Full page lattice plot sizes
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
-ninePanelGraphWidth <- 6.5   #Inches
+ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
-sfParameterGraphWidth <- 4   #Inches
-sfParameterGraphHeight <- 3  #Inches
-cdParameterGraphWidth <- 6.5 #Inches
-cdParameterGraphHeight <- 5  #Inches
 keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
 keyXLoc <- 0.01 #x position of the key
 keyYLoc <- 0.95 #y position of the key
+# Parameter graphs are tricky to ensure same size. I've found that with height set to 5 in for the 
+# cd graphs and 2.93 in for the sf graphs, I get a nearly-exact match with graph size. From these settings I 
+# can set up 2 equations:
+#    5 in = 2*hgraph + haxis
+#    2.93 in = hgraph + haxis
+# to estimate that h_axis = 0.86 in and hgraph = 2.05 in.
+h_param_graph <- 2.07 # Inches for a single panel
+h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
+sfParameterGraphHeight <- h_param_graph + h_param_axis
+cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+sfParameterGraphWidth <- maxWidth
+cdParameterGraphWidth <- maxWidth
+# Other graph parameters that apply to all graphs
 scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
+print(paste("sfParameterGraphHeight =", sfParameterGraphHeight))
+print(paste("cdParameterGraphHeight =", cdParameterGraphHeight))
 @
 
 <<Data Functions, eval=TRUE>>=
