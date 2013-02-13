@@ -214,7 +214,7 @@ options(width=75)
 options(show.signif.stars=FALSE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -475,7 +475,7 @@ createHistoricalLatticeGraph <- function(){
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<HIstorical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -746,23 +746,23 @@ We begin by fitting single-factor economic models of the form
 
 \noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, or $u$.
 
-<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("K")
 @
 
-<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("L")
 @
 
-<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("Q")
 @
 
-<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("X")
 @
 
-<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("U")
 @
 
@@ -1276,7 +1276,47 @@ createCDLatticeGraph()
 \section{CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<CES functions, eval=FALSE>>=
+<<CES functions, eval=TRUE>>=
+####################
+# Returns an nls ces model for the country and energyType specified.
+# energyType should be one of Q", "X", or "U".
+##
+cesModel <- function(countryAbbrev, energyType){
+  # Load the data that we need.
+  dataTable <- loadData(countryAbbrev)
+  # We need to do the CES fit with the desired energyType.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function.
+  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+print(dataTable)
+  # Establish guess values for phi beta, zeta, lambda_L and lambda_E.
+  phiGuess <- -20
+  betaGuess <- 0.5 # a typical value for beta (exponent on labor)
+  zetaGuess <- 0.0004 # a small value
+  lambda_LGuess <- 0.007 #assuming no technical progress on the labor-capital portion of the function
+  lambda_EGuess <- 0.008 #assuming no technical progress on the energy portion of the function
+  # Runs a non-linear least squares fit to the data with constraints
+  modelCES <- nls(iGDP ~ ((1-zeta) * (exp(lambda_L*iYear) * iCapStk^(1-beta) * iLabor^beta)^phi 
+                           + zeta*(exp(lambda_E*iYear) * iEToFit)^phi)^(1/phi), 
+                  data=dataTable,
+                  start=list(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
+                             lambda_E=lambda_EGuess),
+                  control=nls.control(maxiter=500, tol=1e-06, minFactor=1/1024, 
+                                      printEval=FALSE, warnOnly=TRUE),
+#                   algorithm = "port",
+#                   lower = list(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
+#                   upper = list(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
+                   )
+  return(modelCES)
+}
+model <- cesModel("UK", "U")
+summary <- summary(model)
+print(summary)
+
+
+
+
+
 cesData <- function(countryName, energyType){
   energyColumnName <- paste("i", energyType, sep="")
   # Load the data that we need.
