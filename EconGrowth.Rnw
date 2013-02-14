@@ -164,7 +164,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \begin{itemize}
       \item parameter graphs for each country
       \item parameter tables for each country in the appendix
-      \item AIC rows in the AIC table
+      \item \st{AIC rows in the AIC table}
       \item \st{GDP comparison graph}
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
@@ -214,7 +214,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -1546,7 +1546,7 @@ createLinexLatticeGraph <- function(){
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historica data.
 
-<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.", eval=TRUE>>=
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
 createLinexLatticeGraph()
 @
 
@@ -1583,15 +1583,10 @@ The following tables show covariances among GDP ($y$) and factors of production 
 <<Print_Covariance_Tables, results='asis'>>=
 #I wish I could say this, but I get bogus "$US" strings appearing in the LaTeX output.
 #lapply(countryAbbrevs, printCovarTable)
-printCovarTable("US")
-printCovarTable("UK")
-printCovarTable("JP")
-printCovarTable("CN")
-printCovarTable("ZA")
-printCovarTable("SA")
-printCovarTable("IR")
-printCovarTable("TZ")
-printCovarTable("ZM")
+printCovarTable("US"); printCovarTable("UK"); printCovarTable("JP")
+printCovarTable("CN"); printCovarTable("ZA")
+printCovarTable("SA"); printCovarTable("IR")
+printCovarTable("TZ"); printCovarTable("ZM")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1606,11 +1601,8 @@ The following tables provide results for parameters in single-factor models.
 <<SF_Params_Tables, results='asis'>>=
 #I wish I could say this, but I get bogus K [1]” strings appearing in the LaTeX output.
 #lapply(factors, printSingleFactorParamsTable)
-printSFParamsTable("K")
-printSFParamsTable("L")
-printSFParamsTable("Q")
-printSFParamsTable("X")
-printSFParamsTable("U")
+printSFParamsTable("K"); printSFParamsTable("L")
+printSFParamsTable("Q"); printSFParamsTable("X"); printSFParamsTable("U")
 @
 
 \subsection{Cobb-Douglas Models}
@@ -1619,9 +1611,7 @@ The following tables provide results for parameters in Cobb-Douglas models with 
 
 <<CD_Params_Table, results='asis'>>=
 printCDParamsTable()    #Without energy
-printCDParamsTable("Q")
-printCDParamsTable("X")
-printCDParamsTable("U")
+printCDParamsTable("Q"); printCDParamsTable("X"); printCDParamsTable("U") #With energy
 @
 
 \subsection{CES Models}
@@ -1637,7 +1627,7 @@ The following tables provide results for parameters in LINEX models.
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<AIC_Table_Functions>>=
+<<AIC_Table_Functions, eval=TRUE>>=
 ###############################
 # Creates an xtable object that holds the AIC values for each parameter estimation that we include.
 ##
@@ -1670,6 +1660,7 @@ createAICTable <- function(){
   ######################
   # Cobb-Douglas models
   ######################
+  # Cobb-Douglas without energy
   cdModels <- lapply(countryAbbrevs, cobbDouglasModel)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
@@ -1682,7 +1673,6 @@ createAICTable <- function(){
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  cdUModels <- c(cobbDouglasModel("US", "U"), cobbDouglasModel("UK", "U"), cobbDouglasModel("JP", "U"))
   aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
                   UK=AIC(cobbDouglasModel("UK", "U")), 
                   JP=AIC(cobbDouglasModel("JP", "U")),
@@ -1696,10 +1686,23 @@ createAICTable <- function(){
   ######################
   # LINEX models
   ######################
-
+  # LINEX with Q
+  linexQModels <- lapply(countryAbbrevs, linexModel, energyType="Q")
+  aicLINEXq <- data.frame(lapply(linexQModels, AIC))
+  rownames(aicLINEXq) <- "LINEX$q$"
+  # LINEX with X
+  linexXModels <- lapply(countryAbbrevs, linexModel, energyType="X")
+  aicLINEXx <- data.frame(lapply(linexXModels, AIC))
+  rownames(aicLINEXx) <- "LINEX$x$"  
+  # LINEX with U
+  aicLINEXu <- cbind(US=AIC(linexModel("US", "U")), 
+                  UK=AIC(linexModel("UK", "U")), 
+                  JP=AIC(linexModel("JP", "U")),
+                  CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
+  rownames(aicLINEXu) <- "LINEX$u$"
   
   # Create the data.frame table
-  out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, aicCD, aicCDq, aicCDx, aicCDu) 
+  out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, aicCD, aicCDq, aicCDx, aicCDu, aicLINEXq, aicLINEXx, aicLINEXu) 
   # Create the xtable with caption and label
   out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
   return(out)
