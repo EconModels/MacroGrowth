@@ -162,10 +162,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \end{itemize}
 \item Heun: Add Linex production function fits
       \begin{itemize}
-      \item GDP comparison graph
       \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
+      \item \st{GDP comparison graph}
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
