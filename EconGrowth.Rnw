@@ -211,7 +211,7 @@ require(xtable)
 require(tikzDevice) 
 trellis.par.set(theme=theme.mosaic())
 options(width=75)
-options(show.signif.stars=FALSE)
+options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
   eval=FALSE,
@@ -1276,7 +1276,7 @@ createCDLatticeGraph()
 \section{CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<CES functions, eval=TRUE>>=
+<<CES functions, eval=FALSE>>=
 ####################
 # Returns an nls ces model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
@@ -1290,26 +1290,29 @@ cesModel <- function(countryAbbrev, energyType){
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
 print(dataTable)
   # Establish guess values for phi beta, zeta, lambda_L and lambda_E.
-  phiGuess <- -20
-  betaGuess <- 0.5 # a typical value for beta (exponent on labor)
-  zetaGuess <- 0.0004 # a small value
-  lambda_LGuess <- 0.007 #assuming no technical progress on the labor-capital portion of the function
-  lambda_EGuess <- 0.008 #assuming no technical progress on the energy portion of the function
+  sigmaGuess <- 0.663 # 0.663 for Sweden
+  zetaGuess <- 0.147 # 0.147 for Sweden
+  betaGuess <- 0.7 # 0.7 for Sweden
+  lambda_LGuess <- 0.011 # 0.011 for Sweden
+  lambda_EGuess <- 0.018 # 0.018 for Sweden
   # Runs a non-linear least squares fit to the data with constraints
-  modelCES <- nls(iGDP ~ ((1-zeta) * (exp(lambda_L*iYear) * iCapStk^(1-beta) * iLabor^beta)^phi 
-                           + zeta*(exp(lambda_E*iYear) * iEToFit)^phi)^(1/phi), 
+  modelCES <- nls(iGDP ~ ((1-zeta)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+                                                  * iCapStk^(1-beta) 
+                                                  * iLabor^beta)^((sigma-1.0)/sigma) 
+                          + zeta^(1.0/sigma)*(exp(lambda_E*iYear) 
+                                                  * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0)), 
                   data=dataTable,
-                  start=list(phi=phiGuess, beta=betaGuess, zeta=zetaGuess, lambda_L=lambda_LGuess, 
-                             lambda_E=lambda_EGuess),
-                  control=nls.control(maxiter=500, tol=1e-06, minFactor=1/1024, 
+                  start=list(sigma=sigmaGuess, zeta=zetaGuess, beta=betaGuess, 
+                             lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
+                  control=nls.control(maxiter=10000, tol=1e-06, minFactor=1/1024, 
                                       printEval=FALSE, warnOnly=TRUE),
-#                   algorithm = "port",
-#                   lower = list(phi=-Inf, beta=0, zeta=0, lambda_L=-Inf, lambda_E=-Inf),
-#                   upper = list(phi=0, beta=1, zeta=1, lambda_L=Inf, lambda_E=Inf),
-                   )
+                  algorithm = "port",
+                  lower = list(sigma=-Inf, zeta=0, beta=0.0, lambda_L=0.0, lambda_E=0.0),
+                  upper = list(sigma= Inf, zeta=1, beta=1.0, lambda_L=0.1, lambda_E=0.1),
+                  )
   return(modelCES)
 }
-model <- cesModel("UK", "U")
+model <- cesModel("US", "Q")
 summary <- summary(model)
 print(summary)
 
@@ -1428,11 +1431,125 @@ print(tableCESq, caption.placement="top")
 \section{LINEX Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+<<LINEX functions, eval=TRUE>>=
+####################
+# Returns an nls linex model for the country and energyType specified.
+# energyType should be one of Q", "X", or "U".
+##
+linexModel <- function(countryAbbrev, energyType){
+  # Load the data that we need.
+  dataTable <- loadData(countryAbbrev)
+  # We need to do the CES fit with the desired energyType.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function.
+  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  a_0Guess <- 1.0
+  c_tGuess <- 1.0
+  # Runs a non-linear least squares fit to the data with constraints
+  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
+                  data=dataTable,
+                  start=list(a_0=a_0Guess, c_t=c_tGuess),
+                  control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, 
+                                      printEval=FALSE, warnOnly=TRUE),
+#                   algorithm = "port",
+#                   lower = list(a_0=-INF, c_t=-INF),
+#                   upper = list(a_0= INF, c_t= INF)
+                  )
+  return(modelLINEX)
+}
+
+#########################
+# Takes the LINEX fitted models and creates per-country predictions for them.
+# Returns a data.frame with the predictions.
+##
+linexPredictions <- function(countryAbbrev, energyType){
+  # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
+  if (!(haveDataSF(countryAbbrev, energyType))){
+    # If we don't have data for this combination of countryAbbrev and energyType, 
+    # return a column of NAs if the above conditions have been met.
+    nRows <- 21 # All of these countries need 21 rows.
+    df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+    colnames(df) <- "pred"
+    return(df)
+  }
+  model <- linexModel(countryAbbrev, energyType)
+  pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
+  df <- data.frame(pred)
+  # Pad with rows as necessary
+  df <- padRows(countryAbbrev, df)
+  return(df)
+}
+
+#########################
+# Takes the LINEX fitted models and creates a single column of predicted GDP values
+# that corresponds, row for row, with the AllData.txt file.
+##
+linexPredictionsColumn <- function(energyType){
+  out <- do.call("rbind", lapply(countryAbbrevs, linexPredictions, energyType=energyType))
+  colnames(out) <- c(paste("predGDP", energyType, sep=""))
+  return(out)
+}
+
+##############################
+# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+# data as open circles.
+##
+createLinexLatticeGraph <- function(){
+  dataTable <- loadData("All") #Grab the raw data
+  predictionsQ <- linexPredictionsColumn("Q") #Predictions from LINEX with Q
+  predictionsX <- linexPredictionsColumn("X") #Predictions from LINEX with X
+  predictionsU <- linexPredictionsColumn("U") #Predictions from LINEX with U
+  #Now add the predictions columns to the data.
+  dataTable <- cbind(dataTable, predictionsQ, predictionsX, predictionsU) 
+  graphType <- "b" #b is for both line and symbol
+  lineTypes <- c(0, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "red", "blue", "darkorange") #line and symbol colors
+  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+                  type=graphType,
+                  index.cond=list(countryOrderForGraphs), #orders the panels.
+                  layout=ninePanelLayoutSpec, #indicates a 3x3 arrangement of panels.
+                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
+                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+                  pch = symbols, col.symbol = colors, #Controls symbol parameters
+                  key=list(text=list(c("Actual", "With $q$", "With $x$", "With $u$")),
+                           type=graphType,
+                           cex=keyTextSize, #controls size of text in the key
+                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+                           pch=symbols, col=colors, #controls symbol (plot characters) types
+                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+                  scales=list(cex=scaleTextSize, #controls text size on scales.
+                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              y=list(relation="free", #allows each axis to be different
+                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
+                                     )
+                              ), 
+                  ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
+                  xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
+  return(graph)
+}
+
+
+
+
+
+
+@
+
 \subsection{LINEX with $Q$}
 
 \subsection{LINEX with $X$}
 
 \subsection{LINEX with $U$}
+
+Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historica data.
+
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.", eval=TRUE>>=
+createLinexLatticeGraph()
+@
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
