@@ -263,8 +263,6 @@ cdParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
 scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
-print(paste("sfParameterGraphHeight =", sfParameterGraphHeight))
-print(paste("cdParameterGraphHeight =", cdParameterGraphHeight))
 @
 
 <<Data Functions, eval=TRUE>>=
@@ -710,6 +708,8 @@ printSFParamsTable <- function(factor){
 # Creates a graph with confidene intervals for the single-factor model for the given factor
 ##
 createSFParamsGraph <- function(factor){
+  # Set the name of the 2nd graph (m)
+  factorLabel <- paste("$", tolower(factor), "$", sep="")
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda or m), -95% CI, value, +95% CI
   dataTable <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRowsForParamsGraph, factor=factor))
@@ -721,7 +721,7 @@ createSFParamsGraph <- function(factor){
                    layout = c(2,1), #2 column, 1 row
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
-                   strip = strip.custom(bg="white", factor.levels=c("$\\lambda$", "$m$")),
+                   strip = strip.custom(bg="white", factor.levels=c("$\\lambda$", factorLabel)),
                    ylim = list(c(-0.05, 0.1), c(-0.5, 1.5)), #y axis limits
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
