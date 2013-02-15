@@ -215,7 +215,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -1595,6 +1595,32 @@ linexCountryRow <- function(countryAbbrev, energyType){
   return(out)
 }
 
+###########################################
+# Creates a number of rows in a data.frame that contain information 
+# about the coefficients of a LINEX model for countryName and energyType
+# Each parameter has its own row with confidence intervals.
+# The country name is in a column. Which parameter is involved is
+# also in a column.
+# 
+# The return type is a data.frame.
+##
+linexCountryRowsForParamsGraph <- function(countryName, energyType){
+  #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
+  dataLINEX <- linexData(countryName, energyType)
+  a_0Row <- data.frame(country = countryName, 
+                          parameter = "a_0", 
+                          lowerCI = dataLINEX["-95% CI", "a_0"], 
+                          value = dataLINEX["LINEX", "a_0"], 
+                          upperCI = dataLINEX["+95% CI", "a_0"])
+  c_tRow <- data.frame(country = countryName, 
+                         parameter = "c_t",
+                         lowerCI = dataLINEX["-95% CI", "c_t"],
+                         value = dataLINEX["LINEX", "c_t"],  
+                         upperCI = dataLINEX["+95% CI", "c_t"])
+  table <- rbind(a_0Row, c_tRow)
+  return(table)
+}
+
 ############################
 # Aggregates the LINEX results into a big data table for the given energyType.
 ##
@@ -1626,7 +1652,7 @@ printLINEXParamsTable <- function(energyType){
 The LINEX model is of the form
 
 \begin{equation} \label{eq:LINEX_model}
-  y = e \: \mathrm{exp} \left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)       \right]
+  y = e \: \mathrm{exp} \left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right) \right],
 \end{equation}
 
 \noindent where $e$ is any of $q$, $x$, or $u$.
@@ -1637,9 +1663,9 @@ The LINEX model is of the form
 
 \subsection{LINEX with $U$}
 
-Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historica data.
+Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historical data.
 
-<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.", eval=TRUE>>=
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
 createLinexLatticeGraph()
 @
 
