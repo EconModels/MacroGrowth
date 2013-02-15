@@ -160,21 +160,19 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
-\item Heun: Add LINEX production function fits
-      \begin{itemize}
-      \item parameter graphs for each country
-      \item \st{parameter tables for each country in the appendix}
-      \item \st{AIC rows in the AIC table}
-      \item \st{GDP comparison graph}
-      \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length.
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
       \end{itemize}
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the LINEX model
+      \begin{itemize}
+      \item Zambia, upper bound on $c_t$
+      \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
 \item Heun: x-axis labels only on bottom for 9-panel lattice graphs
+\item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
 \item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
@@ -182,7 +180,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item \st{Heun: Add acknowledgements (Dad, Pruim)}
 \item \st{Heun: Add $u$ parameter table and graph}
 \item \st{Heun: Add covariance metrics.}
-\item Heun: Add single factor fits
+\item \st{Heun: Add single factor fits}
       \begin{itemize}
       \item \st{correct sizes for parameter graphs for each country}
       \item \st{parameter graphs ($\lambda$ and $m$) for each country}
@@ -191,6 +189,13 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item \st{AIC rows in the AIC table}
       \end{itemize}
 \item \st{Heun: Add setup variables for figure height and width where not already included.}
+\item \st{Heun: Add LINEX production function fits}
+      \begin{itemize}
+      \item \st{parameter graphs for each country}
+      \item \st{parameter tables for each country in the appendix}
+      \item \st{AIC rows in the AIC table}
+      \item \st{GDP comparison graph}
+      \end{itemize}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -215,7 +220,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -259,8 +264,11 @@ h_param_graph <- 2.07 # Inches for a single panel
 h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
 sfParameterGraphHeight <- h_param_graph + h_param_axis
 cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+linexParameterGraphHeight <- h_param_graph + h_param_axis
 sfParameterGraphWidth <- maxWidth
 cdParameterGraphWidth <- maxWidth
+cesParameterGraphWidth <- maxWidth
+linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
 scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
@@ -413,10 +421,8 @@ covarianceTable <- function(countryAbbrev){
   colnames(covarResults) <- names
   rownames(covarResults) <- names
   covarXtable <- xtable(covarResults, 
-                      caption=paste("Covariance table for ", countryAbbrev, ".", sep=""), 
+                      caption=paste(countryAbbrev, "covariance table."), 
                       label=paste("tab:Covariance_", countryAbbrev, sep=""))
-                      # digits = c(1, 4,4,4, 2,2,2, 2,2,2),
-                      # align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns)
   return(covarXtable)
 }
 
@@ -474,7 +480,7 @@ createHistoricalLatticeGraph <- function(){
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -1107,7 +1113,7 @@ printCDParamsTable <- function(energyType){
 }
 
 #############################
-# Creates a graph with confidene intervals for the Cobb-Douglas model for the given energyType
+# Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType
 ##
 createCDParamsGraph <- function(energyType){
   
@@ -1621,6 +1627,36 @@ linexCountryRowsForParamsGraph <- function(countryName, energyType){
   return(table)
 }
 
+#############################
+# Creates a graph with confidence intervals for the LINEX model for the given energyType
+##
+createLINEXParamsGraph <- function(energyType){
+  # Create a data table with the following columns:
+  # country abbrev, parameter (a_0, c_t), -95% CI, value, +95% CI
+  dataTable <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType))
+  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                   data = dataTable, 
+                   centers = value, #identifies where the dots should be placed
+                   draw.bands = FALSE, #provides nicer error bars
+                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                   layout = c(2,1), #2 column, 2 row
+                   index.cond = list(c(1,2)), #orders the panels as alpha, beta, lambda, gamma
+                   #set labels and bg color in strip
+                   strip = strip.custom(factor.levels=c("$a_0$", "$c_t$"), bg="white"),
+                   col = "black", #Sets line color to black
+                   lwd = 1, #Sets line width to 1.0
+                   ylim = list(c(-0.05, 1.0), c(-0.5, 5)), #y axis limits
+                   scales = list(cex=scaleTextSize, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                 y=list(relation="free", #allow each axis to be different
+                                        at=list(c(0.0, 0.5, 1.0), c(0, 1, 2, 3, 4, 5))   #y tick marks
+                                 )
+                   )
+  )
+  return(graph)
+}
+
 ############################
 # Aggregates the LINEX results into a big data table for the given energyType.
 ##
@@ -1655,13 +1691,32 @@ The LINEX model is of the form
   y = e \: \mathrm{exp} \left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right) \right],
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$.
+\noindent where $e$ is any of $q$, $x$, or $u$, and $a_0$ and $c_t$ are fitting parameters.
 
 \subsection{LINEX with $Q$}
 
+Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
+
+<<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createLINEXParamsGraph("Q")
+@
+
 \subsection{LINEX with $X$}
 
+Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
+
+<<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createLINEXParamsGraph("X")
+@
+
 \subsection{LINEX with $U$}
+
+Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
+
+<<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createLINEXParamsGraph("U")
+@
+
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historical data.
 
@@ -1741,7 +1796,7 @@ The following tables provide results for parameters in CES models.
 
 The following tables provide results for parameters in LINEX models.
 
-<<LINEX_Params_Table, results='asis'>>=
+<<LINEX_Params_Table, results='asis', eval=TRUE>>=
 printLINEXParamsTable("Q"); printLINEXParamsTable("X"); printLINEXParamsTable("U")
 @
 
