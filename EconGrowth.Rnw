@@ -174,6 +174,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item ZM: lower bound on $\lambda$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
+\item Heun: x-axis labels only on bottom for 9-panel lattice graphs
 \item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
@@ -214,7 +215,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -473,7 +474,7 @@ createHistoricalLatticeGraph <- function(){
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
 createHistoricalLatticeGraph()
 @
 
@@ -1088,6 +1089,7 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
 ############################
 # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
 # Leave energyType blank to print a table for Cobb-Douglas without energy.
+##
 printCDParamsTable <- function(energyType){
   if (missing(energyType)){
     print(cobbDouglasParamsTableNoEnergy(), 
@@ -1443,14 +1445,19 @@ linexModel <- function(countryAbbrev, energyType){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-  a_0Guess <- 1.0
+  a_0Guess <- 0.5
   c_tGuess <- 1.0
+  if (countryAbbrev == "SA"){
+    # Need adjusted guess values, becasue k and l are above GDP for SA.
+    a_0Guess <- -1
+    c_tGuess <- -6
+
+  }
   # Runs a non-linear least squares fit to the data with constraints
   modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
                   data=dataTable,
                   start=list(a_0=a_0Guess, c_t=c_tGuess),
-                  control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, 
-                                      printEval=FALSE, warnOnly=TRUE),
+                  control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, printEval=FALSE, warnOnly=TRUE),
 #                   algorithm = "port",
 #                   lower = list(a_0=-INF, c_t=-INF),
 #                   upper = list(a_0= INF, c_t= INF)
@@ -1531,12 +1538,98 @@ createLinexLatticeGraph <- function(){
   return(graph)
 }
 
+#################################################
+# Calculates parameter estimates and confidence intervals
+# for the LINEX production function given a country and an energyType.
+#
+# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+# energyType is a string, one of "Q", "X", or "U"
+#
+# returns a data.frame of data for the LINEX model.
+# First row is the +95% CI on all parameters
+# Second row contains the parameter estimates
+# Third row is the -95% CI on all parameters
+# Each column has names: a_0 and c_t, corresponding to the parameters in the model.
+##
+linexData <- function(countryAbbrev, energyType){
+  #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
+  if (!haveDataCD(countryAbbrev, energyType)){
+    #Return a column of NAs if the above conditions have been met.
+    nRows <- 3 # +95% CI, CDe, and -95% CI.
+    nCols <- 2 # a_0 and c_t
+    df <- as.data.frame(matrix(NA, ncol = nCols, nrow = nRows))
+    colnames(df) <- c("a_0", "c_t")
+    rownames(df) <- c("+95% CI", "CDe", "-95% CI")
+    return(df)
+  }
+  # We have a combination of country and energy type for which we have data.
+  modelLINEX <- linexModel(countryAbbrev, energyType)
+  summaryLINEX <- summary(modelLINEX) # Gives the nls summary table.
+  dofLINEX <- summaryLINEX$df[2] # Gives the degrees of freedom for the model.
+  tvalLINEX <- qt(ciHalfLevel, df = dofLINEX)
+  ciLINEX <- confint(modelLINEX, level = ciLevel)  # Calculates confidence intervals for the LINEX model.
+  # Report results with SE
+  a_0 <- as.numeric(coef(modelLINEX)["a_0"])
+  c_t <- as.numeric(coef(modelLINEX)["c_t"])
+  # Combine all estimates and their confidence intervals into data frames with intelligent row names
+  estLINEX <- data.frame(a_0 = a_0, c_t = c_t)
+  row.names(estLINEX) <- "LINEX"
+  # The [1] subscripts pick off the lower confidence interval
+  lowerLINEX <- data.frame(a_0=ciLINEX["a_0","2.5%"], c_t=ciLINEX["c_t", "2.5%"])
+  row.names(lowerLINEX) <- "-95% CI"
+  # The [2] subscripts pick off the upper confidence interval
+  upperLINEX <- data.frame(a_0=ciLINEX["a_0","97.5%"], c_t=ciLINEX["c_t", "97.5%"])
+  row.names(upperLINEX) <- "+95% CI"
+  # Now create the data for a table and return it
+  dataLINEX <- rbind(upperLINEX, estLINEX, lowerLINEX)
+  return(dataLINEX)
+}
 
+############
+# Creates a row for the LINEX parameters table for the given country (2-letter code) and energyType (Q, X, or U)
+##
+linexCountryRow <- function(countryAbbrev, energyType){
+  dataLINEX <- linexData(countryAbbrev, energyType)
+  out <- cbind(dataLINEX["-95% CI", "a_0"], dataLINEX["LINEX", "a_0"], dataLINEX["+95% CI", "a_0"],
+               dataLINEX["-95% CI", "c_t"], dataLINEX["LINEX", "c_t"], dataLINEX["+95% CI", "c_t"])
+  return(out)
+}
 
+############################
+# Aggregates the LINEX results into a big data table for the given energyType.
+##
+linexParamsTable <- function(energyType){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
+  colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
+  rownames(dataLINEX) <- countryAbbrevs
+  tableLINEX <- xtable(dataLINEX, 
+                    caption=paste("LINEX model (with $", tolower(energyType), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    label=paste("tab:LINEX_Parameters_With_", energyType, sep=""),
+                    digits = c(1, 2,2,2, 2,2,2),
+                    align = "r|ccc|ccc") #Sets alignment of the numbers in the columns
+  return(tableLINEX)
+}
 
-
-
+############################
+# Prints a table with parameters from a LINEX model for the given energyType. 
+##
+printLINEXParamsTable <- function(energyType){
+  print(linexParamsTable(energyType), 
+    caption.placement="top", 
+    sanitize.colnames.function = identity, 
+    size="\\tiny",
+    table.placement="H")
+}
 @
+
+The LINEX model is of the form
+
+\begin{equation} \label{eq:LINEX_model}
+  y = e \: \mathrm{exp} \left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)       \right]
+\end{equation}
+
+\noindent where $e$ is any of $q$, $x$, or $u$.
 
 \subsection{LINEX with $Q$}
 
@@ -1546,7 +1639,7 @@ createLinexLatticeGraph <- function(){
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historica data.
 
-<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.", eval=TRUE>>=
 createLinexLatticeGraph()
 @
 
@@ -1621,6 +1714,10 @@ The following tables provide results for parameters in CES models.
 \subsection{LINEX Models}
 
 The following tables provide results for parameters in LINEX models.
+
+<<LINEX_Params_Table, results='asis', eval=TRUE>>=
+printLINEXParamsTable("Q"); printLINEXParamsTable("X"); printLINEXParamsTable("U")
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Goodness of fit}
