@@ -160,10 +160,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
-\item Heun: Add Linex production function fits
+\item Heun: Add LINEX production function fits
       \begin{itemize}
       \item parameter graphs for each country
-      \item parameter tables for each country in the appendix
+      \item \st{parameter tables for each country in the appendix}
       \item \st{AIC rows in the AIC table}
       \item \st{GDP comparison graph}
       \end{itemize}
@@ -215,7 +215,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -1715,7 +1715,7 @@ The following tables provide results for parameters in CES models.
 
 The following tables provide results for parameters in LINEX models.
 
-<<LINEX_Params_Table, results='asis', eval=TRUE>>=
+<<LINEX_Params_Table, results='asis'>>=
 printLINEXParamsTable("Q"); printLINEXParamsTable("X"); printLINEXParamsTable("U")
 @
 
