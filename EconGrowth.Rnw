@@ -1481,7 +1481,7 @@ cesTable <- function(countryName, energyType){
 }
 @
 
-The CES model has the form
+\citet{Stern:2012ey} developed a CES model of the following form
 
 \begin{equation} \label{eq:CES_model}
   y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
@@ -2023,7 +2023,8 @@ print(createAICTable(),
 %% References with bibTeX database:
 
 \bibliographystyle{model2-names}
-\bibliography{<your-bib-database>}
+%%\bibliography{<your-bib-database>}
+\bibliography{EconGrowth.bib}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
