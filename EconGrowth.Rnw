@@ -212,6 +212,7 @@ require(ggplot2)
 require(car)
 require(mosaic)
 require(xtable)
+require(nlmrt)
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
 require(tikzDevice) 
@@ -1296,28 +1297,58 @@ cesModel <- function(countryAbbrev, energyType){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-  # Establish guess values for phi beta, zeta, lambda_L and lambda_E.
+  # Establish default guesses for sigma, gamma_E, beta, lambda_L and lambda_E.
   sigmaGuess <- 0.663 # 0.663 for Sweden
-  # gamma_EGuess <- 0.147 # 0.147 for Sweden
-  gamma_EGuess <- 0.01
+  gamma_EGuess <- 0.01 # Minimum contribution by energy is the default.
   betaGuess <- 0.7 # 0.7 for Sweden
   lambda_LGuess <- 0.011 # 0.011 for Sweden
   lambda_EGuess <- 0.018 # 0.018 for Sweden
+  lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf)
+  upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf)
+  if (countryAbbrev == "US"){
+    gamma_EGuess <- 0.147 # 0.147 for Sweden
+  }
+  if (countryAbbrev == "UK"){
+    sigmaGuess <- 0.5
+    gamma_EGuess <- 0.147 # 0.147 for Sweden
+    betaGuess <- 0.9
+    lambda_LGuess <- 0.0
+    lambda_EGuess <- 0.0
+    lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-0.3, lambda_E=-0.3)
+    upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= 0.3, lambda_E= 0.3)
+  }
+  if (countryAbbrev == "CN"){
+    
+  }
   # Runs a non-linear least squares fit to the data with constraints
-  modelCES <- nls(iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
-                                                  * iCapStk^(1-beta) 
-                                                  * iLabor^beta)^((sigma-1.0)/sigma) 
+#   modelCES <- nls(iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+#                                                   * iLabor^beta
+#                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
+#                           + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) 
+#                                                   * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0)), 
+#                   data=dataTable,
+#                   start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
+#                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
+#                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
+#                                       printEval=TRUE, warnOnly=TRUE),
+#                   algorithm = "port",
+#                   lower = lower,
+#                   upper = upper
+#                   )
+  model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+                                                  * iLabor^beta
+                                                  * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
                           + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) 
-                                                  * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0)), 
-                  data=dataTable,
-                  start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-                             lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
-                  control=nls.control(maxiter=10000, tol=1e-06, minFactor=1/1024, 
-                                      printEval=FALSE, warnOnly=TRUE),
-                  algorithm = "port",
-                  lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf),
-                  upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf),
-                  )
+                                                  * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+  modelCES <- nlxb(model,
+                   data=dataTable,
+                   start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
+                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess)
+                   )
+print(class(modelCES))
+print(modelCES)
+  modelCES <- wrapnls(modelCES)
+print(class(modelCES))
   return(modelCES)
 }
 print("US Q")
@@ -1453,7 +1484,7 @@ cesTable <- function(countryName, energyType){
 }
 @
 
-The CES model is of the form
+The CES model has the form
 
 \begin{equation} \label{eq:CES_model}
   y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
@@ -1461,7 +1492,7 @@ The CES model is of the form
       ^{\frac{\sigma}{\sigma - 1}},
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$; $\gamma_E$, $\lambda_L$, $\lambda_E$, $\beta$, and $\sigma$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm. Ths sum $\alpha + \beta$ is constrained to unity.
+\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm. Ths sum $\alpha + \beta$ is constrained to unity.
 
 \subsection{CES with $Q$}
 
@@ -1734,7 +1765,7 @@ printLINEXParamsTable <- function(energyType){
 }
 @
 
-The LINEX model is of the form
+The LINEX model has the form
 
 \begin{equation} \label{eq:LINEX_model}
   y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} ,
