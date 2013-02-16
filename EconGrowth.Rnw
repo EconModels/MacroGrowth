@@ -1345,10 +1345,7 @@ cesModel <- function(countryAbbrev, energyType){
                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess)
                    )
-print(class(modelCES))
 print(modelCES)
-  modelCES <- wrapnls(modelCES)
-print(class(modelCES))
   return(modelCES)
 }
 print("US Q")
