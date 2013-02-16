@@ -220,7 +220,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=FALSE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -748,7 +748,7 @@ createSFParamsGraph <- function(factor){
 We begin by fitting single-factor economic models of the form
 
 \begin{equation} \label{eq:Single_Factor_Generic}
-  y = a^{\lambda (t-t_0)}f^{m}
+  y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
 \end{equation}
 
 \noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, or $u$.
@@ -1223,7 +1223,7 @@ createCDLatticeGraph <- function(){
 The Cobb-Douglas model without energy is given by
 
 \begin{equation} \label{eq:CD_No_Energy}
-  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
+  y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
 \end{equation}
 
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
@@ -1241,7 +1241,7 @@ $a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b)$
 The Cobb-Douglas model with energy is given by
 
 \begin{equation} \label{eq:CD_With_Energy}
-  y = a^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
+  y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
 \end{equation}
 
 \noindent where $e$ can be any of thermal energy ($q$), exergy ($x$), or useful work ($u$).
@@ -1284,7 +1284,7 @@ createCDLatticeGraph()
 \section{CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<CES functions, eval=FALSE>>=
+<<CES functions, eval=TRUE>>=
 ####################
 # Returns an nls ces model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
@@ -1296,33 +1296,72 @@ cesModel <- function(countryAbbrev, energyType){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-print(dataTable)
   # Establish guess values for phi beta, zeta, lambda_L and lambda_E.
   sigmaGuess <- 0.663 # 0.663 for Sweden
-  zetaGuess <- 0.147 # 0.147 for Sweden
+  # gamma_EGuess <- 0.147 # 0.147 for Sweden
+  gamma_EGuess <- 0.01
   betaGuess <- 0.7 # 0.7 for Sweden
   lambda_LGuess <- 0.011 # 0.011 for Sweden
   lambda_EGuess <- 0.018 # 0.018 for Sweden
   # Runs a non-linear least squares fit to the data with constraints
-  modelCES <- nls(iGDP ~ ((1-zeta)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+  modelCES <- nls(iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
                                                   * iCapStk^(1-beta) 
                                                   * iLabor^beta)^((sigma-1.0)/sigma) 
-                          + zeta^(1.0/sigma)*(exp(lambda_E*iYear) 
+                          + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) 
                                                   * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0)), 
                   data=dataTable,
-                  start=list(sigma=sigmaGuess, zeta=zetaGuess, beta=betaGuess, 
+                  start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
                   control=nls.control(maxiter=10000, tol=1e-06, minFactor=1/1024, 
                                       printEval=FALSE, warnOnly=TRUE),
                   algorithm = "port",
-                  lower = list(sigma=-Inf, zeta=0, beta=0.0, lambda_L=0.0, lambda_E=0.0),
-                  upper = list(sigma= Inf, zeta=1, beta=1.0, lambda_L=0.1, lambda_E=0.1),
+                  lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf),
+                  upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf),
                   )
   return(modelCES)
 }
-model <- cesModel("US", "Q")
-summary <- summary(model)
-print(summary)
+print("US Q")
+print(summary(cesModel("US", "Q")))
+
+print("")
+print("UK Q")
+print(summary(cesModel("UK", "Q")))
+
+print("")
+print("JP Q")
+print(summary(cesModel("JP", "Q")))
+
+print("")
+print("CN Q")
+print(summary(cesModel("CN", "Q")))
+
+print("")
+print("ZA Q")
+print(summary(cesModel("ZA", "Q")))
+
+print("")
+print("SA Q")
+print(summary(cesModel("SA", "Q")))
+
+print("")
+print("IR Q")
+print(summary(cesModel("IR", "Q")))
+
+print("")
+print("TZ Q")
+print(summary(cesModel("TZ", "Q")))
+
+print("")
+print("ZM Q")
+print(summary(cesModel("ZM", "Q")))
+
+
+
+
+
+
+
+
 
 
 
@@ -1413,6 +1452,16 @@ cesTable <- function(countryName, energyType){
   tableCESq <- xtable(dataCESe, caption=paste(countryName, ", 1980-2011.", sep=""), digit = c(4, 1, 2, 2, 6, 5, 5))
 }
 @
+
+The CES model is of the form
+
+\begin{equation} \label{eq:CES_model}
+  y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+      + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+      ^{\frac{\sigma}{\sigma - 1}},
+\end{equation}
+
+\noindent where $e$ is any of $q$, $x$, or $u$; $\gamma_E$, $\lambda_L$, $\lambda_E$, $\beta$, and $\sigma$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm. Ths sum $\alpha + \beta$ is constrained to unity.
 
 \subsection{CES with $Q$}
 
@@ -1688,16 +1737,16 @@ printLINEXParamsTable <- function(energyType){
 The LINEX model is of the form
 
 \begin{equation} \label{eq:LINEX_model}
-  y = e \: \mathrm{exp} \left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right) \right],
+  y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} ,
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$, and $a_0$ and $c_t$ are fitting parameters.
+\noindent where $e$ is any of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
 
 \subsection{LINEX with $Q$}
 
 Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
-<<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph("Q")
 @
 
@@ -1705,7 +1754,7 @@ createLINEXParamsGraph("Q")
 
 Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
-<<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph("X")
 @
 
@@ -1713,10 +1762,11 @@ createLINEXParamsGraph("X")
 
 Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
-<<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph("U")
 @
 
+\subsection{LINEX comparisons}
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historical data.
 
