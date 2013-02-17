@@ -275,6 +275,29 @@ scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
 
+<<nlmrt tests, eval=TRUE>>=
+# From https://stat.ethz.ch/pipermail/r-help/2012-November/330554.html
+Laptop_sale <- c(1405,1863,2027,2669,2938,5275,6595,6943,8621,10905,12420,22400,32380,31600,34900,43163,47838,47592)
+CuSale <- Laptop_sale
+time <- seq_along(Laptop_sale)
+Bass.Model <- Laptop_sale ~ m * ((p + q)^2/p) * (exp(-(p + q) * time)/((q /p) * exp(-(p + q) * time) + 1)^2)
+Bass.Fit <- nls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), trace = FALSE)
+Bass.Fit
+library(nlmrt)
+xdata<-data.frame(Laptop_sale, time)
+Bass.Fitn <- nlxb(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=FALSE)
+print("")
+print("After nlxb fit:")
+Bass.Fitn
+print(summary(Bass.Fitn))
+
+Bass.Fitn <- wrapnls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=FALSE)
+print("")
+print("After wrapnls fit:")
+print(summary(Bass.Fitn))
+
+@
+
 <<Data Functions, eval=TRUE>>=
 #################################
 # This function loads data given a country abbreviation.
@@ -1285,7 +1308,7 @@ createCDLatticeGraph()
 \section{CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<CES functions, eval=TRUE>>=
+<<ces functions, eval=FALSE>>=
 ####################
 # Returns an nls ces model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
@@ -1343,9 +1366,9 @@ cesModel <- function(countryAbbrev, energyType){
   modelCES <- nlxb(model,
                    data=dataTable,
                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess)
-                   )
-print(modelCES)
+                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
+                   trace=TRUE
+                  )
   return(modelCES)
 }
 print("US Q")
@@ -1874,7 +1897,7 @@ The following tables provide results for parameters in CES models.
 
 The following tables provide results for parameters in LINEX models.
 
-<<LINEX_Params_Table, results='asis', eval=TRUE>>=
+<<LINEX_Params_Table, results='asis'>>=
 printLINEXParamsTable("Q"); printLINEXParamsTable("X"); printLINEXParamsTable("U")
 @
 
