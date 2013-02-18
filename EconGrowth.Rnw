@@ -60,6 +60,7 @@
 
 \usepackage{soul} %Provides strikethrough text
 \usepackage{float} %Allows precise positioning of tables and figures within the text
+\usepackage{amsmath} %Allows \begin{equation*} for unnumbered equations
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -223,7 +224,7 @@ opts_chunk$set(
   # ********************************************************************************************************
   eval=FALSE,
   # ********************************************************************************************************
-  warning=FALSE, #Tells whether to show warnings in the output.
+  warning=TRUE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
@@ -275,17 +276,17 @@ scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
 
-<<nlmrt tests, eval=TRUE>>=
+<<nlmrt tests, eval=FALSE>>=
 # From https://stat.ethz.ch/pipermail/r-help/2012-November/330554.html
 Laptop_sale <- c(1405,1863,2027,2669,2938,5275,6595,6943,8621,10905,12420,22400,32380,31600,34900,43163,47838,47592)
 CuSale <- Laptop_sale
 time <- seq_along(Laptop_sale)
 Bass.Model <- Laptop_sale ~ m * ((p + q)^2/p) * (exp(-(p + q) * time)/((q /p) * exp(-(p + q) * time) + 1)^2)
-Bass.Fit <- nls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), trace = FALSE)
-Bass.Fit
+# Bass.Fit <- nls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), trace = FALSE)
+# Bass.Fit
 library(nlmrt)
 xdata<-data.frame(Laptop_sale, time)
-Bass.Fitn <- nlxb(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=FALSE)
+Bass.Fitn <- nlxb(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=TRUE)
 print("")
 print("After nlxb fit:")
 Bass.Fitn
@@ -295,7 +296,6 @@ Bass.Fitn <- wrapnls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(
 print("")
 print("After wrapnls fit:")
 print(summary(Bass.Fitn))
-
 @
 
 <<Data Functions, eval=TRUE>>=
@@ -530,11 +530,12 @@ singleFactorModel <- function(countryAbbrev, factor){
     # This works for every other combination of country and factor.
     mGuess <- 0.5
   }
+  start <- list(lambda=lambdaGuess, m=mGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  modelSF <- nls(iGDP ~ exp(lambda*iYear) * f^m, 
-                 data=dataTable, 
-                 start = list(lambda=lambdaGuess, m=mGuess)
-                 )
+  model <- iGDP ~ exp(lambda*iYear) * f^m
+  modelSF <- nls(formula=model, data=dataTable, start = start)
+#   model <- iGDP ~ exp(lambda*iYear) * f^m
+#   modelSF <- wrapnls(formula=model, data=dataTable, start=list(lambda=lambdaGuess, m=mGuess))
   return(modelSF)
 }
 
@@ -775,7 +776,7 @@ We begin by fitting single-factor economic models of the form
   y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
 \end{equation}
 
-\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, or $u$.
+\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
 
 <<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("K")
@@ -820,10 +821,10 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     # Establish guess values for alpha and lambda.
     lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
     alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+    start <- list(lambda=lambdaGuess, alpha=alphaGuess)
     # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-    modelCD <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha), 
-                   data=dataTable, 
-                   start = list(lambda=lambdaGuess, alpha=alphaGuess),
+    model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
+    modelCD <- nls(formula=model, data=dataTable, start = start,
                    #Include the next 3 lines to fit with constraints.
                    #algorithm = "port",
                    #lower = list(lambda=-Inf, alpha=0), #constraints on lambda and alpha
@@ -850,10 +851,10 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     betaGuess <- 1.0 - alphaGuess
     aGuess <- alphaGuess
     bGuess <- alphaGuess + betaGuess
+    start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
     # Now actually do the fit, using the column name "iEToFit".
-    modelCDe <- nls(iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b)), 
-                    data = dataTable,
-                    start = list(lambda=lambdaGuess, a=aGuess, b=bGuess),
+    model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
+    modelCDe <- nls(formula=model, data = dataTable, start = start,
                     control = nls.control(maxiter = 200, 
                                           tol = 1e-05, 
                                           minFactor = 1/1024, 
@@ -1308,7 +1309,7 @@ createCDLatticeGraph()
 \section{CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<ces functions, eval=FALSE>>=
+<<ces functions, eval=TRUE>>=
 ####################
 # Returns an nls ces model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
@@ -1321,22 +1322,16 @@ cesModel <- function(countryAbbrev, energyType){
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
   # Establish default guesses for sigma, gamma_E, beta, lambda_L and lambda_E.
-  sigmaGuess <- 0.663 # 0.663 for Sweden
-  gamma_EGuess <- 0.01 # Minimum contribution by energy is the default.
-  betaGuess <- 0.7 # 0.7 for Sweden
-  lambda_LGuess <- 0.011 # 0.011 for Sweden
-  lambda_EGuess <- 0.018 # 0.018 for Sweden
+  start <- list(sigma=0.9, gamma_E=0.01, beta=0.7, lambda_L=0.011, lambda_E=0.018) #values for Sweden
+  # Establish bounds
   lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf)
   upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf)
+  # Now some country-specific values.
   if (countryAbbrev == "US"){
-    gamma_EGuess <- 0.147 # 0.147 for Sweden
+    start <- list(sigma=0.95, gamma_E=0.1, beta=0.7, lambda_L=0.015, lambda_E=0.015) #values for Sweden
   }
   if (countryAbbrev == "UK"){
-    sigmaGuess <- 0.5
-    gamma_EGuess <- 0.147 # 0.147 for Sweden
-    betaGuess <- 0.9
-    lambda_LGuess <- 0.0
-    lambda_EGuess <- 0.0
+    start <- list(sigma=0.95, gamma_E=0.2, beta=0.7, lambda_L=0.02, lambda_E=0.02) #values for Sweden
     lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-0.3, lambda_E=-0.3)
     upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= 0.3, lambda_E= 0.3)
   }
@@ -1344,31 +1339,26 @@ cesModel <- function(countryAbbrev, energyType){
     
   }
   # Runs a non-linear least squares fit to the data with constraints
-#   modelCES <- nls(iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+#   model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
 #                                                   * iLabor^beta
 #                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-#                           + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) 
-#                                                   * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0)), 
-#                   data=dataTable,
-#                   start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-#                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
-#                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
-#                                       printEval=TRUE, warnOnly=TRUE),
-#                   algorithm = "port",
-#                   lower = lower,
-#                   upper = upper
-#                   )
-  model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
-                                                  * iLabor^beta
-                                                  * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-                          + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) 
-                                                  * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-  modelCES <- nlxb(model,
-                   data=dataTable,
-                   start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-                              lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
-                   trace=TRUE
+#                   + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+  model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
+                  + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+  modelCES <- nls(formula=model, data=dataTable, start=start,
+                  control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
+                                      printEval=TRUE, warnOnly=TRUE),
+                  algorithm = "port",
+                  lower = lower,
+                  upper = upper,
+                  trace=TRUE
                   )
+#   modelCES <- nlxb(model,
+#                    data=dataTable,
+#                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
+#                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
+#                    trace=TRUE
+#                   )
   return(modelCES)
 }
 print("US Q")
@@ -1504,15 +1494,23 @@ cesTable <- function(countryName, energyType){
 }
 @
 
-\citet{Stern:2012ey} developed a CES model of the following form
+\citet{Stern:2012ey} developed a CES model of the form
 
 \begin{equation} \label{eq:CES_model}
-  y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
-      + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+  y = \left\{ (1-\gamma_E) \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+      + (\gamma_E) \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
       ^{\frac{\sigma}{\sigma - 1}},
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm. Ths sum $\alpha + \beta$ is constrained to unity.
+\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.\footnote{The CES equation in \citet{Stern:2012ey} appears as
+
+\begin{equation*} \label{eq:Stern_CES_model}
+  y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+      + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+      ^{\frac{\sigma}{\sigma - 1}},
+\end{equation*}
+
+but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms seems erroneous due to $y(t_\mathrm{0}) \neq 1$.} 
 
 \subsection{CES with $Q$}
 
