@@ -1406,13 +1406,23 @@ cesModel <- function(countryAbbrev, energyType){
     # we obtain sigma1 = 1.0 (so perfect substitution between k and l) and sigma = 7.19 (again, not economically
     # meaningful) with R^2 = 0.9983.  Again, none of the rho or sigma values are statistically significant.
     # Furthermore, the only significant varluable is gamma = 1.0731.
-    # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 
+    # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 0.9983.
     rho1 = 0.0
     rho = 0.0
     modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
                        method="LM",
                        rho1=rho1,
                        rho=rho                     
+                       )
+  } else if (countryAbbrev == "ZA"){
+    # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
+    # between k and l.  sigma = 0.03, indicating complementatity between (kl) and (e).
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
+                       )
+  } else if (countryAbbrev == "SA"){
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
                        )
   }
   
@@ -1430,16 +1440,16 @@ cesModel <- function(countryAbbrev, energyType){
 # print(summary(cesModel("JP", "U")))
 
 # print("")
-print("CN Q")
-print(summary(cesModel("CN", "Q")))
+# print("CN Q")
+# print(summary(cesModel("CN", "Q")))
 # 
 # print("")
 # print("ZA Q")
 # print(summary(cesModel("ZA", "Q")))
 # 
 # print("")
-# print("SA Q")
-# print(summary(cesModel("SA", "Q")))
+print("SA Q")
+print(summary(cesModel("SA", "Q")))
 # 
 # print("")
 # print("IR Q")
