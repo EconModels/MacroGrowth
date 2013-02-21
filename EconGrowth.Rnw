@@ -60,7 +60,7 @@
 
 \usepackage{soul} %Provides strikethrough text
 \usepackage{float} %Allows precise positioning of tables and figures within the text
-\usepackage{amsmath} %Allows \begin{equation*} for unnumbered equations
+\usepackage{amsmath} %Allows \begin{equation*} \end{equation*} for unnumbered equations
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -214,6 +214,7 @@ require(car)
 require(mosaic)
 require(xtable)
 require(nlmrt)
+require(micEconCES)
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
 require(tikzDevice) 
@@ -274,28 +275,6 @@ linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
 scaleTextSize <- 1.0  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
-@
-
-<<nlmrt tests, eval=FALSE>>=
-# From https://stat.ethz.ch/pipermail/r-help/2012-November/330554.html
-Laptop_sale <- c(1405,1863,2027,2669,2938,5275,6595,6943,8621,10905,12420,22400,32380,31600,34900,43163,47838,47592)
-CuSale <- Laptop_sale
-time <- seq_along(Laptop_sale)
-Bass.Model <- Laptop_sale ~ m * ((p + q)^2/p) * (exp(-(p + q) * time)/((q /p) * exp(-(p + q) * time) + 1)^2)
-# Bass.Fit <- nls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), trace = FALSE)
-# Bass.Fit
-library(nlmrt)
-xdata<-data.frame(Laptop_sale, time)
-Bass.Fitn <- nlxb(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=TRUE)
-print("")
-print("After nlxb fit:")
-Bass.Fitn
-print(summary(Bass.Fitn))
-
-Bass.Fitn <- wrapnls(formula = Bass.Model, start = c(p = 0.03, q = 0.4, m = max(CuSale)), data=xdata,trace=FALSE)
-print("")
-print("After wrapnls fit:")
-print(summary(Bass.Fitn))
 @
 
 <<Data Functions, eval=TRUE>>=
@@ -1317,6 +1296,12 @@ createCDLatticeGraph()
 cesModel <- function(countryAbbrev, energyType){
   # Load the data that we need.
   dataTable <- loadData(countryAbbrev)
+  if (energyType == "U"){
+    # Trim the dataset to include only those years for which U is available.
+    dataTable <- subset(dataTable, !is.na(iU))
+  }
+  # Trim data from China and South Africa that is missing labor information for 2011.
+  dataTable <- subset(dataTable, !is.na(iLabor))
   # We need to do the CES fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
@@ -1339,62 +1324,135 @@ cesModel <- function(countryAbbrev, energyType){
     
   }
   # Runs a non-linear least squares fit to the data with constraints
+  # This is the version of the function from the Stern and Kander (2012) paper. However, it includes a 
+  # 1/sigma exponent on the gamma_E terms, which, I believe, is bogus.
 #   model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
 #                                                   * iLabor^beta
 #                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
 #                   + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-  model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-                  + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-  modelCES <- nls(formula=model, data=dataTable, start=start,
-                  control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
-                                      printEval=TRUE, warnOnly=TRUE),
-                  algorithm = "port",
-                  lower = lower,
-                  upper = upper,
-                  trace=TRUE
-                  )
+  
+  # This is the corrected version of the Stern and Kander (2012) paper.
+#   model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
+#                   + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+  
+  # This is the nls fit to the CES model  
+#   modelCES <- nls(formula=model, data=dataTable, start=start,
+#                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
+#                                       printEval=TRUE, warnOnly=TRUE),
+#                   algorithm = "port",
+#                   lower = lower,
+#                   upper = upper,
+#                   trace=TRUE
+#                   )
+
+  # An attempt with nlmrt function nlxb. Doesn't provide many good results.
 #   modelCES <- nlxb(model,
 #                    data=dataTable,
 #                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
 #                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
 #                    trace=TRUE
 #                   )
+  
+  # Try a fit to a nested CES function with the micEconCES package.  
+  # This approach is based on a white paper by Henningsen and Henningsen 
+  # http://okonomi.foi.dk/workingpapers/WPpdf/WP2011/WP_2011_9_econometric_estimation_CES.pdf.
+  # Set a few of the variables up front
+  yName = "iGDP"
+  xNames = c("iCapStk", "iLabor", "iEToFit")
+  tName = "iYear"
+  control=nls.lm.control(maxiter=1000, maxfev=2000)
+  if (countryAbbrev == "US") {
+    # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
+    # economically meaningful.  So, a grid search was performed, and it confirmed that low values of 
+    # rho1 yield a better fit. In fact, the lower the value of rho1, the better. So, we'll set it 
+    # here at rho1=0.0, which makes the elasticity of substitution between k and l sigma1 = 1.0, 
+    # giving the Cobb-Douglas form for the k l portion of the CES function. Similar results are found
+    # for X and U.
+    rho1 = 0.0
+    # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
+    # complimentary.  We'll let the estCES function solve for the best value.
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
+                       rho1=rho1
+                       )
+  } else if (countryAbbrev == "UK") {
+    # The unconstrained optimization leads to rho1 = -2.4 and sigma1 = -0.71, which is not economically meaningful.
+    # So, a grid search was performed, and it confirmed that low values of rho1 yield a better fit. In fact, the 
+    # lower the value of rho1, the better. So, we'll set it here at rho1=0.0, which makes the elasticity of 
+    # substitution between k and l sigma1 = 1.0, giving the Cobb-Douglas form for the k l portion of the CES function.
+    # rho1 = c(0.00, 0.01, 0.02)
+    rho1 = 0.0
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
+                       rho1=rho1
+                       )
+  } else if (countryAbbrev == "JP") {
+    # The unconstrained optimization leads to rho1 = 7.99 and sigma1 = 0.11, indicating complementarity between k & l,
+    # but different from the results for the US and UK (where k & l were found to be substitutes).  However, the
+    # p value for rho1 is very high (0.3), indicating that rho1 is not making a significant contribution to the model. 
+    # The unconstrained fit gives R^ = 0.996 and sigma = 0.103, indicating complementarity between (kl) and (e).
+    # 
+    # In fact, we could force rho1 = 0.0 and achieve rho = 280 and sigma = 0.00356 with R^2 = 0.988, a very small
+    # decrease, indeed.  Note that both the constrained and unconstrained fits give small sigma, indicating
+    # that (kl) and (e) are complimentary.
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM"
+                       )
+  } else if (countryAbbrev == "CN"){
+    # Unconstrained optimization: rho1 < -0.2290, rho = 14.1651, R^2 = 0.9984. This corresponds to sigma1 = 1.297
+    # and sigma = 0.0659, indicating that (kl) and (e) are complements and k & l are substitutes.  However, none of the
+    # rho or sigma values are statistically significant.
+    # Now, sigma1 > 1 is not economically meaningful, so we'll set rho1 = 0 to force sigma1 = 1.0. When we do that, 
+    # we obtain sigma1 = 1.0 (so perfect substitution between k and l) and sigma = 7.19 (again, not economically
+    # meaningful) with R^2 = 0.9983.  Again, none of the rho or sigma values are statistically significant.
+    # Furthermore, the only significant varluable is gamma = 1.0731.
+    # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 
+    rho1 = 0.0
+    rho = 0.0
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
+                       rho1=rho1,
+                       rho=rho                     
+                       )
+  }
+  
   return(modelCES)
 }
-print("US Q")
-print(summary(cesModel("US", "Q")))
+# print("US U")
+# print(summary(cesModel("US", "U")))
+# 
+# print("")
+# print("UK U")
+# print(summary(cesModel("UK", "U")))
+# 
+# print("")
+# print("JP U")
+# print(summary(cesModel("JP", "U")))
 
-print("")
-print("UK Q")
-print(summary(cesModel("UK", "Q")))
-
-print("")
-print("JP Q")
-print(summary(cesModel("JP", "Q")))
-
-print("")
+# print("")
 print("CN Q")
 print(summary(cesModel("CN", "Q")))
+# 
+# print("")
+# print("ZA Q")
+# print(summary(cesModel("ZA", "Q")))
+# 
+# print("")
+# print("SA Q")
+# print(summary(cesModel("SA", "Q")))
+# 
+# print("")
+# print("IR Q")
+# print(summary(cesModel("IR", "Q")))
+# 
+# print("")
+# print("TZ Q")
+# print(summary(cesModel("TZ", "Q")))
+# 
+# print("")
+# print("ZM Q")
+# print(summary(cesModel("ZM", "Q")))
 
-print("")
-print("ZA Q")
-print(summary(cesModel("ZA", "Q")))
-
-print("")
-print("SA Q")
-print(summary(cesModel("SA", "Q")))
-
-print("")
-print("IR Q")
-print(summary(cesModel("IR", "Q")))
-
-print("")
-print("TZ Q")
-print(summary(cesModel("TZ", "Q")))
-
-print("")
-print("ZM Q")
-print(summary(cesModel("ZM", "Q")))
 
 
 
@@ -1494,15 +1552,7 @@ cesTable <- function(countryName, energyType){
 }
 @
 
-\citet{Stern:2012ey} developed a CES model of the form
-
-\begin{equation} \label{eq:CES_model}
-  y = \left\{ (1-\gamma_E) \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
-      + (\gamma_E) \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
-      ^{\frac{\sigma}{\sigma - 1}},
-\end{equation}
-
-\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.\footnote{The CES equation in \citet{Stern:2012ey} appears as
+\citet{Stern:2012ey} developed a CES model of the form\footnote{The CES equation in \citet{Stern:2012ey} appears as
 
 \begin{equation*} \label{eq:Stern_CES_model}
   y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
@@ -1510,7 +1560,29 @@ cesTable <- function(countryName, energyType){
       ^{\frac{\sigma}{\sigma - 1}},
 \end{equation*}
 
-but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms seems erroneous due to $y(t_\mathrm{0}) \neq 1$.} 
+but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms is erroneous due to $y_{\mathrm{t_0}} \neq 1$.} 
+
+
+\begin{equation} \label{eq:Stern_CES_model_in_print}
+  y = \left\{ (1-\gamma_E) \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+      + (\gamma_E) \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+      ^{\frac{\sigma}{\sigma - 1}},
+\end{equation}
+
+\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
+
+The R package micEconCES (***** Need reference here *****) estimates CES production functions of the form
+
+\begin{equation} \label{eq:micEconCES_model}
+  y = something.
+\end{equation}
+
+
+\citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+
+\begin{quote}
+\ldots the Levenberg-Marquardt and the PORT algorithms are--at least in this study--most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
+\end{quote}
 
 \subsection{CES with $Q$}
 
