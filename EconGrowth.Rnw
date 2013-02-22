@@ -156,7 +156,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Reese: Add text from Word verson of paper to the LaTeX version.
 \item Heun: Add CES production function fits
       \begin{itemize}
-      \item GDP comparison graph
+      \item \st{GDP comparison graph}
       \item parameter graphs for each country
       \item parameter tables for each country in the appendix
       \item AIC rows in the AIC table
@@ -174,26 +174,28 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
 \item Heun: x-axis labels only on bottom for 9-panel lattice graphs
 \item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
+\item de Wit: provide funding acknowledgement, if necessary.
+\item de Wit: review, critique, and contextualize.
 \item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
-\item \st{Heun: move tables to an appendix at the end.}
+\item \st{Heun: Move tables to an appendix at the end.}
 \item \st{Heun: Add acknowledgements (Dad, Pruim)}
 \item \st{Heun: Add $u$ parameter table and graph}
 \item \st{Heun: Add covariance metrics.}
 \item \st{Heun: Add single factor fits}
       \begin{itemize}
-      \item \st{correct sizes for parameter graphs for each country}
-      \item \st{parameter graphs ($\lambda$ and $m$) for each country}
-      \item \st{parameter tables for each country in the appendix}
+      \item \st{Correct sizes for parameter graphs for each country}
+      \item \st{Parameter graphs ($\lambda$ and $m$) for each country}
+      \item \st{Parameter tables for each country in the appendix}
       \item \st{GDP comparison graph}
       \item \st{AIC rows in the AIC table}
       \end{itemize}
 \item \st{Heun: Add setup variables for figure height and width where not already included.}
 \item \st{Heun: Add LINEX production function fits}
       \begin{itemize}
-      \item \st{parameter graphs for each country}
-      \item \st{parameter tables for each country in the appendix}
+      \item \st{Parameter graphs for each country}
+      \item \st{Parameter tables for each country in the appendix}
       \item \st{AIC rows in the AIC table}
       \item \st{GDP comparison graph}
       \end{itemize}
@@ -936,40 +938,19 @@ cobbDouglasData <- function(countryAbbrev, energyType){
     upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["alpha", "97.5%"], beta=betaCICD[2], gamma=NA)
     row.names(upperCD) <- "+95% CI"
   } else {
-#     print("")
-#     print(paste("In cobbDouglasData:", countryAbbrev, energyType))
-#     print("summaryCD:")
-#     print(paste("    df:", summaryCD$df))
-#     print(paste("    sigma:", summaryCD$sigma))
-#     print("    coeffs: ")
-#     print(summaryCD$coefficients)
-#     print("ciCD:")
-#     print(ciCD)
     #Cobb-Douglas with energy
     a <- as.numeric(coef(modelCD)["a"])
     b <- as.numeric(coef(modelCD)["b"])
-#     print(paste("a =", a))
-#     print(paste("b =", b))
     lambda <- as.numeric(coef(modelCD)["lambda"])
     alpha <- a
     beta <- b - a
     gamma <- 1.0 - b
     # Report results with SE
     beta.est <- deltaMethod(modelCD, "b-a") # Reports results for beta, because beta = b - a.
-#     print("beta.est = b-a")
-#     print(beta.est)
     gamma.est <- deltaMethod(modelCD, "1-b") # Reports results for gamma, because gamma = 1 - b.
-#     print("gamma.est = 1 - b")
-#     print(gamma.est)
     # Now calculate confidence intervals.
-#     print(paste("dofCD =", dofCD))
-#     print(paste("tvalCD =", tvalCD))
     betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.
-#     print("betaCICD:")
-#     print(betaCICD)
     gammaCICD <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on gamma.
-#     print("gammaCICD:")
-#     print(gammaCICD)
     # Combine all estimates and their confidence intervals into data frames with intelligent row names
     estCD <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
     row.names(estCD) <- "CDe"
@@ -1046,14 +1027,11 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryName, energyType){
   if (missing(energyType)){
     table <- rbind(lambdaRow, alphaRow, betaRow)
   } else {
-#     print("In not missing energyType")
-#     print(dataCD)
     gammaRow <- data.frame(country = countryName, 
                            parameter = "gamma",
                            lowerCI = dataCD["-95% CI", "gamma"],
                            value = dataCD[valueRow, "gamma"], 
                            upperCI = dataCD["+95% CI", "gamma"])
-#     print(gammaRow)
     table <- rbind(lambdaRow, alphaRow, betaRow, gammaRow)
   }
   return(table)
@@ -1120,7 +1098,6 @@ printCDParamsTable <- function(energyType){
 # Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType
 ##
 createCDParamsGraph <- function(energyType){
-  
   if (missing(energyType)){
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
@@ -1221,7 +1198,6 @@ createCDLatticeGraph <- function(){
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
-
 @
 
 The Cobb-Douglas model without energy is given by
@@ -1315,7 +1291,7 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
 }
 
 ####################
-# Returns an nls ces model for the country and energyType specified.
+# Returns a cesEst model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
 ##
 cesModel <- function(countryAbbrev, energyType){
@@ -1432,7 +1408,7 @@ cesPredictions <- function(countryAbbrev, energyType){
     return(df)
   }
   model <- cesModel(countryAbbrev, energyType)
-  pred <- cesCalc(xNames=xNames, data=dataTable, coef=coef(model), tName="iYear", nested=TRUE)
+  pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
   df <- padRows(countryAbbrev, df)
@@ -1489,6 +1465,13 @@ createCESLatticeGraph <- function(){
                   xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
+
+
+
+
+
+
+
 
 
 cesData <- function(countryName, energyType){
@@ -1595,17 +1578,19 @@ but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms is errone
 
 \noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
 
-The R package micEconCES (***** Need reference here *****) estimates CES production functions of the form
+The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the form (among others)
 
 \begin{equation} \label{eq:micEconCES_model}
-  y = something.
+  y = \gamma \mathrm{e}^{\lambda(t-t_0)}  
+      \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right] + (1-\delta) e^{-\rho} \right\}
+                                                                                                        ^{-1/\rho}.
 \end{equation}
 
 
 \citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
 
 \begin{quote}
-\ldots the Levenberg-Marquardt and the PORT algorithms are--at least in this study--most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
+\ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 \end{quote}
 
 \subsection{CES with $Q$}
@@ -1618,7 +1603,7 @@ The R package micEconCES (***** Need reference here *****) estimates CES product
 
 Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
 
-<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.", eval=TRUE>>=
+<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.">>=
 createCESLatticeGraph()
 @
 
@@ -1924,8 +1909,7 @@ createLinexLatticeGraph()
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was graciously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and invaluable assistance with the statistical analyses presented herein.
-
+Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Funding for Martin de Wit was provided by *******. The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and invaluable assistance with the statistical analyses presented herein.
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix
