@@ -1289,6 +1289,11 @@ createCDLatticeGraph()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<ces functions, eval=TRUE>>=
+# Set some common names for CES variables.
+xNames = c("iCapStk", "iLabor", "iEToFit")
+tName = "iYear"
+yName = "iGDP"
+
 ######################################
 # Loads data and trims rows where necessary.
 # Also, replaces the name of the desired energy column with "iEToFit".
@@ -1309,7 +1314,6 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   return(dataTable)
 }
 
-
 ####################
 # Returns an nls ces model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
@@ -1317,60 +1321,6 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
 cesModel <- function(countryAbbrev, energyType){
   # Load the data that we need.
   dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
-#   # Establish default guesses for sigma, gamma_E, beta, lambda_L and lambda_E.
-#   start <- list(sigma=0.9, gamma_E=0.01, beta=0.7, lambda_L=0.011, lambda_E=0.018) #values for Sweden
-#   # Establish bounds
-#   lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf)
-#   upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf)
-#   # Now some country-specific values.
-#   if (countryAbbrev == "US"){
-#     start <- list(sigma=0.95, gamma_E=0.1, beta=0.7, lambda_L=0.015, lambda_E=0.015) #values for Sweden
-#   }
-#   if (countryAbbrev == "UK"){
-#     start <- list(sigma=0.95, gamma_E=0.2, beta=0.7, lambda_L=0.02, lambda_E=0.02) #values for Sweden
-#     lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-0.3, lambda_E=-0.3)
-#     upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= 0.3, lambda_E= 0.3)
-#   }
-#   if (countryAbbrev == "CN"){
-#     
-#   }
-#   # Runs a non-linear least squares fit to the data with constraints
-#   # This is the version of the function from the Stern and Kander (2012) paper. However, it includes a 
-#   # 1/sigma exponent on the gamma_E terms, which, I believe, is bogus.
-# #   model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
-# #                                                   * iLabor^beta
-# #                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-# #                   + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-#   
-#   # This is the corrected version of the Stern and Kander (2012) paper.
-# #   model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-# #                   + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-#   
-#   # This is the nls fit to the CES model  
-# #   modelCES <- nls(formula=model, data=dataTable, start=start,
-# #                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
-# #                                       printEval=TRUE, warnOnly=TRUE),
-# #                   algorithm = "port",
-# #                   lower = lower,
-# #                   upper = upper,
-# #                   trace=TRUE
-# #                   )
-# 
-#   # An attempt with nlmrt function nlxb. Doesn't provide many good results.
-# #   modelCES <- nlxb(model,
-# #                    data=dataTable,
-# #                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-# #                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
-# #                    trace=TRUE
-# #                   )
-  
-  # Try a fit to a nested CES function with the micEconCES package.  
-  # This approach is based on a white paper by Henningsen and Henningsen 
-  # http://okonomi.foi.dk/workingpapers/WPpdf/WP2011/WP_2011_9_econometric_estimation_CES.pdf.
-  # Set a few of the variables up front
-  yName = "iGDP"
-  xNames = c("iCapStk", "iLabor", "iEToFit")
-  tName = "iYear"
   control=nls.lm.control(maxiter=1000, maxfev=2000)
   if (countryAbbrev == "US") {
     # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
@@ -1465,49 +1415,12 @@ cesModel <- function(countryAbbrev, energyType){
   }
   return(modelCES)
 }
-# print("US U")
-# print(summary(cesModel("US", "U")))
-# 
-# print("")
-# print("UK U")
-# print(summary(cesModel("UK", "U")))
-# 
-# print("")
-# print("JP U")
-# print(summary(cesModel("JP", "U")))
-
-# print("")
-# print("CN Q")
-# print(summary(cesModel("CN", "Q")))
-# 
-# print("")
-# print("ZA Q")
-# print(summary(cesModel("ZA", "Q")))
-# 
-# print("")
-# print("SA Q")
-# print(summary(cesModel("SA", "Q")))
-# 
-# print("")
-# print("IR Q")
-# print(summary(cesModel("IR", "Q")))
-# 
-# print("")
-# print("TZ Q")
-# print(summary(cesModel("TZ", "Q")))
-# 
-# print("")
-# print("ZM Q")
-# print(summary(cesModel("ZM", "Q")))
-
 
 #########################
 # Takes the CES fitted models and creates per-country predictions for them.
 # Returns a data.frame with the predictions.
 ##
 cesPredictions <- function(countryAbbrev, energyType){
-  xNames = c("iCapStk", "iLabor", "iEToFit")
-  tName = "iYear"
   dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!(haveDataSF(countryAbbrev, energyType))){
@@ -1519,7 +1432,6 @@ cesPredictions <- function(countryAbbrev, energyType){
     return(df)
   }
   model <- cesModel(countryAbbrev, energyType)
-  print(model)
   pred <- cesCalc(xNames=xNames, data=dataTable, coef=coef(model), tName="iYear", nested=TRUE)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -1527,17 +1439,56 @@ cesPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-print(cesPredictions("US", "Q"))
+#########################
+# Takes the CES fitted models and creates a single column of predicted GDP values
+# that corresponds, row for row, with the AllData.txt file.
+##
+cesPredictionsColumn <- function(energyType){
+  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType))
+  colnames(out) <- c(paste("predGDP", energyType, sep=""))
+  return(out)
+}
 
-
-
-
-
-
-
-
-
-
+##############################
+# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+# data as open circles.
+##
+createCESLatticeGraph <- function(){
+  dataTable <- loadData("All") #Grab the raw data
+  predictionsQ <- cesPredictionsColumn("Q") #Predictions from CES with Q
+  predictionsX <- cesPredictionsColumn("X") #Predictions from CES with X
+  predictionsU <- cesPredictionsColumn("U") #Predictions from CES with U
+  #Now add the predictions columns to the data.
+  dataTable <- cbind(dataTable, predictionsQ, predictionsX, predictionsU) 
+  graphType <- "b" #b is for both line and symbol
+  lineTypes <- c(0, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "red", "blue", "darkorange") #line and symbol colors
+  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+                  type=graphType,
+                  index.cond=list(countryOrderForGraphs), #orders the panels.
+                  layout=ninePanelLayoutSpec, #indicates a 3x3 arrangement of panels.
+                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
+                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+                  pch = symbols, col.symbol = colors, #Controls symbol parameters
+                  key=list(text=list(c("Actual", "With $q$", "With $x$", "With $u$")),
+                           type=graphType,
+                           cex=keyTextSize, #controls size of text in the key
+                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+                           pch=symbols, col=colors, #controls symbol (plot characters) types
+                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+                  scales=list(cex=scaleTextSize, #controls text size on scales.
+                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              y=list(relation="free", #allows each axis to be different
+                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
+                                     )
+                              ), 
+                  ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
+                  xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
+  return(graph)
+}
 
 
 cesData <- function(countryName, energyType){
@@ -1608,7 +1559,6 @@ cesData <- function(countryName, energyType){
   
   # Now create the data for a table.
   dataCES <- rbind(upperCES, estCES, lowerCES)
-  print(dataCES)
   return(dataCES)
 }
 
@@ -1660,24 +1610,18 @@ The R package micEconCES (***** Need reference here *****) estimates CES product
 
 \subsection{CES with $Q$}
 
-<<CESq analysisQ, eval=FALSE>>=
-countryName <- "US"
-energyType <- "Q"
-tableCESq <- cesTable(countryName, energyType)
-
-#CESqTables <- lapply(countryAbbrevs, cesTable, energyType="Q")
-@
-
-<<CESq Results, results='asis', eval=FALSE>>=
-print(tableCESq, caption.placement="top")
-
-#print(CESqTables[["US"]], caption.placement="top")
-#print(CESqTables[["ZA"]], caption.placement="top")
-@
-
 \subsection{CES with $X$}
 
 \subsection{CES with $U$}
+
+\subsection{CES comparisons}
+
+Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
+
+<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.", eval=TRUE>>=
+createCESLatticeGraph()
+@
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{LINEX Models}
@@ -1963,7 +1907,7 @@ createLINEXParamsGraph("U")
 
 \subsection{LINEX comparisons}
 
-Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions with historical data.
+Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
 <<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
 createLinexLatticeGraph()
