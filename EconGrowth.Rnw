@@ -1289,12 +1289,12 @@ createCDLatticeGraph()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<ces functions, eval=TRUE>>=
-####################
-# Returns an nls ces model for the country and energyType specified.
-# energyType should be one of Q", "X", or "U".
+######################################
+# Loads data and trims rows where necessary.
+# Also, replaces the name of the desired energy column with "iEToFit".
+# Returns a data.frame with the loaded data.
 ##
-cesModel <- function(countryAbbrev, energyType){
-  # Load the data that we need.
+loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   dataTable <- loadData(countryAbbrev)
   if (energyType == "U"){
     # Trim the dataset to include only those years for which U is available.
@@ -1306,52 +1306,63 @@ cesModel <- function(countryAbbrev, energyType){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-  # Establish default guesses for sigma, gamma_E, beta, lambda_L and lambda_E.
-  start <- list(sigma=0.9, gamma_E=0.01, beta=0.7, lambda_L=0.011, lambda_E=0.018) #values for Sweden
-  # Establish bounds
-  lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf)
-  upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf)
-  # Now some country-specific values.
-  if (countryAbbrev == "US"){
-    start <- list(sigma=0.95, gamma_E=0.1, beta=0.7, lambda_L=0.015, lambda_E=0.015) #values for Sweden
-  }
-  if (countryAbbrev == "UK"){
-    start <- list(sigma=0.95, gamma_E=0.2, beta=0.7, lambda_L=0.02, lambda_E=0.02) #values for Sweden
-    lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-0.3, lambda_E=-0.3)
-    upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= 0.3, lambda_E= 0.3)
-  }
-  if (countryAbbrev == "CN"){
-    
-  }
-  # Runs a non-linear least squares fit to the data with constraints
-  # This is the version of the function from the Stern and Kander (2012) paper. However, it includes a 
-  # 1/sigma exponent on the gamma_E terms, which, I believe, is bogus.
-#   model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
-#                                                   * iLabor^beta
-#                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-#                   + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-  
-  # This is the corrected version of the Stern and Kander (2012) paper.
-#   model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
-#                   + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
-  
-  # This is the nls fit to the CES model  
-#   modelCES <- nls(formula=model, data=dataTable, start=start,
-#                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
-#                                       printEval=TRUE, warnOnly=TRUE),
-#                   algorithm = "port",
-#                   lower = lower,
-#                   upper = upper,
-#                   trace=TRUE
-#                   )
+  return(dataTable)
+}
 
-  # An attempt with nlmrt function nlxb. Doesn't provide many good results.
-#   modelCES <- nlxb(model,
-#                    data=dataTable,
-#                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
-#                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
-#                    trace=TRUE
-#                   )
+
+####################
+# Returns an nls ces model for the country and energyType specified.
+# energyType should be one of Q", "X", or "U".
+##
+cesModel <- function(countryAbbrev, energyType){
+  # Load the data that we need.
+  dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
+#   # Establish default guesses for sigma, gamma_E, beta, lambda_L and lambda_E.
+#   start <- list(sigma=0.9, gamma_E=0.01, beta=0.7, lambda_L=0.011, lambda_E=0.018) #values for Sweden
+#   # Establish bounds
+#   lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-Inf, lambda_E=-Inf)
+#   upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= Inf, lambda_E= Inf)
+#   # Now some country-specific values.
+#   if (countryAbbrev == "US"){
+#     start <- list(sigma=0.95, gamma_E=0.1, beta=0.7, lambda_L=0.015, lambda_E=0.015) #values for Sweden
+#   }
+#   if (countryAbbrev == "UK"){
+#     start <- list(sigma=0.95, gamma_E=0.2, beta=0.7, lambda_L=0.02, lambda_E=0.02) #values for Sweden
+#     lower = list(sigma=-Inf, gamma_E=0.0, beta=-Inf, lambda_L=-0.3, lambda_E=-0.3)
+#     upper = list(sigma= Inf, gamma_E=1.0, beta= Inf, lambda_L= 0.3, lambda_E= 0.3)
+#   }
+#   if (countryAbbrev == "CN"){
+#     
+#   }
+#   # Runs a non-linear least squares fit to the data with constraints
+#   # This is the version of the function from the Stern and Kander (2012) paper. However, it includes a 
+#   # 1/sigma exponent on the gamma_E terms, which, I believe, is bogus.
+# #   model <- iGDP ~ ((1-gamma_E)^(1.0/sigma) * ((exp(lambda_L*iYear))^beta 
+# #                                                   * iLabor^beta
+# #                                                   * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
+# #                   + gamma_E^(1.0/sigma)*(exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+#   
+#   # This is the corrected version of the Stern and Kander (2012) paper.
+# #   model <- iGDP ~ ((1-gamma_E) * ((exp(lambda_L*iYear))^beta * iLabor^beta * iCapStk^(1-beta) )^((sigma-1.0)/sigma) 
+# #                   + gamma_E * (exp(lambda_E*iYear) * iEToFit)^((sigma-1.0)/sigma))^(sigma/(sigma-1.0))
+#   
+#   # This is the nls fit to the CES model  
+# #   modelCES <- nls(formula=model, data=dataTable, start=start,
+# #                   control=nls.control(maxiter=10000, tol=1e-05, minFactor=1/1024, 
+# #                                       printEval=TRUE, warnOnly=TRUE),
+# #                   algorithm = "port",
+# #                   lower = lower,
+# #                   upper = upper,
+# #                   trace=TRUE
+# #                   )
+# 
+#   # An attempt with nlmrt function nlxb. Doesn't provide many good results.
+# #   modelCES <- nlxb(model,
+# #                    data=dataTable,
+# #                    start=list(sigma=sigmaGuess, gamma_E=gamma_EGuess, beta=betaGuess, 
+# #                               lambda_L=lambda_LGuess, lambda_E=lambda_EGuess),
+# #                    trace=TRUE
+# #                   )
   
   # Try a fit to a nested CES function with the micEconCES package.  
   # This approach is based on a white paper by Henningsen and Henningsen 
@@ -1421,11 +1432,37 @@ cesModel <- function(countryAbbrev, energyType){
                        method="LM",
                        )
   } else if (countryAbbrev == "SA"){
+    # An unconstrained fit gives rho = -6.33, rho1 = 9.36 (sigma1 = 0.0965) and R^2 = 0.9892.  
+    # This result is not economically meaningful.
+    # Constraining rho = 0 gives rho1 = -582, again not economically meaningful.
+    # So, do a grid search over meaningful regions to see what is best.
+    # The result (to with +/- 0.1) is rho = 0.0 and rho1 = 5.7, with R^2 = 0.9885.
+    # However, neither the the rho or nor the sigma values are statistically significant.
+    rho1 = 5.7
+    rho = 0.0
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="LM",
+                       rho1 = rho1,
+                       rho = rho
+                       )
+  } else if (countryAbbrev == "IR"){
+    # Iran works with an unconstrained fit.
     modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
                        method="LM",
                        )
+  } else if (countryAbbrev == "TZ"){
+    # Using the PORT algorithm yields convergence and R^2 = 0.9974 with economically menaingful results.
+    # However, none of the rho or sigma values are statistically significant.
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="PORT",
+                       )
+  } else if (countryAbbrev == "ZM"){
+    # ZM works with the PORT algorithm, but not the LM algorithm.
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+                       method="PORT",
+                       rho=0.0
+                       )
   }
-  
   return(modelCES)
 }
 # print("US U")
@@ -1448,8 +1485,8 @@ cesModel <- function(countryAbbrev, energyType){
 # print(summary(cesModel("ZA", "Q")))
 # 
 # print("")
-print("SA Q")
-print(summary(cesModel("SA", "Q")))
+# print("SA Q")
+# print(summary(cesModel("SA", "Q")))
 # 
 # print("")
 # print("IR Q")
@@ -1464,6 +1501,33 @@ print(summary(cesModel("SA", "Q")))
 # print(summary(cesModel("ZM", "Q")))
 
 
+#########################
+# Takes the CES fitted models and creates per-country predictions for them.
+# Returns a data.frame with the predictions.
+##
+cesPredictions <- function(countryAbbrev, energyType){
+  xNames = c("iCapStk", "iLabor", "iEToFit")
+  tName = "iYear"
+  dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
+  # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
+  if (!(haveDataSF(countryAbbrev, energyType))){
+    # If we don't have data for this combination of countryAbbrev and energyType, 
+    # return a column of NAs if the above conditions have been met.
+    nRows <- 21 # All of these countries need 21 rows.
+    df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+    colnames(df) <- "pred"
+    return(df)
+  }
+  model <- cesModel(countryAbbrev, energyType)
+  print(model)
+  pred <- cesCalc(xNames=xNames, data=dataTable, coef=coef(model), tName="iYear", nested=TRUE)
+  df <- data.frame(pred)
+  # Pad with rows as necessary
+  df <- padRows(countryAbbrev, df)
+  return(df)
+}
+
+print(cesPredictions("US", "Q"))
 
 
 
