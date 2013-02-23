@@ -271,6 +271,7 @@ h_param_graph <- 2.07 # Inches for a single panel
 h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
 sfParameterGraphHeight <- h_param_graph + h_param_axis
 cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
 linexParameterGraphHeight <- h_param_graph + h_param_axis
 sfParameterGraphWidth <- maxWidth
 cdParameterGraphWidth <- maxWidth
@@ -852,6 +853,16 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
   }
 }
 
+# print("cobbDouglasModel(US, Q) works fine:")
+# us <- cobbDouglasModel("US", "Q")
+# print(summary(us))
+# print(confint(us))
+# print("cobbDouglasModel(ZA, Q) has NA values:")
+# za <- cobbDouglasModel("ZA", "Q")
+# print(summary(za))
+# print(confint(za))
+# save(us, za, file="HeunModels.Rdata")
+
 #########################
 # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
 # Returns a data.frame with the predictions.
@@ -861,8 +872,8 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   if (!missing(energyType)){
     # Consider this replacement only if energyType has been specified.
     if (!(haveDataCD(countryAbbrev, energyType))){
-      #If we don't have data for this combination of countryAbbrev and energyType, 
-      # return a column of NAs if the above conditions have been met.
+      # If we don't have data for this combination of countryAbbrev and energyType, 
+      # return a column of NAs when the above conditions have been met.
       nRows <- 21 # All of these countries need 21 rows.
       df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
       colnames(df) <- "pred"
@@ -1629,6 +1640,41 @@ cesParamsTable <- function(energyType){
   return(tableCES)
 }
 
+#############################
+# Creates a graph with confidence intervals for the CES model for the given energyType
+##
+createCESParamsGraph <- function(energyType){
+  # Create a data table with the following columns:
+  # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
+  dataTable <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType))
+  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+                   data = dataTable, 
+                   centers = value, #identifies where the dots should be placed
+                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+                   draw.bands = FALSE, #provides nicer error bars
+                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+                   layout = c(2,3), #2 column, 3 row
+                   # Orders the panels as gamma, lambda, delta_1, delta, sigma_1, sigma
+                   index.cond = list(c(1,2,3,4,5,6)), 
+                   #set labels and bg color in strip
+                   strip = strip.custom(factor.levels=c("$\\gamma$", "$\\lambda$", "$\\delta_1$",
+                                                        "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="white"),
+                   col = "black", #Sets line color to black
+                   lwd = 1, #Sets line width to 1.0
+                   ylim = list(c(-0.05, 1.0), c(-0.5, 5), c(0.0, 5.0),
+                               c(0.0, 1.0), c(0.0, 1.0), c(0.0, 1.0)), #y axis limits
+                   scales = list(cex=scaleTextSize, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+                                 y=list(relation="free", #allow each axis to be different
+                                        at=list(c(0.0, 0.5, 1.0), c(0, 1, 2, 3, 4, 5), c(0.0, 0.5, 1.0),
+                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0))   #y tick marks
+                                       )
+                   )
+  )
+  return(graph)
+}
+
 ############################
 # Prints a table with parameters from a CES model for the given energyType. 
 ##
@@ -1677,9 +1723,27 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 \subsection{CES with $Q$}
 
+Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
+
+<<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createCESParamsGraph("Q")
+@
+
 \subsection{CES with $X$}
 
+Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
+
+<<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createCESParamsGraph("X")
+@
+
 \subsection{CES with $U$}
+
+Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
+
+<<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+createCESParamsGraph("U")
+@
 
 \subsection{CES comparisons}
 
@@ -2047,7 +2111,7 @@ printCDParamsTable("Q"); printCDParamsTable("X"); printCDParamsTable("U") #With 
 
 The following tables provide results for parameters in CES models.
 
-<<CES_Params_Table, results='asis', eval=TRUE>>=
+<<CES_Params_Table, results='asis'>>=
 printCESParamsTable("Q"); printCESParamsTable("X"); printCESParamsTable("U")
 @
 
