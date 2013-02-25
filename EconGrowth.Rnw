@@ -901,23 +901,24 @@ cdGrid <- function(countryAbbrev, energyType, gammaGrid){
   return(models)
 }
 
-seFromNlsModel <- function(model) { 
-  return(summary(model)$sigma)
-} 
-
+print("US")
 gammaGrid <- seq(0.05, 0.95, by=0.1)
 models <- cdGrid("US", "Q", gammaGrid)
 SSE <- lapply(models, function(model) summary(model)$sigma)
 data <- cbind(gammaGrid, SSE)
-print("US")
 plot(gammaGrid, SSE)
 print(coef(models[[2]]))
 
+print("ZA")
 models <- cdGrid("ZA", "Q", gammaGrid)
 SSE <- lapply(models, function(model) summary(model)$sigma)
-data <- cbind(gammaGrid, SSE)
-print("ZA")
+print(str(coef(models[[5]])))
+lambda <- lapply(models, function(model) coef(model)["lambda"])
+alpha <- lapply(models, function(model) coef(model)["alpha"])
+data <- cbind(gammaGrid, lambda, alpha, SSE)
 plot(gammaGrid, SSE)
+plot(gammaGrid, lambda)
+plot(gammaGrid, alpha)
 print(coef(models[[5]]))
 
 # Some code that is helping to debug the Cobb-Douglas models. Randy Pruim is helping on this.
