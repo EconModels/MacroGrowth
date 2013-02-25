@@ -867,15 +867,13 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
       # We don't want to estimat the value of gamma
       # Calculate a new column iEGamma = iEToFit^gamma
       iEGamma <- with(dataTable, iEToFit^gamma)
-# print(iEGamma)
       dataTable <- cbind(dataTable, iEGamma)
-# print(dataTable)
-      # Now fit the CD model with fixed gamma
-      # Establish guess values for alpha and lambda.
+      # We already know the value of gamma. We don't want to estimate it.
+      # Establish guess values for lambda and alpha.
       lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-      alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+      alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
       start <- list(lambda=lambdaGuess, alpha=alphaGuess)
-      model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha) * iEGamma
+      model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
       modelCDe <- nls(formula=model, data = dataTable, start = start,
                       control = nls.control(maxiter = 200, 
                                             tol = 1e-05, 
@@ -907,7 +905,7 @@ seFromNlsModel <- function(model) {
   return(summary(model)$sigma)
 } 
 
-gammaGrid <- seq(0.0, 1.0, by=0.1)
+gammaGrid <- seq(0.05, 0.95, by=0.1)
 models <- cdGrid("US", "Q", gammaGrid)
 SSE <- lapply(models, function(model) summary(model)$sigma)
 data <- cbind(gammaGrid, SSE)
