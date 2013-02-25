@@ -837,8 +837,9 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
     betaGuess <- 1.0 - alphaGuess
     if (countryAbbrev == "ZA"){
       # South Africa doesn't converge using the default guess values above. Try different values.
+      gammaGuess <- 0.65 # Found via grid search over gamma
       alphaGuess <- 0.597 # The alpha value when energy is not included
-      betaGuess <- 1.0 - alphaGuess
+      betaGuess <- 1.0 - alphaGuess - gammaGuess
 #       alphaGuess <- 0.4
 #       gammaGuess <- 0.1
 #       betaGuess <- 1.0 - alphaGuess - gammaGuess
@@ -850,7 +851,7 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
     start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
     # Now actually do the fit, using the column name "iEToFit".
     if (missing(gamma)){
-      # gamma is a free parameter that we want to estimate
+      # gamma is a free parameter. We need to estimate lambda, a, and b.
       model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
       modelCDe <- nls(formula=model, data = dataTable, start = start,
                       control = nls.control(maxiter = 200, 
@@ -864,7 +865,7 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
                       #upper = list(lambda= Inf, a=1, b=1)
                       )
     } else {
-      # We don't want to estimat the value of gamma
+      # We don't want to estimate the value of gamma
       # Calculate a new column iEGamma = iEToFit^gamma
       iEGamma <- with(dataTable, iEToFit^gamma)
       dataTable <- cbind(dataTable, iEGamma)
@@ -881,9 +882,9 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
                                             printEval=FALSE, #Tells whether to print details of curve fit process.
                                             warnOnly=TRUE),
                       #Include the next 3 lines to fit with constraints.
-                      #algorithm = "port",
-                      #lower = list(lambda=-Inf, alpha=0),
-                      #upper = list(lambda=Inf, alpha=1)
+                      algorithm = "port",
+                      lower = list(lambda=-Inf, alpha=0),
+                      upper = list(lambda=Inf, alpha=1.0-gamma)
                       )
     }
 # print(summary(modelCDe))
@@ -895,44 +896,42 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
 # Does a grid search over values of gamma for a CD production function
 ##
 cdGrid <- function(countryAbbrev, energyType, gammaGrid){
-  gamma <- c(0.1, 0.2)
   gamma <- gammaGrid
   models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
   return(models)
 }
 
-print("US")
-gammaGrid <- seq(0.05, 0.95, by=0.1)
-models <- cdGrid("US", "Q", gammaGrid)
-SSE <- lapply(models, function(model) summary(model)$sigma)
-data <- cbind(gammaGrid, SSE)
-plot(gammaGrid, SSE)
-print(coef(models[[2]]))
-
+gammaGrid <- seq(0.0, 0.95, by=0.05)
+# print("US")
+# models <- cdGrid("US", "Q", gammaGrid)
+# SSE <- lapply(models, function(model) summary(model)$sigma)
+# data <- cbind(gammaGrid, SSE)
+# plot(gammaGrid, SSE)
+# print(coef(models[[2]]))
+# 
 print("ZA")
 models <- cdGrid("ZA", "Q", gammaGrid)
 SSE <- lapply(models, function(model) summary(model)$sigma)
-print(str(coef(models[[5]])))
 lambda <- lapply(models, function(model) coef(model)["lambda"])
 alpha <- lapply(models, function(model) coef(model)["alpha"])
-data <- cbind(gammaGrid, lambda, alpha, SSE)
+data <- cbind(lambda, alpha, gammaGrid, SSE)
+print(data)
 plot(gammaGrid, SSE)
 plot(gammaGrid, lambda)
 plot(gammaGrid, alpha)
-print(coef(models[[5]]))
 
-# Some code that is helping to debug the Cobb-Douglas models. Randy Pruim is helping on this.
+# Some code to debug the Cobb-Douglas models. Randy Pruim is helping on this.
 
 # print("cobbDouglasModel(US, Q) works fine:")
 # us <- cobbDouglasModel("US", "Q")
 # print(summary(us))
 # print(confint(us))
-
+# 
 # print("cobbDouglasModel(ZA) works fine")
 # za <- cobbDouglasModel("ZA")
 # print(summary(za))
 # print(confint(za))
-
+# 
 # print("cobbDouglasModel(ZA, Q) stops before convergence achieved,")
 # print("and confint gives NA values:")
 # za <- cobbDouglasModel("ZA", "Q")
