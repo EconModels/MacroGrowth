@@ -157,10 +157,11 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item \st{GDP comparison graph}
-      \item \st{Convert $\rho$ variables in the \citet{Henningsen:2011td} CES production function to $\sigma$ variables.}
+      \item \st{Convert $\rho$ variables in the CES production function to $\sigma$}
+      \item Write up the decisions about parameter estimation for the CES production function fits
       \item \st{Create parameter graphs for each country}
       \item \st{Parameter tables for each energy type in the appendix}
-      \item \st{Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix}
+      \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
       \item AIC rows in the AIC table
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command.
