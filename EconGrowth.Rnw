@@ -228,7 +228,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   warning=TRUE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -797,8 +797,9 @@ createSFLatticeGraph()
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
+# by including the gamma parameter, a fit with fixed gamma will be provided.
 ##
-cobbDouglasModel <- function(countryAbbrev, energyType){
+cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   #Run the non-linear least squares fit to the data based on whether we have an energy type or not.
   if (missing(energyType)){
@@ -812,7 +813,7 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     modelCD <- nls(formula=model, data=dataTable, start = start,
                    #Include the next 3 lines to fit with constraints.
                    #algorithm = "port",
-                   #lower = list(lambda=-Inf, alpha=0), #constraints on lambda and alpha
+                   #lower = list(lambda=-Inf, alpha=0),
                    #upper = list(lambda=Inf, alpha=1)
                    )
     return(modelCD)
@@ -848,21 +849,78 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     bGuess <- alphaGuess + betaGuess
     start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
     # Now actually do the fit, using the column name "iEToFit".
-    model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
-    modelCDe <- nls(formula=model, data = dataTable, start = start,
-                    control = nls.control(maxiter = 200, 
-                                          tol = 1e-05, 
-                                          minFactor = 1/1024, 
-                                          printEval=FALSE, #Tells whether to print details of curve fit process.
-                                          warnOnly=TRUE),
-                    #Include the next 3 lines to fit with constraints.
-                    #algorithm = "port",
-                    #lower = list(lambda=-Inf, a=0, b=0),
-                    #upper = list(lambda= Inf, a=1, b=1)
-                    )
+    if (missing(gamma)){
+      # gamma is a free parameter that we want to estimate
+      model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
+      modelCDe <- nls(formula=model, data = dataTable, start = start,
+                      control = nls.control(maxiter = 200, 
+                                            tol = 1e-05, 
+                                            minFactor = 1/1024, 
+                                            printEval=FALSE, #Tells whether to print details of curve fit process.
+                                            warnOnly=TRUE),
+                      #Include the next 3 lines to fit with constraints.
+                      #algorithm = "port",
+                      #lower = list(lambda=-Inf, a=0, b=0),
+                      #upper = list(lambda= Inf, a=1, b=1)
+                      )
+    } else {
+      # We don't want to estimat the value of gamma
+      # Calculate a new column iEGamma = iEToFit^gamma
+      iEGamma <- with(dataTable, iEToFit^gamma)
+# print(iEGamma)
+      dataTable <- cbind(dataTable, iEGamma)
+# print(dataTable)
+      # Now fit the CD model with fixed gamma
+      # Establish guess values for alpha and lambda.
+      lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+      alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+      start <- list(lambda=lambdaGuess, alpha=alphaGuess)
+      model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha) * iEGamma
+      modelCDe <- nls(formula=model, data = dataTable, start = start,
+                      control = nls.control(maxiter = 200, 
+                                            tol = 1e-05, 
+                                            minFactor = 1/1024, 
+                                            printEval=FALSE, #Tells whether to print details of curve fit process.
+                                            warnOnly=TRUE),
+                      #Include the next 3 lines to fit with constraints.
+                      #algorithm = "port",
+                      #lower = list(lambda=-Inf, alpha=0),
+                      #upper = list(lambda=Inf, alpha=1)
+                      )
+    }
+# print(summary(modelCDe))
     return(modelCDe)
   }
 }
+
+###############################
+# Does a grid search over values of gamma for a CD production function
+##
+cdGrid <- function(countryAbbrev, energyType, gammaGrid){
+  gamma <- c(0.1, 0.2)
+  gamma <- gammaGrid
+  models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
+  return(models)
+}
+
+seFromNlsModel <- function(model) { 
+  return(summary(model)$sigma)
+} 
+
+gammaGrid <- seq(0.0, 1.0, by=0.1)
+models <- cdGrid("US", "Q", gammaGrid)
+SSE <- lapply(models, function(model) summary(model)$sigma)
+data <- cbind(gammaGrid, SSE)
+print("US")
+plot(gammaGrid, SSE)
+print(coef(models[[2]]))
+
+models <- cdGrid("ZA", "Q", gammaGrid)
+SSE <- lapply(models, function(model) summary(model)$sigma)
+data <- cbind(gammaGrid, SSE)
+print("ZA")
+plot(gammaGrid, SSE)
+print(coef(models[[5]]))
 
 # Some code that is helping to debug the Cobb-Douglas models. Randy Pruim is helping on this.
 
