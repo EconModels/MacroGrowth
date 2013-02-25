@@ -157,10 +157,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item \st{GDP comparison graph}
-      \item Convert $\rho$ variables in the \citet{Henningsen:2011td} CES production function to $\sigma$ variables.
-      \item Create parameter graphs for each country
+      \item \st{Convert $\rho$ variables in the \citet{Henningsen:2011td} CES production function to $\sigma$ variables.}
+      \item \st{Create parameter graphs for each country}
       \item \st{Parameter tables for each energy type in the appendix}
-      \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
+      \item \st{Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix}
       \item AIC rows in the AIC table
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command.
@@ -227,7 +227,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   warning=TRUE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -833,6 +833,16 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
     lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
     alphaGuess <- 0.9
     betaGuess <- 1.0 - alphaGuess
+    if (countryAbbrev == "ZA"){
+      # South Africa doesn't converge using the default guess values above. Try different values.
+      alphaGuess <- 0.597 # The alpha value when energy is not included
+      betaGuess <- 1.0 - alphaGuess
+#       alphaGuess <- 0.4
+#       gammaGuess <- 0.1
+#       betaGuess <- 1.0 - alphaGuess - gammaGuess
+#       alphaGuess <- 0.39
+#       betaGuess <- 0.41
+    }
     aGuess <- alphaGuess
     bGuess <- alphaGuess + betaGuess
     start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
@@ -853,15 +863,31 @@ cobbDouglasModel <- function(countryAbbrev, energyType){
   }
 }
 
+# Some code that is helping to debug the Cobb-Douglas models. Randy Pruim is helping on this.
+
 # print("cobbDouglasModel(US, Q) works fine:")
 # us <- cobbDouglasModel("US", "Q")
 # print(summary(us))
 # print(confint(us))
-# print("cobbDouglasModel(ZA, Q) has NA values:")
+
+# print("cobbDouglasModel(ZA) works fine")
+# za <- cobbDouglasModel("ZA")
+# print(summary(za))
+# print(confint(za))
+
+# print("cobbDouglasModel(ZA, Q) stops before convergence achieved,")
+# print("and confint gives NA values:")
 # za <- cobbDouglasModel("ZA", "Q")
 # print(summary(za))
 # print(confint(za))
-# save(us, za, file="HeunModels.Rdata")
+# 
+# print("cobbDouglasModel(UK, Q) also stops before convergence achieved,")
+# print("but confint does not produce NA values:")
+# uk <- cobbDouglasModel("UK", "Q")
+# print(summary(uk))
+# print(confint(uk))
+
+# save(us, za, uk, file="HeunModels-US-ZA-UK.Rdata")
 
 #########################
 # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
@@ -1519,6 +1545,13 @@ cesData <- function(countryAbbrev, energyType){
   sigma_1.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho_1)") # Estimates sigma_1 and its standard error (SE).
 #print(sigma_1.est)
   sigma_1CI <- with(sigma_1.est, Estimate + c(-1.0, 1.0) * tvalCES * SE)
+  # There are some cases where the confidence intervals for sigma_1 are huge. Set them to -Inf or Inf as appropriate
+  if (is.nan(sigma_1CI[1]) || (sigma_1CI[1] < -1.0e10)){
+    sigma_1CI[1] <- -Inf 
+  }
+  if (is.nan(sigma_1CI[2]) || (sigma_1CI[2] > 1.0e10)){
+    sigma_1CI[2] <- Inf
+  }
 #print("sigma_1CI:")
 #print(sigma_1CI)
   sigma.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho)") # Estimates sigma and its standard error (SE)
@@ -1618,12 +1651,10 @@ cesCountryRowsForParamsGraph <- function(countryName, energyType){
   return(table)
 }
 
-
 ############################
-# Aggregates the CES results into a big data table for the given energyType.
+# Aggregates the CES results for gamma, delta_1, and delta into a table for the given energyType.
 ##
-cesParamsTable <- function(energyType){
-  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+cesParamsTableA <- function(energyType){
   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
@@ -1632,12 +1663,34 @@ cesParamsTable <- function(energyType){
                          " ", "$\\sigma_1$",  " ",
                          " ", "$\\sigma$",    " ")
   rownames(dataCES) <- countryAbbrevs
-  tableCES <- xtable(dataCES, 
-                    caption=paste("CES model (with $", tolower(energyType), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
-                    label=paste("tab:CES_Parameters_With_", energyType, sep=""),
-                    digits = c(1, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2),
-                    align = "r|ccc|ccc|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
-  return(tableCES)
+  tableCESa <- xtable(dataCES[,c(1,2,3, 7,8,9, 10,11,12)], #Picks up gamma, delta_1, and delta
+                      caption=paste("CES model (with $", tolower(energyType), "$). $\\gamma$, $\\delta_1$, and $\\delta$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                      label=paste("tab:CES_Parameters_With_", energyType, sep=""),
+                      digits = c(1, 2,2,2, 2,2,2, 2,2,2),
+                      align = "r|ccc|ccc|ccc" #Sets alignment of the numbers in the columns
+                      ) 
+  return(tableCESa)
+}
+
+############################
+# Aggregates the CES results for lambda, sigma_1, and sigma into a table for the given energyType.
+##
+cesParamsTableB <- function(energyType){
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
+                         " ", "$\\lambda$",   " ",
+                         " ", "$\\delta_1$",  " ",
+                         " ", "$\\delta$",    " ",
+                         " ", "$\\sigma_1$",  " ",
+                         " ", "$\\sigma$",    " ")
+  rownames(dataCES) <- countryAbbrevs
+  tableCESb <- xtable(dataCES[,c(4,5,6, 13,14,15, 16,17,18)], #Picks up lambda, sigma_1, and sigma
+                      caption=paste("CES model (with $", tolower(energyType), "$). $\\lambda$, $\\sigma_1$, and $\\sigma$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                      label=paste("tab:CES_Parameters_With_", energyType, sep=""),
+                      digits = c(1, 4,4,4, 2,2,2, 2,2,2),
+                      align = "r|ccc|ccc|ccc"  #Sets alignment of the numbers in the columns
+                      )
+  return(tableCESb)
 }
 
 #############################
@@ -1661,14 +1714,15 @@ createCESParamsGraph <- function(energyType){
                                                         "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="white"),
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
-                   ylim = list(c(-0.05, 1.0), c(-0.5, 5), c(0.0, 5.0),
+                   ylim = list(c(0.9, 1.1), c(-0.05, 0.05), c(0.0, 1.0),
                                c(0.0, 1.0), c(0.0, 1.0), c(0.0, 1.0)), #y axis limits
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
                                  y=list(relation="free", #allow each axis to be different
-                                        at=list(c(0.0, 0.5, 1.0), c(0, 1, 2, 3, 4, 5), c(0.0, 0.5, 1.0),
-                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0))   #y tick marks
+                                        at=list(c(0.9, 1.0, 1.1), c(-0.05, 0.0, 0.05),
+                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
+                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0))   #y tick marks
                                        )
                    )
   )
@@ -1676,10 +1730,21 @@ createCESParamsGraph <- function(energyType){
 }
 
 ############################
-# Prints a table with parameters from a CES model for the given energyType. 
+# Prints a table with gamma, delta_1, and delta parameters from a CES model for the given energyType. 
 ##
-printCESParamsTable <- function(energyType){
-  print(cesParamsTable(energyType), 
+printCESParamsTableA <- function(energyType){
+  print(cesParamsTableA(energyType), 
+    caption.placement="top", 
+    sanitize.colnames.function = identity, 
+    size="\\tiny",
+    table.placement="H")
+}
+
+############################
+# Prints a table with lambda, sigma_1, and sigma parameters from a CES model for the given energyType. 
+##
+printCESParamsTableB <- function(energyType){
+  print(cesParamsTableB(energyType), 
     caption.placement="top", 
     sanitize.colnames.function = identity, 
     size="\\tiny",
@@ -1725,7 +1790,7 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
-<<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph("Q")
 @
 
@@ -1733,7 +1798,7 @@ createCESParamsGraph("Q")
 
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
-<<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph("X")
 @
 
@@ -1741,7 +1806,7 @@ createCESParamsGraph("X")
 
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
-<<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph("U")
 @
 
@@ -2112,7 +2177,10 @@ printCDParamsTable("Q"); printCDParamsTable("X"); printCDParamsTable("U") #With 
 The following tables provide results for parameters in CES models.
 
 <<CES_Params_Table, results='asis'>>=
-printCESParamsTable("Q"); printCESParamsTable("X"); printCESParamsTable("U")
+#printCESParamsTable("Q"); printCESParamsTable("X"); printCESParamsTable("U")
+printCESParamsTableA("Q"); printCESParamsTableB("Q")
+printCESParamsTableA("X"); printCESParamsTableB("X")
+printCESParamsTableA("U"); printCESParamsTableB("U")
 @
 
 \subsection{LINEX Models}
