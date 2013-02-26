@@ -228,7 +228,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   warning=TRUE, #Tells whether to show warnings in the output.
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
@@ -795,100 +795,120 @@ createSFLatticeGraph()
 
 <<cobb-douglas functions, eval=TRUE>>=
 ####################
+# Returns an nls Cobb-Douglas model (without energy) for the country specified. 
+# No energy is included in the function to be fitted.
+##
+cdModel <- function(countryAbbrev){
+  dataTable <- loadData(countryAbbrev) #Load the data that we need.
+  # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
+  # Establish guess values for alpha and lambda.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+  start <- list(lambda=lambdaGuess, alpha=alphaGuess)
+  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
+  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
+  modelCD <- nls(formula=model, data=dataTable, start = start,
+                 #Include the next 3 lines to fit with constraints.
+                 #algorithm = "port",
+                 #lower = list(lambda=-Inf, alpha=0),
+                 #upper = list(lambda=Inf, alpha=1)
+                 )
+  return(modelCD)
+}
+
+####################
+# Returns an nls Cobb-Douglas model for the country specified
+# energyType is one of "Q", "X", or "U".
+##
+cdeModel <- function(countryAbbrev, energyType){
+  dataTable <- loadData(countryAbbrev) #Load the data that we need.
+  # We need to do the Cobb-Douglas fit with the desired energy data.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function. 
+  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  # Establish guess values for lambda, alpha, and beta.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.9
+  betaGuess <- 1.0 - alphaGuess
+  aGuess <- alphaGuess
+  bGuess <- alphaGuess + betaGuess
+  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+  # Now actually do the fit, using the column name "iEToFit".
+  # gamma is a free parameter.
+  # Reparameterize to ensure that we meet the constraints:
+  # * alpha + beta + gamma = 1.0.
+  # * alpha, beta, and gamma are all between 0.0 and 1.0.
+  # To do this, we reparameterize as
+  # * 0 < a < 1
+  # * 0 < b < 1
+  # * alpha = min(a, b)
+  # * beta = b - a
+  # * gamma = 1 - max(a, b)
+  model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
+  modelCDe <- nls(formula=model, data = dataTable, start = start,
+                  control = nls.control(maxiter = 200, 
+                                        tol = 1e-05, 
+                                        minFactor = 1/1024, 
+                                        printEval=FALSE, #Tells whether to print details of curve fit process.
+                                        warnOnly=TRUE),
+                  #Include the next 3 lines to fit with constraints.
+                  #algorithm = "port",
+                  #lower = list(lambda=-Inf, a=0, b=0),
+                  #upper = list(lambda= Inf, a=1, b=1)
+                  )
+  return(modelCDe)
+}
+
+##############################
+# Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
+##
+cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma){
+  dataTable <- loadData(countryAbbrev) #Load the data that we need.
+  # We need to do the Cobb-Douglas fit with the desired energy data.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function. 
+  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  # We're fixing the value of gamma.
+  # Calculate a new column iEGamma = iEToFit^gamma
+  iEGamma <- with(dataTable, iEToFit^gamma)
+  dataTable <- cbind(dataTable, iEGamma)
+  # We already know the value of gamma. We don't want to estimate it.
+  # Establish guess values for lambda and alpha.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
+  start <- list(lambda=lambdaGuess, alpha=alphaGuess)
+  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
+  modelCDe <- nls(formula=model, data = dataTable, start = start,
+                  control = nls.control(maxiter = 200, 
+                                        tol = 1e-05, 
+                                        minFactor = 1/1024, 
+                                        printEval=FALSE, #Tells whether to print details of curve fit process.
+                                        warnOnly=TRUE),
+                  #Include the next 3 lines to fit with constraints.
+                  algorithm = "port",
+                  lower = list(lambda=-Inf, alpha=0),
+                  upper = list(lambda=Inf, alpha=1.0-gamma)
+                  )
+  return(modelCDe)
+}
+
+####################
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
-# by including the gamma parameter, a fit with fixed gamma will be provided.
+# If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
+# This function dispatches to cdModel, cdeModel, or cdFixedGammaModel as appropriate.
 ##
 cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
-  dataTable <- loadData(countryAbbrev) #Load the data that we need.
-  #Run the non-linear least squares fit to the data based on whether we have an energy type or not.
   if (missing(energyType)){
-    # No energy term desired in the Cobb-Douglas equation.
-    # Establish guess values for alpha and lambda.
-    lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-    alphaGuess <- 0.7 #0.7 gives good results for all countries.  
-    start <- list(lambda=lambdaGuess, alpha=alphaGuess)
-    # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-    model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
-    modelCD <- nls(formula=model, data=dataTable, start = start,
-                   #Include the next 3 lines to fit with constraints.
-                   #algorithm = "port",
-                   #lower = list(lambda=-Inf, alpha=0),
-                   #upper = list(lambda=Inf, alpha=1)
-                   )
-    return(modelCD)
+    # Fit the Cobb-Douglas model without energy.
+    return(cdModel(countryAbbrev))
   } else {
-    # We need to do the Cobb-Douglas fit with the desired energy data.
-    # To achieve the correct fit, we'll change the name of the desired column
-    # to "iEToFit" and use "iEToFit" in the nls function. 
-    dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-    # Reparameterize to ensure that we meet the constraints:
-    # * alpha + beta + gamma = 1.0.
-    # * alpha, beta, and gamma are all between 0.0 and 1.0.
-    # To do this, we reparameterize as
-    # * 0 < a < 1
-    # * 0 < b < 1
-    # * alpha = min(a, b)
-    # * beta = b - a
-    # * gamma = 1 - max(a, b)
-    # Establish guess values for lambda, alpha, and beta.
-    lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-    alphaGuess <- 0.9
-    betaGuess <- 1.0 - alphaGuess
-    if (countryAbbrev == "ZA"){
-      # South Africa doesn't converge using the default guess values above. Try different values.
-      gammaGuess <- 0.65 # Found via grid search over gamma
-      alphaGuess <- 0.597 # The alpha value when energy is not included
-      betaGuess <- 1.0 - alphaGuess - gammaGuess
-#       alphaGuess <- 0.4
-#       gammaGuess <- 0.1
-#       betaGuess <- 1.0 - alphaGuess - gammaGuess
-#       alphaGuess <- 0.39
-#       betaGuess <- 0.41
-    }
-    aGuess <- alphaGuess
-    bGuess <- alphaGuess + betaGuess
-    start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
-    # Now actually do the fit, using the column name "iEToFit".
     if (missing(gamma)){
-      # gamma is a free parameter. We need to estimate lambda, a, and b.
-      model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
-      modelCDe <- nls(formula=model, data = dataTable, start = start,
-                      control = nls.control(maxiter = 200, 
-                                            tol = 1e-05, 
-                                            minFactor = 1/1024, 
-                                            printEval=FALSE, #Tells whether to print details of curve fit process.
-                                            warnOnly=TRUE),
-                      #Include the next 3 lines to fit with constraints.
-                      #algorithm = "port",
-                      #lower = list(lambda=-Inf, a=0, b=0),
-                      #upper = list(lambda= Inf, a=1, b=1)
-                      )
-    } else {
-      # We don't want to estimate the value of gamma
-      # Calculate a new column iEGamma = iEToFit^gamma
-      iEGamma <- with(dataTable, iEToFit^gamma)
-      dataTable <- cbind(dataTable, iEGamma)
-      # We already know the value of gamma. We don't want to estimate it.
-      # Establish guess values for lambda and alpha.
-      lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-      alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
-      start <- list(lambda=lambdaGuess, alpha=alphaGuess)
-      model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
-      modelCDe <- nls(formula=model, data = dataTable, start = start,
-                      control = nls.control(maxiter = 200, 
-                                            tol = 1e-05, 
-                                            minFactor = 1/1024, 
-                                            printEval=FALSE, #Tells whether to print details of curve fit process.
-                                            warnOnly=TRUE),
-                      #Include the next 3 lines to fit with constraints.
-                      algorithm = "port",
-                      lower = list(lambda=-Inf, alpha=0),
-                      upper = list(lambda=Inf, alpha=1.0-gamma)
-                      )
+      # Fit the Cobb-Douglas model with gamma as a free parameter
+      return(cdeModel(countryAbbrev, energyType))
     }
-# print(summary(modelCDe))
-    return(modelCDe)
+    # Fit the Cobb-Douglas model with fixed value of gamma
+    return(cdeFixedGammaModel(countryAbbrev, energyType, gamma))
   }
 }
 
