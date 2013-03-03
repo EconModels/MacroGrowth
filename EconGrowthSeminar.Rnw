@@ -10,12 +10,13 @@
   \usetheme{Berkeley}
   \usecolortheme{beaver}
   % or ...
+  \setbeamercolor{section number projected}{bg=gray,fg=red}
+  \setbeamercolor{itemize item} {bg=gray, fg=red}
+  \setbeamercolor{itemize subitem} {bg=gray, fg=red}
+  \setbeamercolor{itemize subsubitem} {bg=gray, fg=red}
 
-  \setbeamercovered{transparent}
-  % or whatever (possibly just delete it)
-  
-  \setbeamercolor{section number projected}{bg=red,fg=gray}
-  \setbeamercolor{itemize item} {bg=red, fg=gray}
+  % \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)  
 }
 
 \usepackage[english]{babel}
@@ -36,9 +37,9 @@
 %\subtitle
 %{Presentation Subtitle} % (optional)
 
-\author[Caleb Reese, Lucas Timmer, Matthew Heun] % (optional, use only with lots of authors)
-%{F.~Author\inst{1} \and S.~Another\inst{2}}
+\author[Reese, Timmer, Heun] % (optional, use only with lots of authors)
 {Caleb Reese, Lucas Timmer, Matthew Kuperus Heun}
+%{F.~Author\inst{1} \and S.~Another\inst{2}}
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
@@ -51,21 +52,23 @@
 % - Use the \inst command only if there are several affiliations.
 % - Keep it simple, no one is interested in your street address.
 
-\date[Short Occasion] % (optional)
-{4 April 2013 / Mathematics Department Colloquium}
+\date[Math Seminar] % (optional)
+{Mathematics Colloquium\\
+4 April 2013
+}
 
-\subject{Talks}
+\subject{Energy and Economic Growth}
 % This is only inserted into the PDF information catalog. Can be left
 % out. 
 
 % If you have a file called "university-logo-filename.xxx", where xxx
 % is a graphic format that can be processed by latex or pdflatex,
 % resp., then you can add a logo as follows:
-
 % \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
 % \logo{\pgfuseimage{university-logo}}
 
-
+\pgfdeclareimage[height=1.53cm]{university-logo}{CalvinLogo.png}
+\logo{\pgfuseimage{university-logo}}
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
@@ -105,67 +108,118 @@
 % - Talk about 30s to 2min per frame. So there should be between about
 %   15 and 30 frames, all told.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection[Short First Subsection Name]{First Subsection Name}
+\subsection[Growth Modeling]{Economic Growth Modeling} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{Make Titles Informative. Use Uppercase Letters.}{Subtitles are optional.}
-  % - A title should summarize the slide in an understandable fashion
-  %   for anyone how does not follow everything on the slide itself.
+% \begin{frame}{Make Titles Informative. Use Uppercase Letters.} %----------------------------
+%   % - A title should summarize the slide in an understandable fashion
+%   %   for anyone how does not follow everything on the slide itself.
+% 
+%   \begin{itemize}
+%   \item
+%     Use \texttt{itemize} a lot.
+%   \item
+%     Use very short sentences or short phrases.
+%   \end{itemize}
+% \end{frame}
+% 
+% \begin{frame}{Make Titles Informative.} %----------------------------
+% 
+%   You can create overlays\dots
+%   \begin{itemize}
+%   \item using the \texttt{pause} command:
+%     \begin{itemize}
+%     \item
+%       First item.
+%       \pause
+%     \item    
+%       Second item.
+%     \end{itemize}
+%   \item
+%     using overlay specifications:
+%     \begin{itemize}
+%     \item<3->
+%       First item.
+%     \item<4->
+%       Second item.
+%     \end{itemize}
+%   \item
+%     using the general \texttt{uncover} command:
+%     \begin{itemize}
+%       \uncover<5->{\item
+%         First item.}
+%       \uncover<6->{\item
+%         Second item.}
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
 
-  \begin{itemize}
-  \item
-    Use \texttt{itemize} a lot.
-  \item
-    Use very short sentences or short phrases.
-  \end{itemize}
+\subsection{Types of Energy} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{Thermal Energy ($Q$)} %----------------------------
+
 \end{frame}
 
-\begin{frame}{Make Titles Informative.}
+\begin{frame}{Exergy ($X$)} %----------------------------
 
-  You can create overlays\dots
-  \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item    
-      Second item.
-    \end{itemize}
-  \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
-  \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
-  \end{itemize}
+\end{frame}
+
+\begin{frame}{Useful Work ($W$)} %----------------------------
+
+\end{frame}
+
+\subsection{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{Single Factor} %----------------------------
+
+\end{frame}
+
+\begin{frame}{Cobb-Douglas} %----------------------------
+
+\end{frame}
+
+\begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
+
+\end{frame}
+
+\begin{frame}{LINEX} %----------------------------
+
 \end{frame}
 
 
-\subsection{Second Subsection}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sources of Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Make Titles Informative.}
-\end{frame}
+\subsection[Econ Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{Make Titles Informative.}
-\end{frame}
+\subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Examples}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
+
+\subsection[ZA]{South Africa} %+++++++++++++++++++++++++++++++++++++++
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Summary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Summary}
+\begin{frame}{Summary} %----------------------------
 
   % Keep the summary *very short*.
   \begin{itemize}
