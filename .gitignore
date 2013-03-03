@@ -12,6 +12,12 @@
 *.tikz
 *.aux
 *.spl
-EconGrowth-concordance.tex
+*-concordance.tex
+*.tex
 EconGrowth-tikzDictionary
-EconGrowth.tex
+#
+# Files created by beamer
+#
+*.nav
+*.snm
+*.toc

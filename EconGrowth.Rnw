@@ -813,8 +813,32 @@ cdModel <- function(countryAbbrev){
                  #lower = list(lambda=-Inf, alpha=0),
                  #upper = list(lambda=Inf, alpha=1)
                  )
+# print("str(modelCD)")
+# print(str(modelCD))
+# print("")
+# print(modelCD$)
+#   # We estimated alpha with the above code, but we have beta = 1.0 - alpha. So, get 
+#   # an estimate for beta and add it to the model.
+#   summaryCD <- summary(modelCD)
+# print("summaryCD")
+# print(summaryCD)
+#   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
+#   tvalCD <- qt(ciHalfLevel, df = dofCD)
+#   alpha <- coef(modelCD)["alpha"]
+#   betaEst <- deltaMethod(modelCD, "1 - alpha") # Estimates beta and its standard error (SE).
+# print("betaEst")
+# print(betaEst)
+#   # Calculate beta and its confidence interval and report it.
+#   # Now calculate a confidence interval on beta
+#   betaCICD <- with(betaEst, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
+# print("betaCICD")
+# print(betaCICD)
+
+  
   return(modelCD)
 }
+
+cdModel("US")
 
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
@@ -896,20 +920,19 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma){
 # Returns an nls Cobb-Douglas model for the country specified
 # Give an energyType ("Q", "X", or "U") if you want to include an energy term
 # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
-# This function dispatches to cdModel, cdeModel, or cdFixedGammaModel as appropriate.
+# This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
 ##
 cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
   if (missing(energyType)){
     # Fit the Cobb-Douglas model without energy.
     return(cdModel(countryAbbrev))
-  } else {
-    if (missing(gamma)){
-      # Fit the Cobb-Douglas model with gamma as a free parameter
-      return(cdeModel(countryAbbrev, energyType))
-    }
+  }
+  if (!missing(gamma)){
     # Fit the Cobb-Douglas model with fixed value of gamma
     return(cdeFixedGammaModel(countryAbbrev, energyType, gamma))
   }
+  # Fit the Cobb-Douglas model with gamma as a free parameter
+  return(cdeModel(countryAbbrev, energyType))
 }
 
 ###############################
@@ -935,7 +958,6 @@ SSE <- lapply(models, function(model) summary(model)$sigma)
 lambda <- lapply(models, function(model) coef(model)["lambda"])
 alpha <- lapply(models, function(model) coef(model)["alpha"])
 data <- cbind(lambda, alpha, gammaGrid, SSE)
-print(data)
 plot(gammaGrid, SSE)
 plot(gammaGrid, lambda)
 plot(gammaGrid, alpha)
