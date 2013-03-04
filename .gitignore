@@ -14,8 +14,9 @@ EconGrowthSeminar.pdf
 *.aux
 *.spl
 *-concordance.tex
+*-tikzDictionary
 *.tex
-EconGrowth-tikzDictionary
+figure/
 #
 # Files created by beamer
 #
