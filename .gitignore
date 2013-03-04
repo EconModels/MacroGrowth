@@ -6,7 +6,8 @@
 #
 # Files created by LaTeX
 #
-*.pdf
+EconGrowth.pdf
+EconGrowthSeminar.pdf
 *.log
 *.gz
 *.tikz

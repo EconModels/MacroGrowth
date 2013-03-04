@@ -127,27 +127,17 @@
 %\beamerdefaultoverlayspecification{<+->}
 
 
-\begin{document}
+\begin{document} %**************************************************
 
-\begin{frame}
+
+\begin{frame} %----------------------------
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
+\begin{frame}{Outline} %----------------------------
   \tableofcontents
   % You might wish to add the option [pausesections]
 \end{frame}
-
-
-% Since this a solution template for a generic talk, very little can
-% be said about how it should be structured. However, the talk length
-% of between 15min and 45min and the theme suggest that you stick to
-% the following rules:  
-
-% - Exactly two or three sections (other than the summary).
-% - At *most* three subsections per section.
-% - Talk about 30s to 2min per frame. So there should be between about
-%   15 and 30 frames, all told.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -436,5 +426,4 @@
 \end{frame}
 
 
-\end{document}
-
+\end{document} %**************************************************
