@@ -10,10 +10,50 @@
   \usetheme{Berkeley}
   \usecolortheme{beaver}
   % or ...
-  \setbeamercolor{section number projected}{bg=gray,fg=red}
-  \setbeamercolor{itemize item} {bg=gray, fg=red}
-  \setbeamercolor{itemize subitem} {bg=gray, fg=red}
-  \setbeamercolor{itemize subsubitem} {bg=gray, fg=red}
+  % Some Calvin colors. See:
+  % http://www.calvin.edu/admin/webmanager/color-palette.htm
+  % http://www.calvin.edu/admin/publishing/nameplat.html
+  \definecolor{CalvinMaroon}{RGB}{108, 1, 29} % Approximation of Pantone 202
+  \definecolor{CalvinTan}{RGB}{126, 25, 52}
+  \definecolor{CalvinLightTan}{RGB}{207, 212, 182} % Good for backgrounds
+  \definecolor{CalvinDarkBlueAccent}{RGB}{4, 27, 55}
+  \definecolor{CalvinLightBlueAccent}{RGB}{80, 111, 136}
+  \definecolor{CalvinGreenAccent}{RGB}{8, 59, 71}
+  \definecolor{CalvinGrayAccent}{RGB}{131, 154, 150}
+  
+  % Now set colors of the on-screen elements
+  \setbeamercolor{frametitle}{fg=CalvinMaroon, bg=CalvinLightTan}
+  \setbeamercolor{title}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{section in toc}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{section in toc shaded}{fg=CalvinMaroon, bg=CalvinLightTan!60!white} 
+  \setbeamercolor{item}{fg=CalvinMaroon}
+  \setbeamercolor{subitem}{fg=CalvinMaroon}
+  \setbeamercolor{subsubitem}{fg=CalvinMaroon}
+  \setbeamercolor{description item}{fg=CalvinMaroon}
+  \setbeamercolor{caption}{fg=CalvinMaroon}
+  \setbeamercolor{caption name}{fg=CalvinMaroon}
+  
+  \setbeamercolor{background canvas}{bg=CalvinLightTan!60!white}
+  \setbeamercolor{block title}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{block body}{bg=CalvinLightTan!60!white}
+  \setbeamercolor{block title alerted}{bg=CalvinLightTan!60!white}
+  \setbeamercolor{block body alerted}{bg=CalvinLightTan!60!white}
+  \setbeamercolor{block title example}{bg=CalvinLightTan!60!white}
+  \setbeamercolor{block body example}{bg=CalvinLightTan!60!white}
+
+  \setbeamercolor{section number projected}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{itemize item} {fg=CalvinMaroon}
+  \setbeamercolor{itemize subitem} {fg=CalvinMaroon}
+  \setbeamercolor{itemize subsubitem} {fg=CalvinMaroon}
+  \setbeamercolor{normal text}{fg=CalvinMaroon}
+  
+  \setbeamercolor{palette sidebar primary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{palette sidebar secondary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{palette sidebar tertiary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{palette sidebar quaternary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  
+  % Remove navigation bar from bottom of slides.
+  \beamertemplatenavigationsymbolsempty 
 
   % \setbeamercovered{transparent}
   % or whatever (possibly just delete it)  
@@ -67,18 +107,17 @@
 % \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
 % \logo{\pgfuseimage{university-logo}}
 
-\pgfdeclareimage[height=1.53cm]{university-logo}{CalvinLogo.png}
+\pgfdeclareimage[height=1.56cm]{university-logo}{CalvinLogo.png}
 \logo{\pgfuseimage{university-logo}}
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>{Outline}
-    \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
-
+% \AtBeginSubsection[]
+% {
+%   \begin{frame}<beamer>{Outline}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}
+% }
 
 % If you wish to uncover everything in a step-wise fashion, uncomment
 % the following command: 
@@ -113,50 +152,51 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{Example Frame from the Template}{Shows how to overlay stuff} %----------------------------
+
+  You can create overlays\dots
+  \begin{itemize}
+  \item using the \texttt{pause} command:
+    \begin{itemize}
+    \item
+      First item.
+      \pause
+    \item    
+      Second item.
+    \end{itemize}
+  \item
+    using overlay specifications:
+    \begin{itemize}
+    \item<3->
+      First item.
+    \item<4->
+      Second item.
+    \end{itemize}
+  \item
+    using the general \texttt{uncover} command:
+    \begin{itemize}
+      \uncover<5->{\item
+        First item.}
+      \uncover<6->{\item
+        Second item.}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 \subsection[Growth Modeling]{Economic Growth Modeling} %+++++++++++++++++++++++++++++++++++++++
 
-% \begin{frame}{Make Titles Informative. Use Uppercase Letters.} %----------------------------
-%   % - A title should summarize the slide in an understandable fashion
-%   %   for anyone how does not follow everything on the slide itself.
-% 
-%   \begin{itemize}
-%   \item
-%     Use \texttt{itemize} a lot.
-%   \item
-%     Use very short sentences or short phrases.
-%   \end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{Make Titles Informative.} %----------------------------
-% 
-%   You can create overlays\dots
-%   \begin{itemize}
-%   \item using the \texttt{pause} command:
-%     \begin{itemize}
-%     \item
-%       First item.
-%       \pause
-%     \item    
-%       Second item.
-%     \end{itemize}
-%   \item
-%     using overlay specifications:
-%     \begin{itemize}
-%     \item<3->
-%       First item.
-%     \item<4->
-%       Second item.
-%     \end{itemize}
-%   \item
-%     using the general \texttt{uncover} command:
-%     \begin{itemize}
-%       \uncover<5->{\item
-%         First item.}
-%       \uncover<6->{\item
-%         Second item.}
-%     \end{itemize}
-%   \end{itemize}
-% \end{frame}
+\begin{frame}{Factors of Production: $K$ and $L$} %----------------------------
+  \begin{itemize}
+  \item
+    Capital Stock ($K$) <Definition here>
+  \item
+    Labor ($L$) <Definition here>
+  \item
+    Energy ($E$)
+  \end{itemize}
+\end{frame}
+
+
 
 \subsection{Types of Energy} %+++++++++++++++++++++++++++++++++++++++
 
@@ -198,6 +238,7 @@
 \subsection[Econ Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
 
 \subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
