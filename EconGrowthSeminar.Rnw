@@ -33,7 +33,7 @@
   \setbeamercolor{caption}{fg=CalvinMaroon}
   \setbeamercolor{caption name}{fg=CalvinMaroon}
   
-  \setbeamercolor{background canvas}{bg=CalvinLightTan!60!white}
+  \setbeamertemplate{background canvas}[vertical shading][top=CalvinLightTan, bottom=white]
   \setbeamercolor{block title}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
   \setbeamercolor{block body}{bg=CalvinLightTan!60!white}
   \setbeamercolor{block title alerted}{bg=CalvinLightTan!60!white}
@@ -51,6 +51,8 @@
   \setbeamercolor{palette sidebar secondary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
   \setbeamercolor{palette sidebar tertiary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
   \setbeamercolor{palette sidebar quaternary}{fg=CalvinMaroon, bg=CalvinLightTan!60!white}
+  \setbeamercolor{sidebar}{bg=CalvinLightTan}
+  
   
   % Remove navigation bar from bottom of slides.
   \beamertemplatenavigationsymbolsempty 
@@ -152,93 +154,209 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Example Frame from the Template}{Shows how to overlay stuff} %----------------------------
+\begin{frame}{Energy is Essential for Economic Activity} %----------------------------
+  What do you do that doesn't require energy?
+\end{frame}
 
-  You can create overlays\dots
+\begin{frame}{Cleveland, 1984} %----------------------------
+  Show Cleveland's graph and cover of \emph{Science} here.
+\end{frame}
+
+\begin{frame}{Problem: Energy Cost Share is Low} %----------------------------
+  Therefore, energy is considered to be economically unimportant.
+  
+  Compare cost shares of capital stock, labor, and energy.
+\end{frame}
+
+\begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
+  Show graphs of energy cost share and recessions
+\end{frame}
+
+\begin{frame}{The Big Questions} %----------------------------
+  How account for energy in economic models?
+  
+  What happens when energy supplies become constrained?
+  
+  Historical economic development paths are energy intensive. What happens when energy is constrained and prices rise? Will developing countries be able to expand their economies?
+\end{frame}
+
+\begin{frame}{Economic (Growth) Modeling} %----------------------------
+  \begin{center}
+    \includegraphics[height=2.5cm]{figure/Figure_Growth_Models.pdf}
+  \end{center}
   \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item    
-      Second item.
-    \end{itemize}
   \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
+    Goal: predict economic output over time
   \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
+    Economic output is a function of ``factors of production''
+  \item
+    Output defined as GDP ($Y$)
+  \item
+    All inputs and outputs normalized to initial year (0)
   \end{itemize}
 \end{frame}
 
-\subsection[Growth Modeling]{Economic Growth Modeling} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Factors of Production]{Factors of Production} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{Factors of Production: $K$ and $L$} %----------------------------
+\begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
   \begin{itemize}
   \item
     Capital Stock ($K$) <Definition here>
   \item
     Labor ($L$) <Definition here>
-  \item
-    Energy ($E$)
   \end{itemize}
 \end{frame}
 
-
-
-\subsection{Types of Energy} %+++++++++++++++++++++++++++++++++++++++
+\begin{frame}{Energy ($E$)} %----------------------------
+  Caleb complete
+\end{frame}
 
 \begin{frame}{Thermal Energy ($Q$)} %----------------------------
-
+  Caleb complete
 \end{frame}
 
 \begin{frame}{Exergy ($X$)} %----------------------------
-
+  Caleb complete
 \end{frame}
 
 \begin{frame}{Useful Work ($W$)} %----------------------------
-
+  Caleb complete
 \end{frame}
 
-\subsection{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
 
 \begin{frame}{Single Factor} %----------------------------
 
+  \begin{equation*} \label{eq:Single_Factor_Generic}
+    y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
+  \end{equation*}
+  
+  \begin{center}
+    \begin{tabular}{|c|l|}\hline
+      $y$   & $Y$/$Y_0$ \\
+      $t$   & year\\
+      $t_0$ & initial year\\
+      $f$   & $F$/$F_0$, a factor of production\\
+      \hline
+      $\lambda$   &   technological progress\\
+      $m$   &         ``strength'' of factor $f$\\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}{Example Single-Factor Fit} %----------------------------
+  Heun complete
 \end{frame}
 
 \begin{frame}{Cobb-Douglas} %----------------------------
 
+  \begin{equation*} \label{eq:CD_With_Energy}
+    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
+  \end{equation*}
+  
+  \begin{equation*} \label{eq:CD_Const_Returns_To_Scale}
+    \alpha + \beta + \gamma = 1
+  \end{equation*}
+
+  \begin{equation*} \label{eq:CD_Constraints}
+    0 \leq \alpha, \beta, \gamma \leq 1
+  \end{equation*}
+
+  \begin{center}
+    \begin{tabular}{|c|l|}\hline
+      $k$   & $K$/$K_0$, capital stock\\
+      $l$   & $L$/$L_0$, labor\\
+      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \hline
+      $\lambda$   &   technological progress\\
+      $\alpha$   &    ``strength'' of capital\\
+      $\beta$   &    ``strength'' of labor\\
+      $\gamma$   &    ``strength'' of energy\\
+      \hline
+    \end{tabular}
+  \end{center}
+
 \end{frame}
+
+\begin{frame}{Example Cobb-Douglas Fit} %----------------------------
+  Heun complete
+\end{frame}
+
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
 
+  \begin{equation*} \label{eq:micEconCES_model}
+    \begin{split}
+    y = & \gamma \mathrm{e}^{\lambda(t-t_0)} \\
+        & \cdot \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+                        + (1-\delta) e^{-\rho} \right\}^{-1/\rho}
+    \end{split}
+  \end{equation*}
+  
+  \begin{center}
+    \begin{tabular}{|c|l|}\hline
+      $k$   & $K$/$K_0$, capital stock\\
+      $l$   & $L$/$L_0$, labor\\
+      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \hline
+      $\gamma$   &   fitting coefficient\\
+      $\lambda$  &   technological progress\\
+      $\delta$   &   split between ($kl$) and ($e$)\\
+      $\rho$     &   ``strength'' of ($kl$) vs. ($e$)\\
+      $\delta_1$   &   split between ($k$) and ($l$)\\
+      $\rho_1$     &   ``strength'' of ($k$) vs. ($l$)\\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}{Example CES Fit} %----------------------------
+  Heun complete
 \end{frame}
 
 \begin{frame}{LINEX} %----------------------------
 
+  \begin{equation*} \label{eq:LINEX_model}
+    y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}
+  \end{equation*}
+  
+  \begin{center}
+    \begin{tabular}{|c|l|}\hline
+      $k$   & $K$/$K_0$, capital stock\\
+      $l$   & $L$/$L_0$, labor\\
+      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \hline
+      $a_0$   &   fitting parameter\\
+      $c_t$   &   fitting parameter\\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}{Example LINEX Fit} %----------------------------
+  Heun complete
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Sources of Data}
+\section[Data Sources]{Sources of Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection[Econ Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{Economic Data}
+  Lucas complete
+\end{frame}
 
 \subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame}{Energy Data}
+  Caleb complete
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -247,43 +365,74 @@
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame}{US Single Factor}
+  Heun complete
+\end{frame}
+
+\begin{frame}{US Cobb-Douglas}
+  Heun complete
+\end{frame}
+
+\begin{frame}{US CES}
+  Heun complete
+\end{frame}
+
+\begin{frame}{US LINEX}
+  Heun complete
+\end{frame}
+
 \subsection[ZA]{South Africa} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame}{ZA Single Factor}
+  Heun complete
+\end{frame}
+
+\begin{frame}{ZA Cobb-Douglas}
+  Heun complete
+\end{frame}
+
+\begin{frame}{ZA CES}
+  Heun complete
+\end{frame}
+
+\begin{frame}{ZA LINEX}
+  Heun complete
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{Results}
+  Heun complete
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Summary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Summary} %----------------------------
+\begin{frame}{Conclusions} %----------------------------
 
-  % Keep the summary *very short*.
   \begin{itemize}
   \item
-    The \alert{first main message} of your talk in one or two lines.
+    Including energy is unwarranted \\
+    \scriptsize
+    Little statistical evidence that including energy in production functions improves fit.
+    \normalsize
   \item
-    The \alert{second main message} of your talk in one or two lines.
+    Including energy is unnecessary \\
+    \scriptsize
+    Energy is always \emph{already} embedded in capital stock ($K$) and labor ($L$).
+    \normalsize
+  \vskip0pt plus.5fill
   \item
-    Perhaps a \alert{third message}, but not more than that.
+    Need a modeling method that captures energy's embeddedness \\
+    \scriptsize
+    System dynamics modeling
+    \normalsize
   \end{itemize}
   
-  % The following outlook is optional.
-  \vskip0pt plus.5fill
-  \begin{itemize}
-  \item
-    Outlook
-    \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
-    \end{itemize}
-  \end{itemize}
 \end{frame}
 
 

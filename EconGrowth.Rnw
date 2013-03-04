@@ -1874,8 +1874,8 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 \begin{equation} \label{eq:micEconCES_model}
   y = \gamma \mathrm{e}^{\lambda(t-t_0)}  
-      \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right] + (1-\delta) e^{-\rho} \right\}
-                                                                                                        ^{-1/\rho}.
+      \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+              + (1-\delta) e^{-\rho} \right\}^{-1/\rho}.
 \end{equation}
 
 
