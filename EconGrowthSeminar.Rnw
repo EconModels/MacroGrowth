@@ -140,6 +140,11 @@
 \end{frame}
 
 
+<<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
+# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
+@
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -172,7 +177,7 @@
 
 \begin{frame}{Economic (Growth) Modeling} %----------------------------
   \begin{center}
-    \includegraphics[height=2.5cm]{figure/Figure_Growth_Models.pdf}
+    \includegraphics[height=2.5cm]{figure_other/Figure_Growth_Models.pdf}
   \end{center}
   \begin{itemize}
   \item
@@ -271,7 +276,9 @@
 \end{frame}
 
 \begin{frame}{Example Cobb-Douglas Fit} %----------------------------
-  Heun complete
+<<CDeGammaGraphsZA, eval=TRUE>>=
+  cdeGridGraphs("ZA", "Q")
+@
 \end{frame}
 
 

@@ -15,6 +15,9 @@ trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
+  # ********************************************************************************************************
+  eval=TRUE,
+  # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
   comment=NA,
@@ -572,8 +575,6 @@ cdModel <- function(countryAbbrev){
   return(modelCD)
 }
 
-cdModel("US")
-
 ####################
 # Returns an nls Cobb-Douglas model for the country specified
 # energyType is one of "Q", "X", or "U".
@@ -672,55 +673,28 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
 ###############################
 # Does a grid search over values of gamma for a CD production function
 ##
-cdGrid <- function(countryAbbrev, energyType, gammaGrid){
+cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
   gamma <- gammaGrid
   models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
   return(models)
 }
 
-gammaGrid <- seq(0.0, 0.95, by=0.05)
-# print("US")
-# models <- cdGrid("US", "Q", gammaGrid)
-# SSE <- lapply(models, function(model) summary(model)$sigma)
-# data <- cbind(gammaGrid, SSE)
-# plot(gammaGrid, SSE)
-# print(coef(models[[2]]))
-# 
-print("ZA")
-models <- cdGrid("ZA", "Q", gammaGrid)
-SSE <- lapply(models, function(model) summary(model)$sigma)
-lambda <- lapply(models, function(model) coef(model)["lambda"])
-alpha <- lapply(models, function(model) coef(model)["alpha"])
-data <- cbind(lambda, alpha, gammaGrid, SSE)
-plot(gammaGrid, SSE)
-plot(gammaGrid, lambda)
-plot(gammaGrid, alpha)
-
-# Some code to debug the Cobb-Douglas models. Randy Pruim is helping on this.
-
-# print("cobbDouglasModel(US, Q) works fine:")
-# us <- cobbDouglasModel("US", "Q")
-# print(summary(us))
-# print(confint(us))
-# 
-# print("cobbDouglasModel(ZA) works fine")
-# za <- cobbDouglasModel("ZA")
-# print(summary(za))
-# print(confint(za))
-# 
-# print("cobbDouglasModel(ZA, Q) stops before convergence achieved,")
-# print("and confint gives NA values:")
-# za <- cobbDouglasModel("ZA", "Q")
-# print(summary(za))
-# print(confint(za))
-# 
-# print("cobbDouglasModel(UK, Q) also stops before convergence achieved,")
-# print("but confint does not produce NA values:")
-# uk <- cobbDouglasModel("UK", "Q")
-# print(summary(uk))
-# print(confint(uk))
-
-# save(us, za, uk, file="HeunModels-US-ZA-UK.Rdata")
+#############################
+# This function creates a series of graphs for Cobb-Douglas with energy functions
+# showing various parameters as a function of gamma.
+##
+cdeGridGraphs <- function(countryAbbrev, energyType){
+  gammaGrid <- seq(0.0, 0.95, by=0.05)
+  #print(paste(countryAbbrev, energyType))
+  models <- cdeGridData(countryAbbrev, energyType, gammaGrid)
+  SSE <- lapply(models, function(model) summary(model)$sigma)
+  lambda <- lapply(models, function(model) coef(model)["lambda"])
+  alpha <- lapply(models, function(model) coef(model)["alpha"])
+  data <- cbind(lambda, alpha, gammaGrid, SSE)
+  plot(gammaGrid, SSE)
+  plot(gammaGrid, lambda)
+  plot(gammaGrid, alpha)
+}
 
 #########################
 # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
