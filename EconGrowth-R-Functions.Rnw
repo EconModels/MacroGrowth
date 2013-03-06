@@ -266,6 +266,8 @@ createHistoricalLatticeGraph <- function(countryAbbrev){
     dataTable <- loadData(countryAbbrev)
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
+    # The following lines use [index:index] as a convenient way of subsetting.
+    # This has the added benefit of maintaining the correct classes for things.
     yLimits <- yLimits[index:index]                   # Pick limits for the country we want.
     factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
     indexCond <- list(c(1))                           # We want only one country.

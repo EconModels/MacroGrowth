@@ -366,11 +366,17 @@
   Caleb complete
 \end{frame}
 
-\begin{frame}[fragile]{Example Data}
-
-<<Historical_Data, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
+\begin{frame}{Example Data}
+  \begin{columns}[c]
+    \column{2.0in}
+<<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
 createHistoricalLatticeGraph("US")
+@    
+    \column{2.0in}
+<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createHistoricalLatticeGraph("ZA")
 @
+  \end{columns}
 
 \end{frame}
 
