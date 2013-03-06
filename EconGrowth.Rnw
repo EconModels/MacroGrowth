@@ -221,7 +221,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
 createHistoricalLatticeGraph()
 @
 
@@ -295,9 +295,9 @@ The Cobb-Douglas model with energy is given by
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
 
-The Cobb-Douglas with energy parameter estimation process is problematic. The following graphs show that the minimum of the squared-errors curve occurs at the point where $\beta$ --> 0.0.
+The Cobb-Douglas with energy parameter estimation process is problematic. The following graphs show that the minimum of the squared-errors curve occurs at the point where $\beta \rightarrow 0.0$.
 
-<<CDeGammaGraphsZA, eval=TRUE>>=
+<<CDeGammaGraphsZA>>=
   cdeGridGraphs("ZA", "Q")
 @
 

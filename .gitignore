@@ -16,6 +16,7 @@ EconGrowthSeminar.pdf
 *-concordance.tex
 *-tikzDictionary
 *.tex
+*.vrb
 figure/
 #
 # Files created by beamer

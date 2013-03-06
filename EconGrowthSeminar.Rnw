@@ -1,3 +1,7 @@
+<<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
+# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
+@
+
 \documentclass{beamer}
 
 % This file is a solution template for:
@@ -60,6 +64,10 @@
   % \setbeamercovered{transparent}
   % or whatever (possibly just delete it)  
 }
+
+% Code to get a bibliography working. See notes at http://judsonsnotes.com/notes/index.php?option=com_content&view=article&id=641:bibliography-in-beamer&catid=60:latex&Itemid=84
+\def\newblock{\hskip .11em plus .33em minus .07em}
+
 
 \usepackage[english]{babel}
 % or whatever
@@ -140,11 +148,6 @@
 \end{frame}
 
 
-<<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
-# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
-@
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,8 +156,13 @@
   What do you do that doesn't require energy?
 \end{frame}
 
-\begin{frame}{Cleveland, 1984} %----------------------------
-  Show Cleveland's graph and cover of \emph{Science} here.
+\begin{frame}{Energy and GDP are Linked}%{\citet{Cleveland:1997p5055}} %----------------------------
+  \begin{columns}[c]
+    \column{2.0in}
+      \includegraphics[width=2.0in]{figure_other/Figure_Cleveland_1984.pdf}
+    \column{1.5in}
+      \includegraphics[width=1.5in]{figure_other/Figure_Cleveland_1984_Science_Cover.pdf}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Problem: Energy Cost Share is Low} %----------------------------
@@ -164,7 +172,10 @@
 \end{frame}
 
 \begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
-  Show graphs of energy cost share and recessions
+  \begin{center}
+    \includegraphics[height=6.3cm]{figure_other/Figure_Bashmakov_2007.pdf}
+  \end{center}
+%  \citet{Bashmakov:2007ek}
 \end{frame}
 
 \begin{frame}{The Big Questions} %----------------------------
@@ -276,7 +287,7 @@
 \end{frame}
 
 \begin{frame}{Example Cobb-Douglas Fit} %----------------------------
-<<CDeGammaGraphsZA, eval=TRUE>>=
+<<CDeGammaGraphsZA>>=
   cdeGridGraphs("ZA", "Q")
 @
 \end{frame}
@@ -355,6 +366,14 @@
   Caleb complete
 \end{frame}
 
+\begin{frame}[fragile]{Example Data}
+
+<<Historical_Data, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
+createHistoricalLatticeGraph("US")
+@
+
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}
@@ -430,6 +449,17 @@
     \normalsize
   \end{itemize}
   
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Bibliography}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% See hints at http://judsonsnotes.com/notes/index.php?option=com_content&view=article&id=641:bibliography-in-beamer&catid=60:latex&Itemid=84
+\begin{frame}{Bibliography} %----------------------------
+\bibliographystyle{model2-names}
+\bibliography{EconGrowth.bib}
 \end{frame}
 
 

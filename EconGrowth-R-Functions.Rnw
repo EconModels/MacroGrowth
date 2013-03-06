@@ -16,7 +16,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -34,6 +34,7 @@ ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
 # List of countries
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
+countryAbbrevsAlph <- c(CN="CN", IR="IR", JP="JP", SA="SA", TZ="TZ", UK="UK", US="US", ZA="ZA", ZM="ZM")
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
@@ -45,8 +46,11 @@ countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9) # Sets the order as US, UK, JP, CN
 maxWidth <- 6.5 #Inches
 # Full page lattice plot sizes
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
+onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
+presentationGraph1RowHeight <- 2 #Inches
+presentationGraph2ColWidth  <- 2 #Inches
 keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
 keyXLoc <- 0.01 #x position of the key
@@ -237,20 +241,41 @@ printCovarTable <- function(countryAbbrev){
 }
 
 ####################################
-# Creates a graph that displays all of the factors of production for all countries.
+# Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
+# or a specific country (if you supply a 2-letter abbreviation for a country that we know).
 ##
-createHistoricalLatticeGraph <- function(){
-  dataTable <- loadData("All")
+createHistoricalLatticeGraph <- function(countryAbbrev){
+  # Code for all graphs, regardless of whether we want to focus on a specific country
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
+  yTics <- c(1,2,3,4,5,6,7,8,9,10) #y tic mark locations.
   colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
   symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
+  #y axis limits for countries in alphabetical order.
+  yLimits <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) 
+  # Code that deals with items that are specific to whether we want all countries or a specific country.
+  if (missing(countryAbbrev)){
+    # We want a graph with panels for all countries
+    dataTable <- loadData("All")
+    factorLevels <- countryNamesAlph # We want all countries shown
+    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+    layout <- ninePanelLayoutSpec # Show all countries
+  } else {
+    # We want only a specific country
+    dataTable <- loadData(countryAbbrev)
+    # Select the correct y limits
+    index <- which(countryAbbrevsAlph %in% countryAbbrev)
+    yLimits <- yLimits[index:index]                   # Pick limits for the country we want.
+    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+    indexCond <- list(c(1))                           # We want only one country.
+    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+  }
   graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
                   type = graphType,
-                  index.cond = list(countryOrderForGraphs), #orders the panels.
-                  layout = ninePanelLayoutSpec, 
-                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
+                  index.cond = indexCond, #orders the panels.
+                  layout = layout, 
+                  strip = strip.custom(factor.levels=factorLevels, bg="white"), #Sets strip parameters
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
@@ -262,12 +287,10 @@ createHistoricalLatticeGraph <- function(){
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              y=list(relation="free", #allows each axis to be different
-                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
-                                     )
-                              ),
-                  ylim=list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)), #y axis limits
-                  xlab="", ylab="Indexed (1980=1 or 1991=1)") #axis labels
+                              y=list(relation="free", at=yTics)), #allows each axis to be different
+                  ylim=yLimits, #y axis limits
+                  xlab="", 
+                  ylab="Indexed (1980=1 or 1991=1)") #axis labels
   return(graph)
 }
 @
