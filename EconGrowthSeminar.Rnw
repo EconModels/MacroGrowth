@@ -2,6 +2,10 @@
 # Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
 @
 
+<<global_params>>=
+textScaleForGraphs <- 0.6 # Controls text scaling in graphs
+@
+
 \documentclass{beamer}
 
 % This file is a solution template for:
@@ -356,25 +360,26 @@
 
 \subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{Economic Data}
+\begin{frame}{Economic Data} %----------------------------
   Lucas complete
 \end{frame}
 
 \subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{Energy Data}
+\begin{frame}{Energy Data} %----------------------------
   Caleb complete
 \end{frame}
 
-\begin{frame}{Example Data}
+\begin{frame}{Example Data} %----------------------------
+
   \begin{columns}[c]
-    \column{2.0in}
+    \column{2.2in}
 <<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-createHistoricalLatticeGraph("US")
+createHistoricalLatticeGraph("US", textScaling=0.6)
 @    
-    \column{2.0in}
-<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-createHistoricalLatticeGraph("ZA")
+    \column{2.2in}
+<<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs)
 @
   \end{columns}
 
@@ -387,37 +392,37 @@ createHistoricalLatticeGraph("ZA")
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{US Single Factor}
+\begin{frame}{US Single Factor} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{US Cobb-Douglas}
+\begin{frame}{US Cobb-Douglas} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{US CES}
+\begin{frame}{US CES} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{US LINEX}
+\begin{frame}{US LINEX} %----------------------------
   Heun complete
 \end{frame}
 
 \subsection[ZA]{South Africa} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{ZA Single Factor}
+\begin{frame}{ZA Single Factor} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{ZA Cobb-Douglas}
+\begin{frame}{ZA Cobb-Douglas} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{ZA CES}
+\begin{frame}{ZA CES} %----------------------------
   Heun complete
 \end{frame}
 
-\begin{frame}{ZA LINEX}
+\begin{frame}{ZA LINEX} %----------------------------
   Heun complete
 \end{frame}
 
@@ -425,7 +430,7 @@ createHistoricalLatticeGraph("ZA")
 \section{Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Results}
+\begin{frame}{Results} %----------------------------
   Heun complete
 \end{frame}
 
