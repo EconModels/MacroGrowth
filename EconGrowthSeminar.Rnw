@@ -414,10 +414,10 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
     \column{2.2in}
 <<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
 createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@    
+@
     \column{2.2in}
 <<Results_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-#createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
 \end{frame}

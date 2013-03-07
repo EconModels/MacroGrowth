@@ -463,7 +463,7 @@ createSFParamsGraph("U")
 
 Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
 
-<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.", eval=TRUE>>=
+<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
 @
 
