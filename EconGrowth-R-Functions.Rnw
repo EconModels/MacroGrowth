@@ -72,7 +72,7 @@ cdParameterGraphWidth <- maxWidth
 cesParameterGraphWidth <- maxWidth
 linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
-scaleTextSize <- 1.0  #Multiple of normal size
+scaleTextSize <- 0.8  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 @
 
@@ -281,7 +281,9 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0){
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
                   strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent"), #Sets strip parameters
+                                       bg="transparent",
+                                       par.strip.text=list(cex=textScaling)
+                                       ), #Sets strip parameters
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
