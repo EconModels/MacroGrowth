@@ -214,10 +214,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \subsection{Background}
 
-Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathmr{e}^(t-t_0)$) \citep{Mishra:2007tv}.
+Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}
 
 \begin{equation} \label{eq:CD}
-  y_\mathrm{C-D} = \mathrm{e}^{(t-t_0)} k^\alpha l^\beta,
+  y_\mathrm{CD} = \mathrm{e}^{(t-t_0)} k^\alpha l^\beta,
 \end{equation}
 
 \noindent where
@@ -233,10 +233,10 @@ Neoclassical economic growth theory attributes output growth to growth rates of 
 \noindent and
 
 \begin{equation} \label{eq:l_def}
-  l \equiv L/L_\mathrm{0}; with
+  l \equiv L/L_\mathrm{0};
 \end{equation}
 
-\noindent $Y$ measured by GDP, $K$ measured in currency units, and $L$ measured in workers or work-hours.
+\noindent with $Y$ measured by GDP, $K$ measured in currency units, and $L$ measured in workers or work-hours.
 
 In the Cobb-Douglas production function, capital and labor are related to output with an elasticity of unity, indicating constant returns to scale.
 
@@ -425,7 +425,7 @@ Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled 
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -463,7 +463,7 @@ createSFParamsGraph("U")
 
 Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
 
-<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
+<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.", eval=TRUE>>=
 createSFLatticeGraph()
 @
 

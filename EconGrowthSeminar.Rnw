@@ -379,11 +379,11 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \begin{frame}{USA and China} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
-<<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createHistoricalLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
-<<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
@@ -392,15 +392,16 @@ createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \begin{frame}{South Africa and Saudi Arabia} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
-<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createHistoricalLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
-<<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
 \end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}
@@ -408,12 +409,17 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{US Single Factor} %----------------------------
-  Heun complete
-\end{frame}
-
-\begin{frame}{US Cobb-Douglas} %----------------------------
-  Heun complete
+\begin{frame}{US: Single Factor and Cobb-Douglas} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@    
+    \column{2.2in}
+<<Results_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+#createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
 \end{frame}
 
 \begin{frame}{US CES} %----------------------------
