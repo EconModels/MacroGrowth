@@ -49,7 +49,7 @@ ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
-presentationGraph1RowHeight <- 3 #Inches
+presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth  <- 2 #Inches
 keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
@@ -280,10 +280,16 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0){
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
-                  strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent",
-                                       par.strip.text=list(cex=textScaling)
-                                       ), #Sets strip parameters
+                  # This next code fills the background of the graph panels with white.
+                  panel = function(...) {
+                      panel.fill(col = "white")
+                      panel.xyplot(...)
+                  },
+                  # Sets strip parameters
+                  strip = strip.custom(factor.levels=factorLevels, # Sets text for factor levels
+                                       bg="white", # Sets background color to white
+                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                       ),
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
