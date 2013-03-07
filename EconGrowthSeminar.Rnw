@@ -1,9 +1,11 @@
-<<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
+<<setup_functions, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
 # Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
 @
 
-<<global_params>>=
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
 textScaleForGraphs <- 0.6 # Controls text scaling in graphs
+keyXLoc <- 0.013 # Location for the key in single-panel graphs.
+keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 @
 
 \documentclass{beamer}
@@ -160,7 +162,9 @@ textScaleForGraphs <- 0.6 # Controls text scaling in graphs
   What do you do that doesn't require energy?
 \end{frame}
 
-\begin{frame}{Energy and GDP are Linked}%{\citet{Cleveland:1997p5055}} %----------------------------
+\begin{frame}[fragile] %----------------------------
+  \frametitle{Energy and GDP are Linked} 
+%  \framesubtitle{\citet{Cleveland:1997p5055}}
   \begin{columns}[c]
     \column{2.0in}
       \includegraphics[width=2.0in]{figure_other/Figure_Cleveland_1984.pdf}
@@ -370,21 +374,33 @@ textScaleForGraphs <- 0.6 # Controls text scaling in graphs
   Caleb complete
 \end{frame}
 
-\begin{frame}{Example Data} %----------------------------
+\subsection[Graphs]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame}{USA and China} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
 <<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-createHistoricalLatticeGraph("US", textScaling=0.6)
+createHistoricalLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@    
+    \column{2.2in}
+<<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+\end{frame}
+
+\begin{frame}{South Africa and Saudi Arabia} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createHistoricalLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
 <<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs)
+createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
-
 \end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples}
