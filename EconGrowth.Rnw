@@ -214,27 +214,33 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \subsection{Background}
 
-Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output (\textit{y}) as a function of labor (\textit{l}) and capital (\textit{k}) (MISHRA, 2007).
+Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathmr{e}^(t-t_0)$) \citep{Mishra:2007tv}.
 
-\begin{equation}
-  y_\mathrm{C-D} = A(t) k^\alpha l^\beta
+\begin{equation} \label{eq:CD}
+  y_\mathrm{C-D} = \mathrm{e}^{(t-t_0)} k^\alpha l^\beta,
 \end{equation}
 
-\begin{equation}
-  y \equiv Y/Y_\mathrm{0}
+\noindent where
+
+\begin{equation} \label{eq:y_def}
+  y \equiv Y/Y_\mathrm{0},
 \end{equation}
 
-\begin{equation}
-  k \equiv K/K_\mathrm{0}
+\begin{equation} \label{eq:k_def}
+  k \equiv K/K_\mathrm{0},
 \end{equation}
 
-\begin{equation}
-  l \equiv L/L_\mathrm{0}
+\noindent and
+
+\begin{equation} \label{eq:l_def}
+  l \equiv L/L_\mathrm{0}; with
 \end{equation}
+
+\noindent $Y$ measured by GDP, $K$ measured in currency units, and $L$ measured in workers or work-hours.
 
 In the Cobb-Douglas production function, capital and labor are related to output with an elasticity of unity, indicating constant returns to scale.
 
-\begin{equation}
+\begin{equation} \label{eq:CD_constant_returns_to_scale_constraint}
   \alpha + \beta = 1
 \end{equation}
 
