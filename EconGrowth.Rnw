@@ -603,7 +603,7 @@ createCESParamsGraph("U")
 
 Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
 
-<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.">>=
+<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.", eval=TRUE>>=
 createCESLatticeGraph()
 @
 
@@ -611,8 +611,6 @@ createCESLatticeGraph()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{LINEX Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
 The LINEX model has the form
 

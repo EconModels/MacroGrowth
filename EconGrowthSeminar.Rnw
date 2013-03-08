@@ -422,12 +422,17 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{columns}
 \end{frame}
 
-\begin{frame}{US CES} %----------------------------
-  Heun complete
-\end{frame}
-
-\begin{frame}{US LINEX} %----------------------------
-  Heun complete
+\begin{frame}{US: CES and LINEX} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Results_US_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+    \column{2.2in}
+<<Results_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+#createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
 \end{frame}
 
 \subsection[ZA]{South Africa} %+++++++++++++++++++++++++++++++++++++++
