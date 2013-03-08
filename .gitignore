@@ -17,6 +17,7 @@ EconGrowthSeminar.pdf
 *-tikzDictionary
 *.tex
 *.vrb
+*.bbl
 figure/
 #
 # Files created by beamer

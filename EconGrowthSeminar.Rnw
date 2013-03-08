@@ -85,6 +85,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \usepackage[T1]{fontenc}
 % Or whatever. Note that the encoding and the font should match. If T1
 % does not look nice, try deleting the line with the fontenc.
+\usepackage{url} % To format URLs in the references section.
 
 
 \title[Energy and Growth] % (optional, use only with long paper titles)
@@ -162,9 +163,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   What do you do that doesn't require energy?
 \end{frame}
 
-\begin{frame}[fragile] %----------------------------
-  \frametitle{Energy and GDP are Linked} 
-%  \framesubtitle{\citet{Cleveland:1997p5055}}
+\begin{frame}{Energy and GDP are Linked} %----------------------------
+  \tiny
+  \framesubtitle{\cite{Cleveland:1997p5055}}
+  \normalsize
   \begin{columns}[c]
     \column{2.0in}
       \includegraphics[width=2.0in]{figure_other/Figure_Cleveland_1984.pdf}
@@ -173,10 +175,18 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{columns}
 \end{frame}
 
-\begin{frame}{Problem: Energy Cost Share is Low} %----------------------------
-  Therefore, energy is considered to be economically unimportant.
-  
-  Compare cost shares of capital stock, labor, and energy.
+\begin{frame}{World Oil Supply is Tightening} %----------------------------
+  \framesubtitle{\cite{Tverberg:2013}}
+  \includegraphics[width=4.0in]{figure_other/Figure_Tverberg_2013.png}
+\end{frame}
+
+\begin{frame}{Energy Cost Share is Low} %----------------------------
+  \begin{itemize}
+    \item
+      Therefore, energy is considered to be economically unimportant.
+    \item
+      Compare cost shares of capital stock, labor, and energy.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
@@ -186,12 +196,17 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 %  \citet{Bashmakov:2007ek}
 \end{frame}
 
-\begin{frame}{The Big Questions} %----------------------------
-  How account for energy in economic models?
-  
-  What happens when energy supplies become constrained?
-  
-  Historical economic development paths are energy intensive. What happens when energy is constrained and prices rise? Will developing countries be able to expand their economies?
+\begin{frame}{Observations and Questions} %----------------------------
+  \begin{itemize}
+    \item
+      Historical economic development paths are energy intensive. 
+    \item
+      What happens when energy supplies are constrained and prices rise? 
+    \item
+      Will developing countries be able to expand their economies?
+    \item
+      How account for energy in economic models?
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Economic (Growth) Modeling} %----------------------------
@@ -497,10 +512,21 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % See hints at http://judsonsnotes.com/notes/index.php?option=com_content&view=article&id=641:bibliography-in-beamer&catid=60:latex&Itemid=84
-\begin{frame}{Bibliography} %----------------------------
-\bibliographystyle{model2-names}
-\bibliography{EconGrowth.bib}
-\end{frame}
+% \begin{frame}{Bibliography} %----------------------------
+% \bibliographystyle{model2-names}
+% \bibliography{EconGrowth.bib}
+% \end{frame}
 
+%-------------------------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+%\bibliographystyle{amsalpha}
+\bibliographystyle{model2-names}
+\renewcommand{\thepage}{\arabic{page}}
+\tiny
+\bibliography{EconGrowth.bib}
+\normalsize
+\end{frame}
 
 \end{document} %**************************************************
