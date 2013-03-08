@@ -190,6 +190,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
+  \framesubtitle{\cite{Bashmakov:2007ek}}
   \begin{center}
     \includegraphics[height=6.3cm]{figure_other/Figure_Bashmakov_2007.pdf}
   \end{center}
