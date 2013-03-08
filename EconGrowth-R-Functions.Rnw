@@ -1675,7 +1675,7 @@ linexPredictionsColumn <- function(energyType){
 # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
 # data as open circles.
 ##
-createLinexLatticeGraph <- function(){
+createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
   dataTable <- loadData("All") #Grab the raw data
   predictionsQ <- linexPredictionsColumn("Q") #Predictions from LINEX with Q
   predictionsX <- linexPredictionsColumn("X") #Predictions from LINEX with X
@@ -1687,28 +1687,52 @@ createLinexLatticeGraph <- function(){
   lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
   colors <- c("black", "red", "blue", "darkorange") #line and symbol colors
   symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  # Code that deals with items that are specific to whether we want all countries or a specific country.  
+  if (missing (countryAbbrev)){
+    # We want a graph with panels for all countries
+    yLimits <- yLimitsForGDPGraphs
+    factorLevels <- countryNamesAlph # We want all countries shown
+    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+    layout <- ninePanelLayoutSpec # Show all countries
+  } else {
+    # We want only a specific country
+    dataTable <- subset(dataTable, Country == countryAbbrev)    
+    # Select the correct y limits
+    index <- which(countryAbbrevsAlph %in% countryAbbrev)
+    # The following lines use [index:index] as a convenient way of subsetting.
+    # This has the added benefit of maintaining the correct classes for things.
+    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+    indexCond <- list(c(1))                           # We want only one country.
+    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+  }  
   graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
-                  index.cond=list(countryOrderForGraphs), #orders the panels.
-                  layout=ninePanelLayoutSpec, #indicates a 3x3 arrangement of panels.
-                  strip = strip.custom(factor.levels=countryNamesAlph, bg="white"), #Sets strip parameters
+                  index.cond=indexCond, #orders the panels.
+                  layout=layout,
+                  strip = strip.custom(factor.levels=factorLevels, 
+                                       bg="transparent", # Sets background transparent to match the graph itself.
+                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                       ),
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
                   key=list(text=list(c("Actual", "With $q$", "With $x$", "With $u$")),
                            type=graphType,
-                           cex=keyTextSize, #controls size of text in the key
+                           cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
                            pch=symbols, col=colors, #controls symbol (plot characters) types
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize, #controls text size on scales.
+                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              y=list(relation="free", #allows each axis to be different
-                                     at=c(1,2,3,4,5,6,7,8,9,10) #tick mark locations
-                                     )
-                              ), 
-                  ylim=list(c(1,8), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3), c(1,3)),
-                  xlab="", ylab="Indexed GDP (1980=1 or 1991=1)") #axis labels
+                              x=list(at=timeTics),
+                              y=list(relation="free",  #allows each axis to be different
+                                     at=yTicsForIndexedGraphs)), #specifies location for tics
+                  ylim=yLimits, #y axis limits
+                  #axis labels and scaling
+                  xlab=list(label="", cex=textScaling), 
+                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+                  )
   return(graph)
 }
 

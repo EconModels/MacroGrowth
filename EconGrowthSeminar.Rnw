@@ -430,7 +430,7 @@ createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 @
     \column{2.2in}
 <<Results_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
-#createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
 \end{frame}
