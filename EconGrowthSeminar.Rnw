@@ -404,7 +404,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Examples}
+\section{Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
@@ -412,11 +412,11 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \begin{frame}{US: Single Factor and Cobb-Douglas} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
-<<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
     \column{2.2in}
-<<Results_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Results_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
@@ -425,11 +425,11 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \begin{frame}{US: CES and LINEX} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
-<<Results_US_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Results_US_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
     \column{2.2in}
-<<Results_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<Results_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
@@ -437,28 +437,30 @@ createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 
 \subsection[ZA]{South Africa} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame}{ZA Single Factor} %----------------------------
-  Heun complete
+\begin{frame}{ZA: Single Factor and Cobb-Douglas} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Results_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+    \column{2.2in}
+<<Results_ZA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
 \end{frame}
 
-\begin{frame}{ZA Cobb-Douglas} %----------------------------
-  Heun complete
-\end{frame}
-
-\begin{frame}{ZA CES} %----------------------------
-  Heun complete
-\end{frame}
-
-\begin{frame}{ZA LINEX} %----------------------------
-  Heun complete
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}{Results} %----------------------------
-  Heun complete
+\begin{frame}{ZA: CES and LINEX} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Results_ZA_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+    \column{2.2in}
+<<Results_ZA_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
 \end{frame}
 
 
