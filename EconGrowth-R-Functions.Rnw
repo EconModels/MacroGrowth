@@ -735,12 +735,20 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
 }
 
 ###############################
-# Does a grid search over values of gamma for a CD production function
+# Does a grid search over values of gamma for a CD with energy production function.
+# Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
 ##
 cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
   gamma <- gammaGrid
   models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
-  return(models)
+  SSE <- unlist(lapply(models, function(model){summary(model)$sigma}))
+  lambda <- unlist(lapply(models, function(model){coef(model)["lambda"]}))
+  alpha <- unlist(lapply(models, function(model){coef(model)["alpha"]}))
+  data <- as.data.frame(cbind(gammaGrid, lambda, alpha, SSE))
+  row.names(data) <- NULL #eliminates row names, leaving only numbered rows
+  colnames(data) <- c("gamma", "lambda", "alpha", "SSE")
+  data <- transform(data, beta = 1.0 - alpha - gamma)
+  return(data)
 }
 
 #############################
@@ -749,15 +757,12 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
 ##
 cdeGridGraphs <- function(countryAbbrev, energyType){
   gammaGrid <- seq(0.0, 0.95, by=0.05)
-  #print(paste(countryAbbrev, energyType))
-  models <- cdeGridData(countryAbbrev, energyType, gammaGrid)
-  SSE <- lapply(models, function(model) summary(model)$sigma)
-  lambda <- lapply(models, function(model) coef(model)["lambda"])
-  alpha <- lapply(models, function(model) coef(model)["alpha"])
-  data <- cbind(lambda, alpha, gammaGrid, SSE)
-  plot(gammaGrid, SSE)
-  plot(gammaGrid, lambda)
-  plot(gammaGrid, alpha)
+  data <- cdeGridData(countryAbbrev, energyType, gammaGrid)
+  with(data, plot(gamma, SSE))
+  with(data, plot(gamma, lambda))
+  with(data, plot(gamma, alpha))
+  with(data, plot(gamma, beta))
+  with(data, plot(beta, SSE))
 }
 
 #########################
@@ -837,7 +842,7 @@ cobbDouglasData <- function(countryAbbrev, energyType){
     beta.est <- deltaMethod(modelCD, "1 - alpha") # Estimates beta and its standard error (SE).
     # Calculate beta and its confidence interval and report it.
     # Now calculate a confidence interval on beta
-    betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE); betaCICD # Gives the confidence interval on beta.  
+    betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.  
     # Combine all estimates and their confidence intervals into data frames with intelligent row names
     estCD <- data.frame(lambda=coef(modelCD)["lambda"], alpha=coef(modelCD)["alpha"], beta=beta, gamma=0)
     row.names(estCD) <- "CD"

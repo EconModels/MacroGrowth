@@ -501,7 +501,7 @@ The Cobb-Douglas model with energy is given by
 
 The Cobb-Douglas with energy parameter estimation process is problematic. The following graphs show that the minimum of the squared-errors curve occurs at the point where $\beta \rightarrow 0.0$.
 
-<<CDeGammaGraphsZA>>=
+<<CDeGammaGraphsZA, eval=TRUE>>=
   cdeGridGraphs("ZA", "Q")
 @
 
@@ -648,7 +648,7 @@ createLINEXParamsGraph("U")
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
-<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.", eval=TRUE>>=
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
 createLINEXLatticeGraph()
 @
 

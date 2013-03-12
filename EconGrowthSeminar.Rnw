@@ -86,6 +86,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 % Or whatever. Note that the encoding and the font should match. If T1
 % does not look nice, try deleting the line with the fontenc.
 \usepackage{url} % To format URLs in the references section.
+\usepackage{natbib} % To format the bibliobraphy nicely
+
 
 
 \title[Energy and Growth] % (optional, use only with long paper titles)
@@ -165,7 +167,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Energy and GDP are Linked} %----------------------------
   \tiny
-  \framesubtitle{\cite{Cleveland:1997p5055}}
+  \framesubtitle{\citep{Cleveland:1997p5055}}
   \normalsize
   \begin{columns}[c]
     \column{2.0in}
@@ -176,21 +178,19 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{World Oil Supply is Tightening} %----------------------------
-  \framesubtitle{\cite{Tverberg:2013}}
+  \framesubtitle{\citep{Tverberg:2013}}
   \includegraphics[width=4.0in]{figure_other/Figure_Tverberg_2013.png}
 \end{frame}
 
 \begin{frame}{Energy Cost Share is Low} %----------------------------
   \begin{itemize}
-    \item
-      Therefore, energy is considered to be economically unimportant.
-    \item
-      Compare cost shares of capital stock, labor, and energy.
+    \item{Energy is considered to be economically unimportant.}
+    \item{Compare cost shares of capital stock, labor, and energy.}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
-  \framesubtitle{\cite{Bashmakov:2007ek}}
+  \framesubtitle{\citep{Bashmakov:2007ek}}
   \begin{center}
     \includegraphics[height=6.3cm]{figure_other/Figure_Bashmakov_2007.pdf}
   \end{center}
@@ -199,14 +199,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Observations and Questions} %----------------------------
   \begin{itemize}
-    \item
-      Historical economic development paths are energy intensive. 
-    \item
-      What happens when energy supplies are constrained and prices rise? 
-    \item
-      Will developing countries be able to expand their economies?
-    \item
-      How account for energy in economic models?
+    \item{Historical economic development paths (US, Western Europe) are energy intensive.}
+    \item{What happens when energy supplies are constrained and prices rise?}
+    \item{Will developing countries be able to expand their economies?}
+    \item{How account for energy in economic models?}
   \end{itemize}
 \end{frame}
 
@@ -215,14 +211,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \includegraphics[height=2.5cm]{figure_other/Figure_Growth_Models.pdf}
   \end{center}
   \begin{itemize}
-  \item
-    Goal: predict economic output over time
-  \item
-    Economic output is a function of ``factors of production''
-  \item
-    Output defined as GDP ($Y$)
-  \item
-    All inputs and outputs normalized to initial year (0)
+  \item{Goal: predict economic output over time}
+  \item{Economic output is a function of ``factors of production''}
+  \item{Output defined as GDP ($Y$)}
+  \item{All inputs and outputs normalized to initial year (0)}
   \end{itemize}
 \end{frame}
 
@@ -230,10 +222,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
   \begin{itemize}
-  \item
-    Capital Stock ($K$) <Definition here>
-  \item
-    Labor ($L$) <Definition here>
+  \item{Capital Stock ($K$) <Definition here>}
+  \item{Labor ($L$) <Definition here>}
   \end{itemize}
 \end{frame}
 
@@ -256,11 +246,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
 
 \begin{frame}{Single Factor} %----------------------------
-
   \begin{equation*} \label{eq:Single_Factor_Generic}
     y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
   \end{equation*}
-  
   \begin{center}
     \begin{tabular}{|c|l|}\hline
       $y$   & $Y$/$Y_0$ \\
@@ -273,7 +261,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \hline
     \end{tabular}
   \end{center}
-
 \end{frame}
 
 \begin{frame}{Example Single-Factor Fit} %----------------------------
@@ -281,19 +268,15 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Cobb-Douglas} %----------------------------
-
   \begin{equation*} \label{eq:CD_With_Energy}
     y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
   \end{equation*}
-  
   \begin{equation*} \label{eq:CD_Const_Returns_To_Scale}
     \alpha + \beta + \gamma = 1
   \end{equation*}
-
   \begin{equation*} \label{eq:CD_Constraints}
     0 \leq \alpha, \beta, \gamma \leq 1
   \end{equation*}
-
   \begin{center}
     \begin{tabular}{|c|l|}\hline
       $k$   & $K$/$K_0$, capital stock\\
@@ -307,7 +290,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \hline
     \end{tabular}
   \end{center}
-
 \end{frame}
 
 \begin{frame}{Example Cobb-Douglas Fit} %----------------------------
@@ -316,9 +298,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 @
 \end{frame}
 
-
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
-
   \begin{equation*} \label{eq:micEconCES_model}
     \begin{split}
     y = & \gamma \mathrm{e}^{\lambda(t-t_0)} \\
@@ -326,7 +306,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
                         + (1-\delta) e^{-\rho} \right\}^{-1/\rho}
     \end{split}
   \end{equation*}
-  
   \begin{center}
     \begin{tabular}{|c|l|}\hline
       $k$   & $K$/$K_0$, capital stock\\
@@ -342,7 +321,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \hline
     \end{tabular}
   \end{center}
-
 \end{frame}
 
 \begin{frame}{Example CES Fit} %----------------------------
@@ -350,11 +328,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{LINEX} %----------------------------
-
   \begin{equation*} \label{eq:LINEX_model}
     y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}
   \end{equation*}
-  
   \begin{center}
     \begin{tabular}{|c|l|}\hline
       $k$   & $K$/$K_0$, capital stock\\
@@ -366,7 +342,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \hline
     \end{tabular}
   \end{center}
-
 \end{frame}
 
 \begin{frame}{Example LINEX Fit} %----------------------------
@@ -507,27 +482,23 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
   
 \end{frame}
 
+\begin{frame}{Next Steps (Summer 2013)} %----------------------------
+  \begin{itemize}
+    \item{Estimate statistical properties for \emph{all} fitting parameters}
+    \item{Complete paper}
+  \end{itemize}  
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Bibliography}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% See hints at http://judsonsnotes.com/notes/index.php?option=com_content&view=article&id=641:bibliography-in-beamer&catid=60:latex&Itemid=84
-% \begin{frame}{Bibliography} %----------------------------
-% \bibliographystyle{model2-names}
-% \bibliography{EconGrowth.bib}
-% \end{frame}
-
-%-------------------------------------------------------------------
-
-\begin{frame}
-\frametitle{References}
-%\bibliographystyle{amsalpha}
-\bibliographystyle{model2-names}
-\renewcommand{\thepage}{\arabic{page}}
-\tiny
-\bibliography{EconGrowth.bib}
-\normalsize
+\begin{frame}{References} %----------------------------
+  \bibliographystyle{plainnat}
+  \renewcommand{\thepage}{\arabic{page}}
+  \tiny
+    \bibliography{EconGrowth.bib}
+  \normalsize
 \end{frame}
 
 \end{document} %**************************************************
