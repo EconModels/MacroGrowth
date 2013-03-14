@@ -755,48 +755,44 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
 #############################
 # This function creates a series of graphs for Cobb-Douglas with energy functions
 # showing various parameters as a function of gamma.
+# countryAbbrev tells which country you want to view
+# energyType tells which type of energy you want
+# textScaling tells how you want to scale the text on the axes and other places.
 ##
-cdeGridGraphs <- function(countryAbbrev, energyType){
+cdeGridGraphs <- function(countryAbbrev, energyType, textScaling=1.0){
   gammaGrid <- seq(0.0, 0.95, by=0.05)
   data <- cdeGridData(countryAbbrev, energyType, gammaGrid)
   # Now melt the data so that it is in the correct form.
-  
-#   with(data, plot(gamma, SSE))
-#   with(data, plot(gamma, lambda))
-#   with(data, plot(gamma, alpha))
-#   with(data, plot(gamma, beta))
-  with(data, plot(beta, SSE))
-
   data_molten <- melt(data, id="gamma")
-print(data_molten)
-  
+  alphaBetaGammaRange <- c(0.0, 1.0)
+  alphaBetaGammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
+  lambdaRange <- c(0.0, 0.004)
+  lambdaTics <- c(0.0, 0.001, 0.002, 0.003, 0.004)
+  sseRange <- c(0.0, 0.08)
+  sseTics <- c(0.0, 0.02, 0.04, 0.06, 0.08)
+  # Create a lattice graph that shows the four variables (lambda, alpha, beta, and SSE) vs. gamma.
   graph <- xyplot(value ~ gamma | variable, data=data_molten,
-#                 type=graphType,
-#                 index.cond=indexCond, #orders the panels.
-#                 layout=layout, #indicates a 3x3 arrangement of panels.
-#                 strip = strip.custom(factor.levels=factorLevels, 
-#                                      bg="transparent", # Sets background transparent to match the graph itself.
-#                                      par.strip.text=list(cex=textScaling) # Scales text in the strip.
-#                                      ),
-#                 as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-#                 lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-#                 pch = symbols, col.symbol = colors, #Controls symbol parameters
-#                 key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
-#                          type=graphType,
-#                          cex=keyTextSize * textScaling, #controls size of text in the key
-#                          lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-#                          pch=symbols, col=colors, #controls symbol (plot characters) types
-#                          columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-#                 scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-#                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-#                             x=list(at=timeTics),
-#                             y=list(relation="free",  #allows each axis to be different
-#                                    at=yTicsForIndexedGraphs)), #specifies location for tics
-#                 ylim=yLimits, #y axis limits
-#                 #axis labels and scaling
-#                 xlab=list(label="", cex=textScaling), 
-#                 ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
-                )
+                  # 1=lambda, 2=alpha, 3=SSE, 4=beta
+                  index.cond=list(c(3,1,2,4)), #orders the panels as SSE, lambda, alpha, beta.
+                  strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$SSE$", "$\\beta$"), 
+                                       bg="transparent", # Sets background transparent to match the graph itself.
+                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                       ),
+                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+                  pch = c(1), col.symbol = c("black"), #Controls symbol parameters
+                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              x=list(relation="free",
+                                     at=alphaBetaGammaTics),
+                              y=list(relation="free",  #allows each axis to be different
+                                     #specifies location for tics
+                                     at=list(lambdaTics, alphaBetaGammaTics, sseTics, alphaBetaGammaTics))
+                              ), 
+                  ylim=list(lambdaRange, alphaBetaGammaRange, sseRange, alphaBetaGammaRange), #y axis limits
+                  #axis labels and scaling
+                  xlab=list(label="$\\gamma$", cex=textScaling), 
+                  ylab=list(label="")
+                  )
   return(graph)
 }
 

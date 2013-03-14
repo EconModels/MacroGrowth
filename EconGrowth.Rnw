@@ -499,9 +499,9 @@ The Cobb-Douglas model with energy is given by
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
 
-The Cobb-Douglas with energy parameter estimation process is problematic. The following graphs show that the minimum of the squared-errors curve occurs at the point where $\beta \rightarrow 0.0$.
+The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGammaGraphsZA} shows the sum of squared errors ($SSE$), $\lambda$, $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ for South Africa with thermal energy ($q$). The minimum $SSE$ occurs at a discontinuity caused by the constraint $\beta \geq 0.0$. The parameter estimation algorithm has difficulty recognizing the values of $\gamma$, $\alpha$, $\beta$, and $\lambda$ that produce minimum $SSE$, because the constrained model behaves very differently on either side of the discontinuity.
 
-<<CDeGammaGraphsZA, eval=TRUE>>=
+<<CDeGammaGraphsZA, fig.cap="Cobb-Douglas with thermal energy ($q$) grid search for minimum $SSE$ for South Africa.", fig.pos="H", eval=TRUE>>=
 cdeGridGraphs("ZA", "Q")
 @
 
