@@ -754,11 +754,13 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
 }
 
 #############################
-# This function creates a series of graphs for Cobb-Douglas with energy functions
-# showing various parameters as a function of gamma.
+# This function creates a graph for Cobb-Douglas with energy functions. The graph has 
+# a double Y axis. The first Y axis has alpha, beta, and gamma vs. gamma. The second Y axis
+# has SSE vs. gamma.
 # countryAbbrev tells which country you want to view
 # energyType tells which type of energy you want
 # textScaling tells how you want to scale the text on the axes and other places.
+# This 
 ##
 cdeGridGraphs <- function(countryAbbrev, energyType, textScaling=1.0){
   gammaGrid <- seq(0.0, 0.95, by=0.05)
@@ -772,29 +774,52 @@ cdeGridGraphs <- function(countryAbbrev, energyType, textScaling=1.0){
   sseRange <- c(0.0, 0.08)
   sseTics <- c(0.0, 0.02, 0.04, 0.06, 0.08)
   # Create a lattice graph that shows the four variables (lambda, alpha, beta, and SSE) vs. gamma.
-  graph <- xyplot(value ~ gamma | variable, data=data_molten,
-                  # 1=lambda, 2=alpha, 3=SSE, 4=beta
-                  index.cond=list(c(3,1,2,4)), #orders the panels as SSE, lambda, alpha, beta.
-                  strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$SSE$", "$\\beta$"), 
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                                       ),
-                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-                  pch = c(1), col.symbol = c("black"), #Controls symbol parameters
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              x=list(relation="free",
-                                     at=alphaBetaGammaTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     #specifies location for tics
-                                     at=list(lambdaTics, alphaBetaGammaTics, sseTics, alphaBetaGammaTics))
-                              ), 
-                  ylim=list(lambdaRange, alphaBetaGammaRange, sseRange, alphaBetaGammaRange), #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="$\\gamma$", cex=textScaling), 
-                  ylab=list(label="")
-                  )
-  return(graph)
+#   graph <- xyplot(value ~ gamma | variable, data=data_molten,
+#                   # 1=lambda, 2=alpha, 3=SSE, 4=beta
+#                   index.cond=list(c(3,1,2,4)), #orders the panels as SSE, lambda, alpha, beta.
+#                   strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$SSE$", "$\\beta$"), 
+#                                        bg="transparent", # Sets background transparent to match the graph itself.
+#                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                                        ),
+#                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                   pch = c(1), col.symbol = c("black"), #Controls symbol parameters
+#                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                               x=list(relation="free",
+#                                      at=alphaBetaGammaTics),
+#                               y=list(relation="free",  #allows each axis to be different
+#                                      #specifies location for tics
+#                                      at=list(lambdaTics, alphaBetaGammaTics, sseTics, alphaBetaGammaTics))
+#                               ), 
+#                   ylim=list(lambdaRange, alphaBetaGammaRange, sseRange, alphaBetaGammaRange), #y axis limits
+#                   #axis labels and scaling
+#                   xlab=list(label="$\\gamma$", cex=textScaling), 
+#                   ylab=list(label="")
+#                   )
+#   return(graph)
+  abgGraph <- xyplot(alpha+beta+gamma ~ gamma, data=data,
+#                    pch = c(1), col.symbol = c("black"), #Controls symbol parameters
+                     scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 x=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)), #location for x tics
+                                 y=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0))  #location for y tics
+                     ), 
+                     ylim=c(0.0, 1.5), #y axis limits
+                     #axis labels and scaling
+                     xlab=list(label="$\\gamma$", cex=textScaling), 
+                     ylab=list(label="$\\lambda$, $\\alpha$, $\\beta$")
+  )
+  sseGraph <- xyplot(SSE ~ gamma, data=data,
+                     pch = c(1), col.symbol = c("black"), #Controls symbol parameters
+                     scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 y=list(at=c(0.0, 0.02, 0.04, 0.06, 0.08))  #location for y tics
+                     ), 
+                     ylim=c(0.0, 0.08),
+                     ylab=list(label="$SSE$")
+                     )
+  doubleYGraph <- doubleYScale(abgGraph, sseGraph, add.ylab2=TRUE)
+  return(doubleYGraph)
 }
 
 #########################
