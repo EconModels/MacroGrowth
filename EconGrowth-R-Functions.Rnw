@@ -55,7 +55,8 @@ onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
-presentationGraph2ColWidth  <- 2 #Inches
+presentationGraph2ColWidth <- 2 #Inches
+presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
 keyTextSize <- 0.85 #85% of normal size
 keyColumns <- 1 #Want only 1 column in the key for lattice graphs
 defaultKeyXLoc <- 0.01 #x position of the key. This default is good for 9-panel graphs.
