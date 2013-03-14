@@ -502,7 +502,7 @@ The Cobb-Douglas model with energy is given by
 The Cobb-Douglas with energy parameter estimation process is problematic. The following graphs show that the minimum of the squared-errors curve occurs at the point where $\beta \rightarrow 0.0$.
 
 <<CDeGammaGraphsZA, eval=TRUE>>=
-  cdeGridGraphs("ZA", "Q")
+cdeGridGraphs("ZA", "Q")
 @
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).

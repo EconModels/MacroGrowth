@@ -8,6 +8,7 @@ require(mosaic)
 require(xtable)
 require(nlmrt)
 require(micEconCES)
+require(reshape2) # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
 require(tikzDevice) 
@@ -758,11 +759,45 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
 cdeGridGraphs <- function(countryAbbrev, energyType){
   gammaGrid <- seq(0.0, 0.95, by=0.05)
   data <- cdeGridData(countryAbbrev, energyType, gammaGrid)
-  with(data, plot(gamma, SSE))
-  with(data, plot(gamma, lambda))
-  with(data, plot(gamma, alpha))
-  with(data, plot(gamma, beta))
+  # Now melt the data so that it is in the correct form.
+  
+#   with(data, plot(gamma, SSE))
+#   with(data, plot(gamma, lambda))
+#   with(data, plot(gamma, alpha))
+#   with(data, plot(gamma, beta))
   with(data, plot(beta, SSE))
+
+  data_molten <- melt(data, id="gamma")
+print(data_molten)
+  
+  graph <- xyplot(value ~ gamma | variable, data=data_molten,
+#                 type=graphType,
+#                 index.cond=indexCond, #orders the panels.
+#                 layout=layout, #indicates a 3x3 arrangement of panels.
+#                 strip = strip.custom(factor.levels=factorLevels, 
+#                                      bg="transparent", # Sets background transparent to match the graph itself.
+#                                      par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                                      ),
+#                 as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                 lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+#                 pch = symbols, col.symbol = colors, #Controls symbol parameters
+#                 key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
+#                          type=graphType,
+#                          cex=keyTextSize * textScaling, #controls size of text in the key
+#                          lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+#                          pch=symbols, col=colors, #controls symbol (plot characters) types
+#                          columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+#                 scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                             x=list(at=timeTics),
+#                             y=list(relation="free",  #allows each axis to be different
+#                                    at=yTicsForIndexedGraphs)), #specifies location for tics
+#                 ylim=yLimits, #y axis limits
+#                 #axis labels and scaling
+#                 xlab=list(label="", cex=textScaling), 
+#                 ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+                )
+  return(graph)
 }
 
 #########################
