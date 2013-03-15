@@ -211,10 +211,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \includegraphics[height=2.5cm]{figure_other/Figure_Growth_Models.pdf}
   \end{center}
   \begin{itemize}
-  \item{Goal: predict economic output over time}
-  \item{Economic output is a function of ``factors of production''}
-  \item{Output defined as GDP ($Y$)}
-  \item{All inputs and outputs normalized to initial year (0)}
+    \item{Goal: predict economic output over time}
+    \item{Economic output is a function of ``factors of production''}
+    \item{Output defined as GDP ($Y$)}
+    \item{All inputs and outputs normalized to initial year (0)}
   \end{itemize}
 \end{frame}
 
@@ -222,8 +222,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
   \begin{itemize}
-  \item{Capital Stock ($K$) <Definition here>}
-  \item{Labor ($L$) <Definition here>}
+    \item{Capital Stock ($K$) <Definition here>}
+    \item{Labor ($L$) <Definition here>}
   \end{itemize}
 \end{frame}
 
@@ -292,7 +292,20 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
 \end{frame}
 
-\begin{frame}{Example Cobb-Douglas With Energy Fit} %----------------------------
+\begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
+  \begin{equation*} \label{eq:CD_With_Energy}
+    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
+  \end{equation*}
+  \begin{itemize}
+    \item{Objective: determine $\lambda$, $\alpha$, $\beta$, and $\gamma$ that best fits data}
+    \item{Almost identical to Cobb-Douglas without energy}
+    \item{Perform grid search over $\gamma$}
+    \item{Re-estimate $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$}
+    \item{Respect sum constraint ($\alpha + \beta + \gamma = 1$)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{South Africa Cobb-Douglas With Energy} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
