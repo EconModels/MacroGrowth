@@ -91,10 +91,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 
 \title[Energy and Growth] % (optional, use only with long paper titles)
-{An Empirical Analysis of the Role of Energy in Economic Growth}
-
-%\subtitle
-%{Presentation Subtitle} % (optional)
+{The Role of Energy in Economic Growth}
+\subtitle
+{An Empirical Analysis} % (optional)
 
 \author[Reese, Timmer, Heun] % (optional, use only with lots of authors)
 {Caleb Reese, Lucas Timmer, Matthew Kuperus Heun}
@@ -131,12 +130,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-% \AtBeginSubsection[]
-% {
-%   \begin{frame}<beamer>{Outline}
-%     \tableofcontents[currentsection,currentsubsection]
-%   \end{frame}
-% }
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
 
 % If you wish to uncover everything in a step-wise fashion, uncomment
 % the following command: 
@@ -145,7 +144,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 
 \begin{document} %**************************************************
-
 
 \begin{frame} %----------------------------
   \titlepage
@@ -177,31 +175,44 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{columns}
 \end{frame}
 
-\begin{frame}{World Oil Supply is Tightening} %----------------------------
-  \framesubtitle{\citep{Tverberg:2013}}
+\begin{frame}{World Oil Supply is Tightening}{\citep{Tverberg:2013}} %----------------------------
   \includegraphics[width=4.0in]{figure_other/Figure_Tverberg_2013.png}
 \end{frame}
 
 \begin{frame}{Energy Cost Share is Low} %----------------------------
   \begin{itemize}
-    \item{Energy is considered to be economically unimportant.}
-    \item{Compare cost shares of capital stock, labor, and energy.}
+    \item{$\sim$10\%}
+    \pause
+    \item{Energy unimportant for classical economists}
+    \vspace{\baselineskip}
+    \item{Energy usually ignored}
+    \pause
+    \vspace{\baselineskip}
+    \item{But \dots}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Energy Cost Share and Economic Growth} %----------------------------
-  \framesubtitle{\citep{Bashmakov:2007ek}}
+\begin{frame}{Energy Cost Share and Economic Growth}{\citep{Bashmakov:2007ek}} %----------------------------
   \begin{center}
     \includegraphics[height=6.3cm]{figure_other/Figure_Bashmakov_2007.pdf}
   \end{center}
-%  \citet{Bashmakov:2007ek}
 \end{frame}
 
-\begin{frame}{Observations and Questions} %----------------------------
+\begin{frame}{Energy Cost Share and Economic Growth}{\citep{Murphy:2011jh}}  %----------------------------
+  \begin{center}
+    \includegraphics[height=6.3cm]{figure_other/Figure_Murphy_2011.png}
+  \end{center}  
+\end{frame}
+
+\begin{frame}{Observation and Questions} %----------------------------
   \begin{itemize}
     \item{Historical economic development paths (US, Western Europe) are energy intensive.}
+    \vspace{\baselineskip}
+    \pause
     \item{What happens when energy supplies are constrained and prices rise?}
     \item{Will developing countries be able to expand their economies?}
+    \vspace{\baselineskip}
+    \pause
     \item{How account for energy in economic models?}
   \end{itemize}
 \end{frame}
@@ -212,8 +223,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
   \begin{itemize}
     \item{Goal: predict economic output over time}
-    \item{Economic output is a function of ``factors of production''}
-    \item{Output defined as GDP ($Y$)}
+    \item{Economic output ($Y$) is a function of ``factors of production''}
+    \item{Output ($Y$) defined as GDP}
     \item{All inputs and outputs normalized to initial year (0)}
   \end{itemize}
 \end{frame}
@@ -228,22 +239,95 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Energy ($E$)} %----------------------------
-  Caleb complete
-\end{frame}
-
-\begin{frame}{Thermal Energy ($Q$)} %----------------------------
-  Caleb complete
-\end{frame}
-
-\begin{frame}{Exergy ($X$)} %----------------------------
-  Caleb complete
-\end{frame}
-
-\begin{frame}{Useful Work ($W$)} %----------------------------
-  Caleb complete
+  \begin{itemize}
+    \item{Thermal energy ($Q$)}
+    \item{Exergy ($X$)}
+    \item{Useful work ($W$)}
+  \end{itemize}
 \end{frame}
 
 \subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{No Shortage of Economic Growth Models} %----------------------------
+  Single Factor: $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
+  \vspace{\baselineskip}
+  \pause
+  
+  Cobb-Douglas: $y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}$
+  \vspace{\baselineskip}
+  \pause
+  
+  Cobb-Douglas with Energy: $y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}$
+  \vspace{\baselineskip}
+  \pause  
+  
+  Constant Elasticity of Substitution:
+  \small
+  $y = \gamma \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$
+  \normalsize
+  \vspace{\baselineskip}
+  \pause  
+  
+  LINEX: $y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$
+  \vspace{\baselineskip}
+  \pause
+  
+  System Dynamics Models
+\end{frame}
+
+\begin{frame}{The Question} %----------------------------
+  Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Data Sources]{Sources of Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{Economic Data} %----------------------------
+  Lucas complete
+\end{frame}
+
+\subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{Energy Data} %----------------------------
+  Caleb complete
+\end{frame}
+
+\subsection[Graphs]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame}{USA and China} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createHistoricalLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@    
+    \column{2.2in}
+<<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+\end{frame}
+
+\begin{frame}{South Africa and Saudi Arabia} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createHistoricalLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@    
+    \column{2.2in}
+<<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Analysis]{Analysis of Growth Models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Single Factor} %----------------------------
   \begin{equation*} \label{eq:Single_Factor_Generic}
@@ -268,13 +352,42 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Cobb-Douglas} %----------------------------
-  \begin{equation*} \label{eq:CD_With_Energy}
-    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
+  \begin{equation*} \label{eq:CD_Without_Energy}
+    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}
   \end{equation*}
   \begin{equation*} \label{eq:CD_Const_Returns_To_Scale}
-    \alpha + \beta + \gamma = 1
+    \alpha + \beta = 1
   \end{equation*}
   \begin{equation*} \label{eq:CD_Constraints}
+    0 \leq \alpha, \beta \leq 1
+  \end{equation*}
+  \begin{center}
+    \begin{tabular}{|c|l|}\hline
+      $k$   & $K$/$K_0$, capital stock\\
+      $l$   & $L$/$L_0$, labor\\
+      \hline
+      $\lambda$   &   technological progress\\
+      $\alpha$   &    ``strength'' of capital\\
+      $\beta$   &    ``strength'' of labor\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Example Cobb-Douglas Fits}
+
+Heun complete.
+
+\end{frame}
+
+\begin{frame}{Cobb-Douglas With Energy} %----------------------------
+  \begin{equation*} \label{eq:CDe_With_Energy}
+    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
+  \end{equation*}
+  \begin{equation*} \label{eq:CDe_Const_Returns_To_Scale}
+    \alpha + \beta + \gamma = 1
+  \end{equation*}
+  \begin{equation*} \label{eq:CDe_Constraints}
     0 \leq \alpha, \beta, \gamma \leq 1
   \end{equation*}
   \begin{center}
@@ -293,7 +406,20 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
-  \begin{equation*} \label{eq:CD_With_Energy}
+  \begin{equation*}
+    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
+  \end{equation*}
+  \begin{itemize}
+    \item{Objective: determine $\lambda$, $\alpha$, $\beta$, and $\gamma$ that best fits historical data}
+    \item{Almost identical to Cobb-Douglas without energy}
+    \item{Perform grid search over $\gamma$}
+    \item{Re-estimate $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$}
+    \item{Respect sum constraint ($\alpha + \beta + \gamma = 1$)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
+  \begin{equation*}
     y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
   \end{equation*}
   \begin{itemize}
@@ -306,7 +432,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{South Africa Cobb-Douglas With Energy} %----------------------------
-<<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+<<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
 \end{frame}
@@ -359,51 +485,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Example LINEX Fit} %----------------------------
   Heun complete
-\end{frame}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section[Data Sources]{Sources of Data}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
-
-\begin{frame}{Economic Data} %----------------------------
-  Lucas complete
-\end{frame}
-
-\subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
-
-\begin{frame}{Energy Data} %----------------------------
-  Caleb complete
-\end{frame}
-
-\subsection[Graphs]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
-
-\begin{frame}{USA and China} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-<<Historical_Data_US, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@    
-    \column{2.2in}
-<<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-\end{frame}
-
-\begin{frame}{South Africa and Saudi Arabia} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-<<Historical_Data_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@    
-    \column{2.2in}
-<<Historical_Data_SA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
 \end{frame}
 
 
@@ -473,7 +554,6 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Conclusions} %----------------------------
-
   \begin{itemize}
   \item
     Including energy is unwarranted \\
@@ -492,7 +572,6 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
     System dynamics modeling
     \normalsize
   \end{itemize}
-  
 \end{frame}
 
 \begin{frame}{Next Steps (Summer 2013)} %----------------------------
@@ -502,8 +581,9 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
   \end{itemize}  
 \end{frame}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Bibliography}
+\section*{References}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{References} %----------------------------
