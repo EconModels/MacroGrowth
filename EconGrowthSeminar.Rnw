@@ -292,9 +292,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
 \end{frame}
 
-\begin{frame}{Example Cobb-Douglas Fit} %----------------------------
+\begin{frame}{Example Cobb-Douglas With Energy Fit} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
-  cdeGridGraphs("ZA", "Q", textScaling=0.3)
+  cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
 \end{frame}
 
