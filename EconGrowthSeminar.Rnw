@@ -197,7 +197,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Energy Cost Share and Economic Growth}{\citep{Bashmakov:2007ek}} %----------------------------
+\begin{frame}{Energy Cost Share}{\citep{Bashmakov:2007ek}} %----------------------------
   \begin{center}
     \includegraphics[height=6.3cm]{figure_other/Figure_Bashmakov_2007.pdf}
   \end{center}
@@ -205,7 +205,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Energy Cost Share and Economic Growth}{\citep{Murphy:2011jh}}  %----------------------------
   \begin{center}
-    \includegraphics[height=6.3cm]{figure_other/Figure_Murphy_2011.png}
+    \includegraphics[height=6.0cm]{figure_other/Figure_Murphy_2011.png}
   \end{center}  
 \end{frame}
 
@@ -308,7 +308,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame} %----------------------------
   \begin{center} \huge
-    SOURCES OF DATA
+    DATA SOURCES
   \normalsize \end{center}
 \end{frame}
 
@@ -377,7 +377,9 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \begin{frame} %----------------------------
   \begin{center} \huge
-    ANALYSIS OF GROWTH MODELS
+    ANALYSIS OF\\
+    \vspace{\baselineskip}
+    GROWTH MODELS
   \normalsize \end{center}
 \end{frame}
 
@@ -399,8 +401,80 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{center}
 \end{frame}
 
-\begin{frame}{Example Single-Factor Fit} %----------------------------
-  Heun complete
+\begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_us.pdf} Single-Factor Fit} %----------------------------
+<<Results_Table_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+sfUSK <- singleFactorModel("US", "K")
+sfUSL <- singleFactorModel("US", "L")
+sfUSQ <- singleFactorModel("US", "Q")
+sfUSX <- singleFactorModel("US", "X")
+sfUSU <- singleFactorModel("US", "U")
+@
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|}\hline
+            $f$   & $\lambda$                      & $m$\\
+            \hline
+            $k$   & \Sexpr{coef(sfUSK)["lambda"]}  & \Sexpr{coef(sfUSK)["m"]}\\
+            \hline
+            $l$   & \Sexpr{coef(sfUSL)["lambda"]}  & \Sexpr{coef(sfUSL)["m"]}\\
+            \hline
+            $q$   & \Sexpr{coef(sfUSQ)["lambda"]}  & \Sexpr{coef(sfUSQ)["m"]}\\
+            \hline
+            $x$   & \Sexpr{coef(sfUSX)["lambda"]}  & \Sexpr{coef(sfUSX)["m"]}\\
+            \hline
+            $u$   & \Sexpr{coef(sfUSU)["lambda"]}  & \Sexpr{coef(sfUSU)["m"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+\end{frame}
+
+\begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_za.png} Single-Factor Fit} %----------------------------
+<<Results_Table_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+sfZAK <- singleFactorModel("ZA", "K")
+sfZAL <- singleFactorModel("ZA", "L")
+sfZAQ <- singleFactorModel("ZA", "Q")
+sfZAX <- singleFactorModel("ZA", "X")
+sfZAU <- singleFactorModel("ZA", "U")
+@
+  \begin{columns}[c]
+    \column{2.2in}
+%       \begin{center}
+%         $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
+%         \vspace{\baselineskip}
+%         
+%         \tiny
+%           \begin{tabular}{|c|c|c|}\hline
+%             $f$   & $\lambda$                      & $m$\\
+%             \hline
+%             $k$   & \Sexpr{coef(sfZAK)["lambda"]}  & \Sexpr{coef(sfZAK)["m"]}\\
+%             \hline
+%             $l$   & \Sexpr{coef(sfZAL)["lambda"]}  & \Sexpr{coef(sfZAL)["m"]}\\
+%             \hline
+%             $q$   & \Sexpr{coef(sfZAQ)["lambda"]}  & \Sexpr{coef(sfZAQ)["m"]}\\
+%             \hline
+%             $x$   & \Sexpr{coef(sfZAX)["lambda"]}  & \Sexpr{coef(sfZAX)["m"]}\\
+%             \hline
+%             $u$   & \Sexpr{coef(sfZAU)["lambda"]}  & \Sexpr{coef(sfZAU)["m"]}\\
+%             \hline
+%           \end{tabular}
+%         \normalsize
+%       \end{center}
+    \column{2.2in}
+<<Results_Graph_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Cobb-Douglas} %----------------------------
@@ -544,9 +618,9 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \begin{frame}{US: Single Factor and Cobb-Douglas} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
-<<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
+% <<Results_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+% createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+% @
     \column{2.2in}
 <<Results_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
@@ -630,6 +704,17 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
     \vspace{\baselineskip}
     \vspace{\baselineskip}
     \item{Complete paper}
+  \end{itemize}  
+\end{frame}
+
+\begin{frame}{Acknowledgements} %----------------------------
+  \begin{itemize}
+    \item{Martin de Wit, Stellenbosch University}
+    \item{Randall Pruim, Calvin College}
+    \item{Loren L. Heun, Western Michigan University}
+    \vspace{\baselineskip}
+    \item{Jack and Lois Kuipers Applied Mathematics Endowment\\(Reese and Timmer Summer 2012 funding)}
+    \item{Calvin College Alumni Association\\(Reese Fall 2012 funding)}
   \end{itemize}  
 \end{frame}
 
