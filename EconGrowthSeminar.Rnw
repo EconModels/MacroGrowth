@@ -125,21 +125,20 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 % \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
 % \logo{\pgfuseimage{university-logo}}
 
-\pgfdeclareimage[height=1.56cm]{university-logo}{CalvinLogo.png}
+\pgfdeclareimage[height=1.56cm]{university-logo}{figure_other/CalvinLogo.png}
 \logo{\pgfuseimage{university-logo}}
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>{Outline}
-    \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
+% \AtBeginSubsection[]
+% {
+%   \begin{frame}<beamer>{Outline}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}
+% }
 
 % If you wish to uncover everything in a step-wise fashion, uncomment
 % the following command: 
-
 %\beamerdefaultoverlayspecification{<+->}
 
 
@@ -158,6 +157,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    INTRODUCTION
+  \normalsize \end{center}
+\end{frame}
 
 \begin{frame}{Energy is Essential for Economic Activity} %----------------------------
   What do you do that doesn't require energy?
@@ -182,12 +187,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \begin{frame}{Energy Cost Share is Low} %----------------------------
   \begin{itemize}
     \item{$\sim$10\%}
-    \pause
-    \item{Energy unimportant for classical economists}
     \vspace{\baselineskip}
-    \item{Energy usually ignored}
     \pause
+    \item{Energy (relatively) unimportant for classical economists}
+    \item{Usually ignored}
     \vspace{\baselineskip}
+    \pause
     \item{But \dots}
   \end{itemize}
 \end{frame}
@@ -213,7 +218,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \item{Will developing countries be able to expand their economies?}
     \vspace{\baselineskip}
     \pause
-    \item{How account for energy in economic models?}
+    \item{How should we account for energy in economic models?}
   \end{itemize}
 \end{frame}
 
@@ -231,6 +236,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Factors of Production]{Factors of Production} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    Factors of Production
+  \normalsize \end{center}
+\end{frame}
+
 \begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
   \begin{itemize}
     \item{Capital Stock ($K$) <Definition here>}
@@ -247,6 +258,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    Economic Growth Models
+  \normalsize \end{center}
+\end{frame}
 
 \begin{frame}{No Shortage of Economic Growth Models} %----------------------------
   Single Factor: $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
@@ -275,7 +292,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   System Dynamics Models
 \end{frame}
 
-\begin{frame}{The Question} %----------------------------
+\subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    The Question
+  \normalsize \end{center}
   Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
 \end{frame}
 
@@ -284,7 +306,19 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \section[Data Sources]{Sources of Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    SOURCES OF DATA
+  \normalsize \end{center}
+\end{frame}
+
 \subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    Economic Data
+  \normalsize \end{center}
+\end{frame}
 
 \begin{frame}{Economic Data} %----------------------------
   Lucas complete
@@ -292,11 +326,23 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
 
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    Energy Data
+  \normalsize \end{center}
+\end{frame}
+
 \begin{frame}{Energy Data} %----------------------------
   Caleb complete
 \end{frame}
 
 \subsection[Graphs]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
+
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    Historical Data
+  \normalsize \end{center}
+\end{frame}
 
 \begin{frame}{USA and China} %----------------------------
   \begin{columns}[c]
@@ -328,6 +374,12 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section[Analysis]{Analysis of Growth Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    ANALYSIS OF GROWTH MODELS
+  \normalsize \end{center}
+\end{frame}
 
 \begin{frame}{Single Factor} %----------------------------
   \begin{equation*} \label{eq:Single_Factor_Generic}
@@ -374,10 +426,8 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{center}
 \end{frame}
 
-\begin{frame}{Example Cobb-Douglas Fits}
-
-Heun complete.
-
+\begin{frame}{Example Cobb-Douglas Fit} %----------------------------
+  Heun complete
 \end{frame}
 
 \begin{frame}{Cobb-Douglas With Energy} %----------------------------
@@ -418,23 +468,14 @@ Heun complete.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
-  \begin{equation*}
-    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
-  \end{equation*}
-  \begin{itemize}
-    \item{Objective: determine $\lambda$, $\alpha$, $\beta$, and $\gamma$ that best fits data}
-    \item{Almost identical to Cobb-Douglas without energy}
-    \item{Perform grid search over $\gamma$}
-    \item{Re-estimate $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$}
-    \item{Respect sum constraint ($\alpha + \beta + \gamma = 1$)}
-  \end{itemize}
-\end{frame}
-
 \begin{frame}{Grid Search Over $\gamma$}{South Africa Cobb-Douglas With Energy} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
+\end{frame}
+
+\begin{frame}{Cobb-Douglas with Energy Example Fit} %----------------------------
+  Heun complete
 \end{frame}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
@@ -453,10 +494,10 @@ Heun complete.
       \hline
       $\gamma$   &   fitting coefficient\\
       $\lambda$  &   technological progress\\
-      $\delta$   &   split between ($kl$) and ($e$)\\
-      $\rho$     &   ``strength'' of ($kl$) vs. ($e$)\\
       $\delta_1$   &   split between ($k$) and ($l$)\\
       $\rho_1$     &   ``strength'' of ($k$) vs. ($l$)\\
+      $\delta$   &   split between ($kl$) and ($e$)\\
+      $\rho$     &   ``strength'' of ($kl$) vs. ($e$)\\
       \hline
     \end{tabular}
   \end{center}
@@ -491,6 +532,12 @@ Heun complete.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    RESULTS
+  \normalsize \end{center}
+\end{frame}
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
 
@@ -553,42 +600,41 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \section*{Summary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Conclusions} %----------------------------
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    SUMMARY
+  \normalsize \end{center}
+\end{frame}
+
+\begin{frame}{Tentative Conclusions} %----------------------------
   \begin{itemize}
-  \item
-    Including energy is unwarranted \\
-    \scriptsize
-    Little statistical evidence that including energy in production functions improves fit.
-    \normalsize
-  \item
-    Including energy is unnecessary \\
-    \scriptsize
-    Energy is always \emph{already} embedded in capital stock ($K$) and labor ($L$).
-    \normalsize
-  \vskip0pt plus.5fill
-  \item
-    Need a modeling method that captures energy's embeddedness \\
-    \scriptsize
-    System dynamics modeling
-    \normalsize
+  \item{Including energy is unwarranted \\
+        \scriptsize
+        Little statistical evidence that including energy in production functions improves stastical properties of fitting parameters.
+        \normalsize}
+  \item{Including energy is unnecessary \\
+        \scriptsize
+        Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$).
+        \normalsize}
+  \vspace{\baselineskip}
+  \item{Need a modeling method that captures energy's embeddedness \\
+        \scriptsize
+        System dynamics modeling
+        \normalsize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Next Steps (Summer 2013)} %----------------------------
   \begin{itemize}
     \item{Estimate statistical properties for \emph{all} fitting parameters}
+    \vspace{\baselineskip}
+    \vspace{\baselineskip}
     \item{Complete paper}
   \end{itemize}  
 \end{frame}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{References}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{frame}{References} %----------------------------
   \bibliographystyle{plainnat}
-  \renewcommand{\thepage}{\arabic{page}}
   \tiny
     \bibliography{EconGrowth.bib}
   \normalsize
