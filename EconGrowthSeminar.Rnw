@@ -88,6 +88,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \usepackage{url} % To format URLs in the references section.
 \usepackage{natbib} % To format the bibliobraphy nicely
 
+\usepackage{tikz} % To use the tikzpicture environment.
+
 
 
 \title[Energy and Growth] % (optional, use only with long paper titles)
@@ -168,7 +170,19 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \newcommand{\betaRow}{$\beta$ & ``strength'' of labor}
 \newcommand{\gammaRow}{$\gamma$ & ``strength'' of energy}
 
-
+% Places an image (with scaling) at a position on the page
+% Arguments:
+%  #1 image path
+%  #2 image scaling (1.0 = same size as original image, 2.0 = double size)
+%  #3 x offset from center of the frame (include units, if desired. e.g. "1.0in")
+%  #4 y offset from center of the frame (include units, if desired. e.g. "1.0in")
+\newcommand{\putat}[4]{
+  \begin{tikzpicture}[remember picture,overlay] 
+    \node [xshift=#3, yshift=#4] at (current page.center){
+      \includegraphics[scale=#2]{#1}
+    };             
+  \end{tikzpicture}
+}
 
 \begin{document} %**************************************************
 
@@ -429,7 +443,8 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{center}
 \end{frame}
 
-\begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_us.pdf} Single-Factor Fit} %----------------------------
+\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
+
 <<Results_Table_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 sfUSK <- singleFactorModel("US", "K")
 sfUSL <- singleFactorModel("US", "L")
@@ -465,6 +480,8 @@ sfUSU <- singleFactorModel("US", "U")
 createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
+  % Including at bottom of frame so as not to push other material downward on the frame.
+  \putat{figure_other/flag_us.pdf}{0.055}{2.14in}{1.59in}
 \end{frame}
 
 % \begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_za.png} Single-Factor Fit} %----------------------------
