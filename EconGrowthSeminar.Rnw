@@ -141,6 +141,34 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 % the following command: 
 %\beamerdefaultoverlayspecification{<+->}
 
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+% A bunch of useful commands for this presentation
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+% The equation for a single-factor model
+\newcommand{\sfEqn}{$y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$}
+% The equation for a cobb-douglas without energy model
+\newcommand{\cdEqn}{$y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}$}
+% The equation for a cobb-douglas with energy model
+\newcommand{\cdeEqn}{$y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}$}
+% The equation for a ces model
+\newcommand{\cesEqn}{$y = \gamma \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$}
+% The equation for a linex model
+\newcommand{\linexEqn}{$y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$}
+
+% Some commands for parameter tables in slides
+\newcommand{\yRow}{$y$ & $Y/Y_0$, output}
+\newcommand{\timeRow}{$t$ & year}
+\newcommand{\initialTimeRow}{$t_0$ & initial year}
+\newcommand{\kRow}{$k$ & $K/K_0$, capital stock}
+\newcommand{\lRow}{$l$ & $L/L_0$, labor}
+\newcommand{\eRow}{$e$ & $E/E_0$, any of $q$, $x$, or $u$}
+\newcommand{\lambdaRow}{$\lambda$ & technological progress}
+\newcommand{\alphaRow}{$\alpha$ & ``strength'' of capital}
+\newcommand{\betaRow}{$\beta$ & ``strength'' of labor}
+\newcommand{\gammaRow}{$\gamma$ & ``strength'' of energy}
+
+
 
 \begin{document} %**************************************************
 
@@ -266,26 +294,26 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \end{frame}
 
 \begin{frame}{No Shortage of Economic Growth Models} %----------------------------
-  Single Factor: $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
+  Single Factor: \sfEqn
   \vspace{\baselineskip}
   \pause
   
-  Cobb-Douglas: $y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}$
+  Cobb-Douglas: \cdEqn
   \vspace{\baselineskip}
   \pause
   
-  Cobb-Douglas with Energy: $y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}$
+  Cobb-Douglas with Energy: \cdeEqn
   \vspace{\baselineskip}
   \pause  
   
   Constant Elasticity of Substitution:
   \small
-  $y = \gamma \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$
+  \cesEqn
   \normalsize
   \vspace{\baselineskip}
   \pause  
   
-  LINEX: $y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$
+  LINEX: \linexEqn
   \vspace{\baselineskip}
   \pause
   
@@ -384,18 +412,18 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \end{frame}
 
 \begin{frame}{Single Factor} %----------------------------
-  \begin{equation*} \label{eq:Single_Factor_Generic}
-    y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
-  \end{equation*}
   \begin{center}
+    \sfEqn
+    \vspace{\baselineskip}
+    
     \begin{tabular}{|c|l|}\hline
-      $y$   & $Y$/$Y_0$ \\
-      $t$   & year\\
-      $t_0$ & initial year\\
-      $f$   & $F$/$F_0$, a factor of production\\
+      \yRow\\
+      \timeRow\\
+      \initialTimeRow\\
+      $f$ & $F$/$F_0$, a factor of production\\
       \hline
-      $\lambda$   &   technological progress\\
-      $m$   &         ``strength'' of factor $f$\\
+      \lambdaRow\\
+      $m$ & ``strength'' of factor $f$\\
       \hline
     \end{tabular}
   \end{center}
@@ -412,7 +440,7 @@ sfUSU <- singleFactorModel("US", "U")
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
-        $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
+        \sfEqn
         \vspace{\baselineskip}
         
         \tiny
@@ -439,16 +467,16 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{columns}
 \end{frame}
 
-\begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_za.png} Single-Factor Fit} %----------------------------
-<<Results_Table_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-sfZAK <- singleFactorModel("ZA", "K")
-sfZAL <- singleFactorModel("ZA", "L")
-sfZAQ <- singleFactorModel("ZA", "Q")
-sfZAX <- singleFactorModel("ZA", "X")
-sfZAU <- singleFactorModel("ZA", "U")
-@
-  \begin{columns}[c]
-    \column{2.2in}
+% \begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_za.png} Single-Factor Fit} %----------------------------
+% <<Results_Table_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+% sfZAK <- singleFactorModel("ZA", "K")
+% sfZAL <- singleFactorModel("ZA", "L")
+% sfZAQ <- singleFactorModel("ZA", "Q")
+% sfZAX <- singleFactorModel("ZA", "X")
+% sfZAU <- singleFactorModel("ZA", "U")
+% @
+%   \begin{columns}[c]
+%     \column{2.2in}
 %       \begin{center}
 %         $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
 %         \vspace{\baselineskip}
@@ -470,31 +498,30 @@ sfZAU <- singleFactorModel("ZA", "U")
 %           \end{tabular}
 %         \normalsize
 %       \end{center}
-    \column{2.2in}
-<<Results_Graph_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-\end{frame}
+%     \column{2.2in}
+% <<Results_Graph_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+% createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+% @
+%   \end{columns}
+% \end{frame}
 
 \begin{frame}{Cobb-Douglas} %----------------------------
-  \begin{equation*} \label{eq:CD_Without_Energy}
-    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}
-  \end{equation*}
-  \begin{equation*} \label{eq:CD_Const_Returns_To_Scale}
-    \alpha + \beta = 1
-  \end{equation*}
-  \begin{equation*} \label{eq:CD_Constraints}
-    0 \leq \alpha, \beta \leq 1
-  \end{equation*}
   \begin{center}
+    \cdEqn\\
+    $\alpha + \beta = 1$\\
+    $0 \leq \alpha, \beta \leq 1$
+    \vspace{\baselineskip}
+    
     \begin{tabular}{|c|l|}\hline
-      $k$   & $K$/$K_0$, capital stock\\
-      $l$   & $L$/$L_0$, labor\\
+      \yRow\\
+      \timeRow\\
+      \initialTimeRow\\
+      \kRow\\
+      \lRow\\
       \hline
-      $\lambda$   &   technological progress\\
-      $\alpha$   &    ``strength'' of capital\\
-      $\beta$   &    ``strength'' of labor\\
+      \lambdaRow\\
+      \alphaRow\\
+      \betaRow\\
       \hline
     \end{tabular}
   \end{center}
@@ -505,34 +532,33 @@ createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{Cobb-Douglas With Energy} %----------------------------
-  \begin{equation*} \label{eq:CDe_With_Energy}
-    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
-  \end{equation*}
-  \begin{equation*} \label{eq:CDe_Const_Returns_To_Scale}
-    \alpha + \beta + \gamma = 1
-  \end{equation*}
-  \begin{equation*} \label{eq:CDe_Constraints}
-    0 \leq \alpha, \beta, \gamma \leq 1
-  \end{equation*}
   \begin{center}
+    \cdeEqn\\
+    $\alpha + \beta + \gamma = 1$\\
+    $0 \leq \alpha, \beta, \gamma \leq 1$
+    \vspace{\baselineskip}
+    
     \begin{tabular}{|c|l|}\hline
-      $k$   & $K$/$K_0$, capital stock\\
-      $l$   & $L$/$L_0$, labor\\
-      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \yRow\\
+      \timeRow\\
+      \initialTimeRow\\
+      \kRow\\
+      \lRow\\
+      \eRow\\
       \hline
-      $\lambda$   &   technological progress\\
-      $\alpha$   &    ``strength'' of capital\\
-      $\beta$   &    ``strength'' of labor\\
-      $\gamma$   &    ``strength'' of energy\\
+      \lambdaRow\\
+      \alphaRow\\
+      \betaRow\\
+      \gammaRow\\
       \hline
     \end{tabular}
   \end{center}
 \end{frame}
 
 \begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
-  \begin{equation*}
-    y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}
-  \end{equation*}
+  \begin{center}
+    \cdeEqn
+  \end{center}
   \begin{itemize}
     \item{Objective: determine $\lambda$, $\alpha$, $\beta$, and $\gamma$ that best fits historical data}
     \item{Almost identical to Cobb-Douglas without energy}
@@ -553,21 +579,22 @@ createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
-  \begin{equation*} \label{eq:micEconCES_model}
-    \begin{split}
-    y = & \gamma \mathrm{e}^{\lambda(t-t_0)} \\
-        & \cdot \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-                        + (1-\delta) e^{-\rho} \right\}^{-1/\rho}
-    \end{split}
-  \end{equation*}
   \begin{center}
+    \small
+      \cesEqn
+    \normalsize
+    \vspace{\baselineskip}
+    
     \begin{tabular}{|c|l|}\hline
-      $k$   & $K$/$K_0$, capital stock\\
-      $l$   & $L$/$L_0$, labor\\
-      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \yRow\\
+      \timeRow\\
+      \initialTimeRow\\
+      \kRow\\
+      \lRow\\
+      \eRow\\
       \hline
       $\gamma$   &   fitting coefficient\\
-      $\lambda$  &   technological progress\\
+      \lambdaRow\\
       $\delta_1$   &   split between ($k$) and ($l$)\\
       $\rho_1$     &   ``strength'' of ($k$) vs. ($l$)\\
       $\delta$   &   split between ($kl$) and ($e$)\\
@@ -582,17 +609,17 @@ createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{LINEX} %----------------------------
-  \begin{equation*} \label{eq:LINEX_model}
-    y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}
-  \end{equation*}
   \begin{center}
+    \linexEqn
+    \vspace{\baselineskip}
+        
     \begin{tabular}{|c|l|}\hline
-      $k$   & $K$/$K_0$, capital stock\\
-      $l$   & $L$/$L_0$, labor\\
-      $e$   & $E$/$E_0$, any of $q$, $x$, or $u$\\
+      \kRow\\
+      \lRow\\
+      \eRow\\
       \hline
-      $a_0$   &   fitting parameter\\
-      $c_t$   &   fitting parameter\\
+      $a_0$ & fitting parameter\\
+      $c_t$ & fitting parameter\\
       \hline
     \end{tabular}
   \end{center}
