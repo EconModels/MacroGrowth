@@ -652,6 +652,43 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putat{figure_other/flag_us.png}{0.055}{2.14in}{1.59in}
 \end{frame}
 
+<<Coefs_JP_CD>>=
+cdJP <- cobbDouglasData("JP")
+cdqJP <- cobbDouglasData("JP", "Q")
+cdxJP <- cobbDouglasData("JP", "X")
+cduJP <- cobbDouglasData("JP", "U")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{cdJP["CD", "lambda"]} & \Sexpr{cdJP["CD", "alpha"]} & \Sexpr{cdJP["CD", "beta"]} & \Sexpr{cdJP["CD", "gamma"]}\\
+            \hline
+            $q$   & \Sexpr{cdqJP["CD", "lambda"]} & \Sexpr{cdxJP["CD", "alpha"]} & \Sexpr{cdqJP["CD", "beta"]} & \Sexpr{cdqJP["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxJP["CD", "lambda"]} & \Sexpr{cdxJP["CD", "alpha"]} & \Sexpr{cdxJP["CD", "beta"]} & \Sexpr{cdxJP["CD", "gamma"]}\\
+            \hline
+            $u$   & \Sexpr{cduJP["CD", "lambda"]} & \Sexpr{cduJP["CD", "alpha"]} & \Sexpr{cduJP["CD", "beta"]} & \Sexpr{cduJP["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_JP_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_jp.png}{0.055}{2.14in}{1.59in}
+\end{frame}
+
 <<Coefs_ZA_CD>>=
 cdZA <- cobbDouglasData("ZA")
 cdqZA <- cobbDouglasData("ZA", "Q")
