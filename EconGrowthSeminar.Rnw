@@ -588,6 +588,14 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putat{figure_other/flag_us.pdf}{0.055}{2.14in}{1.59in}
 \end{frame}
 
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas With $q$} %----------------------------
+<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("UK", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_uk.png}{0.048}{2.14in}{1.59in}
+\end{frame}
+
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas With $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
@@ -614,9 +622,9 @@ cdxZA <- cobbDouglasData("ZA", "X")
             \hline
                   & \Sexpr{cdZA["CD", "lambda"]} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{cdZA["CD", "gamma"]}\\
             \hline
-            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{cdqZA["CD", "beta"]} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{round(cdqZA["CD", "beta"], digits=4)} & \Sexpr{cdqZA["CD", "gamma"]}\\
             \hline
-            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{cdxZA["CD", "beta"]} & \Sexpr{cdxZA["CD", "gamma"]}\\
+            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{round(cdxZA["CD", "beta"], digits=4)} & \Sexpr{cdxZA["CD", "gamma"]}\\
             \hline
           \end{tabular}
         \normalsize
@@ -629,6 +637,16 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putat{figure_other/flag_za.png}{0.055}{2.14in}{1.59in}
 \end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas With $q$} %----------------------------
+<<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("TZ", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_tz.png}{0.055}{2.14in}{1.59in}
+\end{frame}
+
+
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
   \begin{center}
