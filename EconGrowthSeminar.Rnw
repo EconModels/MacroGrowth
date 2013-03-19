@@ -593,7 +593,7 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("UK", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_uk.png}{0.048}{2.14in}{1.59in}
+  \putat{figure_other/flag_uk.png}{0.045}{2.14in}{1.59in}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas With $q$} %----------------------------
