@@ -443,15 +443,14 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{center}
 \end{frame}
 
-\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
-
-<<Results_Table_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-sfUSK <- singleFactorModel("US", "K")
-sfUSL <- singleFactorModel("US", "L")
-sfUSQ <- singleFactorModel("US", "Q")
-sfUSX <- singleFactorModel("US", "X")
-sfUSU <- singleFactorModel("US", "U")
+<<Coefs_US_SF>>=
+sfUSK <- coef(singleFactorModel("US", "K"))
+sfUSL <- coef(singleFactorModel("US", "L"))
+sfUSQ <- coef(singleFactorModel("US", "Q"))
+sfUSX <- coef(singleFactorModel("US", "X"))
+sfUSU <- coef(singleFactorModel("US", "U"))
 @
+\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
@@ -460,17 +459,17 @@ sfUSU <- singleFactorModel("US", "U")
         
         \tiny
           \begin{tabular}{|c|c|c|}\hline
-            $f$   & $\lambda$                      & $m$\\
+            $f$   & $\lambda$                & $m$\\
             \hline
-            $k$   & \Sexpr{coef(sfUSK)["lambda"]}  & \Sexpr{coef(sfUSK)["m"]}\\
+            $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
             \hline
-            $l$   & \Sexpr{coef(sfUSL)["lambda"]}  & \Sexpr{coef(sfUSL)["m"]}\\
+            $l$   & \Sexpr{sfUSL["lambda"]}  & \Sexpr{sfUSL["m"]}\\
             \hline
-            $q$   & \Sexpr{coef(sfUSQ)["lambda"]}  & \Sexpr{coef(sfUSQ)["m"]}\\
+            $q$   & \Sexpr{sfUSQ["lambda"]}  & \Sexpr{sfUSQ["m"]}\\
             \hline
-            $x$   & \Sexpr{coef(sfUSX)["lambda"]}  & \Sexpr{coef(sfUSX)["m"]}\\
+            $x$   & \Sexpr{sfUSX["lambda"]}  & \Sexpr{sfUSX["m"]}\\
             \hline
-            $u$   & \Sexpr{coef(sfUSU)["lambda"]}  & \Sexpr{coef(sfUSU)["m"]}\\
+            $u$   & \Sexpr{sfUSU["lambda"]}  & \Sexpr{sfUSU["m"]}\\
             \hline
           \end{tabular}
         \normalsize
@@ -480,49 +479,11 @@ sfUSU <- singleFactorModel("US", "U")
 createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
-  % Including at bottom of frame so as not to push other material downward on the frame.
+  % Including at bottom of frame so as not to push other material downward in the frame.
   \putat{figure_other/flag_us.pdf}{0.055}{2.14in}{1.59in}
 \end{frame}
 
-% \begin{frame}{\includegraphics[height=0.25in]{figure_other/flag_za.png} Single-Factor Fit} %----------------------------
-% <<Results_Table_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-% sfZAK <- singleFactorModel("ZA", "K")
-% sfZAL <- singleFactorModel("ZA", "L")
-% sfZAQ <- singleFactorModel("ZA", "Q")
-% sfZAX <- singleFactorModel("ZA", "X")
-% sfZAU <- singleFactorModel("ZA", "U")
-% @
-%   \begin{columns}[c]
-%     \column{2.2in}
-%       \begin{center}
-%         $y = \mathrm{e}^{\lambda (t-t_0)}f^{m}$
-%         \vspace{\baselineskip}
-%         
-%         \tiny
-%           \begin{tabular}{|c|c|c|}\hline
-%             $f$   & $\lambda$                      & $m$\\
-%             \hline
-%             $k$   & \Sexpr{coef(sfZAK)["lambda"]}  & \Sexpr{coef(sfZAK)["m"]}\\
-%             \hline
-%             $l$   & \Sexpr{coef(sfZAL)["lambda"]}  & \Sexpr{coef(sfZAL)["m"]}\\
-%             \hline
-%             $q$   & \Sexpr{coef(sfZAQ)["lambda"]}  & \Sexpr{coef(sfZAQ)["m"]}\\
-%             \hline
-%             $x$   & \Sexpr{coef(sfZAX)["lambda"]}  & \Sexpr{coef(sfZAX)["m"]}\\
-%             \hline
-%             $u$   & \Sexpr{coef(sfZAU)["lambda"]}  & \Sexpr{coef(sfZAU)["m"]}\\
-%             \hline
-%           \end{tabular}
-%         \normalsize
-%       \end{center}
-%     \column{2.2in}
-% <<Results_Graph_ZA_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-% createSFLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-% @
-%   \end{columns}
-% \end{frame}
-
-\begin{frame}{Cobb-Douglas} %----------------------------
+\begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
   \begin{center}
     \cdEqn\\
     $\alpha + \beta = 1$\\
@@ -544,11 +505,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{center}
 \end{frame}
 
-\begin{frame}{Example Cobb-Douglas Fit} %----------------------------
-  Heun complete
-\end{frame}
-
-\begin{frame}{Cobb-Douglas With Energy} %----------------------------
+\begin{frame}{Cobb-Douglas (with Energy)} %----------------------------
   \begin{center}
     \cdeEqn\\
     $\alpha + \beta + \gamma = 1$\\
@@ -581,18 +538,96 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
     \item{Almost identical to Cobb-Douglas without energy}
     \item{Perform grid search over $\gamma$}
     \item{Re-estimate $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$}
-    \item{Respect sum constraint ($\alpha + \beta + \gamma = 1$)}
+    \item{Respect sum constraint: $\alpha + \beta + \gamma = 1$}
+    \item{Respect absolute constraints: $0 \leq \alpha, \beta, \gamma \leq 1$}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{South Africa Cobb-Douglas With Energy} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas With $q$} %----------------------------
+<<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("US", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_us.pdf}{0.055}{2.14in}{1.59in}
+\end{frame}
+
+<<Coefs_US_CD>>=
+cdUS <- cobbDouglasData("US")
+cdqUS <- cobbDouglasData("US", "Q")
+cdxUS <- cobbDouglasData("US", "X")
+cduUS <- cobbDouglasData("US", "U")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{cdUS["CD", "lambda"]} & \Sexpr{cdUS["CD", "alpha"]} & \Sexpr{cdUS["CD", "beta"]} & \Sexpr{cdUS["CD", "gamma"]}\\
+            \hline
+            $q$   & \Sexpr{cdqUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdqUS["CD", "beta"]} & \Sexpr{cdqUS["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdxUS["CD", "beta"]} & \Sexpr{cdxUS["CD", "gamma"]}\\
+            \hline
+            $u$   & \Sexpr{cduUS["CD", "lambda"]} & \Sexpr{cduUS["CD", "alpha"]} & \Sexpr{cduUS["CD", "beta"]} & \Sexpr{cduUS["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_us.pdf}{0.055}{2.14in}{1.59in}
+\end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas With $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_za.png}{0.055}{2.14in}{1.59in}
 \end{frame}
 
-\begin{frame}{Cobb-Douglas with Energy Example Fit} %----------------------------
-  Heun complete
+<<Coefs_ZA_CD>>=
+cdZA <- cobbDouglasData("ZA")
+cdqZA <- cobbDouglasData("ZA", "Q")
+cdxZA <- cobbDouglasData("ZA", "X")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{cdZA["CD", "lambda"]} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{cdZA["CD", "gamma"]}\\
+            \hline
+            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{cdqZA["CD", "beta"]} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{cdxZA["CD", "beta"]} & \Sexpr{cdxZA["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putat{figure_other/flag_za.png}{0.055}{2.14in}{1.59in}
 \end{frame}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
