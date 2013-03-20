@@ -434,7 +434,8 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \begin{frame} %----------------------------
   \begin{center} \huge
-    ANALYSIS OF\\
+    ANALYSIS OF
+    \vspace{\baselineskip}
     \vspace{\baselineskip}
     GROWTH MODELS
   \normalsize \end{center}
@@ -456,6 +457,28 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
       \hline
     \end{tabular}
   \end{center}
+\end{frame}
+
+\begin{frame}{Curve-fitting As Optimization} %----------------------------
+  \begin{itemize}
+    \item{Choose values of parameters to minimize errors ($SSE$) between predicted and historical economic output $y$}
+    \vspace{\baselineskip}
+    
+    \item{Example: Single-factor Model with $q$}
+    \begin{itemize}
+      \item{$y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$}
+      \item{Select $\lambda$ and $\gamma$ to minimize\\
+            $SSE = \sum\limits_{t=1980}^{2011}(y_{pred} - y_{act})^2$}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Single-factor US with $q$} %----------------------------
+  
+  3-D graph of SSE vs. $\lambda$ and $\gamma$
+  
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{us}{0.055}  
 \end{frame}
 
 <<Coefs_US_SF>>=
