@@ -170,7 +170,11 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \newcommand{\betaRow}{$\beta$ & ``strength'' of labor}
 \newcommand{\gammaRow}{$\gamma$ & ``strength'' of energy}
 
-% Places an image (with scaling) at a position on the page
+% Provides the upper-right location on a page useful for positioning flags on frames
+\newcommand{\upperRightFlagLocation}{\{2.14in\}\{1.59in\}}
+
+% Places an image (with scaling) at a position on the page. The origin (0, 0) is 
+% assumed to be at the center of the frame.
 % Arguments:
 %  #1 image path
 %  #2 image scaling (1.0 = same size as original image, 2.0 = double size)
@@ -182,6 +186,17 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \includegraphics[scale=#2]{#1}
     };             
   \end{tikzpicture}
+}
+
+% Places a flag image in the upper-right portion of the slide. Assumes that the flag
+% file is called flag_<country_abbreviation>.png and is located in 
+% a directory called figure_other. This macro calls the \putat macro with location
+% x = 2.14 and y = 1.59in.
+% Arguments:
+%  #1 2-letter country code (lower case)
+%  #2 scale factor
+\newcommand{\putFlagUpperRight}[2]{
+  \putat{figure_other/flag_#1.png}{#2}{2.14in}{1.59in}
 }
 
 \begin{document} %**************************************************
@@ -480,7 +495,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_us.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{us}{0.055}
 \end{frame}
 
 \begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
@@ -548,7 +563,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("US", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_us.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{us}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas With $q$} %----------------------------
@@ -556,7 +571,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("UK", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_uk.png}{0.045}{2.14in}{1.59in}
+  \putFlagUpperRight{uk}{0.045}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas With $q$} %----------------------------
@@ -564,7 +579,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("JP", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_jp.png}{0.045}{2.14in}{1.59in}
+  \putFlagUpperRight{jp}{0.045}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas With $q$} %----------------------------
@@ -572,7 +587,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("CN", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_jp.png}{0.045}{2.14in}{1.59in}
+  \putFlagUpperRight{cn}{0.045}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas With $q$} %----------------------------
@@ -580,7 +595,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_za.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{za}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas With $q$} %----------------------------
@@ -588,7 +603,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("SA", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_sa.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{sa}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas With $q$} %----------------------------
@@ -596,7 +611,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("IR", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_ir.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{ir}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas With $q$} %----------------------------
@@ -604,7 +619,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("TZ", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_tz.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{tz}{0.07}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas With $q$} %----------------------------
@@ -612,7 +627,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   cdeGridGraph("ZM", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_zm.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{zm}{0.055}
 \end{frame}
 
 <<Coefs_US_CD>>=
@@ -649,7 +664,7 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_us.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{us}{0.055}
 \end{frame}
 
 <<Coefs_JP_CD>>=
@@ -686,7 +701,7 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_jp.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{jp}{0.055}
 \end{frame}
 
 <<Coefs_ZA_CD>>=
@@ -724,7 +739,7 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putat{figure_other/flag_za.png}{0.055}{2.14in}{1.59in}
+  \putFlagUpperRight{za}{0.055}
 \end{frame}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
@@ -900,5 +915,16 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
     \bibliography{EconGrowth.bib}
   \normalsize
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    APPENDIX
+  \normalsize \end{center}
+\end{frame}
+
 
 \end{document} %**************************************************
