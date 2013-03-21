@@ -585,7 +585,7 @@ createSFParamsGraph <- function(factor){
                    layout = c(2,1), #2 column, 1 row
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
-                   strip = strip.custom(bg="white", factor.levels=c("$\\lambda$", exponentParameter)),
+                   strip = strip.custom(bg="transparent", factor.levels=c("$\\lambda$", exponentParameter)),
                    ylim = list(c(-0.05, 0.1), c(-0.5, 1.5)), #y axis limits
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.

@@ -199,6 +199,24 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \putat{figure_other/flag_#1.png}{#2}{2.14in}{1.59in}
 }
 
+% Creates a major separator frame with specified text in ALL CAPS.
+\newcommand{\majorSeparator}[1]{
+\begin{frame} %----------------------------
+  \begin{center} \huge
+    \MakeUppercase{#1}
+  \normalsize \end{center}
+\end{frame}
+}
+
+% Creates a minor separator frame with specified text.
+\newcommand{\minorSeparator}[1]{
+\begin{frame} %----------------------------
+  \begin{center} \Large
+    #1
+  \normalsize \end{center}
+\end{frame}
+}
+
 \begin{document} %**************************************************
 
 \begin{frame} %----------------------------
@@ -215,11 +233,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    INTRODUCTION
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Introduction} %----------------------------
 
 \begin{frame}{Energy is Essential for Economic Activity} %----------------------------
   What do you do that doesn't require energy?
@@ -293,11 +307,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Factors of Production]{Factors of Production} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    Factors of Production
-  \normalsize \end{center}
-\end{frame}
+\minorSeparator{Factors of Production} %----------------------------
 
 \begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
   \begin{itemize}
@@ -316,11 +326,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    Economic Growth Models
-  \normalsize \end{center}
-\end{frame}
+\minorSeparator{Economic Growth Models} %----------------------------
 
 \begin{frame}{No Shortage of Economic Growth Models} %----------------------------
   Single Factor: \sfEqn
@@ -351,31 +357,20 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    The Question
-  \normalsize \end{center}
-  Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
-\end{frame}
+\minorSeparator{The Question\\ \normalsize     
+\vspace{\baselineskip} 
+Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?} %----------------------------
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section[Data Sources]{Sources of Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    DATA SOURCES
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Data Sources}
 
 \subsection[Economic Data]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    Economic Data
-  \normalsize \end{center}
-\end{frame}
+\minorSeparator{Economic Data}
 
 \begin{frame}{Economic Data} %----------------------------
   Lucas complete
@@ -383,11 +378,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Energy Data]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    Energy Data
-  \normalsize \end{center}
-\end{frame}
+\minorSeparator{Energy Data}
 
 \begin{frame}{Energy Data} %----------------------------
   Caleb complete
@@ -395,11 +386,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Graphs]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
 
-\begin{frame} %----------------------------
-  \begin{center} \Large
-    Historical Data
-  \normalsize \end{center}
-\end{frame}
+\minorSeparator{Historical Data}
 
 \begin{frame}{USA and China} %----------------------------
   \begin{columns}[c]
@@ -432,13 +419,9 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \section[Evaluation]{Evaluation of Growth Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    EVALUATION OF
-    \vspace{\baselineskip}
-    GROWTH MODELS
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Evaluation of \vspace{\baselineskip} Growth Models}
+
+\minorSeparator{Single-factor Models}
 
 \begin{frame}{Single Factor} %----------------------------
   \begin{center}
@@ -458,12 +441,12 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{center}
 \end{frame}
 
-\begin{frame}{Curve-fitting As Optimization} %----------------------------
+\begin{frame}{Curve-fitting as Optimization} %----------------------------
   \begin{itemize}
-    \item{Select values of parameters to minimize errors ($SSE$) between predicted and historical economic output $y$}
+    \item{Select values of parameters to minimize errors ($SSE$) between predicted and historical economic output ($y$)}
     \vspace{\baselineskip}
     
-    \item{Example: Single-factor Model with $q$}
+    \item{Example: Single-factor Model with $Q$}
     \begin{itemize}
       \item{$y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$}
       \item{Select $\lambda$ and $\gamma$ to minimize\\
@@ -480,7 +463,7 @@ sfUSX <- coef(singleFactorModel("US", "X"))
 sfUSU <- coef(singleFactorModel("US", "U"))
 @
 
-\begin{frame}{$SSE$ Minimization}{US Single-factor with $q$} %---------------------------- 
+\begin{frame}{$SSE$ Minimization}{US Single-factor with $Q$} %---------------------------- 
 <<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
 sf3DSSEGraph("US", "Q")
 @
@@ -521,6 +504,16 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{us}{0.055}
 \end{frame}
 
+\begin{frame}{Statistical Properties}{US Single-factor ($Q$)} %----------------------------
+<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+createSFParamsGraph("Q")
+@  
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{us}{0.055}
+\end{frame}
+
+\minorSeparator{Cobb-Douglas (without Energy)}
+
 \begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
   \begin{center}
     \cdEqn\\
@@ -542,6 +535,8 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
     \end{tabular}
   \end{center}
 \end{frame}
+
+\minorSeparator{Cobb-Douglas (with Energy)}
 
 \begin{frame}{Cobb-Douglas (with Energy)} %----------------------------
   \begin{center}
@@ -581,7 +576,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("US", "Q", textScaling=0.8)
 @
@@ -589,7 +584,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{us}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("UK", "Q", textScaling=0.8)
 @
@@ -597,7 +592,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{uk}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("JP", "Q", textScaling=0.8)
 @
@@ -605,7 +600,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{jp}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsCN, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("CN", "Q", textScaling=0.8)
 @
@@ -613,7 +608,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{cn}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
@@ -621,7 +616,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{za}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("SA", "Q", textScaling=0.8)
 @
@@ -629,7 +624,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{sa}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsIR, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("IR", "Q", textScaling=0.8)
 @
@@ -637,7 +632,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{ir}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("TZ", "Q", textScaling=0.8)
 @
@@ -645,7 +640,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{tz}{0.07}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsZM, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZM", "Q", textScaling=0.8)
 @
@@ -672,7 +667,7 @@ cduUS <- cobbDouglasData("US", "U")
             \hline
                   & \Sexpr{cdUS["CD", "lambda"]} & \Sexpr{cdUS["CD", "alpha"]} & \Sexpr{cdUS["CD", "beta"]} & \Sexpr{cdUS["CD", "gamma"]}\\
             \hline
-            $q$   & \Sexpr{cdqUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdqUS["CD", "beta"]} & \Sexpr{cdqUS["CD", "gamma"]}\\
+            $Q$   & \Sexpr{cdqUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdqUS["CD", "beta"]} & \Sexpr{cdqUS["CD", "gamma"]}\\
             \hline
             $x$   & \Sexpr{cdxUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdxUS["CD", "beta"]} & \Sexpr{cdxUS["CD", "gamma"]}\\
             \hline
@@ -709,7 +704,7 @@ cduJP <- cobbDouglasData("JP", "U")
             \hline
                   & \Sexpr{cdJP["CD", "lambda"]} & \Sexpr{cdJP["CD", "alpha"]} & \Sexpr{cdJP["CD", "beta"]} & \Sexpr{cdJP["CD", "gamma"]}\\
             \hline
-            $q$   & \Sexpr{cdqJP["CD", "lambda"]} & \Sexpr{cdxJP["CD", "alpha"]} & \Sexpr{cdqJP["CD", "beta"]} & \Sexpr{cdqJP["CD", "gamma"]}\\
+            $Q$   & \Sexpr{cdqJP["CD", "lambda"]} & \Sexpr{cdxJP["CD", "alpha"]} & \Sexpr{cdqJP["CD", "beta"]} & \Sexpr{cdqJP["CD", "gamma"]}\\
             \hline
             $x$   & \Sexpr{cdxJP["CD", "lambda"]} & \Sexpr{cdxJP["CD", "alpha"]} & \Sexpr{cdxJP["CD", "beta"]} & \Sexpr{cdxJP["CD", "gamma"]}\\
             \hline
@@ -749,7 +744,7 @@ pprint <- function(num, digits = 4){
             \hline
                   & \Sexpr{pprint(cdZA["CD", "lambda"])} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
             \hline
-            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            $Q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
             \hline
             $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{cdxZA["CD", "gamma"]}\\
             \hline
@@ -764,6 +759,8 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{za}{0.055}
 \end{frame}
+
+\minorSeparator{Constant Elasticity of Substituion (CES)}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
   \begin{center}
@@ -795,6 +792,8 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   Heun complete
 \end{frame}
 
+\minorSeparator{LINEX}
+
 \begin{frame}{LINEX} %----------------------------
   \begin{center}
     \linexEqn
@@ -821,11 +820,7 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \section{Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    RESULTS
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Results}
 
 \subsection[US]{USA} %+++++++++++++++++++++++++++++++++++++++
 
@@ -888,11 +883,7 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \section*{Summary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    SUMMARY
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Summary}
 
 \begin{frame}{Tentative Conclusions} %----------------------------
   \begin{itemize}
@@ -943,11 +934,8 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \section*{Appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame} %----------------------------
-  \begin{center} \huge
-    APPENDIX
-  \normalsize \end{center}
-\end{frame}
+\majorSeparator{Appendix}
+
 
 
 \end{document} %**************************************************
