@@ -600,6 +600,87 @@ createSFParamsGraph <- function(factor){
   
   return(graph)
 }
+
+#########################
+# Creates a 3-D wireframe graph with SSE on the vertical axis and 
+# lambda and m on the horizontal axes.
+# params: 
+#   countryAbbrev: 2-letter country code (upper case)
+#   factor: the factor of production you want to use in the single-factor model.
+##
+sf3DSSEGraph <- function(countryAbbrev, factor){
+  # Generate the data in the form of a matrix with gamma in columns, lambda in rows, and SSE in the middle
+  # First, make a data.frame with which we want to make predictions
+  lambdaSeq <- seq(0.0, 0.05, by=0.01)
+  mSeq <- seq(0.0, 1.0, by=0.1)
+
+  lambdaSeq <- data.frame(lambdaSeq)
+  nRowLambda <- nrow(lambdaSeq)
+  colnames(lambdaSeq) <- "lambda"
+
+  mSeq <- data.frame(mSeq)
+  nRowM <- nrow(mSeq)
+  colnames(mSeq) <- "m"
+  
+  # Make a sequence of lambda values based on the number of m values you have.
+  lambda <- rep(lambdaSeq[1,1], nRowM)
+  lambda <- data.frame(lambda)
+  colnames(lambda) <- "lambda"
+  for (i in 2:nRowLambda){
+    lambdaTemp <- rep(lambdaSeq[i, 1], nRowM)
+    lambdaTemp <- data.frame(lambdaTemp)
+    colnames(lambdaTemp) <- "lambda"
+    lambda <- rbind(lambda, lambdaTemp)
+  }
+
+  # Make repeats of the m data frame as we have number of lambda rows
+  m <- mSeq
+  for (i in 2:nRowLambda){
+    m <- rbind(m, mSeq)
+  }
+  
+  # Now create the data.frame of new observation locations
+  newX <- cbind(lambda, m)
+  
+  # Get the actual data
+  data <- loadData(countryAbbrev)
+  y_act <- data[ ,"iGDP"] # Pick off the GDP column
+  y_act <- data.frame(y_act)
+
+  # Make predictions
+  # Get the model
+  model <- singleFactorModel(countryAbbrev, factor)
+  
+  sse <- c(1:(nRowLambda*nRowM)) # Build a bogus vector at the start
+  
+  # Loop over all the different combinations of lambda and m that are of interest for us.
+  #i = 1
+  for (i in 1:(nRowLambda*nRowM)){
+    y_pred <- predict(model, newX[i,]) # Get lambda and m for this particular row.
+    y_pred <- data.frame(y_pred)
+  
+    compareDF <- cbind(y_pred, y_act)
+    se <- with(compareDF, (y_pred-y_act)^2) # Makes a column of squared errors at each year
+    compareDF <- cbind(compareDF, se) # Bind it to the data frame as an additional column
+  
+    # Now get the sse
+    sums <- colSums(compareDF)
+    sse[i] <- sums[3] # squared error (se) is the 3rd column
+  }
+  ssedf <- data.frame(sse)
+  colnames(ssedf) <- "sse"
+  
+  # Now merge the sse column and the newX data to form a data.frame fit for 3-D plotting
+  dataFor3DGraph <- cbind(newX, ssedf) 
+  
+  # Create the lattice graph
+  fig <- wireframe(sse ~ lambda * m,
+                   data = dataFor3DGraph,
+                   xlab = "$\\lambda$",
+                   ylab = "$\\gamma$",
+                   zlab = "$SSE$")
+  return(fig)    
+}
 @
 
 <<cobb-douglas functions, eval=TRUE>>=

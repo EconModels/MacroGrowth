@@ -461,7 +461,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \begin{frame}{Curve-fitting As Optimization} %----------------------------
   \begin{itemize}
-    \item{Choose values of parameters to minimize errors ($SSE$) between predicted and historical economic output $y$}
+    \item{Select values of parameters to minimize errors ($SSE$) between predicted and historical economic output $y$}
     \vspace{\baselineskip}
     
     \item{Example: Single-factor Model with $q$}
@@ -473,21 +473,25 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Single-factor US with $q$} %----------------------------
-  
-  3-D graph of SSE vs. $\lambda$ and $\gamma$
-  
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{us}{0.055}  
-\end{frame}
-
-<<Coefs_US_SF>>=
+<<Coefs_US_SF, eval=TRUE>>=
 sfUSK <- coef(singleFactorModel("US", "K"))
 sfUSL <- coef(singleFactorModel("US", "L"))
 sfUSQ <- coef(singleFactorModel("US", "Q"))
 sfUSX <- coef(singleFactorModel("US", "X"))
 sfUSU <- coef(singleFactorModel("US", "U"))
 @
+
+\begin{frame}{$SSE$ Minimization} %---------------------------- 
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+sf3DSSEGraph("US", "Q")
+@
+  \begin{center}
+    $y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$
+  \end{center}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{us}{0.055}  
+\end{frame}
+
 \begin{frame}{Single-Factor $y$ Predictions} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
