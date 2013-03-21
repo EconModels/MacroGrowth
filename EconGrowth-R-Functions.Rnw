@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -679,7 +679,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor){
   # Create the lattice graph
   fig <- wireframe(sse ~ lambda * m,
                    data = dataFor3DGraph,
-                   screen = list(z = -20, x = -65),
+                   screen = list(z = -20, x = -55),
                    xlab = "$\\lambda$",
                    ylab = "$\\gamma$",
                    zlab = list(label="$SSE$", rot=90),
@@ -1155,7 +1155,7 @@ createCDParamsGraph <- function(energyType){
                      layout = c(2,2), #2 column, 2 row
                      index.cond = list(c(2,3,1)), #orders the panels as alpha, beta, lambda, gamma
                      strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$"), #sets labels in strip 
-                                          bg="white"), #sets background color in strip
+                                          bg="transparent"), #sets background color in strip
                      col = "black", #Sets line color to black
                      lwd = 1, #Sets line width to 1.0
                      ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
@@ -1183,7 +1183,7 @@ createCDParamsGraph <- function(energyType){
                      index.cond = list(c(2,3,1,4)), #orders the panels as alpha, beta, lambda, gamma
                      #set labels and bg color in strip
                      strip = strip.custom(factor.levels=c("$\\lambda$", "$\\alpha$", "$\\beta$", "$\\gamma$"),  
-                                          bg="white"),
+                                          bg="transparent"),
                      col = "black", #Sets line color to black
                      lwd = 1, #Sets line width to 1.0
                      ylim = list(c(-0.05, 0.1), c(-0.5, 1.5), c(-0.5, 1.5), c(-0.5, 1.5)), #y axis limits
@@ -1701,7 +1701,7 @@ createCESParamsGraph <- function(energyType){
                    index.cond = list(c(1,2,3,4,5,6)), 
                    #set labels and bg color in strip
                    strip = strip.custom(factor.levels=c("$\\gamma$", "$\\lambda$", "$\\delta_1$",
-                                                        "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="white"),
+                                                        "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="transparent"),
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
                    ylim = list(c(0.9, 1.1), c(-0.05, 0.05), c(0.0, 1.0),
@@ -1969,7 +1969,7 @@ createLINEXParamsGraph <- function(energyType){
                    layout = c(2,1), #2 column, 2 row
                    index.cond = list(c(1,2)), #orders the panels as alpha, beta, lambda, gamma
                    #set labels and bg color in strip
-                   strip = strip.custom(factor.levels=c("$a_0$", "$c_t$"), bg="white"),
+                   strip = strip.custom(factor.levels=c("$a_0$", "$c_t$"), bg="transparent"),
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
                    ylim = list(c(-0.05, 1.0), c(-0.5, 5)), #y axis limits

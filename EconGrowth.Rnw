@@ -439,7 +439,7 @@ We begin by fitting single-factor economic models of the form
   y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
 \end{equation}
 
-\noindent to historical data where the factor of production ($f$) is any of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
+\noindent to historical data where the factor of production ($f$) is one of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
 
 <<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph("K")
@@ -495,7 +495,7 @@ The Cobb-Douglas model with energy is given by
   y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
 \end{equation}
 
-\noindent where $e$ can be any of thermal energy ($q$), exergy ($x$), or useful work ($u$).
+\noindent where $e$ can be one of thermal energy ($q$), exergy ($x$), or useful work ($u$).
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
 
@@ -560,7 +560,7 @@ but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms is errone
       ^{\frac{\sigma}{\sigma - 1}},
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
+\noindent where $e$ is one of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
 
 The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the form (among others)
 
@@ -620,7 +620,7 @@ The LINEX model has the form
   y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} ,
 \end{equation}
 
-\noindent where $e$ is any of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
+\noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
 
 \subsection{LINEX with $Q$}
 
