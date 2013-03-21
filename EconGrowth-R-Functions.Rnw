@@ -671,14 +671,30 @@ sf3DSSEGraph <- function(countryAbbrev, factor){
   colnames(ssedf) <- "sse"
   
   # Now merge the sse column and the newX data to form a data.frame fit for 3-D plotting
-  dataFor3DGraph <- cbind(newX, ssedf) 
+  dataFor3DGraph <- cbind(newX, ssedf)
+  
+  # Adjust settings for a nicer graph
+  #trellis.par.set("axis.line", list(col="transparent"))
   
   # Create the lattice graph
   fig <- wireframe(sse ~ lambda * m,
                    data = dataFor3DGraph,
+                   screen = list(z = -20, x = -65),
                    xlab = "$\\lambda$",
                    ylab = "$\\gamma$",
-                   zlab = "$SSE$")
+                   zlab = list(label="$SSE$", rot=90),
+                   scales = list(arrows=FALSE, 
+                                 cex=0.45, 
+                                 col="black", 
+                                 tck=0.8,
+                                 x=list(at=c(0.00, 0.01, 0.02, 0.03)),
+                                 y=list(at=c(0.0, 0.5, 1.0)),
+                                 z=list(at=c(10, 20, 30))
+                                 ),
+                   xlim = c(0.0, 0.04), # lambda axis
+                   ylim = c(0.0, 1.0), # gamma axis
+                   zlim = c(0, 30) # sse axis
+                   )
   return(fig)    
 }
 @

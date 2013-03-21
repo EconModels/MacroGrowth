@@ -429,13 +429,12 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section[Analysis]{Analysis of Growth Models}
+\section[Evaluation]{Evaluation of Growth Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame} %----------------------------
   \begin{center} \huge
-    ANALYSIS OF
-    \vspace{\baselineskip}
+    EVALUATION OF
     \vspace{\baselineskip}
     GROWTH MODELS
   \normalsize \end{center}
@@ -481,13 +480,10 @@ sfUSX <- coef(singleFactorModel("US", "X"))
 sfUSU <- coef(singleFactorModel("US", "U"))
 @
 
-\begin{frame}{$SSE$ Minimization} %---------------------------- 
-<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+\begin{frame}{$SSE$ Minimization}{US Single-factor with $q$} %---------------------------- 
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
 sf3DSSEGraph("US", "Q")
 @
-  \begin{center}
-    $y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$
-  \end{center}
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{us}{0.055}  
 \end{frame}
@@ -585,7 +581,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("US", "Q", textScaling=0.8)
 @
@@ -593,7 +589,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{us}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("UK", "Q", textScaling=0.8)
 @
@@ -601,7 +597,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{uk}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("JP", "Q", textScaling=0.8)
 @
@@ -609,7 +605,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{jp}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsCN, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("CN", "Q", textScaling=0.8)
 @
@@ -617,7 +613,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{cn}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
@@ -625,7 +621,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{za}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("SA", "Q", textScaling=0.8)
 @
@@ -633,7 +629,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{sa}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsIR, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("IR", "Q", textScaling=0.8)
 @
@@ -641,7 +637,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{ir}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("TZ", "Q", textScaling=0.8)
 @
@@ -649,7 +645,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{tz}{0.07}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas With $q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZM, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZM", "Q", textScaling=0.8)
 @
