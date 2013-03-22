@@ -242,10 +242,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \begin{center}What do you do that doesn't require energy?\end{center}
 \end{frame}
 
-\begin{frame}{Energy and GDP are Linked} %----------------------------
-  \tiny
-  \framesubtitle{\citep{Cleveland:1997p5055}}
-  \normalsize
+\begin{frame}{Energy and GDP are Linked}{\citep{Cleveland:1997p5055}} %----------------------------
   \begin{columns}[c]
     \column{2.0in}
       \includegraphics[width=2.0in]{figure_other/Figure_Cleveland_1984.pdf}
@@ -269,6 +266,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \pause
     \item{But \dots}
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Oil and Recessions}{\citep{Hamilton:2011fo}} %----------------------------
+  \begin{center}
+    10 of last 11 US recessions preceeded by oil price shocks
+  \end{center}
 \end{frame}
 
 \begin{frame}{Energy Cost Share}{\citep{Bashmakov:2007ek}} %----------------------------
@@ -360,9 +363,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{The Question\\ \normalsize     
+\minorSeparator{The Question\\ \normalsize      %----------------------------
 \vspace{\baselineskip} 
-Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?} %----------------------------
+Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -423,6 +426,15 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \majorSeparator{Evaluation of \vspace{\baselineskip} Growth Models}
+
+\begin{frame}{Coordinates of Analysis} %----------------------------
+  \begin{itemize}
+    \item{Country/Economy: 9 \\US, UK, JP, CN, ZA, SA, IR, TZ, ZM}
+    \item{Economic Growth Model: 4 \\SF, CD, CES, LINEX}
+    \item{Type of Energy: 3 \\Q, X, U}
+  \end{itemize}
+  Simplification: 1 country (US), 1 type of energy (Q)
+\end{frame}
 
 \minorSeparator{Single-factor Models}
 
@@ -507,6 +519,18 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
+<<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("K")
+@  
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
+<<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("L")
+@  
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
@@ -849,11 +873,10 @@ createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{CES with $q$} %----------------------------
-<<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
+<<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8, eval=TRUE>>=
 createCESParamsGraph("Q")
 @  
 \end{frame}
-
 
 \minorSeparator{LINEX} %----------------------------
 
