@@ -155,6 +155,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \newcommand{\cdeEqn}{$y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}$}
 % The equation for a ces model
 \newcommand{\cesEqn}{$y = \gamma \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$}
+
+\newcommand{\cesEqnNarrow}{\begin{align*} y = \, &\gamma \: \mathrm{e}^{\lambda(t-t_0)}\\&\times \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} \right. \\ &\left.+ \; (1-\delta) e^{-\rho} \right\}^{-1/\rho} \end{align*}}
+
 % The equation for a linex model
 \newcommand{\linexEqn}{$y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$}
 
@@ -507,7 +510,7 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
-<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createSFParamsGraph("Q")
 @  
 \end{frame}
@@ -684,18 +687,18 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %----------------------------
-<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createCDParamsGraph()
 @  
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas with $q$} %----------------------------
-<<CDq_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<CDq_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createCDParamsGraph("Q")
 @  
 \end{frame}
 
-\minorSeparator{Constant Elasticity of Substituion (CES)}
+\minorSeparator{Constant Elasticity of Substitution (CES)}
 
 \begin{frame}{Constant Elasticity of Substitution (CES)} %----------------------------
   \begin{center}
@@ -732,7 +735,7 @@ cesuUS <- cesData("US", "U")
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
-        \tiny \cesEqn \normalsize
+        \tiny \cesEqnNarrow \normalsize
 
         \vspace{\baselineskip}
         
@@ -778,8 +781,7 @@ cesxZA <- cesData("ZA", "X")
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
-        \tiny \cesEqn \normalsize
-
+        \tiny \cesEqnNarrow \normalsize
         \vspace{\baselineskip}
         
         \tiny
@@ -812,7 +814,14 @@ createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
   \putFlagUpperRight{ZA}{0.055}
 \end{frame}
 
-\minorSeparator{LINEX}
+\begin{frame}{95\% Confidence Intervals}{CES with $q$} %----------------------------
+<<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
+createCESParamsGraph("Q")
+@  
+\end{frame}
+
+
+\minorSeparator{LINEX} %----------------------------
 
 \begin{frame}{LINEX} %----------------------------
   \begin{center}
