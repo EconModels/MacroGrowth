@@ -239,7 +239,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \majorSeparator{Introduction} %----------------------------
 
 \begin{frame}{Energy is Essential for Economic Activity} %----------------------------
-  What do you do that doesn't require energy?
+  \begin{center}What do you do that doesn't require energy?\end{center}
 \end{frame}
 
 \begin{frame}{Energy and GDP are Linked} %----------------------------
@@ -670,7 +670,7 @@ pprint <- function(num, digits = 4){
             \hline
                   & \Sexpr{pprint(cdZA["CD", "lambda"])} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
             \hline
-            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdqZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
             \hline
             $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{cdxZA["CD", "gamma"]}\\
             \hline
@@ -678,12 +678,46 @@ pprint <- function(num, digits = 4){
         \normalsize
       \end{center}
     \column{2.2in}
-<<Results_Graph_US_ZA, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+<<Results_Graph_ZA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
 createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZA}{0.055}
+\end{frame}
+
+<<Coefs_SA_CD>>=
+cdSA <- cobbDouglasData("SA")
+cdqSA <- cobbDouglasData("SA", "Q")
+cdxSA <- cobbDouglasData("SA", "X")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{cdSA["CD", "lambda"]} & \Sexpr{cdSA["CD", "alpha"]} & \Sexpr{cdSA["CD", "beta"]} & \Sexpr{cdSA["CD", "gamma"]}\\
+            \hline
+            $q$   & \Sexpr{cdqSA["CD", "lambda"]} & \Sexpr{cdqSA["CD", "alpha"]} & \Sexpr{cdqSA["CD", "beta"]} & \Sexpr{cdqSA["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxSA["CD", "lambda"]} & \Sexpr{cdxSA["CD", "alpha"]} & \Sexpr{cdxSA["CD", "beta"]} & \Sexpr{cdxSA["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_SA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{SA}{0.055}
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %----------------------------
