@@ -433,12 +433,12 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
     \item{Economic Growth Model: 4 \\SF, CD, CES, LINEX}
     \item{Type of Energy: 3 \\Q, X, U}
   \end{itemize}
-  Simplification: 1 country (US), 1 type of energy (Q)
+  Simplification: 1 type of energy (Q)
 \end{frame}
 
-\minorSeparator{Single-factor Models}
+\minorSeparator{Curve-fitting as Optimization}
 
-\begin{frame}{Single Factor} %----------------------------
+\begin{frame}{Example: Single-factor Model} %----------------------------
   \begin{center}
     \sfEqn
     \vspace{\baselineskip}
@@ -481,88 +481,6 @@ sf3DSSEGraph("US", "Q")
   \putFlagUpperRight{US}{0.055}  
 \end{frame}
 
-<<Coefs_US_SF>>=
-sfUSK <- coef(singleFactorModel("US", "K"))
-sfUSL <- coef(singleFactorModel("US", "L"))
-sfUSQ <- coef(singleFactorModel("US", "Q"))
-sfUSX <- coef(singleFactorModel("US", "X"))
-sfUSU <- coef(singleFactorModel("US", "U"))
-@
-\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-      \begin{center}
-        \sfEqn
-        \vspace{\baselineskip}
-        
-        \tiny
-          \begin{tabular}{|c|c|c|}\hline
-            $f$   & $\lambda$                & $m$\\
-            \hline
-            $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
-            \hline
-            $l$   & \Sexpr{sfUSL["lambda"]}  & \Sexpr{sfUSL["m"]}\\
-            \hline
-            $q$   & \Sexpr{sfUSQ["lambda"]}  & \Sexpr{sfUSQ["m"]}\\
-            \hline
-            $x$   & \Sexpr{sfUSX["lambda"]}  & \Sexpr{sfUSX["m"]}\\
-            \hline
-            $u$   & \Sexpr{sfUSU["lambda"]}  & \Sexpr{sfUSU["m"]}\\
-            \hline
-          \end{tabular}
-        \normalsize
-      \end{center}
-    \column{2.2in}
-<<Results_Graph_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{US}{0.055}
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
-<<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("K")
-@  
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
-<<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("L")
-@  
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
-<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("Q")
-@  
-\end{frame}
-
-\minorSeparator{Cobb-Douglas (without Energy)} %----------------------------
-
-\begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
-  \begin{center}
-    \cdEqn\\
-    $\alpha + \beta = 1$\\
-    $0 \leq \alpha, \beta \leq 1$
-    \vspace{\baselineskip}
-    
-    \begin{tabular}{|c|l|}\hline
-      \yRow\\
-      \timeRow\\
-      \initialTimeRow\\
-      \kRow\\
-      \lRow\\
-      \hline
-      \lambdaRow\\
-      \alphaRow\\
-      \betaRow\\
-      \hline
-    \end{tabular}
-  \end{center}
-\end{frame}
-
 \minorSeparator{Cobb-Douglas (with Energy)} %----------------------------
 
 \begin{frame}{Cobb-Douglas (with Energy)} %----------------------------
@@ -590,9 +508,7 @@ createSFParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
-  \begin{center}
-    \cdeEqn
-  \end{center}
+  \begin{center}\cdeEqn\end{center}
   \begin{itemize}
     \item{Objective: determine $\lambda$, $\alpha$, $\beta$, and $\gamma$ that best fits historical data}
     \item{Almost identical to Cobb-Douglas without energy}
@@ -609,22 +525,6 @@ createSFParamsGraph("Q")
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
-\end{frame}
-
-\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
-<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("UK", "Q", textScaling=0.8)
-@
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{UK}{0.045}
-\end{frame}
-
-\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $Q$} %----------------------------
-<<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("ZA", "Q", textScaling=0.8)
-@
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{ZA}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $Q$} %----------------------------
@@ -672,88 +572,42 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-<<Coefs_ZA_CD>>=
-cdZA <- cobbDouglasData("ZA")
-cdqZA <- cobbDouglasData("ZA", "Q")
-cdxZA <- cobbDouglasData("ZA", "X")
-pprint <- function(num, digits = 4){
-  out <- formatC(num, digit=digits, format="f")
-  return(out)
-}
-@
-\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-      \begin{center}
-        \cdeEqn
-        \vspace{\baselineskip}
-        
-        \tiny
-          \begin{tabular}{|c|c|c|c|c|}\hline
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
-            \hline
-                  & \Sexpr{pprint(cdZA["CD", "lambda"])} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
-            \hline
-            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdqZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
-            \hline
-            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{cdxZA["CD", "gamma"]}\\
-            \hline
-          \end{tabular}
-        \normalsize
-      \end{center}
-    \column{2.2in}
-<<Results_Graph_ZA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{ZA}{0.055}
-\end{frame}
-
-<<Coefs_SA_CD>>=
-cdSA <- cobbDouglasData("SA")
-cdqSA <- cobbDouglasData("SA", "Q")
-cdxSA <- cobbDouglasData("SA", "X")
-@
-\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-      \begin{center}
-        \cdeEqn
-        \vspace{\baselineskip}
-        
-        \tiny
-          \begin{tabular}{|c|c|c|c|c|}\hline
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
-            \hline
-                  & \Sexpr{cdSA["CD", "lambda"]} & \Sexpr{cdSA["CD", "alpha"]} & \Sexpr{cdSA["CD", "beta"]} & \Sexpr{cdSA["CD", "gamma"]}\\
-            \hline
-            $q$   & \Sexpr{cdqSA["CD", "lambda"]} & \Sexpr{cdqSA["CD", "alpha"]} & \Sexpr{cdqSA["CD", "beta"]} & \Sexpr{cdqSA["CD", "gamma"]}\\
-            \hline
-            $x$   & \Sexpr{cdxSA["CD", "lambda"]} & \Sexpr{cdxSA["CD", "alpha"]} & \Sexpr{cdxSA["CD", "beta"]} & \Sexpr{cdxSA["CD", "gamma"]}\\
-            \hline
-          \end{tabular}
-        \normalsize
-      \end{center}
-    \column{2.2in}
-<<Results_Graph_SA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{SA}{0.055}
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %----------------------------
-<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createCDParamsGraph()
-@  
-\end{frame}
-
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas with $q$} %----------------------------
 <<CDq_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createCDParamsGraph("Q")
 @  
+\end{frame}
+
+\begin{frame}{$CI_{\gamma}$ and $\gamma$ in Cobb-Douglas} %----------------------------
+  \begin{center}
+    \cdeEqn\\
+    \includegraphics<1>[height=2.5in]{figure_other/CI-gamma-1.pdf}
+    \includegraphics<2>[height=2.5in]{figure_other/CI-gamma-2.pdf}
+    \includegraphics<3>[height=2.5in]{figure_other/CI-gamma-3.pdf}
+    \includegraphics<4>[height=2.5in]{figure_other/CI-gamma-4.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{CI and $\gamma$ in Cobb-Douglas} %----------------------------
+  Graph here of CI vs. $\gamma$ where each country abbreviation is plotted.
+\end{frame}
+
+\begin{frame}{Implications from Cobb-Douglas} %----------------------------
+  \begin{center}\cdeEqn\end{center}
+  \vspace{\baselineskip}
+        
+  \begin{itemize}
+    \item{Energy parameter ($\gamma$) is either}
+      \begin{itemize}
+        \item{Small (US, JP, CN, SA, IR)}
+        \item{Large CI (ZA, TZ, ZM)}
+        \item{Exception: UK}
+      \end{itemize}
+    \vspace{\baselineskip}      
+    
+    \pause
+    \item{Direct energy input to economy ($q$)is unimportant as a Cobb-Douglas predictor of economic output ($y$)}
+  \end{itemize}
 \end{frame}
 
 \minorSeparator{Constant Elasticity of Substitution (CES)}
@@ -878,6 +732,44 @@ createCESParamsGraph("Q")
 @  
 \end{frame}
 
+\begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
+  \begin{center}
+    \cdeEqn\\
+    \includegraphics<1>[height=2.5in]{figure_other/CI-delta-1.pdf}
+    \includegraphics<2>[height=2.5in]{figure_other/CI-delta-2.pdf}
+    \includegraphics<3>[height=2.5in]{figure_other/CI-delta-3.pdf}
+    \includegraphics<4>[height=2.5in]{figure_other/CI-delta-4.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
+  Graph here of $CI_{\delta}$ vs. $\delta$ where each country abbreviation is plotted.
+\end{frame}
+
+\begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
+  \begin{center}
+    \cdeEqn\\
+    \includegraphics<1>[height=2.5in]{figure_other/CI-sigma-1.pdf}
+    \includegraphics<2>[height=2.5in]{figure_other/CI-sigma-2.pdf}
+    \includegraphics<3>[height=2.5in]{figure_other/CI-sigma-3.pdf}
+    \includegraphics<4>[height=2.5in]{figure_other/CI-sigma-4.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
+  Graph here of $CI_{\sigma}$ vs. $\sigma$ where each country abbreviation is plotted.
+\end{frame}
+
+\begin{frame}{Implications from CES} %----------------------------
+  \begin{center}\cesEqn\end{center}
+  \vspace{\baselineskip}
+        
+  \begin{itemize}
+    \item{kl and e are complements, sigma small where it is distinguishable.}
+    \item{Direct energy input to economy ($q$)is unimportant as a CES predictor of economic output ($y$), because delta is close to 1.0}
+  \end{itemize}
+\end{frame}
+
 \minorSeparator{LINEX} %----------------------------
 
 \begin{frame}{LINEX} %----------------------------
@@ -959,6 +851,162 @@ createCESParamsGraph("Q")
 
 \majorSeparator{Appendix}
 
+\minorSeparator{Single-factor Model}
+
+<<Coefs_US_SF>>=
+sfUSK <- coef(singleFactorModel("US", "K"))
+sfUSL <- coef(singleFactorModel("US", "L"))
+sfUSQ <- coef(singleFactorModel("US", "Q"))
+sfUSX <- coef(singleFactorModel("US", "X"))
+sfUSU <- coef(singleFactorModel("US", "U"))
+@
+\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \sfEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|}\hline
+            $f$   & $\lambda$                & $m$\\
+            \hline
+            $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
+            \hline
+            $l$   & \Sexpr{sfUSL["lambda"]}  & \Sexpr{sfUSL["m"]}\\
+            \hline
+            $q$   & \Sexpr{sfUSQ["lambda"]}  & \Sexpr{sfUSQ["m"]}\\
+            \hline
+            $x$   & \Sexpr{sfUSX["lambda"]}  & \Sexpr{sfUSX["m"]}\\
+            \hline
+            $u$   & \Sexpr{sfUSU["lambda"]}  & \Sexpr{sfUSU["m"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{US}{0.055}
+\end{frame}
+
+\begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
+  \begin{center}
+    \cdEqn\\
+    $\alpha + \beta = 1$\\
+    $0 \leq \alpha, \beta \leq 1$
+    \vspace{\baselineskip}
+    
+    \begin{tabular}{|c|l|}\hline
+      \yRow\\
+      \timeRow\\
+      \initialTimeRow\\
+      \kRow\\
+      \lRow\\
+      \hline
+      \lambdaRow\\
+      \alphaRow\\
+      \betaRow\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
+<<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("K")
+@  
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
+<<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("L")
+@  
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
+<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("Q")
+@  
+\end{frame}
+
+\minorSeparator{Cobb-Douglas Model}
+
+<<Coefs_ZA_CD>>=
+cdZA <- cobbDouglasData("ZA")
+cdqZA <- cobbDouglasData("ZA", "Q")
+cdxZA <- cobbDouglasData("ZA", "X")
+pprint <- function(num, digits = 4){
+  out <- formatC(num, digit=digits, format="f")
+  return(out)
+}
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{pprint(cdZA["CD", "lambda"])} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
+            \hline
+            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdqZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{cdxZA["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_ZA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{ZA}{0.055}
+\end{frame}
+
+<<Coefs_SA_CD>>=
+cdSA <- cobbDouglasData("SA")
+cdqSA <- cobbDouglasData("SA", "Q")
+cdxSA <- cobbDouglasData("SA", "X")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|c|}\hline
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{cdSA["CD", "lambda"]} & \Sexpr{cdSA["CD", "alpha"]} & \Sexpr{cdSA["CD", "beta"]} & \Sexpr{cdSA["CD", "gamma"]}\\
+            \hline
+            $q$   & \Sexpr{cdqSA["CD", "lambda"]} & \Sexpr{cdqSA["CD", "alpha"]} & \Sexpr{cdqSA["CD", "beta"]} & \Sexpr{cdqSA["CD", "gamma"]}\\
+            \hline
+            $x$   & \Sexpr{cdxSA["CD", "lambda"]} & \Sexpr{cdxSA["CD", "alpha"]} & \Sexpr{cdxSA["CD", "beta"]} & \Sexpr{cdxSA["CD", "gamma"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_SA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{SA}{0.055}
+\end{frame}
+
 \begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("JP", "Q", textScaling=0.8)
@@ -973,6 +1021,22 @@ createCESParamsGraph("Q")
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{CN}{0.045}
+\end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
+<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("UK", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{UK}{0.045}
+\end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $Q$} %----------------------------
+<<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("ZA", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{ZA}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $Q$} %----------------------------
@@ -1034,6 +1098,12 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{JP}{0.055}
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %---------------------------- 
+<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createCDParamsGraph()
+@  
 \end{frame}
 
 
