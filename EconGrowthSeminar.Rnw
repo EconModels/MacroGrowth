@@ -154,7 +154,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 % The equation for a cobb-douglas with energy model
 \newcommand{\cdeEqn}{$y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma}$}
 % The equation for a ces model
-\newcommand{\cesEqn}{$y = \gamma \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$}
+\newcommand{\cesEqn}{$y = \gamma \: \mathrm{e}^{\lambda(t-t_0)} \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$}
 
 \newcommand{\cesEqnNarrow}{\begin{align*} y = \, &\gamma \: \mathrm{e}^{\lambda(t-t_0)}\\&\times \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} \right. \\ &\left.+ \; (1-\delta) e^{-\rho} \right\}^{-1/\rho} \end{align*}}
 
