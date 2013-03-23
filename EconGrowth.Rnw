@@ -214,6 +214,97 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \subsection{Background}
 
+<<CIvsParam_Graph, eval=TRUE>>=
+# plot(1:9, rep(1, 9), pch=LETTERS)
+# xyplot(rep(1:9) ~ 1:9, pch=LETTERS)
+# xyplot(rep(1:9) ~ 1:9, pch="US")
+# states <- data.frame(state.x77, 
+#                           state.name = dimnames(state.x77)[[1]], 
+#                           state.region = state.region) 
+#      xyplot(Murder ~ Population | state.region, data = states, 
+#             groups = state.name, 
+#             panel = function(x, y, subscripts, groups) { 
+#                 ltext(x = x, y = y, labels = groups[subscripts], cex=1, 
+#                       fontfamily = "HersheySans") 
+#             }) 
+# print(states)
+
+#######################
+# Creates a plot of confidence interval vs. value of a parameter with symbols being the 2-letter abbreviation
+# for each country.
+# 
+# model the model function you want to use. One of SF, CD, CDe, CES, or LINEX.
+# param the parameter you want to plot. The options depend upon the model you want:
+#       SF: lambda or m
+#       CD: lambda, alpha, or beta
+#      CDe: lambda, alpha, beta, or gamma
+#      CES: gamma, lambda, delta_1, sigma_1, delta, or sigma
+#    LINEX: a_0 or c_t
+# energyType the energy type you want. One of Q, X, or U
+# factor the factor you want to use in a single-factor model, if needed. One of K, L, Q, X, or U.
+##
+CIvsParamPlot <- function(model, param, energyType=NA, factor=NA){
+print("inside CIvsParamPlot")
+  if (model == "SF"){
+    data <- singleFactorParamsDF(factor)
+    if (param == "lambda"){
+      # Want lambda
+      x <- subset(data, select=lambda) # The column of lambdas
+      colnames(x) <- "lambda"
+      xLabel <- "$\\lambda$"
+      y <- subset(data, select=upperCI_lambda) - subset(data, select=lowerCI_lambda) # A column of CI values
+      colnames(y) <- "CI"
+      yLabel <- paste("95\\% CI on", xLabel)
+      data <- cbind(x, y)
+      data <- data.frame(data)
+    } else if (param == "m"){
+      # Want m
+      x <- subset(data, select=m) # The column of lambdas
+      colnames(x) <- "m"
+      if (factor == "K"){xLabel <- "$\\alpha$"}
+      else if (factor == "L"){xLabel <- "$\\beta$"}
+      else if ((factor == "Q") || (factor == "X") || (factor == "U")){xLabel <- "$\\gamma$"}
+      y <- subset(data, select=upperCI_m) - subset(data, select=lowerCI_m) # A column of CI values
+      colnames(y) <- "CI"
+      yLabel <- paste("95\\% CI on", xLabel)
+      data <- cbind(x, y)
+      data <- data.frame(data)
+    }
+  }
+  if (model == "CD"){
+    
+  }
+  if (model == "CDe"){
+    
+  }
+  if (model == "CES"){
+    
+  }
+  if (model == "LINEX"){
+    
+  }
+#   plot <- xyplot(rep(1:9) ~ 1:9,
+#                  panel = function(x, y){
+# print(x)
+# print(y)
+#                    ltext(x = x, y = y, labels=countryAbbrevsAlph)
+#                  })
+print(data)
+print(xLabel)
+print(yLabel)
+  # data[ , 1] is the column that contains the value of the parameter
+  # data[ , 2] is the column that contains confidence intervals
+  plot <- xyplot(data[ , 2] ~ data[ , 1],
+                 xlab=list(label=xLabel),
+                 ylab=list(label=yLabel),
+                 panel = function(x, y){
+                   ltext(x=x, y=y, labels=rownames(data))
+                 })
+  return(plot)
+}
+CIvsParamPlot(model="SF", param="m", factor="U")
+@
+
 Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}
 
 \begin{equation} \label{eq:CD}

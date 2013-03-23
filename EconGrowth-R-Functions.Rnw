@@ -499,12 +499,23 @@ singleFactorCountryRow <- function(countryAbbrev, factor){
  return(out)
 }
 
+########################
+# Aggregates the single-factor results intoa a big data frame for the given factor
+##
+singleFactorParamsDF <- function(factor){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataSF <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRow, factor=factor))
+  #Add names to the rows and columns
+  colnames(dataSF) <- list("lowerCI_lambda", "lambda", "upperCI_lambda", "lowerCI_m", "m", "upperCI_m")
+  rownames(dataSF) <- countryAbbrevs
+  return(dataSF)
+}
+
 ############################
 # Aggregates the single-factor results into a big data table for the given factor.
 ##
 singleFactorParamsTable <- function(factor){
-  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataSF <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRow, factor=factor))
+  dataSF <- singleFactorParamsDF(factor)
   if (factor == "K"){
     factorString <- "$\\alpha$"
   } else if (factor == "L"){
