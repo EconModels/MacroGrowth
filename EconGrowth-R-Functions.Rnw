@@ -506,8 +506,9 @@ singleFactorParamsDF <- function(factor){
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataSF <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRow, factor=factor))
   #Add names to the rows and columns
-  colnames(dataSF) <- list("lowerCI_lambda", "lambda", "upperCI_lambda", "lowerCI_m", "m", "upperCI_m")
+  colnames(dataSF) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", "lowerCI_m", "m", "upperCI_m")
   rownames(dataSF) <- countryAbbrevs
+  dataSF <- data.frame(dataSF)
   return(dataSF)
 }
 
@@ -1093,12 +1094,25 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryName, energyType){
   return(table)
 }
 
+######################
+# Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
+##
+cobbDouglasParamsTableNoEnergyDF <- function(){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow))
+  rownames(dataCD) <- countryAbbrevs
+  colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
+                        "lowerCI_alpha", "alpha", "upperCI_alpha",
+                        "lowerCI_beta", "beta", "upperCI_beta")
+  dataCD <- data.frame(dataCD)
+  return(dataCD)
+}
+
 ############################
 # Aggregates the Cobb-Douglas results into a big data table. No energy.
 ##
 cobbDouglasParamsTableNoEnergy <- function(){
-  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow))
+  dataCD <- cobbDouglasParamsTableNoEnergyDF()
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ")
@@ -1111,12 +1125,27 @@ cobbDouglasParamsTableNoEnergy <- function(){
   return(tableCD)
 }
 
+######################
+# Makes a data.frame with the parameters for the Cobb-Douglas model with energy.
+##
+cobbDouglasParamsTableWithEnergyDF <- function(energyType){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
+  rownames(dataCD) <- countryAbbrevs
+  colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
+                        "lowerCI_alpha", "alpha", "upperCI_alpha",
+                        "lowerCI_beta", "beta", "upperCI_beta",
+                        "lowerCI_gamma", "gamma", "upperCI_gamma")
+  dataCD <- data.frame(dataCD)
+  return(dataCD)
+}
+
 ############################
 # Aggregates the Cobb-Douglas results into a big data table for the given energyType.
 ##
 cobbDouglasParamsTableWithEnergy <- function(energyType){
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
+  dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ",
@@ -1652,6 +1681,20 @@ cesCountryRowsForParamsGraph <- function(countryName, energyType){
   return(table)
 }
 
+######################
+# Creates a data.frame for CES parameters
+cesParamsTableDF <- function(energyType){
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  colnames(dataCES) <- c("lowerCI_gamma", "gamma", "upperCI_gamma",
+                         "lowerCI_lambda", "lambda", "upperCI_lambda",
+                         "lowerCI_delta_1", "delta_1", "upperCI_delta_1",
+                         "lowerCI_delta", "delta", "upperCI_delta",
+                         "lowerCI_sigma_1", "sigma_1", "upperCI_sigma_1",
+                         "lowerCI_sigma", "sigma", "upperCI_sigma")
+  rownames(dataCES) <- countryAbbrevs
+  return(dataCES)
+}
+
 ############################
 # Aggregates the CES results for gamma, delta_1, and delta into a table for the given energyType.
 ##
@@ -1995,12 +2038,23 @@ createLINEXParamsGraph <- function(energyType){
   return(graph)
 }
 
+#####################
+# Creates a data.frame containing all parameters and their confidence intervals 
+##
+linexParamsTableDF <- function(energyType){
+  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
+  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
+  colnames(dataLINEX) <- c("lowerCI_a_0", "a_0", "upperCI_a_0",
+                           "lowerCI_c_t", "c_t", "upperCI_c_t")
+  rownames(dataLINEX) <- countryAbbrevs
+  return(dataLINEX)
+}
+
 ############################
 # Aggregates the LINEX results into a big data table for the given energyType.
 ##
 linexParamsTable <- function(energyType){
-  #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
+  linexParamsTableDF(energyType)
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
   tableLINEX <- xtable(dataLINEX, 

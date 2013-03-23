@@ -245,56 +245,70 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 ##
 CIvsParamPlot <- function(model, param, energyType=NA, factor=NA){
 print("inside CIvsParamPlot")
-  if (model == "SF"){
-    data <- singleFactorParamsDF(factor)
-    if (param == "lambda"){
-      # Want lambda
-      x <- subset(data, select=lambda) # The column of lambdas
-      colnames(x) <- "lambda"
-      xLabel <- "$\\lambda$"
-      y <- subset(data, select=upperCI_lambda) - subset(data, select=lowerCI_lambda) # A column of CI values
-      colnames(y) <- "CI"
-      yLabel <- paste("95\\% CI on", xLabel)
-      data <- cbind(x, y)
-      data <- data.frame(data)
-    } else if (param == "m"){
-      # Want m
-      x <- subset(data, select=m) # The column of lambdas
-      colnames(x) <- "m"
-      if (factor == "K"){xLabel <- "$\\alpha$"}
-      else if (factor == "L"){xLabel <- "$\\beta$"}
-      else if ((factor == "Q") || (factor == "X") || (factor == "U")){xLabel <- "$\\gamma$"}
-      y <- subset(data, select=upperCI_m) - subset(data, select=lowerCI_m) # A column of CI values
-      colnames(y) <- "CI"
-      yLabel <- paste("95\\% CI on", xLabel)
-      data <- cbind(x, y)
-      data <- data.frame(data)
-    }
+  # Get the data from the requested model
+  if (model == "SF"){data <- singleFactorParamsDF(factor)} 
+  else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
+  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType)}
+  else if (model == "CES"){data <- cesParamsTableDF(energyType)}
+  else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
+print(data)
+  # Now get the data for the parameter requested
+  if (param == "lambda"){
+    x <- subset(data, select=lambda) # The column of lambdas
+    xLabel <- "$\\lambda$"
+    y <- subset(data, select=upperCI_lambda) - subset(data, select=lowerCI_lambda) # A column of CI values
+  } else if (param == "m"){
+    x <- subset(data, select=m) # The column of ms
+    colnames(x) <- "m"
+    if (factor == "K"){xLabel <- "$\\alpha$"}
+    else if (factor == "L"){xLabel <- "$\\beta$"}
+    else if ((factor == "Q") || (factor == "X") || (factor == "U")){xLabel <- "$\\gamma$"}
+    y <- subset(data, select=upperCI_m) - subset(data, select=lowerCI_m) # A column of CI values
+  } else if (param == "alpha"){
+    x <- subset(data, select=alpha) # The column of alphas
+    xLabel <- "$\\alpha$"
+    y <- subset(data, select=upperCI_alpha) - subset(data, select=lowerCI_alpha) # A column of CI values
+  } else if (param == "beta"){
+    x <- subset(data, select=beta) # The column of betas
+    xLabel <- "$\\beta$"
+    y <- subset(data, select=upperCI_beta) - subset(data, select=lowerCI_beta) # A column of CI values
+  } else if (param == "gamma"){
+    x <- subset(data, select=gamma) # The column of gammas
+    xLabel <- "$\\gamma$"
+    y <- subset(data, select=upperCI_gamma) - subset(data, select=lowerCI_gamma) # A column of CI values
+  } else if (param == "delta_1"){
+    x <- subset(data, select=delta_1) # The column of delta_1
+    xLabel <- "$\\delta_1$"
+    y <- subset(data, select=upperCI_delta_1) - subset(data, select=lowerCI_delta_1) # A column of CI values
+  } else if (param == "sigma_1"){
+    x <- subset(data, select=sigma_1) # The column of sigma_1
+    xLabel <- "$\\sigma_1$"
+    y <- subset(data, select=upperCI_sigma_1) - subset(data, select=lowerCI_sigma_1) # A column of CI values
+  } else if (param == "delta"){
+    x <- subset(data, select=delta) # The column of delta
+    xLabel <- "$\\delta$"
+    y <- subset(data, select=upperCI_delta) - subset(data, select=lowerCI_delta) # A column of CI values
+  } else if (param == "sigma"){
+    x <- subset(data, select=sigma) # The column of sigma
+    xLabel <- "$\\sigma$"
+    y <- subset(data, select=upperCI_sigma) - subset(data, select=lowerCI_sigma) # A column of CI values
+  } else if (param == "a_0"){
+    x <- subset(data, select=a_0) # The column of a_0s
+    xLabel <- "$a_0$"
+    y <- subset(data, select=upperCI_a_0) - subset(data, select=lowerCI_a_0) # A column of CI values
+  } else if (param == "c_t"){
+    x <- subset(data, select=c_t) # The column of c_ts
+    xLabel <- "$c_t$"
+    y <- subset(data, select=upperCI_c_t) - subset(data, select=lowerCI_c_t) # A column of CI values
   }
-  if (model == "CD"){
-    
-  }
-  if (model == "CDe"){
-    
-  }
-  if (model == "CES"){
-    
-  }
-  if (model == "LINEX"){
-    
-  }
-#   plot <- xyplot(rep(1:9) ~ 1:9,
-#                  panel = function(x, y){
-# print(x)
-# print(y)
-#                    ltext(x = x, y = y, labels=countryAbbrevsAlph)
-#                  })
+  colnames(y) <- "CI"
+  yLabel <- paste("95\\% CI on", xLabel)
+  data <- cbind(x, y)
+  data <- data.frame(data)
 print(data)
 print(xLabel)
 print(yLabel)
-  # data[ , 1] is the column that contains the value of the parameter
-  # data[ , 2] is the column that contains confidence intervals
-  plot <- xyplot(data[ , 2] ~ data[ , 1],
+  plot <- xyplot(data[ , 2] ~ data[ , 1], # data[ , 1] contains the the parameter; data[ , 2] contains the CIs
                  xlab=list(label=xLabel),
                  ylab=list(label=yLabel),
                  panel = function(x, y){
@@ -302,7 +316,11 @@ print(yLabel)
                  })
   return(plot)
 }
-CIvsParamPlot(model="SF", param="m", factor="U")
+#CIvsParamPlot(model="SF", param="lambda", factor="Q")
+#CIvsParamPlot(model="CD", param="alpha")
+#CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
+#CIvsParamPlot(model="CES", param="delta", energyType="Q")
+CIvsParamPlot(model="LINEX", param="c_t", energyType="Q")
 @
 
 Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}
