@@ -743,7 +743,9 @@ createCESParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
-  Graph here of $CI_{\delta}$ vs. $\delta$ where each country abbreviation is plotted.
+<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+CIvsParamPlot(model="CES", param="delta", energyType="Q")
+@
 \end{frame}
 
 \begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
