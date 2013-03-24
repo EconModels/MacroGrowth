@@ -589,7 +589,9 @@ createCDParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{CI and $\gamma$ in Cobb-Douglas} %----------------------------
-  Graph here of CI vs. $\gamma$ where each country abbreviation is plotted.
+<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
+@
 \end{frame}
 
 \begin{frame}{Implications from Cobb-Douglas} %----------------------------
@@ -606,7 +608,7 @@ createCDParamsGraph("Q")
     \vspace{\baselineskip}      
     
     \pause
-    \item{Direct energy input to economy ($q$)is unimportant as a Cobb-Douglas predictor of economic output ($y$)}
+    \item{Direct energy input to economy ($q$) is unimportant as a Cobb-Douglas predictor of economic output ($y$)}
   \end{itemize}
 \end{frame}
 
@@ -734,7 +736,7 @@ createCESParamsGraph("Q")
 
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
   \begin{center}
-    \cdeEqn\\
+    \small\cesEqn\normalsize\\
     \includegraphics<1>[height=2.5in]{figure_other/CI-delta-1.pdf}
     \includegraphics<2>[height=2.5in]{figure_other/CI-delta-2.pdf}
     \includegraphics<3>[height=2.5in]{figure_other/CI-delta-3.pdf}
@@ -743,14 +745,14 @@ createCESParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
-<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
 CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
 \end{frame}
 
 \begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
   \begin{center}
-    \cdeEqn\\
+    \small\cesEqn\normalsize\\
     \includegraphics<1>[height=2.5in]{figure_other/CI-sigma-1.pdf}
     \includegraphics<2>[height=2.5in]{figure_other/CI-sigma-2.pdf}
     \includegraphics<3>[height=2.5in]{figure_other/CI-sigma-3.pdf}
@@ -759,16 +761,18 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 \end{frame}
 
 \begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
-  Graph here of $CI_{\sigma}$ vs. $\sigma$ where each country abbreviation is plotted.
+<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+CIvsParamPlot(model="CES", param="sigma", energyType="Q")
+@
 \end{frame}
 
 \begin{frame}{Implications from CES} %----------------------------
-  \begin{center}\cesEqn\end{center}
+  \begin{center}\small\cesEqn\normalsize\end{center}
   \vspace{\baselineskip}
         
   \begin{itemize}
     \item{kl and e are complements, sigma small where it is distinguishable.}
-    \item{Direct energy input to economy ($q$)is unimportant as a CES predictor of economic output ($y$), because delta is close to 1.0}
+    \item{Direct energy input to economy ($q$) is unimportant as a CES predictor of economic output ($y$), because delta is close to 1.0}
   \end{itemize}
 \end{frame}
 
