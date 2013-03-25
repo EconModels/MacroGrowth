@@ -251,8 +251,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{columns}
 \end{frame}
 
-\begin{frame}{World Oil Supply is Tightening}{\citep{Tverberg:2013}} %----------------------------
-  \includegraphics[width=4.0in]{figure_other/Figure_Tverberg_2013.png}
+\begin{frame}{World Oil Supply is Tightening}{\citep{Tverberg:2013b}} %----------------------------
+  \includegraphics[width=4.0in]{figure_other/Figure_Tverberg_2013b.png}
 \end{frame}
 
 \begin{frame}{Energy Cost Share is Low} %----------------------------
@@ -363,9 +363,17 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{The Question\\ \normalsize      %----------------------------
-\vspace{\baselineskip} 
-Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?}
+\minorSeparator{The Question} %----------------------------
+
+\begin{frame}{The Question} %----------------------------
+  \begin{center}
+    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+    
+    \pause
+    
+    No known studies of comparing economic growth models for various types of economies on a rigorous statistical basis.
+  \end{center}
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -588,8 +596,8 @@ createCDParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{CI and $\gamma$ in Cobb-Douglas} %----------------------------
-<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with Energy} %----------------------------
+<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
 \end{frame}
@@ -744,8 +752,8 @@ createCESParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
-<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+\begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES} %----------------------------
+<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
 \end{frame}
@@ -760,8 +768,8 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
-<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES} %----------------------------
+<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CES", param="sigma", energyType="Q")
 @
 \end{frame}
@@ -851,11 +859,20 @@ CIvsParamPlot(model="CES", param="sigma", energyType="Q")
   \normalsize
 \end{frame}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \majorSeparator{Appendix}
+
+\minorSeparator{Introduction} %----------------------------
+
+\begin{frame}{Energy Cost Share}{\citep{Tverberg:2013a}} %----------------------------
+  \begin{center}
+    \includegraphics[height=6.3cm]{figure_other/Figure_Tverberg_2013a.png}
+  \end{center}
+\end{frame}
 
 \minorSeparator{Single-factor Model}
 

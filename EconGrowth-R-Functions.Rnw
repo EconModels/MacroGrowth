@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -2183,10 +2183,13 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
   else if (model == "CES"){data <- cesParamsTableDF(energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
   # Now get the data for the parameter requested
+  # Also, set limits on the x and y axes if needed
   if (param == "lambda"){
     x <- subset(data, select=lambda) # The column of lambdas
     xLabel <- "$\\lambda$"
     y <- subset(data, select=upperCI_lambda) - subset(data, select=lowerCI_lambda) # A column of CI values
+    xLimits <- c(0.0, 0.1); atX=c(0.0, 0.05, 0.1)
+    yLimits <- c(0.0, 0.2); atY-c(0.0, 0.1, 0.2)
   } else if (param == "m"){
     x <- subset(data, select=m) # The column of ms
     colnames(x) <- "m"
@@ -2194,42 +2197,62 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
     else if (factor == "L"){xLabel <- "$\\beta$"}
     else if ((factor == "Q") || (factor == "X") || (factor == "U")){xLabel <- "$\\gamma$"}
     y <- subset(data, select=upperCI_m) - subset(data, select=lowerCI_m) # A column of CI values
+    xLimits <- c(-0.1, 1.5); atX <- c(0.0, 0.5, 1.0, 1.5)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "alpha"){
     x <- subset(data, select=alpha) # The column of alphas
     xLabel <- "$\\alpha$"
     y <- subset(data, select=upperCI_alpha) - subset(data, select=lowerCI_alpha) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "beta"){
     x <- subset(data, select=beta) # The column of betas
     xLabel <- "$\\beta$"
     y <- subset(data, select=upperCI_beta) - subset(data, select=lowerCI_beta) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(-0.1, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "gamma"){
     x <- subset(data, select=gamma) # The column of gammas
     xLabel <- "$\\gamma$"
     y <- subset(data, select=upperCI_gamma) - subset(data, select=lowerCI_gamma) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(-0.1, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "delta_1"){
     x <- subset(data, select=delta_1) # The column of delta_1
     xLabel <- "$\\delta_1$"
     y <- subset(data, select=upperCI_delta_1) - subset(data, select=lowerCI_delta_1) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "sigma_1"){
     x <- subset(data, select=sigma_1) # The column of sigma_1
     xLabel <- "$\\sigma_1$"
     y <- subset(data, select=upperCI_sigma_1) - subset(data, select=lowerCI_sigma_1) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "delta"){
     x <- subset(data, select=delta) # The column of delta
     xLabel <- "$\\delta$"
     y <- subset(data, select=upperCI_delta) - subset(data, select=lowerCI_delta) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "sigma"){
     x <- subset(data, select=sigma) # The column of sigma
     xLabel <- "$\\sigma$"
     y <- subset(data, select=upperCI_sigma) - subset(data, select=lowerCI_sigma) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "a_0"){
     x <- subset(data, select=a_0) # The column of a_0s
     xLabel <- "$a_0$"
     y <- subset(data, select=upperCI_a_0) - subset(data, select=lowerCI_a_0) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "c_t"){
     x <- subset(data, select=c_t) # The column of c_ts
     xLabel <- "$c_t$"
     y <- subset(data, select=upperCI_c_t) - subset(data, select=lowerCI_c_t) # A column of CI values
+    xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
+    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   }
   colnames(y) <- "CI"
   yLabel <- paste("95\\% CI on", xLabel)
@@ -2238,7 +2261,12 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
                  xlab=list(label=xLabel),
                  ylab=list(label=yLabel),
                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                             tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                             x=list(at=atX),
+                             y=list(at=atY)
+                             ), 
+                 xlim=xLimits, #x axis limits
+                 ylim=yLimits, #y axis limits
                  panel = function(x, y){
                    ltext(x=x, y=y, labels=rownames(data))
                  })
