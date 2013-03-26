@@ -447,6 +447,10 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \begin{center}Simplification: 1 type of energy ($Q$) for this presentation\end{center}
 \end{frame}
 
+\begin{frame}{Types of Economies} %----------------------------
+  Table here with economy types, country names, 2-letter abbreviations, and flags
+\end{frame}
+
 \minorSeparator{Curve-fitting as Optimization}
 
 \begin{frame}{Example: Single-factor Model} %----------------------------
