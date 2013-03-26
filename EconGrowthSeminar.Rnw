@@ -90,6 +90,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \usepackage{tikz} % To use the tikzpicture environment.
 
+\usepackage{multirow} % To create multirow tables.
+
 
 
 \title[Energy and Growth] % (optional, use only with long paper titles)
@@ -238,6 +240,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \majorSeparator{Introduction} %----------------------------
 
+\subsection[Interactions]{Energy-Economy Interactions} %+++++++++++++++++++++++++++++++++++++++
+
+\minorSeparator{Energy-Economy Interactions} %----------------------------
+
 \begin{frame}{Energy is Essential for Economic Activity} %----------------------------
   \begin{center}What do you do that doesn't require energy?\end{center}
 \end{frame}
@@ -301,7 +307,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Economic (Growth) Modeling} %----------------------------
   \begin{center}
-    \includegraphics[height=2.5cm]{figure_other/Figure_Growth_Models.pdf}
+    \includegraphics[height=2.5cm]{figure_other/Growth_Models.pdf}
   \end{center}
   \begin{itemize}
     \item{Goal: predict economic output over time}
@@ -311,30 +317,68 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{itemize}
 \end{frame}
 
-\subsection[Factors of Production]{Factors of Production} %+++++++++++++++++++++++++++++++++++++++
+\subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{Factors of Production} %----------------------------
+\minorSeparator{The Question} %----------------------------
 
-\begin{frame}{Capital Stock ($K$) and Labor ($L$)} %----------------------------
+\begin{frame}{The Question} %----------------------------
+  \begin{center}
+    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+    \vspace{\baselineskip}
+    \pause
+    \footnotesize
+    \\ No known rigorous, statistical comparative studies of economic growth models for various types of economies. 
+    \normalsize
+  \end{center}
+\end{frame}
+
+\subsection[Coordinates]{Coordinates of Analysis}
+
+\minorSeparator{Coordinates of Analysis} %----------------------------
+
+\begin{frame}{Coordinates of Analysis} %----------------------------
   \begin{itemize}
-    \item{Capital Stock ($K$) <Definition here>}
-    \item{Labor ($L$) <Definition here>}
+    \item{Type of Economy}
+    \vspace{\baselineskip}
+    \item{Type of Energy}
+    \vspace{\baselineskip}
+    \item{Economic Growth Model}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Energy ($E$)} %----------------------------
+\begin{frame}{Type of Economy} %----------------------------
+  \begin{center}
+    \begin{tabular}{r c c l}
+      \multirow{3}{*}{Developed}  & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA           \\
+                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom\\
+                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan         \\
+      \hline
+      \multirow{2}{*}{Developing} & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China         \\
+                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa  \\
+      \hline
+      \multirow{2}{*}{Petrol}     & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudo Arabia  \\
+                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran          \\
+      \hline
+      \multirow{2}{*}{Malthusian} & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
+                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia        \\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Type of Energy ($E$)} %----------------------------
   \begin{itemize}
     \item{Thermal energy ($Q$)}
+    \vspace{\baselineskip}  
     \item{Exergy ($X$)}
-    \item{Useful work ($W$)}
+    \vspace{\baselineskip}
+    \item{Useful work ($U$)}
   \end{itemize}
+  \vspace{\baselineskip}
+  \pause
+  \begin{center}Simplification: 1 type of energy ($Q$) for this presentation\end{center}
 \end{frame}
 
-\subsection[Growth Models]{Economic Growth Models} %+++++++++++++++++++++++++++++++++++++++
-
-\minorSeparator{Economic Growth Models} %----------------------------
-
-\begin{frame}{No Shortage of Economic Growth Models} %----------------------------
+\begin{frame}{Economic Growth Model} %----------------------------
   Single Factor: \sfEqn
   \vspace{\baselineskip}
   \pause
@@ -359,20 +403,6 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \pause
   
   System Dynamics Models
-\end{frame}
-
-\subsection[The Question]{The Question} %+++++++++++++++++++++++++++++++++++++++
-
-\minorSeparator{The Question} %----------------------------
-
-\begin{frame}{The Question} %----------------------------
-  \begin{center}
-    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
-    \vspace{\baselineskip}
-    \pause  
-    
-    No known comparative studies of economic growth models for various types of economies on a rigorous statistical basis.
-  \end{center}
 \end{frame}
 
 
@@ -433,23 +463,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \section[Evaluation]{Evaluation of Growth Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\majorSeparator{Evaluation of \vspace{\baselineskip} Growth Models}
-
-\begin{frame}{Coordinates of Analysis} %----------------------------
-  \begin{itemize}
-    \item{Country/Economy: 9 \\US, UK, JP, CN, ZA, SA, IR, TZ, ZM}
-    \item{Economic Growth Model: 4 \\SF, CD, CES, LINEX}
-    \item{Type of Energy: 3 \\Q, X, U}
-  \end{itemize}
-  \vspace{\baselineskip}
-  \pause
-    
-  \begin{center}Simplification: 1 type of energy ($Q$) for this presentation\end{center}
-\end{frame}
-
-\begin{frame}{Types of Economies} %----------------------------
-  Table here with economy types, country names, 2-letter abbreviations, and flags
-\end{frame}
+\majorSeparator{Evaluation of Growth Models}
 
 \minorSeparator{Curve-fitting as Optimization}
 
@@ -550,6 +564,13 @@ sf3DSSEGraph("US", "Q")
   \putFlagUpperRight{SA}{0.055}
 \end{frame}
 
+<<pprint>>=
+pprint <- function(num, digits = 2){
+  out <- formatC(num, digit=digits, format="f")
+  return(out)
+}
+@
+
 <<Coefs_US_CD>>=
 cdUS <- cobbDouglasData("US")
 cdqUS <- cobbDouglasData("US", "Q")
@@ -564,22 +585,21 @@ cduUS <- cobbDouglasData("US", "U")
         \vspace{\baselineskip}
         
         \tiny
-          \begin{tabular}{|c|c|c|c|c|}\hline
+          \begin{tabular}{c|c c c c}
             $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
-                  & \Sexpr{cdUS["CD", "lambda"]} & \Sexpr{cdUS["CD", "alpha"]} & \Sexpr{cdUS["CD", "beta"]} & \Sexpr{cdUS["CD", "gamma"]}\\
+                  & \Sexpr{pprint(cdUS["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdUS["CD", "alpha"])} & \Sexpr{pprint(cdUS["CD", "beta"])} & \Sexpr{pprint(cdUS["CD", "gamma"])}\\
             \hline
-            $q$   & \Sexpr{cdqUS["CD", "lambda"]} & \Sexpr{cdqUS["CD", "alpha"]} & \Sexpr{cdqUS["CD", "beta"]} & \Sexpr{cdqUS["CD", "gamma"]}\\
+            $q$   & \Sexpr{pprint(cdqUS["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdqUS["CD", "alpha"])} & \Sexpr{pprint(cdqUS["CD", "beta"])} & \Sexpr{pprint(cdqUS["CD", "gamma"])}\\
             \hline
-            $x$   & \Sexpr{cdxUS["CD", "lambda"]} & \Sexpr{cdxUS["CD", "alpha"]} & \Sexpr{cdxUS["CD", "beta"]} & \Sexpr{cdxUS["CD", "gamma"]}\\
+            $x$   & \Sexpr{pprint(cdxUS["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdxUS["CD", "alpha"])} & \Sexpr{pprint(cdxUS["CD", "beta"])} & \Sexpr{pprint(cdxUS["CD", "gamma"])}\\
             \hline
-            $u$   & \Sexpr{cduUS["CD", "lambda"]} & \Sexpr{cduUS["CD", "alpha"]} & \Sexpr{cduUS["CD", "beta"]} & \Sexpr{cduUS["CD", "gamma"]}\\
-            \hline
+            $u$   & \Sexpr{pprint(cduUS["CD", "lambda"], digits=4)} & \Sexpr{pprint(cduUS["CD", "alpha"])} & \Sexpr{pprint(cduUS["CD", "beta"])} & \Sexpr{pprint(cduUS["CD", "gamma"])}\\
           \end{tabular}
         \normalsize
       \end{center}
     \column{2.2in}
-<<Results_Graph_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+<<Results_Graph_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
 createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
@@ -588,7 +608,7 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 \begin{frame}{Benefit to Including Energy?}  %----------------------------
-<<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+<<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
 partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -617,7 +637,7 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
 \end{frame}
 
-\begin{frame}{Implications from Cobb-Douglas} %----------------------------
+\begin{frame}{Implications from Cobb-Douglas with $Q$} %----------------------------
   \begin{center}\cdeEqn\end{center}
   \vspace{\baselineskip}
         
@@ -677,27 +697,25 @@ cesuUS <- cesData("US", "U")
         \vspace{\baselineskip}
         
         \tiny
-          \begin{tabular}{|c|c|c|c|}\hline
+          \begin{tabular}{c|c c c}
             $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
             \hline
-            $q$ & \Sexpr{cesqUS["CES", "gamma"]} & \Sexpr{cesqUS["CES", "lambda"]} & \Sexpr{cesqUS["CES", "delta_1"]}\\
+            $q$ & \Sexpr{pprint(cesqUS["CES", "gamma"])} & \Sexpr{pprint(cesqUS["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqUS["CES", "delta_1"])}\\
             \hline
-            $x$ & \Sexpr{cesxUS["CES", "gamma"]} & \Sexpr{cesxUS["CES", "lambda"]} & \Sexpr{cesxUS["CES", "delta_1"]}\\
+            $x$ & \Sexpr{pprint(cesxUS["CES", "gamma"])} & \Sexpr{pprint(cesxUS["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesxUS["CES", "delta_1"])}\\
             \hline
-            $u$ & \Sexpr{cesuUS["CES", "gamma"]} & \Sexpr{cesuUS["CES", "lambda"]} & \Sexpr{cesuUS["CES", "delta_1"]}\\
-            \hline
+            $u$ & \Sexpr{pprint(cesuUS["CES", "gamma"])} & \Sexpr{pprint(cesuUS["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesuUS["CES", "delta_1"])}\\
           \end{tabular}
           \vspace{\baselineskip}
   
-          \begin{tabular}{|c|c|c|c|}\hline
+          \begin{tabular}{c|c c c}
             $e$ & $\sigma_1$ & $\delta$ & $\sigma$\\
             \hline
-            $q$ & \Sexpr{cesqUS["CES", "sigma_1"]} & \Sexpr{cesqUS["CES", "delta"]} & \Sexpr{cesqUS["CES", "sigma"]}\\
+            $q$ & \Sexpr{pprint(cesqUS["CES", "sigma_1"])} & \Sexpr{pprint(cesqUS["CES", "delta"])} & \Sexpr{pprint(cesqUS["CES", "sigma"])}\\
             \hline
-            $x$ & \Sexpr{cesxUS["CES", "sigma_1"]} & \Sexpr{cesxUS["CES", "delta"]} & \Sexpr{cesxUS["CES", "sigma"]}\\
+            $x$ & \Sexpr{pprint(cesxUS["CES", "sigma_1"])} & \Sexpr{pprint(cesxUS["CES", "delta"])} & \Sexpr{pprint(cesxUS["CES", "sigma"])}\\
             \hline
-            $u$ & \Sexpr{cesuUS["CES", "sigma_1"]} & \Sexpr{cesuUS["CES", "delta"]} & \Sexpr{cesuUS["CES", "sigma"]}\\
-            \hline
+            $u$ & \Sexpr{pprint(cesuUS["CES", "sigma_1"])} & \Sexpr{pprint(cesuUS["CES", "delta"])} & \Sexpr{pprint(cesuUS["CES", "sigma"])}\\
           \end{tabular}
         \normalsize
       \end{center}
@@ -710,47 +728,6 @@ createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-<<Coefs_ZA_CES>>=
-cesqZA <- cesData("ZA", "Q")
-cesxZA <- cesData("ZA", "X")
-@
-\begin{frame}{CES $y$ Predictions} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-      \begin{center}
-        \tiny \cesEqnNarrow \normalsize
-        \vspace{\baselineskip}
-        
-        \tiny
-          \begin{tabular}{|c|c|c|c|}\hline
-            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
-            \hline
-            $q$ & \Sexpr{cesqZA["CES", "gamma"]} & \Sexpr{cesqZA["CES", "lambda"]} & \Sexpr{cesqZA["CES", "delta_1"]}\\
-            \hline
-            $x$ & \Sexpr{cesxZA["CES", "gamma"]} & \Sexpr{cesxZA["CES", "lambda"]} & \Sexpr{cesxZA["CES", "delta_1"]}\\
-            \hline
-          \end{tabular}
-          \vspace{\baselineskip}
-  
-          \begin{tabular}{|c|c|c|c|}\hline
-            $e$ & $\sigma_1$ & $\delta$ & $\sigma$\\
-            \hline
-            $q$ & \Sexpr{cesqZA["CES", "sigma_1"]} & \Sexpr{cesqZA["CES", "delta"]} & \Sexpr{cesqZA["CES", "sigma"]}\\
-            \hline
-            $x$ & \Sexpr{cesxZA["CES", "sigma_1"]} & \Sexpr{cesxZA["CES", "delta"]} & \Sexpr{cesxZA["CES", "sigma"]}\\
-            \hline
-          \end{tabular}
-        \normalsize
-      \end{center}
-    \column{2.2in}
-<<Results_Graph_ZA_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{ZA}{0.055}
-\end{frame}
-
 \begin{frame}{95\% Confidence Intervals}{CES with $q$} %----------------------------
 <<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
 createCESParamsGraph("Q")
@@ -760,10 +737,7 @@ createCESParamsGraph("Q")
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
   \begin{center}
     \small\cesEqn\normalsize\\
-    \includegraphics<1>[height=2.5in]{figure_other/CI-delta-1.pdf}
-    \includegraphics<2>[height=2.5in]{figure_other/CI-delta-2.pdf}
-    \includegraphics<3>[height=2.5in]{figure_other/CI-delta-3.pdf}
-    \includegraphics<4>[height=2.5in]{figure_other/CI-delta-4.pdf}
+    \includegraphics[height=2.5in]{figure_other/CI-delta.pdf}
   \end{center}
 \end{frame}
 
@@ -773,29 +747,13 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
 \end{frame}
 
-\begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
-  \begin{center}
-    \small\cesEqn\normalsize\\
-    \includegraphics<1>[height=2.5in]{figure_other/CI-sigma-1.pdf}
-    \includegraphics<2>[height=2.5in]{figure_other/CI-sigma-2.pdf}
-    \includegraphics<3>[height=2.5in]{figure_other/CI-sigma-3.pdf}
-    \includegraphics<4>[height=2.5in]{figure_other/CI-sigma-4.pdf}
-  \end{center}
-\end{frame}
-
-\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $Q$} %----------------------------
-<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
-CIvsParamPlot(model="CES", param="sigma", energyType="Q")
-@
-\end{frame}
-
 \begin{frame}{Implications from CES} %----------------------------
   \begin{center}\small\cesEqn\normalsize\end{center}
   \vspace{\baselineskip}
         
   \begin{itemize}
-    \item{kl and e are complements, sigma small where it is distinguishable.}
-    \item{Direct energy input to economy ($q$) is unimportant as a CES predictor of economic output ($y$), because delta is close to 1.0}
+    \item{Where significant, $\delta$ is close to 1.0}
+    \item{Direct energy input to economy ($q$) is unimportant as a CES predictor of economic output ($y$)}
   \end{itemize}
 \end{frame}
 
@@ -978,10 +936,6 @@ createSFParamsGraph("Q")
 cdZA <- cobbDouglasData("ZA")
 cdqZA <- cobbDouglasData("ZA", "Q")
 cdxZA <- cobbDouglasData("ZA", "X")
-pprint <- function(num, digits = 4){
-  out <- formatC(num, digit=digits, format="f")
-  return(out)
-}
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -994,11 +948,11 @@ pprint <- function(num, digits = 4){
           \begin{tabular}{|c|c|c|c|c|}\hline
             $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
-                  & \Sexpr{pprint(cdZA["CD", "lambda"])} & \Sexpr{cdZA["CD", "alpha"]} & \Sexpr{cdZA["CD", "beta"]} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
+                  & \Sexpr{pprint(cdZA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdZA["CD", "alpha"])} & \Sexpr{pprint(cdZA["CD", "beta"])} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
             \hline
-            $q$   & \Sexpr{cdqZA["CD", "lambda"]} & \Sexpr{cdqZA["CD", "alpha"]} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{cdqZA["CD", "gamma"]}\\
+            $q$   & \Sexpr{pprint(cdqZA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdqZA["CD", "alpha"])} & \Sexpr{pprint(cdqZA["CD", "beta"])} & \Sexpr{pprint(cdqZA["CD", "gamma"])}\\
             \hline
-            $x$   & \Sexpr{cdxZA["CD", "lambda"]} & \Sexpr{cdxZA["CD", "alpha"]} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{cdxZA["CD", "gamma"]}\\
+            $x$   & \Sexpr{pprint(cdxZA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdxZA["CD", "alpha"])} & \Sexpr{pprint(cdxZA["CD", "beta"])} & \Sexpr{pprint(cdxZA["CD", "gamma"])}\\
             \hline
           \end{tabular}
         \normalsize
@@ -1143,6 +1097,60 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 <<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createCDParamsGraph()
 @  
+\end{frame}
+
+<<Coefs_ZA_CES>>=
+cesqZA <- cesData("ZA", "Q")
+cesxZA <- cesData("ZA", "X")
+@
+\begin{frame}{CES $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \tiny \cesEqnNarrow \normalsize
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|c|}\hline
+            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
+            \hline
+            $q$ & \Sexpr{pprint(cesqZA["CES", "gamma"])} & \Sexpr{pprint(cesqZA["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqZA["CES", "delta_1"])}\\
+            \hline
+            $x$ & \Sexpr{pprint(cesxZA["CES", "gamma"])} & \Sexpr{pprint(cesxZA["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesxZA["CES", "delta_1"])}\\
+            \hline
+          \end{tabular}
+          \vspace{\baselineskip}
+  
+          \begin{tabular}{|c|c|c|c|}\hline
+            $e$ & $\sigma_1$ & $\delta$ & $\sigma$\\
+            \hline
+            $q$ & \Sexpr{pprint(cesqZA["CES", "sigma_1"])} & \Sexpr{pprint(cesqZA["CES", "delta"])} & \Sexpr{pprint(cesqZA["CES", "sigma"])}\\
+            \hline
+            $x$ & \Sexpr{pprint(cesxZA["CES", "sigma_1"])} & \Sexpr{pprint(cesxZA["CES", "delta"])} & \Sexpr{pprint(cesxZA["CES", "sigma"])}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_ZA_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{ZA}{0.055}
+\end{frame}
+
+\begin{frame}{$CI_{\sigma}$ and $\sigma$ in CES} %----------------------------
+  \begin{center}
+    \small\cesEqn\normalsize\\
+    \includegraphics[height=2.5in]{figure_other/CI-sigma.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $Q$} %----------------------------
+<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
+CIvsParamPlot(model="CES", param="sigma", energyType="Q")
+@
 \end{frame}
 
 
