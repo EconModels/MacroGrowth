@@ -368,10 +368,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \begin{frame}{The Question} %----------------------------
   \begin{center}
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+    \vspace{\baselineskip}
+    \pause  
     
-    \pause
-    
-    No known studies of comparing economic growth models for various types of economies on a rigorous statistical basis.
+    No known comparative studies of economic growth models for various types of economies on a rigorous statistical basis.
   \end{center}
 \end{frame}
 
@@ -441,7 +441,10 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
     \item{Economic Growth Model: 4 \\SF, CD, CES, LINEX}
     \item{Type of Energy: 3 \\Q, X, U}
   \end{itemize}
-  Simplification: 1 type of energy (Q)
+  \vspace{\baselineskip}
+  \pause
+    
+  \begin{center}Simplification: 1 type of energy ($Q$) for this presentation\end{center}
 \end{frame}
 
 \minorSeparator{Curve-fitting as Optimization}
@@ -523,7 +526,7 @@ sf3DSSEGraph("US", "Q")
     \item{Perform grid search over $\gamma$}
     \item{Re-estimate $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$}
     \item{Respect sum constraint: $\alpha + \beta + \gamma = 1$}
-    \item{Respect absolute constraints: $0 \leq \alpha, \beta, \gamma \leq 1$}
+    \item{Respect absolute constraints: $0 \leq \alpha, \beta, \gamma \leq 1$} (not yet)
   \end{itemize}
 \end{frame}
 
@@ -596,7 +599,7 @@ createCDParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with Energy} %----------------------------
+\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $Q$} %----------------------------
 <<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
@@ -737,7 +740,7 @@ createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{CES with $q$} %----------------------------
-<<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8, eval=TRUE>>=
+<<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
 createCESParamsGraph("Q")
 @  
 \end{frame}
@@ -752,7 +755,7 @@ createCESParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES} %----------------------------
+\begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $Q$} %----------------------------
 <<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
@@ -768,7 +771,7 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES} %----------------------------
+\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $Q$} %----------------------------
 <<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
 CIvsParamPlot(model="CES", param="sigma", energyType="Q")
 @
@@ -836,6 +839,7 @@ CIvsParamPlot(model="CES", param="sigma", energyType="Q")
   \begin{itemize}
     \item{Estimate statistical properties for \emph{all} fitting parameters}
     \vspace{\baselineskip}
+    \item{Incorporate all constraints for Cobb-Douglas model}
     \vspace{\baselineskip}
     \item{Complete paper}
   \end{itemize}  

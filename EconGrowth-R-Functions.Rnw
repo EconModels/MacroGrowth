@@ -770,9 +770,9 @@ cdeModel <- function(countryAbbrev, energyType){
                                         printEval=FALSE, #Tells whether to print details of curve fit process.
                                         warnOnly=TRUE),
                   #Include the next 3 lines to fit with constraints.
-                  #algorithm = "port",
-                  #lower = list(lambda=-Inf, a=0, b=0),
-                  #upper = list(lambda= Inf, a=1, b=1)
+#                   algorithm = "port",
+#                   lower = list(lambda=-Inf, a=0, b=0),
+#                   upper = list(lambda= Inf, a=1, b=1)
                   )
   return(modelCDe)
 }
@@ -1306,6 +1306,30 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                   ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
                   )
   return(graph)
+}
+
+#################
+# Creates a plot with y residuals vs. energy (e). The y residuals are from a Cobb-Douglas model without energy.
+# The energy term on the x axis is whatever type is specified in the calling funciton
+partialResidualPlot <- function(countryAbbrev, energyType, textScaling=1.0){
+  # Get the model
+  cdModel <- cdModel(countryAbbrev)
+  # Get the residuals
+  cdResid <- resid(cdModel)
+  cdResid <- data.frame(cdResid)
+  cdResid <- padRows(countryAbbrev=countryAbbrev, df=cdResid)
+  # Load data
+  data <- loadData(countryAbbrev)
+  data <- cbind(data, cdResid)
+  data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
+  plot <- xyplot(cdResid ~ iEToFit, data=data,
+                 type=c('p','smooth'),
+                 scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
+                             tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                 xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
+                 ylab=list(label="$y$ residuals", cex=textScaling)
+                 )
+  return(plot)  
 }
 @
 
