@@ -1324,6 +1324,7 @@ partialResidualPlot <- function(countryAbbrev, energyType, textScaling=1.0){
   data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
   plot <- xyplot(cdResid ~ iEToFit, data=data,
                  type=c('p','smooth'),
+                 col="black",
                  scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
                              tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
                  xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
@@ -2240,7 +2241,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
     xLabel <- "$\\gamma$"
     y <- subset(data, select=upperCI_gamma) - subset(data, select=lowerCI_gamma) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
-    yLimits <- c(-0.1, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
+    yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "delta_1"){
     x <- subset(data, select=delta_1) # The column of delta_1
     xLabel <- "$\\delta_1$"
@@ -2252,7 +2253,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
     xLabel <- "$\\sigma_1$"
     y <- subset(data, select=upperCI_sigma_1) - subset(data, select=lowerCI_sigma_1) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
-    yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
+    yLimits <- c(0.0, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "delta"){
     x <- subset(data, select=delta) # The column of delta
     xLabel <- "$\\delta$"
@@ -2279,7 +2280,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   }
   colnames(y) <- "CI"
-  yLabel <- paste("95\\% CI on", xLabel)
+  yLabel <- paste("Width of 95\\% CI on", xLabel)
   data <- cbind(x, y)
   plot <- xyplot(data[ , 2] ~ data[ , 1], # data[ , 1] contains the the parameter; data[ , 2] contains the CIs
                  xlab=list(label=xLabel),

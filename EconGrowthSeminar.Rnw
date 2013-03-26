@@ -583,6 +583,14 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
+\begin{frame}{Benefit to Including Energy?}  %----------------------------
+<<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H", eval=TRUE>>=
+partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{US}{0.055}
+\end{frame}
+
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas with $q$} %----------------------------
 <<CDq_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createCDParamsGraph("Q")
@@ -600,7 +608,7 @@ createCDParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $Q$} %----------------------------
-<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
+<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
 \end{frame}
@@ -756,7 +764,7 @@ createCESParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $Q$} %----------------------------
-<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
+<<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
 \end{frame}
@@ -772,7 +780,7 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 \end{frame}
 
 \begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $Q$} %----------------------------
-<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5, eval=TRUE>>=
+<<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CES", param="sigma", energyType="Q")
 @
 \end{frame}
@@ -874,7 +882,7 @@ CIvsParamPlot(model="CES", param="sigma", energyType="Q")
 
 \begin{frame}{Energy Cost Share}{\citep{Tverberg:2013a}} %----------------------------
   \begin{center}
-    \includegraphics[height=6.3cm]{figure_other/Figure_Tverberg_2013a.png}
+    \includegraphics[height=6.0cm]{figure_other/Figure_Tverberg_2013a.png}
   \end{center}
 \end{frame}
 
