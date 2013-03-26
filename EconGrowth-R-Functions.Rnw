@@ -694,7 +694,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor){
                    screen = list(z = -20, x = -55),
                    xlab = "$\\lambda$",
                    ylab = "$\\gamma$",
-                   zlab = list(label="$SSE$", rot=90),
+                   zlab = list(label="$SSE_y$", rot=90),
                    scales = list(arrows=FALSE, 
                                  cex=0.45, 
                                  col="black", 
@@ -1971,7 +1971,7 @@ linexData <- function(countryAbbrev, energyType){
     nCols <- 2 # a_0 and c_t
     df <- as.data.frame(matrix(NA, ncol = nCols, nrow = nRows))
     colnames(df) <- c("a_0", "c_t")
-    rownames(df) <- c("+95% CI", "CDe", "-95% CI")
+    rownames(df) <- c("+95% CI", "LINEX", "-95% CI")
     return(df)
   }
   # We have a combination of country and energy type for which we have data.

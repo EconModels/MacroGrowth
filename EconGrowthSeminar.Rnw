@@ -356,7 +356,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \multirow{2}{*}{Developing} & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China         \\
                                   & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa  \\
       \hline
-      \multirow{2}{*}{Petrol}     & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudo Arabia  \\
+      \multirow{2}{*}{Petrol}     & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia  \\
                                   & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran          \\
       \hline
       \multirow{2}{*}{Malthusian} & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
@@ -443,6 +443,8 @@ createHistoricalLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXL
 createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
+  \putat{flag/flag_US.png}{0.055}{-0.73in}{1.0in} % US flag
+  \putat{flag/flag_CN.png}{0.055}{ 1.50in}{1.0in} % CN flag
 \end{frame}
 
 \begin{frame}{South Africa and Saudi Arabia} %----------------------------
@@ -456,6 +458,8 @@ createHistoricalLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
+  \putat{flag/flag_ZA.png}{0.055}{-0.73in}{1.0in} % US flag
+  \putat{flag/flag_SA.png}{0.055}{ 1.50in}{1.0in} % CN flag
 \end{frame}
 
 
@@ -510,6 +514,46 @@ sf3DSSEGraph("US", "Q")
   \putFlagUpperRight{US}{0.055}  
 \end{frame}
 
+<<Coefs_US_SF>>=
+sfUSK <- coef(singleFactorModel("US", "K"))
+sfUSL <- coef(singleFactorModel("US", "L"))
+sfUSQ <- coef(singleFactorModel("US", "Q"))
+sfUSX <- coef(singleFactorModel("US", "X"))
+sfUSU <- coef(singleFactorModel("US", "U"))
+@
+\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \sfEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{|c|c|c|}\hline
+            $f$   & $\lambda$                & $m$\\
+            \hline
+            $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
+            \hline
+            $l$   & \Sexpr{sfUSL["lambda"]}  & \Sexpr{sfUSL["m"]}\\
+            \hline
+            $q$   & \Sexpr{sfUSQ["lambda"]}  & \Sexpr{sfUSQ["m"]}\\
+            \hline
+            $x$   & \Sexpr{sfUSX["lambda"]}  & \Sexpr{sfUSX["m"]}\\
+            \hline
+            $u$   & \Sexpr{sfUSU["lambda"]}  & \Sexpr{sfUSU["m"]}\\
+            \hline
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
+createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{US}{0.055}
+\end{frame}
+
 \minorSeparator{Cobb-Douglas (with Energy)} %----------------------------
 
 \begin{frame}{Cobb-Douglas (with Energy)} %----------------------------
@@ -556,12 +600,12 @@ sf3DSSEGraph("US", "Q")
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $Q$} %----------------------------
-<<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("SA", "Q", textScaling=0.8)
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
+<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("UK", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{SA}{0.055}
+  \putFlagUpperRight{UK}{0.045}
 \end{frame}
 
 <<pprint>>=
@@ -607,12 +651,56 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
+<<Coefs_UK_CD>>=
+cdUK <- cobbDouglasData("UK")
+cdqUK <- cobbDouglasData("UK", "Q")
+cdxUK <- cobbDouglasData("UK", "X")
+cduUK <- cobbDouglasData("UK", "U")
+@
+\begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \cdeEqn
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{c|c c c c}
+            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            \hline
+                  & \Sexpr{pprint(cdUK["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdUK["CD", "alpha"])} & \Sexpr{pprint(cdUK["CD", "beta"])} & \Sexpr{pprint(cdUK["CD", "gamma"])}\\
+            \hline
+            $q$   & \Sexpr{pprint(cdqUK["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdqUK["CD", "alpha"])} & \Sexpr{pprint(cdqUK["CD", "beta"])} & \Sexpr{pprint(cdqUK["CD", "gamma"])}\\
+            \hline
+            $x$   & \Sexpr{pprint(cdxUK["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdxUK["CD", "alpha"])} & \Sexpr{pprint(cdxUK["CD", "beta"])} & \Sexpr{pprint(cdxUK["CD", "gamma"])}\\
+            \hline
+            $u$   & \Sexpr{pprint(cduUK["CD", "lambda"], digits=4)} & \Sexpr{pprint(cduUK["CD", "alpha"])} & \Sexpr{pprint(cduUK["CD", "beta"])} & \Sexpr{pprint(cduUK["CD", "gamma"])}\\
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_UK_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
+createCDLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{UK}{0.055}
+\end{frame}
+
 \begin{frame}{Benefit to Including Energy?}  %----------------------------
 <<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
 partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
+\end{frame}
+
+\begin{frame}{Benefit to Including Energy?}  %----------------------------
+<<UK_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+partialResidualPlot("UK", "Q", textScaling=textScaleForGraphs)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{UK}{0.055}
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas with $q$} %----------------------------
@@ -776,6 +864,41 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
   \end{center}
 \end{frame}
 
+<<Coefs_US_LINEX>>=
+linexqUS <- linexData("US", "Q")
+linexxUS <- linexData("US", "X")
+linexuUS <- linexData("US", "U")
+@
+\begin{frame}{LINEX $y$ Predictions} %----------------------------
+  \begin{columns}[c]
+    \column{2.2in}
+      \begin{center}
+        \linexEqn
+
+        \vspace{\baselineskip}
+        
+        \tiny
+          \begin{tabular}{c|c c}
+            $e$ & $a_0$ & $c_t$\\
+            \hline
+            $q$ & \Sexpr{pprint(linexqUS["LINEX", "a_0"])} & \Sexpr{pprint(linexqUS["LINEX", "c_t"])}\\
+            \hline
+            $x$ & \Sexpr{pprint(linexxUS["LINEX", "a_0"])} & \Sexpr{pprint(linexxUS["LINEX", "c_t"])}\\
+            \hline
+            $u$ & \Sexpr{pprint(linexuUS["LINEX", "a_0"])} & \Sexpr{pprint(linexuUS["LINEX", "c_t"])}\\
+          \end{tabular}
+        \normalsize
+      \end{center}
+    \column{2.2in}
+<<Results_Graph_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
+createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+@
+  \end{columns}
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{US}{0.055}
+\end{frame}
+
+
 \begin{frame}{Example LINEX Fit} %----------------------------
   Heun complete
 \end{frame}
@@ -849,46 +972,6 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 \end{frame}
 
 \minorSeparator{Single-factor Model}
-
-<<Coefs_US_SF>>=
-sfUSK <- coef(singleFactorModel("US", "K"))
-sfUSL <- coef(singleFactorModel("US", "L"))
-sfUSQ <- coef(singleFactorModel("US", "Q"))
-sfUSX <- coef(singleFactorModel("US", "X"))
-sfUSU <- coef(singleFactorModel("US", "U"))
-@
-\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
-  \begin{columns}[c]
-    \column{2.2in}
-      \begin{center}
-        \sfEqn
-        \vspace{\baselineskip}
-        
-        \tiny
-          \begin{tabular}{|c|c|c|}\hline
-            $f$   & $\lambda$                & $m$\\
-            \hline
-            $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
-            \hline
-            $l$   & \Sexpr{sfUSL["lambda"]}  & \Sexpr{sfUSL["m"]}\\
-            \hline
-            $q$   & \Sexpr{sfUSQ["lambda"]}  & \Sexpr{sfUSQ["m"]}\\
-            \hline
-            $x$   & \Sexpr{sfUSX["lambda"]}  & \Sexpr{sfUSX["m"]}\\
-            \hline
-            $u$   & \Sexpr{sfUSU["lambda"]}  & \Sexpr{sfUSU["m"]}\\
-            \hline
-          \end{tabular}
-        \normalsize
-      \end{center}
-    \column{2.2in}
-<<Results_Graph_US_SF, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
-@
-  \end{columns}
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{US}{0.055}
-\end{frame}
 
 \begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
   \begin{center}
@@ -1016,20 +1099,20 @@ createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{CN}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
-<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("UK", "Q", textScaling=0.8)
-@
-  % Including at bottom of frame so as not to push other material downward in the frame.
-  \putFlagUpperRight{UK}{0.045}
-\end{frame}
-
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $Q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZA}{0.055}
+\end{frame}
+
+\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $Q$} %----------------------------
+<<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+  cdeGridGraph("SA", "Q", textScaling=0.8)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{SA}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $Q$} %----------------------------
