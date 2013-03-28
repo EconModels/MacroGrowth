@@ -618,7 +618,7 @@ createSFParamsGraph <- function(factor){
 # lambda and m on the horizontal axes.
 # params: 
 #   countryAbbrev: 2-letter country code (upper case)
-#   factor: the factor of production you want to use in the single-factor model.
+#   factor: the factor of production you want to use in the single-factor model. One of K, L, Q, X, or U
 ##
 sf3DSSEGraph <- function(countryAbbrev, factor){
   # Generate the data in the form of a matrix with gamma in columns, lambda in rows, and SSE in the middle
@@ -662,6 +662,12 @@ sf3DSSEGraph <- function(countryAbbrev, factor){
   # Make predictions
   # Get the model
   model <- singleFactorModel(countryAbbrev, factor)
+
+  # Get information about the optimum point, the point where SSE is minimized
+  coefs <- coef(model)
+  lambda_opt <- coefs["lambda"]
+  gamma_opt <- coefs["gamma"]
+  #sse_opt <- ???????
   
   sse <- c(1:(nRowLambda*nRowM)) # Build a bogus vector at the start
   
@@ -689,6 +695,25 @@ sf3DSSEGraph <- function(countryAbbrev, factor){
   #trellis.par.set("axis.line", list(col="transparent"))
   
   # Create the lattice graph
+#   fig <- wireframe(sse ~ lambda * m,
+#                    data = dataFor3DGraph,
+#                    screen = list(z = -20, x = -55),
+#                    xlab = "$\\lambda$",
+#                    ylab = "$\\gamma$",
+#                    zlab = list(label="$SSE_y$", rot=90),
+#                    scales = list(arrows=FALSE, 
+#                                  cex=0.45, 
+#                                  col="black", 
+#                                  tck=0.8,
+#                                  x=list(at=c(0.00, 0.01, 0.02, 0.03)),
+#                                  y=list(at=c(0.0, 0.5, 1.0)),
+#                                  z=list(at=c(10, 20, 30))
+#                                  ),
+#                    xlim = c(0.0, 0.04), # lambda axis
+#                    ylim = c(0.0, 1.0), # gamma axis
+#                    zlim = c(0, 30) # sse axis
+#                    )
+
   fig <- wireframe(sse ~ lambda * m,
                    data = dataFor3DGraph,
                    screen = list(z = -20, x = -55),

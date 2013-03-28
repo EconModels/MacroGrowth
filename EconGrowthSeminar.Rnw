@@ -171,9 +171,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \newcommand{\lRow}{$l$ & $L/L_0$, labor}
 \newcommand{\eRow}{$e$ & $E/E_0$, one of $q$, $x$, or $u$}
 \newcommand{\lambdaRow}{$\lambda$ & technological progress}
-\newcommand{\alphaRow}{$\alpha$ & ``strength'' of capital}
-\newcommand{\betaRow}{$\beta$ & ``strength'' of labor}
-\newcommand{\gammaRow}{$\gamma$ & ``strength'' of energy}
+\newcommand{\alphaRow}{$\alpha$ & ``influence'' of capital}
+\newcommand{\betaRow}{$\beta$ & ``influence'' of labor}
+\newcommand{\gammaRow}{$\gamma$ & ``influence'' of energy}
 
 % Provides the upper-right location on a page useful for positioning flags on frames
 \newcommand{\upperRightFlagLocation}{\{2.14in\}\{1.59in\}}
@@ -375,7 +375,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{itemize}
   \vspace{\baselineskip}
   \pause
-  \begin{center}Simplification: 1 type of energy ($Q$) for this presentation\end{center}
+  \begin{center}Simplification: One type of energy ($Q$) for this presentation\end{center}
 \end{frame}
 
 \begin{frame}{Economic Growth Model} %----------------------------
@@ -483,7 +483,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
       $f$ & $F$/$F_0$, a factor of production\\
       \hline
       \lambdaRow\\
-      $m$ & ``strength'' of factor $f$\\
+      $m$ & ``influence'' of factor $f$\\
       \hline
     \end{tabular}
   \end{center}
@@ -494,12 +494,12 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
     \vspace{\baselineskip}
     
     \begin{itemize}
-      \item{Time-dependent technology term: $\mathrm{e}^{\lambda(t-t_0)}$}
+      \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
       \begin{itemize}
         \item{Represents the irrepressible ``progress'' of technology}
         \item{Is independent of factor of production ($f$)}
       \end{itemize}
-      \item{Use for illustration purposes here}
+      \item{Used for illustration purposes here}
       \item{Example: \citet{Nel:2009wq} use $f$ = $q$}
       \item{Parameters estimated by \texttt{nls} function in \texttt{R}}
     \end{itemize}
@@ -523,7 +523,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \end{frame}
 
 \begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
-<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
 sf3DSSEGraph("US", "Q")
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -537,7 +537,7 @@ sfUSQ <- coef(singleFactorModel("US", "Q"))
 sfUSX <- coef(singleFactorModel("US", "X"))
 sfUSU <- coef(singleFactorModel("US", "U"))
 @
-\begin{frame}{Single-Factor $y$ Predictions} %----------------------------
+\begin{frame}{Single-factor (with $q$) Predictions for $y$} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
@@ -568,6 +568,12 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
+<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("Q")
+@  
 \end{frame}
 
 \subsection[Cobb-Douglas]{Evaluation of Cobb-Douglas} %+++++++++++++++++++++++++++++++++++++++
@@ -601,9 +607,9 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \begin{frame}{Comments on Cobb-Douglas Model Equation} %----------------------------
   \begin{center} \cdeEqn \end{center}
   \begin{itemize}
-    \item{Time-dependent technology term: $\mathrm{e}^{\lambda(t-t_0)}$}
+    \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
     \begin{itemize}
-      \item{Represents the irrepressible ``progress'' of technology}
+      \item{Represents the ``irrepressible'' ``progress'' of technology}
       \item{Is independent of factors of production ($k$, $l$, and $e$)}
     \end{itemize}
     \item{$k$, $l$, and $e$ factors of production ``blend'' with $\alpha + \beta + \gamma = 1$}
@@ -739,6 +745,18 @@ createCDParamsGraph("Q")
 @  
 \end{frame}
 
+\begin{frame}{Two Important Questions for\\Cobb-Douglas Model} %----------------------------
+  \begin{center}
+    \cdeEqn
+  \end{center}
+  \begin{itemize}
+    \item{Is energy important for this economy?\\Yes, if $\gamma$ not small.}
+    \vspace{\baselineskip}
+        
+    \item{Are we sure? (Is energy statistically significant?)\\Yes, if $CI_{\gamma}$ doesn't cross 0.0.}
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{$CI_{\gamma}$ and $\gamma$ in Cobb-Douglas} %----------------------------
   \begin{center}
     \cdeEqn\\
@@ -795,9 +813,9 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
       $\gamma$   &   fitting coefficient\\
       \lambdaRow\\
       $\delta_1$   &   split between ($k$) and ($l$)\\
-      $\rho_1$     &   ``strength'' of ($k$) vs. ($l$)\\
+      $\rho_1$     &   ``influence'' of ($k$) vs. ($l$)\\
       $\delta$   &   split between ($kl$) and ($e$)\\
-      $\rho$     &   ``strength'' of ($kl$) vs. ($e$)\\
+      $\rho$     &   ``influence'' of ($kl$) vs. ($e$)\\
       \hline
     \end{tabular}
   \end{center}
@@ -806,16 +824,12 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 \begin{frame}{Comments on CES Model Equation} %----------------------------
   \begin{center} \small \cesEqn \normalsize \end{center}
   \begin{itemize}
-    \item{Time-dependent technology term: $\mathrm{e}^{\lambda(t-t_0)}$}
-    \begin{itemize}
-      \item{Represents the irrepressible ``progress'' of technology}
-      \item{Is independent of factors of production ($k$, $l$, and $e$)}
-    \end{itemize}
+    \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
     \item{$\delta$: split between ($kl$) and ($e$)}
-    \item{$\sigma$: elasticity of substitution ($0.0 \leq \sigma \leq 1.0$)}
+    \item{$\sigma \equiv \frac{1}{1+\rho}$: elasticity of substitution ($0 \leq \sigma \leq 1$)}
     \begin{itemize}
-      \item{$\sigma$ ******* rightarrow******* 0: ($kl$) and ($e$) are complementary}
-      \item{$\sigma$ ******* rightarrow******* 1: ($kl$) and ($e$) are substitutes}
+      \item{$\sigma \rightarrow 0$: ($kl$) and ($e$) are complementary}
+      \item{$\sigma \rightarrow 1$: ($kl$) and ($e$) are substitutes}
     \end{itemize}
     \item{Example: \citet{Stern:2012ey}}
     \item{Parameters estimated by \texttt{cesEst} function in \texttt{R}'s \texttt{micEcon} package}
@@ -1150,6 +1164,20 @@ createLINEXParamsGraph("Q")
 
 \minorSeparator{Single-factor Model}
 
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
+<<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("K")
+@  
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
+<<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createSFParamsGraph("L")
+@  
+\end{frame}
+
+\minorSeparator{Cobb-Douglas Model}
+
 \begin{frame}{Cobb-Douglas (without Energy)} %----------------------------
   \begin{center}
     \cdEqn\\
@@ -1171,26 +1199,6 @@ createLINEXParamsGraph("Q")
     \end{tabular}
   \end{center}
 \end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
-<<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("K")
-@  
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
-<<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("L")
-@  
-\end{frame}
-
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
-<<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("Q")
-@  
-\end{frame}
-
-\minorSeparator{Cobb-Douglas Model}
 
 <<Coefs_ZA_CD>>=
 cdZA <- cobbDouglasData("ZA")
