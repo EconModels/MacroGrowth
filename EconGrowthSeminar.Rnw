@@ -358,13 +358,13 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
                                   & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom\\
                                   & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan         \\
       \hline
-      \multirow{2}{*}{Developing} & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China         \\
+      \multirow{2}{*}{BRICS}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China         \\
                                   & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa  \\
       \hline
       \multirow{2}{*}{Petrol}     & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia  \\
                                   & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran          \\
       \hline
-      \multirow{2}{*}{Malthusian} & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
+      \multirow{2}{*}{LDCs}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
                                   & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia        \\
     \end{tabular}
   \end{center}
@@ -425,13 +425,13 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \begin{itemize}
     \item{Output ($Y$): the real market value of the total amount of produced goods in an economy (GDP).}
     \item{Capital Stock ($K$): the real market value of the total amount of goods in an economy used in the production process of output (machines, tools, infrastructure, etc.).}
-    \item{Labor: the number of workers in an economy that produce output. Labor can be treated as either the total number of workers in an economy or the total number of hours worked per year in an economy.}
+    \item{Labor ($L$): the number of workers in an economy that produce output. Labor can be treated as either the total number of workers in an economy or the total number of hours worked per year in an economy.}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Sources of Economic Data} %----------------------------
   \begin{center}
-    \tiny
+    \scriptsize
     \begin{tabular}{r c|c l}
       \multirow{3}{*}{WB GEP} & \multirow{3}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & $Y$, $K$ for all countries & \multirow{3}{*}{Real 2005\$} \\
                               &                          & (1980-2011: US, UK, JP; & \\
@@ -453,8 +453,20 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \minorSeparator{Energy Data}
 
-\begin{frame}{Energy Data} %----------------------------
-  Caleb complete
+\begin{frame}{Energy Data: Definitions} %----------------------------
+  \begin{itemize}
+    \item{Thermal Energy ($Q$): The heat content of an energy carrier.}
+    \item{Exergy ($X$): The maximum work that can be extracted from a heat carrier by a process that brings the system into equillibrium with a thermal reservoir (typically the surrounding environment).}
+    \item{Useful Work ($U$): Energy that directly generates economic activity.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Energy Flows} %----------------------------
+  Caleb's diagram here
+\end{frame}
+
+\begin{frame}{Sources of Energy Data} %----------------------------
+  Table here.
 \end{frame}
 
 \subsection[Historical Data]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
