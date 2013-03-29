@@ -270,7 +270,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \item{Usually ignored}
     \vspace{\baselineskip}
     \pause
-    \item{But \dots}
+    \item{And yet \dots}
   \end{itemize}
 \end{frame}
 
@@ -312,8 +312,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \begin{itemize}
     \item{Goal: predict economic output over time}
     \item{Economic output ($Y$) is a function of ``factors of production''}
-    \item{Output ($Y$) defined as GDP}
-    \item{All inputs and outputs normalized to initial year (0)}
+    \item{Output ($Y$) measured by GDP}
+    \item{All inputs and outputs normalized to initial year: $y = Y/Y_0, e = E/E_0$, etc.}
   \end{itemize}
 \end{frame}
 
@@ -326,8 +326,13 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
     \vspace{\baselineskip}
     \pause
+    
+    Extra credit: reflect dynamics of energy cost share and prices spikes.
+    \vspace{\baselineskip}
+    \pause
+    
     \footnotesize
-    \\ No known rigorous, statistical comparative studies of economic growth models for various types of economies. 
+    No known rigorous, statistical comparative studies of economic growth models for various types of economies. 
     \normalsize
   \end{center}
 \end{frame}
@@ -414,10 +419,34 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \subsection[Economic]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{Economic Data}
+\minorSeparator{Sources of Economic Data}
 
-\begin{frame}{Economic Data} %----------------------------
-  Lucas complete
+\begin{frame}{Economic Data: Definitions} %----------------------------
+  \begin{itemize}
+    \item{Output ($Y$): the real market value of the total amount of produced goods in an economy (GDP).}
+    \item{Capital Stock ($K$): the real market value of the total amount of goods in an economy used in the production process of output (machines, tools, infrastructure, etc.).}
+    \item{Labor: the number of workers in an economy that produce output. Labor can be treated as either the total number of workers in an economy or the total number of hours worked per year in an economy.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sources of Economic Data} %----------------------------
+  \begin{center}
+    \tiny
+    \begin{tabular}{r c|c l}
+      \multirow{3}{*}{WB GEP} & \multirow{3}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & $Y$, $K$ for all countries & \multirow{3}{*}{Real 2005\$} \\
+                              &                          & (1980-2011: US, UK, JP; & \\
+                              &                          & 1991-2011: CN, ZA, SA, IR, TZ, ZM) & \\
+      \hline
+      \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total Employment} \\
+                              &                          & Emp/Pop ratio > 15 yo, &                                \\
+                              &                          & used to find $L$, (1991-2011: &                         \\
+                              &                          & CN, ZA, SA, IR, TZ, ZM) &                         \\
+      \hline
+      \multirow{2}{*}{US BLS} & \multirow{2}{*}{\includegraphics[scale=0.07]{figure_other/Figure_BLS.png}} & $L$ for developed countries & Labor hours \\
+                              &                          & (1980-2011: US, UK, JP)     & per year \\ 
+    \end{tabular}
+  \normalsize
+  \end{center}
 \end{frame}
 
 \subsection[Energy]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
@@ -574,6 +603,15 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 <<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createSFParamsGraph("Q")
 @  
+\end{frame}
+
+\begin{frame}{Comments on Single-factor Model with $Q$} %----------------------------
+  \begin{itemize}
+    \item{Not typically used for economic modeling. Illustrates confidence intervals.}
+    \vspace{\baselineskip}
+    
+    \item{$CI_{\lambda}$ smaller than $CI_{\gamma}$ for all countries}
+  \end{itemize}
 \end{frame}
 
 \subsection[Cobb-Douglas]{Evaluation of Cobb-Douglas} %+++++++++++++++++++++++++++++++++++++++
@@ -745,7 +783,7 @@ createCDParamsGraph("Q")
 @  
 \end{frame}
 
-\begin{frame}{Two Important Questions for\\Cobb-Douglas Model} %----------------------------
+\begin{frame}{Two Important Questions for the\\Cobb-Douglas Model} %----------------------------
   \begin{center}
     \cdeEqn
   \end{center}
@@ -886,6 +924,19 @@ createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 createCESParamsGraph("Q")
 @  
 \end{frame}
+
+\begin{frame}{Two Important Questions for\\CES Model} %----------------------------
+  \begin{center}
+    \small \cesEqn \normalsize
+  \end{center}
+  \begin{itemize}
+    \item{Is energy important for this economy?\\Yes, if $\delta$ is not large.}
+    \vspace{\baselineskip}
+        
+    \item{Are we sure? (Is energy statistically significant?)\\Yes, if $CI_{\delta}$ doesn't cross 0.0.}
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
   \begin{center}
@@ -1073,6 +1124,18 @@ createLINEXLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
   \putFlagUpperRight{SA}{0.055}
 \end{frame}
 
+\begin{frame}{Two Important Questions for\\LINEX Model} %----------------------------
+  \begin{center}
+    \linexEqn
+  \end{center}
+  \begin{itemize}
+    \item{Is energy important for this economy?\\Yes, by definition!}
+    \vspace{\baselineskip}
+        
+    \item{Are we sure? Yes, by definition!}
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{95\% Confidence Intervals}{LINEX with $q$} %----------------------------
 <<LINEXq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
 createLINEXParamsGraph("Q")
@@ -1100,14 +1163,11 @@ createLINEXParamsGraph("Q")
   \begin{itemize}
   \item{Including energy in Cobb-Douglas and CES production functions is unwarranted \\
         \scriptsize
-        Statistical evidence indicates that energy parameters are not significant for most countries \\
-        Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$), so including energy is unnecessary.
+        Statistical evidence indicates that energy parameters are not significant for most countries \\Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$), so including energy is unnecessary.
         \normalsize}
   \item{Including energy in LINEX production function is required \\
         \scriptsize
-        The foundation of LINEX is an energy term.\\
-        Statistical evidence indicates that LINEX parameters $a_0$ and $c_t$ are significant for most countries. \\
-        LINEX fits overall are worse than Cobb-Douglas or CES.
+        The foundation of LINEX is an energy term.\\Statistical evidence indicates that LINEX parameters $a_0$ and $c_t$ are significant for most countries.\\LINEX fits overall are worse than Cobb-Douglas or CES.
         \normalsize}
   \vspace{\baselineskip}
   \pause

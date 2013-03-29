@@ -212,10 +212,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<test3dPlot, eval=TRUE>>=
-sf3DSSEGraph("US", "Q")
-@
-
 \subsection{Background}
 
 Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}
