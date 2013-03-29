@@ -313,7 +313,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \item{Goal: predict economic output over time}
     \item{Economic output ($Y$) is a function of ``factors of production''}
     \item{Output ($Y$) measured by GDP}
-    \item{All inputs and outputs normalized to initial year: $y = Y/Y_0, e = E/E_0$, etc.}
+    \item{All factors and outputs indexed to initial year: $y = Y/Y_0, e = E/E_0$, etc.}
   \end{itemize}
 \end{frame}
 
@@ -421,7 +421,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \minorSeparator{Sources of Economic Data}
 
-\begin{frame}{Economic Data: Definitions} %----------------------------
+\begin{frame}{Economic Definitions} %----------------------------
   \begin{itemize}
     \item{Output ($Y$): the real market value of the total amount of produced goods in an economy (GDP).}
     \item{Capital Stock ($K$): the real market value of the total amount of goods in an economy used in the production process of output (machines, tools, infrastructure, etc.).}
@@ -432,10 +432,10 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 \begin{frame}{Sources of Economic Data} %----------------------------
   \begin{center}
     \scriptsize
-    \begin{tabular}{r c|c l}
+    \begin{tabular}{r c c l}
       \multirow{3}{*}{WB GEP} & \multirow{3}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & $Y$, $K$ for all countries & \multirow{3}{*}{Real 2005\$} \\
-                              &                          & (1980-2011: US, UK, JP; & \\
-                              &                          & 1991-2011: CN, ZA, SA, IR, TZ, ZM) & \\
+                              &                          & (1980-2011: Developed; & \\
+                              &                          & 1991-2011: Other) & \\
       \hline
       \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total Employment} \\
                               &                          & Emp/Pop ratio > 15 yo, &                                \\
@@ -445,7 +445,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \multirow{2}{*}{US BLS} & \multirow{2}{*}{\includegraphics[scale=0.07]{figure_other/Figure_BLS.png}} & $L$ for developed countries & Labor hours \\
                               &                          & (1980-2011: US, UK, JP)     & per year \\ 
     \end{tabular}
-  \normalsize
+    \normalsize
   \end{center}
 \end{frame}
 
@@ -453,20 +453,39 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \minorSeparator{Energy Data}
 
-\begin{frame}{Energy Data: Definitions} %----------------------------
+\begin{frame}{Energy Definitions} %----------------------------
   \begin{itemize}
     \item{Thermal Energy ($Q$): The heat content of an energy carrier.}
     \item{Exergy ($X$): The maximum work that can be extracted from a heat carrier by a process that brings the system into equillibrium with a thermal reservoir (typically the surrounding environment).}
     \item{Useful Work ($U$): Energy that directly generates economic activity.}
   \end{itemize}
+  \begin{center}Note: indexed $Q$ and $X$ are identical unless energy mix changes significantly. \end{center}
 \end{frame}
 
 \begin{frame}{Energy Flows} %----------------------------
-  Caleb's diagram here
+  \begin{center}
+    \includegraphics[scale=0.4]{figure_other/Figure_Energy_Sankey.pdf}
+  \end{center}
 \end{frame}
 
 \begin{frame}{Sources of Energy Data} %----------------------------
-  Table here.
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{r c c l}
+      \multirow{3}{*}{IEA} & \multirow{3}{*}{\includegraphics[scale=0.20]{figure_other/Figure_IEA.png}} & Coal, Oil, Petroleum, & \multirow{3}{*}{GJ/year} \\
+                              &                          & Nat. gas, Nuclear, & \\
+                              &                          & Renewables & \\
+      \hline
+      \multirow{4}{*}{FAOStat} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_FAOStat.png}} & Fuel wood,    & \multirow{4}{*}{GJ/year} \\
+                              &                          & Available livestock &                                \\
+                              &                          & (1980-2011: Developed; &                         \\
+                              &                          & 1991-2011: Other) &                         \\
+      \hline
+      \multirow{2}{*}{REXS} & \multirow{2}{*}{\includegraphics[scale=0.05]{figure_other/Figure_Warr.png}} & Energy allocation factors. &  \\
+                              &                          & (1980-2000: Developed)     & \\ 
+    \end{tabular}
+    \normalsize
+  \end{center}
 \end{frame}
 
 \subsection[Historical Data]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
@@ -564,7 +583,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 \end{frame}
 
 \begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
-<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 sf3DSSEGraph("US", "Q")
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -773,7 +792,7 @@ createCDLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{UK}{0.055}
 \end{frame}
 
-\begin{frame}{Benefit to Including Energy?}  %----------------------------
+\begin{frame}{Beneficial to Include Energy?}  %----------------------------
 <<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
 partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
 @
@@ -781,7 +800,7 @@ partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-\begin{frame}{Benefit to Including Energy?}  %----------------------------
+\begin{frame}{Beneficial to Include Energy?}  %----------------------------
 <<UK_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
 partialResidualPlot("UK", "Q", textScaling=textScaleForGraphs)
 @
