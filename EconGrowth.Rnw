@@ -212,51 +212,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<TestWireframeCloud, eval=TRUE>>=
-
-
-sf3DSSEGraph("US", "Q", showOpt=TRUE)
-
-
-
-# point <- data.frame(x=0.0, y=0.0, z=1.0)
-# 
-# x <- seq(-.8, .8, .1)
-# y <- seq(-.8, .8, .1)
-# myGrid <- data.frame(expand.grid(x,y))
-# colnames(myGrid) <- c("x","y")
-# myGrid$z <- myGrid$x + myGrid$y
-# noise <- rnorm(length(myGrid$z),.3,.2)
-# myGrid$z2 <- myGrid$x + myGrid$y + noise
-# mypanel <- function(x, y, z, points, showPoints=TRUE, ...) {
-#   panel.wireframe(x, y, z, ...)
-#   if (showPoints){
-#     panel.cloud(points$x, points$y, points$z, ...)
-#   }
-# }
-# wireframe(z ~ x * y, data=myGrid, xlab="X", ylab="Y", zlab="Z",
-#           panel=mypanel, points=point, showPoints=FALSE)
-
-
-# x <- seq(-.8, .8, .1)
-# y <- seq(-.8, .8, .1)
-# myGrid <- data.frame(expand.grid(x,y))
-# colnames(myGrid) <- c("x","y")
-# myGrid$z <- myGrid$x + myGrid$y
-# noise <- rnorm(length(myGrid$z),.3,.2)
-# myGrid$z2 <- myGrid$x + myGrid$y + noise
-# mypanel <- function(x,y,z,z2,...) {
-#   panel.wireframe(x,y,z,...)
-#   panel.cloud(x,y,z2,...)
-# }
-# wireframe(z ~ x * y, data=myGrid, xlab="X", ylab="Y", zlab="Z",
-#           panel=mypanel, z2=myGrid$z2)
-
-
-@
-
-
-
 \subsection{Background}
 
 Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}

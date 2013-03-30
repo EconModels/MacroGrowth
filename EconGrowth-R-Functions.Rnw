@@ -626,7 +626,8 @@ createSFParamsGraph <- function(factor){
 wireCloudPanel <- function(x, y, z, points, showPoints=TRUE, ...) {
   panel.wireframe(x, y, z, ...)
   if (showPoints){
-    panel.cloud(points$x, points$y, points$z, ...)
+    #pch=16 gives filled circle plot symbol, cex!=1 makes it a different size.
+    panel.cloud(points$x, points$y, points$z, col="red", pch=16, cex=1.5, ...)
   }
 }
 

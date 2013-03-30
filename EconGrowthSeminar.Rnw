@@ -588,9 +588,19 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \end{itemize}
 \end{frame}
 
+% This is a sequence of two slides with 3-D graphs. 
+% The first just shows the surface. The second also shows the optimum point in the surface.
 \begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
-<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-sf3DSSEGraph("US", "Q")
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+sf3DSSEGraph("US", "Q", showOpt=FALSE)
+@
+  % Including at bottom of frame so as not to push other material downward in the frame.
+  \putFlagUpperRight{US}{0.055}  
+\end{frame}
+
+\begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
+<<3D_Graph_US_SF_Q_With_Opt_Point, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+sf3DSSEGraph("US", "Q", showOpt=TRUE)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}  
