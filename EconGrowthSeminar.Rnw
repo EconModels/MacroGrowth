@@ -591,7 +591,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 % This is a sequence of two slides with 3-D graphs. 
 % The first just shows the surface. The second also shows the optimum point in the surface.
 \begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
-<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 sf3DSSEGraph("US", "Q", showOpt=FALSE)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -599,7 +599,7 @@ sf3DSSEGraph("US", "Q", showOpt=FALSE)
 \end{frame}
 
 \begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
-<<3D_Graph_US_SF_Q_With_Opt_Point, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3, eval=TRUE>>=
+<<3D_Graph_US_SF_Q_With_Opt_Point, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 sf3DSSEGraph("US", "Q", showOpt=TRUE)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -657,7 +657,7 @@ createSFParamsGraph("Q")
     \item{Not typically used for economic modeling: illustrates confidence intervals}
     \vspace{\baselineskip}
     
-    \item{$CI_{\lambda}$ smaller than $CI_{\gamma}$ for all countries}
+    \item{$CI_{\lambda}$ smaller than $CI_{\gamma}$ for all countries\footnote{\tiny as percentage of $0.0 < \lambda < 0.1$ and $0 < \gamma < 1$ \normalsize}}
   \end{itemize}
 \end{frame}
 
@@ -1207,16 +1207,30 @@ createLINEXParamsGraph("Q")
 
 \majorSeparator{Summary}
 
-\begin{frame}{Tentative Conclusions} %----------------------------
+\begin{frame}{Summary of Analysis} %----------------------------
   \begin{itemize}
-  \item{Including energy in Cobb-Douglas and CES production functions is unwarranted \\
-        \scriptsize
-        Preliminary statistical evidence indicates that energy parameters are not significant for most countries \\Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$).
-        \normalsize}
-  \item{Including energy in LINEX production function is required \\
-        \scriptsize
-        The foundation of LINEX is an energy term.\\Statistical evidence indicates that LINEX parameters $a_0$ and $c_t$ are significant for most countries.\\However, LINEX fits are worse overall than Cobb-Douglas or CES.
-        \normalsize}
+  \item{Including energy ($E$) in Cobb-Douglas and CES production functions appears to be unwarranted}
+  \pause
+    \begin{itemize}
+      \scriptsize
+      \item{Energy parameters less significant than others for most countries}
+      \pause
+      \item{Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$)}
+      \normalsize
+    \end{itemize}
+  \vspace{\baselineskip}
+  \pause
+  \item{Including energy ($E$) in LINEX production function is required}
+  \pause
+    \begin{itemize}
+      \scriptsize
+      \item{One factor of production: energy}
+      \pause
+      \item{Statistical evidence indicates that LINEX parameters $a_0$ and $c_t$ are significant for most countries}
+      \pause
+      \item{Unfortunately, LINEX fits are worse overall than Cobb-Douglas or CES}
+      \normalsize
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -1224,6 +1238,10 @@ createLINEXParamsGraph("Q")
   \begin{center}
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
   \end{center}
+  \vspace{\baselineskip}
+      
+  \vspace{\baselineskip}
+      
 \end{frame}
 
 \begin{frame}{The ``Answer''} %----------------------------
@@ -1231,30 +1249,31 @@ createLINEXParamsGraph("Q")
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
     \vspace{\baselineskip}
         
-    \pause
     Answer: Cobb-Douglas or CES without energy
   \end{center}
 \end{frame}
 
 \begin{frame}{Extra Credit?} %----------------------------
-  \begin{center} Reflect dynamics of energy cost share and price spikes \end{center}
+  \begin{center} Reflect dynamics of energy cost share and price spikes? \end{center}
     \vspace{\baselineskip}
         
     \pause
   \begin{itemize}
     \item{Price, cost share exogenous to all models}
     \pause
+    \item{No extra credit!}
+    \pause
+    \vspace{\baselineskip}
+        
     \item{Models (CD and CES without energy) could be \emph{included within} a model that endogenizes price and cost share}
     \pause
     \item{Still searching for a modeling approach that captures price and cost share dynamics \\ \scriptsize System dynamics modeling? \normalsize}
-    \pause
-    \item{No extra credit!}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Next Steps (Summer 2013)} %----------------------------
   \begin{itemize}
-    \item{Estimate statistical properties for \emph{all} fitting parameters}
+    \item{Verify and improve estimates of statistical properties for \emph{all} fitting parameters}
     \vspace{\baselineskip}
     \item{Incorporate all constraints for Cobb-Douglas model}
     \vspace{\baselineskip}
