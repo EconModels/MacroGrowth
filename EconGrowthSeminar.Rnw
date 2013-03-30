@@ -116,7 +116,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \date[Math Seminar] % (optional)
 {Mathematics Colloquium\\
-4 April 2013
+Thursday, 4 April 2013
 }
 
 \subject{Energy and Economic Growth}
@@ -424,14 +424,18 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \majorSeparator{Data Sources}
 
-\subsection[Economic]{Sources of Economic Data} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Economic]{Economic} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{Sources of Economic Data}
 
 \begin{frame}{Economic Definitions} %----------------------------
   \begin{itemize}
     \item{Output ($Y$): total value (\$) of goods produced (GDP)}
-    \item{Capital Stock ($K$): market value of productive goods (machines, tools, infrastructure).}
+    \vspace{\baselineskip}
+    
+    \item{Capital stock ($K$): market value of productive goods (e.g., machines, tools, infrastructure)}
+    \vspace{\baselineskip}
+    
     \item{Labor ($L$): workers in an economy (people or hours)}
   \end{itemize}
 \end{frame}
@@ -444,7 +448,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
                               &                          & (1980-2011: Developed; & \\
                               &                          & 1991-2011: Other) & \\
       \hline
-      \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total Employment} \\
+      \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total employment} \\
                               &                          & Emp/Pop ratio > 15 yo, &                                \\
                               &                          & used to find $L$, (1991-2011: &                         \\
                               &                          & CN, ZA, SA, IR, TZ, ZM) &                         \\
@@ -456,17 +460,21 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
 \end{frame}
 
-\subsection[Energy]{Sources of Energy Data} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Energy]{Energy} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{Energy Data} %----------------------------
 
 \begin{frame}{Energy Definitions} %----------------------------
   \begin{itemize}
     \item{Thermal energy ($Q$): heat content of an energy carrier}
+    \vspace{\baselineskip}
+    
     \item{Exergy ($X$): maximum work from a heat carrier}
+    \vspace{\baselineskip}
+    
     \item{Useful work ($U$): energy that generates economic activity directly}
   \end{itemize}
-  \begin{center}Note: indexed $Q$ and $X$ are identical unless energy mix changes significantly. \end{center}
+  \begin{center}Note: indexed $Q$ and $X$ are identical unless energy mix changes significantly \end{center}
 \end{frame}
 
 \begin{frame}{Energy Flows} %----------------------------
@@ -495,9 +503,9 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
 \end{frame}
 
-\subsection[Historical Data]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Visualization]{Visualization} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{Historical Data}
+\minorSeparator{Visualization of Historical Data}
 
 \begin{frame}{USA and China} %----------------------------
   \begin{columns}[c]
@@ -561,31 +569,22 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
     \vspace{\baselineskip}
     
     \begin{itemize}
+      \item{Illustrative}
       \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
       \begin{itemize}
-        \item{Represents the irrepressible ``progress'' of technology}
-        \item{Is independent of factor of production ($f$)}
+        \item{Irrepressible ``progress'' of technology}
+        \item{Independent of factor of production ($f$)}
       \end{itemize}
-      \item{Used for illustration purposes here}
       \item{Example: \citet{Nel:2009wq} use $f$ = $q$}
       \item{$\lambda$ and $m$ estimated by \texttt{nls} function in \texttt{R}}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Curve-fitting as Optimization} %----------------------------
+\begin{frame}{Example: Single-factor model with $q$} %----------------------------
+  \begin{center}$y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$\end{center}
   \begin{itemize}
-    \item{Select values of parameters to minimize errors ($SSE$) between predicted and historical economic output ($y$)}
-    \vspace{\baselineskip}
-    
-    \item{Example: Single-factor Model with $Q$}
-    \begin{itemize}
-      \item{$y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$}
-      \item{Select $\lambda$ and $\gamma$ to minimize\\
-            $SSE = \sum\limits_{t=1980}^{2011}(y_{pred} - y_{act})^2$}
-    \end{itemize}
-    \vspace{\baselineskip}
-    
-    \item{``Curve-fitting,'' ``parameter estimation,''  ``optimization,'' and ``minimization'' are used interchangeably}
+    \item{Select $\lambda$, $\gamma$}
+    \item{To minimize \\ $SSE = \sum\limits_{t=1980}^{2011}(y_{pred} - y_{act})^2$}
   \end{itemize}
 \end{frame}
 
@@ -645,14 +644,14 @@ createSFParamsGraph("Q")
 
 \begin{frame}{Comments on Single-factor Model with $Q$} %----------------------------
   \begin{itemize}
-    \item{Not typically used for economic modeling. Illustrates confidence intervals.}
+    \item{Not typically used for economic modeling: illustrates confidence intervals}
     \vspace{\baselineskip}
     
     \item{$CI_{\lambda}$ smaller than $CI_{\gamma}$ for all countries}
   \end{itemize}
 \end{frame}
 
-\subsection[Cobb-Douglas]{Evaluation of Cobb-Douglas} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Cobb-Douglas]{Cobb-Douglas} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{Cobb-Douglas (with Energy)} %----------------------------
 
@@ -867,7 +866,7 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
   \end{itemize}
 \end{frame}
 
-\subsection[CES]{Evaluation of CES} %+++++++++++++++++++++++++++++++++++++++
+\subsection[CES]{CES} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{Constant Elasticity of Substitution (CES)}
 
@@ -902,11 +901,6 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
   \begin{itemize}
     \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
     \item{$\delta$: split between ($kl$) and ($e$)}
-    \item{$\sigma \equiv \frac{1}{1+\rho}$: elasticity of substitution ($0 \leq \sigma \leq 1$)}
-    \begin{itemize}
-      \item{$\sigma \rightarrow 0$: ($kl$) and ($e$) are complementary}
-      \item{$\sigma \rightarrow 1$: ($kl$) and ($e$) are substitutes}
-    \end{itemize}
     \item{Example: \citet{Stern:2012ey}}
     \item{$\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, $\rho$ estimated by \texttt{cesEst} function in \texttt{R}'s \texttt{micEcon} package}
   \end{itemize}
@@ -1006,7 +1000,7 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
   \end{itemize}
 \end{frame}
 
-\subsection[LINEX]{Evaluation of LINEX} %+++++++++++++++++++++++++++++++++++++++
+\subsection[LINEX]{LINEX} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{LINEX} %----------------------------
 
@@ -1202,7 +1196,7 @@ createLINEXParamsGraph("Q")
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Summary}
+\section{Summary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \majorSeparator{Summary}
@@ -1242,8 +1236,7 @@ createLINEXParamsGraph("Q")
     \pause
     \item{Models (CD without energy, CES) could be \emph{included within} a model that endogenizes price and cost share}
     \pause
-    \item{Still searching for a modeling approach that captures price and cost share dynamics \\
-      \scriptsize System dynamics modeling? \normalsize}
+    \item{Still searching for a modeling approach that captures price and cost share dynamics \\ \scriptsize System dynamics modeling? \normalsize}
     \pause
     \item{No extra credit!}
   \end{itemize}
@@ -1328,6 +1321,12 @@ createSFParamsGraph("L")
       \hline
     \end{tabular}
   \end{center}
+\end{frame}
+
+\begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %---------------------------- 
+<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
+createCDParamsGraph()
+@  
 \end{frame}
 
 <<Coefs_ZA_CD>>=
@@ -1491,10 +1490,17 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{JP}{0.055}
 \end{frame}
 
-\begin{frame}{95\% Confidence Intervals}{Cobb-Douglas (without energy)} %---------------------------- 
-<<CD_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createCDParamsGraph()
-@  
+\minorSeparator{CES Model}
+
+\begin{frame}{CES Elasticity of Substitution} %----------------------------
+  \begin{center} \small \cesEqn \normalsize \end{center}
+  \begin{itemize}
+    \item{$\sigma \equiv \frac{1}{1+\rho}$: elasticity of substitution ($0 \leq \sigma \leq 1$)}
+    \begin{itemize}
+      \item{$\sigma \rightarrow 0$: ($kl$) and ($e$) are complementary}
+      \item{$\sigma \rightarrow 1$: ($kl$) and ($e$) are substitutes}
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 <<Coefs_ZA_CES>>=
