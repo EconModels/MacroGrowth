@@ -335,12 +335,12 @@ Thursday, 4 April 2013
     \vspace{\baselineskip}
     
     \footnotesize
-    No known rigorous, statistical comparative studies of economic growth models for various types of economies. 
+    No known statistically-rigorous comparative studies of economic growth models for various types of economies. 
     \normalsize
     \pause
     \vspace{\baselineskip}
     
-    Extra credit: reflect dynamics of energy cost share and prices spikes.
+    Extra credit: reflect dynamics of energy cost share and price spikes.
   \end{center}
 \end{frame}
 
@@ -436,7 +436,7 @@ Thursday, 4 April 2013
     \item{Capital stock ($K$): market value of productive goods (e.g., machines, tools, infrastructure)}
     \vspace{\baselineskip}
     
-    \item{Labor ($L$): workers in an economy (people or hours)}
+    \item{Labor ($L$): human work in an economy (people or hours)}
   \end{itemize}
 \end{frame}
 
@@ -693,10 +693,6 @@ createSFParamsGraph("Q")
   \begin{center} \cdeEqn \end{center}
   \begin{itemize}
     \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
-    \begin{itemize}
-      \item{Represents the ``irrepressible'' ``progress'' of technology}
-      \item{Is independent of factors of production ($k$, $l$, and $e$)}
-    \end{itemize}
     \item{$k$, $l$, and $e$ factors of production ``blend'' with $\alpha + \beta + \gamma = 1$}
     \item{Example: \citet{Froling:2009vo}}
   \end{itemize}
@@ -1211,17 +1207,11 @@ createLINEXParamsGraph("Q")
 
 \majorSeparator{Summary}
 
-\begin{frame}{The Question} %----------------------------
-  \begin{center}
-    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
-  \end{center}
-\end{frame}
-
 \begin{frame}{Tentative Conclusions} %----------------------------
   \begin{itemize}
   \item{Including energy in Cobb-Douglas and CES production functions is unwarranted \\
         \scriptsize
-        Preliminary statistical evidence indicates that energy parameters are not significant for most countries \\Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$), so including energy is unnecessary.
+        Preliminary statistical evidence indicates that energy parameters are not significant for most countries \\Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$).
         \normalsize}
   \item{Including energy in LINEX production function is required \\
         \scriptsize
@@ -1230,21 +1220,31 @@ createLINEXParamsGraph("Q")
   \end{itemize}
 \end{frame}
 
+\begin{frame}{The Question} %----------------------------
+  \begin{center}
+    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+  \end{center}
+\end{frame}
+
 \begin{frame}{The ``Answer''} %----------------------------
   \begin{center}
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
     \vspace{\baselineskip}
         
     \pause
-    Answer: Cobb-Douglas without energy or CES 
+    Answer: Cobb-Douglas or CES without energy
   \end{center}
 \end{frame}
 
 \begin{frame}{Extra Credit?} %----------------------------
+  \begin{center} Reflect dynamics of energy cost share and price spikes \end{center}
+    \vspace{\baselineskip}
+        
+    \pause
   \begin{itemize}
     \item{Price, cost share exogenous to all models}
     \pause
-    \item{Models (CD without energy, CES) could be \emph{included within} a model that endogenizes price and cost share}
+    \item{Models (CD and CES without energy) could be \emph{included within} a model that endogenizes price and cost share}
     \pause
     \item{Still searching for a modeling approach that captures price and cost share dynamics \\ \scriptsize System dynamics modeling? \normalsize}
     \pause
