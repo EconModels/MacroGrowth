@@ -150,17 +150,17 @@ Thursday, 4 April 2013
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
 % The equation for a single-factor model
-\newcommand{\sfEqn}{$y = A \: f^{m}$; $A \equiv \mathrm{e}^{\lambda (t-t_0)}$}
+\newcommand{\sfEqn}{$y = A \: f^{m}$; \small $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ \normalsize}
 % The equation for a cobb-douglas without energy model
-\newcommand{\cdEqn}{$y = A \: k^{\alpha}l^{\beta}$; $A \equiv \mathrm{e}^{\lambda (t-t_0)}$}
+\newcommand{\cdEqn}{$y = A \: k^{\alpha}l^{\beta}$; \small $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ \normalsize}
 % The equation for a cobb-douglas with energy model
-\newcommand{\cdeEqn}{$y = A\: k^{\alpha}l^{\beta}e^{\gamma}$; $A \equiv \mathrm{e}^{\lambda (t-t_0)}$}
+\newcommand{\cdeEqn}{$y = A\: k^{\alpha}l^{\beta}e^{\gamma}$; \small $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ \normalsize}
 % The equation for a ces model
 \newcommand{\cesEqn}{\scriptsize $y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}$; \tiny $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ \normalsize}
 % The narrow equation for a ces model
 \newcommand{\cesEqnNarrow}{\begin{align*} y = \, &\gamma \: A \\&\times \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} \right. \\ &\left.+ \; (1-\delta) e^{-\rho} \right\}^{-1/\rho} \end{align*}}
 % The equation for a linex model
-\newcommand{\linexEqn}{$y =  A \: e$; $A \equiv \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$}
+\newcommand{\linexEqn}{$y =  A \: e$; \small $A \equiv \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]}$ \normalsize}
 
 % Some commands for parameter tables in slides
 \newcommand{\yRow}{$y$ & $Y/Y_0$, output}
@@ -227,10 +227,10 @@ Thursday, 4 April 2013
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline} %----------------------------
-  \tableofcontents
-  % You might wish to add the option [pausesections]
-\end{frame}
+% \begin{frame}{Outline} %----------------------------
+%   \tableofcontents
+%   % You might wish to add the option [pausesections]
+% \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -554,9 +554,9 @@ Thursday, 4 April 2013
   \end{center}
 \end{frame}
 
-\subsection[Visualization]{Visualization} %+++++++++++++++++++++++++++++++++++++++
+\subsection[Historical Data]{Historical Data} %+++++++++++++++++++++++++++++++++++++++
 
-\minorSeparator{Visualization of Historical Data}
+\minorSeparator{Historical Data}
 
 \begin{frame}{USA and United Kingdom} %----------------------------
   \begin{columns}[c]
@@ -610,7 +610,7 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 % This is a sequence of two slides with 3-D graphs. 
 % The first just shows the surface. The second also shows the optimum point in the surface.
-\begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
+\begin{frame}{$SSE$ Minimization}{US single-factor with $q$} %---------------------------- 
 <<3D_Graph_US_SF_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 sf3DSSEGraph("US", "Q", showOpt=FALSE)
 @
@@ -618,7 +618,7 @@ sf3DSSEGraph("US", "Q", showOpt=FALSE)
   \putFlagUpperRight{US}{0.055}  
 \end{frame}
 
-\begin{frame}{$SSE$ Minimization}{US single-factor with $Q$} %---------------------------- 
+\begin{frame}{$SSE$ Minimization}{US single-factor with $q$} %---------------------------- 
 <<3D_Graph_US_SF_Q_With_Opt_Point, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 sf3DSSEGraph("US", "Q", showOpt=TRUE)
 @
@@ -642,7 +642,7 @@ sfUSU <- coef(singleFactorModel("US", "U"))
         
         \tiny
           \begin{tabular}{|c|c|c|}\hline
-            $f$   & $\lambda$                & $m$\\
+            $f$   & $\lambda$ [1/year]       & $m$\\
             \hline
             $k$   & \Sexpr{sfUSK["lambda"]}  & \Sexpr{sfUSK["m"]}\\
             \hline
@@ -666,13 +666,13 @@ createSFLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-\begin{frame}{95\% Confidence Intervals}{Single-factor with $Q$} %----------------------------
+\begin{frame}{95\% Confidence Intervals}{Single-factor with $q$} %----------------------------
 <<SF_Params_Graph_Q, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
 createSFParamsGraph("Q")
 @  
 \end{frame}
 
-\begin{frame}{Comments on Single-factor Model with $Q$} %----------------------------
+\begin{frame}{Comments on Single-factor Model with $q$} %----------------------------
   \begin{itemize}
     \item{Not typically used for economic modeling: illustrates confidence intervals}
     \vspace{\baselineskip}
@@ -696,7 +696,7 @@ createSFParamsGraph("Q")
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("US", "Q", textScaling=0.8)
 @
@@ -704,7 +704,7 @@ createSFParamsGraph("Q")
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("UK", "Q", textScaling=0.8)
 @
@@ -734,7 +734,7 @@ cduUS <- cobbDouglasData("US", "U")
         
         \tiny
           \begin{tabular}{c|c c c c}
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            $e$ & $\lambda$ [1/year] & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
             $-$   & \Sexpr{pprint(cdUS["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdUS["CD", "alpha"])} & \Sexpr{pprint(cdUS["CD", "beta"])} & \Sexpr{pprint(cdUS["CD", "gamma"])}\\
             \hline
@@ -770,7 +770,7 @@ cduUK <- cobbDouglasData("UK", "U")
         
         \tiny
           \begin{tabular}{c|c c c c}
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            $e$ & $\lambda$ [1/year] & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
             $-$   & \Sexpr{pprint(cdUK["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdUK["CD", "alpha"])} & \Sexpr{pprint(cdUK["CD", "beta"])} & \Sexpr{pprint(cdUK["CD", "gamma"])}\\
             \hline
@@ -805,7 +805,7 @@ cdxZA <- cobbDouglasData("ZA", "X")
         
         \tiny
           \begin{tabular}{|c|c|c|c|c|}\hline
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            $e$ & $\lambda$ [1/year] & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
             $-$   & \Sexpr{pprint(cdZA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdZA["CD", "alpha"])} & \Sexpr{pprint(cdZA["CD", "beta"])} & \Sexpr{pprint(cdZA["CD", "gamma"])}\\
             \hline
@@ -839,7 +839,7 @@ cdxSA <- cobbDouglasData("SA", "X")
         
         \tiny
           \begin{tabular}{|c|c|c|c|c|}\hline
-            $e$ & $\lambda$ & $\alpha$ & $\beta$ & $\gamma$\\
+            $e$ & $\lambda$ [1/year] & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
             $-$   & \Sexpr{cdSA["CD", "lambda"]} & \Sexpr{cdSA["CD", "alpha"]} & \Sexpr{cdSA["CD", "beta"]} & \Sexpr{cdSA["CD", "gamma"]}\\
             \hline
@@ -903,13 +903,13 @@ createCDParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $q$} %----------------------------
 <<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
 \end{frame}
 
-\begin{frame}{Implications from Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Implications from Cobb-Douglas with $q$} %----------------------------
   \begin{center}\cdeEqn\end{center}
   \vspace{\baselineskip}
         
@@ -956,7 +956,7 @@ cesuUS <- cesData("US", "U")
         
         \tiny
           \begin{tabular}{c|c c c}
-            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
+            $e$ & $\gamma$ & $\lambda$ [1/year] & $\delta_1$\\
             \hline
             $q$ & \Sexpr{pprint(cesqUS["CES", "gamma"])} & \Sexpr{pprint(cesqUS["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqUS["CES", "delta_1"])}\\
             \hline
@@ -1001,7 +1001,7 @@ cesuUK <- cesData("UK", "U")
         
         \tiny
           \begin{tabular}{c|c c c}
-            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
+            $e$ & $\gamma$ & $\lambda$ [1year] & $\delta_1$\\
             \hline
             $q$ & \Sexpr{pprint(cesqUK["CES", "gamma"])} & \Sexpr{pprint(cesqUK["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqUK["CES", "delta_1"])}\\
             \hline
@@ -1044,7 +1044,7 @@ cesxZA <- cesData("ZA", "X")
         
         \tiny
           \begin{tabular}{|c|c|c|c|}\hline
-            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
+            $e$ & $\gamma$ & $\lambda$ [1/year] & $\delta_1$\\
             \hline
             $q$ & \Sexpr{pprint(cesqZA["CES", "gamma"])} & \Sexpr{pprint(cesqZA["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqZA["CES", "delta_1"])}\\
             \hline
@@ -1085,7 +1085,7 @@ cesxSA <- cesData("SA", "X")
         
         \tiny
           \begin{tabular}{|c|c|c|c|}\hline
-            $e$ & $\gamma$ & $\lambda$ & $\delta_1$\\
+            $e$ & $\gamma$ & $\lambda$ [1/year] & $\delta_1$\\
             \hline
             $q$ & \Sexpr{pprint(cesqSA["CES", "gamma"])} & \Sexpr{pprint(cesqSA["CES", "lambda"], digits=4)} & \Sexpr{pprint(cesqSA["CES", "delta_1"])}\\
             \hline
@@ -1138,7 +1138,7 @@ createCESParamsGraph("Q")
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $Q$} %----------------------------
+\begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $q$} %----------------------------
 <<CI_delta_vs_delta_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
@@ -1165,15 +1165,15 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 
 \minorSeparator{LINEX} %----------------------------
 
-\begin{frame}{Parameter Estimatino for LINEX Model Equation} %----------------------------
+\begin{frame}{Parameter Estimation for LINEX Model Equation} %----------------------------
   \begin{center} \linexEqn \end{center}
   \begin{itemize}
     \item{Derived from thermodynamics \citep{Kummel:1980wx}}
     \item{Time-dependent technology $\rightarrow$ efficiency ratios}
     \item{Productivity ($A$) $\uparrow$ if}
     \begin{itemize}
-      \item{Efficiency of producing capital stock increases ($k$ > $l + e$)}
-      \item{Energy efficiency of labor increases ($l$ > $e$)}
+      \item{Efficiency of producing capital stock increases \\ ($k$ > $l + e$)}
+      \item{Energy efficiency of labor increases \\ ($l$ > $e$)}
     \end{itemize}
     \item{$a_0$ and $c_t$ estimated by \texttt{nls} function in \texttt{R}}
   \end{itemize}
@@ -1334,7 +1334,7 @@ createLINEXParamsGraph("Q")
   \begin{itemize}
     \item{LINEX parameters $a_0$ and $c_t$ are significant (different from 0) for most countries}
     \item{Direct energy input to economy ($q$) is important as a LINEX predictor of economic output ($y$)}
-    \item{LINEX fits are poorer quality than other model}
+    \item{LINEX fits are poorer quality than other models}
   \end{itemize}
 \end{frame}
 
@@ -1366,7 +1366,7 @@ createLINEXParamsGraph("Q")
       \pause
       \item{$a_0$ and $c_t$ are significant for most countries}
       \pause
-      \item{Unfortunately, LINEX fits are poorer quality than Cobb-Douglas or CES}
+      \item{Unfortunately, LINEX fits are poorer quality than CD or CES}
       \normalsize
     \end{itemize}
   \end{itemize}
@@ -1382,7 +1382,7 @@ createLINEXParamsGraph("Q")
       
 \end{frame}
 
-\begin{frame}{The ``Answer''} %----------------------------
+\begin{frame}{The (Tentative) ``Answer''} %----------------------------
   \begin{center}
     Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
     \vspace{\baselineskip}
@@ -1547,7 +1547,7 @@ createCDParamsGraph()
 @  
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("JP", "Q", textScaling=0.8)
 @
@@ -1555,7 +1555,7 @@ createCDParamsGraph()
   \putFlagUpperRight{JP}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsCN, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("CN", "Q", textScaling=0.8)
 @
@@ -1563,7 +1563,7 @@ createCDParamsGraph()
   \putFlagUpperRight{CN}{0.045}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZA", "Q", textScaling=0.8)
 @
@@ -1571,7 +1571,7 @@ createCDParamsGraph()
   \putFlagUpperRight{ZA}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("SA", "Q", textScaling=0.8)
 @
@@ -1579,7 +1579,7 @@ createCDParamsGraph()
   \putFlagUpperRight{SA}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsIR, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("IR", "Q", textScaling=0.8)
 @
@@ -1587,7 +1587,7 @@ createCDParamsGraph()
   \putFlagUpperRight{IR}{0.055}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("TZ", "Q", textScaling=0.8)
 @
@@ -1595,7 +1595,7 @@ createCDParamsGraph()
   \putFlagUpperRight{TZ}{0.07}
 \end{frame}
 
-\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $Q$} %----------------------------
+\begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZM, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
   cdeGridGraph("ZM", "Q", textScaling=0.8)
 @
@@ -1660,7 +1660,7 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \end{center}
 \end{frame}
 
-\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $Q$} %----------------------------
+\begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $q$} %----------------------------
 <<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CES", param="sigma", energyType="Q")
 @
