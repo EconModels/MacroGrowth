@@ -1323,12 +1323,13 @@ partialResidualPlot <- function(countryAbbrev, energyType, textScaling=1.0){
   data <- cbind(data, cdResid)
   data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
   plot <- xyplot(cdResid ~ iEToFit, data=data,
-                 type=c('p','smooth'),
+#                 type=c("p",:smooth"),
+                 type=c("p"),
                  col="black",
                  scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
                              tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
                  xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
-                 ylab=list(label="$y$ residuals", cex=textScaling)
+                 ylab=list(label="$y$ residuals (CD without energy)", cex=textScaling)
                  )
   return(plot)  
 }
