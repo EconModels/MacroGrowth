@@ -380,13 +380,13 @@ Thursday, 4 April 2013
   Single Factor: \sfEqn
   \vspace{\baselineskip}
   
-  Cobb-Douglas: \cdEqn
+  Cobb-Douglas (CD): \cdEqn
   \vspace{\baselineskip}
   
-  Cobb-Douglas with Energy: \cdeEqn
+  Cobb-Douglas (CD) with Energy: \cdeEqn
   \vspace{\baselineskip}
   
-  Constant Elasticity of Substitution:
+  Constant Elasticity of Substitution (CES):
   \cesEqn
   \vspace{\baselineskip}
   
@@ -408,6 +408,9 @@ Thursday, 4 April 2013
       $m$ & ``influence'' of factor $f$ ($\alpha$, $\beta$, or $\gamma$)\\
       \hline
     \end{tabular}
+    \vspace{\baselineskip}
+    
+    Example: \citet{Nel:2009wq} use $f$ = $q$
   \end{center}
 \end{frame}
 
@@ -425,6 +428,9 @@ Thursday, 4 April 2013
       \gammaRow\\
       \hline
     \end{tabular}
+    \vspace{\baselineskip}
+    
+    Example: \citet{Froling:2009vo}
   \end{center}
 \end{frame}
 
@@ -442,6 +448,9 @@ Thursday, 4 April 2013
       $\rho$     &   ``influence'' of ($kl$) vs. ($e$)\\
       \hline
     \end{tabular}
+    \vspace{\baselineskip}
+    
+    Example: \citet{Stern:2012ey}
   \end{center}
 \end{frame}
 
@@ -455,6 +464,9 @@ Thursday, 4 April 2013
       $c_t$ & fitting parameter\\
       \hline
     \end{tabular}
+    \vspace{\baselineskip}
+    
+    Example: \citet{Warr:2006hc}
   \end{center}
 \end{frame}
 
@@ -474,10 +486,10 @@ Thursday, 4 April 2013
     \item{Output ($Y$): total value (real 2005\$) of goods produced (GDP)}
     \vspace{\baselineskip}
     
-    \item{Capital stock ($K$): market value of productive goods (e.g., machines, tools, infrastructure)}
+    \item{Capital stock ($K$): market value (real 2005\$) of productive goods (e.g., machines, tools, infrastructure)}
     \vspace{\baselineskip}
     
-    \item{Labor ($L$): human work in an economy (people or hours)}
+    \item{Labor ($L$): human work in an economy (persons or hours)}
   \end{itemize}
 \end{frame}
 
@@ -489,7 +501,7 @@ Thursday, 4 April 2013
                               &                          & (1980-2011: Developed; & \\
                               &                          & 1991-2011: Other) & \\
       \hline
-      \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total employment} \\
+      \multirow{4}{*}{WB WDI} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_World_Bank.png}} & Pop, Pop < 15 yo,    & \multirow{4}{*}{Total employment (persons)} \\
                               &                          & Emp/Pop ratio > 15 yo, &                                \\
                               &                          & used to find $L$, (1991-2011: &                         \\
                               &                          & CN, ZA, SA, IR, TZ, ZM) &                         \\
@@ -513,7 +525,7 @@ Thursday, 4 April 2013
     \item{Exergy ($X$): maximum work from a heat carrier}
     \vspace{\baselineskip}
     
-    \item{Useful work ($U$): energy that generates economic activity directly}
+    \item{Useful work ($U$): energy that generates economic activity directly \citep{Warr:2006hc}}
   \end{itemize}
   \begin{center}Note: $q$ and $x$ are identical unless energy mix changes significantly \end{center}
 \end{frame}
@@ -529,13 +541,11 @@ Thursday, 4 April 2013
     \scriptsize
     \begin{tabular}{r c c l}
       \multirow{3}{*}{IEA} & \multirow{3}{*}{\includegraphics[scale=0.20]{figure_other/Figure_IEA.png}} & Coal, Oil, Petroleum, & \multirow{3}{*}{GJ/year} \\
-                              &                          & Nat. gas, Nuclear, & \\
+                              &                          & Natural gas, Nuclear, & \\
                               &                          & Renewables & \\
       \hline
-      \multirow{4}{*}{FAOStat} & \multirow{4}{*}{\includegraphics[scale=0.07]{figure_other/Figure_FAOStat.png}} & Fuel wood,    & \multirow{4}{*}{GJ/year} \\
+      \multirow{2}{*}{FAOStat} & \multirow{2}{*}{\includegraphics[scale=0.06]{figure_other/Figure_FAOStat.png}} & Fuel wood,    & \multirow{2}{*}{GJ/year} \\
                               &                          & Available livestock &                                \\
-                              &                          & (1980-2011: Developed; &                         \\
-                              &                          & 1991-2011: Other) &                         \\
       \hline
       \multirow{2}{*}{REXS} & \multirow{2}{*}{\includegraphics[scale=0.05]{figure_other/Figure_Warr.png}} & Energy allocation factors. &  \multirow{2}{*}{\citet{Warr:2006hc}}\\
                               &                          & (1980-2000: Developed)     & \\ 
@@ -587,27 +597,14 @@ createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \minorSeparator{Curve-fitting as Optimization}
 
-\begin{frame}{Comments on Single-factor Model Equation} %----------------------------
-    \begin{center} \sfEqn \end{center}
+\begin{frame}{Example: Single-factor model with $q$} %----------------------------
+  \begin{center}$y = A \: q^{\gamma}; A \equiv \mathrm{e}^{\lambda (t-t_0)}$\end{center}
+  \begin{itemize}
+    \item{Select $\lambda$, $\gamma$ to minimize \\ $SSE_y = \sum\limits_{t=1980}^{2011}(y_{pred} - y_{act})^2$}
+    \pause
     \vspace{\baselineskip}
     
-    \begin{itemize}
-      \item{Illustrative}
-      \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
-      \begin{itemize}
-        \item{Irrepressible ``progress'' of technology}
-        \item{Independent of factor of production ($f$)}
-      \end{itemize}
-      \item{Example: \citet{Nel:2009wq} use $f$ = $q$}
-      \item{$\lambda$ and $m$ estimated by \texttt{nls} function in \texttt{R}}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Example: Single-factor model with $q$} %----------------------------
-  \begin{center}$y = \mathrm{e}^{\lambda (t-t_0)}q^{\gamma}$\end{center}
-  \begin{itemize}
-    \item{Select $\lambda$, $\gamma$}
-    \item{To minimize \\ $SSE = \sum\limits_{t=1980}^{2011}(y_{pred} - y_{act})^2$}
+    \item{$\lambda$ and $m$ estimated by \texttt{nls} function in \texttt{R}}
   \end{itemize}
 \end{frame}
 
@@ -687,15 +684,6 @@ createSFParamsGraph("Q")
 \subsection[Cobb-Douglas]{Cobb-Douglas} %+++++++++++++++++++++++++++++++++++++++
 
 \minorSeparator{Cobb-Douglas (with Energy)} %----------------------------
-
-\begin{frame}{Comments on Cobb-Douglas Model Equation} %----------------------------
-  \begin{center} \cdeEqn \end{center}
-  \begin{itemize}
-    \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
-    \item{$k$, $l$, and $e$ factors of production ``blend'' with $\alpha + \beta + \gamma = 1$}
-    \item{Example: \citet{Froling:2009vo}}
-  \end{itemize}
-\end{frame}
 
 \begin{frame}{Parameter Estimation for Cobb-Douglas With Energy} %----------------------------
   \begin{center}\cdeEqn\end{center}
@@ -943,12 +931,12 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 
 \minorSeparator{Constant Elasticity of Substitution (CES)}
 
-\begin{frame}{Comments on CES Model Equation} %----------------------------
+\begin{frame}{Parameter Estimation for CES Model Equation} %----------------------------
   \begin{center} \cesEqn \end{center}
   \begin{itemize}
-    \item{$\mathrm{e}^{\lambda(t-t_0)}$: Time-dependent technology term}
     \item{$\delta$: split between ($kl$) and ($e$)}
-    \item{Example: \citet{Stern:2012ey}}
+    \vspace{\baselineskip}
+    
     \item{$\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, $\rho$ estimated by \texttt{cesEst} function in \texttt{R}'s \texttt{micEcon} package}
   \end{itemize}
 \end{frame}
@@ -1177,17 +1165,16 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 
 \minorSeparator{LINEX} %----------------------------
 
-\begin{frame}{Comments on LINEX Model Equation} %----------------------------
+\begin{frame}{Parameter Estimatino for LINEX Model Equation} %----------------------------
   \begin{center} \linexEqn \end{center}
   \begin{itemize}
     \item{Derived from thermodynamics \citep{Kummel:1980wx}}
     \item{Time-dependent technology $\rightarrow$ efficiency ratios}
-    \item{Productivity $\uparrow$ if}
+    \item{Productivity ($A$) $\uparrow$ if}
     \begin{itemize}
       \item{Efficiency of producing capital stock increases ($k$ > $l + e$)}
       \item{Energy efficiency of labor increases ($l$ > $e$)}
     \end{itemize}
-    \item{Example: \citet{Warr:2006hc}}
     \item{$a_0$ and $c_t$ estimated by \texttt{nls} function in \texttt{R}}
   \end{itemize}
 \end{frame}
