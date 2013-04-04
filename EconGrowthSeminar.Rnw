@@ -115,8 +115,8 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 % - Keep it simple, no one is interested in your street address.
 
 \date[Math Seminar] % (optional)
-{Mathematics Colloquium\\
-Thursday, 4 April 2013
+{Calvin College Mathematics Colloquium\\
+3:30 PM, Thursday, 4 April 2013
 }
 
 \subject{Energy and Economic Growth}
@@ -265,17 +265,17 @@ Thursday, 4 April 2013
     \item{$\sim$10\%}
     \vspace{\baselineskip}
     \pause
-    \item{Energy (relatively) unimportant for classical economists}
+    \item{Energy (relatively) unimportant for neoclassical economists}
     \item{Usually ignored}
     \vspace{\baselineskip}
     \pause
-    \item{And yet \dots}
+    \item{And yet\dots}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Oil and Recessions}{\citep{Hamilton:2011fo}} %----------------------------
   \begin{center}
-    10 of last 11 US recessions preceeded by oil price shocks
+    10 of last 11 US recessions preceded by oil price shocks
     \vspace{\baselineskip}
     
     \pause
@@ -307,27 +307,27 @@ Thursday, 4 April 2013
     \includegraphics[height=2.5cm]{figure_other/Growth_Models.pdf}
   \end{center}
   \begin{itemize}
-    \item{Goal: predict economic output over time}
+    \item{Goal: predict economic output ($Y$) over time}
     \item{Set aside debates about growth and its measure}
     \item{All factors and outputs indexed to initial year: $y = Y/Y_0, e = E/E_0$, etc.}
     \vspace{\baselineskip}
     \pause
     
-    \item{Uncritical use of energy-augmented growth models in the literature}
+    \item{Uncritical use of energy-augmented growth models for developed economies in the literature}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{What's Needed?} %----------------------------
   \begin{itemize}
-    \item{Go beyond developed economies}
+    \item{Move beyond developed economies}
     \pause
     \vspace{\baselineskip}
     
-    \item{Rigorous, statistical evaluation of energy-augmented growth models with $Q$, $X$, and $U$}
+    \item{Statistically rigorous evaluation of energy types $Q$, $X$, and $U$}
     \pause
     \vspace{\baselineskip}
     
-    \item{Comparative analysis of growth models}
+    \item{Comparative analysis of energy-augmented growth models}
   \end{itemize}
 \end{frame}
 
@@ -337,7 +337,7 @@ Thursday, 4 April 2013
 
 \begin{frame}{The Question} %----------------------------
   \begin{center}
-    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+    Which model best describes (statistically) the role of energy in economic growth for different types of economies?
     \pause
     \vspace{\baselineskip}
     
@@ -388,7 +388,7 @@ Thursday, 4 April 2013
   \end{itemize}
   \vspace{\baselineskip}
   \pause
-  \begin{center}Simplification: One type of energy ($Q$) for this presentation\end{center}
+  \begin{center} Simplification: One type of energy ($Q$) for this presentation \end{center}
 \end{frame}
 
 \begin{frame}{Type of Economic Growth Model} %----------------------------
@@ -489,7 +489,7 @@ Thursday, 4 April 2013
   \end{center}
 \end{frame}
 
-\begin{frame}{LINEX}
+\begin{frame}{LINEX} %----------------------------
     \begin{center} \linexEqn \end{center}
     \vspace{\baselineskip}
         
@@ -525,7 +525,7 @@ Thursday, 4 April 2013
 \section[Data Sources]{Sources of Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\majorSeparator{Data Sources}
+\majorSeparator{Data Sources} %----------------------------
 
 \subsection[Economic]{Economic} %+++++++++++++++++++++++++++++++++++++++
 
@@ -683,7 +683,7 @@ sfUSQ <- coef(singleFactorModel("US", "Q"))
 sfUSX <- coef(singleFactorModel("US", "X"))
 sfUSU <- coef(singleFactorModel("US", "U"))
 @
-\begin{frame}{Single-factor (with $q$) Predictions for $y$} %----------------------------
+\begin{frame}{Single-factor Predictions for $y$} %----------------------------
   \begin{columns}[c]
     \column{2.2in}
       \begin{center}
@@ -724,10 +724,10 @@ createSFParamsGraph("Q")
 
 \begin{frame}{Comments on Single-factor Model with $q$} %----------------------------
   \begin{itemize}
-    \item{Single-factor not typically used for economic modeling: illustrates confidence intervals}
+    \item{Single-factor model not typically used for economic modeling: illustrates confidence intervals}
     \vspace{\baselineskip}
     
-    \item{$CI_{\gamma}$ > $CI_{\lambda}$ for all countries\footnote{\tiny as percentage of 0.0 1/year < $\lambda$ < 0.1 1/year and $0 < \gamma < 1$ \normalsize}}
+    \item{$CI_{\gamma}$ > $CI_{\lambda}$ for all countries\footnote{\tiny as percentage of 0.0 yr$^{-1}$ < $\lambda$ < 0.1 yr$^{-1}$ and $0 < \gamma < 1$ \normalsize}}
   \end{itemize}
 \end{frame}
 
@@ -891,11 +891,11 @@ cdxSA <- cobbDouglasData("SA", "X")
           \begin{tabular}{|c|c|c|c|c|}\hline
             $e$ & $\lambda$ [1/year] & $\alpha$ & $\beta$ & $\gamma$\\
             \hline
-            $-$   & \Sexpr{cdSA["CD", "lambda"]} & \Sexpr{cdSA["CD", "alpha"]} & \Sexpr{cdSA["CD", "beta"]} & \Sexpr{cdSA["CD", "gamma"]}\\
+            $-$   & \Sexpr{pprint(cdSA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdSA["CD", "alpha"])} & \Sexpr{pprint(cdSA["CD", "beta"])} & \Sexpr{pprint(cdSA["CD", "gamma"])}\\
             \hline
-            $q$   & \Sexpr{cdqSA["CD", "lambda"]} & \Sexpr{cdqSA["CD", "alpha"]} & \Sexpr{cdqSA["CD", "beta"]} & \Sexpr{cdqSA["CD", "gamma"]}\\
+            $q$   & \Sexpr{pprint(cdqSA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdqSA["CD", "alpha"])} & \Sexpr{pprint(cdqSA["CD", "beta"])} & \Sexpr{pprint(cdqSA["CD", "gamma"])}\\
             \hline
-            $x$   & \Sexpr{cdxSA["CD", "lambda"]} & \Sexpr{cdxSA["CD", "alpha"]} & \Sexpr{cdxSA["CD", "beta"]} & \Sexpr{cdxSA["CD", "gamma"]}\\
+            $x$   & \Sexpr{pprint(cdxSA["CD", "lambda"], digits=4)} & \Sexpr{pprint(cdxSA["CD", "alpha"])} & \Sexpr{pprint(cdxSA["CD", "beta"])} & \Sexpr{pprint(cdxSA["CD", "gamma"])}\\
             \hline
           \end{tabular}
         \normalsize
@@ -954,12 +954,12 @@ createCDParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $q$} %----------------------------
-<<CI_gamma_vs_gamma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
+<<CI_gamma_vs_gamma_Graph_Q, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
 CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 @
 \end{frame}
 
-\begin{frame}{Implications from Cobb-Douglas with $q$} %----------------------------
+\begin{frame}{Summary of Cobb-Douglas with $q$} %----------------------------
   \begin{center}\cdeEqn\end{center}
   \vspace{\baselineskip}
         
@@ -1194,7 +1194,7 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 @
 \end{frame}
 
-\begin{frame}{Implications from CES} %----------------------------
+\begin{frame}{Summary of CES with $q$} %----------------------------
   \begin{center} \cesEqn \end{center}
   \vspace{\baselineskip}
         
@@ -1373,7 +1373,7 @@ createLINEXParamsGraph("Q")
 @  
 \end{frame}
 
-\begin{frame}{Implications from LINEX} %----------------------------
+\begin{frame}{Summary of LINEX with $q$} %----------------------------
   \begin{center}\linexEqn\end{center}
   \vspace{\baselineskip}
         
@@ -1393,15 +1393,17 @@ createLINEXParamsGraph("Q")
 
 \begin{frame}{Summary of Analysis} %----------------------------
   \begin{itemize}
-  \item{Including energy ($E$) in Cobb-Douglas and CES production functions appears to be unwarranted}
+  \item{Augmenting Cobb-Douglas and CES production functions with energy ($E$) appears to be unwarranted}
   \pause
     \begin{itemize}
       \scriptsize
-      \item{Energy parameters ($\gamma$, $\delta$) less important than others ($\lambda$, $\alpha$, $\beta$) for nearly all countries}
+      \item{Energy parameters ($\gamma$, $\delta$) less important than others for nearly all countries}
       \pause
       \item{Why? Energy is \emph{always already} embedded in capital stock ($K$) and labor ($L$)}
       \normalsize
     \end{itemize}
+  \pause
+  \item{Uncritical use of energy-augmented CD and CES growth models is problematic}
   \vspace{\baselineskip}
   \pause
   \item{Including energy ($E$) in LINEX production function is required}
@@ -1412,31 +1414,21 @@ createLINEXParamsGraph("Q")
       \pause
       \item{$a_0$ and $c_t$ are significant for most countries}
       \pause
-      \item{Unfortunately, LINEX fits are poorer quality than CD or CES}
+      \item{LINEX fits are poorer quality than CD or CES}
       \normalsize
     \end{itemize}
-  \item{Uncritical use of energy-augmented growth models is problematic}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{The Question} %----------------------------
   \begin{center}
-    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
+    Which model best describes (statistically) the role of energy in economic growth for different types of economies?
   \end{center}
-  \vspace{\baselineskip}
-      
-  \vspace{\baselineskip}
-      
-  \vspace{\baselineskip}
-      
 \end{frame}
 
 \begin{frame}{The (Tentative) ``Answer''} %----------------------------
   \begin{center}
-    Which economic growth model best describes (statistically) the role of energy in economic growth for different types of economies?
-    \vspace{\baselineskip}
-        
-    Answer: Cobb-Douglas without energy (possibly CES without energy)
+    Cobb-Douglas without energy\\(possibly CES without energy)
   \end{center}
 \end{frame}
 
@@ -1452,28 +1444,31 @@ createLINEXParamsGraph("Q")
     \pause
     \vspace{\baselineskip}
         
-    \item{Models (CD, or CES, without energy) could be \emph{included within} a model that endogenizes price and cost share}
+    \item{Models (CD, or CES, without energy) could be \emph{included within} a system dynamics model that endogenizes price and cost share}
     \pause
-    \item{Still searching for a modeling approach that captures price and cost share dynamics \\ \scriptsize System dynamics modeling? \normalsize}
+    \item{System dynamics modeling}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Next Steps (Summer 2013)} %----------------------------
   \begin{itemize}
     \item{Evaluate CES without energy}
+    \vspace{\baselineskip}
     \item{Verify and improve estimates of statistical properties for \emph{all} fitting parameters}
     \vspace{\baselineskip}
     \item{Incorporate all constraints for all models}
     \vspace{\baselineskip}
     \item{Submit paper}
+    \vspace{\baselineskip}
+    \item{Develop system dynamics model}
   \end{itemize}  
 \end{frame}
 
 \begin{frame}{Acknowledgements} %----------------------------
   \begin{itemize}
     \item{Martin de Wit, Stellenbosch University}
-    \item{Randall Pruim, Calvin College}
     \item{Loren L. Heun, Western Michigan University}
+    \item{Randall Pruim, Calvin College}
     \vspace{\baselineskip}
     \item{Jack and Lois Kuipers Applied Mathematics Endowment\\(Reese and Timmer Summer 2012 funding)}
     \item{Calvin College Alumni Association\\(Reese Fall 2012 funding)}
@@ -1690,7 +1685,26 @@ createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
   \putFlagUpperRight{JP}{0.055}
 \end{frame}
 
-\minorSeparator{CES Model}
+\begin{frame}{$CI_{\gamma}$ and $\gamma$ in Cobb-Douglas} %----------------------------
+  \begin{center}
+    \cdeEqn\\
+    \includegraphics[height=2.5in]{figure_other/CI-gamma-4.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $x$} %----------------------------
+<<CI_gamma_vs_gamma_Graph_X, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
+CIvsParamPlot(model="CDe", param="gamma", energyType="X")
+@
+\end{frame}
+
+\begin{frame}{$CI_{\gamma}$ vs. $\gamma$ for Cobb-Douglas with $u$} %----------------------------
+<<CI_gamma_vs_gamma_Graph_U, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
+CIvsParamPlot(model="CDe", param="gamma", energyType="U")
+@
+\end{frame}
+
+\minorSeparator{CES Model} %----------------------------
 
 \begin{frame}{$CI_{\delta}$ and $\delta$ in CES} %----------------------------
   \begin{center}
