@@ -308,11 +308,12 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
   \begin{itemize}
     \item{Goal: predict economic output ($Y$) over time}
-    \item{Set aside debates about growth and its measure}
     \item{All factors and outputs indexed to initial year: $y = Y/Y_0, e = E/E_0$, etc.}
-    \vspace{\baselineskip}
     \pause
-    
+    \vspace{\baselineskip}
+
+    \item{Set aside debates about growth and its measure}
+    \pause
     \item{Uncritical use of energy-augmented growth models for developed economies in the literature}
   \end{itemize}
 \end{frame}
