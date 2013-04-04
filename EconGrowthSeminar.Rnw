@@ -323,7 +323,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
     \pause
     \vspace{\baselineskip}
     
-    \item{Statistically rigorous evaluation of energy types $Q$, $X$, and $U$}
+    \item{Statistically rigorous evaluation of energy quantifications $Q$, $X$, and $U$}
     \pause
     \vspace{\baselineskip}
     
@@ -353,7 +353,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \begin{itemize}
     \item{Type of economy}
     \vspace{\baselineskip}
-    \item{Type of energy}
+    \item{Energy quantification}
     \vspace{\baselineskip}
     \item{Type of economic growth model}
   \end{itemize}
@@ -378,7 +378,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{center}
 \end{frame}
 
-\begin{frame}{Type of Energy ($E$)} %----------------------------
+\begin{frame}{Energy ($E$) Quantification} %----------------------------
   \begin{itemize}
     \item{Thermal energy ($Q$)}
     \vspace{\baselineskip}  
@@ -388,7 +388,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \end{itemize}
   \vspace{\baselineskip}
   \pause
-  \begin{center} Simplification: One type of energy ($Q$) for this presentation \end{center}
+  \begin{center} Simplification: Focus on $Q$ for this presentation \end{center}
 \end{frame}
 
 \begin{frame}{Type of Economic Growth Model} %----------------------------
@@ -533,13 +533,13 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
 
 \begin{frame}{Economic Definitions} %----------------------------
   \begin{itemize}
-    \item{Output ($Y$): total value (real 2005\$) of goods produced (GDP)}
+    \item{Output ($Y$): total value (real 2005\$/year) of goods produced (GDP)}
     \vspace{\baselineskip}
     
     \item{Capital stock ($K$): market value (real 2005\$) of productive goods (e.g., machines, tools, infrastructure)}
     \vspace{\baselineskip}
     
-    \item{Labor ($L$): human work in an economy (persons or work hours)}
+    \item{Labor ($L$): human work in an economy (persons/year or work hours/year)}
   \end{itemize}
 \end{frame}
 
@@ -1445,8 +1445,6 @@ createLINEXParamsGraph("Q")
     \vspace{\baselineskip}
         
     \item{Models (CD, or CES, without energy) could be \emph{included within} a system dynamics model that endogenizes price and cost share}
-    \pause
-    \item{System dynamics modeling}
   \end{itemize}
 \end{frame}
 
