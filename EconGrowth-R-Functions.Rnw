@@ -2080,7 +2080,7 @@ linexParamsTableDF <- function(energyType){
 # Aggregates the LINEX results into a big data table for the given energyType.
 ##
 linexParamsTable <- function(energyType){
-  linexParamsTableDF(energyType)
+  dataLINEX <- linexParamsTableDF(energyType)
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
   tableLINEX <- xtable(dataLINEX, 
