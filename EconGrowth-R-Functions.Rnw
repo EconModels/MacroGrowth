@@ -1345,18 +1345,15 @@ yName = "iGDP"
 ######################################
 # Loads data and trims rows where necessary.
 # Also, replaces the name of the desired energy column with "iEToFit".
+# If you omit the energyType parameter, "iEToFit" will not appear in the column names, because
+# it is assumed that you want a CES fit without an energy term.
 # Returns a data.frame with the loaded data.
 ##
 loadAndPrepDataForCES <- function(countryAbbrev, energyType){
-print(paste("Inside loadAndPrepDataForCES. countryAbbrev =", countryAbbrev))
-print(paste("missing(energyType) =", missing(energyType)))
   dataTable <- loadData(countryAbbrev)
-print("loaded data")
   # Trim data from China and South Africa that is missing labor information for 2011.
   dataTable <- subset(dataTable, !is.na(iLabor))
-print("Trimmed data")
   if (!missing(energyType)){
-print("Inside if not missing energy type")
     if (energyType == "U"){
       # Trim the dataset to include only those years for which U is available.
       dataTable <- subset(dataTable, !is.na(iU))
@@ -1366,7 +1363,6 @@ print("Inside if not missing energy type")
     # to "iEToFit" and use "iEToFit" in the nls function.
     dataTable <- replaceColName(dataTable, energyType, "iEToFit")
   }
-print("right before return.")
   return(dataTable)
 }
 
@@ -1374,7 +1370,6 @@ print("right before return.")
 # Returns a cesEst model (without energy) for the country specified.
 ##
 cesModelNoEnergy <- function(countryAbbrev){
-print(paste("Inside cesModelNoEnergy. countryAbbrev =", countryAbbrev))
   # Load the data that we need.
   dataTable <- loadAndPrepDataForCES(countryAbbrev)
   control=nls.lm.control(maxiter=1000, maxfev=2000)
@@ -1389,7 +1384,6 @@ print(paste("Inside cesModelNoEnergy. countryAbbrev =", countryAbbrev))
 ##
 cesModel <- function(countryAbbrev, energyType){
   if (missing(energyType)){
-print(paste("Inside cesModel. energyType is missing. countryAbbrev =", countryAbbrev))
     return(cesModelNoEnergy(countryAbbrev))
   }
   # We need to include energy in the production function.
