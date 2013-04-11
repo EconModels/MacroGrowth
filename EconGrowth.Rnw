@@ -127,13 +127,13 @@
 \author[CalvinEngr]{Caleb Reese}
 \author[CalvinEngr]{Lucas Timmer}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
-\ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
+\ead{mkh2@calvin.edu}
 \author[Stellenbosch]{Martin de Wit}
 \author[CalvinMath]{Randall J. Pruim}
 
 \cortext[cor1]{Corresponding author}
 \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
-\address[Stellenbosch]{Stellenbosch University, Faculty of Economics and Management Sciences, School of Public Leadership, P.O. Box 610, Bellville 7535, South Africa}
+\address[Stellenbosch]{Faculty of Economics and Management Sciences, School of Public Leadership, Stellenbosch University, P.O. Box 610, Bellville 7535, South Africa}
 \address[CalvinMath]{Mathematics \& Statistics Department, Calvin College, Grand Rapids, MI 49546, USA}
 
 \begin{abstract}
@@ -156,7 +156,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model.
-\item Heun: Add CI vs. params plots for all model types. Maybe as a lattice graph where each model type is a panel.
+\item Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel.
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item \st{GDP comparison graph}
@@ -166,13 +166,17 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item \st{Parameter tables for each energy type in the appendix}
       \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
       \item AIC rows in the AIC table (Code is in the createAICTable function, but it is not yet working)
-      \item \st{Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}
       \item Add a CES model without energy option (unspecified energyType parameters means CES without energy)
+        \begin{itemize}
+          \item{Extract CES without energy parameters from the ``without energy'' models and correctly name them: $\sigma \rightarrow \sigma_1$, $\rho \rightarrow \rho_1$, $\delta \rightarrow \delta_1$}
+          \item{Add CES without energy parameters to tables of results in the appendix}
+          \item{Create a CES without energy parameters graphs (with CIs) in the paper}
+          \item{\st{Add CES without energy lines to the CES lattice graph}}
+        \end{itemize}
       \item Revisit my assumptions for the CES production function (with energy) for each country.
       \end{itemize}
-\item Heun: \st{Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
+\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
       \item ZM: lower bound on $\lambda$
@@ -187,6 +191,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
 \item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
+\item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
+\item \st{Heun: Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}
 \item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
