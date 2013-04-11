@@ -124,15 +124,17 @@
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[Calvin]{Caleb Reese}
-\author[Calvin]{Lucas Timmer}
+\author[CalvinEngr]{Caleb Reese}
+\author[CalvinEngr]{Lucas Timmer}
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
 \author[Stellenbosch]{Martin de Wit}
-\author[Calvin]{Matthew Kuperus Heun\corref{cor1}}
+\author[CalvinMath]{Randall J. Pruim}
 \ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
 \cortext[cor1]{Corresponding author}
-\address[Calvin]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
 \address[Stellenbosch]{Stellenbosch University, Faculty of Economics and Management Sciences, School of Public Leadership, P.O. Box 610, Bellville 7535, South Africa}
+\address[CalvinMath]{Mathematics \& Statistics Department, Calvin College, Grand Rapids, MI 49546, USA}
 
 \begin{abstract}
 %% Text of abstract
@@ -153,7 +155,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item Reese: Add text from Word verson of paper to the LaTeX version.
+\item Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model.
+\item Heun: Add CI vs. params plots for all model types. Maybe as a lattice graph where each model type is a panel.
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item \st{GDP comparison graph}
@@ -181,6 +184,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
+\item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
 \item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
 \item \st{Heun: Create a table of AIC values for each fit.}
 \item \st{Heun: Add $u$ predictions for Cobb-Douglas}
@@ -667,7 +671,7 @@ createLINEXLatticeGraph()
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Funding for Martin de Wit was provided by *******. The authors thank Randall Pruim (Calvin College) and Loren L. Heun (Western Michigan University) for their insightful comments on and invaluable assistance with the statistical analyses presented herein.
+Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. A Calvin Research Fellowship provided funding for Matthew Kuperus Heun. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix
