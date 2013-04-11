@@ -127,9 +127,9 @@
 \author[CalvinEngr]{Caleb Reese}
 \author[CalvinEngr]{Lucas Timmer}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 \author[Stellenbosch]{Martin de Wit}
 \author[CalvinMath]{Randall J. Pruim}
-\ead{mkh2@calvin.edu, tel: +1 (616) 526-6663, fax: +1 (616) 526-6501}
 
 \cortext[cor1]{Corresponding author}
 \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
