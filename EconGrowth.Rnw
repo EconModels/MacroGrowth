@@ -168,7 +168,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item AIC rows in the AIC table (Code is in the createAICTable function, but it is not yet working)
       \item \st{Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}
       \item Add a CES model without energy option (unspecified energyType parameters means CES without energy)
+      \item Revisit my assumptions for the CES production function (with energy) for each country.
       \end{itemize}
+\item Heun: \st{Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
       \begin{itemize}
@@ -583,6 +585,16 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 \end{quote}
 
+\subsection{CES without energy}
+
+<<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+
+modelUS <- cesModel("US")
+print(summary(modelUS))
+
+
+@
+
 \subsection{CES with $Q$}
 
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
@@ -671,7 +683,7 @@ createLINEXLatticeGraph()
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. A Calvin Research Fellowship provided funding for Matthew Kuperus Heun. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
+Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix

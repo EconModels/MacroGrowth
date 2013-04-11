@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -1337,7 +1337,8 @@ partialResidualPlot <- function(countryAbbrev, energyType, textScaling=1.0){
 
 <<ces functions, eval=TRUE>>=
 # Set some common names for CES variables.
-xNames = c("iCapStk", "iLabor", "iEToFit")
+xNamesWithoutEnergy = c("iCapStk", "iLabor")
+xNamesWithEnergy = c("iCapStk", "iLabor", "iEToFit")
 tName = "iYear"
 yName = "iGDP"
 
@@ -1347,28 +1348,57 @@ yName = "iGDP"
 # Returns a data.frame with the loaded data.
 ##
 loadAndPrepDataForCES <- function(countryAbbrev, energyType){
+print(paste("Inside loadAndPrepDataForCES. countryAbbrev =", countryAbbrev))
+print(paste("missing(energyType) =", missing(energyType)))
   dataTable <- loadData(countryAbbrev)
-  if (energyType == "U"){
-    # Trim the dataset to include only those years for which U is available.
-    dataTable <- subset(dataTable, !is.na(iU))
-  }
+print("loaded data")
   # Trim data from China and South Africa that is missing labor information for 2011.
   dataTable <- subset(dataTable, !is.na(iLabor))
-  # We need to do the CES fit with the desired energyType.
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function.
-  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+print("Trimmed data")
+  if (!missing(energyType)){
+print("Inside if not missing energy type")
+    if (energyType == "U"){
+      # Trim the dataset to include only those years for which U is available.
+      dataTable <- subset(dataTable, !is.na(iU))
+    }
+    # We need to do the CES fit with the desired energyType.
+    # To achieve the correct fit, we'll change the name of the desired column
+    # to "iEToFit" and use "iEToFit" in the nls function.
+    dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  }
+print("right before return.")
   return(dataTable)
+}
+
+########################
+# Returns a cesEst model (without energy) for the country specified.
+##
+cesModelNoEnergy <- function(countryAbbrev){
+print(paste("Inside cesModelNoEnergy. countryAbbrev =", countryAbbrev))
+  # Load the data that we need.
+  dataTable <- loadAndPrepDataForCES(countryAbbrev)
+  control=nls.lm.control(maxiter=1000, maxfev=2000)
+  modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesWithoutEnergy, tName=tName, control=control)
+  return(modelCES)
 }
 
 ####################
 # Returns a cesEst model for the country and energyType specified.
 # energyType should be one of Q", "X", or "U".
+# If energyType is not specified, this method dispatches to the function cesModelNoEnergy(countryAbbrev)
 ##
 cesModel <- function(countryAbbrev, energyType){
+  if (missing(energyType)){
+print(paste("Inside cesModel. energyType is missing. countryAbbrev =", countryAbbrev))
+    return(cesModelNoEnergy(countryAbbrev))
+  }
+  # We need to include energy in the production function.
   # Load the data that we need.
   dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
   control=nls.lm.control(maxiter=1000, maxfev=2000)
+  # Decide which independent variables we want to use
+  xNamesToUse <- xNamesWithEnergy    
+  # Now estimate the parameters for the CES production function.
   if (countryAbbrev == "US") {
     # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
     # economically meaningful.  So, a grid search was performed, and it confirmed that low values of 
@@ -1379,7 +1409,7 @@ cesModel <- function(countryAbbrev, energyType){
     rho1 = 0.0
     # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
     # complimentary.  We'll let the estCES function solve for the best value.
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        rho1=rho1
                        )
@@ -1390,7 +1420,7 @@ cesModel <- function(countryAbbrev, energyType){
     # substitution between k and l sigma1 = 1.0, giving the Cobb-Douglas form for the k l portion of the CES function.
     # rho1 = c(0.00, 0.01, 0.02)
     rho1 = 0.0
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        rho1=rho1
                        )
@@ -1403,7 +1433,7 @@ cesModel <- function(countryAbbrev, energyType){
     # In fact, we could force rho1 = 0.0 and achieve rho = 280 and sigma = 0.00356 with R^2 = 0.988, a very small
     # decrease, indeed.  Note that both the constrained and unconstrained fits give small sigma, indicating
     # that (kl) and (e) are complimentary.
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM"
                        )
   } else if (countryAbbrev == "CN"){
@@ -1417,15 +1447,15 @@ cesModel <- function(countryAbbrev, energyType){
     # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 0.9983.
     rho1 = 0.0
     rho = 0.0
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        rho1=rho1,
                        rho=rho                     
                        )
   } else if (countryAbbrev == "ZA"){
     # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
-    # between k and l.  sigma = 0.03, indicating complementatity between (kl) and (e).
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    # between k and l.  sigma = 0.03, indicating complementarity between (kl) and (e).
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        )
   } else if (countryAbbrev == "SA"){
@@ -1437,25 +1467,25 @@ cesModel <- function(countryAbbrev, energyType){
     # However, neither the the rho or nor the sigma values are statistically significant.
     rho1 = 5.7
     rho = 0.0
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        rho1 = rho1,
                        rho = rho
                        )
   } else if (countryAbbrev == "IR"){
     # Iran works with an unconstrained fit.
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        )
   } else if (countryAbbrev == "TZ"){
     # Using the PORT algorithm yields convergence and R^2 = 0.9974 with economically menaingful results.
     # However, none of the rho or sigma values are statistically significant.
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="PORT",
                        )
   } else if (countryAbbrev == "ZM"){
     # ZM works with the PORT algorithm, but not the LM algorithm.
-    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNames, tName=tName, control=control,
+    modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="PORT",
                        rho=0.0
                        )
