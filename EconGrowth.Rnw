@@ -162,7 +162,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item \st{Create parameter graphs for each country}
       \item \st{Parameter tables for each energy type in the appendix}
       \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
-      \item AIC rows in the AIC table
+      \item AIC rows in the AIC table (Code is in the createAICTable function, but it is not yet working)
       \item \st{Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}
       \item Add a CES model without energy option (unspecified energyType parameters means CES without energy)
       \end{itemize}
