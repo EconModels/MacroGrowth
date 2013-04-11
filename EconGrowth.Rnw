@@ -163,8 +163,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item \st{Parameter tables for each energy type in the appendix}
       \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
       \item AIC rows in the AIC table
+      \item \st{Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}
       \end{itemize}
-\item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command.
+\item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows. Asked Pruim about this via email on 4 Feb 2013 but have not heard a response.
       \begin{itemize}
       \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
@@ -722,7 +723,6 @@ printCDParamsTable("Q"); printCDParamsTable("X"); printCDParamsTable("U") #With 
 The following tables provide results for parameters in CES models.
 
 <<CES_Params_Table, results='asis'>>=
-#printCESParamsTable("Q"); printCESParamsTable("X"); printCESParamsTable("U")
 printCESParamsTableA("Q"); printCESParamsTableB("Q")
 printCESParamsTableA("X"); printCESParamsTableB("X")
 printCESParamsTableA("U"); printCESParamsTableB("U")
