@@ -1721,49 +1721,6 @@ cesParamsTableDF <- function(energyType){
   return(dataCES)
 }
 
-# ############################
-# # Aggregates the CES results for gamma, delta_1, and delta into a table for the given energyType.
-# ##
-# cesParamsTableA <- function(energyType){
-#   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
-#   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
-#                          " ", "$\\lambda$",   " ",
-#                          " ", "$\\delta_1$",  " ",
-#                          " ", "$\\delta$",    " ",
-#                          " ", "$\\sigma_1$",  " ",
-#                          " ", "$\\sigma$",    " ")
-#   rownames(dataCES) <- countryAbbrevs
-#   tableCESa <- xtable(dataCES[,c(1,2,3, 7,8,9, 10,11,12)], #Picks up gamma, delta_1, and delta
-#                       caption=paste("CES model (with $", tolower(energyType), "$). $\\gamma$, $\\delta_1$, and $\\delta$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
-#                       label=paste("tab:CES_Parameters_With_", energyType, sep=""),
-#                       digits = c(1, 2,2,2, 2,2,2, 2,2,2),
-#                       align = "r|ccc|ccc|ccc" #Sets alignment of the numbers in the columns
-#                       ) 
-#   return(tableCESa)
-# }
-# 
-# ############################
-# # Aggregates the CES results for lambda, sigma_1, and sigma into a table for the given energyType.
-# ##
-# cesParamsTableB <- function(energyType){
-#   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
-#   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
-#                          " ", "$\\lambda$",   " ",
-#                          " ", "$\\delta_1$",  " ",
-#                          " ", "$\\delta$",    " ",
-#                          " ", "$\\sigma_1$",  " ",
-#                          " ", "$\\sigma$",    " ")
-#   rownames(dataCES) <- countryAbbrevs
-#   tableCESb <- xtable(dataCES[,c(4,5,6, 13,14,15, 16,17,18)], #Picks up lambda, sigma_1, and sigma
-#                       caption=paste("CES model (with $", tolower(energyType), "$). $\\lambda$, $\\sigma_1$, and $\\sigma$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
-#                       label=paste("tab:CES_Parameters_With_", energyType, sep=""),
-#                       digits = c(1, 4,4,4, 2,2,2, 2,2,2),
-#                       align = "r|ccc|ccc|ccc"  #Sets alignment of the numbers in the columns
-#                       )
-#   return(tableCESb)
-# }
-# 
-
 ############################
 # Aggregates the CES results for gamma, delta_1, and delta into a table for the given energyType.
 ##
@@ -2200,10 +2157,23 @@ createAICTable <- function(){
   ######################
   # CES models
   ######################
-  cesQModels <- lapply(countryAbbrevs, cesModel, energyType="Q")
-  aicCESq <- data.frame(lapply(cesQModels, AIC))
-  rownames(aicCESq)
-
+# At present, this AIC for CES code is not working. Perhaps because the CES model from the cesEst function
+# in the micEcon package does not provide its data in the correct format for the AIC function?
+# --Matthew Kuperus Heun, 10 April 2013.
+#   # CES with Q
+#   cesQModels <- lapply(countryAbbrevs, cesModel, energyType="Q")
+#   aicCESq <- data.frame(lapply(cesQModels, AIC))
+#   rownames(aicCESq) <- "CES$q$"
+#   # CES with X
+#   cesXModels <- lapply(countryAbbrevs, cesModel, energyType="X")
+#   aicDEXx <- data.frame(lapply(cesXModels, AIC))
+#   rownames(aicCESx) <- "CES$x$"
+#   # CES with U
+#   aicCESu <- cbind(US=AIC(cesModel("US", "U")), 
+#                   UK=AIC(cesModel("UK", "U")), 
+#                   JP=AIC(cesModel("JP", "U")),
+#                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
+#   rownames(aicCESu) <- "CES$u$"
   ######################
   # LINEX models
   ######################
@@ -2223,7 +2193,13 @@ createAICTable <- function(){
   rownames(aicLINEXu) <- "LINEX$u$"
   
   # Create the data.frame table
-  out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, aicCD, aicCDq, aicCDx, aicCDu, aicLINEXq, aicLINEXx, aicLINEXu) 
+  out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, 
+               aicCD, aicCDq, aicCDx, aicCDu, 
+               aicLINEXq, aicLINEXx, aicLINEXu) 
+#   out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, 
+#                aicCD, aicCDq, aicCDx, aicCDu, 
+#                aicCESq, aicCESx, aicCESu, 
+#                aicLINEXq, aicLINEXx, aicLINEXu) 
   # Create the xtable with caption and label
   out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
   return(out)
