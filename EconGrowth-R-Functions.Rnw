@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -1490,19 +1490,23 @@ cesModel <- function(countryAbbrev, energyType){
 #########################
 # Takes the CES fitted models and creates per-country predictions for them.
 # Returns a data.frame with the predictions.
+# If energyType is not specified, the CES model without energy will be used.
 ##
 cesPredictions <- function(countryAbbrev, energyType){
-  dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType)
-  # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
-  if (!(haveDataSF(countryAbbrev, energyType))){
-    # If we don't have data for this combination of countryAbbrev and energyType, 
-    # return a column of NAs if the above conditions have been met.
-    nRows <- 21 # All of these countries need 21 rows.
-    df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
-    colnames(df) <- "pred"
-    return(df)
+  if (missing(energyType)){
+    model <- cesModel(countryAbbrev)
+  } else {
+    # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
+    if (!(haveDataSF(countryAbbrev, energyType))){
+      # If we don't have data for this combination of countryAbbrev and energyType, 
+      # return a column of NAs if the above conditions have been met.
+      nRows <- 21 # All of these countries need 21 rows.
+      df <- as.data.frame(matrix(NA, ncol = 1, nrow = nRows))
+      colnames(df) <- "pred"
+      return(df)
+    }
+    model <- cesModel(countryAbbrev, energyType)
   }
-  model <- cesModel(countryAbbrev, energyType)
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -1513,10 +1517,16 @@ cesPredictions <- function(countryAbbrev, energyType){
 #########################
 # Takes the CES fitted models and creates a single column of predicted GDP values
 # that corresponds, row for row, with the AllData.txt file.
+# If energyType is not specified, the CES model without energy will be used for the predictions.
 ##
 cesPredictionsColumn <- function(energyType){
-  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType))
-  colnames(out) <- c(paste("predGDP", energyType, sep=""))
+  if (missing(energyType)){
+    out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions))      
+    colnames(out) <- "predGDP"
+  } else {
+    out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType))  
+    colnames(out) <- c(paste("predGDP", energyType, sep=""))
+  }
   return(out)
 }
 
@@ -1526,16 +1536,17 @@ cesPredictionsColumn <- function(energyType){
 ##
 createCESLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
   dataTable <- loadData("All") #Grab the raw data
+  predictions <- cesPredictionsColumn() #Predictions from CES without energy
   predictionsQ <- cesPredictionsColumn("Q") #Predictions from CES with Q
   predictionsX <- cesPredictionsColumn("X") #Predictions from CES with X
   predictionsU <- cesPredictionsColumn("U") #Predictions from CES with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictionsQ, predictionsX, predictionsU) 
+  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "red", "blue", "darkorange") #line and symbol colors
+  symbols <- c(1, NA, NA, NA, NA)  #NA gives no symbol.
   # Code that deals with items that are specific to whether we want all countries or a specific country.  
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
@@ -1555,7 +1566,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = de
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -1566,7 +1577,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = de
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "With $q$", "With $x$", "With $u$")),
+                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
                            type=graphType,
                            cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types

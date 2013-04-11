@@ -589,25 +589,29 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 
-print("US")
-print(summary(cesModel("US")))
-print("UK")
-print(summary(cesModel("UK")))
-print("JP")
-print(summary(cesModel("JP")))
-print("CN")
-print(summary(cesModel("CN")))
-print("ZA")
-print(summary(cesModel("ZA")))
-print("SA")
-print(summary(cesModel("SA")))
-print("IR")
-print(summary(cesModel("IR")))
-print("TZ")
-print(summary(cesModel("TZ")))
-print("ZM")
-print(summary(cesModel("ZM")))
+# print("US")
+# print(summary(cesModel("US")))
+# print("UK")
+# print(summary(cesModel("UK")))
+# print("JP")
+# print(summary(cesModel("JP")))
+# print("CN")
+# print(summary(cesModel("CN")))
+# print("ZA")
+# print(summary(cesModel("ZA")))
+# print("SA")
+# print(summary(cesModel("SA")))
+# print("IR")
+# print(summary(cesModel("IR")))
+# print("TZ")
+# print(summary(cesModel("TZ")))
+# print("ZM")
+# print(summary(cesModel("ZM")))
 
+# print(cesPredictionsColumn("Q"))
+# print(cesPredictionsColumn())
+
+# createCESLatticeGraph()
 
 @
 
