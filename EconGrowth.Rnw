@@ -159,11 +159,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel.
 \item Heun: Add CES production function fits
       \begin{itemize}
-      \item \st{GDP comparison graph}
-      \item \st{Convert $\rho$ variables in the CES production function to $\sigma$}
+      \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
       \item Write up the decisions about parameter estimation for the CES production function fits
-      \item \st{Create parameter graphs for each country}
-      \item \st{Parameter tables for each energy type in the appendix}
       \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
       \item AIC rows in the AIC table (Code is in the createAICTable function, but it is not yet working)
       \item Add a CES model without energy option (unspecified energyType parameters means CES without energy)
@@ -174,6 +171,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
           \item{\st{Add CES without energy lines to the CES lattice graph}}
         \end{itemize}
       \item Revisit my assumptions for the CES production function (with energy) for each country.
+      \item \st{Create parameter graphs for each country}
+      \item \st{Parameter tables for each energy type in the appendix}
+      \item \st{GDP comparison graph}
+      \item \st{Convert $\rho$ variables in the CES production function to $\sigma$}
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows
@@ -595,29 +596,7 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 
-# print("US")
-# print(summary(cesModel("US")))
-# print("UK")
-# print(summary(cesModel("UK")))
-# print("JP")
-# print(summary(cesModel("JP")))
-# print("CN")
-# print(summary(cesModel("CN")))
-# print("ZA")
-# print(summary(cesModel("ZA")))
-# print("SA")
-# print(summary(cesModel("SA")))
-# print("IR")
-# print(summary(cesModel("IR")))
-# print("TZ")
-# print(summary(cesModel("TZ")))
-# print("ZM")
-# print(summary(cesModel("ZM")))
-
-# print(cesPredictionsColumn("Q"))
-# print(cesPredictionsColumn())
-
-# createCESLatticeGraph()
+print(cesData("US"))
 
 @
 
