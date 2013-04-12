@@ -597,6 +597,7 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 
 print(cesData("US"))
+print(cesCountryRow("US"))
 
 @
 

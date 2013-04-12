@@ -1636,6 +1636,12 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = de
 # Each column has names: gamma, lambda, delta_1, delta, rho_1, rho
 ##
 cesData <- function(countryAbbrev, energyType=NULL){
+  # Determine whether we want an energy term or not
+  if (missing(energyType) || is.null(energyType) || is.na(energyType) || energyType == ""){
+    wantEnergyTerm <- FALSE
+  } else {
+    wantEnergyTerm <- TRUE
+  }
   #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataCES(countryAbbrev, energyType)){
     #Return a column of NAs if we don't have data available for this combination of country and energy type.
@@ -1650,12 +1656,12 @@ cesData <- function(countryAbbrev, energyType=NULL){
   modelCES <- cesModel(countryAbbrev, energyType)
   summaryCES <- summary(modelCES) # Gives a summary table.
   # Calculate the degrees of freedom as N_obs - N_params
-  if (is.null(energyType)){
-    # For a CES model without energy, we have 4 parameters: gamma, lambda, delta, and rho
-    dofCES <- nrow(loadAndPrepDataForCES(countryAbbrev)) - 4 #    
-  } else {
+  if (wantEnergyTerm){
     # For a CES model with energy, we have 6 parameters: gamma, lambda, delta, rho, delta_1, and rho_1
     dofCES <- nrow(loadAndPrepDataForCES(countryAbbrev, energyType)) - 6 # Gives the degrees of freedom for the model.
+  } else {
+    # For a CES model without energy, we have 4 parameters: gamma, lambda, delta, and rho
+    dofCES <- nrow(loadAndPrepDataForCES(countryAbbrev)) - 4 #    
   }
   tvalCES <- qt(ciHalfLevel, df = dofCES)
   # Calculate confidence intervals for the parameters of the model
@@ -1668,11 +1674,11 @@ cesData <- function(countryAbbrev, energyType=NULL){
   #######################
   sigma.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho)") # Estimates sigma and its standard error (SE)
   sigmaCI <- with(sigma.est, Estimate + c(-1.0, 1.0) * tvalCES * SE)
-  if (!is.null(energyType)){
+  if (wantEnergyTerm){
     sigma_1.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho_1)") # Estimates sigma_1 and its standard error (SE)
     sigma_1CI <- with(sigma_1.est, Estimate + c(-1.0, 1.0) * tvalCES * SE)
   }
-  if (is.null(energyType)){
+  if (!wantEnergyTerm){
     # We're not using energy in this fit.
     gamma <- coef(modelCES)["gamma"]
     lambda <- coef(modelCES)["lambda"]
