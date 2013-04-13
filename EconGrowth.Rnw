@@ -596,7 +596,7 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 \subsection{CES without energy}
 
-<<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
+<<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 
 # print(cesData("US"))
 # print(cesCountryRow("US"))
@@ -755,7 +755,7 @@ printSFParamsTable(factor="Q"); printSFParamsTable(factor="X"); printSFParamsTab
 
 The following tables provide results for parameters in Cobb-Douglas models with and without energy terms.
 
-<<CD_Params_Table, results='asis', eval=TRUE>>=
+<<CD_Params_Table, results='asis'>>=
 printCDParamsTable(energyType=NA)    #Without energy
 printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDParamsTable(energyType="U") #With energy
 @
@@ -764,7 +764,7 @@ printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDP
 
 The following tables provide results for parameters in CES models.
 
-<<CES_Params_Table, results='asis', eval=TRUE>>=
+<<CES_Params_Table, results='asis'>>=
 printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)
 printCESParamsTableA(energyType="Q"); printCESParamsTableB(energyType="Q")
 printCESParamsTableA(energyType="X"); printCESParamsTableB(energyType="X")
@@ -786,7 +786,7 @@ printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); pr
 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
-<<AIC_Table, results='asis', label="AIC_Table">>=
+<<AIC_Table, results='asis', label="AIC_Table", eval=TRUE>>=
 print(createAICTable(), 
       caption.placement="top", 
       sanitize.rownames.function = identity,
