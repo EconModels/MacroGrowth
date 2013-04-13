@@ -157,6 +157,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model.
 \item Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel.
+\item{Heun: Convert to using NA everywhere for models without energy}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -457,26 +458,26 @@ We begin by fitting single-factor economic models of the form
 \noindent to historical data where the factor of production ($f$) is one of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
 
 <<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph("K")
+createSFParamsGraph(factor="K")
 @
 
 <<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph("L")
+createSFParamsGraph(factor="L")
 @
 
 <<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph("Q")
+createSFParamsGraph(factor="Q")
 @
 
 <<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph("X")
+createSFParamsGraph(factor="X")
 @
 
 <<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph("U")
+createSFParamsGraph(factor="U")
 @
 
-Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historica data.
+Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
 
 <<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
@@ -495,7 +496,7 @@ The Cobb-Douglas model without energy is given by
 Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
 
 <<CD_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph()
+createCDParamsGraph(energyType=NA)
 @
 
 \section{Cobb-Douglas Models With Energy (CDe)}
@@ -519,13 +520,13 @@ The Cobb-Douglas with energy parameter estimation process is challenging. To dem
 ******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
 
 <<CDeGammaGraphsZA, fig.width=5, fig.height=3, fig.align="center", fig.cap="Cobb-Douglas with thermal energy ($q$) grid search for minimum $SSE$ for South Africa.", fig.pos="H">>=
-cdeGridGraph("ZA", "Q")
+cdeGridGraph(countryAbbrev="ZA", energyType="Q")
 @
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
 <<CDq_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph("Q")
+createCDParamsGraph(energyType="Q")
 @
 
 \subsection{Cobb-Douglas with exergy ($x$)}
@@ -535,7 +536,7 @@ The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Paramet
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 <<CDx_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph("X")
+createCDParamsGraph(energyType="X")
 @
 
 \subsection{Cobb-Douglas with useful work ($u$)}
@@ -543,7 +544,7 @@ createCDParamsGraph("X")
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
 <<CDu_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph("U")
+createCDParamsGraph(energyType="U")
 @
 
 \subsection{Cobb-Douglas Comparisons}
@@ -596,8 +597,25 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.", eval=TRUE>>=
 
-print(cesData("US"))
-print(cesCountryRow("US"))
+# print(cesData("US"))
+# print(cesCountryRow("US"))
+# print(cesCountryRowsForParamsGraph("US"))
+# print(cesParamsTableDF())
+
+# Testing null and missing
+
+testMissing <- function(param){
+  print(paste("missing(param) =", missing(param)))
+  print(paste("is.na(param) =", is.na(param)))
+  print(paste("is.null(param) =", is.null(param)))
+  print(paste("param =", param))
+}
+
+# testMissing()
+# testMissing(NA)
+# testMissing(NULL)
+# testMissing("")
+
 
 @
 
@@ -606,7 +624,7 @@ print(cesCountryRow("US"))
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
 <<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph("Q")
+createCESParamsGraph(energyType="Q")
 @
 
 \subsection{CES with $X$}
@@ -614,7 +632,7 @@ createCESParamsGraph("Q")
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
 <<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph("X")
+createCESParamsGraph(energyType="X")
 @
 
 \subsection{CES with $U$}
@@ -622,7 +640,7 @@ createCESParamsGraph("X")
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
 <<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph("U")
+createCESParamsGraph(energyType="U")
 @
 
 \subsection{CES comparisons}
@@ -651,7 +669,7 @@ The LINEX model has the form
 Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
 <<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createLINEXParamsGraph("Q")
+createLINEXParamsGraph(energyType="Q")
 @
 
 \subsection{LINEX with $X$}
@@ -659,7 +677,7 @@ createLINEXParamsGraph("Q")
 Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
 <<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createLINEXParamsGraph("X")
+createLINEXParamsGraph(energyType="X")
 @
 
 \subsection{LINEX with $U$}
@@ -667,7 +685,7 @@ createLINEXParamsGraph("X")
 Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
 <<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createLINEXParamsGraph("U")
+createLINEXParamsGraph(energyType="U")
 @
 
 \subsection{LINEX comparisons}
@@ -708,12 +726,12 @@ Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
 
 <<Print_Covariance_Tables, results='asis'>>=
-#I wish I could say this, but I get bogus "$US" strings appearing in the LaTeX output.
+#I wish I could say the following, but I get bogus "$US" strings appearing in the LaTeX output.
 #lapply(countryAbbrevs, printCovarTable)
-printCovarTable("US"); printCovarTable("UK"); printCovarTable("JP")
-printCovarTable("CN"); printCovarTable("ZA")
-printCovarTable("SA"); printCovarTable("IR")
-printCovarTable("TZ"); printCovarTable("ZM")
+printCovarTable(countryAbbrev="US"); printCovarTable(countryAbbrev="UK"); printCovarTable(countryAbbrev="JP")
+printCovarTable(countryAbbrev="CN"); printCovarTable(countryAbbrev="ZA")
+printCovarTable(countryAbbrev="SA"); printCovarTable(countryAbbrev="IR")
+printCovarTable(countryAbbrev="TZ"); printCovarTable(countryAbbrev="ZM")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -728,27 +746,28 @@ The following tables provide results for parameters in single-factor models.
 <<SF_Params_Tables, results='asis'>>=
 #I wish I could say this, but I get bogus K [1]” strings appearing in the LaTeX output.
 #lapply(factors, printSingleFactorParamsTable)
-printSFParamsTable("K"); printSFParamsTable("L")
-printSFParamsTable("Q"); printSFParamsTable("X"); printSFParamsTable("U")
+printSFParamsTable(factor="K"); printSFParamsTable(factor="L")
+printSFParamsTable(factor="Q"); printSFParamsTable(factor="X"); printSFParamsTable(factor="U")
 @
 
 \subsection{Cobb-Douglas Models}
 
 The following tables provide results for parameters in Cobb-Douglas models with and without energy terms.
 
-<<CD_Params_Table, results='asis'>>=
-printCDParamsTable()    #Without energy
-printCDParamsTable("Q"); printCDParamsTable("X"); printCDParamsTable("U") #With energy
+<<CD_Params_Table, results='asis', eval=TRUE>>=
+printCDParamsTable(energyType=NA)    #Without energy
+printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDParamsTable(energyType="U") #With energy
 @
 
 \subsection{CES Models}
 
 The following tables provide results for parameters in CES models.
 
-<<CES_Params_Table, results='asis'>>=
-printCESParamsTableA("Q"); printCESParamsTableB("Q")
-printCESParamsTableA("X"); printCESParamsTableB("X")
-printCESParamsTableA("U"); printCESParamsTableB("U")
+<<CES_Params_Table, results='asis', eval=TRUE>>=
+printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)
+printCESParamsTableA(energyType="Q"); printCESParamsTableB(energyType="Q")
+printCESParamsTableA(energyType="X"); printCESParamsTableB(energyType="X")
+printCESParamsTableA(energyType="U"); printCESParamsTableB(energyType="U")
 @
 
 \subsection{LINEX Models}
@@ -756,7 +775,7 @@ printCESParamsTableA("U"); printCESParamsTableB("U")
 The following tables provide results for parameters in LINEX models.
 
 <<LINEX_Params_Table, results='asis'>>=
-printLINEXParamsTable("Q"); printLINEXParamsTable("X"); printLINEXParamsTable("U")
+printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); printLINEXParamsTable(energyType="U")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
