@@ -762,7 +762,7 @@ printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDP
 
 \subsection{CES Models}
 
-The following tables provide results for parameters in CES models.
+The following tables provide results for parameters in CES models with and without energy terms.
 
 <<CES_Params_Table, results='asis'>>=
 printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)

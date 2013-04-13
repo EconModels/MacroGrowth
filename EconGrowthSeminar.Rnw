@@ -771,10 +771,10 @@ pprint <- function(num, digits = 2){
 @
 
 <<Coefs_US_CD>>=
-cdUS <- cobbDouglasData("US")
-cdqUS <- cobbDouglasData("US", "Q")
-cdxUS <- cobbDouglasData("US", "X")
-cduUS <- cobbDouglasData("US", "U")
+cdUS  <- cobbDouglasData(countryAbbrev="US", energyType=NA)
+cdqUS <- cobbDouglasData(countryAbbrev="US", energyType="Q")
+cdxUS <- cobbDouglasData(countryAbbrev="US", energyType="X")
+cduUS <- cobbDouglasData(countryAbbrev="US", energyType="U")
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -799,7 +799,7 @@ cduUS <- cobbDouglasData("US", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_US_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph(countryAbbrev="US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -807,10 +807,10 @@ createCDLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 <<Coefs_UK_CD>>=
-cdUK <- cobbDouglasData("UK")
-cdqUK <- cobbDouglasData("UK", "Q")
-cdxUK <- cobbDouglasData("UK", "X")
-cduUK <- cobbDouglasData("UK", "U")
+cdUK  <- cobbDouglasData(countryAbbrev="UK", energyType=NA)
+cdqUK <- cobbDouglasData(countryAbbrev="UK", energyType="Q")
+cdxUK <- cobbDouglasData(countryAbbrev="UK", energyType="X")
+cduUK <- cobbDouglasData(countryAbbrev="UK", energyType="U")
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -835,7 +835,7 @@ cduUK <- cobbDouglasData("UK", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_UK_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createCDLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph(countryAbbrev="UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -843,9 +843,9 @@ createCDLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 <<Coefs_ZA_CD>>=
-cdZA <- cobbDouglasData("ZA")
-cdqZA <- cobbDouglasData("ZA", "Q")
-cdxZA <- cobbDouglasData("ZA", "X")
+cdZA  <- cobbDouglasData(countryAbbrev="ZA", energyType=NA)
+cdqZA <- cobbDouglasData(countryAbbrev="ZA", energyType="Q")
+cdxZA <- cobbDouglasData(countryAbbrev="ZA", energyType="X")
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -869,7 +869,7 @@ cdxZA <- cobbDouglasData("ZA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_ZA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph(countryAbbrev="ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -877,9 +877,9 @@ createCDLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 \end{frame}
 
 <<Coefs_SA_CD>>=
-cdSA <- cobbDouglasData("SA")
-cdqSA <- cobbDouglasData("SA", "Q")
-cdxSA <- cobbDouglasData("SA", "X")
+cdSA  <- cobbDouglasData(countryAbbrev="SA", energyType=NA)
+cdqSA <- cobbDouglasData(countryAbbrev="SA", energyType="Q")
+cdxSA <- cobbDouglasData(countryAbbrev="SA", energyType="X")
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -903,7 +903,7 @@ cdxSA <- cobbDouglasData("SA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_SA_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph(countryAbbrev="SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -912,7 +912,7 @@ createCDLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyY
 
 \begin{frame}{Beneficial to Include Energy?}  %----------------------------
 <<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
+partialResidualPlot(countryAbbrev="US", energyType="Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
@@ -920,7 +920,7 @@ partialResidualPlot("US", "Q", textScaling=textScaleForGraphs)
 
 \begin{frame}{Beneficial to Include Energy?}  %----------------------------
 <<UK_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-partialResidualPlot("UK", "Q", textScaling=textScaleForGraphs)
+partialResidualPlot(countryAbbrev="UK", energyType="Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{UK}{0.055}
@@ -928,7 +928,7 @@ partialResidualPlot("UK", "Q", textScaling=textScaleForGraphs)
 
 \begin{frame}{95\% Confidence Intervals}{Cobb-Douglas with $q$} %----------------------------
 <<CDq_Params_Graph, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createCDParamsGraph("Q")
+createCDParamsGraph(energyType="Q")
 @  
 \end{frame}
 
@@ -993,9 +993,9 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="Q")
 \end{frame}
 
 <<Coefs_US_CES>>=
-cesqUS <- cesData("US", "Q")
-cesxUS <- cesData("US", "X")
-cesuUS <- cesData("US", "U")
+cesqUS <- cesData(countryAbbrev="US", energyType="Q")
+cesxUS <- cesData(countryAbbrev="US", energyType="X")
+cesuUS <- cesData(countryAbbrev="US", energyType="U")
 @
 \begin{frame}{CES $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1030,7 +1030,7 @@ cesuUS <- cesData("US", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_US_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCESLatticeGraph(countryAbbrev="US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1038,9 +1038,9 @@ createCESLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 \end{frame}
 
 <<Coefs_UK_CES>>=
-cesqUK <- cesData("UK", "Q")
-cesxUK <- cesData("UK", "X")
-cesuUK <- cesData("UK", "U")
+cesqUK <- cesData(countryAbbrev="UK", energyType="Q")
+cesxUK <- cesData(countryAbbrev="UK", energyType="X")
+cesuUK <- cesData(countryAbbrev="UK", energyType="U")
 @
 \begin{frame}{CES $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1075,7 +1075,7 @@ cesuUK <- cesData("UK", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_UK_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCESLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCESLatticeGraph(countryAbbrev="UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1083,8 +1083,8 @@ createCESLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 \end{frame}
 
 <<Coefs_ZA_CES>>=
-cesqZA <- cesData("ZA", "Q")
-cesxZA <- cesData("ZA", "X")
+cesqZA <- cesData(countryAbbrev="ZA", energyType="Q")
+cesxZA <- cesData(countryAbbrev="ZA", energyType="X")
 @
 \begin{frame}{CES $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1116,7 +1116,7 @@ cesxZA <- cesData("ZA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_ZA_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCESLatticeGraph(countryAbbrev="ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1124,8 +1124,8 @@ createCESLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 \end{frame}
 
 <<Coefs_SA_CES>>=
-cesqSA <- cesData("SA", "Q")
-cesxSA <- cesData("SA", "X")
+cesqSA <- cesData(countryAbbrev="SA", energyType="Q")
+cesxSA <- cesData(countryAbbrev="SA", energyType="X")
 @
 \begin{frame}{CES $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1157,7 +1157,7 @@ cesxSA <- cesData("SA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_SA_CES, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCESLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCESLatticeGraph(countryAbbrev="SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1166,7 +1166,7 @@ createCESLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, key
 
 \begin{frame}{95\% Confidence Intervals}{CES with $q$} %----------------------------
 <<CESq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
-createCESParamsGraph("Q")
+createCESParamsGraph(energyType="Q")
 @  
 \end{frame}
 
@@ -1227,9 +1227,9 @@ CIvsParamPlot(model="CES", param="delta", energyType="Q")
 \end{frame}
 
 <<Coefs_US_LINEX>>=
-linexqUS <- linexData("US", "Q")
-linexxUS <- linexData("US", "X")
-linexuUS <- linexData("US", "U")
+linexqUS <- linexData(countryAbbrev="US", energyType="Q")
+linexxUS <- linexData(countryAbbrev="US", energyType="X")
+linexuUS <- linexData(countryAbbrev="US", energyType="U")
 @
 \begin{frame}{LINEX $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1253,7 +1253,7 @@ linexuUS <- linexData("US", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_US_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createLINEXLatticeGraph(countryAbbrev="US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1261,9 +1261,9 @@ createLINEXLatticeGraph("US", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \end{frame}
 
 <<Coefs_UK_LINEX>>=
-linexqUK <- linexData("UK", "Q")
-linexxUK <- linexData("UK", "X")
-linexuUK <- linexData("UK", "U")
+linexqUK <- linexData(countryAbbrev="UK", energyType="Q")
+linexxUK <- linexData(countryAbbrev="UK", energyType="X")
+linexuUK <- linexData(countryAbbrev="UK", energyType="U")
 @
 \begin{frame}{LINEX $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1287,7 +1287,7 @@ linexuUK <- linexData("UK", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_UK_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createLINEXLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createLINEXLatticeGraph(countryAbbrev="UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1295,8 +1295,8 @@ createLINEXLatticeGraph("UK", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \end{frame}
 
 <<Coefs_ZA_LINEX>>=
-linexqZA <- linexData("ZA", "Q")
-linexxZA <- linexData("ZA", "X")
+linexqZA <- linexData(countryAbbrev="ZA", energyType="Q")
+linexxZA <- linexData(countryAbbrev="ZA", energyType="X")
 @
 \begin{frame}{LINEX $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1318,7 +1318,7 @@ linexxZA <- linexData("ZA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_ZA_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createLINEXLatticeGraph(countryAbbrev="ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1326,8 +1326,8 @@ createLINEXLatticeGraph("ZA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 \end{frame}
 
 <<Coefs_SA_LINEX>>=
-linexqSA <- linexData("SA", "Q")
-linexxSA <- linexData("SA", "X")
+linexqSA <- linexData(countryAbbrev="SA", energyType="Q")
+linexxSA <- linexData(countryAbbrev="SA", energyType="X")
 @
 \begin{frame}{LINEX $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1349,7 +1349,7 @@ linexxSA <- linexData("SA", "X")
       \end{center}
     \column{2.2in}
 <<Results_Graph_SA_LINEX, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight>>=
-createLINEXLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createLINEXLatticeGraph(countryAbbrev="SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
@@ -1370,7 +1370,7 @@ createLINEXLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, k
 
 \begin{frame}{95\% Confidence Intervals}{LINEX with $q$} %----------------------------
 <<LINEXq_Params_Graph, fig.width=presentationGraph1ColWidth*1.8, fig.height=presentationGraph1RowHeight*1.8>>=
-createLINEXParamsGraph("Q")
+createLINEXParamsGraph(energyType="Q")
 @  
 \end{frame}
 
@@ -1506,11 +1506,11 @@ createLINEXParamsGraph("Q")
   \begin{columns}[c]
     \column{2.2in}
 <<Historical_Data_JP, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
 <<Historical_Data_CN, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="CN", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   \putat{flag/flag_JP.png}{0.055}{-0.73in}{1.0in}
@@ -1521,11 +1521,11 @@ createHistoricalLatticeGraph("CN", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \begin{columns}[c]
     \column{2.2in}
 <<Historical_Data_SA_Appendix, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="SA", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
 <<Historical_Data_IR, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("IR", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="IR", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   \putat{flag/flag_SA.png}{0.055}{-0.73in}{1.0in}
@@ -1536,11 +1536,11 @@ createHistoricalLatticeGraph("IR", textScaling=textScaleForGraphs, keyXLoc=keyXL
   \begin{columns}[c]
     \column{2.2in}
 <<Historical_Data_TZ, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("TZ", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="TZ", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @    
     \column{2.2in}
 <<Historical_Data_ZM, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createHistoricalLatticeGraph("ZM", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createHistoricalLatticeGraph(countryAbbrev="ZM", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   \putat{flag/flag_TZ.png}{0.055}{-0.73in}{1.0in}
@@ -1551,13 +1551,13 @@ createHistoricalLatticeGraph("ZM", textScaling=textScaleForGraphs, keyXLoc=keyXL
 
 \begin{frame}{95\% Confidence Intervals}{Single-factor with $K$} %----------------------------
 <<SF_Params_Graph_K, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("K")
+createSFParamsGraph(factor="K")
 @  
 \end{frame}
 
 \begin{frame}{95\% Confidence Intervals}{Single-factor with $L$} %----------------------------
 <<SF_Params_Graph_L, fig.width=presentationGraph1ColWidth*1.3, fig.height=presentationGraph1RowHeight*1.3>>=
-createSFParamsGraph("L")
+createSFParamsGraph(factor="L")
 @  
 \end{frame}
 
@@ -1593,7 +1593,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("JP", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="JP", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{JP}{0.045}
@@ -1601,7 +1601,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsCN, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("CN", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="CN", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{CN}{0.045}
@@ -1609,7 +1609,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("ZA", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="ZA", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZA}{0.055}
@@ -1617,7 +1617,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("SA", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="SA", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{SA}{0.055}
@@ -1625,7 +1625,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsIR, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("IR", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="IR", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{IR}{0.055}
@@ -1633,7 +1633,7 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("TZ", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="TZ", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{TZ}{0.07}
@@ -1641,17 +1641,17 @@ createCDParamsGraph()
 
 \begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZM, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("ZM", "Q", textScaling=0.8)
+  cdeGridGraph(countryAbbrev="ZM", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZM}{0.055}
 \end{frame}
 
 <<Coefs_JP_CD>>=
-cdJP <- cobbDouglasData("JP")
-cdqJP <- cobbDouglasData("JP", "Q")
-cdxJP <- cobbDouglasData("JP", "X")
-cduJP <- cobbDouglasData("JP", "U")
+cdJP  <- cobbDouglasData(countryAbbrev="JP", energyType=NA)
+cdqJP <- cobbDouglasData(countryAbbrev="JP", energyType="Q")
+cdxJP <- cobbDouglasData(countryAbbrev="JP", energyType="X")
+cduJP <- cobbDouglasData(countryAbbrev="JP", energyType="U")
 @
 \begin{frame}{Cobb-Douglas $y$ Predictions} %----------------------------
   \begin{columns}[c]
@@ -1677,7 +1677,7 @@ cduJP <- cobbDouglasData("JP", "U")
       \end{center}
     \column{2.2in}
 <<Results_Graph_JP_CD, fig.width=presentationGraph2ColWidth, fig.height=presentationGraph1RowHeight, fig.pos="H">>=
-createCDLatticeGraph("JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
+createCDLatticeGraph(countryAbbrev="JP", textScaling=textScaleForGraphs, keyXLoc=keyXLoc, keyYLoc=keyYLoc)
 @
   \end{columns}
   % Including at bottom of frame so as not to push other material downward in the frame.
