@@ -323,6 +323,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                               x=list(at=timeTics),
                               y=list(relation="free",  #allows each axis to be different
                                      at=yTicsForIndexedGraphs)), #specifies location for tics
@@ -451,6 +452,7 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                               x=list(at=timeTics),
                               y=list(relation="free",  #allows each axis to be different
                                      at=yTicsForIndexedGraphs)), #specifies location for tics
@@ -906,6 +908,7 @@ cdeGridGraph <- function(countryAbbrev, energyType, keyXLoc = defaultKeyXLoc, ke
                               columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                      scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                                  x=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)), #location for x tics
                                  y=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0))  #location for y tics
                      ), 
@@ -1320,6 +1323,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                               x=list(at=timeTics),
                               y=list(relation="free",  #allows each axis to be different
                                      at=yTicsForIndexedGraphs)), #specifies location for tics
@@ -1580,6 +1584,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                               x=list(at=timeTics),
                               y=list(relation="free",  #allows each axis to be different
                                      at=yTicsForIndexedGraphs)), #specifies location for tics
@@ -2018,6 +2023,7 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
                               x=list(at=timeTics),
                               y=list(relation="free",  #allows each axis to be different
                                      at=yTicsForIndexedGraphs)), #specifies location for tics
@@ -2473,7 +2479,8 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
                    as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                    col = "black",
                    scales = list(cex=scaleTextSize*textScaling, #controls text size on scales.
-                                 tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 alternating=FALSE), # prevents left/right, top/bot alternating
                    xlab = list(label=xLabelString, cex=textScaling),
                    ylab = list(label=yLabelString, cex=textScaling)
                    )

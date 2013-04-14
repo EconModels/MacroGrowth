@@ -161,9 +161,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
       \item Write up the decisions about parameter estimation for the CES production function fits
-      \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
-      \item{AIC rows in the AIC table. Code is in the createAICTable function, but it is not yet working. Need to find a way to calculate AIC from the object that is returned from the cesEst function.}
       \item Revisit my assumptions for the CES production function (with energy) for each country.
+      \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
+      \item{Add CES rows to the AIC table. Code is in the createAICTable function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the cesEst function.}
       \item \st{Create parameter graphs for each country}
       \item \st{Parameter tables for each energy type in the appendix}
       \item \st{GDP comparison graph}
@@ -185,14 +185,14 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \end{itemize}
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the LINEX model
       \begin{itemize}
-      \item Zambia, upper bound on $c_t$
+      \item ZM: upper bound on $c_t$
       \end{itemize}
 \item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
-\item Heun: x-axis labels only on bottom for 9-panel lattice graphs
 \item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
 \item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
+\item{\st{Heun: x-axis labels only on bottom for 9-panel lattice graphs}}
 \item{\st{Heun: Convert the presentation to use energyType=NA for models without energy}}
 \item{\st{Heun: Convert to using NA everywhere for models without energy}}
 \item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
@@ -503,15 +503,15 @@ createCDParamsGraph(energyType=NA)
 
 To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we create partial residual plots as shown in Figures \ref{fig:CDPartialResidualsQ} - \ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, suggesting that energy augmentation of the Cobb-Douglas production function will not be beneficial.
 
-<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
+<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
+<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
+<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
@@ -620,15 +620,15 @@ createCESParamsGraph(energyType=NA)
 
 Similar to the analysis of the Cobb-Douglas model above, we make partial residual plots for the CES model in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
 
-<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
+<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
+<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
+<<CESPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
@@ -798,7 +798,7 @@ printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); pr
 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
-<<AIC_Table, results='asis', label="AIC_Table", eval=TRUE>>=
+<<AIC_Table, results='asis', label="AIC_Table">>=
 print(createAICTable(), 
       caption.placement="top", 
       sanitize.rownames.function = identity,
