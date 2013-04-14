@@ -501,6 +501,21 @@ Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for 
 createCDParamsGraph(energyType=NA)
 @
 
+To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we create partial residual plots as shown in Figures \ref{fig:CDPartialResidualsQ} - \ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, suggesting that energy augmentation of the Cobb-Douglas production function will not be beneficial.
+
+<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
+@
+
+<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
+@
+
+<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
+@
+
+
 \section{Cobb-Douglas Models With Energy (CD$e$)}
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
@@ -516,30 +531,6 @@ The Cobb-Douglas model with energy is given by
 \noindent where $e$ can be one of thermal energy ($q$), exergy ($x$), or useful work ($u$).
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
-
-<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
-@
-
-<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
-@
-
-<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
-@
-
-<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
-@
-
-<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
-@
-
-<<CESPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
-createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
-@
 
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGammaGraphsZA} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ for South Africa with thermal energy ($q$). The minimum $SSE$ occurs at a discontinuity caused by the constraint $\beta \geq 0.0$. The parameter estimation algorithm has difficulty recognizing the values of $\gamma$, $\alpha$, $\beta$, and $\lambda$ that produce minimum $SSE$, because the constrained model behaves very differently on either side of the discontinuity.
 
@@ -629,6 +620,20 @@ Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for
 
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType=NA)
+@
+
+Similar to the analysis of the Cobb-Douglas model above, we make partial residual plots for the CES model in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
+
+<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
+@
+
+<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
+@
+
+<<CESPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
+createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
 \subsection{CES with $Q$ (CES$q$)}
