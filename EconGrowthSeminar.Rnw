@@ -1191,7 +1191,7 @@ createCESParamsGraph(energyType="Q")
 
 \begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $q$} %----------------------------
 <<CI_delta_vs_delta_Graph_Q, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
-CIvsParamPlot(model="CES", param="delta", energyType="Q")
+CIvsParamPlot(model="CESe", param="delta", energyType="Q")
 @
 \end{frame}
 
@@ -1714,13 +1714,13 @@ CIvsParamPlot(model="CDe", param="gamma", energyType="U")
 
 \begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $x$} %----------------------------
 <<CI_delta_vs_delta_Graph_X, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
-CIvsParamPlot(model="CES", param="delta", energyType="X")
+CIvsParamPlot(model="CESe", param="delta", energyType="X")
 @
 \end{frame}
 
 \begin{frame}{$CI_{\delta}$ vs. $\delta$ for CES with $u$} %----------------------------
 <<CI_delta_vs_delta_Graph_U, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
-CIvsParamPlot(model="CES", param="delta", energyType="U")
+CIvsParamPlot(model="CESe", param="delta", energyType="U")
 @
 \end{frame}
 
@@ -1744,7 +1744,7 @@ CIvsParamPlot(model="CES", param="delta", energyType="U")
 
 \begin{frame}{$CI_{\sigma}$ vs. $\sigma$ for CES with $q$} %----------------------------
 <<CI_sigma_vs_sigma_Graph, fig.width=presentationGraph1ColWidth*1.5, fig.height=presentationGraph1RowHeight*1.5>>=
-CIvsParamPlot(model="CES", param="sigma", energyType="Q")
+CIvsParamPlot(model="CESe", param="sigma", energyType="Q")
 @
 \end{frame}
 

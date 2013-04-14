@@ -2326,7 +2326,8 @@ createAICTable <- function(){
 #       SF: lambda or m
 #       CD: lambda, alpha, or beta
 #      CDe: lambda, alpha, beta, or gamma
-#      CES: gamma, lambda, delta_1, sigma_1, delta, or sigma
+#      CES: gamma, lambda, delta_1, sigma_1, or delta
+#     CESe: gamma, lambda, delta_1, sigma_1, delta, or sigma
 #    LINEX: a_0 or c_t
 # energyType the energy type you want. One of Q, X, or U
 # factor the factor you want to use in a single-factor model, if needed. One of K, L, Q, X, or U.
@@ -2337,7 +2338,8 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
   else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
   else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType)}
-  else if (model == "CES"){data <- cesParamsTableDF(energyType)}
+  else if (model == "CES"){data <- cesParamsTableDF(energyType=NA)}
+  else if (model == "CESe"){data <- cesParamsTableDF(energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
   # Now get the data for the parameter requested
   # Also, set limits on the x and y axes if needed
