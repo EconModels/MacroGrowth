@@ -2438,33 +2438,46 @@ calcResiduals <- function(countryAbbrev, modelType, energyType){
 #################
 # Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
 # modelType: one of "CD" or "CES"
-# energyType: one of "Q", "X", or "U"
-# The energy term on the x axis is whatever type is specified in the calling funciton
-# 
-partialResidualPlot <- function(modelType, countryAbbrev, energyType, textScaling=1.0){
-  data <- calcResiduals(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
-  plot <- xyplot(resid ~ iEToFit, data=data,
-                 type=c("p"),
-                 col="black",
-                 scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
-                             tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
-                 xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
-                 ylab=list(label="$y$ residuals (CD without energy)", cex=textScaling)
-                 )
-  return(plot)  
-}
-
-partialResidualLattice <- function(modelType, energyType, textScaling=1.0){
-  data <- do.call("rbind", lapply(countryAbbrevs, calcResiduals, modelType=modelType, energyType=energyType))
-print(data)
-  plot <- xyplot(resid ~ iEToFit | Country, data=data,
-                 type=c("p"),
-                 col="black",
-                 scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
-                             tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
-                 xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
-                 ylab=list(label="$y$ residuals (CD without energy)", cex=textScaling)
-                 )
+# energyType: one of "Q", "X", or "U" to serve as the ordinate of the graph
+# countryAbbrev: set to NA (the default) if you want a lattice graph with all countries shown. Set to one of
+#                US, UK, JP, CN, ZA, SA, IR, TZ, ZM for an individual graph.
+## 
+createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, textScaling=1.0){
+  xLabelString <- paste("$", tolower(energyType), "$", sep="")
+  yLabelString <- paste("$y$ residuals (", modelType, " without energy)", sep="")
+  if (! is.na(countryAbbrev)){
+    # An individual graph for a single country is desired.
+    data <- calcResiduals(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
+    plot <- xyplot(resid ~ iEToFit, data=data,
+                   type=c("p"),
+                   col="black",
+                   scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
+                               tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                   xlab=list(label=xLabelString, cex=textScaling),
+                   ylab=list(label=yLabelString, cex=textScaling)
+                   )
+  } else {
+    # Lattice graph will all countries is desired.
+    factorLevels <- countryNamesAlph # We want all countries shown
+    layout <- ninePanelLayoutSpec
+    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, calcResiduals, modelType=modelType, energyType=energyType))
+    plot <- xyplot(resid ~ iEToFit | Country, data=data,
+                   type = c("p"),
+                   index.cond = indexCond, #orders the panels.
+                   layout = layout,
+                   strip = strip.custom(factor.levels=factorLevels, 
+                                        bg="transparent", # Sets background transparent to match the graph itself.
+                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                        ),
+                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+                   col = "black",
+                   scales = list(cex=scaleTextSize*textScaling, #controls text size on scales.
+                                 tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                   xlab = list(label=xLabelString, cex=textScaling),
+                   ylab = list(label=yLabelString, cex=textScaling)
+                   )
+  }
   return(plot)
 }
 

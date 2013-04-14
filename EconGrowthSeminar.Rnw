@@ -911,8 +911,8 @@ createCDLatticeGraph(countryAbbrev="SA", textScaling=textScaleForGraphs, keyXLoc
 \end{frame}
 
 \begin{frame}{Beneficial to Include Energy?}  %----------------------------
-<<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
-partialResidualPlot(modelType="CD", countryAbbrev="US", energyType="Q", textScaling=textScaleForGraphs)
+<<US_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
+createPartialResidualPlot(modelType="CD", countryAbbrev="US", energyType="Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
@@ -920,7 +920,7 @@ partialResidualPlot(modelType="CD", countryAbbrev="US", energyType="Q", textScal
 
 \begin{frame}{Beneficial to Include Energy?}  %----------------------------
 <<UK_Partial_Residuals_Plot, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-partialResidualPlot(modelType="CD", countryAbbrev="UK", energyType="Q", textScaling=textScaleForGraphs)
+createPartialResidualPlot(modelType="CD", countryAbbrev="UK", energyType="Q", textScaling=textScaleForGraphs)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{UK}{0.055}
