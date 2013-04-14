@@ -157,25 +157,24 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model.
 \item Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel.
-\item{Heun: Convert the presentation to use energyType=NA for models without energy}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
       \item Write up the decisions about parameter estimation for the CES production function fits
       \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
       \item AIC rows in the AIC table (Code is in the createAICTable function, but it is not yet working)
-      \item Add a CES model without energy option (unspecified energyType parameters means CES without energy)
-        \begin{itemize}
-          \item{Extract CES without energy parameters from the ``without energy'' models and correctly name them: $\sigma \rightarrow \sigma_1$, $\rho \rightarrow \rho_1$, $\delta \rightarrow \delta_1$}
-          \item{Add CES without energy parameters to tables of results in the appendix}
-          \item{Create a CES without energy parameters graphs (with CIs) in the paper}
-          \item{\st{Add CES without energy lines to the CES lattice graph}}
-        \end{itemize}
       \item Revisit my assumptions for the CES production function (with energy) for each country.
       \item \st{Create parameter graphs for each country}
       \item \st{Parameter tables for each energy type in the appendix}
       \item \st{GDP comparison graph}
       \item \st{Convert $\rho$ variables in the CES production function to $\sigma$}
+      \item{\st{Add a CES model without energy option (energyType=NA means CES without energy)}}
+        \begin{itemize}
+          \item{\st{Create a CES without energy parameters graphs (with CIs) in the paper}}
+          \item{\st{Extract CES without energy parameters from the ``without energy'' models and correctly name them: $\sigma \rightarrow \sigma_1$, $\rho \rightarrow \rho_1$, $\delta \rightarrow \delta_1$}}
+          \item{\st{Add CES without energy parameters to tables of results in the appendix}}
+          \item{\st{Add CES without energy lines to the CES lattice graph}}
+        \end{itemize}
       \end{itemize}
 \item Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?
 \item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows
@@ -193,6 +192,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
 \item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
+\item{\st{Heun: Convert the presentation to use energyType=NA for models without energy}}
 \item{\st{Heun: Convert to using NA everywhere for models without energy}}
 \item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
 \item{\st{Heun: Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}}
@@ -596,28 +596,10 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 
 \subsection{CES without energy}
 
+Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
+
 <<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-
-# print(cesData("US"))
-# print(cesCountryRow("US"))
-# print(cesCountryRowsForParamsGraph("US"))
-# print(cesParamsTableDF())
-
-# Testing null and missing
-
-testMissing <- function(param){
-  print(paste("missing(param) =", missing(param)))
-  print(paste("is.na(param) =", is.na(param)))
-  print(paste("is.null(param) =", is.null(param)))
-  print(paste("param =", param))
-}
-
-# testMissing()
-# testMissing(NA)
-# testMissing(NULL)
-# testMissing("")
-
-
+createCESParamsGraph(energyType=NA)
 @
 
 \subsection{CES with $Q$}

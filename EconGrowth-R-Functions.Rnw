@@ -2279,6 +2279,14 @@ createAICTable <- function(){
 #                   JP=AIC(cesModel("JP", "U")),
 #                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
 #   rownames(aicCESu) <- "CES$u$"
+  aicCES  <- data.frame(US=NA, UK=NA, JP=NA, CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+  rownames(aicCES) <- "CES"
+  aicCESq <- data.frame(US=NA, UK=NA, JP=NA, CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+  rownames(aicCESq) <- "CES$q$"
+  aicCESx <- data.frame(US=NA, UK=NA, JP=NA, CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+  rownames(aicCESx) <- "CES$x$"
+  aicCESu <- data.frame(US=NA, UK=NA, JP=NA, CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+  rownames(aicCESu) <- "CES$u$"
   ######################
   # LINEX models
   ######################
@@ -2300,11 +2308,8 @@ createAICTable <- function(){
   # Create the data.frame table
   out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, 
                aicCD, aicCDq, aicCDx, aicCDu, 
+               aicCES, aicCESq, aicCESx, aicCESu, 
                aicLINEXq, aicLINEXx, aicLINEXu) 
-#   out <- rbind(aicSFk, aicSFl, aicSFq, aicSFx, aicSFu, 
-#                aicCD, aicCDq, aicCDx, aicCDu, 
-#                aicCESq, aicCESx, aicCESu, 
-#                aicLINEXq, aicLINEXx, aicLINEXu) 
   # Create the xtable with caption and label
   out <- xtable(out, caption="AIC values for all models.", label="tab:AICTable", digits=1)
   return(out)
