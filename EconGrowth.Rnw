@@ -501,7 +501,7 @@ Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for 
 createCDParamsGraph(energyType=NA)
 @
 
-\section{Cobb-Douglas Models With Energy (CDe)}
+\section{Cobb-Douglas Models With Energy (CD$e$)}
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
@@ -517,12 +517,20 @@ The Cobb-Douglas model with energy is given by
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
 
+<<CDPartialResidualsQ, fig.width=5, fig.height=3, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H", eval=TRUE>>=
+partialResidualPlot(modelType="CES", countryAbbrev="US", energyType="Q")
+@
+
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGammaGraphsZA} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ for South Africa with thermal energy ($q$). The minimum $SSE$ occurs at a discontinuity caused by the constraint $\beta \geq 0.0$. The parameter estimation algorithm has difficulty recognizing the values of $\gamma$, $\alpha$, $\beta$, and $\lambda$ that produce minimum $SSE$, because the constrained model behaves very differently on either side of the discontinuity.
 
 ******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
 
 <<CDeGammaGraphsZA, fig.width=5, fig.height=3, fig.align="center", fig.cap="Cobb-Douglas with thermal energy ($q$) grid search for minimum $SSE$ for South Africa.", fig.pos="H">>=
 cdeGridGraph(countryAbbrev="ZA", energyType="Q")
+@
+
+<<CDGridSearchGraphs, fig.width=5, fig.height=3, fig.align='center', fig.cap="Cobb-Douglas with thermal energy ($q$) grid search for minimum $SSEy$.", fig.pos="H">>=
+cdeGridGraph(countryAbbrev=NA, energyType="Q")
 @
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
@@ -595,7 +603,7 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 \end{quote}
 
-\subsection{CES without energy}
+\subsection{CES without energy (CES)}
 
 Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
 
@@ -603,7 +611,7 @@ Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for
 createCESParamsGraph(energyType=NA)
 @
 
-\subsection{CES with $Q$}
+\subsection{CES with $Q$ (CES$q$)}
 
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
@@ -611,7 +619,7 @@ Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="Q")
 @
 
-\subsection{CES with $X$}
+\subsection{CES with $X$ (CES$x$)}
 
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
@@ -619,7 +627,7 @@ Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="X")
 @
 
-\subsection{CES with $U$}
+\subsection{CES with $U$ (CES$u$)}
 
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
