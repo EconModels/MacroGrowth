@@ -2407,21 +2407,22 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
 @
 
 <<PartialResidualPlots, eval=TRUE>>=
-#################
-# Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
+#############################
+# Creates a data.frame containing raw data and residuals for given arguments.
 # modelType: one of "CD" or "CES"
+# countryAbbrev: the country of interest to you
 # energyType: one of "Q", "X", or "U"
-# The energy term on the x axis is whatever type is specified in the calling funciton
-# 
-partialResidualPlot <- function(modelType, countryAbbrev, energyType, textScaling=1.0){
+##
+calcResiduals <- function(countryAbbrev, modelType, energyType){
+  # Get the model
   if (modelType == "CD"){
     model <- cdModel(countryAbbrev)  
   } else if (modelType == "CES"){
     model <- cesModelNoEnergy(countryAbbrev)
   } else {
     print(paste("Unknown modelType:", modelType, "in partialResidualPlot."))
+    return(NULL)
   }
-  # Get the model
   # Get the residuals
   resid <- resid(model)
   resid <- data.frame(resid)
@@ -2429,7 +2430,19 @@ partialResidualPlot <- function(modelType, countryAbbrev, energyType, textScalin
   # Load data
   data <- loadData(countryAbbrev)
   data <- cbind(data, resid)
+  # Replace name of column we want with the name "iEToFit"
   data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
+  return(data)
+}
+
+#################
+# Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
+# modelType: one of "CD" or "CES"
+# energyType: one of "Q", "X", or "U"
+# The energy term on the x axis is whatever type is specified in the calling funciton
+# 
+partialResidualPlot <- function(modelType, countryAbbrev, energyType, textScaling=1.0){
+  data <- calcResiduals(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
   plot <- xyplot(resid ~ iEToFit, data=data,
                  type=c("p"),
                  col="black",
@@ -2441,7 +2454,18 @@ partialResidualPlot <- function(modelType, countryAbbrev, energyType, textScalin
   return(plot)  
 }
 
-partialResidualLattice <- function(modelType, energyType){
-  
+partialResidualLattice <- function(modelType, energyType, textScaling=1.0){
+  data <- do.call("rbind", lapply(countryAbbrevs, calcResiduals, modelType=modelType, energyType=energyType))
+print(data)
+  plot <- xyplot(resid ~ iEToFit | Country, data=data,
+                 type=c("p"),
+                 col="black",
+                 scales=list(cex=scaleTextSize*textScaling, #controls text size on scales.
+                             tck=scaleTickSize), #controls tick mark length. < 0 for inside the graph.
+                 xlab=list(label=paste("$", tolower(energyType), "$", sep=""), cex=textScaling),
+                 ylab=list(label="$y$ residuals (CD without energy)", cex=textScaling)
+                 )
+  return(plot)
 }
+
 @
