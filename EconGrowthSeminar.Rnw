@@ -748,16 +748,16 @@ createSFParamsGraph("Q")
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{US Cobb-Douglas with $q$} %----------------------------
-<<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("US", "Q", textScaling=0.8)
+<<CDeGammaGraphsUS, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+  cdeGridLattice(countryAbbrev="US", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{US}{0.055}
 \end{frame}
 
 \begin{frame}{Grid Search Over $\gamma$}{UK Cobb-Douglas with $q$} %----------------------------
-<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph("UK", "Q", textScaling=0.8)
+<<CDeGammaGraphsUK, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight, eval=TRUE>>=
+  cdeGridLattice(countryAbbrev="UK", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{UK}{0.045}

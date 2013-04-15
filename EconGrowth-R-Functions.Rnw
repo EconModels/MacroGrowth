@@ -876,67 +876,6 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
   return(data)
 }
 
-#############################
-# This function creates a graph for Cobb-Douglas with energy functions. The graph has 
-# a double Y axis. The first Y axis has alpha, beta, and gamma vs. gamma. The second Y axis
-# has SSE_y vs. gamma.
-# countryAbbrev tells which country you want to view
-# energyType tells which type of energy you want
-# textScaling tells how you want to scale the text on the axes and other places.
-##
-cdeGridGraph <- function(countryAbbrev, energyType, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc, textScaling = 1.0){
-  gammaGrid <- seq(0.0, 0.95, by=0.05)
-  data <- cdeGridData(countryAbbrev, energyType, gammaGrid)
-  # Now melt the data so that it is in the correct form.
-  data_molten <- melt(data, id="gamma")
-  alphaBetaGammaRange <- c(0.0, 1.0)
-  alphaBetaGammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
-  lambdaRange <- c(0.0, 0.004)
-  lambdaTics <- c(0.0, 0.001, 0.002, 0.003, 0.004)
-  sseRange <- c(0.0, 0.08)
-  sseTics <- c(0.0, 0.02, 0.04, 0.06, 0.08)
-  # Create a lattice graph that shows the four variables (lambda, alpha, beta, and SSE) vs. gamma.
-  graphType <- "b" #b is for both symbls and lines. Necessary so that the key looks right.
-  lineTypes <- c(2, 1, 3, 0) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(1, 3, 1, 0) #line widths. 0 means no line.
-  symbols <- c(NA, NA, NA, 1)
-  colors <- c("black", "black", "black", "black") #line and symbol colors
-  abgGraph <- xyplot(alpha+beta+gamma ~ gamma, data=data,
-                     type=graphType,
-                     lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                     pch = symbols, col.symbol = colors, #Controls symbol parameters
-                     key=list(text=list(c("$\\alpha$", "$\\beta$", "$\\gamma$", "$SSE_y$")),
-                              type=graphType,
-                              cex=keyTextSize * textScaling, #controls size of text in the key
-                              lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                              pch=symbols, col=colors, #controls symbol (plot characters) types
-                              columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                     scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                                 alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                                 x=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)), #location for x tics
-                                 y=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0))  #location for y tics
-                     ), 
-                     ylim=c(0.0, 1.5), #y axis limits
-                     #axis labels and scaling
-                     xlab=list(label="$\\gamma$", cex=textScaling), 
-                     ylab=list(label="$\\alpha$, $\\beta$, $\\gamma$", cex=textScaling)
-  )
-  sseGraph <- xyplot(SSE ~ gamma, data=data,
-                     pch = c(1), col.symbol = c("black"), #Controls symbol parameters
-                     scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                                 y=list(at=c(0.0, 0.02, 0.04, 0.06, 0.08)) #location for y tics                                          
-                                 ), 
-                     ylim=c(0.0, 0.08),
-                     xlab=list(label="$\\gamma$", cex=textScaling), #Not used by the double-Y graph.
-                     ylab=list(label="$SSE$", cex=textScaling)
-                     )
-  # Combine the two graphs into a double-Y graph.
-  doubleYGraph <- doubleYScale(abgGraph, sseGraph, add.ylab2=TRUE, use.style=FALSE)
-  return(doubleYGraph)
-}
-
 #######################
 # Creates a single graph or a multi-panel lattice plot showing grid search over gamma for Cobb-Douglas models with 
 # the given quantification for energy.
@@ -949,9 +888,25 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
   if (is.na(countryAbbrev)){
     # All countries are wanted.
     data <- do.call("rbind", lapply(countryAbbrevsAlph, cdeGridData, energyType=energyType, gammaGrid=gammaGrid))
+    # Establish some formatting parameters
+    factorLevels <- countryNamesAlph # We want all countries shown
+    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+    layout <- ninePanelLayoutSpec # Show all countries
+    stripSpec <- strip.custom(factor.levels=factorLevels, # Sets text for factor levels
+                              bg="transparent", # Sets background transparent to match the graph itself.
+                              par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                              )
   } else {
     # Only one specific country is wanted.
     data <- cdeGridData(countryAbbrev=countryAbbrev, energyType=energyType, gammaGrid=gammaGrid)
+    # Select the correct y limits
+    index <- which(countryAbbrevsAlph %in% countryAbbrev)
+    # The following lines use [index:index] as a convenient way of subsetting.
+    # This has the added benefit of maintaining the correct classes for things.
+    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+    indexCond <- list(c(1))                           # We want only one country.
+    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+    stripSpec <- FALSE # No strip needed.
   }
   alphaBetaGammaRange <- c(-0.1, 1.5)
   alphaBetaGammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
@@ -971,6 +926,10 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
                      type=graphType,
                      lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                      pch = symbols, col.symbol = colors, #Controls symbol parameters
+                     index.cond = indexCond, #orders the panels.
+                     layout = layout,                     
+                     strip = stripSpec,
+                     as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                      key=list(text=list(c("$\\alpha$", "$\\beta$", "$\\gamma$", "$SSE_y$")),
                               type=graphType,
                               cex=keyTextSize * textScaling, #controls size of text in the key
@@ -991,6 +950,10 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
                      )
   sseGraph <- xyplot(SSE ~ gamma | Country, data=data,
                      pch = c(1), col.symbol = c("black"), #Controls symbol parameters
+                     index.cond = indexCond, #orders the panels.
+                     layout = layout,                     
+                     strip = stripSpec,
+                     as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                      scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  y=list(at=sseTics) #location for y tics                                          
