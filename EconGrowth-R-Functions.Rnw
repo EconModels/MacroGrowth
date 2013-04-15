@@ -953,12 +953,14 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
     # Only one specific country is wanted.
     data <- cdeGridData(countryAbbrev=countryAbbrev, energyType=energyType, gammaGrid=gammaGrid)
   }
-  alphaBetaGammaRange <- c(0.0, 1.0)
+  alphaBetaGammaRange <- c(-0.1, 1.5)
   alphaBetaGammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
   lambdaRange <- c(0.0, 0.004)
   lambdaTics <- c(0.0, 0.001, 0.002, 0.003, 0.004)
   sseRange <- c(0.0, 0.1)
-  sseTics <- c(0.0, 0.02, 0.04, 0.06, 0.08, 0.10)
+  sseTics <- c(0.02, 0.04, 0.06, 0.08, 0.10)
+  gammaRange <- c(-0.1, 1.1)
+  gammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
   # Create a lattice graph that shows the four variables (lambda, alpha, beta, and SSE) vs. gamma.
   graphType <- "b" #b is for both symbls and lines. Necessary so that the key looks right.
   lineTypes <- c(2, 1, 3, 0) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
@@ -978,10 +980,11 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
                      scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                                 x=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)), #location for x tics
-                                 y=list(at=c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0))  #location for y tics
+                                 x=list(at=gammaTics), #location for x tics
+                                 y=list(at=alphaBetaGammaTics)  #location for y tics
                      ), 
-                     ylim=c(0.0, 1.5), #y axis limits
+                     xlim=gammaRange, #x axis limits
+                     ylim=alphaBetaGammaRange, #y axis limits
                      #axis labels and scaling
                      xlab=list(label="$\\gamma$", cex=textScaling), 
                      ylab=list(label="$\\alpha$, $\\beta$, $\\gamma$", cex=textScaling)
@@ -992,6 +995,7 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  y=list(at=sseTics) #location for y tics                                          
                                  ), 
+                     xlim=gammaRange,
                      ylim=sseRange,
                      xlab=list(label="$\\gamma$", cex=textScaling), #Not used by the double-Y graph.
                      ylab=list(label="$SSE$", cex=textScaling)
