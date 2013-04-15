@@ -155,12 +155,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Rearrange the panels on the CD gamma grid search graph}
-\item{Heun: Change the strip to transparent on the CD gamma grid search graph}
-\item{Heun: Get full country names into the CD gamma grid search graph}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
-\item{Heun: Change the presentation to use the cdeGridLattice function instead of cdeGridGraph}
-\item{Heun: Remove cdeGridGraph function}
 \item{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}
 \item Heun: Add CES production function fits
       \begin{itemize}
@@ -197,6 +192,11 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
 \item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
+\item{\st{Heun: Rearrange the panels on the CD gamma grid search graph}}
+\item{\st{Heun: Change the strip to transparent on the CD gamma grid search graph}}
+\item{\st{Heun: Get full country names into the CD gamma grid search graph}}
+\item{\st{Heun: Change the presentation to use the cdeGridLattice function instead of cdeGridGraph}}
+\item{\st{Heun: Remove cdeGridGraph function}}
 \item{\st{Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model}}
 \item{\st{Heun: x-axis labels only on bottom for 9-panel lattice graphs}}
 \item{\st{Heun: Convert the presentation to use energyType=NA for models without energy}}
@@ -449,7 +449,7 @@ Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled 
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy types ($q$, $x$, and $u$). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data. Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
