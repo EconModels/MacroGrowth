@@ -2428,87 +2428,55 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
 CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.0){
   # Get the data from the requested model
   data <- CIvsParamDF(model=model, param=param, energyType=energyType, factor=factor)
-#   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
-#   else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
-#   else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType)}
-#   else if (model == "CES"){data <- cesParamsTableDF(energyType=NA)}
-#   else if (model == "CESe"){data <- cesParamsTableDF(energyType)}
-#   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
-#   # Now get the data for the parameter requested
   # Also, set limits on the x and y axes if needed
   if (param == "lambda"){
-#     x <- subset(data, select=lambda) # The column of lambdas
     xLabel <- "$\\lambda$ [1/year]"
-#     y <- subset(data, select=upperCI_lambda) - subset(data, select=lowerCI_lambda) # A column of CI values
     xLimits <- c(0.0, 0.1); atX=c(0.0, 0.05, 0.1)
     yLimits <- c(0.0, 0.2); atY-c(0.0, 0.1, 0.2)
   } else if (param == "m"){
-#     x <- subset(data, select=m) # The column of ms
-#     colnames(x) <- "m"
     if (factor == "K"){xLabel <- "$\\alpha$"}
     else if (factor == "L"){xLabel <- "$\\beta$"}
     else if ((factor == "Q") || (factor == "X") || (factor == "U")){xLabel <- "$\\gamma$"}
-#     y <- subset(data, select=upperCI_m) - subset(data, select=lowerCI_m) # A column of CI values
     xLimits <- c(-0.1, 1.5); atX <- c(0.0, 0.5, 1.0, 1.5)
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "alpha"){
-#     x <- subset(data, select=alpha) # The column of alphas
     xLabel <- "$\\alpha$"
-#     y <- subset(data, select=upperCI_alpha) - subset(data, select=lowerCI_alpha) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "beta"){
-#     x <- subset(data, select=beta) # The column of betas
     xLabel <- "$\\beta$"
-#     y <- subset(data, select=upperCI_beta) - subset(data, select=lowerCI_beta) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(-0.1, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "gamma"){
-#     x <- subset(data, select=gamma) # The column of gammas
     xLabel <- "$\\gamma$"
-#     y <- subset(data, select=upperCI_gamma) - subset(data, select=lowerCI_gamma) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "delta_1"){
-#     x <- subset(data, select=delta_1) # The column of delta_1
     xLabel <- "$\\delta_1$"
-#     y <- subset(data, select=upperCI_delta_1) - subset(data, select=lowerCI_delta_1) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "sigma_1"){
-#     x <- subset(data, select=sigma_1) # The column of sigma_1
     xLabel <- "$\\sigma_1$"
-#     y <- subset(data, select=upperCI_sigma_1) - subset(data, select=lowerCI_sigma_1) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(0.0, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "delta"){
-#     x <- subset(data, select=delta) # The column of delta
     xLabel <- "$\\delta$"
-#     y <- subset(data, select=upperCI_delta) - subset(data, select=lowerCI_delta) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "sigma"){
-#     x <- subset(data, select=sigma) # The column of sigma
     xLabel <- "$\\sigma$"
-#     y <- subset(data, select=upperCI_sigma) - subset(data, select=lowerCI_sigma) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(-0.1, 2.0); atY <- c(0.0, 1.0, 2.0)
   } else if (param == "a_0"){
-#     x <- subset(data, select=a_0) # The column of a_0s
     xLabel <- "$a_0$"
-#     y <- subset(data, select=upperCI_a_0) - subset(data, select=lowerCI_a_0) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   } else if (param == "c_t"){
-#     x <- subset(data, select=c_t) # The column of c_ts
     xLabel <- "$c_t$"
-#     y <- subset(data, select=upperCI_c_t) - subset(data, select=lowerCI_c_t) # A column of CI values
     xLimits <- c(-0.1, 1.1); atX <- c(0.0, 0.5, 1.0)
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   }
-#   colnames(y) <- "CI"
   yLabel <- paste("Width of 95\\% CI on", xLabel)
-#   data <- cbind(x, y)
   # Need to use the indices in the following code, because the column labels will be different for each type
   # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
   # back with column names of "sigma" and "CI" on the first and second column, respectively. 
