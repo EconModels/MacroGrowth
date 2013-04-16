@@ -157,6 +157,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
 \item{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}
+\item{Heun: Eliminate non-developed countries from partial residual plots.}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -235,6 +236,12 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<Test, eval=TRUE>>=
+CIvsParamDF(model="CESe", param="sigma", energyType="Q")
+CIvsParamPlot(model="CESe", param="sigma", energyType="Q")
+
+@
 
 \subsection{Background}
 
@@ -542,7 +549,7 @@ The Cobb-Douglas with energy parameter estimation process is challenging. To dem
 
 ******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
 
-<<CDeGridLattice, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas with energy model.", fig.pos="H", eval=TRUE>>=
+<<CDeGridLattice, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas with energy model.", fig.pos="H">>=
 cdeGridLattice(energyType="Q")
 @
 

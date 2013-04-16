@@ -1593,7 +1593,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{JP Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsJP, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="JP", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="JP", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{JP}{0.045}
@@ -1601,7 +1601,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{CN Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsCN, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="CN", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="CN", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{CN}{0.045}
@@ -1609,7 +1609,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{ZA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="ZA", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="ZA", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZA}{0.055}
@@ -1617,7 +1617,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{SA Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsSA, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="SA", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="SA", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{SA}{0.055}
@@ -1625,7 +1625,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{IR Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsIR, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="IR", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="IR", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{IR}{0.055}
@@ -1633,7 +1633,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{TZ Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsTZ, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="TZ", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="TZ", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{TZ}{0.07}
@@ -1641,7 +1641,7 @@ createCDParamsGraph(energyType=NA)
 
 \begin{frame}{Grid Search Over $\gamma$}{ZM Cobb-Douglas with $q$} %----------------------------
 <<CDeGammaGraphsZM, fig.width=presentationGraph1ColWidth, fig.height=presentationGraph1RowHeight>>=
-  cdeGridGraph(countryAbbrev="ZM", energyType="Q", textScaling=0.8)
+  cdeGridLattice(countryAbbrev="ZM", energyType="Q", textScaling=0.8)
 @
   % Including at bottom of frame so as not to push other material downward in the frame.
   \putFlagUpperRight{ZM}{0.055}
