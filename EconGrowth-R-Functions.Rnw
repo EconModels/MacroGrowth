@@ -2405,7 +2405,9 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   nRows <- nrow(x)
   factor <- as.data.frame(matrix(factorString, ncol=1, nrow=nRows))
   colnames(factor) <- "factor"
-  data <- cbind(x, y, factor)
+  # Now make a column containing the country abbreviations.
+  Country <- data.frame(countryAbbrevs)
+  data <- cbind(x, y, factor, Country)
   return(data)
 }
 
@@ -2495,7 +2497,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
                  xlim=xLimits, #x axis limits
                  ylim=yLimits, #y axis limits
                  panel = function(x, y){
-                   ltext(x=x, y=y, labels=rownames(data))
+                   ltext(x=x, y=y, labels=data[ , 4]) # Picks up the 4th column containing the country abbreviations.
                  })
   return(plot)
 }
@@ -2541,6 +2543,7 @@ CIvsParamLattice <- function(descriptors){
   data <- rbind(gammaCDeqDF,  gammaCDexDF,  gammaCDeuDF, 
                 deltaCESeqDF, deltaCESexDF, deltaCESeuDF, 
                 sigmaCESeqDF, sigmaCESexDF, sigmaCESeuDF)
+print(data)
   # Now make the graph.
 }
 @
