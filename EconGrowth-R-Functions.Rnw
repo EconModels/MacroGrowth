@@ -2543,8 +2543,30 @@ CIvsParamLattice <- function(descriptors){
   data <- rbind(gammaCDeqDF,  gammaCDexDF,  gammaCDeuDF, 
                 deltaCESeqDF, deltaCESexDF, deltaCESeuDF, 
                 sigmaCESeqDF, sigmaCESexDF, sigmaCESeuDF)
-print(data)
   # Now make the graph.
+  # Need to use the indices in the following code, because the column labels will be different for each type
+  # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
+  # back with column names of "sigma" and "CI" on the first and second column, respectively. 
+  # plot <-  xyplot(data$CI ~ data$sigma, ...)
+  # would break if we, instead, wanted CESe with Q and plotting delta.
+  # So, instead, we use the column indices to pick off the correct variables.
+  # data[ , 1] contains the the parameter; 
+  # data[ , 2] contains the CI width; 
+  # data[ , 3] contains the descriptor for the type of graph it is.
+  plot <- xyplot(data[ , 2] ~ data[ , 1] | data[ , 3], 
+#                  xlab=list(label=xLabel),
+#                  ylab=list(label=yLabel),
+#                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                              x=list(at=atX),
+#                              y=list(at=atY)
+#                              ), 
+#                  xlim=xLimits, #x axis limits
+#                  ylim=yLimits, #y axis limits
+                 panel = function(x, y){
+                   ltext(x=x, y=y, labels=data[ , 4]) # Picks up the 4th column containing the country abbreviations.
+                 })
+  return(plot)
 }
 @
 
