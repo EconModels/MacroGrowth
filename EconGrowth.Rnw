@@ -238,8 +238,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<Test, eval=TRUE>>=
-CIvsParamDF(model="CESe", param="sigma", energyType="Q")
+# CIvsParamDF(model="CESe", param="sigma", energyType="Q")
 CIvsParamPlot(model="CESe", param="sigma", energyType="Q")
+
+CIvsParamLattice()
 
 @
 

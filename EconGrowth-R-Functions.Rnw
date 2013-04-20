@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -2348,9 +2348,9 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   # Get the data from the requested model
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
   else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
-  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType)}
+  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType)}
   else if (model == "CES"){data <- cesParamsTableDF(energyType=NA)}
-  else if (model == "CESe"){data <- cesParamsTableDF(energyType)}
+  else if (model == "CESe"){data <- cesParamsTableDF(energyType=energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
   # Now get the data for the parameter requested
   # Also, set limits on the x and y axes if needed
@@ -2399,7 +2399,7 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   } else if (is.na(energyType)){
     factorString <- paste(param, model, factor, sep="")
   } else {
-    print("Neither energyType nor factor were NA in CIvsParamDF. But one should be.")
+    print("Neither energyType nor factor were NA in CIvsParamDF. But one should be!")
     return(NULL)
   }
   nRows <- nrow(x)
@@ -2477,6 +2477,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
     yLimits <- c(0.0, 1.5); atY <- c(0.0, 0.5, 1.0, 1.5)
   }
   yLabel <- paste("Width of 95\\% CI on", xLabel)
+  
   # Need to use the indices in the following code, because the column labels will be different for each type
   # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
   # back with column names of "sigma" and "CI" on the first and second column, respectively. 
@@ -2497,6 +2498,50 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
                    ltext(x=x, y=y, labels=rownames(data))
                  })
   return(plot)
+}
+
+########################
+# Creates a lattice plot that has the size of confidence intervals on the vertical axis and parameter
+# values on the horizontal axis.
+# At this point, this function is NOT a general-purpose function, as the number of permutations
+# of model, parameter, energy type, and factor is too varied to be able to turn into a general-purpose 
+# graph with little time investment at this point.
+# This function makes a lattice plot with the following panels (in the arrangement shown)
+#
+# gammaCDeq   gammaCDex    gammaCDeu
+# deltaCESeq  deltaCESex   deltaCESeu
+# sigmaCESeq  sigmaCESex   sigmaCESeu
+#
+# Parameters and models (gamma for CDe and delta and sigma for CESe) are in rows and energyTypes (q, x, and u) 
+# are in columns.
+##
+CIvsParamLattice <- function(descriptors){
+  # Build a data.frame that has all the necessary models
+  gammaCDeqDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="Q")
+  gammaCDexDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="X")
+  gammaCDeuDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="U")
+  deltaCESeqDF <- CIvsParamDF(model="CESe", param="delta", energyType="Q")
+  deltaCESexDF <- CIvsParamDF(model="CESe", param="delta", energyType="X")
+  deltaCESeuDF <- CIvsParamDF(model="CESe", param="delta", energyType="U")
+  sigmaCESeqDF <- CIvsParamDF(model="CESe", param="sigma", energyType="Q")
+  sigmaCESexDF <- CIvsParamDF(model="CESe", param="sigma", energyType="X")
+  sigmaCESeuDF <- CIvsParamDF(model="CESe", param="sigma", energyType="U")
+  # Change the name of the first columns (the ones that contain the parameter of interest to us) to "param".
+  # Doing this allows us to combine the individual data frames into one large data frame.
+  colnames(gammaCDeqDF)[1]  <- "param"
+  colnames(gammaCDexDF)[1]  <- "param"
+  colnames(gammaCDeuDF)[1]  <- "param"
+  colnames(deltaCESeqDF)[1] <- "param"
+  colnames(deltaCESexDF)[1] <- "param"
+  colnames(deltaCESeuDF)[1] <- "param"
+  colnames(sigmaCESeqDF)[1] <- "param"
+  colnames(sigmaCESexDF)[1] <- "param"
+  colnames(sigmaCESeuDF)[1] <- "param"
+  # Create one big data.frame with all of the data.
+  data <- rbind(gammaCDeqDF,  gammaCDexDF,  gammaCDeuDF, 
+                deltaCESeqDF, deltaCESexDF, deltaCESeuDF, 
+                sigmaCESeqDF, sigmaCESexDF, sigmaCESeuDF)
+  # Now make the graph.
 }
 @
 
