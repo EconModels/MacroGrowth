@@ -2516,8 +2516,10 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
 #
 # Parameters and models (gamma for CDe and delta and sigma for CESe) are in rows and energyTypes (q, x, and u) 
 # are in columns.
+#
+# textScaling: the amount by which you want to scale the text on the graph.
 ##
-CIvsParamLattice <- function(descriptors){
+CIvsParamLattice <- function(textScaling=1.0){
   # Build a data.frame that has all the necessary models
   gammaCDeqDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="Q")
   gammaCDexDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="X")
@@ -2554,15 +2556,30 @@ CIvsParamLattice <- function(descriptors){
   # data[ , 2] contains the CI width; 
   # data[ , 3] contains the descriptor for the type of graph it is.
   plot <- xyplot(data[ , 2] ~ data[ , 1] | data[ , 3], 
-#                  xlab=list(label=xLabel),
-#                  ylab=list(label=yLabel),
-#                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-#                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-#                              x=list(at=atX),
-#                              y=list(at=atY)
-#                              ), 
-#                  xlim=xLimits, #x axis limits
-#                  ylim=yLimits, #y axis limits
+                 scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                             alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+                             x=list(at=c(0.0, 0.5, 1.0)),
+                             y=list(at=c(0.0, 1.0, 2.0))
+                             ), 
+                 xlim=c(-0.2, 1.2), #x axis limits
+                 ylim=c(-0.4, 2.4), #y axis limits
+                 xlab=list(label=""),
+                 ylab=list(label="Width of 95\\% Confidence Interval"),
+                 # Set text for factor levels
+                 strip = strip.custom(factor.levels=c("$\\gamma$ (CD with $q$)",  
+                                                      "$\\gamma$ (CD with $x$)",  
+                                                      "$\\gamma$ (CD with $u$)",
+                                                      "$\\delta$ (CES with $q$)", 
+                                                      "$\\delta$ (CES with $x$)", 
+                                                      "$\\delta$ (CES with $u$)",
+                                                      "$\\sigma$ (CES with $q$)", 
+                                                      "$\\sigma$ (CES with $x$)", 
+                                                      "$\\sigma$ (CES with $u$)"), 
+                                      bg="transparent", # Sets background transparent to match the graph itself.
+                                      par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                      ),
+                 as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                  panel = function(x, y){
                    ltext(x=x, y=y, labels=data[ , 4]) # Picks up the 4th column containing the country abbreviations.
                  })
