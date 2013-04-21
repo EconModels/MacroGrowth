@@ -156,18 +156,18 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
-\item{Heun: Eliminate non-developed countries from partial residual plots.}
+\item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
 \item Heun: Add CES production function fits
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
-      \item Write up the decisions about parameter estimation for the CES production function fits
-      \item Revisit my assumptions for the CES production function (with energy) for each country.
-      \item Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix
-      \item{Add CES rows to the AIC table. Code is in the createAICTable function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the cesEst function.}
-      \item \st{Create parameter graphs for each country}
-      \item \st{Parameter tables for each energy type in the appendix}
-      \item \st{GDP comparison graph}
-      \item \st{Convert $\rho$ variables in the CES production function to $\sigma$}
+      \item{Write up the decisions about parameter estimation for the CES production function fits}
+      \item{Revisit my assumptions for the CES production function (with energy) for each country.}
+      \item{Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix}
+      \item{Add CES rows to the AIC table. Code is in the \texttt{createAICTable} function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the cesEst function.}
+      \item{\st{Create parameter graphs for each country}}
+      \item{\st{Parameter tables for each energy type in the appendix}}
+      \item{\st{GDP comparison graph}}
+      \item{\st{Convert $\rho$ variables in the CES production function to $\sigma$}}
       \item{\st{Add a CES model without energy option (energyType=NA means CES without energy)}}
         \begin{itemize}
           \item{\st{Create a CES without energy parameters graphs (with CIs) in the paper}}
@@ -177,20 +177,20 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
         \end{itemize}
       \end{itemize}
 \item{Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?}
-\item{Heun: Add data from 2011 and, possibly, 2012 to the models}
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows
+\item{Heun: Add data from 2011 to the models}
+\item{Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows}
       \begin{itemize}
-      \item ZA: lower bound on $\lambda$ and upper bound on $\alpha$
-      \item ZM: lower bound on $\lambda$
+      \item{ZA: lower bound on $\lambda$ and upper bound on $\alpha$}
+      \item{ZM: lower bound on $\lambda$}
       \end{itemize}
-\item Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the LINEX model
+\item{Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the LINEX model}
       \begin{itemize}
-      \item ZM: upper bound on $c_t$
+      \item{ZM: upper bound on $c_t$}
       \end{itemize}
-\item Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.
-\item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
-\item de Wit: provide funding acknowledgement, if necessary.
-\item de Wit: review, critique, and contextualize.
+\item{Heun: Fix warnings of the form ``Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562'' in the code that generates the Cobb-Douglas with energy fits.}
+\item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
+\item{de Wit: provide funding acknowledgement, if necessary.}
+\item{de Wit: review, critique, and contextualize.}
 \item{\st{Reese: Add text from Word verson of paper to the LaTeX version.}}
 \item{\st{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}}
 \item{\st{Heun: Rearrange the panels on the CD gamma grid search graph}}
@@ -213,19 +213,19 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item \st{Heun: Add covariance metrics.}
 \item \st{Heun: Add single factor fits}
       \begin{itemize}
-      \item \st{Correct sizes for parameter graphs for each country}
-      \item \st{Parameter graphs ($\lambda$ and $m$) for each country}
-      \item \st{Parameter tables for each country in the appendix}
-      \item \st{GDP comparison graph}
-      \item \st{AIC rows in the AIC table}
+      \item{\st{Correct sizes for parameter graphs for each country}}
+      \item{\st{Parameter graphs ($\lambda$ and $m$) for each country}}
+      \item{\st{Parameter tables for each country in the appendix}}
+      \item{\st{GDP comparison graph}}
+      \item{\st{AIC rows in the AIC table}}
       \end{itemize}
-\item \st{Heun: Add setup variables for figure height and width where not already included.}
-\item \st{Heun: Add LINEX production function fits}
+\item{\st{Heun: Add setup variables for figure height and width where not already included.}}
+\item{\st{Heun: Add LINEX production function fits}}
       \begin{itemize}
-      \item \st{Parameter graphs for each country}
-      \item \st{Parameter tables for each country in the appendix}
-      \item \st{AIC rows in the AIC table}
-      \item \st{GDP comparison graph}
+      \item{\st{Parameter graphs for each country}}
+      \item{\st{Parameter tables for each country in the appendix}}
+      \item{\st{AIC rows in the AIC table}}
+      \item{\st{GDP comparison graph}}
       \end{itemize}
 \end{itemize}
 
