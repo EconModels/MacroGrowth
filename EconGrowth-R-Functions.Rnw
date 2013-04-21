@@ -2519,7 +2519,7 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
 #
 # textScaling: the amount by which you want to scale the text on the graph.
 ##
-CIvsParamLattice <- function(textScaling=1.0){
+CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   # Build a data.frame that has all the necessary models
   gammaCDeqDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="Q")
   gammaCDexDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="X")
@@ -2581,7 +2581,8 @@ CIvsParamLattice <- function(textScaling=1.0){
                                       ),
                  as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                  panel = function(x, y){
-                   ltext(x=x, y=y, labels=data[ , 4]) # Picks up the 4th column containing the country abbreviations.
+                   # Picks up the 4th column containing the country abbreviations.
+                   ltext(x=x, y=y, labels=data[ , 4], cex=countryAbbrevScaling) 
                  })
   return(plot)
 }

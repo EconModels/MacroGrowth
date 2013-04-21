@@ -156,7 +156,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
-\item{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}
 \item{Heun: Eliminate non-developed countries from partial residual plots.}
 \item Heun: Add CES production function fits
       \begin{itemize}
@@ -192,7 +191,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.
 \item de Wit: provide funding acknowledgement, if necessary.
 \item de Wit: review, critique, and contextualize.
-\item \st{Reese: Add text from Word verson of paper to the LaTeX version.}
+\item{\st{Reese: Add text from Word verson of paper to the LaTeX version.}}
+\item{\st{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}}
 \item{\st{Heun: Rearrange the panels on the CD gamma grid search graph}}
 \item{\st{Heun: Change the strip to transparent on the CD gamma grid search graph}}
 \item{\st{Heun: Get full country names into the CD gamma grid search graph}}
@@ -236,14 +236,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-<<Test, eval=TRUE>>=
-# CIvsParamDF(model="CESe", param="sigma", energyType="Q")
-CIvsParamPlot(model="CESe", param="sigma", energyType="Q")
-
-CIvsParamLattice()
-
-@
 
 \subsection{Background}
 
@@ -677,6 +669,19 @@ Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to histori
 
 <<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.">>=
 createCESLatticeGraph()
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Confidence Intervals for Cobb-Douglas and CES Models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. When the 95\% confidence interval for $\gamma$ and $\delta$ extends to 0.0 and 1.0, respectively, we cannot say whether including energy in the production function is helpful. If the value of $\gamma$ is close to 0.0, and the 95\% confidence interval does not extend to 0.0, we know that energy does not play an important role in producing economic output for the Cobb-Douglas model. If the value of $\delta$ is close to 1.0 and the 95\% confidence intervale does not extend to 1.0, we know that energy does not play an important role in producing economic output for the CES model.
+
+The following figure shows these relationships.
+
+<<CIvsParam_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="95\\% Confidence interval width vs. parameter value for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models.">>=
+CIvsParamLattice(countryAbbrevScaling=0.6)
 @
 
 
