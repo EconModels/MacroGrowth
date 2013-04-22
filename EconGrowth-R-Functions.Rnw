@@ -2527,9 +2527,9 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   yLimits <- c(-0.4, 2.4) #y axis limits
   xLabels <- c("$\\gamma$", "$\\delta$", "$\\sigma$") #x axis labels
   yLabel <- "Width of 95\\% Confidence Interval"
-  stripLabels <- c("CD with $q$", "CES with $q$", "CES with $q$",
-                   "CD with $x$", "CES with $x$", "CES with $x$", 
-                   "CD with $u$", "CES with $u$", "CES with $u$")
+  stripLabels <- c("Cobb-Douglas with $q$", "CES with $q$", "CES with $q$",
+                   "Cobb-Douglas with $x$", "CES with $x$", "CES with $x$", 
+                   "Cobb-Douglas with $u$", "CES with $u$", "CES with $u$")
   stripBG <- "transparent"
 
   # Build a data.frame that contains coordinates for diagonal lines on the various graphs.
@@ -2558,16 +2558,16 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   factor <- c("deltaCESeU", "deltaCESeU")
   diagLineDeltaCESeUDF <- data.frame(param, CI, factor)
 
-  # Diagonal line for the sigma-CES-Q panel  
-  param <- c(0.0, 1.0)
-  CI <- c(0.0, 2.0)
-  factor <- c("sigmaCESeQ", "sigmaCESeQ")
+  # Diagonal lines for the sigma-CES-Q panel  
+  param <- c(0.0, 1.0, 2.0)
+  CI <- c(2.0, 0.0, 2.0)
+  factor <- c("sigmaCESeQ", "sigmaCESeQ", "sigmaCESeQ")
   diagLineSigmaCESeQDF <- data.frame(param, CI, factor)
   # Diagonal line for the sigma-CES-X panel  
-  factor <- c("sigmaCESeX", "sigmaCESeX")
+  factor <- c("sigmaCESeX", "sigmaCESeX", "sigmaCESeX")
   diagLineSigmaCESeXDF <- data.frame(param, CI, factor)
   # Diagonal line for the sigma-CES-U panel  
-  factor <- c("sigmaCESeU", "sigmaCESeU")
+  factor <- c("sigmaCESeU", "sigmaCESeU", "sigmaCESeU")
   diagLineSigmaCESeUDF <- data.frame(param, CI, factor)
   
   # Now combine all data.frames in the correct order.
@@ -2577,6 +2577,7 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 
   # Make an xyplot that contains the diagonal lines.
   diagLinesLattice <- xyplot(CI ~ param | factor, data=diagLinesDF,
+                             type="l", col = "black", lty=2, #controls line parameters
                              scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
@@ -2619,40 +2620,32 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   data <- rbind(gammaCDeqDF, deltaCESeqDF, sigmaCESeqDF, 
                 gammaCDexDF, deltaCESexDF, sigmaCESexDF,
                 gammaCDeuDF, deltaCESeuDF, sigmaCESeuDF)
-print(data)
   # Now make the graph.
-  # Need to use the indices in the following code, because the column labels will be different for each type
-  # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
-  # back with column names of "sigma" and "CI" on the first and second column, respectively. 
-  # plot <-  xyplot(data$CI ~ data$sigma, ...)
-  # would break if we, instead, wanted CESe with Q and plotting delta.
-  # So, instead, we use the column indices to pick off the correct variables.
-  # data[ , 1] contains the the parameter; 
-  # data[ , 2] contains the CI width; 
-  # data[ , 3] contains the descriptor for the type of graph it is.
-  plot <- xyplot(CI ~ param | factor, data=data,
-                 scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                             alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                             x=list(at=xTics),
-                             y=list(at=yTics)
-                             ), 
-                 xlim=xLimits, 
-                 ylim=yLimits, 
-                 xlab=list(label=xLabels),
-                 ylab=list(label=yLabel),
-                 # Set text for factor levels
-                 strip = strip.custom(factor.levels=stripLabels, 
-                                      bg=stripBG, # Sets background transparent to match the graph itself.
-                                      par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                                      ),
-                 as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-                 panel = function(x, y){
-                   # Picks up the 4th column containing the country abbreviations.
-                   ltext(x=x, y=y, labels=data[ , 4], cex=countryAbbrevScaling) 
-                 })
+  dataPlot <- xyplot(CI ~ param | factor, data=data,
+                     scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                                 alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+                                 x=list(at=xTics),
+                                 y=list(at=yTics)
+                                 ), 
+                     xlim=xLimits, 
+                     ylim=yLimits, 
+                     xlab=list(label=xLabels),
+                     ylab=list(label=yLabel),
+                     # Set text for factor levels
+                     strip = strip.custom(factor.levels=stripLabels, 
+                                          bg=stripBG, # Sets background transparent to match the graph itself.
+                                          par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                          ),
+                     as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+                     panel = function(x, y){
+                       # Picks up the 4th column containing the country abbreviations.
+                       ltext(x=x, y=y, labels=data[ , 4], cex=countryAbbrevScaling) 
+                     })
+  doubleYPlot <- doubleYScale(diagLinesLattice, dataPlot, add.ylab2=FALSE, use.style=FALSE)
   #return(plot)
-  return(diagLinesLattice)
+  #return(diagLinesLattice)
+  return(doubleYPlot)
 }
 @
 
