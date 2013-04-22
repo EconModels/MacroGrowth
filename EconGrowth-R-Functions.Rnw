@@ -2522,29 +2522,29 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
 CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   # Build a data.frame that has all the necessary models
   gammaCDeqDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="Q")
-  gammaCDexDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="X")
-  gammaCDeuDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="U")
   deltaCESeqDF <- CIvsParamDF(model="CESe", param="delta", energyType="Q")
-  deltaCESexDF <- CIvsParamDF(model="CESe", param="delta", energyType="X")
-  deltaCESeuDF <- CIvsParamDF(model="CESe", param="delta", energyType="U")
   sigmaCESeqDF <- CIvsParamDF(model="CESe", param="sigma", energyType="Q")
+  gammaCDexDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="X")
+  deltaCESexDF <- CIvsParamDF(model="CESe", param="delta", energyType="X")
   sigmaCESexDF <- CIvsParamDF(model="CESe", param="sigma", energyType="X")
+  gammaCDeuDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="U")
+  deltaCESeuDF <- CIvsParamDF(model="CESe", param="delta", energyType="U")
   sigmaCESeuDF <- CIvsParamDF(model="CESe", param="sigma", energyType="U")
   # Change the name of the first columns (the ones that contain the parameter of interest to us) to "param".
   # Doing this allows us to combine the individual data frames into one large data frame.
   colnames(gammaCDeqDF)[1]  <- "param"
-  colnames(gammaCDexDF)[1]  <- "param"
-  colnames(gammaCDeuDF)[1]  <- "param"
   colnames(deltaCESeqDF)[1] <- "param"
-  colnames(deltaCESexDF)[1] <- "param"
-  colnames(deltaCESeuDF)[1] <- "param"
   colnames(sigmaCESeqDF)[1] <- "param"
+  colnames(gammaCDexDF)[1]  <- "param"
+  colnames(deltaCESexDF)[1] <- "param"
   colnames(sigmaCESexDF)[1] <- "param"
+  colnames(gammaCDeuDF)[1]  <- "param"
+  colnames(deltaCESeuDF)[1] <- "param"
   colnames(sigmaCESeuDF)[1] <- "param"
   # Create one big data.frame with all of the data.
-  data <- rbind(gammaCDeqDF,  gammaCDexDF,  gammaCDeuDF, 
-                deltaCESeqDF, deltaCESexDF, deltaCESeuDF, 
-                sigmaCESeqDF, sigmaCESexDF, sigmaCESeuDF)
+  data <- rbind(gammaCDeqDF, deltaCESeqDF, sigmaCESeqDF, 
+                gammaCDexDF, deltaCESexDF, sigmaCESexDF,
+                gammaCDeuDF, deltaCESeuDF, sigmaCESeuDF)
   # Now make the graph.
   # Need to use the indices in the following code, because the column labels will be different for each type
   # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
@@ -2564,18 +2564,18 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
                              ), 
                  xlim=c(-0.2, 1.2), #x axis limits
                  ylim=c(-0.4, 2.4), #y axis limits
-                 xlab=list(label=""),
+                 xlab=list(label=c("$\\gamma$", "$\\delta$", "$\\sigma$")),
                  ylab=list(label="Width of 95\\% Confidence Interval"),
                  # Set text for factor levels
-                 strip = strip.custom(factor.levels=c("$\\gamma$ (CD with $q$)",  
-                                                      "$\\gamma$ (CD with $x$)",  
-                                                      "$\\gamma$ (CD with $u$)",
-                                                      "$\\delta$ (CES with $q$)", 
-                                                      "$\\delta$ (CES with $x$)", 
-                                                      "$\\delta$ (CES with $u$)",
-                                                      "$\\sigma$ (CES with $q$)", 
-                                                      "$\\sigma$ (CES with $x$)", 
-                                                      "$\\sigma$ (CES with $u$)"), 
+                 strip = strip.custom(factor.levels=c("CD with $q$",
+                                                      "CES with $q$", 
+                                                      "CES with $q$",
+                                                      "CD with $x$",  
+                                                      "CES with $x$", 
+                                                      "CES with $x$", 
+                                                      "CD with $u$",
+                                                      "CES with $u$",
+                                                      "CES with $u$"), 
                                       bg="transparent", # Sets background transparent to match the graph itself.
                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
                                       ),
