@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -2520,7 +2520,81 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
 # textScaling: the amount by which you want to scale the text on the graph.
 ##
 CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
-  # Build a data.frame that has all the necessary models
+  # Set up plotting parameters that are common to both graphs.
+  xTics <- c(0.0, 0.5, 1.0) #x axis tic locations
+  yTics <- c(0.0, 1.0, 2.0) #y axis tic locations
+  xLimits <- c(-0.2, 1.2) #x axis limits
+  yLimits <- c(-0.4, 2.4) #y axis limits
+  xLabels <- c("$\\gamma$", "$\\delta$", "$\\sigma$") #x axis labels
+  yLabel <- "Width of 95\\% Confidence Interval"
+  stripLabels <- c("CD with $q$", "CES with $q$", "CES with $q$",
+                   "CD with $x$", "CES with $x$", "CES with $x$", 
+                   "CD with $u$", "CES with $u$", "CES with $u$")
+  stripBG <- "transparent"
+
+  # Build a data.frame that contains coordinates for diagonal lines on the various graphs.
+  # Columns are "param", "CI", and "factor" to match the column names later in this function.
+  # Diagonal line for the gamma-CD-Q panel
+  param <- c(0.0, 1.0)
+  CI <- c(0.0, 2.0)
+  factor <- c("gammaCDeQ", "gammaCDeQ")
+  diagLineGammaCDeQDF <- data.frame(param, CI, factor)
+  # Diagonal line for the gamma-CD-X panel
+  factor <- c("gammaCDeX", "gammaCDeX")
+  diagLineGammaCDeXDF <- data.frame(param, CI, factor)
+  # Diagonal line for the gamma-CD-U panel
+  factor <- c("gammaCDeU", "gammaCDeU")
+  diagLineGammaCDeUDF <- data.frame(param, CI, factor)
+
+  # Diagonal line for the delta-CES-Q panel  
+  param <- c(1.0, 0.0)
+  CI <- c(0.0, 2.0)
+  factor <- c("deltaCESeQ", "deltaCESeQ")
+  diagLineDeltaCESeQDF <- data.frame(param, CI, factor)
+  # Diagonal line for the delta-CES-X panel  
+  factor <- c("deltaCESeX", "deltaCESeX")
+  diagLineDeltaCESeXDF <- data.frame(param, CI, factor)
+  # Diagonal line for the delta-CES-U panel  
+  factor <- c("deltaCESeU", "deltaCESeU")
+  diagLineDeltaCESeUDF <- data.frame(param, CI, factor)
+
+  # Diagonal line for the sigma-CES-Q panel  
+  param <- c(0.0, 1.0)
+  CI <- c(0.0, 2.0)
+  factor <- c("sigmaCESeQ", "sigmaCESeQ")
+  diagLineSigmaCESeQDF <- data.frame(param, CI, factor)
+  # Diagonal line for the sigma-CES-X panel  
+  factor <- c("sigmaCESeX", "sigmaCESeX")
+  diagLineSigmaCESeXDF <- data.frame(param, CI, factor)
+  # Diagonal line for the sigma-CES-U panel  
+  factor <- c("sigmaCESeU", "sigmaCESeU")
+  diagLineSigmaCESeUDF <- data.frame(param, CI, factor)
+  
+  # Now combine all data.frames in the correct order.
+  diagLinesDF <- rbind(diagLineGammaCDeQDF, diagLineDeltaCESeQDF, diagLineSigmaCESeQDF,
+                       diagLineGammaCDeXDF, diagLineDeltaCESeXDF, diagLineSigmaCESeXDF,
+                       diagLineGammaCDeUDF, diagLineDeltaCESeUDF, diagLineSigmaCESeUDF)
+
+  # Make an xyplot that contains the diagonal lines.
+  diagLinesLattice <- xyplot(CI ~ param | factor, data=diagLinesDF,
+                             scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                             tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                             alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+                             x=list(at=xTics),
+                             y=list(at=yTics)
+                             ), 
+                             xlim=xLimits, 
+                             ylim=yLimits, 
+                             xlab=list(label=xLabels),
+                             ylab=list(label=yLabel),
+                             strip = strip.custom(factor.levels=stripLabels, # Set text for factor levels
+                                                  bg=stripBG,
+                                                  par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                                                  ),
+                             as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+                             )
+
+  # Build a data.frame that has all the necessary data from the models.
   gammaCDeqDF  <- CIvsParamDF(model="CDe",  param="gamma", energyType="Q")
   deltaCESeqDF <- CIvsParamDF(model="CESe", param="delta", energyType="Q")
   sigmaCESeqDF <- CIvsParamDF(model="CESe", param="sigma", energyType="Q")
@@ -2545,6 +2619,7 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   data <- rbind(gammaCDeqDF, deltaCESeqDF, sigmaCESeqDF, 
                 gammaCDexDF, deltaCESexDF, sigmaCESexDF,
                 gammaCDeuDF, deltaCESeuDF, sigmaCESeuDF)
+print(data)
   # Now make the graph.
   # Need to use the indices in the following code, because the column labels will be different for each type
   # of model. In other words, if we're doing CESe with Q and plotting sigma, the data.frame will come 
@@ -2555,28 +2630,20 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
   # data[ , 1] contains the the parameter; 
   # data[ , 2] contains the CI width; 
   # data[ , 3] contains the descriptor for the type of graph it is.
-  plot <- xyplot(data[ , 2] ~ data[ , 1] | data[ , 3], 
+  plot <- xyplot(CI ~ param | factor, data=data,
                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                             x=list(at=c(0.0, 0.5, 1.0)),
-                             y=list(at=c(0.0, 1.0, 2.0))
+                             x=list(at=xTics),
+                             y=list(at=yTics)
                              ), 
-                 xlim=c(-0.2, 1.2), #x axis limits
-                 ylim=c(-0.4, 2.4), #y axis limits
-                 xlab=list(label=c("$\\gamma$", "$\\delta$", "$\\sigma$")),
-                 ylab=list(label="Width of 95\\% Confidence Interval"),
+                 xlim=xLimits, 
+                 ylim=yLimits, 
+                 xlab=list(label=xLabels),
+                 ylab=list(label=yLabel),
                  # Set text for factor levels
-                 strip = strip.custom(factor.levels=c("CD with $q$",
-                                                      "CES with $q$", 
-                                                      "CES with $q$",
-                                                      "CD with $x$",  
-                                                      "CES with $x$", 
-                                                      "CES with $x$", 
-                                                      "CD with $u$",
-                                                      "CES with $u$",
-                                                      "CES with $u$"), 
-                                      bg="transparent", # Sets background transparent to match the graph itself.
+                 strip = strip.custom(factor.levels=stripLabels, 
+                                      bg=stripBG, # Sets background transparent to match the graph itself.
                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
                                       ),
                  as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
@@ -2584,7 +2651,8 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
                    # Picks up the 4th column containing the country abbreviations.
                    ltext(x=x, y=y, labels=data[ , 4], cex=countryAbbrevScaling) 
                  })
-  return(plot)
+  #return(plot)
+  return(diagLinesLattice)
 }
 @
 
