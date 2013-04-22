@@ -155,6 +155,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
+\item{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
 \item Heun: Add CES production function fits
@@ -202,16 +203,16 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{\st{Heun: x-axis labels only on bottom for 9-panel lattice graphs}}
 \item{\st{Heun: Convert the presentation to use energyType=NA for models without energy}}
 \item{\st{Heun: Convert to using NA everywhere for models without energy}}
-\item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
+\item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Result: doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
 \item{\st{Heun: Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}}
-\item \st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}
-\item \st{Heun: Create a table of AIC values for each fit.}
-\item \st{Heun: Add $u$ predictions for Cobb-Douglas}
-\item \st{Heun: Move tables to an appendix at the end.}
-\item \st{Heun: Add acknowledgements (Dad, Pruim)}
-\item \st{Heun: Add $u$ parameter table and graph}
-\item \st{Heun: Add covariance metrics.}
-\item \st{Heun: Add single factor fits}
+\item{\st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}}
+\item{\st{Heun: Create a table of AIC values for each fit.}}
+\item{\st{Heun: Add $u$ predictions for Cobb-Douglas}}
+\item{\st{Heun: Move tables to an appendix at the end.}}
+\item{\st{Heun: Add acknowledgements (Dad, Pruim)}}
+\item{\st{Heun: Add $u$ parameter table and graph}}
+\item{\st{Heun: Add covariance metrics.}}
+\item{\st{Heun: Add single factor fits}}
       \begin{itemize}
       \item{\st{Correct sizes for parameter graphs for each country}}
       \item{\st{Parameter graphs ($\lambda$ and $m$) for each country}}
@@ -539,7 +540,7 @@ The Cobb-Douglas model with energy is given by
 
 \subsection{Cobb-Douglas with thermal energy ($q$)}
 
-The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGammaGraphsZA} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ for South Africa with thermal energy ($q$). The minimum $SSE$ occurs at a discontinuity caused by the constraint $\beta \geq 0.0$. The parameter estimation algorithm has difficulty recognizing the values of $\gamma$, $\alpha$, $\beta$, and $\lambda$ that produce minimum $SSE$, because the constrained model behaves very differently on either side of the discontinuity.
+The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
 ******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
 
@@ -676,11 +677,11 @@ createCESLatticeGraph()
 \section{Confidence Intervals for Cobb-Douglas and CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) represents the importance of energy for economic growth. When $\gamma$ is small (close to 0), energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma$ is large (close to 1), energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for 95\% confidence interval on $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the region where the 95\% confidence interval on $\gamma$ crosses 0 is an upper-left triangle, above and to the left of a line that connects points (0, 0) and (1, 2) on the graph. If $\gamma$ for a given economy is below and to the right of the line connecting (0, 0) and (1, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
+The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) represents the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for 95\% confidence interval on $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the region where the 95\% confidence interval on $\gamma$ crosses 0 is an upper-left triangle, above and to the left of a line that connects points (0, 0) and (1, 2) on the graph. If $\gamma$ for a given economy is below and to the right of the line connecting (0, 0) and (1, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
 
 The left column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most countries are above and to the left of the line, while only a few are below and to the right. 
 
-For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\delta$ indicates that importance of energy for economic growth. When $\delta$ is close to 1, energy is an insignificant contributor to economic growth, and when $\delta$ is close to 0, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of $\delta$ confidence interval width ($CI_{95\%,\delta}$) vs. $\delta$, where each economy is represented by a point, the region where the 95\% confidence interval for $\delta$ crosses 1 is an upper-right triangle, above and to the right of a line that connects points (1, 0) and (0, 2) on the graph. If $\delta$ for a given economy is below and to the left of the line connecting (1, 0) and (0, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
+For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\delta$ indicates that importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of $\delta$ confidence interval width ($CI_{95\%,\delta}$) vs. $\delta$, where each economy is represented by a point, the region where the 95\% confidence interval for $\delta$ crosses 1 is an upper-right triangle, above and to the right of a line that connects points (1, 0) and (0, 2) on the graph. If $\delta$ for a given economy is below and to the left of the line connecting (1, 0) and (0, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
 
 The middle column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most countries are above and to the right of the line, while only a few are below and to the left.
 
@@ -701,7 +702,7 @@ CIvsParamLattice(countryAbbrevScaling=0.6)
 The LINEX model has the form
 
 \begin{equation} \label{eq:LINEX_model}
-  y = e \: \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} ,
+  y = \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} \: e ,
 \end{equation}
 
 \noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
