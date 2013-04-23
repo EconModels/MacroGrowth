@@ -238,41 +238,33 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Background}
-
 Neoclassical economic growth theory attributes output ($Y$) to factors of production: capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the canonical representation of indexed economic output ($y$) as a function of indexed labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent technological progress term ($\mathrm{e}^{\lambda(t-t_0)}$):
 
 \begin{equation} \label{eq:CD}
-  y = \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta,
+  y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ measured by GDP, $K$ measured in currency units, $L$ measured in workers/year or work-hours/year, and subscripts ``0'' indicating values at an initial year. Time ($t$) is measured in years, and $\lambda$ indicates the pace of technological progress (in units of year$^{-1}$). Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress affects economic growth, nor does it attempt to describe how technological progress might vary from one economy to the next. Mathematically, technological progress is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, an elasticity of unity is assumed ($\alpha + \beta = 1$), indicating constant returns to scale.
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. Time ($t$) is measured in years, $A$ is a technological progress term with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$). Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress affects economic growth, nor does it attempt to describe how technological progress might vary from one economy to the next. Mathematically, technological progress is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
 
-As shown in Equation \ref{eq:CD} above, neoclassical economic theory neglects the role of energy input to the economy. However, \citet{Bashmakov:2007ek} and \citet{Murphy:2011jh} indicate that the influence of energy on economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and an inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
+As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek} and \citet{Murphy:2011jh} indicate that the importance of energy may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
 
-Some energy economists augment economic growth models with energy as an additional (or the only) factor of production. However, there is little agreement on how this should be done. Neither the mathematical form of the production function (Cobb-Douglas, CD; Constant Elasticity of Substitution, CES; or Linear Exponential, LINEX) nor which quantification of energy should be included (thermal energy, $q$; exergy, $x$; or useful work, $u$) are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of energy-augmented production functions for different types of economies (e.g., developed, BRICS,\footnote{Brazil, China, India, South Africa} petrol, or developing). This paper attempts to contribute to the literature in these important areas.
+Some energy economists augment economic growth models with energy being an additional (or the only) factor of production. However, there is little agreement in the literature on how this should be done. Neither the mathematical form of the energy-augmented production function nor the quantification of energy are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of energy-augmented production functions for different types of economies. In addition, very few studies of the importance of energy in economic growth include rigorous statistical assessments of energy-related parameters. This paper attempts to contribute to the literature with statistically rigorous methods along three coordinates of analysis: form of the energy augmented production function, energy quantification, and type of economy.
+
+\subsection{Mathematical Forms of the Energy-augmented Production Function}
+
+Three prominent energy-augmented production functions appear in the literature: Cobb-Douglas, CDe \citep{Ayres:2008cl}, Constant Elasticity of Substitution, CESe \citep{Stern:2012ey}, and LINear EXponential, LINEX \citep{Kummel:1980wx}.
+
+Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
+
+\begin{equation} \label{eq:CDe}
+  y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
+\end{equation}
+
+\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time. The energy-augmented Cobb-Douglas production function is often assumed to have constant returns to scale for the three factors of production: $\alpha + \beta + \gamma = 1$.
+
+\citet{Ayres:2008cl} uses Equation \ref{eq:CDe} with exergy ($x$) and useful work ($u$) energy quantifications to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with a thermal energy ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
 
 ************* Matt ended here. ****************
-
-\subsection{Mathematical Forms of the Production Function}
-
-Many energy-augmented production functions have been used to predict economic growth. Three prominent functions are the Cobb-Douglas production function with an energy input as used by (AYRES AND WARR, 2008), the Stern Constant Elasticity of Substitution (CES) production function (STERN, 2010), and K\"{u}mmel's Linear Exponential (LINEX) production function (KUMMEL, 1980).
-
-Similar to the Cobb-Douglas production function without an energy term, the Cobb-Douglas production function with energy (\textit{e}) includes constant returns to scale for the three factors of production.
-
-\begin{equation}
-  y_\mathrm{C-D} = A(t)k^\alpha l^\beta e^\gamma
-\end{equation}
-
-\begin{equation}
-  e \equiv E/E_\mathrm{0}
-\end{equation}
-
-\begin{equation}
-  \alpha + \beta + \gamma = 1
-\end{equation}
-
-(AYRES AND WARR, 2009) use this production function with useful work and exergy being the energy factors of production to descrive historic Japanese and American economies from 1900-2000. (FROLING, 2009) also uses a Cobb-Douglas production function with a thermal energy input to describe output for the global economy from 1800-1970. Fr\"{o}ling's Cobb-Douglas production function endogenizes labor with respect to fertility and mortality rates and separates the thermal energy factor of production into two types: biomass energy and coal energy. (SERRENHO, 2010) uses the Cobb-Douglas derivative with a thermal energy factor of production to describe output for the EU-15 countries. Serrenho divides the thermal energy factor into energy consumption from renewables, non-renewables, wastes, and imports.
 
 Other energy economists use the Constant Elasticity of Substitution (CES) production function to describe economic growth with an energy factor of production. (VAN DER WERF, 2007) models various nested CES production functions for 12 OECD (Organisation for Economic Co-operating and Development) countries with respect to climate change policy. van der Werf concludes that (KL)E nesting structure (capital and labor combined, then energy added) best fits the historic data. (LECCA, 2011) also models a variety of CES production functions using a KLEM structure to determine how the energy factor of production's location affects results stability. (STERN, 2011) uses a CES production function that has a Cobb-Douglas production function embedded into the CES production function, following the (KL)E format. 
 
@@ -307,6 +299,7 @@ The final production function chosen for our comparison was the (KUMMEL, 1980, 1
 Where $a_\mathrm{0}$ is a parameter representing capital efficiency and $c_\mathrm{t}$ is a parameter representing energy demand. (KUMMEL, 1980) inserted an energy factor of production into the Cobb-Douglas derivative, then assumed constant elasticity for the energy, labor, and capital factors of production. (KUMMEL, 1985) then partially integrated the Cobb-Douglas derivative to form the LINEX production function. K\"{u}mmel uses his LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany (KUMMEL, 2002). (AYRES AND WARR, 2010) compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
 
 \subsection{Quantification of Energy}
+
 The literature shows three types of energy used in production functions: thermal energy, exergy, and useful work. Thermal energy ($e$) is the heat content of an energy carrier. Exergy ($x$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($u$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy for the energy factor of production in the production function, including (STERN, 2011), (FROLING, 2009), (SERRENHO, 2010), and (KUMMEL, 1980, 1985, 2002). (AYRES AND WARR, 2009) introduced the idea of using exergy and useful work in a production function in order to include the importance of efficiency gains in energy production over the last century. Little work has been done comparing the predictive ability of each type of energy quantification in production functions.
 
 %Figure 2 goes here.
