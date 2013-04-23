@@ -155,7 +155,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}
 \item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
 \item Heun: Add CES production function fits
@@ -192,6 +191,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}}
 \item{\st{Reese: Add text from Word verson of paper to the LaTeX version.}}
 \item{\st{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}}
 \item{\st{Heun: Rearrange the panels on the CD gamma grid search graph}}
@@ -240,50 +240,23 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \subsection{Background}
 
-Neoclassical economic growth theory attributes output growth to growth rates of factors of production: capital stock and labor. In 1928, Amherst Professors Charles Cobb and Paul Douglas created the Cobb-Douglas production function that predicted manufacturing output ($y$) as a function of labor ($l$), capital stock ($k$), and a technological progress term ($\mathrm{e}^{(t-t_0)}$) \citep{Mishra:2007tv}
+Neoclassical economic growth theory attributes output ($Y$) to factors of production: capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the canonical representation of indexed economic output ($y$) as a function of indexed labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent technological progress term ($\mathrm{e}^{\lambda(t-t_0)}$):
 
 \begin{equation} \label{eq:CD}
-  y_\mathrm{CD} = \mathrm{e}^{(t-t_0)} k^\alpha l^\beta,
+  y = \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta,
 \end{equation}
 
-\noindent where
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ measured by GDP, $K$ measured in currency units, $L$ measured in workers/year or work-hours/year, and subscripts ``0'' indicating values at an initial year. Time ($t$) is measured in years, and $\lambda$ indicates the pace of technological progress (in units of year$^{-1}$). Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress affects economic growth, nor does it attempt to describe how technological progress might vary from one economy to the next. Mathematically, technological progress is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, an elasticity of unity is assumed ($\alpha + \beta = 1$), indicating constant returns to scale.
 
-\begin{equation} \label{eq:y_def}
-  y \equiv Y/Y_\mathrm{0},
-\end{equation}
+As shown in Equation \ref{eq:CD} above, neoclassical economic theory neglects the role of energy input to the economy. However, \citet{Bashmakov:2007ek} and \citet{Murphy:2011jh} indicate that the influence of energy on economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and an inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
 
-\begin{equation} \label{eq:k_def}
-  k \equiv K/K_\mathrm{0},
-\end{equation}
+Some energy economists augment economic growth models with energy as an additional (or the only) factor of production. However, there is little agreement on how this should be done. Neither the mathematical form of the production function (Cobb-Douglas, CD; Constant Elasticity of Substitution, CES; or Linear Exponential, LINEX) nor which quantification of energy should be included (thermal energy, $q$; exergy, $x$; or useful work, $u$) are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of energy-augmented production functions for different types of economies (e.g., developed, BRICS,\footnote{Brazil, China, India, South Africa} petrol, or developing). This paper attempts to contribute to the literature in these important areas.
 
-\noindent and
-
-\begin{equation} \label{eq:l_def}
-  l \equiv L/L_\mathrm{0};
-\end{equation}
-
-\noindent with $Y$ measured by GDP, $K$ measured in currency units, and $L$ measured in workers or work-hours.
-
-In the Cobb-Douglas production function, capital and labor are related to output with an elasticity of unity, indicating constant returns to scale.
-
-\begin{equation} \label{eq:CD_constant_returns_to_scale_constraint}
-  \alpha + \beta = 1
-\end{equation}
-
-Using only labor and capital factors of production, neoclassical economic growth theory cannot predict the growth of the U.S. economy over the last 100 years.
-
-%Figure 1 goes here
-
-So, an exogenous "technological progress" term (\textit{A(t)}) is often included to better predict historical economic growth as a function of capital and labor factors of production. For the U.S., the \textit{A(t)} parameter is necessary: without it, the theory cannot accurately describe historical economic performance.
-
-Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress affects economic growth, nor does it attempt to say how technological progress might vary from one economy to the next. Mathematically, technological progress is nothing more than a fitting parameter that aligns the predictions of equation 1 with historical data.
-
-As shown in Equation 1 above, neoclassical economic theory neglects the role of energy input to the economy. However, (BASHMAKOV, 2007) and (MURPHY, 2011) indicate that the influence of energy on economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy input is, therefore, cause for concern, and an inquiry into the proper approach to including energy as a factor of production in growth modeling is therefore, extremely relevant.
-
-Many energy economists include energy as a factor of production (along with capital stock and labor) to improve predictions of historical economic growth. But, there is little agreement on how this should be done. Neither the mathematical form of the production function, nor which type of energy should be considered (thermal energy, exergy, of useful work) are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of various energy-including production functions for different types of economies. This paper attempts to contribute to our understanding in these important areas.
+************* Matt ended here. ****************
 
 \subsection{Mathematical Forms of the Production Function}
-Many energy-including production functions have been used to predict economic growth. Three prominent functions are the Cobb-Douglas production function with an energy input as used by (AYRES AND WARR, 2008), the Stern Constant Elasticity of Substitution (CES) production function (STERN, 2010), and K\"{u}mmel's Linear Exponential (LINEX) production function (KUMMEL, 1980).
+
+Many energy-augmented production functions have been used to predict economic growth. Three prominent functions are the Cobb-Douglas production function with an energy input as used by (AYRES AND WARR, 2008), the Stern Constant Elasticity of Substitution (CES) production function (STERN, 2010), and K\"{u}mmel's Linear Exponential (LINEX) production function (KUMMEL, 1980).
 
 Similar to the Cobb-Douglas production function without an energy term, the Cobb-Douglas production function with energy (\textit{e}) includes constant returns to scale for the three factors of production.
 
@@ -677,23 +650,25 @@ createCESLatticeGraph()
 \section{Confidence Intervals for Cobb-Douglas and CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) represents the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for 95\% confidence interval on $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the region where the 95\% confidence interval on $\gamma$ crosses 0 is an upper-left triangle, above and to the left of a line that connects points (0, 0) and (1, 2) on the graph. If $\gamma$ for a given economy is below and to the right of the line connecting (0, 0) and (1, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
+The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the locus of points where the 95\% confidence interval on $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
 
-The left column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most countries are above and to the left of the line, while only a few are below and to the right. 
+The left column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the left of the line, while only a few are below and to the right.
 
-For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\delta$ indicates that importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence that energy makes a meaningful contribution to economic growth for that economy. On a graph of $\delta$ confidence interval width ($CI_{95\%,\delta}$) vs. $\delta$, where each economy is represented by a point, the region where the 95\% confidence interval for $\delta$ crosses 1 is an upper-right triangle, above and to the right of a line that connects points (1, 0) and (0, 2) on the graph. If $\delta$ for a given economy is below and to the left of the line connecting (1, 0) and (0, 2), we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
+For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\delta$ indicates the importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. In a manner similar to $\gamma$ for the Cobb-Douglas model, we note that if the combination of $\delta$ and its confidence interval for a given economy is below and to the left of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
 
-The middle column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most countries are above and to the right of the line, while only a few are below and to the left.
+The middle column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the right of the line, while only a few are below and to the left.
 
-For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose value of $\sigma$ is below and to the left of a line connecting (0, 2) and (1, 0) on a graph of $CI_{95\%,\sigma}$ vs. $\sigma$, we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of a line connecting (1, 0) and (2, 2), we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
+For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose combination of  $\sigma$ and its confidence interval is below and to the left of the lines in the rightmost graphs of Figure \ref{fig:CIvsParam_Lattice_Graph} we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of the line, we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
 
 The right column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\sigma}$ vs. $\sigma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that energy ($e$) unambiguously complements capital stock and labor ($kl$) for most economies.
 
-<<CIvsParam_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="95\\% Confidence interval widths vs. parameter values for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models. If an economy appears in the region above a dashed line, the 95\\% confidence interval for the parameter extends to or beyond $\\gamma \\le$ 0 (cannot say with 95\\% confidence that energy is important for the Cobb-Douglas model), $\\delta \\ge$ 1 (cannot say with 95\\% confidence that energy is important for the CES model), or $\\sigma$ = 0 (cannot say with 95\\% confidence whether ($kl$) and ($e$) are complements or substitutes in the CES model).", eval=TRUE>>=
+<<CIvsParam_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="95\\% Confidence interval widths vs. parameter values for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models with energy. If an economy appears in the region above a dashed line, the 95\\% confidence interval for the parameter extends to or beyond $\\gamma \\le$ 0 (cannot say with 95\\% confidence that energy is important for the Cobb-Douglas model), $\\delta \\ge$ 1 (cannot say with 95\\% confidence that energy is important for the CES model), or $\\sigma$ = 1 (cannot say with 95\\% confidence whether ($kl$) and ($e$) are complements or substitutes in the CES model).">>=
 CIvsParamLattice(countryAbbrevScaling=0.6)
 @
 
-*********** Martin: Need interpretation here. *******************
+Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or $u$), there are few economies for which we can say with high confidence (at the 95\% level) that energy plays a significant role in economic growth. However, in seeming contradiction, results for the CES model indicate that energy complements capital stock and labor. That is, energy is essential for capital stock and labor to generate economic growth. One possible explanation for this apparent contradiction is to consider energy as embedded within capital stock and labor: it takes energy to make both captial stock and labor available to generate economic growth.
+
+*********** Martin: Need additional interpretation here. *******************
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{LINEX Models}
