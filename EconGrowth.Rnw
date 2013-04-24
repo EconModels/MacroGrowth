@@ -252,7 +252,9 @@ Some energy economists augment economic growth models with energy being an addit
 
 \subsection{Mathematical Forms of the Energy-augmented Production Function}
 
-Three prominent energy-augmented production functions appear in the literature: Cobb-Douglas, CDe \citep{Ayres:2008cl}, Constant Elasticity of Substitution, CESe \citep{Stern:2012ey}, and LINear EXponential, LINEX \citep{Kummel:1980wx}.
+Three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX).
+
+\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)}
 
 Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
 
@@ -264,37 +266,46 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
 
 \citet{Ayres:2008cl} uses Equation \ref{eq:CDe} with exergy ($x$) and useful work ($u$) energy quantifications to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with a thermal energy ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
 
+**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Especially, are there any confidence interals or statistical evaluation in each of these studies? ********************
+
+\subsubsection{Energy-augmented CES Production Function (CESe)}
+
+Other energy economists use an energy-augmented Constant Elasticity of Substitution (CESe) production function to describe economic growth. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the form (among others)
+
+\begin{equation} \label{eq:CESe}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity.
+
+\citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. van der Werf concludes that ($kl$)($e$) nesting structure (capital and labor combined, then energy added) best fits the historic data. ******** Any confidence intervals in this study? ********* \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the energy factor of production's location affects results stability. \citet{Stern:2012ey} use a CES production function of the form ($kl$)($e$) that has a Cobb-Douglas production function embedded within the CES production function as shown below. 
+
+\begin{equation} \label{eq:CES_Stern}
+  y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+      + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+      ^{\frac{\sigma}{\sigma - 1}}
+\end{equation}
+
+\citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
+
+\subsubsection{LINEX Production Function}
+
+A third production function often cited in the literature is the LINear EXponential (LINEX) function \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}:
+
+\begin{equation} \label{eq:LINEX}
+  y = Ae; A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) + c_t \left(\rho_l - 1 \right)\right]},
+\end{equation}
+
+\noindent where $e$ is indexed energy and e is the base of the natural logarithm. The LINEX model assumes energy ($e$) is the only factor of production. $\rho_k \equiv \frac{k}{(1/2)(l+e)}$ and represents the rate at which capital stock increases relative to the average of labor and energy. $\rho_l \equiv \frac{l}{e}$ and represents the rate at which labor ($l$) increases relative to energy ($e$). Energy ($e$) as a factor of production is enhanced by $A$ if either
+
+\begin{itemize}
+\item{capital stock ($k$) increases faster than the average of energy ($e$) and labor ($l$), i.e. if $\rho_k >$ 1, or}
+\item{labor ($l$) increases faster than energy ($e$), i.e. if $\rho_l >$ 1.}
+\end{itemize}
+
+\noindent According to the LINEX model, an economy that can increase capital stock without a commensurate increase in labor and energy will experience increasing output. Similarly, an economy benefits by increasing labor without a commensurate increase in energy. Thus, $\rho_k$ is a kind of efficiency of using labor and energy to make capital available to the economy, and $\rho_l$ is a kind of efficiency of using energy to make labor available to the economy. The parameter $a_0$ represents the overall importance of these efficiencies, and $c_t$ represents the relative importance of the labor efficiency compared to the capital stock efficiency. 
+
 ************* Matt ended here. ****************
-
-Other energy economists use the Constant Elasticity of Substitution (CES) production function to describe economic growth with an energy factor of production. (VAN DER WERF, 2007) models various nested CES production functions for 12 OECD (Organisation for Economic Co-operating and Development) countries with respect to climate change policy. van der Werf concludes that (KL)E nesting structure (capital and labor combined, then energy added) best fits the historic data. (LECCA, 2011) also models a variety of CES production functions using a KLEM structure to determine how the energy factor of production's location affects results stability. (STERN, 2011) uses a CES production function that has a Cobb-Douglas production function embedded into the CES production function, following the (KL)E format. 
-
-\begin{equation}
-  y_\mathrm{CES} = \bigg{[} (1-\zeta)(A_\mathrm{L} l^\beta k^{1-\beta})^\phi + \zeta(A_\mathrm{E} e)^\phi \bigg{]} ^\frac{1}{\phi}
-\end{equation}
-
-\begin{equation}
-  \phi = \frac{\sigma-1}{\sigma}
-\end{equation}
-
-Where $A_\mathrm{L}$ is the augmentation indice for labor and capital, $A_\mathrm{E}$ is the augmentation indice for energy, $\sigma$ is the elasticity of substitution between energy and value added aggregate, and $\zeta$ is the relative importance of labor/capital and energy. The elasticity of substitution between the capital and labor term and the energy term is less than unity, reflecting a minimum energy requirement for economic output. Stern applies his CES function to the Swedish economy from 1800-2000, which reflects the significance in the transfer from wood to more energy-intensive fossil fuel sources in promoting economic growth.
-
-The final production function chosen for our comparison was the (KUMMEL, 1980, 1985, 2002) LINEX production function.
-
-\begin{equation}
-  y_\mathrm{LINEX} = e \textrm{exp} \bigg{[} a_\mathrm{0} \bigg{(} 2-\frac{l+e}{k} \bigg{)} + a_\mathrm{0} c_\mathrm{t} \bigg{(} \frac{l}{e} - 1 \bigg{)} \bigg{]}
-\end{equation}
-
-\begin{equation}
-  a = a_\mathrm{0} \frac{l + e}{k}
-\end{equation}
-
-\begin{equation}
-  \beta = a_\mathrm{0} \bigg{(} c_\mathrm{t} \frac{l}{e} - \frac{l}{k} \bigg{)}
-\end{equation}
-
-\begin{equation}
-  \gamma = 1 - \frac{a_\mathrm{0} e}{k} - a_\mathrm{0} c_\mathrm{t} \frac{l}{e}
-\end{equation}
 
 Where $a_\mathrm{0}$ is a parameter representing capital efficiency and $c_\mathrm{t}$ is a parameter representing energy demand. (KUMMEL, 1980) inserted an energy factor of production into the Cobb-Douglas derivative, then assumed constant elasticity for the energy, labor, and capital factors of production. (KUMMEL, 1985) then partially integrated the Cobb-Douglas derivative to form the LINEX production function. K\"{u}mmel uses his LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany (KUMMEL, 2002). (AYRES AND WARR, 2010) compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
 
