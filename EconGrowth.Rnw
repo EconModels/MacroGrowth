@@ -261,7 +261,7 @@ This section describes the three coordinates of analysis and reviews studies in 
 \subsection{Mathematical Forms of the Energy-augmented Production Function} \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
-Three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). In this paper, we assess all three, and the following sections describe each.
+In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following sections describe each.
 
 %------------------------------
 \subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)}
@@ -283,13 +283,17 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
 \subsubsection{Energy-augmented CES Production Function (CESe)}
 %------------------------------
 
-Other energy economists use an energy-augmented Constant Elasticity of Substitution (CESe) production function to describe economic growth. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the form (among others)
+Other energy economists use an energy-augmented Constant Elasticity of Substitution (CESe) production function to describe economic growth. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the following forms (among others):
+
+\begin{equation} \label{eq:CES}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
 
 \begin{equation} \label{eq:CESe}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity.
+\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. Equation \ref{eq:CESe} augments a standard CES production function (Equation \ref{eq:CES}) with energy using a ($kl$)($e$) nesting arrangement, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$.
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. ******** Any confidence intervals in this study? ********* \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
 
@@ -297,7 +301,7 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
 \subsubsection{LINEX Production Function}
 %------------------------------
 
-A third production function often cited in the literature is the LINear EXponential (LINEX) function \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}:
+A third production function, the LINear EXponential (LINEX) function \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}, was derived from thermodynamic considerations:
 
 \begin{equation} \label{eq:LINEX}
   y = Ae; A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) + c_t \left(\rho_l - 1 \right)\right]},
@@ -310,15 +314,19 @@ A third production function often cited in the literature is the LINear EXponent
 \item{labor ($l$) increases faster than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
 
-\noindent According to the LINEX model, an economy that can increase capital stock ($k$) without a commensurate increase in labor ($l$) and energy ($e$) will experience an increase in output ($y$) in excess of its increase of energy consumption ($e$). Similarly, an economy benefits by increasing labor ($l$) without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an efficiency of using labor and energy to make capital available to the economy, and $\rho_l$ is an efficiency of using energy to make labor available to the economy. The parameter $a_0$ represents the overall importance of these efficiencies, and $c_t$ represents the relative importance of the labor efficiency term compared to the capital stock efficiency term. In contrast to the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equation \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies directly and, therefore, does not employ a time-dependent technical progress term. \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
+\noindent According to the LINEX model, an economy that can increase capital stock ($k$) without a commensurate increase in labor ($l$) and energy ($e$) will experience an increase in output ($y$) in excess of its increase of energy consumption ($e$). Similarly, an economy benefits by increasing labor ($l$) without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an efficiency of using labor and energy to make capital available to the economy, and $\rho_l$ is an efficiency of using energy to make labor available to the economy. The parameter $a_0$ represents the overall importance of these efficiencies, and $c_t$ represents the relative importance of the labor efficiency term compared to the capital stock efficiency term. Both $a_0$ and $c_t$ are constant with respect to time. 
 
-**************** Martin: More on the conclusions of the papers above. ***************
+In contrast to the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations \ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technical progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
+
+**************** Martin: More on the results of the above papers. ***************
 
 %++++++++++++++++++++++++++++++
 \subsection{Quantification of Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($e$) used in energy-augmented production functions: thermal energy ($q$), exergy ($x$), and useful work ($u$). Thermal energy ($q$) is the heat content of an energy carrier. Exergy ($x$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($u$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in a production function to account for efficiency gains in energy production and consumption over the last century. We know of no statistically-rigorous comparisons of the predictive ability of each type of energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}.
+The literature shows three quantifications of energy ($e$) used in energy-augmented production functions: thermal energy ($q$), exergy ($x$), and useful work ($u$). Thermal energy ($q$) is the heat content of an energy carrier. Exergy ($x$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($u$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in a production function to account for efficiency gains in energy production and consumption over the last century. 
+
+We know of no statistically-rigorous comparisons of the predictive ability of each type of energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($q$, $x$, and $u$) for developed economies and thermal energy ($q$) and exergy ($x$) for all other economies.
 
 %++++++++++++++++++++++++++++++
 \subsection{Economy Types}
@@ -326,11 +334,9 @@ The literature shows three quantifications of energy ($e$) used in energy-augmen
 
 In most energy-economic growth literature, economists assess developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies. 
 
-In this paper, we evaluate example economies from four significant groups: Developed, BRICS, Petrol, and LDCs.\footnote{Lesser-Developed Countries} 
+In this paper we analyze at least two economies from each of the following categories: developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), petrol (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). (See Table \ref{tab:Economy_Examples}.)
 
-In this paper we analyze at least two economies from each of the following categories: developed economies (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} economies (rapid economic growth with standards of living below the developed economies), petrol economies (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). Table \ref{tab:Economy_Types} shows the example countries, their ISO 3166-1 alpha-2 codes, and the years of analysis for each economy.
-
-\begin{table} \caption{Economy types and examples evaluated in this paper.} \label{tab:Economy_Types} 
+\begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
     \begin{tabular}{r c c l l} 
       \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980-2011}\\
@@ -351,36 +357,9 @@ In this paper we analyze at least two economies from each of the following categ
 
 ************* Matt ended here. ****************
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Models and methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%++++++++++++++++++++++++++++++
-\subsection{Production function selection}
-%++++++++++++++++++++++++++++++
-
-The production functions chosen for comparison were the Cobb-Douglas production function, the CES production function, and the LINEX production function. These three production functions were all treated as exogenous, with inputs of capital, labor, and energy (or exergy in the case of this paper's analysis). All three of the production functions are derived from the fundamental growth equation.
-
-\begin{equation}
-  \frac{1}{y} \frac{dy}{dt} = \alpha \frac{1}{k} \frac{\partial k}{\partial t} + \beta \frac {1}{l} \frac{\partial l}{\partial t} + \gamma \frac{1}{e} \frac{\partial e}{\partial t}
-\end{equation}
-
-Integrating equation 1 with differing solutions of $\alpha$, $\beta$, and $\gamma$ yields the various production functions. In order to satisfy the condition of constant returns to scale, $\alpha + \beta +\gamma = 1$ in all cases. The bounds for the elasticities are: $0 \le \alpha \le 1$, $0 \le \beta \le 1$, and $0 \le \gamma \le 1$.
-
-The Cobb-Douglas production function was chosen because it is one of the most commonly used in econometric modeling. The Cobb-Douglas production function is the result of partially integrating equation 11 from ($y_\mathrm{0}$, 1, 1, 1) to ($y_\mathrm{final}$, k, l, e) and assuming trivial values of $\alpha$, $\beta$, and $\gamma$ ($\alpha_\mathrm{0}$, $\beta_\mathrm{0}$, $\gamma_\mathrm{0}$). The Cobb-Douglas function is most commonly written as a function of capital and labor. A modified form can also be used where energy is a third term. The technological progress term, $A(t)$, is a multiplier representing total factor productivity; to account for some portion of the output that is only dependent on time and unaccounted for by labor and capital. The other production functions were compared to the basic Cobb-Douglas function to gain an understanding of how energy is intertwined with capital and labor. A modified version of the Cobb-Douglas with energy was also modeled to see how adaptive the function is and to examine if the total factor productivity term could be partially explained by energy.
-
-The CES production functions are a family of production functions that are starting to become more widely used in economic modeling. (MISHRA, 2007) covers a wide variety of production functions that are members of the CES family. The CES form that we chose to use is from (STERN, 2011, 2012), which embeds a Cobb-Douglas function in a CES function (see equation 8). Since Stern's function is embedded with a Cobb-Douglas function, it reduces to the standard Cobb-Douglas form as $\sigma \rightarrow 1$ and $\gamma \rightarrow 0$.
-
-The LINEX production function was chosen because it approaches growth from a perspective that combines elements of thermodynamics and economics (see equation 10). The form of the LINEX function being used is taken from (KUMMEL, 1980, 1985, 2002), with a linear dependence on energy and an exponential dependence on capital and labor. The LINEX function is a result of using the simplest non-trivial solutions of $\alpha$, $\beta$, and $\gamma$ (see equation 11, 12, and 13). The variables $a_\mathrm{0}$ and $c_\mathrm{t}$ are constant over a given period of time. The greatest advantage of the LINEX function is the time dependent output elasticities. It seems more plausible that these values would change over time as a country nears the demographic transition and shifts from using physical labor to more energy for industrialization.
-
-The combination of these four types of production functions (Cobb-Douglas, Cobb-Douglas with energy, LINEX, and Stern-CES) allowed us to get a sense of the true effects of energy on economic growth modeling.
-
-%++++++++++++++++++++++++++++++
-\subsection{Country and economy type selection}
-%++++++++++++++++++++++++++++++
-
 
 \section{Data sources and data collection}
 
