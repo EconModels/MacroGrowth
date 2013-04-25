@@ -61,6 +61,7 @@
 \usepackage{soul} %Provides strikethrough text
 \usepackage{float} %Allows precise positioning of tables and figures within the text
 \usepackage{amsmath} %Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow} % To create multirow tables.
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -317,7 +318,7 @@ A third production function often cited in the literature is the LINear EXponent
 \subsection{Quantification of Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($e$) used in production functions: thermal energy ($q$), exergy ($x$), and useful work ($u$). Thermal energy ($q$) is the heat content of an energy carrier. Exergy ($x$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($u$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in a production function to account for efficiency gains in energy production and consumption over the last century. We know of no statistically-rigorous comparisons of the predictive ability of each type of energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}.
+The literature shows three quantifications of energy ($e$) used in energy-augmented production functions: thermal energy ($q$), exergy ($x$), and useful work ($u$). Thermal energy ($q$) is the heat content of an energy carrier. Exergy ($x$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($u$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in a production function to account for efficiency gains in energy production and consumption over the last century. We know of no statistically-rigorous comparisons of the predictive ability of each type of energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}.
 
 %++++++++++++++++++++++++++++++
 \subsection{Economy Types}
@@ -325,9 +326,30 @@ The literature shows three quantifications of energy ($e$) used in production fu
 
 In most energy-economic growth literature, economists assess developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies. 
 
-************* Matt ended here. ****************
+In this paper, we evaluate example economies from four significant groups: Developed, BRICS, Petrol, and LDCs.\footnote{Lesser-Developed Countries} 
 
-In this paper, we evaluate 
+In this paper we analyze at least two economies from each of the following categories: developed economies (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} economies (rapid economic growth with standards of living below the developed economies), petrol economies (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). Table \ref{tab:Economy_Types} shows the example countries, their ISO 3166-1 alpha-2 codes, and the years of analysis for each economy.
+
+\begin{table} \caption{Economy types and examples evaluated in this paper.} \label{tab:Economy_Types} 
+  \begin{center}
+    \begin{tabular}{r c c l l} 
+      \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980-2011}\\
+                                 & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
+                                 & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
+      \hline
+      \multirow{2}{*}{BRICS}     & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1990-2011}        \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
+      \hline
+      \multirow{2}{*}{Petrol}    & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1990-2011} \\
+                                 & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
+      \hline
+      \multirow{2}{*}{LDC}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1990-2011}     \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+************* Matt ended here. ****************
 
 
 
@@ -359,7 +381,6 @@ The combination of these four types of production functions (Cobb-Douglas, Cobb-
 \subsection{Country and economy type selection}
 %++++++++++++++++++++++++++++++
 
-In this paper we analyze economies at all stages of economic growth. We selected at least two economies from each of the following categories: the developed economies, which are economies that are technologically advanced with high standards of living; developing economies, which experience rapid economic growth but are still subject to low standards of living; the petrol economies, which depend on petroleum as a substantial source of GDP; and the Malthusian economies, which maintain living standards near subsistence levels. We analyzed the developed economies of the United States, the United Kingdom, and Japan for the period 1980-2011. We analyze two developing economies for 1991-2011: South Africa and China. The petrol economies analyzed for 1991-2011 are Iran and Saudi Arabia. Finally, the Malthusian economies analyzed from 1991-2011 are Tanzania and Zambia.
 
 \section{Data sources and data collection}
 
@@ -462,7 +483,7 @@ Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled 
 
 Figure \ref{fig:Historical_Lattice_Graph} shows historical data, including GDP ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980-2011 (developed economies) and 1991-2011 (other economies). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=TRUE>>=
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
