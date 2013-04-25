@@ -373,7 +373,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
       \multirow{2}{*}{Petrol}     & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia  \\
                                   & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran          \\
       \hline
-      \multirow{2}{*}{LDC}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
+      \multirow{2}{*}{LDC}        & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania      \\
                                   & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia        \\
     \end{tabular}
   \end{center}
