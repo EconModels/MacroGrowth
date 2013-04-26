@@ -58,10 +58,11 @@
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
 
-\usepackage{soul} %Provides strikethrough text
-\usepackage{float} %Allows precise positioning of tables and figures within the text
-\usepackage{amsmath} %Allows \begin{equation*} \end{equation*} for unnumbered equations
-\usepackage{multirow} % To create multirow tables.
+\usepackage{soul} % Provides strikethrough text
+\usepackage{float} % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath} % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow} % To create multirow tables
+\usepackage{hyperref} % To create hyperlinks in the paper
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -236,7 +237,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction} \label{sec:Introduction}
+\section{Introduction} 
+\label{sec:Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Neoclassical economic growth theory attributes output ($Y$) to factors of production: capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the canonical representation of indexed economic output ($y$) as a function of indexed labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent technological progress term ($A$):
@@ -252,7 +254,8 @@ As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not in
 Some energy economists augment economic growth models with energy being an additional (or the only) factor of production. However, there is little agreement in the literature on how this should be done. Neither the mathematical form of the energy-augmented production function nor the quantification of energy are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of energy-augmented production functions for different types of economies. In addition, very few studies of the importance of energy in economic growth include rigorous statistical assessments of energy-related parameters. This paper attempts to contribute to the literature by applying statistically rigorous methods along three coordinates of analysis: form of the energy augmented production function, energy quantification, and type of economy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Coordinates of Analysis} \label{sec:Coordinates}
+\section{Coordinates of Analysis} 
+\label{sec:Coordinates}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This section describes the three coordinates of analysis and briefly reviews literature related to each.
@@ -264,7 +267,8 @@ This section describes the three coordinates of analysis and briefly reviews lit
 In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following sections describe each.
 
 %------------------------------
-\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} \label{sec:CDe}
+\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
+\label{sec:CDe}
 %------------------------------
 
 Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
@@ -280,7 +284,8 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
 **************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
 
 %------------------------------
-\subsubsection{Energy-augmented CES Production Function (CESe)} \label{sec:CES}
+\subsubsection{Energy-augmented CES Production Function (CESe)} 
+\label{sec:CES}
 %------------------------------
 
 Other energy economists use an energy-augmented Constant Elasticity of Substitution (CESe) production function to describe economic growth. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the following forms (among others):
@@ -298,7 +303,8 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
 \citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. ******** Any confidence intervals in this study? ********* \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
 
 %------------------------------
-\subsubsection{LINEX Production Function} \label{sec:LINEX}
+\subsubsection{LINEX Production Function} 
+\label{sec:LINEX}
 %------------------------------
 
 A third production function, the LINear EXponential (LINEX) function \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}, was derived from thermodynamic considerations:
@@ -321,7 +327,8 @@ In contrast to the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) a
 **************** Martin: More on the results of the above papers. ***************
 
 %++++++++++++++++++++++++++++++
-\subsection{Quantification of Energy} \label{sec:Quantification_Of_Energy}
+\subsection{Quantification of Energy} 
+\label{sec:Quantification_of_Energy}
 %++++++++++++++++++++++++++++++
 
 The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Most energy economists have used thermal energy ($Q$) for the energy factor of production ($E$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($X$) and useful work ($U$) in a production function to account for efficiency gains in energy production and consumption over the last century. 
@@ -329,7 +336,8 @@ The literature shows three quantifications of energy ($E$) used in energy-augmen
 We know of no statistically-rigorous comparisons of the predictive ability of each type of energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($Q$, $X$, and $U$) for developed economies and thermal energy ($Q$) and exergy ($X$) for all other economies.
 
 %++++++++++++++++++++++++++++++
-\subsection{Economy Types} \label{sec:Economy_Types}
+\subsection{Economy Types} 
+\label{sec:Economy_Types}
 %++++++++++++++++++++++++++++++
 
 In most energy-economic growth literature, economists assess developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies. 
@@ -357,39 +365,43 @@ In this paper we analyze at least two economies from each of the following categ
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Data Sources} \label{sec:Data_Sources}
+\section{Historical Data}
+\label{sec:Historical_Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-To assess energy-augmented models of economic growth along the coordinates of analysis outlined in Section \ref{sec:Coordinates}, historical data for economic output ($Y$), capital stock ($K$), labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) is required. Subsections below describe sources for and calculations to obtain historical data. A final subsection presents the data in graphical form.
-
-************* Matt ended here. ****************
+To assess energy-augmented models of economic growth along the coordinates of analysis outlined in Section \ref{sec:Coordinates}, historical data for economic output ($Y$), capital stock ($K$), labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) are required. Subsections below describe sources for and calculations to obtain historical data. A final subsection presents the historical data in graphical form.
 
 %++++++++++++++++++++++++++++++
-\subsection{Output ($Y$)} \label{sec:Output_Data}
+\subsection{Output ($Y$)} 
+\label{sec:Output_Data}
 %++++++++++++++++++++++++++++++
 
-We take real gross domestic product to be an appropriate, if imperfect, proxy for output ($Y$). Gross domestic product data in real 2005 U.S. dollars for the United States, the United Kingdom, and Japan for 1980-2011 is from the World Bank's Global Economic Prospects (GEP) database (WORLD BANK, 2012). GDP data in real 2005 U.S. dollars for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia for 1991-2011 is from the World Bank's Global Economic Prospects database (WORLD BANK, 2012).
+We measure economic output ($Y$) by real gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
-\subsection{Capital stock ($K$)} \label{sec:Capital_Stock_Data}
+\subsection{Capital Stock ($K$)} 
+\label{sec:Capital_Stock_Data}
 %++++++++++++++++++++++++++++++
 
-Gross capital stock for the United States, the United Kingdom, and Japan for 1980-2011 in real 2005 U.S. dollars is from the World Bank GEP database (WORLD BANK, 2012). Gross capital stock data in real 2005 U.S. dollars for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia for 1991-2011 is from the World Bank GEP database (WORLD BANK, 2012). 
+Gross capital stock in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
-\subsection{Labor and employment ($L$)} \label{sec:Labor_Data}
+\subsection{Labor and Employment ($L$)} 
+\label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
-Total employment and average hours worked per year per worker for the United States, the United Kingdom, and Japan for 1980-2011 is from the United States Bureau of Labor Statistics (BLS, 2011). Total hours worked is calculated by multiplying total employment by average hours worked per worker. The World Bank's WDI database (WORLD BANK, 2012) provides an employment to population ratio of people fifteen and older, total population, and a percentage of people under fifteen for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia for 1991-2011. The population of people fifteen and older was calculated by multiplying the percentage of people under fifteen by total population, and then subtracting this from the total population. Total employment could be calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older. The labor input for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia is based on total employment, not on total hours worked per year.
+Total employment and average hours worked per year per worker for the United States, the United Kingdom, and Japan for 1980-2011 was obtained from the United States \citet{BLS:2011a}. Total hours worked was calculated by multiplying total employment by average hours worked per worker. ************* Matt ended here. **************** The World Bank's WDI database (WORLD BANK, 2012) provides an employment to population ratio of people fifteen and older, total population, and a percentage of people under fifteen for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia for 1991-2011. The population of people fifteen and older was calculated by multiplying the percentage of people under fifteen by total population, and then subtracting this from the total population. Total employment could be calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older. The labor input for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia is based on total employment, not on total hours worked per year.
 
 %++++++++++++++++++++++++++++++
-\subsection{Thermal energy, exergy, and useful work ($E$)} \label{sec:Energy_Data}
+\subsection{Thermal Energy, Exergy, and Useful Work ($E$)} 
+\label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
 We were interested in how the three different types of energy (thermal energy, exergy, and useful work) would affect our econometric growth modeling. The rationale being that exergy, and to a greater extent useful work, would take into account the energy that is being directly used to further economic growth. We examined typical sources of energy for an economy, including: coal; oil and petroleum products; dry natural gas and natural gas plant liquids; nuclear power generation; and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of (AYRES AND WARR, 2002, 2005), energy available from human and animal muscle power are also considered. The time series data used for the United States, the United Kingdom, and Japan is from 1980-2011. Time series data used for South Africa, China, Saudi Arabia, Iran, Zambia, and Tanzania is from 1991-2011.
 
 %------------------------------
-\subsubsection{Thermal energy ($Q$)} \label{sec:Q_Data}
+\subsubsection{Thermal Energy ($Q$)} 
+\label{sec:Q_Data}
 %------------------------------
 
 Thermal energy ($q$) is evaluated in TJ/year for the production functions. In the case of fuels, thermal energy was calculated using equation \ref{eq:thermal_energy}.
@@ -417,7 +429,8 @@ Human muscle power was calculated in the same way, except the $ME$ value for peo
 \end{equation}
 
 %------------------------------
-\subsubsection{Exergy ($X$)} \label{sec:X_Data}
+\subsubsection{Exergy ($X$)} 
+\label{sec:X_Data}
 %------------------------------
 
 Exergy ($x$) is also evaluated in TJ/year and based on the previously determined thermal energy values. For coal; oil and petroleum; dry natural gas and natural gas liquids; and biomass/fuel wood., the thermal energy value for the fuels was calculated using an exergy-to-energy allocation factor from Ayres and Warr (AYRES AND WARR, 2005). 
@@ -441,7 +454,8 @@ For calculating the exergy from animal and human muscle power, the food-to-energ
 Where $\eta_\mathrm{food-to-work, animals}$ and $\eta_\mathrm{food-to-work, humans}$ are the animal's and human's efficiency of converting food into energy respectively. For humans, an additional factor of the ratio of food-end-use to food-intake is also applied. This ratio looks at how much of a person's energy can actually be used for physical labor, or muscle work, by taking into account food that's used to simply sustain the body's normal function. The food-to-work efficiency values are taken from Ayres and Warr (AYRES AND WARR, THE ECONOMIC GROWTH ENGINE) and the end-use to intake ratio is taken from Wirsenius (WIRSENIUS, 2000). The same ratio could also be applied to animals, but Wirsenius did not contain any information on these values and the magnitude of the animal muscle exergy is quite small compared to the other fuel sources.
 
 %------------------------------
-\subsubsection{Useful work ($U$)} \label{sec:U_Data}
+\subsubsection{Useful Work ($U$)} 
+\label{sec:U_Data}
 %------------------------------
 
 Useful work is a concept first developed by (AYRES AND WARR, 2005). Useful work takes exergy analysis one step further and considers where the energy is going and how efficiencies come into play. To calculate useful work, exergy is broken down into several categories by usage type: high temperature heat, medium temperature heat, low temperature heat, mechanical drive, electricity, light, and muscle work. Each of these categories then has an efficiency applied, as opposed to using an overall effiency for the base exergy value. The rationale behind this is that the efficiency of various industries in an economy will be very different, e.g. the efficiency of a coal fired power plant (high temperature heat source) will be very different from that of a residential heating system (low temperature heat source).
@@ -468,43 +482,6 @@ createHistoricalLatticeGraph()
 
 Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution (such as China's substitution of ***** for ***** over the last 2 decades). The growth rate of $u$ is significantly different from $q$ and $x$, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD}, \ref{eq:CDe}, and \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Single-factor Models (SF)}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-We begin by fitting single-factor economic models of the form
-
-\begin{equation} \label{eq:Single_Factor_Generic}
-  y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
-\end{equation}
-
-\noindent to historical data where the factor of production ($f$) is one of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
-
-<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="K")
-@
-
-<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="L")
-@
-
-<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="Q")
-@
-
-<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="X")
-@
-
-<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="U")
-@
-
-Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
-
-<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
-createSFLatticeGraph()
-@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cobb-Douglas Models Without Energy (CD)}
@@ -766,6 +743,13 @@ createLINEXLatticeGraph()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
 %% \appendix
@@ -778,6 +762,7 @@ Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Covariance Tables}
+\label{sec:Covariance_Tables}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -798,6 +783,44 @@ printCovarTable(countryAbbrev="TZ"); printCovarTable(countryAbbrev="ZM")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Single-factor Models}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single-factor Models (SF)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We begin by fitting single-factor economic models of the form
+
+\begin{equation} \label{eq:Single_Factor_Generic}
+  y = \mathrm{e}^{\lambda (t-t_0)}f^{m}
+\end{equation}
+
+\noindent to historical data where the factor of production ($f$) is one of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
+
+<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="K")
+@
+
+<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="L")
+@
+
+<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="Q")
+@
+
+<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="X")
+@
+
+<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="U")
+@
+
+Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
+
+<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
+createSFLatticeGraph()
+@
 
 The following tables provide results for parameters in single-factor models.
 
