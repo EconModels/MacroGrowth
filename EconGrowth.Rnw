@@ -343,7 +343,7 @@ In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CD
 \label{sec:Quantification_of_Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of ability to generate economic activity \citep{Cleveland:2000vl}. Exergy ($X$), and to a greater extent, useful work ($U$) account for the useful energy that goes into generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used to convert thermal energy ($Q$) into useful work ($U$).
+The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Exergy ($X$), and to a greater extent, useful work ($U$) account for the useful energy that goes into generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used to convert thermal energy ($Q$) into useful work ($U$).
 
 Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in energy-augmentd production functions to account for efficiency gains in energy production and consumption over the last century. 
 
@@ -356,22 +356,22 @@ We know of no statistically-rigorous comparisons of the predictive ability of ea
 
 In the energy-economic growth literature, the focus is almost exclusively on developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies.
 
-But, the nearly-complete focus on developed economies misses the role that energy plays in the development process. In this paper we analyze at least two economies from each of the following categories: developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), petrol (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). (See Table \ref{tab:Economy_Examples}.)
+But, the nearly-complete focus on developed economies misses the role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). (See Table \ref{tab:Economy_Examples}.)
 
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
     \begin{tabular}{r c c l l} 
-      \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980-2011}\\
+      \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
       \hline
-      \multirow{2}{*}{BRICS}     & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991-2011}        \\
+      \multirow{2}{*}{BRICS}     & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
       \hline
-      \multirow{2}{*}{Petrol}    & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991-2011} \\
+      \multirow{2}{*}{Petrol}    & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
       \hline
-      \multirow{2}{*}{LDC}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991-2011}     \\
+      \multirow{2}{*}{LDC}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
     \end{tabular}
   \end{center}
@@ -390,39 +390,39 @@ To assess energy-augmented models of economic growth along the coordinates of an
 \label{sec:Economic_Output_Data}
 %++++++++++++++++++++++++++++++
 
-We measure economic output ($Y$) by real gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
+We measure economic output ($Y$) by real gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980--2011) and all other countries (1991--2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
 \subsection{Capital Stock} 
 \label{sec:Capital_Stock_Data}
 %++++++++++++++++++++++++++++++
 
-Gross capital stock in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
+Gross capital stock in real 2005 U.S. dollars for developed countries (1980--2011) and all other countries (1991--2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
 \subsection{Labor and Employment}
 \label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
-Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980-2011 were obtained from the United States \citet{BLS:2011a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
+Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet{BLS:2011a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
 
-The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other nations (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991-2011. The population of people under fifteen was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
+The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other nations (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population of people under fifteen was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
 
 %++++++++++++++++++++++++++++++
 \subsection{Thermal Energy, Exergy, and Useful Work} 
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-************* Matt ended here. ****************
+To account for all energy input to an economy, we summed consumption data for many energy sources, including: coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of \citet{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power are also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011.
 
-To account for all energy input to an economy, we summed consumption data for many energy sources for each economy, including: coal; oil and petroleum products; dry natural gas and natural gas plant liquids; nuclear power generation; and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of (AYRES AND WARR, 2002, 2005), energy available from human and animal muscle power are also considered. The time series data used for the United States, the United Kingdom, and Japan is from 1980-2011. Time series data used for South Africa, China, Saudi Arabia, Iran, Zambia, and Tanzania is from 1991-2011.
+************* Matt ended here. ****************
 
 %------------------------------
 \subsubsection{Thermal Energy} 
 \label{sec:Q_Data}
 %------------------------------
 
-Thermal energy ($q$) is evaluated in TJ/year for the production functions. In the case of fuels, thermal energy was calculated using equation \ref{eq:thermal_energy}.
+Thermal energy ($Q$) is evaluated in TJ/year for the production functions. In the case of fuels, thermal energy was calculated using equation \ref{eq:thermal_energy}.
 
 \begin{equation} \label{eq:thermal_energy}
   e_\mathrm{fuel} = (consumption)(heat content)
@@ -440,7 +440,7 @@ Human and animal muscle power was calculated using a similar style to Ayres and 
 
 Where $ME$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of horses or mules.  Metabolizable energy values were taken from Warr (WARR SPREADSHEETS) for horses and mules, which represent the amount of energy used to the animals for a days work. It should be noted that the same $ME$ value was assumed constant across all years, and used for all countries. The number of horses and mules for all the countries was taken from the "Live Animals" time series on the FAO Statistics Database (FAOSTAT, 2012). The food-to-work conversion efficiency was taken from Warr (WARR SPREADSHEETS) and was assumed to be the same for all countries.
 
-Human muscle power was calculated in the same way, except the $ME$ value for people was taken from a time series of kcal/day-person for workers in the U.S. from 1980-2011 (WARR SPREADSHEETS). The value stays relatively constant over the time series and the same time series was used to all of the countries, although it should be noted that this value may vary some (especially for the Malthusian vs developed economies). The number of humans was taken to be only the working population, with the same data collected for employment and labor being used. Ultimately, human muscle work was calculated using equation \ref{eq:human_muscle}.
+Human muscle power was calculated in the same way, except the $ME$ value for people was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 (WARR SPREADSHEETS). The value stays relatively constant over the time series and the same time series was used to all of the countries, although it should be noted that this value may vary some (especially for the Malthusian vs developed economies). The number of humans was taken to be only the working population, with the same data collected for employment and labor being used. Ultimately, human muscle work was calculated using equation \ref{eq:human_muscle}.
 
 \begin{equation} \label{eq:human_muscle}
   e_\mathrm{humans} = (ME_\mathrm{humans})(N_\mathrm{humans,employed})
@@ -486,14 +486,14 @@ Useful work is evaluated in TJ/year, and is given be equation \ref{eq:useful_wor
 
 Where $\epsilon_\mathrm{i}$ is the efficiency of each useful work type and $\phi_\mathrm{i}$ is the allocation factor, where $0 \le \phi_\mathrm{i} \le 1$.
 
-Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled by Warr (WARR, REXS, 2012). These values are not constant over time, as power generation technologies change and become more efficient. Useful work was only analyzed for the developed economies (the United States, the United Kingdom, and Japan) from 1980-2011, because of the difficulty associated with determining $\phi$ and $\epsilon$ values. In order to determine these parameters, information is needed about the efficiency of different technologies and what industries/areas is consuming the most energy within an economy. This proved to be quite difficult for the developing, petrol, and Malthusian economies so we restricted this part of the analysis to using the data already compiled in the REXS database.
+Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled by Warr (WARR, REXS, 2012). These values are not constant over time, as power generation technologies change and become more efficient. Useful work was only analyzed for the developed economies (the United States, the United Kingdom, and Japan) from 1980--2011, because of the difficulty associated with determining $\phi$ and $\epsilon$ values. In order to determine these parameters, information is needed about the efficiency of different technologies and what industries/areas is consuming the most energy within an economy. This proved to be quite difficult for the developing, petrol, and Malthusian economies so we restricted this part of the analysis to using the data already compiled in the REXS database.
 
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980-2011 (developed economies) and 1991-2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
+Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
 <<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
