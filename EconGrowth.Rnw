@@ -365,42 +365,42 @@ In this paper we analyze at least two economies from each of the following categ
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Historical Data}
-\label{sec:Historical_Data}
+\section{Sources of Data}
+\label{sec:Sources_of_Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To assess energy-augmented models of economic growth along the coordinates of analysis outlined in Section \ref{sec:Coordinates}, historical data for economic output ($Y$), capital stock ($K$), labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) are required. Subsections below describe sources for and calculations to obtain historical data. A final subsection presents the historical data in graphical form.
 
 %++++++++++++++++++++++++++++++
-\subsection{Output ($Y$)} 
-\label{sec:Output_Data}
+\subsection{Economic Output} 
+\label{sec:Economic_Output_Data}
 %++++++++++++++++++++++++++++++
 
 We measure economic output ($Y$) by real gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
-\subsection{Capital Stock ($K$)} 
+\subsection{Capital Stock} 
 \label{sec:Capital_Stock_Data}
 %++++++++++++++++++++++++++++++
 
 Gross capital stock in real 2005 U.S. dollars for developed countries (1980-2011) and all other countries (1991-2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
-\subsection{Labor and Employment ($L$)} 
+\subsection{Labor and Employment}
 \label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
 Total employment and average hours worked per year per worker for the United States, the United Kingdom, and Japan for 1980-2011 was obtained from the United States \citet{BLS:2011a}. Total hours worked was calculated by multiplying total employment by average hours worked per worker. ************* Matt ended here. **************** The World Bank's WDI database (WORLD BANK, 2012) provides an employment to population ratio of people fifteen and older, total population, and a percentage of people under fifteen for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia for 1991-2011. The population of people fifteen and older was calculated by multiplying the percentage of people under fifteen by total population, and then subtracting this from the total population. Total employment could be calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older. The labor input for South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia is based on total employment, not on total hours worked per year.
 
 %++++++++++++++++++++++++++++++
-\subsection{Thermal Energy, Exergy, and Useful Work ($E$)} 
+\subsection{Thermal Energy, Exergy, and Useful Work} 
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
 We were interested in how the three different types of energy (thermal energy, exergy, and useful work) would affect our econometric growth modeling. The rationale being that exergy, and to a greater extent useful work, would take into account the energy that is being directly used to further economic growth. We examined typical sources of energy for an economy, including: coal; oil and petroleum products; dry natural gas and natural gas plant liquids; nuclear power generation; and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of (AYRES AND WARR, 2002, 2005), energy available from human and animal muscle power are also considered. The time series data used for the United States, the United Kingdom, and Japan is from 1980-2011. Time series data used for South Africa, China, Saudi Arabia, Iran, Zambia, and Tanzania is from 1991-2011.
 
 %------------------------------
-\subsubsection{Thermal Energy ($Q$)} 
+\subsubsection{Thermal Energy} 
 \label{sec:Q_Data}
 %------------------------------
 
@@ -429,7 +429,7 @@ Human muscle power was calculated in the same way, except the $ME$ value for peo
 \end{equation}
 
 %------------------------------
-\subsubsection{Exergy ($X$)} 
+\subsubsection{Exergy} 
 \label{sec:X_Data}
 %------------------------------
 
@@ -454,7 +454,7 @@ For calculating the exergy from animal and human muscle power, the food-to-energ
 Where $\eta_\mathrm{food-to-work, animals}$ and $\eta_\mathrm{food-to-work, humans}$ are the animal's and human's efficiency of converting food into energy respectively. For humans, an additional factor of the ratio of food-end-use to food-intake is also applied. This ratio looks at how much of a person's energy can actually be used for physical labor, or muscle work, by taking into account food that's used to simply sustain the body's normal function. The food-to-work efficiency values are taken from Ayres and Warr (AYRES AND WARR, THE ECONOMIC GROWTH ENGINE) and the end-use to intake ratio is taken from Wirsenius (WIRSENIUS, 2000). The same ratio could also be applied to animals, but Wirsenius did not contain any information on these values and the magnitude of the animal muscle exergy is quite small compared to the other fuel sources.
 
 %------------------------------
-\subsubsection{Useful Work ($U$)} 
+\subsubsection{Useful Work} 
 \label{sec:U_Data}
 %------------------------------
 
@@ -471,10 +471,11 @@ Where $\epsilon_\mathrm{i}$ is the efficiency of each useful work type and $\phi
 Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled by Warr (WARR, REXS, 2012). These values are not constant over time, as power generation technologies change and become more efficient. Useful work was only analyzed for the developed economies (the United States, the United Kingdom, and Japan) from 1980-2011, because of the difficulty associated with determining $\phi$ and $\epsilon$ values. In order to determine these parameters, information is needed about the efficiency of different technologies and what industries/areas is consuming the most energy within an economy. This proved to be quite difficult for the developing, petrol, and Malthusian economies so we restricted this part of the analysis to using the data already compiled in the REXS database.
 
 %++++++++++++++++++++++++++++++
-\subsection{Historical Data} \label{sec:Historical_Data}
+\subsection{Historical Data} 
+\label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980-2011 (developed economies) and 1991-2011 (other economies). Factors of production track each other closely, and large covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
+Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980-2011 (developed economies) and 1991-2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
 <<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
@@ -514,7 +515,7 @@ createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
 
-\section{Cobb-Douglas Models With Energy (CD$e$)}
+\section{Cobb-Douglas Models With Energy}
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
@@ -528,7 +529,7 @@ The Cobb-Douglas model with energy is given by
 
 \noindent where $e$ can be one of thermal energy ($q$), exergy ($x$), or useful work ($u$).
 
-\subsection{Cobb-Douglas with thermal energy ($q$)}
+\subsection{Cobb-Douglas with thermal energy}
 
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
@@ -544,7 +545,7 @@ Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for
 createCDParamsGraph(energyType="Q")
 @
 
-\subsection{Cobb-Douglas with exergy ($x$)}
+\subsection{Cobb-Douglas with exergy}
 
 The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
 
@@ -554,7 +555,7 @@ Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for
 createCDParamsGraph(energyType="X")
 @
 
-\subsection{Cobb-Douglas with useful work ($u$)}
+\subsection{Cobb-Douglas with useful work}
 
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
@@ -630,7 +631,7 @@ createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
-\subsection{CES with $Q$ (CES$q$)}
+\subsection{CES with Thermal Energy}
 
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
@@ -638,7 +639,7 @@ Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="Q")
 @
 
-\subsection{CES with $X$ (CES$x$)}
+\subsection{CES with Exergy}
 
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
@@ -646,7 +647,7 @@ Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="X")
 @
 
-\subsection{CES with $U$ (CES$u$)}
+\subsection{CES with Useful Work}
 
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
@@ -699,7 +700,7 @@ The LINEX model has the form
 
 \noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
 
-\subsection{LINEX with $Q$}
+\subsection{LINEX with Thermal Energy}
 
 Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
@@ -707,7 +708,7 @@ Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals 
 createLINEXParamsGraph(energyType="Q")
 @
 
-\subsection{LINEX with $X$}
+\subsection{LINEX with Exergy}
 
 Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
@@ -715,7 +716,7 @@ Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals 
 createLINEXParamsGraph(energyType="X")
 @
 
-\subsection{LINEX with $U$}
+\subsection{LINEX with Useful Work}
 
 Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
@@ -748,7 +749,7 @@ Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and
 \section*{Reproducible Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
