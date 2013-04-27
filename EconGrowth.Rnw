@@ -413,26 +413,28 @@ The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including: coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of \citet{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power are also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011.
-
-************* Matt ended here. ****************
+To account for all energy input to an economy, we summed consumption data for many energy sources, including: coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of \citet{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power are also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011. Details on each of the quantifications of energy are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
 \label{sec:Q_Data}
 %------------------------------
 
-Thermal energy ($Q$) is evaluated in TJ/year for the production functions. In the case of fuels, thermal energy was calculated using equation \ref{eq:thermal_energy}.
+Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
 
 \begin{equation} \label{eq:thermal_energy}
-  e_\mathrm{fuel} = (consumption)(heat content)
+  Q_{fuel} = C_{fuel}h_{fuel},
 \end{equation}
 
-Yearly consumption data for all the countries was obtained from the International Energy Agency (IEA, 2012) for coal (in short tons/year); oil and petroleum (in barrels/year); and dry natural gas and natural gas plant liquids (in cubic feet/year). Yearly average heat content data (in kJ/kg) for coal, oil, and natural gas was also taken from the IEA (IEA, 2012) for all the countries. Yearly consumption (in cubic meters/year) and heat content data (in kJ/kg) for biomass/fuel wood was taken from the"Fuelwood" time series on the FAO Statistics Database (FAOSTAT, 2012).
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). ******* Need a fuelwood density to convert between m3/year and kJ/kg. *******
 
-For the renewable and nuclear energy sources, data on yearly electricity generation (in BTU/year) was directly available from the IEA (IEA, 2012) for each of the countries, so the use of equation \ref{eq:thermal_energy} was not needed.
+Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the International Energy Agency \citep{IEA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas was obtained from the IEA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
-Human and animal muscle power was calculated using a similar style to Ayres and Warr and Wirsenius (AYRES AND WARR (No reference? We used the worksheets he sent us.), WIRSENIUS (2000)). For animals, our analysis was restricted to draught animals; horses and mules in this case. Muscle work from animals was calculated using equation \ref{eq:animal_muscle}.
+For renewable and nuclear energy sources, data on yearly electricity generation (in BTU/year) was directly available from the IEA \citep{IEA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not needed.
+
+************* Matt ended here. ****************
+
+Human and animal muscle power was calculated using a similar approach to Ayres and Warr and Wirsenius (AYRES AND WARR (No reference? We used the worksheets he sent us.), WIRSENIUS (2000)). For animals, our analysis was restricted to draught animals; horses and mules in this case. Muscle work from animals was calculated using equation \ref{eq:animal_muscle}.
 
 \begin{equation} \label{eq:animal_muscle}
   e_\mathrm{animals} = \bigg{[} (ME_\mathrm{horse}N_\mathrm{horses})+(ME_\mathrm{mules}N_\mathrm{mules}) \bigg{]}
