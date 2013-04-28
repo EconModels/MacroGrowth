@@ -247,7 +247,7 @@ Neoclassical economic growth theory attributes output ($Y$) to factors of produc
   y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year.\footnote{In this paper, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$) and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$).} $A$ is a technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$). Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. $A$ is a unitless technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical progress term $A$, which is dimensionless but written in upper-case by convention.} Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
 
 As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek} and \citet{Murphy:2011jh} indicate that the importance of energy may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
 
@@ -413,7 +413,7 @@ The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including: coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood,  hydroelectric generation). In the style of \citet{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power are also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011. Details on each of the quantifications of energy are given in subsections below.
+To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power were also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
@@ -428,47 +428,67 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
 
 \noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). ******* Need a fuelwood density to convert between m3/year and kJ/kg. *******
 
-Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the International Energy Agency \citep{IEA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas was obtained from the IEA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
+Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the International Energy Agency \citep{IEA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas and natural gas plant liquids was obtained from the IEA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
-For renewable and nuclear energy sources, data on yearly electricity generation (in BTU/year) was directly available from the IEA \citep{IEA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not needed.
+For renewable and nuclear energies, yearly electricity generation (in BTU/year) was available directly from the IEA \citep{IEA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not necessary.
 
-************* Matt ended here. ****************
+************** Should all of the following calculations have $Q_m$ instead of $E_m$, because we're talking specifically about thermal energy here. Or, is $E_m$ correct? ************* 
 
-Human and animal muscle power was calculated using a similar approach to Ayres and Warr and Wirsenius (AYRES AND WARR (No reference? We used the worksheets he sent us.), WIRSENIUS (2000)). For animals, our analysis was restricted to draught animals; horses and mules in this case. Muscle work from animals was calculated using equation \ref{eq:animal_muscle}.
+Animal and human muscle work was estimated using an approach similar to \citet{Ayres:2010ug}, using some data from Warr's REXS database \citep{Warr:2012a} and results from \citet{Wirsenius:2000vi}. For animal work, our analysis was restricted to draught animals (horses and mules). Muscle work from animals ($E_{animals}$) was calculated using
 
 \begin{equation} \label{eq:animal_muscle}
-  e_\mathrm{animals} = \bigg{[} (ME_\mathrm{horse}N_\mathrm{horses})+(ME_\mathrm{mules}N_\mathrm{mules}) \bigg{]}
+  E_{animals} = E_{m,horse}N_{horses} + E_{m,mule}N_{mules}
 \end{equation}
 
-Where $ME$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of horses or mules.  Metabolizable energy values were taken from Warr (WARR SPREADSHEETS) for horses and mules, which represent the amount of energy used to the animals for a days work. It should be noted that the same $ME$ value was assumed constant across all years, and used for all countries. The number of horses and mules for all the countries was taken from the "Live Animals" time series on the FAO Statistics Database (FAOSTAT, 2012). The food-to-work conversion efficiency was taken from Warr (WARR SPREADSHEETS) and was assumed to be the same for all countries.
+\noindent where $E_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used to ****** feed? ****** the animals for a days work. The value of $E_m$ was assumed constant for all economies and years. ***** What was the value? ******* The number of horses and mules for each economy was taken from the ``Live Animals'' time series on the FAO Statistics Database \citep{FAO:2013a}. The animal feed-to-work conversion efficiency was taken from \citet{Warr:2012a} and assumed equal across all economies. ******** Why is this important here? Should the feed-to-work conversion efficiency be employed in the sections below? Or, was the feed-to-work effiency used to calculate $E_m$? In any case, what was the value of the feed-to-work efficiency? **********
 
-Human muscle power was calculated in the same way, except the $ME$ value for people was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 (WARR SPREADSHEETS). The value stays relatively constant over the time series and the same time series was used to all of the countries, although it should be noted that this value may vary some (especially for the Malthusian vs developed economies). The number of humans was taken to be only the working population, with the same data collected for employment and labor being used. Ultimately, human muscle work was calculated using equation \ref{eq:human_muscle}.
+Human muscle power was calculated in a similar manner.
 
 \begin{equation} \label{eq:human_muscle}
-  e_\mathrm{humans} = (ME_\mathrm{humans})(N_\mathrm{humans,employed})
+  E_{workers} = (E_{m,workers})(N_{workers})
 \end{equation}
+
+\noindent The value of $E_{m,workers}$ was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 \citep{Warr:2012a}. $E_{m,workers}$ is relatively constant over the period 1980--2011 at about ****** What is the value? *******, and the U.S. time series was assumed to apply to all economies.\footnote{The assumption that U.S. per-worker food intake applies to all economies introduces minor errors in human muscle work estimates for the various economies. However, human muscle work is never more than ****** \% of total energy consumption for any of the economies in this study, and we estimate that the error caused by this assumption is always less than ***** \% of total energy consumption for all economies.} The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
 
 %------------------------------
 \subsubsection{Exergy} 
 \label{sec:X_Data}
 %------------------------------
 
-Exergy ($x$) is also evaluated in TJ/year and based on the previously determined thermal energy values. For coal; oil and petroleum; dry natural gas and natural gas liquids; and biomass/fuel wood., the thermal energy value for the fuels was calculated using an exergy-to-energy allocation factor from Ayres and Warr (AYRES AND WARR, 2005). 
+Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated using a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. 
 
 \begin{equation} \label{eq:exergy}
-  x_\mathrm{fuels} = (e_\mathrm{fuels})(f_\mathrm{exergy-allocation})
+  X_{fuel} = f_{exergy-allocation} Q_{fuel}
 \end{equation}
 
-This allocation factor is the ratio of each fuel source's chemical exergy to the higher heating value. The exergy allocation factor was assumed to be the same for each of the countries. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so no further modification is needed.
+\begin{table} \caption{Exergy allocation factors.} \label{tab:Exergy_Allocation} 
+  \begin{center}
+    \begin{tabular}{r l} 
+      Fuel                                    & $f_{exergy-allocation}$ \\
+      \hline
+      Coal                                    & ****    \\
+      Oil and petroleum                       & *****   \\      
+      Dry natural gas and                     & \multirow{2}{*}{******}    \\
+      natural gas liquids                     &         \\
+      Biomass/fuel wood                       & *****   \\
+      Nuclear                                 & 1.0     \\
+      Renewables                              & 1.0     \\
+    \end{tabular}
+  \end{center}
+\end{table}
 
-For calculating the exergy from animal and human muscle power, the food-to-energy conversion efficiency and the ratio of food-end-use to food-intake are considered (see equation \ref{eq:animal_muscle_exergy} and equation \ref{eq:human_muscle_exergy}).
+$f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. ***** Is this right? Are the $X$ values larger than the $Q$ values? The exergy allocation factor for each fuel was assumed to be constant across all economiess. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
+
+************* Matt ended here. ****************
+
+For calculating the exergy of animal and human muscle power, the food-to-energy conversion efficiency and the ratio of food-end-use to food-intake are considered (see equation \ref{eq:animal_muscle_exergy} and equation \ref{eq:human_muscle_exergy}).
 
 \begin{equation} \label{eq:animal_muscle_exergy}
-  x_\mathrm{animals} = (e_\mathrm{animals}) (\eta_\mathrm{food-to-work, animals})
+  X_{animals} = E_{animals} \eta_{food \rightarrow work,animals}
 \end{equation}
 
 \begin{equation} \label{eq:human_muscle_exergy}
-  x_\mathrm{humans} = (e_\mathrm{humans}) (\eta_\mathrm{food-to-work, humans})( f_\mathrm{enduse-to-intake})
+  X_{workers} = E_{humans} \eta_{food \rightarrow work,workers} f_{enduse-to-intake}
 \end{equation}
 
 Where $\eta_\mathrm{food-to-work, animals}$ and $\eta_\mathrm{food-to-work, humans}$ are the animal's and human's efficiency of converting food into energy respectively. For humans, an additional factor of the ratio of food-end-use to food-intake is also applied. This ratio looks at how much of a person's energy can actually be used for physical labor, or muscle work, by taking into account food that's used to simply sustain the body's normal function. The food-to-work efficiency values are taken from Ayres and Warr (AYRES AND WARR, THE ECONOMIC GROWTH ENGINE) and the end-use to intake ratio is taken from Wirsenius (WIRSENIUS, 2000). The same ratio could also be applied to animals, but Wirsenius did not contain any information on these values and the magnitude of the animal muscle exergy is quite small compared to the other fuel sources.
