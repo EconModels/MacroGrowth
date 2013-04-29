@@ -157,9 +157,11 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Fix weirdnesses with China on the CD gamma grid search graph}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
-\item Heun: Add CES production function fits
+\item{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references.}
+\item{Heun: Obtain answers to questions for Caleb.}
+\item{Heun: Add references from Lucas.}
+\item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
       \item{Write up the decisions about parameter estimation for the CES production function fits}
@@ -178,8 +180,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
           \item{\st{Add CES without energy lines to the CES lattice graph}}
         \end{itemize}
       \end{itemize}
-\item{Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command?}
-\item{Heun: Add data from 2011 to the models}
+\item{Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command? Partially complete: need to work on the $u$ data only.}
 \item{Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows}
       \begin{itemize}
       \item{ZA: lower bound on $\lambda$ and upper bound on $\alpha$}
@@ -193,6 +194,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Add data from 2011 to the models}}
+\item{\st{Heun: Fix weirdnesses with China on the CD gamma grid search graph.}}
 \item{\st{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}}
 \item{\st{Reese: Add text from Word verson of paper to the LaTeX version.}}
 \item{\st{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}}
@@ -343,7 +346,7 @@ In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CD
 \label{sec:Quantification_of_Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Exergy ($X$), and to a greater extent, useful work ($U$) account for the useful energy that goes into generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used to convert thermal energy ($Q$) into useful work ($U$).
+The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Exergy ($X$), and to a greater extent, useful work ($U$) account for the useful energy that goes into generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used to convert thermal energy ($Q$) into useful work ($U$).
 
 Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in energy-augmentd production functions to account for efficiency gains in energy production and consumption over the last century. 
 
