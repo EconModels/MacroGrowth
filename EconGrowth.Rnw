@@ -445,7 +445,7 @@ Animal and human muscle work was estimated using an approach similar to \citet{A
 Human muscle power was calculated in a similar manner.
 
 \begin{equation} \label{eq:human_muscle}
-  E_{workers} = (E_{m,workers})(N_{workers})
+  E_{workers} = E_{m,workers} N_{workers}
 \end{equation}
 
 \noindent The value of $E_{m,workers}$ was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 \citep{Warr:2012a}. $E_{m,workers}$ is relatively constant over the period 1980--2011 at about ****** What is the value? *******, and the U.S. time series was assumed to apply to all economies.\footnote{The assumption that U.S. per-worker food intake applies to all economies introduces minor errors in human muscle work estimates for the various economies. However, human muscle work is never more than ****** \% of total energy consumption for any of the economies in this study, and we estimate that the error caused by this assumption is always less than ***** \% of total energy consumption for all economies.} The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
