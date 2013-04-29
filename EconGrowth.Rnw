@@ -64,6 +64,9 @@
 \usepackage{multirow} % To create multirow tables
 \usepackage{hyperref} % To create hyperlinks in the paper
 
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\def\citeapos#1{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers after \end{frontmatter}.
@@ -301,7 +304,7 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. Equation \ref{eq:CESe} augments a standard CES production function (Equation \ref{eq:CES}) with energy using a ($kl$)($e$) nesting arrangement, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$.
+\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. Equation \ref{eq:CESe} augments a standard CES production function (Equation \ref{eq:CES}) with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$.
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. ******** Any confidence intervals in this study? ********* \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
 
@@ -407,7 +410,7 @@ Gross capital stock in real 2005 U.S. dollars for developed countries (1980--201
 \label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
-Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet{BLS:2011a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
+Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet{BLS:2013a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
 
 The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other nations (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population of people under fifteen was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
 
@@ -458,7 +461,7 @@ Human muscle power was calculated in a similar manner.
 \label{sec:X_Data}
 %------------------------------
 
-Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated using a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. 
+Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated by a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. $f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. ***** Is this right? Are the $X$ values larger than the $Q$ values? ******* $f_{exergy-allocation}$ for each fuel was assumed to be constant through time across all economies. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
 
 \begin{equation} \label{eq:exergy}
   X_{fuel} = f_{exergy-allocation} Q_{fuel}
@@ -480,38 +483,38 @@ Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$)
   \end{center}
 \end{table}
 
-$f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. ***** Is this right? Are the $X$ values larger than the $Q$ values? The exergy allocation factor for each fuel was assumed to be constant across all economiess. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
-
-************* Matt ended here. ****************
-
-For calculating the exergy of animal and human muscle power, the food-to-energy conversion efficiency and the ratio of food-end-use to food-intake are considered (see equation \ref{eq:animal_muscle_exergy} and equation \ref{eq:human_muscle_exergy}).
+To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food end-use to food intake ($f_{enduse \rightarrow intake}$) were included. $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The values for $\eta_{food \rightarrow work, animals}$ = ***** and $\eta_{food \rightarrow work, workers}$ = ***** were taken from \citet{Ayres:2010ug}. For workers, an additional factor ($f_{enduse \rightarrow intake}$ = ********), which accounts for food energy that is used to sustain the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. A similar ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in neglecting $f_{enduse \rightarrow intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of **** \% for ****** in ****** year ******.}
 
 \begin{equation} \label{eq:animal_muscle_exergy}
-  X_{animals} = E_{animals} \eta_{food \rightarrow work,animals}
+  X_{animals} = \eta_{food \rightarrow work,animals} E_{animals}
 \end{equation}
 
 \begin{equation} \label{eq:human_muscle_exergy}
-  X_{workers} = E_{humans} \eta_{food \rightarrow work,workers} f_{enduse-to-intake}
+  X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse \rightarrow intake} E_{workers}
 \end{equation}
 
-Where $\eta_\mathrm{food-to-work, animals}$ and $\eta_\mathrm{food-to-work, humans}$ are the animal's and human's efficiency of converting food into energy respectively. For humans, an additional factor of the ratio of food-end-use to food-intake is also applied. This ratio looks at how much of a person's energy can actually be used for physical labor, or muscle work, by taking into account food that's used to simply sustain the body's normal function. The food-to-work efficiency values are taken from Ayres and Warr (AYRES AND WARR, THE ECONOMIC GROWTH ENGINE) and the end-use to intake ratio is taken from Wirsenius (WIRSENIUS, 2000). The same ratio could also be applied to animals, but Wirsenius did not contain any information on these values and the magnitude of the animal muscle exergy is quite small compared to the other fuel sources.
+\noindent 
 
 %------------------------------
 \subsubsection{Useful Work} 
 \label{sec:U_Data}
 %------------------------------
 
-Useful work is a concept first developed by (AYRES AND WARR, 2005). Useful work takes exergy analysis one step further and considers where the energy is going and how efficiencies come into play. To calculate useful work, exergy is broken down into several categories by usage type: high temperature heat, medium temperature heat, low temperature heat, mechanical drive, electricity, light, and muscle work. Each of these categories then has an efficiency applied, as opposed to using an overall effiency for the base exergy value. The rationale behind this is that the efficiency of various industries in an economy will be very different, e.g. the efficiency of a coal fired power plant (high temperature heat source) will be very different from that of a residential heating system (low temperature heat source).
-
-Useful work is evaluated in TJ/year, and is given be equation \ref{eq:useful_work}.
+The conversion of a raw energy carrier (e.g., coal) into productive energy for an economy (e.g., electricity) necessarily involves inefficiencies. In the case of coal consumption, only about one-third ****** Is this the number we want to use? ****** of the heat content of coal is converted to useful electricity, the rest is waste heat. The concept of ``useful work,'' pioneered by \citet{Ayres:2005kn}, takes exergy one step further to consider efficiencies of both energy production and end use. To calculate useful work ($U$), each source of exergy (coal, oil and petroleum products, dry natural gas and natural gas plant liquids, biomass/fuel wood, nuclear, solar, wind, and human and animal muscle work) is decomposed into several end uses: high temperature heat (for electricity production **** anything else? ****), medium temperature heat (**** for ???? ****), low temperature heat (for residential heating **** anything else? ****), mechanical drive (**** for ???? ****), electricity (**** for ???? ****), light, and muscle work. The efficiency of each combination of energy source and end use in an economy can be very different, e.g. the efficiency of a coal fired power plant (high temperature heat source, $\sim$30\%) will be very different from a residential heating system (low temperature heat source, $\sim$****\%). Efficiencies specific to each combination of energy source and end use were applied to exergy values to obtain useful work ($U$) input to an economy with the following equation:
 
 \begin{equation} \label{eq:useful_work}
-  u = \sum{\phi_\mathrm{i} \epsilon_\mathrm{i} x}
+  U = \sum{\phi_i \varepsilon_i X}
 \end{equation}
 
-Where $\epsilon_\mathrm{i}$ is the efficiency of each useful work type and $\phi_\mathrm{i}$ is the allocation factor, where $0 \le \phi_\mathrm{i} \le 1$.
+***** Shouldn't this be a double-sum? In other words, shouldn't $X$ have a subscript, too? We sum the U's for all energy sources to get the total useful work for an economy, right? Also, the allocation factor should be specific to the COMBINATION of energy source and end use, right? *****
 
-Data on $\epsilon$ and $\phi$ values were taken from the REXS database compiled by Warr (WARR, REXS, 2012). These values are not constant over time, as power generation technologies change and become more efficient. Useful work was only analyzed for the developed economies (the United States, the United Kingdom, and Japan) from 1980--2011, because of the difficulty associated with determining $\phi$ and $\epsilon$ values. In order to determine these parameters, information is needed about the efficiency of different technologies and what industries/areas is consuming the most energy within an economy. This proved to be quite difficult for the developing, petrol, and Malthusian economies so we restricted this part of the analysis to using the data already compiled in the REXS database.
+\noindent where the subscript $i$ indicates the energy end use, $\varepsilon_i$ is the efficiency of each end use, and $\phi_i$ gives the fraction of each energy source that goes to the end use, where $0 \le \phi_i \le 1$. ****** Can we list the raw energy sources and the end uses? *****
+
+Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. Most $\varepsilon$ values increase over time **** Are there any that don't? ****, as power generation technologies improve. **** Are there any values of $\varepsilon_i$ that are not increasing with time? **** For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw energy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1980--2011 ****** Up to 2011? Isn't this 2000? ******. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of energy sources to end uses ($\phi_i$) are extremely difficult to find.
+
+**** Do we want to graph the $\varepsilon_i$ and $\phi_i$ values over time?
+
+************* Matt ended here. ****************
 
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
@@ -526,8 +529,9 @@ createHistoricalLatticeGraph()
 
 Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD}, \ref{eq:CDe}, and \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Cobb-Douglas Models Without Energy (CD)}
+\section{Cobb-Douglas Model Without Energy (CD)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The Cobb-Douglas model without energy is given by
