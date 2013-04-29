@@ -65,7 +65,7 @@
 \usepackage{hyperref} % To create hyperlinks in the paper
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
-\def\citeapos#1{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -161,7 +161,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
-\item{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references.}
 \item{Heun: Obtain answers to questions I put to Caleb.}
 \item{Heun: Add references from Lucas.}
 \item{Heun: Add CES production function fits}
@@ -197,6 +196,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references. I think the bibliography is OK.}}
 \item{\st{Heun: Fix parentheses heights in LINEX production function equation.}}
 \item{\st{Heun: Add data from 2011 to the models}}
 \item{\st{Heun: Fix weirdnesses with China on the CD gamma grid search graph.}}
@@ -420,7 +420,7 @@ The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power were also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011. For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
+To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power were also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011 (except for useful work which is limited to the years 1980--2000 **** is this date range correct? ****). For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
@@ -455,7 +455,7 @@ Human muscle power was calculated in a similar manner.
   E_{workers} = E_{m,workers} N_{workers}
 \end{equation}
 
-\noindent The value of $E_{m,workers}$ was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 \citep{Warr:2012a}. $E_{m,workers}$ is relatively constant over the period 1980--2011 at about ****** What is the value? *******, and the U.S. time series was assumed to apply to all economies.\footnote{The assumption that U.S. per-worker food intake applies to all economies introduces minor errors in human muscle work estimates for the various economies. However, human muscle work is never more than ****** \% of total energy consumption for any of the economies in this study, and we estimate that the error caused by this assumption is always less than ***** \% of total energy consumption for all economies.} The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
+\noindent The value of $E_{m,workers}$ was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 ***** Should this be 1980--2000 ??? ******  \citep{Warr:2012a}. $E_{m,workers}$ is relatively constant over the period 1980--2011 ***** Should this be 1980--2000 ???? **** at about ****** What is the value? *******, and the U.S. time series was assumed to apply to all economies.\footnote{The assumption that U.S. per-worker food intake applies to all economies introduces minor errors in human muscle work estimates for the various economies. However, human muscle work is never more than ****** \% of total energy consumption for any of the economies in this study, and we estimate that the error caused by this assumption is always less than ***** \% of total energy consumption for all economies.} The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
 
 %------------------------------
 \subsubsection{Exergy} 
