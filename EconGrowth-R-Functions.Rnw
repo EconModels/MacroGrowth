@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,

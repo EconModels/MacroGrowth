@@ -162,7 +162,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \begin{itemize}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
 \item{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references.}
-\item{Heun: Obtain answers to questions for Caleb.}
+\item{Heun: Obtain answers to questions I put to Caleb.}
 \item{Heun: Add references from Lucas.}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
@@ -197,6 +197,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Fix parentheses heights in LINEX production function equation.}}
 \item{\st{Heun: Add data from 2011 to the models}}
 \item{\st{Heun: Fix weirdnesses with China on the CD gamma grid search graph.}}
 \item{\st{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}}
@@ -316,7 +317,7 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
 A third production function, the LINear EXponential (LINEX) function \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}, was derived from thermodynamic considerations:
 
 \begin{equation} \label{eq:LINEX}
-  y = Ae; A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) + c_t \left(\rho_l - 1 \right)\right]},
+  y = Ae; A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
 \end{equation}
 
 \noindent where $e$ is indexed energy and e is the base of the natural logarithm. The LINEX model assumes energy ($e$) is the only factor of production. The parameters $\rho_k$ and $\rho_l$ are defined as
@@ -527,7 +528,7 @@ Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including in
 createHistoricalLatticeGraph()
 @
 
-Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD}, \ref{eq:CDe}, and \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
+Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD} -- \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -730,7 +731,7 @@ The right column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI
 CIvsParamLattice(countryAbbrevScaling=0.6)
 @
 
-Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or $u$), there are few economies for which we can say with high confidence (at the 95\% level) that energy plays a significant role in economic growth. However, in seeming contradiction, results for the CES model indicate that energy complements capital stock and labor. That is, energy is essential for capital stock and labor to generate economic growth. One possible explanation for this apparent contradiction is to consider energy as embedded within capital stock and labor: it takes energy to make both captial stock and labor available to generate economic growth.
+Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or $u$), there are few economies for which we can say with high confidence (at the 95\% level) that energy plays a significant role in economic growth. However, in seeming contradiction, results for the CES model indicate that energy complements capital stock and labor, indicating that energy ($e$) is essential for capital stock ($k$) and labor ($l$) to generate economic growth. One possible explanation for this apparent contradiction is to consider energy as embedded within capital stock and labor: it takes energy to make both captial stock and labor available to generate economic growth.
 
 *********** Martin: Need additional interpretation here. *******************
 
@@ -811,6 +812,7 @@ In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreads
 \section{Covariance Tables}
 \label{sec:Covariance_Tables}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$).
@@ -827,13 +829,10 @@ printCovarTable(countryAbbrev="TZ"); printCovarTable(countryAbbrev="ZM")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model Parameters}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Single-factor Models}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Single-factor Models (SF)}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We begin by fitting single-factor economic models of the form
 
@@ -909,6 +908,7 @@ printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Goodness of fit}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
