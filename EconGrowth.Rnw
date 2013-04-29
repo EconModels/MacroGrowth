@@ -160,6 +160,10 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
+\item{Reese: Review EIA IES database for any revisions to historical data.}
+\item{Reese: Add food energy intake for all countries from FAO.}
+\item{Reese: Fix the energy sankey diagram from the seminar.}
+\item{Heun: Include the adjusted sankey diagram in the seminar.}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
 \item{Heun: Obtain answers to questions I put to Caleb.}
 \item{Heun: Add references from Lucas.}
@@ -196,6 +200,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Reese: Send URL reference for FAO food data.}}
 \item{\st{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references. I think the bibliography is OK.}}
 \item{\st{Heun: Fix parentheses heights in LINEX production function equation.}}
 \item{\st{Heun: Add data from 2011 to the models}}
@@ -420,7 +425,7 @@ The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power were also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011 (except for useful work which is limited to the years 1980--2000 **** is this date range correct? ****). For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
+To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power was also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2000. For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
@@ -433,36 +438,34 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
   Q_{fuel} = C_{fuel}h_{fuel},
 \end{equation}
 
-\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). ******* Need a fuelwood density to convert between m3/year and kJ/kg. *******
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). The fuel wood density of 166.67 kg/m$^3$ was obtained from the \citet{FAO:2013a} **** Caleb: verify this number and source ****.
 
-Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the International Energy Agency \citep{IEA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas and natural gas plant liquids was obtained from the IEA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
+Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the Energy Information Agency \citep{EIA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
-For renewable and nuclear energies, yearly electricity generation (in BTU/year) was available directly from the IEA \citep{IEA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not necessary.
-
-************** Should all of the following calculations have $Q_m$ instead of $E_m$, because we're talking specifically about thermal energy here. Or, is $E_m$ correct? ************* 
+For renewable and nuclear energies, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not necessary.
 
 Animal and human muscle work was estimated using an approach similar to \citet{Ayres:2010ug}, using some data from Warr's REXS database \citep{Warr:2012a} and results from \citet{Wirsenius:2000vi}. For animal work, our analysis was restricted to draught animals (horses and mules). Muscle work from animals ($E_{animals}$) was calculated using
 
 \begin{equation} \label{eq:animal_muscle}
-  E_{animals} = E_{m,horse}N_{horses} + E_{m,mule}N_{mules}
+  Q_{animals} = Q_{m,horse}N_{horses} + Q_{m,mule}N_{mules}
 \end{equation}
 
-\noindent where $E_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used to ****** feed? ****** the animals for a days work. The value of $E_m$ was assumed constant for all economies and years. ***** What was the value? ******* The number of horses and mules for each economy was taken from the ``Live Animals'' time series on the FAO Statistics Database \citep{FAO:2013a}. The animal feed-to-work conversion efficiency was taken from \citet{Warr:2012a} and assumed equal across all economies. ******** Why is this important here? Should the feed-to-work conversion efficiency be employed in the sections below? Or, was the feed-to-work effiency used to calculate $E_m$? In any case, what was the value of the feed-to-work efficiency? **********
+\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 7,215 kcal/day-mule) were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used by animals for a day of work. The $Q_m$ values are assumed constant for all countries and years. The number of horses and mules for each economy was taken from the ``Live Animals'' time series in the FAO Statistics Database \citep{FAO:2013a}.
 
-Human muscle power was calculated in a similar manner.
+Human muscle power was calculated in a similar manner
 
 \begin{equation} \label{eq:human_muscle}
-  E_{workers} = E_{m,workers} N_{workers}
+  Q_{workers} = Q_{m,workers} N_{workers}
 \end{equation}
 
-\noindent The value of $E_{m,workers}$ was taken from a time series of kcal/day-person for workers in the U.S. from 1980--2011 ***** Should this be 1980--2000 ??? ******  \citep{Warr:2012a}. $E_{m,workers}$ is relatively constant over the period 1980--2011 ***** Should this be 1980--2000 ???? **** at about ****** What is the value? *******, and the U.S. time series was assumed to apply to all economies.\footnote{The assumption that U.S. per-worker food intake applies to all economies introduces minor errors in human muscle work estimates for the various economies. However, human muscle work is never more than ****** \% of total energy consumption for any of the economies in this study, and we estimate that the error caused by this assumption is always less than ***** \% of total energy consumption for all economies.} The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
+\noindent where the value of $Q_{m,workers}$ for the U.S. was taken from a time series of kcal/day-person for workers for 1980--2011 \citep{Warr:2012a} ($\sim$ 4200 kcal/day-worker). $Q_{m,workers}$ for other countries was taken from the \citet{FAO:2013b}. The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
 
 %------------------------------
 \subsubsection{Exergy} 
 \label{sec:X_Data}
 %------------------------------
 
-Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated by a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. $f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. ***** Is this right? Are the $X$ values larger than the $Q$ values? ******* $f_{exergy-allocation}$ for each fuel was assumed to be constant through time across all economies. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
+Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated by a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. $f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. $f_{exergy-allocation}$ for each fuel was assumed to be constant through time across all economies. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
 
 \begin{equation} \label{eq:exergy}
   X_{fuel} = f_{exergy-allocation} Q_{fuel}
@@ -473,25 +476,35 @@ Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$)
     \begin{tabular}{r l} 
       Fuel                                    & $f_{exergy-allocation}$ \\
       \hline
-      Coal                                    & ****    \\
-      Oil and petroleum                       & *****   \\      
-      Dry natural gas and                     & \multirow{2}{*}{******}    \\
+      Coal                                    & 1.088    \\
+      Oil and petroleum                       & 1.073   \\      
+      Dry natural gas and                     & \multirow{2}{*}{1.040}    \\
       natural gas liquids                     &         \\
-      Biomass/fuel wood                       & *****   \\
-      Nuclear                                 & 1.0     \\
-      Renewables                              & 1.0     \\
+      Biomass/fuel wood                       & 1.150   \\
+      Nuclear                                 & 1.000   \\
+      Renewables                              & 1.000   \\
     \end{tabular}
   \end{center}
 \end{table}
 
-To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food end-use to food intake ($f_{enduse \rightarrow intake}$) were included. $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The values for $\eta_{food \rightarrow work, animals}$ = ***** and $\eta_{food \rightarrow work, workers}$ = ***** were taken from \citet{Ayres:2010ug}. For workers, an additional factor ($f_{enduse \rightarrow intake}$ = ********), which accounts for food energy that is used to sustain the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. A similar ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in neglecting $f_{enduse \rightarrow intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of **** \% for ****** in ****** year ******.}
+To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food end-use to food intake ($f_{enduse/intake}$) were included. $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The animal feed-to-work conversion efficiency ($\eta_{food \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The worker food-to-work efficiency ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. $f_{enduse/intake}$ varies by country. A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 4.1\% for China in 1992.}
+
+\begin{table} \caption{Food end use to intake ratios for all countries.} \label{tab:f_enduse_intake}
+  \begin{center}
+    \begin{tabular}{r c c c c c c c c c}
+      Country & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\
+      \hline
+      $f_{enduse/intake}$ & 0.62 & 0.65 & 0.76 & 0.76 & 0.87 & 0.72 & 0.72 & 0.72 & 0.72\\
+    \end{tabular}
+  \end{center}
+\end{table}
 
 \begin{equation} \label{eq:animal_muscle_exergy}
-  X_{animals} = \eta_{food \rightarrow work,animals} E_{animals}
+  X_{animals} = \eta_{food \rightarrow work,animals} Q_{animals}
 \end{equation}
 
 \begin{equation} \label{eq:human_muscle_exergy}
-  X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse \rightarrow intake} E_{workers}
+  X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse/intake} Q_{workers}
 \end{equation}
 
 \noindent 
@@ -501,19 +514,15 @@ To calculate the exergy of animal and human muscle power, the food-to-work conve
 \label{sec:U_Data}
 %------------------------------
 
-The conversion of a raw energy carrier (e.g., coal) into productive energy for an economy (e.g., electricity) necessarily involves inefficiencies. In the case of coal consumption, only about one-third ****** Is this the number we want to use? ****** of the heat content of coal is converted to useful electricity, the rest is waste heat. The concept of ``useful work,'' pioneered by \citet{Ayres:2005kn}, takes exergy one step further to consider efficiencies of both energy production and end use. To calculate useful work ($U$), each source of exergy (coal, oil and petroleum products, dry natural gas and natural gas plant liquids, biomass/fuel wood, nuclear, solar, wind, and human and animal muscle work) is decomposed into several end uses: high temperature heat (for electricity production **** anything else? ****), medium temperature heat (**** for ???? ****), low temperature heat (for residential heating **** anything else? ****), mechanical drive (**** for ???? ****), electricity (**** for ???? ****), light, and muscle work. The efficiency of each combination of energy source and end use in an economy can be very different, e.g. the efficiency of a coal fired power plant (high temperature heat source, $\sim$30\%) will be very different from a residential heating system (low temperature heat source, $\sim$****\%). Efficiencies specific to each combination of energy source and end use were applied to exergy values to obtain useful work ($U$) input to an economy with the following equation:
+The conversion of a raw energy carrier (e.g., coal) into productive energy for an economy (e.g., electricity) necessarily involves inefficiencies. In the case of coal consumption, only about one-third of the coal exergy is converted to useful electricity, the rest is waste heat. The concept of ``useful work,'' pioneered by Ayres and Warr \citep{Ayres:2003ec, Ayres:2005kn}, takes exergy one step further to consider efficiencies of both energy production and end use. To calculate useful work ($U$), each source of exergy (coal, oil and petroleum products, dry natural gas and natural gas plant liquids, biomass/fuel wood, nuclear, solar, wind, and human and animal muscle work) is decomposed into several end uses: high temperature industrial heat (e.g., steel production), medium temperature heat (e.g., steam production), low temperature space heat (for residential heating), mechanical drive (energy used for prime mover engines of all types except electric motors), electricity (excluding lighting), light (from both electricity and fuels), and muscle work (from animals and workers). The efficiency ($\varepsilon$) of convering exergy into useful work can be very different, depending upon the end use of the exergy. Efficiencies specific to each end use ($\varepsilon_i$) were applied to exergy values to obtain useful work ($U$) input to an economy with the following equation:
 
 \begin{equation} \label{eq:useful_work}
-  U = \sum{\phi_i \varepsilon_i X}
+  U = \sum_i{\varepsilon_i \phi_i X}
 \end{equation}
 
-***** Shouldn't this be a double-sum? In other words, shouldn't $X$ have a subscript, too? We sum the U's for all energy sources to get the total useful work for an economy, right? Also, the allocation factor should be specific to the COMBINATION of energy source and end use, right? *****
+\noindent where the subscript $i$ indicates the energy end use, $\varepsilon_i$ is the efficiency of converting exergy into useful energy for each end use, and $\phi_i$ gives the fraction of exergy input to an economy that goes toward the i$^\mathrm{th}$ end use.
 
-\noindent where the subscript $i$ indicates the energy end use, $\varepsilon_i$ is the efficiency of each end use, and $\phi_i$ gives the fraction of each energy source that goes to the end use, where $0 \le \phi_i \le 1$. ****** Can we list the raw energy sources and the end uses? *****
-
-Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. Most $\varepsilon$ values increase over time **** Are there any that don't? ****, as power generation technologies improve. **** Are there any values of $\varepsilon_i$ that are not increasing with time? **** For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw energy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1980--2011 ****** Up to 2011? Isn't this 2000? ******. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of energy sources to end uses ($\phi_i$) are extremely difficult to find.
-
-**** Do we want to graph the $\varepsilon_i$ and $\phi_i$ values over time?
+Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, but we are using data in the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
 
 ************* Matt ended here. ****************
 
