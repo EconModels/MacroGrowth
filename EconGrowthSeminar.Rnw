@@ -591,7 +591,7 @@ keyYLoc <- 0.87 # Location for the key in single-panel graphs.
   \begin{center}
     \scriptsize
     \begin{tabular}{r c c l}
-      \multirow{3}{*}{IEA} & \multirow{3}{*}{\includegraphics[scale=0.20]{figure_other/Figure_IEA.png}} & Coal, Oil, Petroleum, & \multirow{3}{*}{GJ/year} \\
+      \multirow{3}{*}{EIA} & \multirow{3}{*}{\includegraphics[scale=0.20]{figure_other/Figure_EIA.png}} & Coal, Oil, Petroleum, & \multirow{3}{*}{GJ/year} \\
                               &                          & Natural gas, Nuclear, & \\
                               &                          & Renewables & \\
       \hline
