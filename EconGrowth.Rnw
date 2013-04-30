@@ -160,13 +160,12 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Reese: Review EIA IES database for any revisions to historical data.}
-\item{Reese: Add food energy intake for all countries from FAO.}
-\item{Reese: Fix the energy sankey diagram from the seminar.}
-\item{Heun: Include the adjusted sankey diagram in the seminar.}
-\item{Heun: Eliminate non-developed countries from 9-panel partial residual plots.}
-\item{Heun: Obtain answers to questions I put to Caleb.}
-\item{Heun: Add references from Lucas.}
+\item{Reese: Review EIA IES database for any revisions to historical data}
+\item{Reese: Add food energy intake for all countries from FAO}
+\item{Reese: Fix the energy sankey diagram from the seminar}
+\item{Heun: Include the adjusted sankey diagram in the seminar}
+\item{Heun: Eliminate non-developed countries from 9-panel partial residual plots}
+\item{Heun: Add references from Lucas}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -200,6 +199,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Obtain answers to questions I put to Caleb about the energy section}}
+\item{\st{Heun: Add Warr to acknowledgements}}
+\item{\st{Heun: Include EIA graphic (instead of IEA graphic) in the seminar}}
 \item{\st{Reese: Send URL reference for FAO food data.}}
 \item{\st{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references. I think the bibliography is OK.}}
 \item{\st{Heun: Fix parentheses heights in LINEX production function equation.}}
@@ -416,7 +418,7 @@ Gross capital stock in real 2005 U.S. dollars for developed countries (1980--201
 \label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
-Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet{BLS:2013a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
+Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet[Tables 6 and 7]{BLS:2013a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
 
 The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other nations (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population of people under fifteen was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
 
@@ -799,7 +801,7 @@ createLINEXLatticeGraph()
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
+Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein. The authors are grateful to Benjamin S. Warr (INSEAD) for providing the REXS database \citep{Warr:2012a}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Reproducible Research}
