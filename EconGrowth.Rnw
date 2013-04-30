@@ -164,7 +164,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Reese: Add food energy intake for all countries from FAO}
 \item{Reese: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include the adjusted sankey diagram in the seminar}
-\item{Heun: Ensure consistent x and y axis limits in partial residual plots}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -197,8 +196,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Ensure consistent x and y axis limits in partial residual plots}}
 \item{\st{Heun: Use full country names instead of 2-letter abbreviations in partial residual plots}}
-\item{\st{Heun: Adjust variable threePanelGraphHeight in the Functions file to produce U partial residual plots that are exactly the same size as the graphs in the 9-panel plots.}}
+\item{\st{Heun: Adjust variable threePanelGraphHeight in the EconGrowth-R-Functions.Rnw file to produce U partial residual plots that are exactly the same size as the graphs in the 9-panel plots.}}
 \item{\st{Heun: Eliminate non-developed countries from 9-panel partial residual plots}}
 \item{\st{Heun: Add references from Lucas}}
 \item{\st{Heun: Obtain answers to questions I put to Caleb about the energy section}}
@@ -569,7 +569,7 @@ The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb
   y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent from which $\beta = 1 - \alpha$ can be found. The above reparameterization ensures the $\alpha + \beta = 1$ for constant returns to scale. ****** Say something here about constraints when we get them figured out. *********** $\lambda$ and $\alpha$ were estimated for all countries with the \citet{R} function \texttt{nls}. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. $\lambda$ and $\alpha$ were estimated for all countries in Equation \ref{eq:CD_reparam} by the \citet{R} function \texttt{nls}. By constraining $\alpha \in [0,1]$ during the fitting process, we ensure that $\beta \in [0,1]$ also. ****** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. *********** The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
 
 <<CD_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
@@ -589,13 +589,13 @@ createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
-To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the energy-augmented Cobb-Douglas model, we reparameterized Equation \ref{eq:CDe} as
+To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the energy-augmented Cobb-Douglas model, Equation \ref{eq:CDe} was reparameterized as
 
 \begin{equation} \label{eq:CDe_reparam}
   y = A k^{\min(a,b)}l^{|b-a|}e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent from which $\alpha = \min(a,b)$, $\beta = |b-a|$, and $\gamma = \max(a,b)$ can be calculated. By constraining $a \in [0,1]$ and $b \in [0,1]$, we ensure that $\alpha \in [0,1]$, $\beta \in [0,1]$, and $\gamma \in [0,1]$. The \citet{R} function \texttt{nls} was used to estimate values for $\lambda$, $a$, and $b$.
+\noindent to ensure that $\alpha + \beta + \gamma = 1$. By constraining $a \in [0,1]$ and $b \in [0,1]$, we ensure that $\alpha \in [0,1]$, $\beta \in [0,1]$, and $\gamma \in [0,1]$. Given values of $a$ and $b$ that represent the least-squares parameter optimization for a given economy, $\alpha = \min(a,b)$, $\beta = |b-a|$, and $\gamma = \max(a,b)$ can be calculated. The \citet{R} function \texttt{nls} was used to estimate the least-squares values of $\lambda$, $a$, and $b$.
 
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
@@ -683,11 +683,11 @@ Similar to the analysis of the Cobb-Douglas model above, we make partial residua
 createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", eval=TRUE>>=
+<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).">>=
 createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", eval=TRUE>>=
+<<CESPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).">>=
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 

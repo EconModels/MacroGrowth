@@ -2722,6 +2722,8 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
       layout <- ninePanelLayoutSpec
       indexCond <- list(countryOrderForGraphs) # Orders as US, UK, JP, CN, ZA, SA, IR, TZ, ZM
     }
+    xLimits <- c(0.5, 4.5) # Maintain consistent x-axis limits across all graphs
+    yLimits <- c(-0.2, 0.2) # Maintain consistent y-axis limits across all graphs
     plot <- xyplot(resid ~ iEToFit | Country, data=data,
                    type = c("p"),
                    index.cond = indexCond, #orders the panels.
@@ -2732,6 +2734,8 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
                                         ),
                    as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                    col = "black",
+                   xlim=xLimits, 
+                   ylim=yLimits, 
                    scales = list(cex=scaleTextSize*textScaling, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  alternating=FALSE), # prevents left/right, top/bot alternating
