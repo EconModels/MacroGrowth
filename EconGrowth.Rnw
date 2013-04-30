@@ -262,11 +262,11 @@ Neoclassical economic growth theory attributes output ($Y$) to factors of produc
   y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. $A$ is a unitless technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical progress term $A$, which is dimensionless but written in upper-case by convention.} Neoclassical economic growth theory makes no attempt to understand the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, with e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. $A$ is a unitless technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical progress term $A$, which is dimensionless but written in upper-case by convention.} Neoclassical economic growth theory as expressed in the Cobb-Douglas production function makes no attempt to describe the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
 
-As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek} and \citet{Murphy:2011jh} indicate that the importance of energy may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
+As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, \citet{Benes:2012tm}, \citet{Kumhof:2012ua}, and others indicate that the importance of energy for economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
 
-Some energy economists augment economic growth models with energy being an additional (or the only) factor of production. However, there is little agreement on how this should be done. Neither the mathematical form of the energy-augmented production function nor the quantification of energy are consistent in the literature. Furthermore, there has been little empirical work done to assess the predictive ability of various energy-augmented production functions for different types of economies. In addition, very few studies of the importance of energy in economic growth include rigorous statistical assessments of energy-related fitting parameters. This paper attempts to contribute to the literature by applying statistically rigorous methods along three coordinates of analysis: form of the energy augmented production function, energy quantification, and type of economy.
+Some energy economists augment economic growth models by including energy as an additional (or the only) factor of production. However, there is little agreement on how this should be done. Neither the mathematical form of the energy-augmented production function nor the quantification of energy are consistent in the literature. There has been little empirical work assessing the predictive ability of various energy-augmented production functions for different types of economies. And, very few studies of the importance of energy in economic growth include rigorous statistical assessments of energy-related fitting parameters. This paper attempts to contribute to the literature by applying statistically rigorous methods along three coordinates of analysis: form of the energy augmented production function, energy quantification, and type of economy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coordinates of Analysis} 
@@ -292,11 +292,11 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
   y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time. The energy-augmented Cobb-Douglas production function is often assumed to have constant returns to scale for the three factors of production: $\alpha + \beta + \gamma = 1$.
+\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. The energy-augmented Cobb-Douglas production function is often assumed to have constant returns to scale for the three factors of production: $\alpha + \beta + \gamma = 1$.
 
 \citet{Ayres:2008cl} uses Equation \ref{eq:CDe} with exergy ($x$) and useful work ($u$) quantifications for $e$ to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with thermal energy quantification ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
 
-**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
+**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
 
 %------------------------------
 \subsubsection{Energy-augmented CES Production Function (CESe)} 
@@ -313,9 +313,11 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent where the elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. Equation \ref{eq:CESe} augments a standard CES production function (Equation \ref{eq:CES}) with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$.
+\noindent Equation \ref{eq:CESe} augments a standard CES production function (Equation \ref{eq:CES}) with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$. The elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. 
 
-\citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. ******** Any confidence intervals in this study? ********* \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
+\citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
+
+**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
 
 %------------------------------
 \subsubsection{LINEX Production Function} 
@@ -340,7 +342,7 @@ A third production function, the LINear EXponential (LINEX) function \citep{Kumm
   \rho_l \equiv \frac{l}{e}
 \end{equation}
 
-\noindent and represent (a) capital stock increase relative to the average of labor and energy and (b) the increase of labor ($l$) relative to energy ($e$), respectively. Energy ($e$) as a the only factor of production is enhanced by $A$ if either
+\noindent and represent (a) capital stock increase relative to the average of labor and energy and (b) labor increase relative to energy, respectively. Energy ($e$), as the only factor of production, is enhanced by $A$ if either
 
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average of energy ($e$) and labor ($l$), i.e. if $\rho_k >$ 1, or}
@@ -349,18 +351,20 @@ A third production function, the LINear EXponential (LINEX) function \citep{Kumm
 
 \noindent According to the LINEX model, an economy that can increase capital stock ($k$) without a commensurate increase in labor ($l$) and energy ($e$) will experience an increase in output ($y$) in excess of its increase of energy consumption ($e$), because $A$ will be greater than 1. Similarly, an economy benefits by increasing labor ($l$) without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an efficiency of using labor and energy to make capital available to the economy, and $\rho_l$ is an efficiency of using energy to make labor available to the economy. $a_0$ represents the overall importance of these efficiencies, and $c_t$ represents the relative importance of the labor efficiency term compared to the capital stock efficiency term. We treat $a_0$ and $c_t$ as fitting parameters; both are assumed constant with respect to time. 
 
-In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations \ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technical progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
+In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations \ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technological progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
 
-**************** Martin: More on the results of the above papers. ***************
+**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
 
 %++++++++++++++++++++++++++++++
 \subsection{Quantification of Energy} 
 \label{sec:Quantification_of_Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that can be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Exergy ($X$), and to a greater extent, useful work ($U$) account for the useful energy that goes into generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used to convert thermal energy ($Q$) into useful work ($U$).
+The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that could be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). ******** Caleb: Is this how Ayres and Warr use the term ``exergy''? ************ Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of their ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Both exergy ($X$), and to a greater extent, useful work ($U$) quantifications of energy are intended to account for the usefulness of energy for generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used in energy conversion processes.
 
-Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Warr:2010ga} introduced the idea of using exergy ($x$) and useful work ($u$) in energy-augmentd production functions to account for efficiency gains in energy production and consumption over the last century. 
+Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Ayres:2003ec} introduced the idea that exergy ($x$) and useful work ($u$) were important factors of production. 
+
+**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
 
 We know of no statistically-rigorous comparisons of the predictive ability of each energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($Q$, $X$, and $U$) for developed economies and thermal energy ($Q$) and exergy ($X$) for all other economies.
 
@@ -371,7 +375,7 @@ We know of no statistically-rigorous comparisons of the predictive ability of ea
 
 In the energy-economic growth literature, the focus is almost exclusively on developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies.
 
-But, the nearly-complete focus on developed economies misses the role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels). (See Table \ref{tab:Economy_Examples}.)
+But, the nearly-complete focus on developed economies closes off the possibility of discovering any role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP ******* Martin: Is this the right way to describe the petrol economies? *********); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels ******* Martin: Is this the right way to describe the LDC economies? *********). (See Table \ref{tab:Economy_Examples}.)
 
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
@@ -405,7 +409,7 @@ To assess energy-augmented models of economic growth along the coordinates of an
 \label{sec:Economic_Output_Data}
 %++++++++++++++++++++++++++++++
 
-We measure economic output ($Y$) by real gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980--2011) and all other countries (1991--2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
+We measure economic output ($Y$) by gross domestic product (GDP). GDP data in real 2005 U.S. dollars for developed countries (1980--2011) and all other countries (1991--2011) was obtained from the World Bank's Global Economic Prospects (GEP) database \citep{WorldBankGEP:2013a}.
 
 %++++++++++++++++++++++++++++++
 \subsection{Capital Stock} 
@@ -421,14 +425,14 @@ Gross capital stock in real 2005 U.S. dollars for developed countries (1980--201
 
 Total employment and average hours worked per worker per year for the developed nations (United States, United Kingdom, and Japan) for 1980--2011 were obtained from the United States \citet[Tables 6 and 7]{BLS:2013a}. Total hours worked per year was calculated by multiplying total employment by average hours worked per worker per year.  
 
-The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other nations (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population of people under fifteen was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
+The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a} provides the employment to population ratio for people fifteen and older, total population, and a percentage of people under fifteen for other economies (South Africa, China, Iran, Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population of people under fifteen years of age was subtracted from total population to calculate the population of people fifteen and older. Total employment was calculated by multiplying the employment to population ratio of people fifteen and older by the population of people fifteen and older.
 
 %++++++++++++++++++++++++++++++
 \subsection{Thermal Energy, Exergy, and Useful Work} 
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power was also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2000. For all other countries, we generated energy data for 1991--2011. Details on each of the energy quantifications are given in subsections below.
+To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2003ec, Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power was also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011, with the exception of useful work data (1980--2000). For all other countries, we generated thermal energy and exergy data for 1991--2011. Details on each energy quantifications are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
@@ -438,37 +442,37 @@ To account for all energy input to an economy, we summed consumption data for ma
 Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
 
 \begin{equation} \label{eq:thermal_energy}
-  Q_{fuel} = C_{fuel}h_{fuel},
+  Q_{fuel} = C_{fuel}h_{fuel}
 \end{equation}
 
-\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). The fuel wood density of 166.67 kg/m$^3$ was obtained from the \citet{FAO:2013a} **** Caleb: verify this number and source ****.
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67 kg/m$^3$ **** Caleb: verify this number and source ****) was obtained from the \citet{FAO:2013a}.
 
-Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the Energy Information Agency \citep{EIA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data  for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
+Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the \citet{EIA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
-For renewable and nuclear energies, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was not necessary.
+For renewable and nuclear energy sources, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was unnecessary.
 
-Animal and human muscle work was estimated using an approach similar to \citet{Ayres:2010ug}, using some data from Warr's REXS database \citep{Warr:2012a} and results from \citet{Wirsenius:2000vi}. For animal work, our analysis was restricted to draught animals (horses and mules). Muscle work from animals ($E_{animals}$) was calculated using
+Animal and human muscle work was estimated using an approach similar to \citet{Ayres:2010ug}, using some data from Warr's REXS database \citep{Warr:2012a} and results from \citet{Wirsenius:2000vi}. For animal work, our analysis was restricted to draught animals (horses and mules). Muscle work from animals ($Q_{animals}$) was calculated using
 
 \begin{equation} \label{eq:animal_muscle}
   Q_{animals} = Q_{m,horse}N_{horses} + Q_{m,mule}N_{mules}
 \end{equation}
 
-\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 7,215 kcal/day-mule) were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used by animals for a day of work. The $Q_m$ values are assumed constant for all countries and years. The number of horses and mules for each economy was taken from the ``Live Animals'' time series in the FAO Statistics Database \citep{FAO:2013a}.
+\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 7,215 kcal/day-mule) were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used by animals for a day of work. (******** Caleb: Perhaps this should be ``represent the amount of energy in the feed consumed by animals for a day of work.'' *********) The $Q_m$ values are assumed constant for all countries and years. The number of horses and mules for each economy was taken from the ``Live Animals'' time series in the FAO Statistics Database \citep{FAO:2013a} ******** Get a table number from Caleb. *************.
 
-Human muscle power was calculated in a similar manner
+Human muscle power was calculated in a similar manner:
 
 \begin{equation} \label{eq:human_muscle}
   Q_{workers} = Q_{m,workers} N_{workers}
 \end{equation}
 
-\noindent where the value of $Q_{m,workers}$ for the U.S. was taken from a time series of kcal/day-person for workers for 1980--2011 \citep{Warr:2012a} ($\sim$ 4200 kcal/day-worker). $Q_{m,workers}$ for other countries was taken from the \citet{FAO:2013b}. The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
+\noindent where the value of $Q_{m,workers}$ for the U.S. ($\sim$ 4200 kcal/day-worker) was taken from a time series of kcal/day-person for workers for 1980--2011 \citep{Warr:2012a}. $Q_{m,workers}$ for other countries was taken from the \citet{FAO:2013b}. The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
 
 %------------------------------
 \subsubsection{Exergy} 
 \label{sec:X_Data}
 %------------------------------
 
-Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated by a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet{Ayres:2005kn} and shown in Table \ref{tab:Exergy_Allocation}. $f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. $f_{exergy-allocation}$ for each fuel was assumed to be constant through time across all economies. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
+Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data}. For fuels, exergy was calculated by a unitless exergy-to-energy allocation factor ($f_{exergy-allocation}$) from \citet[Table~A-2]{Ayres:2003ec} and shown in Table \ref{tab:Exergy_Allocation}. 
 
 \begin{equation} \label{eq:exergy}
   X_{fuel} = f_{exergy-allocation} Q_{fuel}
@@ -481,16 +485,28 @@ Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$)
       \hline
       Coal                                    & 1.088    \\
       Oil and petroleum                       & 1.073   \\      
-      Dry natural gas and                     & \multirow{2}{*}{1.040}    \\
+      Dry natural gas and                     & \multirow{2}{*}{1.04}    \\
       natural gas liquids                     &         \\
-      Biomass/fuel wood                       & 1.150   \\
-      Nuclear                                 & 1.000   \\
-      Renewables                              & 1.000   \\
+      Biomass/fuel wood                       & 1.15   \\
+      Nuclear                                 & 1.0   \\
+      Renewables                              & 1.0   \\
     \end{tabular}
   \end{center}
 \end{table}
 
-To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food end-use to food intake ($f_{enduse/intake}$) were included. $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The animal feed-to-work conversion efficiency ($\eta_{food \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The worker food-to-work efficiency ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. $f_{enduse/intake}$ varies by country. A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 4.1\% for China in 1992.}
+\noindent $f_{exergy-allocation}$ is the ratio of chemical exergy to the higher heating value for each fuel. $f_{exergy-allocation}$ for each fuel was assumed to be constant through time across all economies. For renewable and nuclear energy sources, the electricity generated is already pure exergy, so $f_{exergy-allocation}$ is unity.
+
+To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food enduse to food intake ($f_{enduse/intake}$) were included. 
+
+\begin{equation} \label{eq:animal_muscle_exergy}
+  X_{animals} = \eta_{food \rightarrow work,animals} Q_{animals}
+\end{equation}
+
+\begin{equation} \label{eq:human_muscle_exergy}
+  X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse/intake} Q_{workers}
+\end{equation}
+
+\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The animal feed-to-work conversion efficiency ($\eta_{food \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. $f_{enduse/intake}$ varies by country (Table \ref{tab:f_enduse_intake}). A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 4.1\% for China in 1992.}
 
 \begin{table} \caption{Food enduse-to-intake ratios for all countries.} \label{tab:f_enduse_intake}
   \begin{center}
@@ -502,22 +518,12 @@ To calculate the exergy of animal and human muscle power, the food-to-work conve
   \end{center}
 \end{table}
 
-\begin{equation} \label{eq:animal_muscle_exergy}
-  X_{animals} = \eta_{food \rightarrow work,animals} Q_{animals}
-\end{equation}
-
-\begin{equation} \label{eq:human_muscle_exergy}
-  X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse/intake} Q_{workers}
-\end{equation}
-
-\noindent 
-
 %------------------------------
 \subsubsection{Useful Work} 
 \label{sec:U_Data}
 %------------------------------
 
-The conversion of a raw energy carrier (e.g., coal) into productive energy for an economy (e.g., electricity) necessarily involves inefficiencies. In the case of coal consumption, only about one-third of the coal exergy is converted to useful electricity, the rest is waste heat. The concept of ``useful work,'' pioneered by Ayres and Warr \citep{Ayres:2003ec, Ayres:2005kn}, takes exergy one step further to consider efficiencies of both energy production and end use. To calculate useful work ($U$), each source of exergy (coal, oil and petroleum products, dry natural gas and natural gas plant liquids, biomass/fuel wood, nuclear, solar, wind, and human and animal muscle work) is decomposed into several end uses: high temperature industrial heat (e.g., steel production), medium temperature heat (e.g., steam production), low temperature space heat (for residential heating), mechanical drive (energy used for prime mover engines of all types except electric motors), electricity (excluding lighting), light (from both electricity and fuels), and muscle work (from animals and workers). The efficiency ($\varepsilon$) of convering exergy into useful work can be very different, depending upon the end use of the exergy. Efficiencies specific to each end use ($\varepsilon_i$) were applied to exergy values to obtain useful work ($U$) input to an economy with the following equation:
+The conversion of a raw energy carrier (e.g., coal) into productive energy for an economy (e.g., electricity) necessarily involves inefficiencies. In the case of coal consumption, only about one-third of the coal exergy is converted to useful electricity: the rest is waste heat. The concept of ``useful work,'' pioneered by Ayres and Warr \citep{Ayres:2003ec, Ayres:2005kn}, build upon exergy analysis to consider efficiencies of both energy production and end use. To calculate useful work ($U$), the total exergy input to an economy ($X$) is decomposed into several end uses: high temperature industrial heat (e.g., steel production), medium temperature heat (e.g., steam production), low temperature space heat (for residential heating), mechanical drive (energy used for prime mover engines of all types except electric motors), electricity (excluding lighting), lighting (from both electricity and fuels), and muscle work (from animals and workers) as shown in the following equation:
 
 \begin{equation} \label{eq:useful_work}
   U = \sum_i{\varepsilon_i \phi_i X}
@@ -525,7 +531,7 @@ The conversion of a raw energy carrier (e.g., coal) into productive energy for a
 
 \noindent where the subscript $i$ indicates the energy end use, $\varepsilon_i$ is the efficiency of converting exergy into useful energy for each end use, and $\phi_i$ gives the fraction of exergy input to an economy that goes toward the i$^\mathrm{th}$ end use.
 
-Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, but we are using data in the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
+Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, and we used data from the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
 
 ************* Matt ended here. ****************
 
