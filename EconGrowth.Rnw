@@ -276,7 +276,8 @@ Some energy economists augment economic growth models by including energy as an 
 This section describes the three coordinates of analysis and briefly reviews literature related to each.
 
 %++++++++++++++++++++++++++++++
-\subsection{Mathematical Forms of the Energy-augmented Production Function} \label{sec:Prod_Func_Forms}
+\subsection{Mathematical Forms of the Energy-augmented Production Function} 
+\label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
 In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following subsections describe each.
@@ -533,8 +534,6 @@ The conversion of a raw energy carrier (e.g., coal) into productive energy for a
 
 Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, and we used data from the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
 
-************* Matt ended here. ****************
-
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
 \label{sec:Historical_Data}
@@ -542,7 +541,9 @@ Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database su
 
 Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}.
 
-<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+% You can add fig.pos="H" to force the figure position to be this exact place.
+
+<<Historical_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -550,97 +551,89 @@ Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy qua
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Cobb-Douglas Model Without Energy (CD)}
+\section{Parameter Estimation}
+\label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The Cobb-Douglas model without energy is given by
+Each of the economic growth models discussed in Section \ref{sec:Prod_Func_Forms} has parameters which must be estimated for each economy (see Section \ref{sec:Economy_Types}) and each energy quantification (see Section \ref{sec:Quantification_of_Energy}) via least-squares methods. The following subsections discuss parameter estimation methods interpret the results. 
 
-\begin{equation} \label{eq:CD_No_Energy}
-  y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}.
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas Models}
+%++++++++++++++++++++++++++++++
+
+The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb-Douglas production function was reparameterized as
+
+\begin{equation} \label{eq:CD_reparam}
+  y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-Figure \ref{fig:CD_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (without energy).
+\noindent from which $\beta = 1 - \alpha$ can be found. The above reparameterization ensures the $\alpha + \beta = 1$ for constant returns to scale. ****** Say something here about constraints when we get them figured out. *********** $\lambda$ and $\alpha$ were estimated for all countries with the \citet{R} function \texttt{nls}. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
 
-<<CD_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CD_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
 @
 
-To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we create partial residual plots as shown in Figures \ref{fig:CDPartialResidualsQ} - \ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, suggesting that energy augmentation of the Cobb-Douglas production function will not be beneficial.
+To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we created partial residual plots as shown in Figures \ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, with the exception, perhaps, of the United Kingdom, whose residuals are, on average, above 0.
 
-<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).", fig.pos="H">>=
+<<CDPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).">>=
 createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).", fig.pos="H">>=
+<<CDPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for exergy ($x$).">>=
 createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H">>=
+<<CDPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).">>=
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
+To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the energy-augmented Cobb-Douglas model, we reparameterized Equation \ref{eq:CDe} as
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Cobb-Douglas Models With Energy}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
-
-$a \in[0,1], b \in [0,1], \alpha=\min(a,b), \beta=|b-a|, \gamma = 1-\max(a,b)$
-
-The Cobb-Douglas model with energy is given by
-
-\begin{equation} \label{eq:CD_With_Energy}
-  y = \mathrm{e}^{\lambda (t-t_0)}k^{\alpha}l^{\beta}e^{\gamma},
+\begin{equation} \label{eq:CDe_reparam}
+  y = A k^{\min(a,b)}l^{|b-a|}e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent where $e$ can be one of thermal energy ($q$), exergy ($x$), or useful work ($u$).
-
-\subsection{Cobb-Douglas with thermal energy}
+\noindent from which $\alpha = \min(a,b)$, $\beta = |b-a|$, and $\gamma = \max(a,b)$ can be calculated. By constraining $a \in [0,1]$ and $b \in [0,1]$, we ensure that $\alpha \in [0,1]$, $\beta \in [0,1]$, and $\gamma \in [0,1]$. The \citet{R} function \texttt{nls} was used to estimate values for $\lambda$, $a$, and $b$.
 
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
 ******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
 
-<<CDeGridLattice, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas with energy model.", fig.pos="H">>=
+<<CDeGridLattice, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas with energy model.", eval=TRUE>>=
 cdeGridLattice(energyType="Q")
 @
 
 Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
-<<CDq_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDq_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="Q")
 @
-
-\subsection{Cobb-Douglas with exergy}
 
 The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
 
 Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
-<<CDx_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDx_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="X")
 @
 
-\subsection{Cobb-Douglas with useful work}
-
 Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
-<<CDu_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CDu_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="U")
 @
 
-\subsection{Cobb-Douglas Comparisons}
+Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $e=q$, with $e=x$, and with $e=u$) to historical data.
 
-Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $q$, with $x$, and with $u$) to historical data.
-
-<<CD_GDP_Lattice_Graph, fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Cobb-Douglas results.">>=
+<<CD_GDP_Lattice_Graph, fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
 @
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{CES Models}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+************* Matt ended here. ****************
+
+%++++++++++++++++++++++++++++++
+\subsection{CES Models}
+%++++++++++++++++++++++++++++++
 
 \citet{Stern:2012ey} developed a CES model of the form\footnote{The CES equation in \citet{Stern:2012ey} appears as
 
@@ -676,73 +669,53 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 \end{quote}
 
-%++++++++++++++++++++++++++++++
-\subsection{CES without energy (CES)}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
 
-<<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CES_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType=NA)
 @
 
 Similar to the analysis of the Cobb-Douglas model above, we make partial residual plots for the CES model in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
 
-<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).", fig.pos="H">>=
+<<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).">>=
 createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).", fig.pos="H">>=
+<<CESPartialResidualsX, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).">>=
 createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 @
 
-<<CESPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).", fig.pos="H">>=
+<<CESPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).">>=
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{CES with Thermal Energy}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
-<<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CESq_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="Q")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{CES with Exergy}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
-<<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CESx_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="X")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{CES with Useful Work}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
-<<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.pos="H", fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CESu_Params_Graph, fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="U")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{CES comparisons}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
 
-<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="CES results.">>=
+<<CES_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES results.">>=
 createCESLatticeGraph()
 @
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Confidence Intervals for Cobb-Douglas and CES Models}
+\subsection{Confidence Intervals for Cobb-Douglas and CES Models}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the locus of points where the 95\% confidence interval on $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
@@ -757,7 +730,7 @@ For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\sigma$ i
 
 The right column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\sigma}$ vs. $\sigma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that energy ($e$) unambiguously complements capital stock and labor ($kl$) for most economies.
 
-<<CIvsParam_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="95\\% Confidence interval widths vs. parameter values for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models with energy. If an economy appears in the region above a dashed line, the 95\\% confidence interval for the parameter extends to or beyond $\\gamma \\le$ 0 (cannot say with 95\\% confidence that energy is important for the Cobb-Douglas model), $\\delta \\ge$ 1 (cannot say with 95\\% confidence that energy is important for the CES model), or $\\sigma$ = 1 (cannot say with 95\\% confidence whether ($kl$) and ($e$) are complements or substitutes in the CES model).">>=
+<<CIvsParam_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="95\\% Confidence interval widths vs. parameter values for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models with energy. If an economy appears in the region above a dashed line, the 95\\% confidence interval for the parameter extends to or beyond $\\gamma \\le$ 0 (cannot say with 95\\% confidence that energy is important for the Cobb-Douglas model), $\\delta \\ge$ 1 (cannot say with 95\\% confidence that energy is important for the CES model), or $\\sigma$ = 1 (cannot say with 95\\% confidence whether ($kl$) and ($e$) are complements or substitutes in the CES model).">>=
 CIvsParamLattice(countryAbbrevScaling=0.6)
 @
 
@@ -777,49 +750,44 @@ The LINEX model has the form
 
 \noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
 
-%++++++++++++++++++++++++++++++
-\subsection{LINEX with Thermal Energy}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
-<<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="Q")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{LINEX with Exergy}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
-<<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<LINEXx_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="X")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{LINEX with Useful Work}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
-<<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.pos="H", fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<LINEXu_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="U")
 @
 
-%++++++++++++++++++++++++++++++
-\subsection{LINEX comparisons}
-%++++++++++++++++++++++++++++++
-
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
-<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="LINEX results.">>=
+<<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
 createLINEXLatticeGraph()
 @
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implications}
+\label{sec:Implications}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+************* Do we need this? **************
+
+************* Martin needs to write this. **************
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
+\label{sec:Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ****************** Add conclusion here. *********************
@@ -836,7 +804,7 @@ Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and
 \section*{Reproducible Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \protect\url{https://github.com/MatthewHeun/Econ-Growth- R-Analysis}.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
@@ -964,29 +932,29 @@ We begin by fitting single-factor economic models of the form
 
 \noindent to historical data where the factor of production ($f$) is one of $k$, $l$, $q$, $x$, or $u$, and the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, or $\gamma$ for $q$, $x$, and $u$.
 
-<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<SFk_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="K")
 @
 
-<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<SFl_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="L")
 @
 
-<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<SFq_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="Q")
 @
 
-<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<SFx_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="X")
 @
 
-<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.pos="H", fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<SFu_Params_Graph, fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="U")
 @
 
 Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
 
-<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
+<<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
 @
 
