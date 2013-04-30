@@ -39,6 +39,7 @@ countryAbbrevsAlph <- c(CN="CN", IR="IR", JP="JP", SA="SA", TZ="TZ", UK="UK", US
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryAbbrevsAlphU <- c(JP="JP", UK="UK", US="US")
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
+countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
@@ -56,7 +57,7 @@ ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
 threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panels
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 threePanelGraphWidth <- maxWidth
-threePanelGraphHeight <- 3.3 #Inches
+threePanelGraphHeight <- 3.17 #Inches
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
@@ -2713,7 +2714,7 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
       # Use data from only those countries that have U defined.
       data <- subset(data, !is.na(iEToFit))
       layout <- threePanelLayoutSpec
-      factorLevels <- countryAbbrevsAlphU # Want only those countries for which U is known
+      factorLevels <- countryNamesAlphU # Want only those countries for which U is known
       indexCond <- list(countryOrderForGraphsU) # Orders as US, UK, JP
     } else {
       # Use data from all countries, because all countries have Q and X data.
