@@ -46,13 +46,14 @@ factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
 # "1" means first alphabetically.
 countryOrderForGraphs <- c(7,6,3,1,8,5,4,2,9) # Sets the order as US, UK, JP, CN, ZA, TZ, SA, IR, ZM.
+countryOrderForGraphsU <- c(3, 2, 1) # Sets the order as US, UK, JP when we're looking only at energyType=U.
 timeTics <- c(1980, 1990, 2000, 2010)
 yTicsForIndexedGraphs <- c(1,2,3,4,5,6,7,8,9,10) #y tic mark locations.
 
 maxWidth <- 6.5 #Inches
 # Full page lattice plot sizes
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
-threePanelLayoutSpec <- c(1,3) #indicates a 1 row x 3 column arangement of panels
+threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panels
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
@@ -2705,16 +2706,19 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
     data <- do.call("rbind", lapply(countryAbbrevsAlph, calcResiduals, modelType=modelType, energyType=energyType))
     # If useful work is desired, need to trim the data set.
     if (energyType == "U"){
-print(data)
+      # Use data from only those countries that have U defined.
       data <- subset(data, !is.na(iEToFit))
 print(data)
       layout <- threePanelLayoutSpec
       factorLevels <- countryAbbrevsAlphU # Want only those countries for which U is known
+print(factorLevels)
+      indexCond <- list(countryOrderForGraphsU) # Orders as US, UK, JP
     } else {
+      # Use data from all countries, because all countries have Q and X data.
       factorLevels <- countryNamesAlph # We want all countries shown
       layout <- ninePanelLayoutSpec
+      indexCond <- list(countryOrderForGraphs) # Orders as US, UK, JP, CN, ZA, SA, IR, TZ, ZM
     }
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
     plot <- xyplot(resid ~ iEToFit | Country, data=data,
                    type = c("p"),
                    index.cond = indexCond, #orders the panels.

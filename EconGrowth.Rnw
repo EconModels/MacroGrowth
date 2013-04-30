@@ -165,7 +165,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Reese: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include the adjusted sankey diagram in the seminar}
 \item{Heun: Eliminate non-developed countries from 9-panel partial residual plots}
-\item{Heun: Add references from Lucas}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -197,8 +196,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
-\item{de Wit: provide funding acknowledgement, if necessary.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Add references from Lucas}}
 \item{\st{Heun: Obtain answers to questions I put to Caleb about the energy section}}
 \item{\st{Heun: Add Warr to acknowledgements}}
 \item{\st{Heun: Include EIA graphic (instead of IEA graphic) in the seminar}}
@@ -244,6 +243,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item{\st{AIC rows in the AIC table}}
       \item{\st{GDP comparison graph}}
       \end{itemize}
+\item{\st{de Wit: provide funding acknowledgement, if necessary}}
 \end{itemize}
 
 <<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
@@ -278,7 +278,7 @@ This section describes the three coordinates of analysis and briefly reviews lit
 \subsection{Mathematical Forms of the Energy-augmented Production Function} \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
-In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following sections describe each.
+In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following subsections describe each.
 
 %------------------------------
 \subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
@@ -491,7 +491,7 @@ Exergy ($X$), expressed in TJ/year, was calculated from the thermal energy ($Q$)
 
 To calculate the exergy of animal and human muscle power, the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) and the ratio of food end-use to food intake ($f_{enduse/intake}$) were included. $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy respectively. The animal feed-to-work conversion efficiency ($\eta_{food \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The worker food-to-work efficiency ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi}. $f_{enduse/intake}$ varies by country. A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 4.1\% for China in 1992.}
 
-\begin{table} \caption{Food end use to intake ratios for all countries.} \label{tab:f_enduse_intake}
+\begin{table} \caption{Food enduse-to-intake ratios for all countries.} \label{tab:f_enduse_intake}
   \begin{center}
     \begin{tabular}{r c c c c c c c c c}
       Country & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\
@@ -568,12 +568,14 @@ createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H">>=
+<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cobb-Douglas Models With Energy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We can force $\alpha$, $\beta$, and $\gamma$ to be in $[0,1]$ by a reparameterization:
 
@@ -667,7 +669,9 @@ The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} e
 \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 \end{quote}
 
+%++++++++++++++++++++++++++++++
 \subsection{CES without energy (CES)}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
 
@@ -689,7 +693,9 @@ createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{CES with Thermal Energy}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
@@ -697,7 +703,9 @@ Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="Q")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{CES with Exergy}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
@@ -705,7 +713,9 @@ Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="X")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{CES with Useful Work}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
@@ -713,7 +723,9 @@ Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals fo
 createCESParamsGraph(energyType="U")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{CES comparisons}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
 
@@ -758,7 +770,9 @@ The LINEX model has the form
 
 \noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
 
+%++++++++++++++++++++++++++++++
 \subsection{LINEX with Thermal Energy}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
@@ -766,7 +780,9 @@ Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals 
 createLINEXParamsGraph(energyType="Q")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{LINEX with Exergy}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
@@ -774,7 +790,9 @@ Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals 
 createLINEXParamsGraph(energyType="X")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{LINEX with Useful Work}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
@@ -782,7 +800,9 @@ Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals 
 createLINEXParamsGraph(energyType="U")
 @
 
+%++++++++++++++++++++++++++++++
 \subsection{LINEX comparisons}
+%++++++++++++++++++++++++++++++
 
 Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
@@ -797,11 +817,13 @@ createLINEXLatticeGraph()
 
 ****************** Add conclusion here. *********************
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Funding for Martin de Wit was provided by *******. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein. The authors are grateful to Benjamin S. Warr (INSEAD) for providing the REXS database \citep{Warr:2012a}.
+Funding for Caleb Reese and Lucas Timmer was generously supplied by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Partial funding for Martin de Wit was provided by the South African National Research Foundation (NRF).\footnote{Any opinion, findings, and conclusions or recommendations expressed herein are those of the authors, and, therefore, NRF does not accept any liability in regard thereto.} The authors are grateful to Benjamin S. Warr (INSEAD) for providing the REXS database \citep{Warr:2012a}. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Reproducible Research}
@@ -815,9 +837,11 @@ In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreads
 %% \section{}
 %% \label{}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Covariance Tables}
@@ -837,13 +861,93 @@ printCovarTable(countryAbbrev="SA"); printCovarTable(countryAbbrev="IR")
 printCovarTable(countryAbbrev="TZ"); printCovarTable(countryAbbrev="ZM")
 @
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model Parameters}
+\label{sec:Model_Parameters}
 \setcounter{table}{0} % Restarts table number counter at 0 in this section.
 \setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%++++++++++++++++++++++++++++++
 \subsection{Single-factor Models}
+%++++++++++++++++++++++++++++++
+
+****** This subsection should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ********
+
+The following tables provide results for parameters in single-factor models.
+
+<<SF_Params_Tables, results='asis'>>=
+#I wish I could say this, but I get bogus K [1]” strings appearing in the LaTeX output.
+#lapply(factors, printSingleFactorParamsTable)
+printSFParamsTable(factor="K"); printSFParamsTable(factor="L")
+printSFParamsTable(factor="Q"); printSFParamsTable(factor="X"); printSFParamsTable(factor="U")
+@
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas Models}
+%++++++++++++++++++++++++++++++
+
+The following tables provide results for parameters in Cobb-Douglas models with and without energy terms.
+
+<<CD_Params_Table, results='asis'>>=
+printCDParamsTable(energyType=NA)    #Without energy
+printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDParamsTable(energyType="U") #With energy
+@
+
+%++++++++++++++++++++++++++++++
+\subsection{CES Models}
+%++++++++++++++++++++++++++++++
+
+The following tables provide results for parameters in CES models with and without energy terms.
+
+<<CES_Params_Table, results='asis'>>=
+printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)
+printCESParamsTableA(energyType="Q"); printCESParamsTableB(energyType="Q")
+printCESParamsTableA(energyType="X"); printCESParamsTableB(energyType="X")
+printCESParamsTableA(energyType="U"); printCESParamsTableB(energyType="U")
+@
+
+%++++++++++++++++++++++++++++++
+\subsection{LINEX Models}
+%++++++++++++++++++++++++++++++
+
+The following tables provide results for parameters in LINEX models.
+
+<<LINEX_Params_Table, results='asis'>>=
+printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); printLINEXParamsTable(energyType="U")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Goodness of fit}
+\label{sec:Goodness_of_Fit}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
+
+<<AIC_Table, results='asis', label="AIC_Table">>=
+print(createAICTable(), 
+      caption.placement="top", 
+      sanitize.rownames.function = identity,
+      size="\\tiny",
+      table.placement="H")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single-factor Models}
+\label{sec:Single-factor_Models}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+****** This section should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ********
 
 We begin by fitting single-factor economic models of the form
 
@@ -877,59 +981,6 @@ Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions w
 
 <<SF_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.pos="H", fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
-@
-
-The following tables provide results for parameters in single-factor models.
-
-<<SF_Params_Tables, results='asis'>>=
-#I wish I could say this, but I get bogus K [1]” strings appearing in the LaTeX output.
-#lapply(factors, printSingleFactorParamsTable)
-printSFParamsTable(factor="K"); printSFParamsTable(factor="L")
-printSFParamsTable(factor="Q"); printSFParamsTable(factor="X"); printSFParamsTable(factor="U")
-@
-
-\subsection{Cobb-Douglas Models}
-
-The following tables provide results for parameters in Cobb-Douglas models with and without energy terms.
-
-<<CD_Params_Table, results='asis'>>=
-printCDParamsTable(energyType=NA)    #Without energy
-printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDParamsTable(energyType="U") #With energy
-@
-
-\subsection{CES Models}
-
-The following tables provide results for parameters in CES models with and without energy terms.
-
-<<CES_Params_Table, results='asis'>>=
-printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)
-printCESParamsTableA(energyType="Q"); printCESParamsTableB(energyType="Q")
-printCESParamsTableA(energyType="X"); printCESParamsTableB(energyType="X")
-printCESParamsTableA(energyType="U"); printCESParamsTableB(energyType="U")
-@
-
-\subsection{LINEX Models}
-
-The following tables provide results for parameters in LINEX models.
-
-<<LINEX_Params_Table, results='asis'>>=
-printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); printLINEXParamsTable(energyType="U")
-@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Goodness of fit}
-\setcounter{table}{0} % Restarts table number counter at 0 in this section.
-\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
-
-<<AIC_Table, results='asis', label="AIC_Table">>=
-print(createAICTable(), 
-      caption.placement="top", 
-      sanitize.rownames.function = identity,
-      size="\\tiny",
-      table.placement="H")
 @
 
 
