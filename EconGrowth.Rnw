@@ -164,7 +164,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Reese: Add food energy intake for all countries from FAO}
 \item{Reese: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include the adjusted sankey diagram in the seminar}
-\item{Heun: Eliminate non-developed countries from 9-panel partial residual plots}
+\item{Heun: Adjust variable threePanelGraphHeight in the Functions file to produce U partial residual plots that are exactly the same size as the graphs in the 9-panel plots.}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -197,6 +197,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Eliminate non-developed countries from 9-panel partial residual plots}}
 \item{\st{Heun: Add references from Lucas}}
 \item{\st{Heun: Obtain answers to questions I put to Caleb about the energy section}}
 \item{\st{Heun: Add Warr to acknowledgements}}
@@ -568,7 +569,7 @@ createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 @
 
-<<CDPartialResidualsU, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H", eval=TRUE>>=
+<<CDPartialResidualsU, fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for useful work ($u$).", fig.pos="H">>=
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 

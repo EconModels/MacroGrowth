@@ -55,6 +55,8 @@ maxWidth <- 6.5 #Inches
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
 threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panels
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
+threePanelGraphWidth <- maxWidth
+threePanelGraphHeight <- 3.3 #Inches
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
@@ -2708,10 +2710,8 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
     if (energyType == "U"){
       # Use data from only those countries that have U defined.
       data <- subset(data, !is.na(iEToFit))
-print(data)
       layout <- threePanelLayoutSpec
       factorLevels <- countryAbbrevsAlphU # Want only those countries for which U is known
-print(factorLevels)
       indexCond <- list(countryOrderForGraphsU) # Orders as US, UK, JP
     } else {
       # Use data from all countries, because all countries have Q and X data.
