@@ -164,6 +164,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Reese: Add food energy intake for all countries from FAO}
 \item{Reese: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include the adjusted sankey diagram in the seminar}
+\item{Heun: Add the insight that for indexed factors of production $q$ and $x$, there is small difference in absolute magnitude and even smaller difference in indexed values unless $f_{exergy-allocation}$ is significantly different from 1.0 \emph{and} there is a shift in energy input to the economy.}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -549,7 +550,7 @@ Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including in
 createHistoricalLatticeGraph()
 @
 
-Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD} -- \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
+Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of natural gas and coal consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD} -- \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -561,6 +562,7 @@ Each of the economic growth models discussed in Section \ref{sec:Prod_Func_Forms
 
 %++++++++++++++++++++++++++++++
 \subsection{Cobb-Douglas Models}
+\label{sec:CD_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
 The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb-Douglas production function was reparameterized as
@@ -569,7 +571,7 @@ The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb
   y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. $\lambda$ and $\alpha$ were estimated for all countries in Equation \ref{eq:CD_reparam} by the \citet{R} function \texttt{nls}. By constraining $\alpha \in [0,1]$ during the fitting process, we ensure that $\beta \in [0,1]$ also. ****** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. *********** The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. ****** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. *********** $\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}.  The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
 
 <<CD_Params_Graph, fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
@@ -631,45 +633,38 @@ Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas
 createCDLatticeGraph()
 @
 
-************* Matt ended here. ****************
-
 %++++++++++++++++++++++++++++++
 \subsection{CES Models}
+\label{sec:CES_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-\citet{Stern:2012ey} developed a CES model of the form\footnote{The CES equation in \citet{Stern:2012ey} appears as
+% This bit about the Stern model is commented out for now. I'm leaving it in the paper in case we decide to use it later.
+% \citet{Stern:2012ey} developed a CES model of the form\footnote{The CES equation in \citet{Stern:2012ey} appears as
+% 
+% \begin{equation*} \label{eq:Stern_CES_model}
+%   y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+%       + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+%       ^{\frac{\sigma}{\sigma - 1}},
+% \end{equation*}
+% 
+% but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms is erroneous due to $y_{\mathrm{t_0}} \neq 1$.} 
+% 
+% 
+% \begin{equation} \label{eq:Stern_CES_model_in_print}
+%   y = \left\{ (1-\gamma_E) \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
+%       + (\gamma_E) \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
+%       ^{\frac{\sigma}{\sigma - 1}},
+% \end{equation}
+% 
+% \noindent where $e$ is one of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
 
-\begin{equation*} \label{eq:Stern_CES_model}
-  y = \left\{ (1-\gamma_E)^{1/\sigma} \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
-      + (\gamma_E)^{1/\sigma} \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
-      ^{\frac{\sigma}{\sigma - 1}},
-\end{equation*}
+The CES model without and with energy is given by Equations \ref{eq:CES} and \ref{eq:CESe}, respectively. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} was used to estimate parameters $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. ********* More details here about which algorithms were used, etc. Complete after our work this summer. ******* Elasticities of substitution $\sigma_1$ and $\sigma$ (see Section \ref{sec:CES}) were estimated by the delta method (****** is this correct? Ask Pruim. ******).
 
-but the $1/\sigma$ exponent on the $(1-\gamma_E)$ and $\gamma_E$ terms is erroneous due to $y_{\mathrm{t_0}} \neq 1$.} 
-
-
-\begin{equation} \label{eq:Stern_CES_model_in_print}
-  y = \left\{ (1-\gamma_E) \left[ k^{\alpha} \left( \mathrm{e}^{\lambda_L(t-t_0)} l \right)^{\beta} \right]^{\frac{\sigma-1}{\sigma}}   
-      + (\gamma_E) \left[ \mathrm{e}^{\lambda_E(t-t_0)} e \right]^{\frac{\sigma - 1}{\sigma}}   \right\}
-      ^{\frac{\sigma}{\sigma - 1}},
-\end{equation}
-
-\noindent where $e$ is one of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
-
-The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the form (among others)
-
-\begin{equation} \label{eq:micEconCES_model}
-  y = \gamma \mathrm{e}^{\lambda(t-t_0)}  
-      \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-              + (1-\delta) e^{-\rho} \right\}^{-1/\rho}.
-\end{equation}
-
-
-\citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
-
-\begin{quote}
-\ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
-\end{quote}
+% \citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+% 
+% \begin{quote}
+% \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
+% \end{quote}
 
 Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
 
@@ -677,7 +672,7 @@ Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for
 createCESParamsGraph(energyType=NA)
 @
 
-Similar to the analysis of the Cobb-Douglas model above, we make partial residual plots for the CES model in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
+Similar to the analysis of the Cobb-Douglas model in Section \ref{sec:CD_Parameter_Estimation}, we make partial residual plots for the CES model (without energy) in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
 
 <<CESPartialResidualsQ, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).">>=
 createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
@@ -716,19 +711,20 @@ createCESLatticeGraph()
 @
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Confidence Intervals for Cobb-Douglas and CES Models}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%++++++++++++++++++++++++++++++
+\subsection{Confidence Intervals for Cobb-Douglas and CES Energy Parameters}
+\label{sec:CI_for_CD_and_CES}
+%++++++++++++++++++++++++++++++
 
-The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CD_With_Energy}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point, the locus of points where the 95\% confidence interval on $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
+The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CDe}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point (its two-letter abbreviation; see Table \ref{tab:Economy_Examples}), the locus of points where the 95\% confidence interval for $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
 
 The left column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the left of the line, while only a few are below and to the right.
 
-For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\delta$ indicates the importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. In a manner similar to $\gamma$ for the Cobb-Douglas model, we note that if the combination of $\delta$ and its confidence interval for a given economy is below and to the left of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
+For the CES model (Equation \ref{eq:CESe}), the parameter $\delta$ indicates the importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. In a manner similar to $\gamma$ for the Cobb-Douglas model, we note that if the combination of $\delta$ and its confidence interval for a given economy is below and to the left of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
 
 The middle column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the right of the line, while only a few are below and to the left.
 
-For the CES model (Equation \ref{eq:micEconCES_model}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose combination of  $\sigma$ and its confidence interval is below and to the left of the lines in the rightmost graphs of Figure \ref{fig:CIvsParam_Lattice_Graph} we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of the line, we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
+For the CES model (Equation \ref{eq:CESe}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose combination of  $\sigma$ and its confidence interval is below and to the left of the lines in the rightmost graphs of Figure \ref{fig:CIvsParam_Lattice_Graph} we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of the line, we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
 
 The right column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\sigma}$ vs. $\sigma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that energy ($e$) unambiguously complements capital stock and labor ($kl$) for most economies.
 
@@ -740,9 +736,12 @@ Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or
 
 *********** Martin: Need additional interpretation here. *******************
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{LINEX Models}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+************* Matt ended here. ****************
+
+%++++++++++++++++++++++++++++++
+\subsection{LINEX Models}
+\label{sec:LINEX_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
 
 The LINEX model has the form
 
