@@ -736,22 +736,12 @@ Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or
 
 *********** Martin: Need additional interpretation here. *******************
 
-************* Matt ended here. ****************
-
 %++++++++++++++++++++++++++++++
 \subsection{LINEX Models}
 \label{sec:LINEX_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-The LINEX model has the form
-
-\begin{equation} \label{eq:LINEX_model}
-  y = \mathrm{e}^{\left[a_0 \left(2 - \frac{l + e}{k} \right) + a_0 c_t \left(\frac{l}{e} - 1 \right)\right]} \: e ,
-\end{equation}
-
-\noindent where $e$ is one of $q$, $x$, or $u$; $a_0$ and $c_t$ are fitting parameters; and $\mathrm{e}$ is the base of the natural logarithm.
-
-Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
+The LINEX model is given in Equation \ref{eq:LINEX}. Parameters $a_0$ and $c_t$ were estimated using the \texttt{nls} function in \texttt{R} \citep{R}. Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
 <<LINEXq_Params_Graph, fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="Q")
@@ -774,6 +764,8 @@ Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to his
 <<LINEX_GDP_Lattice_Graph, fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
 createLINEXLatticeGraph()
 @
+
+************* Matt ended here. ****************
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
