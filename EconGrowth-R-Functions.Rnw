@@ -17,7 +17,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************************************************************
   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
   tidy=FALSE,
@@ -245,17 +245,23 @@ replaceColName <- function(dataTable, factor, newName){
 ##
 covarianceTable <- function(countryAbbrev){
   data <- loadData(countryAbbrev)
-  # Grab only the data we want.
-  dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX)
-  names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
   if (countryAbbrev %in% countryAbbrevsU){
-    # Add U data only if we have it.
-    dataForCovar <- cbind(dataForCovar, data$iU)
+    # Calculate covariances among the typical variables.
+    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX, data$iU)
+    # Calculates the covariances among y, k. l, q, x, and u using all available data, namely,
+    # 1980-2011 for covariances among y, k, l, q, and x for developed economies
+    # 1980-2000 for covariances involving u for developed economies
+    # 1991-2011 for covariances among y, k, l, q, and x for developing economies
+    covarResults <- data.frame(cor(x=dataForCovar, use="pairwise.complete.obs"))
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
+  } else {
+    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX)
+    covarResults <- cor(dataForCovar)
+    names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
   }
-  covarResults <- cor(dataForCovar)
   colnames(covarResults) <- names
   rownames(covarResults) <- names
+  # Now make an xtable so it displays nicely
   covarXtable <- xtable(covarResults, 
                       caption=paste(countryAbbrev, "covariance table."), 
                       label=paste("tab:Covariance_", countryAbbrev, sep=""))
