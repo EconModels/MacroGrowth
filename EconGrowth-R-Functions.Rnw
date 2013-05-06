@@ -252,6 +252,7 @@ covarianceTable <- function(countryAbbrev){
     # 1980-2011 for covariances among y, k, l, q, and x for developed economies
     # 1980-2000 for covariances involving u for developed economies
     # 1991-2011 for covariances among y, k, l, q, and x for developing economies
+    # The key here is the use="pairwise.complete.obs" argument.
     covarResults <- data.frame(cor(x=dataForCovar, use="pairwise.complete.obs"))
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
   } else {
