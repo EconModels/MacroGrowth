@@ -170,7 +170,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item{Write up the decisions about parameter estimation for the CES production function fits}
       \item{Revisit my assumptions for the CES production function (with energy) for each country.}
       \item{Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix}
-      \item{Add CES rows to the AIC table. Code is in the \texttt{createAICTable} function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the cesEst function.}
+      \item{Add CES rows to the AIC table. Code is in the \texttt{createAICTable} function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the \texttt{cesEst} function.}
       \item{\st{Create parameter graphs for each country}}
       \item{\st{Parameter tables for each energy type in the appendix}}
       \item{\st{GDP comparison graph}}
@@ -796,11 +796,11 @@ The evidence above leads to a re-conceptualization of the relationships among en
 
 ****************** Edit conclusion after we finish the statistical studies. *********************
 
-We found that statistical properties of historical economic data (e.g., covariances) and statistical properties of fitting parameters in production functions (e.g., confidence intervals) are extremely useful for interpreting historical economic data and growth model results. We know of no previous energy-economic studies that presented these statistical properties, and we presume that energy-augmentation of production functions has been done in the literature without regard to whether it is statistically meaningful to do so. That different authors can find good correlation between model predictions and historical data with very different growth model coefficients is a result of the heretofore unseen large confidence intervals on the fitting parameters. As a consequence, economic growth models that assume very different relationships among capital stock, labor, and energy can all be successful in matching historical data. The production function is a canvas upon which investigators can paint their preconceived vision of the importance (or not) of energy for ecnomic growth.
+We claim that statistical properties (e.g., covariances) of historical economic data and statistical properties (e.g., confidence intervals) of production function fitting parameters are extremely useful for interpreting historical economic data and growth model results. We know of no previous studies on the role of energy in the economy that presented these statistical properties, and we presume that energy-augmentation of production functions has been done in the literature without regard to whether it is statistically meaningful to do so. That different authors can find good correlation between model predictions and historical data with very different growth model coefficients is a result of the heretofore unseen large confidence intervals on the fitting parameters. As a consequence, economic growth models that assume very different relationships among capital stock, labor, and energy can all be successful in matching historical data. In short, the production function is a canvas upon which investigators can paint their preconceived vision of the importance (or not) of energy for economic growth.
 
-To break free of this problem, a new way of conceptualizing the relationships among capital stock, labor, and energy is required. Our analysis above indicates that energy is unequivocally complementary to the capital stock/labor pair for many types of economies. We agree with K\"{u}mmel that energy is required to form and maintain capital stock, and that energy is required to sustain labor. (And, for that matter, that labor is required to operate capital stock.) I.e., energy is already always \emph{embedded within} capital stock and labor. We posit that the complementarity between ($kl$) and ($e$) shown by the energy-augmented CES production function is due to the embeddedness of energy within the traditional factors of production, capital stock and labor.
+To break free from this problem, a new way of conceptualizing the relationships among capital stock, labor, and energy is required. Our analysis above indicates that energy is unequivocally complementary to the capital stock/labor pair for many types of economies. We agree with K\"{u}mmel that energy is required to form and maintain capital stock, and that energy is required to sustain labor. (And, for that matter, we agree that labor is required to operate capital stock.) In other words, energy is already, always \emph{embedded within} capital stock and labor. We posit that the complementarity between ($kl$) and ($e$) shown by the energy-augmented CES production function is due to the embeddedness of energy within the traditional factors of production, capital stock and labor.
 
-As a consequence, production functions that use only energy and production functions that use the capital stock/labor pair are both successful in predicting economic growth. The augmentation of capital stock/labor production functions with energy is both unwarranted and unnecessary.
+The foregoing discussion means that production functions with either (a) energy only (such as the LINEX model) or (b) capital stock/labor only (such as the Cobb-Douglas and CES models without energy) can both be successful in predicting economic growth. But, the embedded nature of energy in capital stock and labor means that augmenting a capital stock/labor only production function with energy is redundant and unnecessary, and, therefore, unwarranted.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -814,7 +814,8 @@ Funding for Caleb Reese and Lucas Timmer was provided by the Jack and Lois Kuipe
 \section*{Reproducible Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreadsheets, \texttt{R} code \citep{R}, and other materials associated with this paper can be found at\\*
+\protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
