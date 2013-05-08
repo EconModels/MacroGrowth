@@ -161,7 +161,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \section*{To-do List}
 \begin{itemize}
 \item{Reese: Review EIA IES database for any revisions to historical data}
-\item{Reese: Add food energy intake for all countries from FAO}
+\item{Reese: Add food energy intake for all countries from FAO. We won't assume that the US caloric intake applies to all coutries.}
 \item{Reese: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include Caleb's adjusted sankey diagram in the seminar}
 \item{Heun: Add CES production function fits}
@@ -193,8 +193,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item{ZM: upper bound on $c_t$}
       \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
-\item{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}}
 \item{\st{Heun: Add the insight that for indexed factors of production $q$ and $x$, there is small difference in absolute magnitude and even smaller difference in indexed values unless $f_{exergy-allocation}$ is significantly different from 1.0 \emph{and} there is a shift in energy input to the economy.}}
 \item{\st{Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command? Partially complete: need to work on the $u$ data only.}}
 \item{\st{Heun: Ensure consistent x and y axis limits in partial residual plots}}
@@ -364,7 +364,7 @@ In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CD
 \label{sec:Quantification_of_Energy}
 %++++++++++++++++++++++++++++++
 
-The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that could be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir (typically the surrounding environment). ******** Caleb: Is this how Ayres and Warr use the term ``exergy''? ************ Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of their ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Both exergy ($X$), and to a greater extent, useful work ($U$) quantifications of energy are intended to account for the usefulness of energy for generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used in energy conversion processes.
+The literature shows three quantifications of energy ($E$) used in energy-augmented production functions: thermal energy ($Q$), exergy ($X$), and useful work ($U$). Thermal energy ($Q$) is the heat content of an energy carrier. Exergy ($X$) is the maximum useful work that could be extracted from an energy carrier by a process that brings the system into equilibrium with a heat reservoir, typically the surrounding environment \citep[p.~78]{Ayres:2010ug}. Like \citeauthor{Ayres:2010ug}, we use chemical exergy (as opposed to thermal exergy or mechanical exergy) as our quantification for exergy ($x$). Useful work ($U$) includes the direct energy that goes into an economy, including work from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), but useful work ($U$) alters the size and shape of materials, keeps the lights on, and transports goods to consumers. Not all forms of energy are created equal in terms of their ability to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. Both exergy ($X$), and to a greater extent, useful work ($U$) quantifications of energy are intended to account for the usefulness of energy for generating economic activity, thereby reflecting the ``quality'' of each energy type and the efficiency of machines and devices typically used in energy conversion processes.
 
 Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Ayres:2003ec} introduced the idea that exergy ($x$) and useful work ($u$) were important factors of production. 
 
@@ -449,9 +449,9 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
   Q_{fuel} = C_{fuel}h_{fuel}
 \end{equation}
 
-\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67 kg/m$^3$ **** Caleb: verify this number and source ****) was obtained from the \citet{FAO:2013a}.
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67~kg/m$^3$ **** Caleb: verify this number and source ****) was obtained from the \citet{FAO:2013a}.
 
-Yearly consumption rates ($C_{fuel}$) for all economies were obtained from the \citet{EIA:2013a} for coal, oil and petroleum, and dry natural gas and natural gas plant liquids. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
+Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, dry natural gas and natural gas plant liquids, and biofuels (ethanol and biodiesel) were obtained from the \citet{EIA:2013a} for all economies. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. We used 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg \citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol and corn-based biodiesel, respectively. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
 For renewable and nuclear energy sources, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was unnecessary.
 
@@ -461,7 +461,7 @@ Animal and human muscle work was estimated using an approach similar to \citet{A
   Q_{animals} = Q_{m,horse}N_{horses} + Q_{m,mule}N_{mules}
 \end{equation}
 
-\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 7,215 kcal/day-mule) were taken from \citet{Warr:2012a} for horses and mules and represent the amount of energy used by animals for a day of work. (******** Caleb: Perhaps this should be ``represent the amount of energy in the feed consumed by animals for a day of work.'' *********) The $Q_m$ values are assumed constant for all countries and years. The number of horses and mules for each economy was taken from the ``Live Animals'' time series in the FAO Statistics Database \citep{FAO:2013a} ******** Get a table number from Caleb. *************.
+\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) and $N$ is the number of animals. Metabolizable energy values ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 7,215 kcal/day-mule) were taken from \citet{Warr:2012a}. $Q_m$ represents the amount of energy in the feed consumed by animals for a day of work, and they are assumed constant for all countries and years. The number of horses and mules for each economy was taken from the ``Live Animals'' section of the FAO Statistics online database \citep{FAO:2013a}.
 
 Human muscle power was calculated in a similar manner:
 
