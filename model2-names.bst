@@ -611,6 +611,8 @@ FUNCTION {format.btitle}
 { title "title" bibinfo.check
   duplicate$ empty$ 'skip$
     {
+    %% Next line added by M.K. Heun on 13 May 2013 to obtain italicized book titles.
+    "\emph{" swap$ * "}" *
     }
   if$
 }
@@ -861,6 +863,8 @@ FUNCTION {article}
   crossref missing$
     {
       journal
+      %% The following line was added by M.K. Heun on 13 May 2013 to italicize journal titles.
+      "\emph{" swap$ * "}" *
       "journal" bibinfo.check
       "journal" output.check
       add.blank
