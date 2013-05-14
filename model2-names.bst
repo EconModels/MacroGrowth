@@ -612,6 +612,7 @@ FUNCTION {format.btitle}
   duplicate$ empty$ 'skip$
     {
     %% Next line added by M.K. Heun on 13 May 2013 to obtain italicized book titles.
+    %% See http://tex.stackexchange.com/questions/67724/is-it-possible-to-italicize-journal-names-and-book-titles-through-the-bst-file/
     "\emph{" swap$ * "}" *
     }
   if$
@@ -864,6 +865,7 @@ FUNCTION {article}
     {
       journal
       %% The following line was added by M.K. Heun on 13 May 2013 to italicize journal titles.
+      %% See http://tex.stackexchange.com/questions/67724/is-it-possible-to-italicize-journal-names-and-book-titles-through-the-bst-file/
       "\emph{" swap$ * "}" *
       "journal" bibinfo.check
       "journal" output.check
