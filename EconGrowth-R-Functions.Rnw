@@ -101,7 +101,7 @@ scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 loadData <- function(countryAbbrev){
   # Read the data file as a table with a header.  
   fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
-  dataTable <- read.table(fileName, header = TRUE)
+  dataTable <- read.table(file=fileName, header=TRUE)
   return(dataTable)
 }
 
@@ -263,7 +263,7 @@ covarianceTable <- function(countryAbbrev){
   colnames(covarResults) <- names
   rownames(covarResults) <- names
   # Now make an xtable so it displays nicely
-  covarXtable <- xtable(covarResults, 
+  covarXtable <- xtable(x=covarResults, 
                       caption=paste(countryAbbrev, "covariance table."), 
                       label=paste("tab:Covariance_", countryAbbrev, sep=""))
   return(covarXtable)
