@@ -843,9 +843,9 @@ In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreads
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$). Covariances are calculated for the following years: 
 \begin{itemize}
-  \item{1980-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for\\*developed economies;}
+  \item{1980-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for developed\\*economies;}
   \item{1980-2000 for covariances involving $u$ for developed economies; and}
-  \item{1991-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for\\*developing economies.}
+  \item{1991-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for developing\\*economies.}
 \end{itemize}
 
 <<Print_Covariance_Tables, results='asis', eval=TRUE>>=
