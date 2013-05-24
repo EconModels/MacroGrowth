@@ -143,7 +143,7 @@
 
 \begin{abstract}
 %% Text of abstract
-*********** Add abstract ***********
+**** Add abstract ****
 \end{abstract}
 
 \begin{keyword}
@@ -302,7 +302,7 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
 
 \citet{Ayres:2008cl} uses Equation \ref{eq:CDe} with exergy ($x$) and useful work ($u$) quantifications for $e$ to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with thermal energy quantification ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
 
-**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
+**** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
 %------------------------------
 \subsubsection{Energy-augmented CES Production Function (CESe)} 
@@ -323,7 +323,7 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
 
-**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
+**** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
 %------------------------------
 \subsubsection{LINEX Production Function} 
@@ -359,7 +359,7 @@ A third production function, the LINear EXponential (LINEX) function \citep{Kumm
 
 In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations \ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technological progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
 
-**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
+**** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
 %++++++++++++++++++++++++++++++
 \subsection{Quantification of Energy} 
@@ -370,7 +370,7 @@ The literature shows three quantifications of energy ($E$) used in energy-augmen
 
 Most energy economists use thermal energy ($q$) for the energy factor of production ($e$) in energy-augmented production functions, including \citet{Stern:2012ey}, \citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and \citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. \citet{Ayres:2003ec} introduced the idea that exergy ($x$) and useful work ($u$) were important factors of production. 
 
-**************** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ********************
+**** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
 We know of no statistically-rigorous comparisons of the predictive ability of each energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($Q$, $X$, and $U$) for developed economies and thermal energy ($Q$) and exergy ($X$) for all other economies.
 
@@ -381,7 +381,7 @@ We know of no statistically-rigorous comparisons of the predictive ability of ea
 
 In the energy-economic growth literature, the focus is almost exclusively on developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies.
 
-But, the nearly-complete focus on developed economies closes off the possibility of discovering any role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP ******* Martin: Is this the right way to describe the petrol economies? *********); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels ******* Martin: Is this the right way to describe the LDC economies? *********). (See Table \ref{tab:Economy_Examples}.)
+But, the nearly-complete focus on developed economies closes off the possibility of discovering any role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP **** Martin: Is this the right way to describe the petrol economies? ****); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels **** Martin: Is this the right way to describe the LDC economies? ****). (See Table \ref{tab:Economy_Examples}.)
 
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
@@ -451,7 +451,7 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
   Q_{fuel} = C_{fuel}h_{fuel}
 \end{equation}
 
-\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67~kg/m$^3$ **** Caleb: verify this number and source ****) was calculated from ***** and *****, both obtained from the \citet{FAO:2013c}.
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67~kg/m$^3$ **** Caleb: verify this number and source ****) was calculated from **** and ****, both obtained from the \citet{FAO:2013c}.
 
 Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, dry natural gas and natural gas plant liquids, and biofuels (ethanol and biodiesel) were obtained from the \citet{EIA:2013a} for all economies. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. We used lower (net) heating values of 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg \citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol and corn-based biodiesel, respectively. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
@@ -514,7 +514,7 @@ To calculate the exergy of animal and human muscle power, the food-to-work conve
   X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse/intake} Q_{workers}
 \end{equation}
 
-\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi} **** Caleb needs to find a detailed source (table, equation, number, page number) in Wirsenius for this approach *****. $f_{enduse/intake}$ varies by country (Table \ref{tab:f_enduse_intake}). A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 0.41\% for China in 1992.}
+\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi} **** Caleb needs to find a detailed source (table, equation, number, page number) in Wirsenius for this approach ****. $f_{enduse/intake}$ varies by country (Table \ref{tab:f_enduse_intake}). A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 0.41\% for China in 1992.}
 
 \begin{table} \caption{Food enduse-to-intake ratios ($f_{enduse/intake}$) for all countries.} \label{tab:f_enduse_intake}
   \begin{center}
@@ -546,7 +546,7 @@ Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database su
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}. **************** Discuss the covariances in more detail after we finalize the covariances for U. *******************
+Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}. **** Discuss the covariances in more detail after we finalize the covariances for U. ****
 
 <<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
@@ -573,7 +573,7 @@ The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb
   y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. ****** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. *********** $\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}.  The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. **** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. **** $\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}.  The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
@@ -603,7 +603,7 @@ To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the ene
 
 The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
-******** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. *************
+**** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. ****
 
 <<CDeGridLattice, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas model with thermal energy ($q$).">>=
 cdeGridLattice(energyType="Q")
@@ -660,7 +660,7 @@ createCDLatticeGraph()
 % 
 % \noindent where $e$ is one of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
 
-The CES model without and with energy is given by Equations \ref{eq:CES} and \ref{eq:CESe}, respectively. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} was used to estimate parameters $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. ********* More details here about which algorithms were used, etc. Complete after our work this summer. ******* Elasticities of substitution $\sigma_1$ and $\sigma$ (see Section \ref{sec:CES}) were estimated by the delta method (****** is this correct? Ask Pruim. ******).
+The CES model without and with energy is given by Equations \ref{eq:CES} and \ref{eq:CESe}, respectively. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} was used to estimate parameters $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. **** More details here about which algorithms were used, etc. Complete after our work this summer. **** Elasticities of substitution $\sigma_1$ and $\sigma$ (see Section \ref{sec:CES}) were estimated by the delta method (**** is this correct? Ask Pruim. ****).
 
 % \citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
 % 
@@ -736,7 +736,7 @@ CIvsParamLattice(countryAbbrevScaling=0.6)
 
 Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or $u$), there are few economies for which we can say with high confidence (at the 95\% level) that energy plays a significant role in economic growth. However, in seeming contradiction, results for the CES model indicate that energy complements capital stock and labor, indicating that energy ($e$) is essential for capital stock ($k$) and labor ($l$) to generate economic growth. One possible explanation for this apparent contradiction is to consider energy as embedded within capital stock and labor: it takes energy to make both captial stock and labor available to generate economic growth.
 
-*********** Martin: Need additional interpretation here. *******************
+**** Martin: Need additional interpretation here. ****
 
 %++++++++++++++++++++++++++++++
 \subsection{LINEX Models}
@@ -773,7 +773,7 @@ createLINEXLatticeGraph()
 \label{sec:Implications}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-****** This section needs to be re-evaluated after the statistical work is tightened up during Summer 2013. ******
+**** This section needs to be re-evaluated after the statistical work is tightened up during Summer 2013. ****
 
 The above analysis points to several implications.
 
@@ -785,12 +785,12 @@ The above analysis points to several implications.
   \item{Figure \ref{fig:CIvsParam_Lattice_Graph} shows that important energy parameters for both the energy-augmented Cobb-Douglas and CES production functions ($\gamma$ and $\delta$, respectively) have large confidence intervals such that we are unable to say (at the 95\% confidence level) that energy is an important factor for economic growth, vis-\`{a}-vis capital stock ($k$) or labor ($l$) for most economies.}
   \item{Figure \ref{fig:CIvsParam_Lattice_Graph} indicates that energy (in all quantifications: $q$, $x$, and $u$) is complementary to capital stock ($k$) and labor ($l$) for producing economic growth, according to the CES model.}
   \item{Figures \ref{fig:LINEXq_Params_Graph}--\ref{fig:LINEXu_Params_Graph} indicate that LINEX model fitting parameters $a_0$ and $c_t$ are significant (at the 95\% confidence level) for nearly all countries. Figure \ref{fig:LINEX_GDP_Lattice_Graph} shows that the LINEX production function provides reasonably good fits to historical data. This evidence indicates that the LINEX production function (with energy ($e$) as its only factor of production) is a reasonable replacement the Cobb-Douglas and CES production functions which have capital stock ($k$) and labor ($l$) as factors of production.}
-  \item{****** Discuss the AIC values for each of the model types. It could happen that the LINEX models have a higher AIC value than the CD or CES models. If so, that would mean that the LINEX model is actually preferred to the CD or CES models, primarily because it does a good-enough job of predicting economic output with fewer adjustable parameters (2) compared to CD (2), CDe (3), CES (4), CESe (6). Discuss with Randy Pruim during Summer 2013.}
+  \item{**** Discuss the AIC values for each of the model types. It could happen that the LINEX models have a higher AIC value than the CD or CES models. If so, that would mean that the LINEX model is actually preferred to the CD or CES models, primarily because it does a good-enough job of predicting economic output with fewer adjustable parameters (2) compared to CD (2), CDe (3), CES (4), CESe (6). Discuss with Randy Pruim during Summer 2013.}
 \end{itemize}
 
 The evidence above leads to a re-conceptualization of the relationships among energy, capital stock, and labor: energy is \emph{embedded within} capital stock and labor, and, therefore, it is both unwarranted and unnecessary to include \emph{both} energy ($e$) and the capital stock/labor pair ($kl$) in a production function. The empirical evidence indicates that \emph{both} (a) capital stock/labor production functions (Cobb-Douglas and CES without energy) and (b) an energy-only production function (LINEX) provide a reasonable models for economic growth.
 
-************* Martin needs to flesh out the above section. **************
+**** Martin needs to flesh out the above section. ****
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -798,7 +798,7 @@ The evidence above leads to a re-conceptualization of the relationships among en
 \label{sec:Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-****************** Edit conclusion after we finish the statistical studies. *********************
+**** Edit conclusion after we finish the statistical studies. ****
 
 We claim that statistical properties (e.g., covariances) of historical economic data and statistical properties (e.g., confidence intervals) of production function fitting parameters are extremely useful for interpreting historical economic data and growth model results. We know of no previous studies on the role of energy in the economy that presented these statistical properties, and we presume that energy-augmentation of production functions has been done in the literature without regard to whether it is statistically meaningful to do so. That different authors can find good correlation between model predictions and historical data with very different growth model coefficients is a result of the heretofore unseen large confidence intervals on the fitting parameters. As a consequence, economic growth models that assume very different relationships among capital stock, labor, and energy can all be successful in matching historical data. In short, the production function is a canvas upon which investigators can paint their preconceived vision of the importance (or not) of energy for economic growth.
 
@@ -811,7 +811,7 @@ The foregoing discussion means that production functions with either (a) energy 
 \section*{Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Funding for Caleb Reese and Lucas Timmer was provided by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Partial funding for Martin de Wit was provided by the South African National Research Foundation (NRF).\footnote{Any opinion, findings, and conclusions or recommendations expressed herein are those of the authors, and, therefore, NRF does not accept any liability in regard thereto.} The authors are grateful to Benjamin S. Warr (INSEAD) for providing the REXS database \citep{Warr:2012a}. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
+Funding for Caleb Reese and Lucas Timmer was provided by the Jack and Lois Kuipers Applied Mathematics Endowment and the Calvin College Alumni Association. Partial support for Matthew Kuperus Heun was provided by a Calvin College Research Followship. Partial funding for Martin de Wit was provided by the South African National Research Foundation (NRF).\footnote{Any opinion, findings, and conclusions or recommendations expressed herein are those of the authors, and, therefore, NRF does not accept any liability in regard thereto.} The authors are grateful to Benjamin S. Warr (INSEAD) for providing the REXS database \citep{Warr:2012a}. The authors thank Loren L. Heun (Western Michigan University) for insightful critique of the statistical analyses presented herein.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -843,9 +843,9 @@ In the spirit of Reproducible Research \citep{Gandrud:2013vx}, all data, spreads
 
 The following tables show covariances among GDP ($y$) and factors of production ($k$, $l$, $q$, $x$, and $u$). Covariances are calculated for the following years: 
 \begin{itemize}
-  \item{1980-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for developed economies;}
+  \item{1980-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for\\*developed economies;}
   \item{1980-2000 for covariances involving $u$ for developed economies; and}
-  \item{1991-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for developing economies.}
+  \item{1991-2011 for covariances among $y$, $k$, $l$, $q$, and $x$ for\\*developing economies.}
 \end{itemize}
 
 <<Print_Covariance_Tables, results='asis', eval=TRUE>>=
@@ -870,7 +870,7 @@ printCovarTable(countryAbbrev="TZ"); printCovarTable(countryAbbrev="ZM")
 \subsection{Single-factor Models}
 %++++++++++++++++++++++++++++++
 
-****** This subsection should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ********
+**** This subsection should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ****
 
 The following tables provide results for parameters in single-factor models.
 
@@ -943,7 +943,7 @@ print(createAICTable(),
 \setcounter{equation}{0} % Restarts equation counter to 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-****** This section should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ********
+**** This section should be either (a) deleted or (b) moved into the main body of the paper. I would prefer to delete it on the grounds that single-factor models are not often used in the literature. However, I want to talk with Martin about this before making the decision.  So, I'm parking it here for now. --Matt. ****
 
 We begin by fitting single-factor economic models of the form
 
