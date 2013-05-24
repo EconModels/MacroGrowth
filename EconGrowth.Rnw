@@ -163,7 +163,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Reese: Review EIA IES database for any revisions to historical data}
 \item{Reese: Add food energy intake for all countries from FAO. We won't assume that the US caloric intake applies to all coutries.}
 \item{Reese: Fix the energy sankey diagram from the seminar}
-\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}}
+\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}}
 \item{Heun: Include Caleb's adjusted sankey diagram in the seminar}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
