@@ -451,7 +451,17 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
   Q_{fuel} = C_{fuel}h_{fuel}
 \end{equation}
 
-\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density (166.67~kg/m$^3$ **** Caleb: verify this number and source ****) was calculated from **** and ****, both obtained from the \citet{FAO:2013c}.
+\noindent where $C_{fuel}$ is the consumption rate of the fuel (in units of short tons/year for coal, barrels/year for oil and petroleum, ft$^3$/year for dry natural gas and natural gas plant liquids, and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, kJ/ft$^3$ for dry natural gas and natural gas plant liquids, and kJ/kg for biomass/fuel wood). Fuel wood density of 300~kg/m$^3$ was taken from \citet{Ragland:2013wp} at the low end of the range of density of dry wood and bark.
+
+
+
+
+
+
+
+
+
+
 
 Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, dry natural gas and natural gas plant liquids, and biofuels (ethanol and biodiesel) were obtained from the \citet{EIA:2013a} for all economies. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. We used lower (net) heating values of 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg \citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol and corn-based biodiesel, respectively. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
@@ -471,7 +481,7 @@ Human muscle power was calculated in a similar manner:
   Q_{workers} = Q_{m,workers} N_{workers}
 \end{equation}
 
-\noindent where the value of $Q_{m,workers}$ for the U.S. ($\sim$ 4200 kcal/day-worker) was taken from a time series of kcal/day-person for workers for 1980--2011 \citep{Warr:2012a}. $Q_{m,workers}$ for other countries was taken from the \citet[``\texttt{Dietary Energy Cons.~Countries}'' tab]{FAO:2013b}. The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section \ref{sec:Labor_Data}.
+\noindent where the value of $Q_{m,workers}$ is the ``the amount of food available for human consumption'' (i.e., at the wholesale level) taken from the \citet[``\texttt{Dietary~Energy~Cons.~Countries}'' tab]{FAO:2013b}. The value for $N_{workers}$ was obtained from the labor time series for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 %------------------------------
 \subsubsection{Exergy} 
@@ -514,9 +524,9 @@ To calculate the exergy of animal and human muscle power, the food-to-work conve
   X_{workers} = \eta_{food \rightarrow work,workers} f_{enduse/intake} Q_{workers}
 \end{equation}
 
-\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug}, an additional factor ($f_{enduse/intake}$) was included to account for workers' food energy that sustains the body's normal function as opposed to providing energy for physical labor \citep{Wirsenius:2000vi} **** Caleb needs to find a detailed source (table, equation, number, page number) in Wirsenius for this approach ****. $f_{enduse/intake}$ varies by country (Table \ref{tab:f_enduse_intake}). A similar enduse-to-intake ratio could also be applied to animal work, but it was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{enduse/intake}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 0.41\% for China in 1992.}
+\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug} and methodology from \citet{Warr:2012a}, an additional factor ($f_{intake/wholesale}$) was included to account for ``wastage and losses of food in the household, e.g. during storage, in preparation and cooking, as plate-waste, or quantities fed to domestic animals and pets'' \citep{FAO:2013b}. Values of $f_{intake/wholesale}$ were calculated from \citet[Table~3.3 for wholesale and Table~3.4 for intake]{Wirsenius:2000vi}. $f_{intake/wholesale}$ varies by country (Table \ref{tab:f_intake_wholesale}). A similar intake-to-wholesale ratio could also be applied to animal work, but data to calculate the ratio was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{intake/wholesale}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 0.41\% for China in 1992. It could be argued that $f_{intake/wholesale}$ for animals is likely to be closer to 1.0 than $f_{intake/wholesale}$ for humans.}
 
-\begin{table} \caption{Food enduse-to-intake ratios ($f_{enduse/intake}$) for all countries.} \label{tab:f_enduse_intake}
+\begin{table} \caption{Food intake-to-wholesale ratios ($f_{intake/wholesale}$) for all countries.} \label{tab:f_intake_wholesale}
   \begin{center}
     \begin{tabular}{r c c c c c c c c c}
       Country & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\
