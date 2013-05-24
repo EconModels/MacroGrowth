@@ -265,13 +265,13 @@ Neoclassical economic growth theory attributes output ($Y$) to factors of produc
   y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, with e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. $A$ is a unitless technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical progress term $A$, which is dimensionless but written in upper-case by convention.} Neoclassical economic growth theory as expressed in the Cobb-Douglas production function makes no attempt to describe the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation \ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in currency units, $L$ expressed in workers/year or work-hours/year, time ($t$) measured in years, with e being the base of the natural logarithm, and subscripts ``0'' indicating values at an initial year. $A$ is a unitless technological progress term, with $\lambda$ indicating the pace of technological progress (in units of year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by lower-case symbols ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional quantities are represented by upper-case symbols ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical progress term $A$, which is dimensionless but written in upper-case by convention.} Neoclassical economic growth theory as expressed in the Cobb-Douglas production function makes no attempt to describe the mechanisms by which technological progress ($A$) affects economic growth, nor does it attempt to describe how technological progress ($A$) might vary from one economy to the next. Mathematically, $A$ is a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, indicating constant returns to scale.
 
-As shown in Equation \ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, \citet{Benes:2012tm}, \citet{Kumhof:2012ua}, and others indicate that the importance of energy for economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
+As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not include an explicit term for the role of energy in economic growth. However, \citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, \citet{Benes:2012tm}, \citet{Kumhof:2012ua}, and others indicate that the importance of energy for economic growth may far outweigh its cost share in the economy. That neoclassical economic growth theory ignores energy is, therefore, cause for concern, and inquiry into the proper approach for including energy as a factor of production in economic growth modeling is both relevant and important.
 
 Some energy economists augment economic growth models by including energy as an additional (or the only) factor of production. However, there is little agreement on how this should be done. Neither the mathematical form of the energy-augmented production function nor the quantification of energy are consistent in the literature. There has been little empirical work assessing the predictive ability of various energy-augmented production functions for different types of economies. And, very few studies of the importance of energy in economic growth include rigorous statistical assessments of energy-related fitting parameters. This paper attempts to contribute to the literature by applying statistically rigorous methods along three coordinates of analysis: form of the energy augmented production function, energy quantification, and type of economy.
 
-The remainder of this paper is organized as follows. Section \ref{sec:Coordinates} discusses the coordinates of analysis described above. Section \ref{sec:Sources_of_Data} details sources of data and calculations to generate time series for economic output and factors of production. The procedures for and results from parameter estimation for the various production functions are discussed in Section \ref{sec:Parameter_Estimation}. Section \ref{sec:Implications} discusses implications of the parameter estimation results, and Section \ref{sec:Conclusion} concludes. An appendix provides details of all statistical results.
+The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} discusses the coordinates of analysis described above. Section~\ref{sec:Sources_of_Data} details sources of data and calculations to generate time series for economic output and factors of production. The procedures for and results from parameter estimation for the various production functions are discussed in Section~\ref{sec:Parameter_Estimation}. Section~\ref{sec:Implications} discusses implications of the parameter estimation results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details of all statistical results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coordinates of Analysis} 
@@ -292,7 +292,7 @@ In this paper, we assess three prominent energy-augmented production functions a
 \label{sec:CDe}
 %------------------------------
 
-Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
+Similar to Equation~\ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
 
 \begin{equation} \label{eq:CDe}
   y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
@@ -300,7 +300,7 @@ Similar to Equation \ref{eq:CD}, the energy-augmented Cobb-Douglas production fu
 
 \noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. The energy-augmented Cobb-Douglas production function is often assumed to have constant returns to scale for the three factors of production: $\alpha + \beta + \gamma = 1$.
 
-\citet{Ayres:2008cl} uses Equation \ref{eq:CDe} with exergy ($x$) and useful work ($u$) quantifications for $e$ to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with thermal energy quantification ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
+\citet{Ayres:2008cl} uses Equation~\ref{eq:CDe} with exergy ($x$) and useful work ($u$) quantifications for $e$ to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with thermal energy quantification ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
 
 **** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
@@ -319,7 +319,7 @@ Other energy economists use an energy-augmented Constant Elasticity of Substitut
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent Equation \ref{eq:CES} is a CES production function with capital stock ($k$) and labor ($l$) factors of production. Equation \ref{eq:CESe} augments Equation \ref{eq:CES} with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation \ref{eq:CES} is a degenerate form of Equation \ref{eq:CESe} where $\delta = 1$. The elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. 
+\noindent Equation~\ref{eq:CES} is a CES production function with capital stock ($k$) and labor ($l$) factors of production. Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} where $\delta = 1$. The elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. 
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
 
@@ -357,7 +357,7 @@ A third production function, the LINear EXponential (LINEX) function \citep{Kumm
 
 \noindent According to the LINEX model, an economy that can increase capital stock ($k$) without a commensurate increase in labor ($l$) and energy ($e$) will experience an increase in output ($y$) in excess of its increase of energy consumption ($e$), because $A$ will be greater than 1. Similarly, an economy benefits by increasing labor ($l$) without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an efficiency of using labor and energy to make capital available to the economy, and $\rho_l$ is an efficiency of using energy to make labor available to the economy. $a_0$ represents the overall importance of these efficiencies, and $c_t$ represents the relative importance of the labor efficiency term compared to the capital stock efficiency term. We treat $a_0$ and $c_t$ as fitting parameters; both are assumed constant with respect to time. 
 
-In contrast to both the Cobb-Douglas model (Equations \ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations \ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation \ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technological progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
+In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES} and \ref{eq:CESe}), the LINEX model (Equation~\ref{eq:LINEX}) accounts for efficiencies among capital, labor, and energy directly and, therefore, does not employ a time-dependent technological progress term ($A$). \citet{Kummel:2002tx} use the LINEX production function to describe economic output for the economies of the U.S., Japan, and Germany. \citet{Warr:2010ga} compare the LINEX production function with the Cobb-Douglas production function to assess economic growth for Austria, the United Kingdom, the United States, and Japan. 
 
 **** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
@@ -372,7 +372,7 @@ Most energy economists use thermal energy ($q$) for the energy factor of product
 
 **** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
-We know of no statistically-rigorous comparisons of the predictive ability of each energy quantification in the various types of production functions discussed in Section \ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($Q$, $X$, and $U$) for developed economies and thermal energy ($Q$) and exergy ($X$) for all other economies.
+We know of no statistically-rigorous comparisons of the predictive ability of each energy quantification in the various types of production functions discussed in Section~\ref{sec:Prod_Func_Forms}. We analyze all three quantifications of energy ($Q$, $X$, and $U$) for developed economies and thermal energy ($Q$) and exergy ($X$) for all other economies.
 
 %++++++++++++++++++++++++++++++
 \subsection{Economy Types} 
@@ -381,7 +381,7 @@ We know of no statistically-rigorous comparisons of the predictive ability of ea
 
 In the energy-economic growth literature, the focus is almost exclusively on developed economies from North America or Europe. Examples include \citet{Kummel:1980wx} applying LINEX to describe the West German economy, \citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, \citet{VanderWerf:2008tc} applying CES nesting variants to the 12 OECD countries, \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, \citet{Stern:2012ey} applying CES to describe the Swedish economy, and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, American, British, and Japanese economies.
 
-But, the nearly-complete focus on developed economies closes off the possibility of discovering any role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP **** Martin: Is this the right way to describe the petrol economies? ****); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels **** Martin: Is this the right way to describe the LDC economies? ****). (See Table \ref{tab:Economy_Examples}.)
+But, the nearly-complete focus on developed economies closes off the possibility of discovering any role that energy plays in the development process. In this paper we analyze at least two economies in each of the following four categories: Developed (technologically advanced with high standards of living), BRICS\footnote{Brazil, Russia, India, China, and South Africa} (rapid economic growth with standards of living below that of developed economies), Petrol (petroleum is a substantial source of GDP **** Martin: Is this the right way to describe the petrol economies? ****); and LDCs\footnote{Lesser Developed Countries} (living standards near subsistence levels **** Martin: Is this the right way to describe the LDC economies? ****). (See Table~\ref{tab:Economy_Examples}.)
 
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
@@ -408,7 +408,7 @@ But, the nearly-complete focus on developed economies closes off the possibility
 \label{sec:Sources_of_Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-To assess energy-augmented models of economic growth along the coordinates of analysis outlined in Section \ref{sec:Coordinates}, historical data for economic output ($Y$), capital stock ($K$), labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) are required. Subsections below describe sources for and calculations to obtain historical data. A final subsection presents the historical data in graphical form.
+To assess energy-augmented models of economic growth along the coordinates of analysis outlined in Section~\ref{sec:Coordinates}, historical data for economic output ($Y$), capital stock ($K$), labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) are required. Subsections below describe sources for and calculations to obtain historical data. A final subsection presents the historical data in graphical form.
 
 %++++++++++++++++++++++++++++++
 \subsection{Economic Output} 
@@ -438,7 +438,7 @@ The World Bank's World Development Indicators database \citep{WorldBankWDI:2013a
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
-To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2003ec, Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power was also included. Similar to the economic data discussed in Sections \ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011, with the exception of useful work data (1980--2000). For all other countries, we generated thermal energy and exergy data for 1991--2011. Details on each energy quantifications are given in subsections below.
+To account for all energy input to an economy, we summed consumption data for many energy sources, including coal, oil and petroleum products, dry natural gas and natural gas plant liquids, nuclear power generation, and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, and hydro). In the style of work by Warr and Ayres \citep{Ayres:2003ec, Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, energy from human and animal muscle power was also included. Similar to the economic data discussed in Sections~\ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, we generated energy data for developed countries from 1980--2011, with the exception of useful work data (1980--2000). For all other countries, we generated thermal energy and exergy data for 1991--2011. Details on each energy quantifications are given in subsections below.
 
 %------------------------------
 \subsubsection{Thermal Energy} 
@@ -465,7 +465,7 @@ Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
 
 Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, dry natural gas and natural gas plant liquids, and biofuels (ethanol and biodiesel) were obtained from the \citet{EIA:2013a} for all economies. Yearly average heat content data for coal, oil, and natural gas and natural gas plant liquids was obtained from the EIA for all economies. We used lower (net) heating values of 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg \citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol and corn-based biodiesel, respectively. Yearly consumption and heat content data for biomass/fuel wood was obtained from the ``Fuelwood'' time series of the FAO Statistics Database \citep{FAO:2013a}.
 
-For renewable and nuclear energy sources, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation \ref{eq:thermal_energy} was unnecessary.
+For renewable and nuclear energy sources, yearly electricity generation (in BTU/year) was available directly from the \citet{EIA:2013a} for all economies, so Equation~\ref{eq:thermal_energy} was unnecessary.
 
 Animal and human muscle work was estimated using an approach similar to \citet{Ayres:2010ug}, using some data from Warr's REXS database \citep{Warr:2012a} and results from \citet{Wirsenius:2000vi}. For animal work, our analysis was restricted to draught animals (horses and mules). Muscle work from animals ($Q_{animals}$) was calculated using
 
@@ -488,7 +488,7 @@ Human muscle power was calculated in a similar manner:
 \label{sec:X_Data}
 %------------------------------
 
-Exergy ($X$), expressed in TJ/year, was calculated by multiplying the thermal energy ($Q$) values discussed in Section \ref{sec:Q_Data} by a unitless exergy-to-thermal-energy allocation factor ($f_{exergy-allocation}$) shown in Table \ref{tab:Exergy_Allocation}.
+Exergy ($X$), expressed in TJ/year, was calculated by multiplying the thermal energy ($Q$) values discussed in Section~\ref{sec:Q_Data} by a unitless exergy-to-thermal-energy allocation factor ($f_{exergy-allocation}$) shown in Table~\ref{tab:Exergy_Allocation}.
 
 \begin{equation} \label{eq:exergy}
   X_{fuel} = f_{exergy-allocation} Q_{fuel}
@@ -524,7 +524,7 @@ To calculate the exergy of animal and human muscle power, the food-to-work conve
   X_{workers} = \eta_{food \rightarrow work,workers} f_{intake/wholesale} Q_{workers}
 \end{equation}
 
-\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug} and methodology from \citet{Warr:2012a}, an additional factor ($f_{intake/wholesale}$) was included to account for ``wastage and losses of food in the household, e.g. during storage, in preparation and cooking, as plate-waste, or quantities fed to domestic animals and pets'' \citep{FAO:2013b}. Values of $f_{intake/wholesale}$ were calculated from \citet[Table~3.3 for wholesale and Table~3.4 for intake]{Wirsenius:2000vi}. $f_{intake/wholesale}$ varies by country (Table \ref{tab:f_intake_wholesale}). A similar intake-to-wholesale ratio could also be applied to animal work, but data to calculate the ratio was unavailable from \citet{Wirsenius:2000vi}.\footnote{The error in exergy caused by neglecting $f_{intake/wholesale}$ for animals is very small, because animal muscle exergy is a small fraction of the total energy supply to any economy, with a maximum of 0.41\% for China in 1992. It could be argued that $f_{intake/wholesale}$ for animals is likely to be closer to 1.0 than $f_{intake/wholesale}$ for humans.}
+\noindent $\eta_{food \rightarrow work, animals}$ and $\eta_{food \rightarrow work, workers}$ are animal and worker efficiency of converting food into energy, respectively. The animal feed-to-work conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) was taken from \citet{Warr:2012a} and assumed equal across all economies. The food-to-work efficiency for workers ($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from \citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug} and methodology from \citet{Warr:2012a}, an additional factor ($f_{intake/wholesale}$) was included to account for ``wastage and losses of food in the household, e.g. during storage, in preparation and cooking, as plate-waste, or quantities fed to domestic animals and pets'' \citep[\texttt{notes} tab]{FAO:2013b}. Values of $f_{intake/wholesale}$ were calculated from \citet[Table~3.3 for wholesale and Table~3.4 for intake]{Wirsenius:2000vi}. $f_{intake/wholesale}$ varies by country as shown in Table~\ref{tab:f_intake_wholesale}. A similar intake-to-wholesale ratio could also be applied to animal work, but data to calculate the ratio was unavailable from \citet{Wirsenius:2000vi}, and $f_{intake/wholesale,animals}$ is assumed to be unity.\footnote{The error in total exergy input to any economy caused by assuming $f_{intake/wholesale,animals} = 1.0$ is very small, because animal muscle exergy is a small fraction of the total exergy supply to any economy, with a maximum of 0.41\% for China in 1992. It could also be argued that $f_{intake/wholesale, animals}$ is likely to be closer to unity than $f_{intake/wholesale, workers}$.}
 
 \begin{table} \caption{Food intake-to-wholesale ratios ($f_{intake/wholesale}$) for all countries.} \label{tab:f_intake_wholesale}
   \begin{center}
@@ -547,22 +547,22 @@ The conversion of a raw energy carrier (e.g., coal) into productive energy for a
   U = \sum_i{\varepsilon_i \phi_i X}
 \end{equation}
 
-\noindent where the subscript $i$ indicates the energy enduse, $\varepsilon_i$ is the efficiency of converting exergy into useful energy for each enduse, and $\phi_i$ gives the fraction of exergy input to an economy that goes toward the i$^\mathrm{th}$ enduse.
+\noindent where the subscript $i$ indicates the energy enduse, $\varepsilon_i$ is the efficiency of converting exergy into useful energy for each enduse, and $\phi_i$ gives the fraction of exergy input to an economy that goes toward the $i^\mathrm{th}$ enduse.
 
-Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section \ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, and we used data from the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
+Values of $\varepsilon_i$ and $\phi_i$ were calculated from the REXS database supplied by \citet{Warr:2012a}. Values of $X$ were calculated by methods discussed in Section~\ref{sec:X_Data}. For most countries, values of $\phi_i$ are not constant with time, as economic sectors with different distributions of raw exergy inputs grow at different rates. \citeapos{Warr:2012a} REXS database contains information for developed economies (United States, United Kingdom, and Japan) from 1900--2000, and we used data from the 1980--2000 timeframe. Extending the REXS database to the BRICS, petrol, and LDC economies is beyond the scope of this work, because longitudinal data for the efficiency of different end uses ($\varepsilon_i$) and the distribution of exergy sources to end uses ($\phi_i$) are extremely difficult to find.
 
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure \ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables \ref{tab:Covariance_US} through \ref{tab:Covariance_ZM}. **** Discuss the covariances in more detail after we finalize the covariances for U. ****
+Figure~\ref{fig:Historical_Lattice_Graph} presents historical data, including indexed values for output ($y$), capital stock ($k$), labor ($l$), and the various energy quantifications ($q$, $x$, and $u$) for 1980--2011 (developed economies) and 1991--2011 (other economies). Factors of production track each other closely, and high covariances among these variables can be seen in Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. **** Discuss the covariances in more detail after we finalize the covariances for U. ****
 
 <<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: Indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
-Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal and natural gas consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations \ref{eq:CD} -- \ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
+Figure~\ref{fig:Historical_Lattice_Graph} indicates the importance of energy quantification for economic growth modeling. Thermal energy ($q$) and exergy ($x$) grow at similar rates, unless there is a significant raw energy carrier substitution in the economy (such as China's rapid increase of coal and natural gas consumption relative to petroleum since 2000). The growth rate of $u$ is significantly different from $q$ and $x$ for most countries, however. \citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest that the time-dependent technological progress term ($A$) in the Cobb-Douglas and CES production functions (Equations~\ref{eq:CD}--\ref{eq:CESe}) may be a proxy for increasing energy efficiency in the U.S. economy.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -570,26 +570,26 @@ Figure \ref{fig:Historical_Lattice_Graph} indicates the importance of energy qua
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Each of the economic growth models discussed in Section \ref{sec:Prod_Func_Forms} has parameters which must be estimated for each economy (see Section \ref{sec:Economy_Types}) and each energy quantification (see Section \ref{sec:Quantification_of_Energy}) via least-squares methods. The following subsections discuss parameter estimation methods interpret the results. 
+Each of the economic growth models discussed in Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated for each economy (see Section~\ref{sec:Economy_Types}) and each energy quantification (see Section~\ref{sec:Quantification_of_Energy}) via least-squares methods. The following subsections discuss parameter estimation methods interpret the results. 
 
 %++++++++++++++++++++++++++++++
 \subsection{Cobb-Douglas Models}
 \label{sec:CD_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-The Cobb-Douglas model without energy is given by Equation \ref{eq:CD}. The Cobb-Douglas production function was reparameterized as
+The Cobb-Douglas model without energy is given by Equation~\ref{eq:CD}. The Cobb-Douglas production function was reparameterized as
 
 \begin{equation} \label{eq:CD_reparam}
   y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. **** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. **** $\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}.  The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure \ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix \ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. **** Is this truly how we implemented the constraints? Finish after we actually implement the constraints. **** $\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}.  The value of $\beta$ can be found with $\beta = 1 - \alpha$. Figure~\ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals for $\lambda$ and $\alpha$. Appendix~\ref{sec:Model_Parameters} contains tables with numerical values of model parameters and confidence intervals.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
 @
 
-To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we created partial residual plots as shown in Figures \ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, with the exception, perhaps, of the United Kingdom, whose residuals are, on average, above 0.
+To qualitatively assess whether augmenting the Cobb-Douglas model with energy will be beneficial, we created partial residual plots as shown in Figures~\ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} below. If a monotonic trend is observed on the graphs, we expect that energy augmentation will be beneficial. However, no strong monotonic tends are observed for any country, with the exception, perhaps, of the United Kingdom, whose residuals are, on average, above 0.
 
 <<CDPartialResidualsQ, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="Cobb-Douglas partial residuals plot for thermal energy ($q$).">>=
 createPartialResidualPlot(modelType="CD", energyType="Q", countryAbbrev=NA)
@@ -603,7 +603,7 @@ createPartialResidualPlot(modelType="CD", energyType="X", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CD", energyType="U", countryAbbrev=NA)
 @
 
-To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the energy-augmented Cobb-Douglas model, Equation \ref{eq:CDe} was reparameterized as
+To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} was reparameterized as
 
 \begin{equation} \label{eq:CDe_reparam}
   y = A k^{\min(a,b)}l^{|b-a|}e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
@@ -611,7 +611,7 @@ To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ in the ene
 
 \noindent to ensure that $\alpha + \beta + \gamma = 1$. By constraining $a \in [0,1]$ and $b \in [0,1]$, we ensure that $\alpha \in [0,1]$, $\beta \in [0,1]$, and $\gamma \in [0,1]$. Given values of $a$ and $b$ that represent the least-squares parameter optimization for a given economy, $\alpha = \min(a,b)$, $\beta = |b-a|$, and $\gamma = \max(a,b)$ can be calculated. The \citet{R} function \texttt{nls} was used to estimate the least-squares values of $\lambda$, $a$, and $b$.
 
-The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure \ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
+The Cobb-Douglas with energy parameter estimation process is challenging. To demonstrate the characteristics of the parameter estimation process, we performed a grid search over values of $\gamma$, wherein we re-estimated values of $\lambda$, $\alpha$, and $\beta$ at each value of $\gamma$. Figure~\ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), $\alpha$, and $\beta$ as a function of the fixed value of $\gamma$ with thermal energy ($q$). For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, $\beta$, or $\gamma$. The parameter estimation algorithm has difficulty assessing confidence intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained model behaves very differently on either side of the constraint.
 
 **** Fix the right y axis label. SSE should be italicized. Also, scaling on the axis labels and scales is not being picked up. ****
 
@@ -619,27 +619,27 @@ The Cobb-Douglas with energy parameter estimation process is challenging. To dem
 cdeGridLattice(energyType="Q")
 @
 
-Figure \ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
+Figure~\ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $q$).
 
 <<CDq_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="Q")
 @
 
-The Cobb-Douglas (with exergy) parameters are given in Table \ref{tab:CD_Parameters_With_X}.
+The Cobb-Douglas (with exergy) parameters are given in Table~\ref{tab:CD_Parameters_With_X}.
 
-Figure \ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
+Figure~\ref{fig:CDx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $x$).
 
 <<CDx_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="X")
 @
 
-Figure \ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
+Figure~\ref{fig:CDu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the Cobb-Douglas model (with $u$).
 
 <<CDu_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="U")
 @
 
-Figure \ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $e=q$, with $e=x$, and with $e=u$) to historical data.
+Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions from the Cobb-Douglas models (without energy, with $e=q$, with $e=x$, and with $e=u$) to historical data.
 
 <<CD_GDP_Lattice_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas results.">>=
 createCDLatticeGraph()
@@ -670,7 +670,7 @@ createCDLatticeGraph()
 % 
 % \noindent where $e$ is one of $q$, $x$, or $u$; $\sigma$, $\gamma_E$, $\beta$, $\lambda_L$, and $\lambda_E$ are fitting parameters; $\mathrm{e}$ is the base of the natural logarithm; and the sum $\alpha + \beta$ is constrained to unity.
 
-The CES model without and with energy is given by Equations \ref{eq:CES} and \ref{eq:CESe}, respectively. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} was used to estimate parameters $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. **** More details here about which algorithms were used, etc. Complete after our work this summer. **** Elasticities of substitution $\sigma_1$ and $\sigma$ (see Section \ref{sec:CES}) were estimated by the delta method (**** is this correct? Ask Pruim. ****).
+The CES model without and with energy is given by Equations~\ref{eq:CES} and \ref{eq:CESe}, respectively. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} was used to estimate parameters $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. **** More details here about which algorithms were used, etc. Complete after our work this summer. **** Elasticities of substitution $\sigma_1$ and $\sigma$ (see Section~\ref{sec:CES}) were estimated by the delta method (**** is this correct? Ask Pruim. ****).
 
 % \citet{Henningsen:2011td}, in their detailed analysis of \citet{Kemfert:1998vd}, found that 
 % 
@@ -678,13 +678,13 @@ The CES model without and with energy is given by Equations \ref{eq:CES} and \re
 % \ldots the Levenberg-Marquardt and the PORT algorithms are---at least in this study---most likely to find the coefficients that give the best fit to the model, where the PORT algorithm can be used to restrict the estimates to the economically meaningful region.
 % \end{quote}
 
-Figure \ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
+Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (without energy).
 
 <<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType=NA)
 @
 
-Similar to the analysis of the Cobb-Douglas model in Section \ref{sec:CD_Parameter_Estimation}, we make partial residual plots for the CES model (without energy) in Figures \ref{fig:CESPartialResidualsQ} - \ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
+Similar to the analysis of the Cobb-Douglas model in Section~\ref{sec:CD_Parameter_Estimation}, we make partial residual plots for the CES model (without energy) in Figures~\ref{fig:CESPartialResidualsQ}--\ref{fig:CESPartialResidualsU} below. Again, no strong monotonic trend is observed, suggesting the energy-augmentation of the CES model will not significantly improve the model.
 
 <<CESPartialResidualsQ, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).">>=
 createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
@@ -698,25 +698,25 @@ createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
 createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
-Figure \ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
+Figure~\ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $q$).
 
 <<CESq_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="Q")
 @
 
-Figure \ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
+Figure~\ref{fig:CESx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $x$).
 
 <<CESx_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="X")
 @
 
-Figure \ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
+Figure~\ref{fig:CESu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the CES model (with $u$).
 
 <<CESu_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="U")
 @
 
-Figure \ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
+Figure~\ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions to historical data.
 
 <<CES_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES results.">>=
 createCESLatticeGraph()
@@ -728,17 +728,17 @@ createCESLatticeGraph()
 \label{sec:CI_for_CD_and_CES}
 %++++++++++++++++++++++++++++++
 
-The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation \ref{eq:CDe}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point (its two-letter abbreviation; see Table \ref{tab:Economy_Examples}), the locus of points where the 95\% confidence interval for $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
+The key energy parameters for the Cobb-Douglas and CES models are $\gamma$, $\delta$, and $\sigma$. The parameter $\gamma$ in the Cobb-Douglas model (Equation~\ref{eq:CDe}) indicates the importance of energy for economic growth. When $\gamma \rightarrow 0$, energy is not a significant contributor to economic growth for an economy. Conversely, when $\gamma \rightarrow 1$, energy is the primary contributor to economic growth. However, if the 95\% confidence interval for $\gamma$ for any given economy extends to 0.0, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. On a graph of the width of the 95\% confidence interval for $\gamma$ ($CI_{95\%,\gamma}$) vs. $\gamma$, where each economy is represented by a point (its two-letter abbreviation; see Table~\ref{tab:Economy_Examples}), the locus of points where the 95\% confidence interval for $\gamma$ crosses 0 is a diagonal line. If the combination of $\gamma$ and its confidence interval for a given economy is below and to the right of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\gamma$ is below the line and small (i.e., close to 0) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\gamma$ is below the line and large (i.e., close to 1) for an economy can we say that energy is a significant contributor to economic growth, according to the Cobb-Douglas model.
 
-The left column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the left of the line, while only a few are below and to the right.
+The left column of graphs in Figure~\ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\gamma}$ vs. $\gamma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the left of the line, while only a few are below and to the right.
 
-For the CES model (Equation \ref{eq:CESe}), the parameter $\delta$ indicates the importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. In a manner similar to $\gamma$ for the Cobb-Douglas model, we note that if the combination of $\delta$ and its confidence interval for a given economy is below and to the left of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
+For the CES model (Equation~\ref{eq:CESe}), the parameter $\delta$ indicates the importance of energy for economic growth. When $\delta \rightarrow 1$, energy is an insignificant contributor to economic growth, and when $\delta \rightarrow 0$, energy is the primary contributor to economic growth for an economy. However, if the 95\% confidence interval for $\delta$ extends to 1, we cannot say with high confidence whether or not energy makes a meaningful contribution to economic growth for that economy. In a manner similar to $\gamma$ for the Cobb-Douglas model, we note that if the combination of $\delta$ and its confidence interval for a given economy is below and to the left of the line, we have high confidence that we can say whether or not energy is a significant contributor to economic growth. Thus, only when $\delta$ is below the line and large (i.e., close to 1) for an economy, can we say with confidence that energy is an insignificant contributor to economic growth. Only when $\delta$ is below the line and small (i.e., close to 0) for an economy can we say that energy is a significant contributor to economic growth, according to the CES model.
 
-The middle column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the right of the line, while only a few are below and to the left.
+The middle column of graphs in Figure~\ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\delta}$ vs. $\delta$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that most economies are above and to the right of the line, while only a few are below and to the left.
 
-For the CES model (Equation \ref{eq:CESe}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose combination of  $\sigma$ and its confidence interval is below and to the left of the lines in the rightmost graphs of Figure \ref{fig:CIvsParam_Lattice_Graph} we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of the line, we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
+For the CES model (Equation~\ref{eq:CESe}), the parameter $\sigma$ indicates whether capital stock and labor ($kl$) and energy ($e$) are complements ($\sigma <$ 1) or substitutes ($\sigma >$ 1). For countries whose combination of  $\sigma$ and its confidence interval is below and to the left of the lines in the rightmost graphs of Figure~\ref{fig:CIvsParam_Lattice_Graph} we can say (with 95\% confidence) that ($kl$) and ($e$) are complements. For economies whose value of $\sigma$ is below and to the right of the line, we can say (with 95\% confidence) that ($kl$) and ($e$) are substitutes. For economies whose value of $\sigma$ is above those lines, we cannot say with 95\% confidence whether ($kl$) and ($e$) are substitues or complements.
 
-The right column of graphs in Figure \ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\sigma}$ vs. $\sigma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that energy ($e$) unambiguously complements capital stock and labor ($kl$) for most economies.
+The right column of graphs in Figure~\ref{fig:CIvsParam_Lattice_Graph} shows $CI_{95\%,\sigma}$ vs. $\sigma$ for the three quantifications of energy (thermal energy, $q$, exergy, $x$, and useful work, $u$). We note that energy ($e$) unambiguously complements capital stock and labor ($kl$) for most economies.
 
 <<CIvsParam_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="95\\% Confidence interval widths vs. parameter values for key energy parameters ($\\gamma$, $\\delta$, and $\\sigma$) of the Cobb-Douglas and CES models with energy. If an economy appears in the region above a dashed line, the 95\\% confidence interval for the parameter extends to or beyond $\\gamma \\le$ 0 (cannot say with 95\\% confidence that energy is important for the Cobb-Douglas model), $\\delta \\ge$ 1 (cannot say with 95\\% confidence that energy is important for the CES model), or $\\sigma$ = 1 (cannot say with 95\\% confidence whether ($kl$) and ($e$) are complements or substitutes in the CES model).">>=
 CIvsParamLattice(countryAbbrevScaling=0.6)
@@ -753,25 +753,25 @@ Regardless of model (Cobb-Douglas or CES) or energy quantification ($q$, $x$, or
 \label{sec:LINEX_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-The LINEX model is given in Equation \ref{eq:LINEX}. Parameters $a_0$ and $c_t$ were estimated using the \texttt{nls} function in \texttt{R} \citep{R}. Figure \ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
+The LINEX model is given in Equation~\ref{eq:LINEX}. Parameters $a_0$ and $c_t$ were estimated using the \texttt{nls} function in \texttt{R} \citep{R}. Figure~\ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $q$).
 
 <<LINEXq_Params_Graph, fig.pos="H", fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="Q")
 @
 
-Figure \ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
+Figure~\ref{fig:LINEXx_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $x$).
 
 <<LINEXx_Params_Graph, fig.pos="H", fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="X")
 @
 
-Figure \ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
+Figure~\ref{fig:LINEXu_Params_Graph} shows values and 95\% confidence intervals for the parameters for the LINEX model (with $u$).
 
 <<LINEXu_Params_Graph, fig.pos="H", fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createLINEXParamsGraph(energyType="U")
 @
 
-Figure \ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
+Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
 <<LINEX_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
 createLINEXLatticeGraph()
@@ -788,13 +788,13 @@ createLINEXLatticeGraph()
 The above analysis points to several implications.
 
 \begin{itemize}
-  \item{The use of chemical exergy, as opposed to thermal energy, in economic growth models is probably unnecessary. Table \ref{tab:Exergy_Allocation} shows that exergy allocation factors are all close to unity. Therefore, there is a small difference in absolute magnitude between $Q$ and $X$. However, there is no difference in indexed magnitude between $q$ and $x$, unless there are large changes in energy mix for an economy. Figure \ref{fig:Historical_Lattice_Graph} shows that $q$ and $x$ lines lie atop one another for almost every economy.}
-  \item{The concept of useful work ($u$) is potentially useful and should be explored beyond developed economies. Figure \ref{fig:Historical_Lattice_Graph} shows that $u$ grows at very different rates from thermal energy ($q$) or exergy ($x$). Useful work may contain different information from thermal energy and exergy.}
-  \item{Figure \ref{fig:CDeGridLattice} shows that the set of parameters ($\lambda$, $\alpha$, $\beta$, and $\gamma$) that minimizes $SSE$ for the energy-augmented Cobb-Douglas production function always (with the exception of Saudi Arabia) has $\beta = 0$ or $\gamma = 0$. This result implies that it is unnecessary to include both labor ($l$) and energy ($e$) in the Cobb-Douglas production function.}
-  \item{Partial residual plots for both the Cobb-Douglas model (Figures \ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} and CES model (Figures \ref{fig:CESPartialResidualsQ}--\ref{fig:CESPartialResidualsU}) indicate that augmenting the Cobb-Douglas and CES production functions with energy is not beneficial.}
-  \item{Figure \ref{fig:CIvsParam_Lattice_Graph} shows that important energy parameters for both the energy-augmented Cobb-Douglas and CES production functions ($\gamma$ and $\delta$, respectively) have large confidence intervals such that we are unable to say (at the 95\% confidence level) that energy is an important factor for economic growth, vis-\`{a}-vis capital stock ($k$) or labor ($l$) for most economies.}
-  \item{Figure \ref{fig:CIvsParam_Lattice_Graph} indicates that energy (in all quantifications: $q$, $x$, and $u$) is complementary to capital stock ($k$) and labor ($l$) for producing economic growth, according to the CES model.}
-  \item{Figures \ref{fig:LINEXq_Params_Graph}--\ref{fig:LINEXu_Params_Graph} indicate that LINEX model fitting parameters $a_0$ and $c_t$ are significant (at the 95\% confidence level) for nearly all countries. Figure \ref{fig:LINEX_GDP_Lattice_Graph} shows that the LINEX production function provides reasonably good fits to historical data. This evidence indicates that the LINEX production function (with energy ($e$) as its only factor of production) is a reasonable replacement the Cobb-Douglas and CES production functions which have capital stock ($k$) and labor ($l$) as factors of production.}
+  \item{The use of chemical exergy, as opposed to thermal energy, in economic growth models is probably unnecessary. Table~\ref{tab:Exergy_Allocation} shows that exergy allocation factors are all close to unity. Therefore, there is a small difference in absolute magnitude between $Q$ and $X$. However, there is no difference in indexed magnitude between $q$ and $x$, unless there are large changes in energy mix for an economy. Figure~\ref{fig:Historical_Lattice_Graph} shows that $q$ and $x$ lines lie atop one another for almost every economy.}
+  \item{The concept of useful work ($u$) is potentially useful and should be explored beyond developed economies. Figure~\ref{fig:Historical_Lattice_Graph} shows that $u$ grows at very different rates from thermal energy ($q$) or exergy ($x$). Useful work may contain different information from thermal energy and exergy.}
+  \item{Figure~\ref{fig:CDeGridLattice} shows that the set of parameters ($\lambda$, $\alpha$, $\beta$, and $\gamma$) that minimizes $SSE$ for the energy-augmented Cobb-Douglas production function always (with the exception of Saudi Arabia) has $\beta = 0$ or $\gamma = 0$. This result implies that it is unnecessary to include both labor ($l$) and energy ($e$) in the Cobb-Douglas production function.}
+  \item{Partial residual plots for both the Cobb-Douglas model (Figures~\ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} and CES model (Figures~\ref{fig:CESPartialResidualsQ}--\ref{fig:CESPartialResidualsU}) indicate that augmenting the Cobb-Douglas and CES production functions with energy is not beneficial.}
+  \item{Figure~\ref{fig:CIvsParam_Lattice_Graph} shows that important energy parameters for both the energy-augmented Cobb-Douglas and CES production functions ($\gamma$ and $\delta$, respectively) have large confidence intervals such that we are unable to say (at the 95\% confidence level) that energy is an important factor for economic growth, vis-\`{a}-vis capital stock ($k$) or labor ($l$) for most economies.}
+  \item{Figure~\ref{fig:CIvsParam_Lattice_Graph} indicates that energy (in all quantifications: $q$, $x$, and $u$) is complementary to capital stock ($k$) and labor ($l$) for producing economic growth, according to the CES model.}
+  \item{Figures~\ref{fig:LINEXq_Params_Graph}--\ref{fig:LINEXu_Params_Graph} indicate that LINEX model fitting parameters $a_0$ and $c_t$ are significant (at the 95\% confidence level) for nearly all countries. Figure~\ref{fig:LINEX_GDP_Lattice_Graph} shows that the LINEX production function provides reasonably good fits to historical data. This evidence indicates that the LINEX production function (with energy ($e$) as its only factor of production) is a reasonable replacement the Cobb-Douglas and CES production functions which have capital stock ($k$) and labor ($l$) as factors of production.}
   \item{**** Discuss the AIC values for each of the model types. It could happen that the LINEX models have a higher AIC value than the CD or CES models. If so, that would mean that the LINEX model is actually preferred to the CD or CES models, primarily because it does a good-enough job of predicting economic output with fewer adjustable parameters (2) compared to CD (2), CDe (3), CES (4), CESe (6). Discuss with Randy Pruim during Summer 2013.}
 \end{itemize}
 
@@ -934,7 +934,7 @@ printLINEXParamsTable(energyType="Q"); printLINEXParamsTable(energyType="X"); pr
 \setcounter{equation}{0} % Restarts equation counter to 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table \ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
+We assess goodness of fit via the Akaike Information Criterion (AIC). AIC values for all models and all countries are shown in Table~\ref{tab:AICTable}. Increasing goodness of fit is indicated by smaller (i.e., more negative) AIC values. AIC values can be compared per data set (i.e., per country) but not across data sets (i.e., not across countries). 
 
 <<AIC_Table, results='asis', label="AIC_Table">>=
 print(createAICTable(), 
@@ -983,7 +983,7 @@ createSFParamsGraph(factor="X")
 createSFParamsGraph(factor="U")
 @
 
-Figure \ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
+Figure~\ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions with historical data.
 
 <<SF_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single-factor results.">>=
 createSFLatticeGraph()
