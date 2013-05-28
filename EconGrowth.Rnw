@@ -99,6 +99,40 @@
 
 \begin{document}
 
+<<setup_child, echo=FALSE, message=FALSE, eval=TRUE>>=
+# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
+require(lattice)
+require(latticeExtra)
+require(ggplot2)
+require(car)
+require(mosaic)
+require(xtable)
+require(nlmrt)
+require(micEconCES)
+require(reshape2) # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
+# tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
+# require(tikzDevice) 
+trellis.par.set(theme=theme.mosaic())
+options(width=75)
+options(show.signif.stars=TRUE)
+opts_chunk$set(
+  # ********************************************************************************************************
+  eval=FALSE,
+  # ********************************************************************************************************
+  dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
+  tidy=FALSE,
+  comment=NA,
+  #Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (i.e., cache=TRUE).
+  cache=FALSE,
+  warning=FALSE,  #Tells whether to show warnings in the output.
+  message=FALSE, #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
+  echo=FALSE     #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
+)
+source("Econ-Growth-Functions.R")
+@
+
 \begin{frontmatter}
 
 %% Title, authors and addresses
@@ -188,9 +222,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{de Wit: review, critique, and contextualize.}
 \end{itemize}
 
-<<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
-# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
-@
+
 
 <<FindError, eval=TRUE>>=
 # print(cobbDouglasCountryRow(countryAbbrev="US", energyType="X"))
@@ -281,38 +313,64 @@ of all statistical results.
 \label{sec:Coordinates}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section describes the three coordinates of analysis and briefly reviews literature related to each.
+This section describes the three coordinates of analysis and briefly reviews 
+literature related to each.
 
 %++++++++++++++++++++++++++++++
 \subsection{Mathematical Forms of the Energy-augmented Production Function} 
 \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
-In this paper, we assess three prominent energy-augmented production functions appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of Substitution (CESe), and LINear EXponential (LINEX). The following subsections describe each.
+In this paper, we assess three prominent energy-augmented production functions 
+appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
+Substitution (CESe), and LINear EXponential (LINEX). The following subsections 
+describe each.
 
 %------------------------------
 \subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
 \label{sec:CDe}
 %------------------------------
 
-Similar to Equation~\ref{eq:CD}, the energy-augmented Cobb-Douglas production function is
+Similar to Equation~\ref{eq:CD}, the energy-augmented Cobb-Douglas 
+production function is
 
 \begin{equation} \label{eq:CDe}
   y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
 \end{equation}
 
-\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. The energy-augmented Cobb-Douglas production function is often assumed to have constant returns to scale for the three factors of production: $\alpha + \beta + \gamma = 1$.
+\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
+typically TJ/year. The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha + \beta + \gamma = 1$.
 
-\citet{Ayres:2008cl} uses Equation~\ref{eq:CDe} with exergy ($x$) and useful work ($u$) quantifications for $e$ to describe historic Japanese and American economies from 1900-2000. \citet{Froling:2009vo} uses an energy-augmented Cobb-Douglas production function with thermal energy quantification ($q$) to describe output for the global economy from 1800-1970. Fr\"{o}ling's model endogenizes labor with respect to fertility and mortality rates and separates thermal energy into two types: biomass energy and coal energy. \citet{Serrenho:2010vq} use the log transform of the energy-augmented Cobb-Douglas function with thermal energy quantification ($q$) to describe output for the EU-15 countries. Serrenho divides thermal energy into renewables, non-renewables, wastes, and imports.
+\citet{Ayres:2008cl} uses Equation~\ref{eq:CDe} with exergy ($x$) and 
+useful work ($u$) quantifications for $e$ to describe historic Japanese 
+and American economies from 1900-2000. \citet{Froling:2009vo} uses an 
+energy-augmented Cobb-Douglas production function with thermal energy 
+quantification ($q$) to describe output for the global economy from 
+1800--1970. Fr\"{o}ling's model endogenizes labor with respect to fertility 
+and mortality rates and separates thermal energy into two types: biomass 
+energy and coal energy. \citet{Serrenho:2010vq} use the log transform of 
+the energy-augmented Cobb-Douglas function with thermal energy 
+quantification ($q$) to describe output for the EU-15 countries. 
+Serrenho divides thermal energy into renewables, non-renewables, 
+wastes, and imports.
 
-**** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
+**** Martin: add more here about the conclusions of each paper regarding 
+the role of energy in economic growth? Add additional literature? 
+Or, adjust as you see fit. Especially, are there any confidence intervals 
+or statistical evaluation in each of these studies? ****
 
 %------------------------------
 \subsubsection{Energy-augmented CES Production Function (CESe)} 
 \label{sec:CES}
 %------------------------------
 
-Other energy economists use an energy-augmented Constant Elasticity of Substitution (CESe) production function to describe economic growth. The \texttt{R} \citep{R} package \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production functions of the following forms (among others):
+Other energy economists use an energy-augmented 
+Constant Elasticity of Substitution (CESe) production function to 
+describe economic growth. The \texttt{R} \citep{R} package 
+\texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
+functions of the following forms (among others):
 
 \begin{equation} \label{eq:CES}
   y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; A = \mathrm{e}^{\lambda (t-t_0)}
