@@ -234,7 +234,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 # print(cobbDouglasCountryRow(countryAbbrev="IR", energyType="X"))
 # print(cobbDouglasCountryRow(countryAbbrev="TZ", energyType="X"))
 
-print(cobbDouglasData(countryAbbrev="TZ", energyType="X"))
+cobbDouglasData(countryAbbrev="TZ", energyType="X")
 
 # print(cobbDouglasModel(countryAbbrev="TZ", energyType="X"))
 # print(cdeModel(countryAbbrev="TZ", energyType="X"))
