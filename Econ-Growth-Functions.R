@@ -749,7 +749,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
 # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
 # No energy is included in the function to be fitted.
 ##
-cdModel <- function(countryAbbrev){
+cdModel <- function(countryAbbrev,...){
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
   # Establish guess values for alpha and lambda.
@@ -771,7 +771,7 @@ cdModel <- function(countryAbbrev){
 # Returns an nls Cobb-Douglas model for the country specified
 # energyType is one of "Q", "X", or "U".
 ##
-cdeModel <- function(countryAbbrev, energyType){
+cdeModel <- function(countryAbbrev, energyType,...){
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
@@ -813,7 +813,7 @@ cdeModel <- function(countryAbbrev, energyType){
 ##############################
 # Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
 ##
-cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma){
+cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
@@ -850,17 +850,17 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma){
 # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
 # This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
 ##
-cobbDouglasModel <- function(countryAbbrev, energyType, gamma){
+cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
   if (is.na(energyType)){
     # Fit the Cobb-Douglas model without energy.
-    return(cdModel(countryAbbrev=countryAbbrev))
+    return(cdModel(countryAbbrev=countryAbbrev,...))
   }
   if (!missing(gamma)){
     # Fit the Cobb-Douglas model with fixed value of gamma
-    return(cdeFixedGammaModel(countryAbbrev=countryAbbrev, energyType=energyType, gamma=gamma))
+    return(cdeFixedGammaModel(countryAbbrev=countryAbbrev, energyType=energyType, gamma=gamma,...))
   }
   # Fit the Cobb-Douglas model with gamma as a free parameter
-  return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType))
+  return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType,...))
 }
 
 ###############################
@@ -1030,7 +1030,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
 # Third row is the -95% CI on all parameters
 # Each column has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
 ##
-cobbDouglasData <- function(countryAbbrev, energyType){
+cobbDouglasData <- function(countryAbbrev, energyType, ...){
   # First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataCD(countryAbbrev, energyType)){
     #Return a column of NAs if the above conditions have been met.
@@ -1048,8 +1048,14 @@ cobbDouglasData <- function(countryAbbrev, energyType){
   print(summaryCD)
   print("Before CI calculation")
   # Calculates confidence intervals for the CD model.
-  ciCD <- tryCatch( confint(object=modelCD, level=ciLevel), error=function(e) {return(modelCD)} )
+  
+  ciCD <- tryCatch( confint( profile(modelCD, ...) , level=ciLevel,...), error=function(e) { modelCD } )
+  if (inherits( ciCD, "nls") ) {
+    warning("Early exit from CobbDouglassData");
+    return(ciCD)
+  }
   print("After CI calculation")
+  
   print(ciCD)
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD)
