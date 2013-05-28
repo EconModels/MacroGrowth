@@ -160,11 +160,11 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Reese: Review EIA IES database for any revisions to historical data}
-\item{Reese: Add food energy intake for all countries from FAO. We won't assume that the US caloric intake applies to all coutries.}
-\item{Reese: Fix the energy sankey diagram from the seminar}
-\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}}
-\item{Heun: Include Caleb's adjusted sankey diagram in the seminar}
+\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}. \\* There is code after the to-do list in this file that exposes the problem.}
+\item{Heun: Get function \texttt{cdeModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to get this to work properly.}
+\item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
+\item{Heun: Fix the energy sankey diagram from the seminar}
+\item{Heun: Include adjusted sankey diagram in the seminar}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
       \item{Get values and se for $\sigma$s directly from the \texttt{cesModel} object in the \texttt{cesData} function}
@@ -172,17 +172,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \item{Revisit my assumptions for the CES production function (with energy) for each country.}
       \item{Fix the problems with $\sigma_1$ and $\sigma$ values in the CES parameter tables in the appendix}
       \item{Add CES rows to the AIC table. Code is in the \texttt{createAICTable} function, but it is not yet working. Need to find a way to calculate AIC for the object that is returned from the \texttt{cesEst} function.}
-      \item{\st{Create parameter graphs for each country}}
-      \item{\st{Parameter tables for each energy type in the appendix}}
-      \item{\st{GDP comparison graph}}
-      \item{\st{Convert $\rho$ variables in the CES production function to $\sigma$}}
-      \item{\st{Add a CES model without energy option (energyType=NA means CES without energy)}}
-        \begin{itemize}
-          \item{\st{Create a CES without energy parameters graphs (with CIs) in the paper}}
-          \item{\st{Extract CES without energy parameters from the ``without energy'' models and correctly name them: $\sigma \rightarrow \sigma_1$, $\rho \rightarrow \rho_1$, $\delta \rightarrow \delta_1$}}
-          \item{\st{Add CES without energy parameters to tables of results in the appendix}}
-          \item{\st{Add CES without energy lines to the CES lattice graph}}
-        \end{itemize}
       \end{itemize}
 \item{Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the Cobb-Douglas with energy rows}
       \begin{itemize}
@@ -195,60 +184,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{de Wit: review, critique, and contextualize.}
-\item{\st{Heun: adjust y axis limits on $a_0$ and $c_t$ parameter graphs for the LINEX model AFTER we finish debugging the LINEX models.}}
-\item{\st{Heun: Add the insight that for indexed factors of production $q$ and $x$, there is small difference in absolute magnitude and even smaller difference in indexed values unless $f_{exergy-allocation}$ is significantly different from 1.0 \emph{and} there is a shift in energy input to the economy.}}
-\item{\st{Heun: Deal with missing covariance numbers when columns have unequal length. Use the \texttt{subset} command? Partially complete: need to work on the $u$ data only.}}
-\item{\st{Heun: Ensure consistent x and y axis limits in partial residual plots}}
-\item{\st{Heun: Use full country names instead of 2-letter abbreviations in partial residual plots}}
-\item{\st{Heun: Adjust variable threePanelGraphHeight in the EconGrowth-R-Functions.Rnw file to produce U partial residual plots that are exactly the same size as the graphs in the 9-panel plots.}}
-\item{\st{Heun: Eliminate non-developed countries from 9-panel partial residual plots}}
-\item{\st{Heun: Add references from Lucas}}
-\item{\st{Heun: Obtain answers to questions I put to Caleb about the energy section}}
-\item{\st{Heun: Add Warr to acknowledgements}}
-\item{\st{Heun: Include EIA graphic (instead of IEA graphic) in the seminar}}
-\item{\st{Reese: Send URL reference for FAO food data.}}
-\item{\st{Heun: Fix the ordering of references in the bibliography by setting the alphabetical order of the keys to match the temporal order of the references. I think the bibliography is OK.}}
-\item{\st{Heun: Fix parentheses heights in LINEX production function equation.}}
-\item{\st{Heun: Add data from 2011 to the models}}
-\item{\st{Heun: Fix weirdnesses with China on the CD gamma grid search graph.}}
-\item{\st{Heun: Add diagonal lines to triangle plots via the doubleY graph idea. Make a simple data.frame that contains the coordinates of the line and add it to the graph as a second Y axis, but don't show the second Y axis.}}
-\item{\st{Reese: Add text from Word verson of paper to the LaTeX version.}}
-\item{\st{Heun: Add CI vs. params plots for all model types (the triangle plots from the seminar). Maybe as a lattice graph where each model type is a panel. But, wait until we know if we have symmetric confidence intervals before doing this. These graphs won't work if we have asymmetric CIs.}}
-\item{\st{Heun: Rearrange the panels on the CD gamma grid search graph}}
-\item{\st{Heun: Change the strip to transparent on the CD gamma grid search graph}}
-\item{\st{Heun: Get full country names into the CD gamma grid search graph}}
-\item{\st{Heun: Change the presentation to use the cdeGridLattice function instead of cdeGridGraph}}
-\item{\st{Heun: Remove cdeGridGraph function}}
-\item{\st{Heun: Add 9-panel lattice graph for min($SSE_y$) graphs for the CD model}}
-\item{\st{Heun: x-axis labels only on bottom for 9-panel lattice graphs}}
-\item{\st{Heun: Convert the presentation to use energyType=NA for models without energy}}
-\item{\st{Heun: Convert to using NA everywhere for models without energy}}
-\item{\st{Heun: Investigate use of the micEcon package transLogEst function for CD parameter estimation. Result: doesn't look like it will work, because it doesn't do the CD form of interest to us.}}
-\item{\st{Heun: Re-organize CES tables into (a) $\lambda$, $\delta$, $\sigma$ and (b) $\gamma$, $\delta_1$, $\sigma_1$}}
-\item{\st{Heun: Ask Martin if he can supply an ``Economics'' affiliation. Will probably make a stronger paper.}}
-\item{\st{Heun: Create a table of AIC values for each fit.}}
-\item{\st{Heun: Add $u$ predictions for Cobb-Douglas}}
-\item{\st{Heun: Move tables to an appendix at the end.}}
-\item{\st{Heun: Add acknowledgements (Dad, Pruim)}}
-\item{\st{Heun: Add $u$ parameter table and graph}}
-\item{\st{Heun: Add covariance metrics.}}
-\item{\st{Heun: Add single factor fits}}
-      \begin{itemize}
-      \item{\st{Correct sizes for parameter graphs for each country}}
-      \item{\st{Parameter graphs ($\lambda$ and $m$) for each country}}
-      \item{\st{Parameter tables for each country in the appendix}}
-      \item{\st{GDP comparison graph}}
-      \item{\st{AIC rows in the AIC table}}
-      \end{itemize}
-\item{\st{Heun: Add setup variables for figure height and width where not already included.}}
-\item{\st{Heun: Add LINEX production function fits}}
-      \begin{itemize}
-      \item{\st{Parameter graphs for each country}}
-      \item{\st{Parameter tables for each country in the appendix}}
-      \item{\st{AIC rows in the AIC table}}
-      \item{\st{GDP comparison graph}}
-      \end{itemize}
-\item{\st{de Wit: provide funding acknowledgement, if necessary}}
 \end{itemize}
 
 <<setup_child, child='EconGrowth-R-Functions.Rnw', echo=FALSE, message=FALSE, eval=TRUE>>=
