@@ -160,9 +160,9 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}. \\* There is code after the to-do list in this file that exposes the problem.}
-\item{Heun: Get function \texttt{cdModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to get this to work properly.}
-\item{Heun: Get function \texttt{cdeModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to get this to work properly.}
+\item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \\* \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}. \\* There is code after the to-do list in this file that exposes the problem.}
+\item{Heun: Get function \texttt{cdModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to view the problems.}
+\item{Heun: Get function \texttt{cdeModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to view the problems.}
 \item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
 \item{Heun: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include adjusted sankey diagram in the seminar}
