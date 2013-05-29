@@ -1025,10 +1025,10 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
   }
   # We have a combination of country and energy type for which we have data.
   modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
-#print(str(modelCD))
+print(str(modelCD))
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-#print(summaryCD)
-#print("Before CI calculation")
+print(summaryCD)
+print("Before CI calculation")
   # Calculates confidence intervals for the CD model.
   
   ciCD <- tryCatch( confint( profile(modelCD, ...) , level=ciLevel,...), error=function(e) { modelCD } )
@@ -1036,9 +1036,9 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
     warning("Early exit from CobbDouglassData");
     return(ciCD)
   }
-#print("After CI calculation")
+print("After CI calculation")
   
-#print(ciCD)
+print(ciCD)
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD)
   if (is.na(energyType)){
