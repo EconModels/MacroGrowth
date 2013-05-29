@@ -99,7 +99,7 @@
 
 \begin{document}
 
-<<setup_child, echo=FALSE, message=FALSE, eval=TRUE>>=
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
 # Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
 require(lattice)
 require(latticeExtra)
