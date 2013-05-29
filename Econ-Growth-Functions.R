@@ -69,29 +69,28 @@ linexParameterGraphWidth <- maxWidth
 scaleTextSize <- 0.8  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
 
-## <<Data Functions, eval=TRUE>>=
-  #################################
-# This function loads data given a country abbreviation.
-# The file name from which data will be loaded is assumed to be of the form 
-# "<countryAbbrev>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
-#
-# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-#
-# returns a data.frame with the data that has been loaded
-##
 loadData <- function(countryAbbrev){
+  #################################
+  # This function loads data given a country abbreviation.
+  # The file name from which data will be loaded is assumed to be of the form 
+  # "<countryAbbrev>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
+  #
+  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+  #
+  # returns a data.frame with the data that has been loaded
+  ##
   # Read the data file as a table with a header.  
   fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
   dataTable <- read.table(file=fileName, header=TRUE)
   return(dataTable)
 }
 
-###############################
-# Tells whether we have data for this combination of country and energy type for a single-factor curve fit.
-#
-# returns logical value (TRUE or FALSE)
-##
 haveDataSF <- function(countryAbbrev, factor){
+  ###############################
+  # Tells whether we have data for this combination of country and energy type for a single-factor curve fit.
+  #
+  # returns logical value (TRUE or FALSE)
+  ##
   # The design here is to go through several cases where data is unavailable and
   # return FALSE. If we make it through all of those cases, we'll return TRUE.
   if (!(countryAbbrev %in% countryAbbrevs)){
@@ -113,13 +112,13 @@ haveDataSF <- function(countryAbbrev, factor){
   return(TRUE)
 }
 
-###############################
-# Tells whether we have data for this combination of country and energy type for a Cobb-Douglas curve fit.
-# a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
-#
-# returns logical value (TRUE or FALSE)
-##
 haveDataCD <- function(countryAbbrev, energyType){
+  ###############################
+  # Tells whether we have data for this combination of country and energy type for a Cobb-Douglas curve fit.
+  # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
+  #
+  # returns logical value (TRUE or FALSE)
+  ##
   # The design here is to go through several cases where data is unavailable and
   # return FALSE. If we make it through all of those cases, we'll return TRUE.
   if (!(countryAbbrev %in% countryAbbrevs)){
@@ -142,34 +141,34 @@ haveDataCD <- function(countryAbbrev, energyType){
   return(TRUE)
 }
 
-###############################
-# Tells whether we have data for this combination of country and energy type for a CES curve fit.
-# a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
-# This function re-routes to haveDataCD, because the logic is identical.
-#
-# returns logical value (TRUE or FALSE)
-##
 haveDataCES <- function(countryAbbrev, energyType){
+  ###############################
+  # Tells whether we have data for this combination of country and energy type for a CES curve fit.
+  # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
+  # This function re-routes to haveDataCD, because the logic is identical.
+  #
+  # returns logical value (TRUE or FALSE)
+  ##
   return(haveDataCD(countryAbbrev, energyType))
 }
 
-###############################
-# Tells whether we have data for this combination of country and energy type for a LINEX curve fit.
-# a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
-# This function re-routes to haveDataCD, because the logic is identical.
-#
-# returns logical value (TRUE or FALSE)
-##
 haveDataLINEX <- function(countryAbbrev, energyType){
+  ###############################
+  # Tells whether we have data for this combination of country and energy type for a LINEX curve fit.
+  # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
+  # This function re-routes to haveDataCD, because the logic is identical.
+  #
+  # returns logical value (TRUE or FALSE)
+  ##
   return(haveDataCD(countryAbbrev, energyType))
 }
 
-#####################
-# This function adds NA rows to the end of a data.frame to ensure that the df is 
-# the same length as the country data set
-# returns a modified version of df that includes the padded rows filled with "NA".
-##
 padRows <- function(countryAbbrev, df){
+  #####################
+  # This function adds NA rows to the end of a data.frame to ensure that the df is 
+  # the same length as the country data set
+  # returns a modified version of df that includes the padded rows filled with "NA".
+  ##
   nRowsData <- nrow(loadData(countryAbbrev)) #Gets number of rows in data set
   nRowsDF <- nrow(df)
   nRowsToAdd <- nRowsData - nRowsDF
@@ -179,12 +178,12 @@ padRows <- function(countryAbbrev, df){
   return(rbind(df, dfToAppend))
 }
 
-##############################
-# Returns an integer representing the column index for some data
-# dataTable the data.frame in which you want to change column names
-# factor should be a string and one of Year, Y, K, L, Q, X, or U
-##
 columnIndex <- function(dataTable, factor){
+  ##############################
+  # Returns an integer representing the column index for some data
+  # dataTable the data.frame in which you want to change column names
+  # factor should be a string and one of Year, Y, K, L, Q, X, or U
+  ##
   if (factor == "Year"){
     colName <- "iYear"
   } else if (factor == "Y"){
@@ -208,23 +207,23 @@ columnIndex <- function(dataTable, factor){
   return(colIndex)  
 }
 
-##############################
-# Replaces a column name with the given string
-# dataTable the data.frame that you're working with
-# factor should be a string and one of Year, Y, K, L, Q, X, or U
-# newName should be a string and the desired new name of the column
-# returns dataTable with a new name for one of its factor column.
-##
 replaceColName <- function(dataTable, factor, newName){
+  ##############################
+  # Replaces a column name with the given string
+  # dataTable the data.frame that you're working with
+  # factor should be a string and one of Year, Y, K, L, Q, X, or U
+  # newName should be a string and the desired new name of the column
+  # returns dataTable with a new name for one of its factor column.
+  ##
   colIndex <- columnIndex(dataTable, factor)
   colnames(dataTable)[colIndex] <- newName #Change desired column name to newName
   return(dataTable)
 }
 
-##############################
-# Returns an xtable of covariance information for the specified country.
-##
 covarianceTable <- function(countryAbbrev){
+  ##############################
+  # Returns an xtable of covariance information for the specified country.
+  ##
   data <- loadData(countryAbbrev)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
@@ -250,10 +249,10 @@ covarianceTable <- function(countryAbbrev){
   return(covarXtable)
 }
 
-###############################
-# Prints a covariance table for countryAbbrev
-##
 printCovarTable <- function(countryAbbrev){
+  ###############################
+  # Prints a covariance table for countryAbbrev
+  ##
   print(covarianceTable(countryAbbrev), 
         caption.placement="top", 
         sanitize.rownames.function = identity,
@@ -262,15 +261,15 @@ printCovarTable <- function(countryAbbrev){
         table.placement="H")
 }
 
-####################################
-# Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
-# or a specific country (if you supply a 2-letter abbreviation for a country that we know).
-# Provide a value for textScaling to scale the size of the text on the graph. This is expecially useful
-# for converting between graphs in a paper and graphs in a beamer presentation.
-# textScaling = 1.0 is good for a paper. textScaling = 0.6 is good for a beamer presentation.
-# keyXLoc and keyYLoc are locations for the graph's legend.
-##
 createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+  ####################################
+  # Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
+  # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
+  # Provide a value for textScaling to scale the size of the text on the graph. This is expecially useful
+  # for converting between graphs in a paper and graphs in a beamer presentation.
+  # textScaling = 1.0 is good for a paper. textScaling = 0.6 is good for a beamer presentation.
+  # keyXLoc and keyYLoc are locations for the graph's legend.
+  ##
   # Code for all graphs, regardless of whether we want to focus on a specific country
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
@@ -330,11 +329,11 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 ## <<single-factor functions, eval=TRUE>>=
-  ####################
-# Returns an nls single-factor model for the country and factor specified.
-# factor should be one of "K", "L", "Q", "X", or "U".
-##
 singleFactorModel <- function(countryAbbrev, factor){
+  ####################
+  # Returns an nls single-factor model for the country and factor specified.
+  # factor should be one of "K", "L", "Q", "X", or "U".
+  ##
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We'll change the name of the desired column to "f"
   dataTable <- replaceColName(dataTable, factor, "f")
@@ -356,11 +355,11 @@ singleFactorModel <- function(countryAbbrev, factor){
   return(modelSF)
 }
 
-#########################
-# Takes the single-factor fitted models and creates per-country predictions for them.
-# Returns a data.frame with the predictions.
-##
 singleFactorPredictions <- function(countryAbbrev, factor){
+  #########################
+  # Takes the single-factor fitted models and creates per-country predictions for them.
+  # Returns a data.frame with the predictions.
+  ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!(haveDataSF(countryAbbrev, factor))){
     #If we don't have data for this combination of countryAbbrev and energyType, 
@@ -378,21 +377,21 @@ singleFactorPredictions <- function(countryAbbrev, factor){
   return(df)
 }
 
-#########################
-# Takes the single-factor fitted models and creates a single column of predicted GDP values
-# that corresponds, row for row, with the AllData.txt file.
-##
 singleFactorPredictionsColumn <- function(factor){
+  #########################
+  # Takes the single-factor fitted models and creates a single column of predicted GDP values
+  # that corresponds, row for row, with the AllData.txt file.
+  ##
   out <- do.call("rbind", lapply(countryAbbrevs, singleFactorPredictions, factor=factor))
   colnames(out) <- c(paste("predGDP", factor, sep=""))
   return(out)
 }
 
-##############################
-# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-# data as open circles.
-##
 createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+  ##############################
+  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+  # data as open circles.
+  ##
   dataTable <- loadData("All") #Grab the raw data
   predictionsK <- singleFactorPredictionsColumn("K") #Predictions from SF with K
   predictionsL <- singleFactorPredictionsColumn("L") #Predictions from SF with L
@@ -457,20 +456,20 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   return(graph)
 }
 
-#################################################
-# Calculates parameter estimates and confidence intervals
-# for the single factor production function for a given a country.
-#
-# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# factor is a string, one of "K", "L", "Q", "X", or "U"
-#
-# returns a data.frame of data for the Cobb-Douglas model. 
-# First row is the +95% CI on all parameters
-# Second row contains the parameter estimates
-# Third row is the -95% CI on all parameters
-# Each column has names: lambda and m corresponding to the parameters in the model.
-##
 singleFactorData <- function(countryAbbrev, factor){
+  #################################################
+  # Calculates parameter estimates and confidence intervals
+  # for the single factor production function for a given a country.
+  #
+  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+  # factor is a string, one of "K", "L", "Q", "X", or "U"
+  #
+  # returns a data.frame of data for the Cobb-Douglas model. 
+  # First row is the +95% CI on all parameters
+  # Second row contains the parameter estimates
+  # Third row is the -95% CI on all parameters
+  # Each column has names: lambda and m corresponding to the parameters in the model.
+  ##
   #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataSF(countryAbbrev, factor)){
     #Return a column of NAs if we don't have data for this factor
@@ -506,20 +505,20 @@ singleFactorData <- function(countryAbbrev, factor){
   return(dataSF)
 }
 
-############
-# Creates a row for the single factor parameters table for the given country (2-letter code) and factor.
-##
 singleFactorCountryRow <- function(countryAbbrev, factor){
+  ############
+  # Creates a row for the single factor parameters table for the given country (2-letter code) and factor.
+  ##
   dataSF <- singleFactorData(countryAbbrev, factor)
   out <- cbind(dataSF["-95% CI", "lambda"], dataSF["SF", "lambda"], dataSF["+95% CI", "lambda"],
                dataSF["-95% CI", "m"],  dataSF["SF", "m"],  dataSF["+95% CI", "m"])
   return(out)
 }
 
-########################
-# Aggregates the single-factor results intoa a big data frame for the given factor
-##
 singleFactorParamsDF <- function(factor){
+  ########################
+  # Aggregates the single-factor results intoa a big data frame for the given factor
+  ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataSF <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRow, factor=factor))
   #Add names to the rows and columns
@@ -529,10 +528,10 @@ singleFactorParamsDF <- function(factor){
   return(dataSF)
 }
 
-############################
-# Aggregates the single-factor results into a big data table for the given factor.
-##
 singleFactorParamsTable <- function(factor){
+  ############################
+  # Aggregates the single-factor results into a big data table for the given factor.
+  ##
   dataSF <- singleFactorParamsDF(factor)
   if (factor == "K"){
     factorString <- "$\\alpha$"
@@ -552,16 +551,16 @@ singleFactorParamsTable <- function(factor){
   return(tableSF)
 }
 
-###########################################
-# Creates a number of rows in a data.frame that contain information 
-# about the coefficients of a single factor model for countryAbbrev.
-# Each parameter has its own row with confidence intervals.
-# The country name is in a column. Which parameter is involved is
-# also in a column.
-# 
-# The return type is a data.frame.
-##
 singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor){
+  ###########################################
+  # Creates a number of rows in a data.frame that contain information 
+  # about the coefficients of a single factor model for countryAbbrev.
+  # Each parameter has its own row with confidence intervals.
+  # The country name is in a column. Which parameter is involved is
+  # also in a column.
+  # 
+  # The return type is a data.frame.
+  ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
   dataSF <- singleFactorData(countryAbbrev, factor)
   valueRow <- "SF"
@@ -580,10 +579,10 @@ singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor){
   return(table)
 }
 
-###############################
-# Prints a covariance table for the given factor of production
-##
 printSFParamsTable <- function(factor){
+  ###############################
+  # Prints a covariance table for the given factor of production
+  ##
   print(singleFactorParamsTable(factor),
         caption.placement="top", 
         sanitize.colnames.function = identity, 
@@ -591,10 +590,10 @@ printSFParamsTable <- function(factor){
         table.placement="H")
 }
 
-#############################
-# Creates a graph with confidene intervals for the single-factor model for the given factor
-##
 createSFParamsGraph <- function(factor){
+  #############################
+  # Creates a graph with confidene intervals for the single-factor model for the given factor
+  ##
   # Figure out the exponent for the desired factor
   if (factor == "K"){
     exponentParameter <- "$\\alpha$"
@@ -630,17 +629,17 @@ createSFParamsGraph <- function(factor){
   return(graph)
 }
 
-###############################
-# Creates a panel for use with a mixed wireframe and cloud.
-# See http://stackoverflow.com/questions/1406202/plotting-a-wireframe-and-a-cloud-with-lattice-in-r
-# 
-# x: x variable to be used in the wireframe plot. This will be the x variable from the wireframe plot.
-# y: y variable to be used in the wireframe plot. This will be the y variable from the wireframe plot.
-# z: z variable to be used in the wireframe plot. This will be the z variable from the wireframe plot.
-# points: a data.frame containing columns named x, y, and z.
-# showPoints: a boolean saying whether you want the points to be shown.
-##
 wireCloudPanel <- function(x, y, z, points, showPoints=TRUE, ...) {
+  ###############################
+  # Creates a panel for use with a mixed wireframe and cloud.
+  # See http://stackoverflow.com/questions/1406202/plotting-a-wireframe-and-a-cloud-with-lattice-in-r
+  # 
+  # x: x variable to be used in the wireframe plot. This will be the x variable from the wireframe plot.
+  # y: y variable to be used in the wireframe plot. This will be the y variable from the wireframe plot.
+  # z: z variable to be used in the wireframe plot. This will be the z variable from the wireframe plot.
+  # points: a data.frame containing columns named x, y, and z.
+  # showPoints: a boolean saying whether you want the points to be shown.
+  ##
   panel.wireframe(x, y, z, ...)
   if (showPoints){
     #pch=16 gives filled circle plot symbol, cex!=1 makes it a different size.
@@ -648,15 +647,15 @@ wireCloudPanel <- function(x, y, z, points, showPoints=TRUE, ...) {
   }
 }
 
-#########################
-# Creates a 3-D wireframe graph with SSE on the vertical axis and 
-# lambda and m on the horizontal axes.
-# params: 
-#   countryAbbrev: 2-letter country code (upper case)
-#   factor: the factor of production you want to use in the single-factor model. One of K, L, Q, X, or U
-#   showOpt: tells whether or not to show a dot at the optimium point.
-##
 sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
+  #########################
+  # Creates a 3-D wireframe graph with SSE on the vertical axis and 
+  # lambda and m on the horizontal axes.
+  # params: 
+  #   countryAbbrev: 2-letter country code (upper case)
+  #   factor: the factor of production you want to use in the single-factor model. One of K, L, Q, X, or U
+  #   showOpt: tells whether or not to show a dot at the optimium point.
+  ##
   # First, make a data.frame with which we want to make predictions
   lambdaSeq <- seq(0.0, 0.05, by=0.01)
   mSeq <- seq(0.0, 1.0, by=0.1)
@@ -727,12 +726,12 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   return(fig)    
 }
 
-## <<cobb-douglas functions, eval=TRUE>>=
-  ####################
-# Returns an nls Cobb-Douglas model (without energy) for the country specified. 
-# No energy is included in the function to be fitted.
-##
 cdModel <- function(countryAbbrev,...){
+  ## <<cobb-douglas functions, eval=TRUE>>=
+  ####################
+  # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
+  # No energy is included in the function to be fitted.
+  ##
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
   # Establish guess values for alpha and lambda.
@@ -750,11 +749,11 @@ cdModel <- function(countryAbbrev,...){
   return(modelCD)
 }
 
-####################
-# Returns an nls Cobb-Douglas model for the country specified
-# energyType is one of "Q", "X", or "U".
-##
 cdeModel <- function(countryAbbrev, energyType,...){
+  ####################
+  # Returns an nls Cobb-Douglas model for the country specified
+  # energyType is one of "Q", "X", or "U".
+  ##
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
@@ -793,10 +792,10 @@ cdeModel <- function(countryAbbrev, energyType,...){
   return(modelCDe)
 }
 
-##############################
-# Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
-##
 cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
+  ##############################
+  # Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
+  ##
   dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
@@ -826,14 +825,14 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
   return(modelCDe)
 }
 
-####################
-# Returns an nls Cobb-Douglas model for the country specified
-# Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType=NA 
-# for a model without energy.
-# If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
-# This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
-##
 cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
+  ####################
+  # Returns an nls Cobb-Douglas model for the country specified
+  # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType=NA 
+  # for a model without energy.
+  # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
+  # This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
+  ##
   if (is.na(energyType)){
     # Fit the Cobb-Douglas model without energy.
     return(cdModel(countryAbbrev=countryAbbrev,...))
@@ -846,11 +845,11 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
   return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType,...))
 }
 
-###############################
-# Does a grid search over values of gamma for a CD with energy production function.
-# Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
-##
 cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
+  ###############################
+  # Does a grid search over values of gamma for a CD with energy production function.
+  # Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
+  ##
   gamma <- gammaGrid
   models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
   SSE <- unlist(lapply(models, function(model){summary(model)$sigma}))
@@ -868,14 +867,14 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
   return(data)
 }
 
-#######################
-# Creates a single graph or a multi-panel lattice plot showing grid search over gamma for Cobb-Douglas models with 
-# the given quantification for energy.
-# countryAbbrev: one of "US", "UK", "JP", "CN", "ZA", "SA", "IR", "TZ", or "ZM". Set to NA if you want a lattice
-# plot for all countries
-# energyType: one of "Q", "X", or "U"
-##
 cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc, textScaling = 1.0){
+  #######################
+  # Creates a single graph or a multi-panel lattice plot showing grid search over gamma for Cobb-Douglas models with 
+  # the given quantification for energy.
+  # countryAbbrev: one of "US", "UK", "JP", "CN", "ZA", "SA", "IR", "TZ", or "ZM". Set to NA if you want a lattice
+  # plot for all countries
+  # energyType: one of "Q", "X", or "U"
+  ##
   gammaGrid <- seq(0.0, 0.95, by=0.05) # Establishes the grid in which we're interested.
   alphaBetaGammaRange <- c(-0.1, 1.5)
   alphaBetaGammaTics <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
@@ -961,11 +960,11 @@ cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLo
   return(doubleYGraph)
 }
 
-#########################
-# Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
-# Returns a data.frame with the predictions.
-##
 cobbDouglasPredictions <- function(countryAbbrev, energyType){
+  #########################
+  # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
+  # Returns a data.frame with the predictions.
+  ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!is.na(energyType)){
     # Consider this replacement only if energyType has been specified.
@@ -986,11 +985,11 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-#########################
-# Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
-# that corresponds, row for row, with the AllData.txt file.
-##
 cobbDouglasPredictionsColumn <- function(energyType){
+  #########################
+  # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
+  # that corresponds, row for row, with the AllData.txt file.
+  ##
   out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType))
   if (is.na(energyType)){
     colnames(out) <- c("predGDP")
@@ -1000,20 +999,20 @@ cobbDouglasPredictionsColumn <- function(energyType){
   return(out)
 }
 
-#################################################
-# Calculates parameter estimates and confidence intervals
-# for the Cobb-Douglas production function given a country.
-#
-# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyType is a string, one of "Q", "X", "U", or NA. NA means you want a CD model without energy.
-#
-# returns a data.frame of data for the Cobb-Douglas model. 
-# First row is the +95% CI on all parameters
-# Second row contains the parameter estimates
-# Third row is the -95% CI on all parameters
-# Each column has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
-##
 cobbDouglasData <- function(countryAbbrev, energyType, ...){
+  #################################################
+  # Calculates parameter estimates and confidence intervals
+  # for the Cobb-Douglas production function given a country.
+  #
+  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+  # energyType is a string, one of "Q", "X", "U", or NA. NA means you want a CD model without energy.
+  #
+  # returns a data.frame of data for the Cobb-Douglas model. 
+  # First row is the +95% CI on all parameters
+  # Second row contains the parameter estimates
+  # Third row is the -95% CI on all parameters
+  # Each column has names: lambda, alpha, beta, gamma, corresponding to the parameters in the model.
+  ##
   # First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataCD(countryAbbrev, energyType)){
     #Return a column of NAs if the above conditions have been met.
@@ -1026,10 +1025,10 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
   }
   # We have a combination of country and energy type for which we have data.
   modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
-  print(str(modelCD))
+#print(str(modelCD))
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-  print(summaryCD)
-  print("Before CI calculation")
+#print(summaryCD)
+#print("Before CI calculation")
   # Calculates confidence intervals for the CD model.
   
   ciCD <- tryCatch( confint( profile(modelCD, ...) , level=ciLevel,...), error=function(e) { modelCD } )
@@ -1037,9 +1036,9 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
     warning("Early exit from CobbDouglassData");
     return(ciCD)
   }
-  print("After CI calculation")
+#print("After CI calculation")
   
-  print(ciCD)
+#print(ciCD)
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD)
   if (is.na(energyType)){
@@ -1094,10 +1093,10 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
   return(dataCD)
 }
 
-############
-# Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
-##
 cobbDouglasCountryRow <- function(countryAbbrev, energyType){
+  ############
+  # Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
+  ##
   dataCD <- cobbDouglasData(countryAbbrev, energyType)
   if (is.na(energyType)){
     out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
@@ -1112,16 +1111,16 @@ cobbDouglasCountryRow <- function(countryAbbrev, energyType){
   return(out)
 }
 
-###########################################
-# Creates a number of rows in a data.frame that contain information 
-# about the coefficients of a Cobb-Douglas model for countryAbbrev.
-# Each parameter has its own row with confidence intervals.
-# The country name is in a column. Which parameter is involved is
-# also in a column.
-# 
-# The return type is a data.frame.
-##
 cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+  ###########################################
+  # Creates a number of rows in a data.frame that contain information 
+  # about the coefficients of a Cobb-Douglas model for countryAbbrev.
+  # Each parameter has its own row with confidence intervals.
+  # The country name is in a column. Which parameter is involved is
+  # also in a column.
+  # 
+  # The return type is a data.frame.
+  ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
   if (is.na(energyType)){
     valueRow <- "CD"
@@ -1159,10 +1158,10 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   return(table)
 }
 
-######################
-# Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
-##
 cobbDouglasParamsTableNoEnergyDF <- function(){
+  ######################
+  # Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
+  ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=NA))
   rownames(dataCD) <- countryAbbrevs
@@ -1173,10 +1172,10 @@ cobbDouglasParamsTableNoEnergyDF <- function(){
   return(dataCD)
 }
 
-############################
-# Aggregates the Cobb-Douglas results into a big data table. No energy.
-##
 cobbDouglasParamsTableNoEnergy <- function(){
+  ############################
+  # Aggregates the Cobb-Douglas results into a big data table. No energy.
+  ##
   dataCD <- cobbDouglasParamsTableNoEnergyDF()
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
@@ -1190,10 +1189,10 @@ cobbDouglasParamsTableNoEnergy <- function(){
   return(tableCD)
 }
 
-######################
-# Makes a data.frame with the parameters for the Cobb-Douglas model with energy.
-##
 cobbDouglasParamsTableWithEnergyDF <- function(energyType){
+  ######################
+  # Makes a data.frame with the parameters for the Cobb-Douglas model with energy.
+  ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
   rownames(dataCD) <- countryAbbrevs
@@ -1205,10 +1204,10 @@ cobbDouglasParamsTableWithEnergyDF <- function(energyType){
   return(dataCD)
 }
 
-############################
-# Aggregates the Cobb-Douglas results into a big data table for the given energyType.
-##
 cobbDouglasParamsTableWithEnergy <- function(energyType){
+  ############################
+  # Aggregates the Cobb-Douglas results into a big data table for the given energyType.
+  ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
@@ -1224,11 +1223,11 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
   return(tableCD)
 }
 
-############################
-# Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
-# Set energyType=NA to print a table for Cobb-Douglas without energy.
-##
 printCDParamsTable <- function(energyType){
+  ############################
+  # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
+  # Set energyType=NA to print a table for Cobb-Douglas without energy.
+  ##
   if (is.na(energyType)){
     print(cobbDouglasParamsTableNoEnergy(), 
           caption.placement="top", 
@@ -1244,11 +1243,11 @@ printCDParamsTable <- function(energyType){
   }
 }
 
-#############################
-# Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType. If you 
-# want the Cobb-Douglas model without energy, supply energyType=NA.
-##
 createCDParamsGraph <- function(energyType){
+  #############################
+  # Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType. If you 
+  # want the Cobb-Douglas model without energy, supply energyType=NA.
+  ##
   if (is.na(energyType)){
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
@@ -1310,10 +1309,10 @@ createCDParamsGraph <- function(energyType){
   return(graph)
 }
 
-##############################
-# Creates a graph that plots predicted GDP as lines and GDP data as open circles.
-##
 createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+  ##############################
+  # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
+  ##
   dataTable <- loadData("All") #Grab the raw data
   predictions  <- cobbDouglasPredictionsColumn(energyType=NA)  #Predictions from CD without energy
   predictionsQ <- cobbDouglasPredictionsColumn(energyType="Q") #Predictions from CD with Q
@@ -1377,20 +1376,20 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
 }
 
 ## <<ces functions, eval=TRUE>>=
-  # Set some common names for CES variables.
-  xNamesWithoutEnergy = c("iCapStk", "iLabor")
+# Set some common names for CES variables.
+xNamesWithoutEnergy = c("iCapStk", "iLabor")
 xNamesWithEnergy = c("iCapStk", "iLabor", "iEToFit")
 tName = "iYear"
 yName = "iGDP"
 
-######################################
-# Loads data and trims rows where necessary.
-# Also, replaces the name of the desired energy column with "iEToFit".
-# If you set energyType=NA, "iEToFit" will not appear in the column names, because
-# it is assumed that you want a CES fit without an energy term.
-# Returns a data.frame with the loaded data.
-##
 loadAndPrepDataForCES <- function(countryAbbrev, energyType){
+  ######################################
+  # Loads data and trims rows where necessary.
+  # Also, replaces the name of the desired energy column with "iEToFit".
+  # If you set energyType=NA, "iEToFit" will not appear in the column names, because
+  # it is assumed that you want a CES fit without an energy term.
+  # Returns a data.frame with the loaded data.
+  ##
   dataTable <- loadData(countryAbbrev)
   # Trim data from China and South Africa that is missing labor information for 2011.
   dataTable <- subset(dataTable, !is.na(iLabor))
@@ -1410,10 +1409,10 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   return(dataTable)
 }
 
-########################
-# Returns a cesEst model (without energy) for the country specified.
-##
 cesModelNoEnergy <- function(countryAbbrev){
+  ########################
+  # Returns a cesEst model (without energy) for the country specified.
+  ##
   # Load the data that we need.
   dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType=NA)
   control=nls.lm.control(maxiter=1000, maxfev=2000)
@@ -1421,12 +1420,12 @@ cesModelNoEnergy <- function(countryAbbrev){
   return(modelCES)
 }
 
-####################
-# Returns a cesEst model for the country and energyType specified.
-# energyType should be one of Q", "X", "U", or NA.
-# If energyType=NA, this method dispatches to the function cesModelNoEnergy(countryAbbrev)
-##
 cesModel <- function(countryAbbrev, energyType){
+  ####################
+  # Returns a cesEst model for the country and energyType specified.
+  # energyType should be one of Q", "X", "U", or NA.
+  # If energyType=NA, this method dispatches to the function cesModelNoEnergy(countryAbbrev)
+  ##
   if (is.na(energyType)){
     return(cesModelNoEnergy(countryAbbrev))
   }
@@ -1531,12 +1530,12 @@ cesModel <- function(countryAbbrev, energyType){
   return(modelCES)
 }
 
-#########################
-# Takes the CES fitted models and creates per-country predictions for them.
-# Returns a data.frame with the predictions.
-# If energyType=NA, the CES model without energy will be used.
-##
 cesPredictions <- function(countryAbbrev, energyType){
+  #########################
+  # Takes the CES fitted models and creates per-country predictions for them.
+  # Returns a data.frame with the predictions.
+  # If energyType=NA, the CES model without energy will be used.
+  ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!(haveDataCES(countryAbbrev, energyType))){
     # If we don't have data for this combination of countryAbbrev and energyType, 
@@ -1554,12 +1553,12 @@ cesPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-#########################
-# Takes the CES fitted models and creates a single column of predicted GDP values
-# that corresponds, row for row, with the AllData.txt file.
-# If energyType=NA is specified, the CES model without energy will be used for the predictions.
-##
 cesPredictionsColumn <- function(energyType){
+  #########################
+  # Takes the CES fitted models and creates a single column of predicted GDP values
+  # that corresponds, row for row, with the AllData.txt file.
+  # If energyType=NA is specified, the CES model without energy will be used for the predictions.
+  ##
   out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType))  
   if (is.na(energyType)){
     colnames(out) <- "predGDP"
@@ -1569,11 +1568,11 @@ cesPredictionsColumn <- function(energyType){
   return(out)
 }
 
-##############################
-# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-# data as open circles.
-##
 createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+  ##############################
+  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+  # data as open circles.
+  ##
   dataTable <- loadData("All") #Grab the raw data
   predictions  <- cesPredictionsColumn(energyType=NA)  #Predictions from CES without energy
   predictionsQ <- cesPredictionsColumn(energyType="Q") #Predictions from CES with Q
@@ -1636,21 +1635,21 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
   return(graph)
 }
 
-#################################################
-# Calculates parameter estimates and confidence intervals
-# for the CES production function given a country and an energyType.
-#
-# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyType is a string, one of "Q", "X", "U", or NA. energyType=NA means we're interested
-# in a CES function without energy.
-#
-# returns a data.frame of data for the CES model.
-# First row is the +95% CI on all parameters
-# Second row contains the parameter estimates
-# Third row is the -95% CI on all parameters
-# Each column has names: gamma, lambda, delta_1, delta, rho_1, rho
-##
 cesData <- function(countryAbbrev, energyType){
+  #################################################
+  # Calculates parameter estimates and confidence intervals
+  # for the CES production function given a country and an energyType.
+  #
+  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+  # energyType is a string, one of "Q", "X", "U", or NA. energyType=NA means we're interested
+  # in a CES function without energy.
+  #
+  # returns a data.frame of data for the CES model.
+  # First row is the +95% CI on all parameters
+  # Second row contains the parameter estimates
+  # Third row is the -95% CI on all parameters
+  # Each column has names: gamma, lambda, delta_1, delta, rho_1, rho
+  ##
   # Determine whether we want an energy term or not
   if (is.na(energyType)){
     wantEnergyTerm <- FALSE
@@ -1754,10 +1753,10 @@ cesData <- function(countryAbbrev, energyType){
   return(dataCES)
 }
 
-############
-# Creates a row for the CES parameters table for the given country (2-letter code) and energyType (Q, X, U, or NA)
-##
 cesCountryRow <- function(countryAbbrev, energyType){
+  ############
+  # Creates a row for the CES parameters table for the given country (2-letter code) and energyType (Q, X, U, or NA)
+  ##
   dataCES <- cesData(countryAbbrev, energyType)
   out <- cbind(dataCES["-95% CI", "gamma"], dataCES["CES", "gamma"], dataCES["+95% CI", "gamma"],
                dataCES["-95% CI", "lambda"], dataCES["CES", "lambda"], dataCES["+95% CI", "lambda"],
@@ -1769,17 +1768,17 @@ cesCountryRow <- function(countryAbbrev, energyType){
   return(out)
 }
 
-###########################################
-# Creates a number of rows in a data.frame that contain information 
-# about the coefficients of a CES model for countryAbbrev and energyType
-# Each parameter has its own row with confidence intervals.
-# The country name is in a column. Which parameter is involved is
-# also in a column.
-# Set energyType=NA for the CES model without energy.
-# 
-# The return type is a data.frame.
-##
 cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+  ###########################################
+  # Creates a number of rows in a data.frame that contain information 
+  # about the coefficients of a CES model for countryAbbrev and energyType
+  # Each parameter has its own row with confidence intervals.
+  # The country name is in a column. Which parameter is involved is
+  # also in a column.
+  # Set energyType=NA for the CES model without energy.
+  # 
+  # The return type is a data.frame.
+  ##
   #Create six rows, one for each parameter. Each row is a data.frame so that it is plottable!
   dataCES <- cesData(countryAbbrev, energyType)
   gammaRow <- data.frame(country = countryAbbrev, 
@@ -1816,9 +1815,10 @@ cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   return(table)
 }
 
-######################
-# Creates a data.frame for CES parameters
 cesParamsTableDF <- function(energyType){
+  ######################
+  # Creates a data.frame for CES parameters
+  ##
   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
   colnames(dataCES) <- c("lowerCI_gamma", "gamma", "upperCI_gamma",
                          "lowerCI_lambda", "lambda", "upperCI_lambda",
@@ -1830,10 +1830,10 @@ cesParamsTableDF <- function(energyType){
   return(dataCES)
 }
 
-############################
-# Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
-##
 cesParamsTableA <- function(energyType){
+  ############################
+  # Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
+  ##
   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
@@ -1858,10 +1858,10 @@ cesParamsTableA <- function(energyType){
   return(tableCESa)
 }
 
-############################
-# Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
-##
 cesParamsTableB <- function(energyType){
+  ############################
+  # Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
+  ##
   dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
@@ -1886,10 +1886,10 @@ cesParamsTableB <- function(energyType){
   return(tableCESb)
 }
 
-#############################
-# Creates a graph with confidence intervals for the CES model for the given energyType
-##
 createCESParamsGraph <- function(energyType){
+  #############################
+  # Creates a graph with confidence intervals for the CES model for the given energyType
+  ##
   # Create a data table with the following columns:
   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
   dataTable <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType))
@@ -1922,10 +1922,10 @@ createCESParamsGraph <- function(energyType){
   return(graph)
 }
 
-############################
-# Prints a table with lambda, delta, and sigma parameters from a CES model for the given energyType. 
-##
 printCESParamsTableA <- function(energyType){
+  ############################
+  # Prints a table with lambda, delta, and sigma parameters from a CES model for the given energyType. 
+  ##
   print(cesParamsTableA(energyType=energyType), 
         caption.placement="top", 
         sanitize.colnames.function = identity, 
@@ -1933,10 +1933,10 @@ printCESParamsTableA <- function(energyType){
         table.placement="H")
 }
 
-############################
-# Prints a table with gamma, delta_1, and sigma_1 parameters from a CES model for the given energyType. 
-##
 printCESParamsTableB <- function(energyType){
+  ############################
+  # Prints a table with gamma, delta_1, and sigma_1 parameters from a CES model for the given energyType. 
+  ##
   print(cesParamsTableB(energyType=energyType), 
         caption.placement="top", 
         sanitize.colnames.function = identity, 
@@ -1945,11 +1945,11 @@ printCESParamsTableB <- function(energyType){
 }
 
 ## <<LINEX functions, eval=TRUE>>=
-  ####################
-# Returns an nls linex model for the country and energyType specified.
-# energyType should be one of Q", "X", or "U".
-##
 linexModel <- function(countryAbbrev, energyType){
+  ####################
+  # Returns an nls linex model for the country and energyType specified.
+  # energyType should be one of Q", "X", or "U".
+  ##
   # Load the data that we need.
   dataTable <- loadData(countryAbbrev)
   # We need to do the CES fit with the desired energyType.
@@ -1976,11 +1976,11 @@ linexModel <- function(countryAbbrev, energyType){
   return(modelLINEX)
 }
 
-#########################
-# Takes the LINEX fitted models and creates per-country predictions for them.
-# Returns a data.frame with the predictions.
-##
 linexPredictions <- function(countryAbbrev, energyType){
+  #########################
+  # Takes the LINEX fitted models and creates per-country predictions for them.
+  # Returns a data.frame with the predictions.
+  ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
   if (!(haveDataSF(countryAbbrev, energyType))){
     # If we don't have data for this combination of countryAbbrev and energyType, 
@@ -1998,21 +1998,21 @@ linexPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-#########################
-# Takes the LINEX fitted models and creates a single column of predicted GDP values
-# that corresponds, row for row, with the AllData.txt file.
-##
 linexPredictionsColumn <- function(energyType){
+  #########################
+  # Takes the LINEX fitted models and creates a single column of predicted GDP values
+  # that corresponds, row for row, with the AllData.txt file.
+  ##
   out <- do.call("rbind", lapply(countryAbbrevs, linexPredictions, energyType=energyType))
   colnames(out) <- c(paste("predGDP", energyType, sep=""))
   return(out)
 }
 
-##############################
-# Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-# data as open circles.
-##
 createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+  ##############################
+  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+  # data as open circles.
+  ##
   dataTable <- loadData("All") #Grab the raw data
   predictionsQ <- linexPredictionsColumn("Q") #Predictions from LINEX with Q
   predictionsX <- linexPredictionsColumn("X") #Predictions from LINEX with X
@@ -2074,20 +2074,20 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
   return(graph)
 }
 
-#################################################
-# Calculates parameter estimates and confidence intervals
-# for the LINEX production function given a country and an energyType.
-#
-# countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-# energyType is a string, one of "Q", "X", or "U"
-#
-# returns a data.frame of data for the LINEX model.
-# First row is the +95% CI on all parameters
-# Second row contains the parameter estimates
-# Third row is the -95% CI on all parameters
-# Each column has names: a_0 and c_t, corresponding to the parameters in the model.
-##
 linexData <- function(countryAbbrev, energyType){
+  #################################################
+  # Calculates parameter estimates and confidence intervals
+  # for the LINEX production function given a country and an energyType.
+  #
+  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
+  # energyType is a string, one of "Q", "X", or "U"
+  #
+  # returns a data.frame of data for the LINEX model.
+  # First row is the +95% CI on all parameters
+  # Second row contains the parameter estimates
+  # Third row is the -95% CI on all parameters
+  # Each column has names: a_0 and c_t, corresponding to the parameters in the model.
+  ##
   #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataCD(countryAbbrev, energyType)){
     #Return a column of NAs if the above conditions have been met.
@@ -2121,26 +2121,26 @@ linexData <- function(countryAbbrev, energyType){
   return(dataLINEX)
 }
 
-############
-# Creates a row for the LINEX parameters table for the given country (2-letter code) and energyType (Q, X, or U)
-##
 linexCountryRow <- function(countryAbbrev, energyType){
+  ############
+  # Creates a row for the LINEX parameters table for the given country (2-letter code) and energyType (Q, X, or U)
+  ##
   dataLINEX <- linexData(countryAbbrev, energyType)
   out <- cbind(dataLINEX["-95% CI", "a_0"], dataLINEX["LINEX", "a_0"], dataLINEX["+95% CI", "a_0"],
                dataLINEX["-95% CI", "c_t"], dataLINEX["LINEX", "c_t"], dataLINEX["+95% CI", "c_t"])
   return(out)
 }
 
-###########################################
-# Creates a number of rows in a data.frame that contain information 
-# about the coefficients of a LINEX model for countryAbbrev and energyType
-# Each parameter has its own row with confidence intervals.
-# The country name is in a column. Which parameter is involved is
-# also in a column.
-# 
-# The return type is a data.frame.
-##
 linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+  ###########################################
+  # Creates a number of rows in a data.frame that contain information 
+  # about the coefficients of a LINEX model for countryAbbrev and energyType
+  # Each parameter has its own row with confidence intervals.
+  # The country name is in a column. Which parameter is involved is
+  # also in a column.
+  # 
+  # The return type is a data.frame.
+  ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
   dataLINEX <- linexData(countryAbbrev, energyType)
   a_0Row <- data.frame(country = countryAbbrev, 
@@ -2157,10 +2157,10 @@ linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   return(table)
 }
 
-#############################
-# Creates a graph with confidence intervals for the LINEX model for the given energyType
-##
 createLINEXParamsGraph <- function(energyType){
+  #############################
+  # Creates a graph with confidence intervals for the LINEX model for the given energyType
+  ##
   # Create a data table with the following columns:
   # country abbrev, parameter (a_0, c_t), -95% CI, value, +95% CI
   dataTable <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType))
@@ -2187,10 +2187,10 @@ createLINEXParamsGraph <- function(energyType){
   return(graph)
 }
 
-#####################
-# Creates a data.frame containing all parameters and their confidence intervals 
-##
 linexParamsTableDF <- function(energyType){
+  #####################
+  # Creates a data.frame containing all parameters and their confidence intervals 
+  ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
   dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
   colnames(dataLINEX) <- c("lowerCI_a_0", "a_0", "upperCI_a_0",
@@ -2199,10 +2199,10 @@ linexParamsTableDF <- function(energyType){
   return(dataLINEX)
 }
 
-############################
-# Aggregates the LINEX results into a big data table for the given energyType.
-##
 linexParamsTable <- function(energyType){
+  ############################
+  # Aggregates the LINEX results into a big data table for the given energyType.
+  ##
   dataLINEX <- linexParamsTableDF(energyType)
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
@@ -2214,10 +2214,10 @@ linexParamsTable <- function(energyType){
   return(tableLINEX)
 }
 
-############################
-# Prints a table with parameters from a LINEX model for the given energyType. 
-##
 printLINEXParamsTable <- function(energyType){
+  ############################
+  # Prints a table with parameters from a LINEX model for the given energyType. 
+  ##
   print(linexParamsTable(energyType), 
         caption.placement="top", 
         sanitize.colnames.function = identity, 
@@ -2226,10 +2226,10 @@ printLINEXParamsTable <- function(energyType){
 }
 
 ## <<AIC_Table_Functions, eval=TRUE>>=
-  ###############################
-# Creates an xtable object that holds the AIC values for each parameter estimation that we include.
-##
 createAICTable <- function(){
+  ###############################
+  # Creates an xtable object that holds the AIC values for each parameter estimation that we include.
+  ##
   ######################
   # Single-factor models
   ######################
@@ -2333,19 +2333,19 @@ createAICTable <- function(){
 }
 
 ## <<CIvsParam_Graph, eval=TRUE>>=
-  ############################
-# Creates a data.frame that contains the following information:
-# row name: 2-letter country abbreviation
-# 1st col: parameter value. The name of this column is the name of the parameter, "sigma", "delta", etc. 
-#          as appropriate for the model generating the data
-# 2nd col: width of the confidence interval. The name of this column is "CI"
-# 3rd col: an identifier for parameter, model, and (factor or energy type). 
-#          For example, if you want the sigma parameter for the CES model with Q, you would get "sigmaCESeq".
-#          If you want the m parameter for the single-factor mdoel with k, you would get "mSFk".
-#          If you want the alpha parameter for the Cobb-Douglas model without energy, you would get "alphaCD".
-#          The name of the column is "factor"
-##
 CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
+  ############################
+  # Creates a data.frame that contains the following information:
+  # row name: 2-letter country abbreviation
+  # 1st col: parameter value. The name of this column is the name of the parameter, "sigma", "delta", etc. 
+  #          as appropriate for the model generating the data
+  # 2nd col: width of the confidence interval. The name of this column is "CI"
+  # 3rd col: an identifier for parameter, model, and (factor or energy type). 
+  #          For example, if you want the sigma parameter for the CES model with Q, you would get "sigmaCESeq".
+  #          If you want the m parameter for the single-factor mdoel with k, you would get "mSFk".
+  #          If you want the alpha parameter for the Cobb-Douglas model without energy, you would get "alphaCD".
+  #          The name of the column is "factor"
+  ##
   # Get the data from the requested model
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
   else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
@@ -2412,23 +2412,23 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   return(data)
 }
 
-#######################
-# Creates a plot of confidence interval vs. value of a parameter with symbols being the 2-letter abbreviation
-# for each country.
-# 
-# model the model function you want to use. One of SF, CD, CDe, CES, or LINEX.
-# param the parameter you want to plot. The options depend upon the model you want:
-#       SF: lambda or m
-#       CD: lambda, alpha, or beta
-#      CDe: lambda, alpha, beta, or gamma
-#      CES: gamma, lambda, delta_1, sigma_1, or delta
-#     CESe: gamma, lambda, delta_1, sigma_1, delta, or sigma
-#    LINEX: a_0 or c_t
-# energyType the energy type you want. One of Q, X, or U
-# factor the factor you want to use in a single-factor model, if needed. One of K, L, Q, X, or U.
-# textScaling the scale factor for labels on the graph
-##
 CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.0){
+  #######################
+  # Creates a plot of confidence interval vs. value of a parameter with symbols being the 2-letter abbreviation
+  # for each country.
+  # 
+  # model the model function you want to use. One of SF, CD, CDe, CES, or LINEX.
+  # param the parameter you want to plot. The options depend upon the model you want:
+  #       SF: lambda or m
+  #       CD: lambda, alpha, or beta
+  #      CDe: lambda, alpha, beta, or gamma
+  #      CES: gamma, lambda, delta_1, sigma_1, or delta
+  #     CESe: gamma, lambda, delta_1, sigma_1, delta, or sigma
+  #    LINEX: a_0 or c_t
+  # energyType the energy type you want. One of Q, X, or U
+  # factor the factor you want to use in a single-factor model, if needed. One of K, L, Q, X, or U.
+  # textScaling the scale factor for labels on the graph
+  ##
   # Get the data from the requested model
   data <- CIvsParamDF(model=model, param=param, energyType=energyType, factor=factor)
   # Also, set limits on the x and y axes if needed
@@ -2503,24 +2503,24 @@ CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.
   return(plot)
 }
 
-########################
-# Creates a lattice plot that has the size of confidence intervals on the vertical axis and parameter
-# values on the horizontal axis.
-# At this point, this function is NOT a general-purpose function, as the number of permutations
-# of model, parameter, energy type, and factor is too varied to be able to turn into a general-purpose 
-# graph with little time investment at this point.
-# This function makes a lattice plot with the following panels (in the arrangement shown)
-#
-# gammaCDeq   gammaCDex    gammaCDeu
-# deltaCESeq  deltaCESex   deltaCESeu
-# sigmaCESeq  sigmaCESex   sigmaCESeu
-#
-# Parameters and models (gamma for CDe and delta and sigma for CESe) are in rows and energyTypes (q, x, and u) 
-# are in columns.
-#
-# textScaling: the amount by which you want to scale the text on the graph.
-##
 CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
+  ########################
+  # Creates a lattice plot that has the size of confidence intervals on the vertical axis and parameter
+  # values on the horizontal axis.
+  # At this point, this function is NOT a general-purpose function, as the number of permutations
+  # of model, parameter, energy type, and factor is too varied to be able to turn into a general-purpose 
+  # graph with little time investment at this point.
+  # This function makes a lattice plot with the following panels (in the arrangement shown)
+  #
+  # gammaCDeq   gammaCDex    gammaCDeu
+  # deltaCESeq  deltaCESex   deltaCESeu
+  # sigmaCESeq  sigmaCESex   sigmaCESeu
+  #
+  # Parameters and models (gamma for CDe and delta and sigma for CESe) are in rows and energyTypes (q, x, and u) 
+  # are in columns.
+  #
+  # textScaling: the amount by which you want to scale the text on the graph.
+  ##
   # Set up plotting parameters that are common to both graphs.
   xTics <- c(0.0, 0.5, 1.0) #x axis tic locations
   yTics <- c(0.0, 1.0, 2.0) #y axis tic locations
@@ -2650,13 +2650,13 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 }
 
 ## <<PartialResidualPlots, eval=TRUE>>=
-  #############################
-# Creates a data.frame containing raw data and residuals for given arguments.
-# modelType: one of "CD" or "CES"
-# countryAbbrev: the country of interest to you
-# energyType: one of "Q", "X", or "U"
-##
 calcResiduals <- function(countryAbbrev, modelType, energyType){
+  #############################
+  # Creates a data.frame containing raw data and residuals for given arguments.
+  # modelType: one of "CD" or "CES"
+  # countryAbbrev: the country of interest to you
+  # energyType: one of "Q", "X", or "U"
+  ##
   # Get the model
   if (modelType == "CD"){
     model <- cdModel(countryAbbrev)  
@@ -2678,14 +2678,14 @@ calcResiduals <- function(countryAbbrev, modelType, energyType){
   return(data)
 }
 
-#################
-# Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
-# modelType: one of "CD" or "CES"
-# energyType: one of "Q", "X", or "U" to serve as the ordinate of the graph
-# countryAbbrev: set to NA (the default) if you want a lattice graph with all countries shown. Set to one of
-#                US, UK, JP, CN, ZA, SA, IR, TZ, ZM for an individual graph.
-## 
 createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, textScaling=1.0){
+  #################
+  # Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
+  # modelType: one of "CD" or "CES"
+  # energyType: one of "Q", "X", or "U" to serve as the ordinate of the graph
+  # countryAbbrev: set to NA (the default) if you want a lattice graph with all countries shown. Set to one of
+  #                US, UK, JP, CN, ZA, SA, IR, TZ, ZM for an individual graph.
+  ## 
   xLabelString <- paste("$", tolower(energyType), "$", sep="")
   yLabelString <- paste("$y$ residuals (", modelType, " without energy)", sep="")
   if (! is.na(countryAbbrev)){
