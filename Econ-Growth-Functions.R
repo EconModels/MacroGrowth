@@ -10,24 +10,7 @@ require(micEconCES)
 require(reshape2) # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
-# require(tikzDevice) 
-# trellis.par.set(theme=theme.mosaic())
-# options(width=75)
-# options(show.signif.stars=TRUE)
-# opts_chunk$set(
-#   # ********************************************************************************************************
-#   eval=TRUE,
-#   # ********************************************************************************************************
-#   dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
-#   tidy=FALSE,
-#   comment=NA,
-#   #Tells whether to cache output from chunks are saved. Cacheing saves time. 
-#   #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (i.e., cache=TRUE).
-#   cache=FALSE,
-#   warning=FALSE,  #Tells whether to show warnings in the output.
-#   message=FALSE, #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
-#   echo=FALSE     #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
-# )
+require(tikzDevice) 
 
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
