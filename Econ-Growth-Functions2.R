@@ -165,7 +165,7 @@ haveDataLINEX <- function(countryAbbrev, energyType){
 
 padRows1 <- function( data, otherData) {
   nRowsToAdd <- nrow(otherData) - nrow(data)
-  if (nRowsToAdd < 1) stop( paste( "Model data frame has", abs(nRowsToAdd), "fewer rows than target."))
+  if (nRowsToAdd < 0) stop( paste( "Model data frame has", abs(nRowsToAdd), "fewer rows than target."))
   dfToAppend <- as.data.frame(matrix(NA, ncol=ncol(data), nrow=nRowsToAdd))
   colnames(dfToAppend) <- colnames(data)
   return(rbind(data, dfToAppend))
@@ -217,7 +217,7 @@ replaceColName <- function(dataTable, factor, newName){
   # newName should be a string and the desired new name of the column
   # returns dataTable with a new name for one of its factor column.
   ##
-  colIndex <- columnIndex(dataTable, factor)
+  colIndex <- columnIndex(dataTable=dataTable, factor=factor)
   colnames(dataTable)[colIndex] <- newName #Change desired column name to newName
   return(dataTable)
 }
@@ -256,7 +256,7 @@ printCovarTable <- function(countryAbbrev){
   covarXtable <- xtable(x=covarResults, 
                         caption=paste(countryAbbrev, "covariance table."), 
                         label=paste("tab:Covariance_", countryAbbrev, sep=""))
-  print(covarianceTable(countryAbbrev), 
+  print(covarXtable, 
         caption.placement="top", 
         sanitize.rownames.function = identity,
         sanitize.colnames.function = identity,
@@ -337,22 +337,21 @@ singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, facto
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
   ##
-  dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We'll change the name of the desired column to "f"
-  dataTable <- replaceColName(dataTable, factor, "f")
+  data <- replaceColName(data, factor, "f")
   # Now do the fit.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  mGuess <- 0.5 # works for almost every country
   # Some economies need different guesses
-  if (countryAbbrev == "IR" && factor == "X"){
-    mGuess <- 0.7
-  } else {
-    # This works for every other combination of country and factor.
-    mGuess <- 0.5
-  }
+  # I'm commenting the following code for now. The goal here is to make it 
+  # possible to supply a data.frame to this method.
+#   if (countryAbbrev == "IR" && factor == "X"){
+#     mGuess <- 0.7
+#   }
   start <- list(lambda=lambdaGuess, m=mGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * f^m
-  modelSF <- nls(formula=model, data=dataTable, start = start)
+  modelSF <- nls(formula=model, data=data, start = start)
   #   model <- iGDP ~ exp(lambda*iYear) * f^m
   #   modelSF <- wrapnls(formula=model, data=dataTable, start=list(lambda=lambdaGuess, m=mGuess))
   return(modelSF)
@@ -372,7 +371,7 @@ singleFactorPredictions <- function(countryAbbrev, factor){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- singleFactorModel(countryAbbrev, factor)
+  model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -484,7 +483,7 @@ singleFactorData <- function(countryAbbrev, factor){
     return(df)
   }
   # We have a combination of country and factor for which we have data.
-  modelSF <- singleFactorModel(countryAbbrev, factor)
+  modelSF <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
   summarySF <- summary(modelSF) # Gives the nls summary table.
   ciSF <- confint(modelSF, level = ciLevel)  # Calculates confidence intervals for the SF model.
   dofSF <- summarySF$df[2] # Gives the degrees of freedom for the model.
@@ -669,7 +668,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   y_act <- data[ ,"iGDP"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
-  model <- singleFactorModel(countryAbbrev, factor)
+  model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
   # Get information about the optimum point, the point where SSE is minimized
   coefs <- coef(model)
   lambda_opt <- coefs["lambda"]
@@ -2253,9 +2252,9 @@ createAICTable <- function(){
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel("US", "U")), 
-                  UK=AIC(singleFactorModel("UK", "U")), 
-                  JP=AIC(singleFactorModel("JP", "U")),
+  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U")), 
+                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U")), 
+                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U")),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
