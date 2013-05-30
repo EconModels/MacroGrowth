@@ -100,7 +100,6 @@
 \begin{document}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
-# Includes the Functions.Rnw file that contains all of the functions for analyzing our economic data.
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
@@ -109,26 +108,36 @@ require(mosaic)
 require(xtable)
 require(nlmrt)
 require(micEconCES)
-require(reshape2) # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
-# tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
-# See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
-# require(tikzDevice) 
+# Provides access to data melting. 
+# See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
+require(reshape2) 
+# tikz allows use of LaTeX formatting and font in graphs. 
+# Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions 
+# on installing tikzDevice.
+require(tikzDevice) 
 trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
-  # ********************************************************************************************************
+  # ********************************************************
   eval=FALSE,
-  # ********************************************************************************************************
-  dev='tikz',    #Allows LaTeX code in graphical output. E.g., "$y$" for a variable name in the legend for a graph.
+  # ********************************************************
+  # Allows LaTeX code in graphical output. 
+  # E.g., "$y$" for a variable name in the legend for a graph.  
+  dev='tikz',    
   tidy=FALSE,
   comment=NA,
-  #Tells whether to cache output from chunks are saved. Cacheing saves time. 
-  #However, references to LaTeX tables DO NOT WORK if cacheing is turned on (i.e., cache=TRUE).
+  # Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  # However, references to LaTeX tables DO NOT WORK if cacheing is turned on.
   cache=FALSE,
   warning=FALSE,  #Tells whether to show warnings in the output.
-  message=FALSE, #Turns off messages for all chunks. Set TRUE on an individual chunk to see it.
-  echo=FALSE     #Tells whether to echo code for all chunks. Set TRUE on an individual chunk to see its code.
+  # Turns off messages for all chunks. 
+  # Set TRUE on an individual chunk to see it.
+  message=FALSE, 
+  # Tells whether to echo code for all chunks. 
+  # Set TRUE on an individual chunk to see its code.
+  echo=FALSE     
 )
 source("Econ-Growth-Functions.R")
 @
@@ -380,11 +389,16 @@ describe economic growth. The \texttt{R} \citep{R} package
 functions of the following forms (among others):
 
 \begin{equation} \label{eq:CES}
-  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
 \begin{equation} \label{eq:CESe}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
 \noindent Equation~\ref{eq:CES} is a CES production function with capital stock ($k$) and labor ($l$) factors of production. Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} where $\delta = 1$. The elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. 
