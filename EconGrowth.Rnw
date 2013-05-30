@@ -401,9 +401,28 @@ functions of the following forms (among others):
       A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent Equation~\ref{eq:CES} is a CES production function with capital stock ($k$) and labor ($l$) factors of production. Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy using a ($kl$)($e$) nesting structure, as is typical in the literature. Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} where $\delta = 1$. The elasticity of substitution between capital ($k$) and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, the elasticity of substitution between ($kl$) and ($e$) is given by $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, expected to be close to unity. 
+\noindent Equation~\ref{eq:CES} is a CES production function with 
+capital stock ($k$) and labor ($l$) factors of production. 
+Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
+where $\delta = 1$. The elasticity of substitution between capital ($k$) 
+and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, 
+the elasticity of substitution between ($kl$) and ($e$) is given by 
+$\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance 
+of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, 
+expected to be close to unity. 
 
-\citet{VanderWerf:2008tc} evalutes various nested CES production functions for 12 OECD countries with respect to climate change policy. \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of CES production functions using a KLEM structure to determine how the various options for nesting the energy factor of production affect predictive ability. \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy from 1800-2000 and demonstrate the importance of the transition from wood to fossil fuels for economic growth.
+\citet{VanderWerf:2008tc} evalutes various nested CES production 
+functions for 12 OECD countries with respect to climate change policy. 
+\citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure 
+best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of 
+CES production functions using a KLEM structure to determine how the various 
+options for nesting the energy factor of production affect predictive ability. 
+\citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). 
+\citeauthor{Stern:2012ey} apply their CES function to the Swedish economy 
+from 1800-2000 and demonstrate the importance of the transition from wood to 
+fossil fuels for economic growth.
 
 **** Martin: add more here about the conclusions of each paper regarding the role of energy in economic growth? Add additional literature? Or, adjust as you see fit. Especially, are there any confidence intervals or statistical evaluation in each of these studies? ****
 
