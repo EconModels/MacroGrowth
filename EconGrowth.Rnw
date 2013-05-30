@@ -194,7 +194,13 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{\st{Heun: Get Pruim set up on the GitHub repository.}}
+\item{Pruim: At present, we are doing simple ± t-value * std. dev. for
+      confidence intervals of, e.g., $1-\alpha-\beta$ in some places. 
+      Is that still correct if we move to a different approach for 
+      estimating confidence intervals?}
+\item{Pruim: At present, we are doing \texttt{deltaMethod} for determining CIs on 
+      $1-\alpha-\beta$ terms. Is that OK if we move to a different approach
+      for estimating confidence intervals?}
 \item{Heun: Fix error when calculating confidence intervals for Cobb-Douglas model for TZ with X. The problem occurs in function \texttt{cobbDouglasData}. To repeat the problem, call \\* \texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. \\* The code fails on the line \\* \texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}. \\* There is code after the to-do list in this file that exposes the problem.}
 \item{Heun: Get function \texttt{cdModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to view the problems.}
 \item{Heun: Get function \texttt{cdeModel} working with constraints. Note that the unconstrained solutions are sometimes within the constraints. But, sometimes they aren't. All solutions need to be within constraints. We may need to run with warnings turned off to view the problems.}
@@ -220,6 +226,7 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
       \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Get Pruim set up on the GitHub repository.}}
 \end{itemize}
 
 
