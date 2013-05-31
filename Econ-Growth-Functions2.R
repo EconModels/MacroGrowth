@@ -1398,7 +1398,7 @@ xNamesWithEnergy = c("iCapStk", "iLabor", "iEToFit")
 tName = "iYear"
 yName = "iGDP"
 
-loadAndPrepDataForCES <- function(countryAbbrev, energyType){
+loadAndPrepDataForCES <- function(countryAbbrev, energyType=NA, data=loadData(countryAbbrev)){
   ######################################
   # Loads data and trims rows where necessary.
   # Also, replaces the name of the desired energy column with "iEToFit".
@@ -1406,23 +1406,22 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   # it is assumed that you want a CES fit without an energy term.
   # Returns a data.frame with the loaded data.
   ##
-  dataTable <- loadData(countryAbbrev)
   # Trim data from China and South Africa that is missing labor information for 2011.
-  dataTable <- subset(dataTable, !is.na(iLabor))
+  data <- subset(data, !is.na(iLabor))
   if (is.na(energyType)){
     # We're done. Don't have to deal with special issues with energyType.
-    return(dataTable)
+    return(data)
   }
   # We have an energyType argument. Do some additional checking.
   if (energyType == "U"){
     # Trim the dataset to include only those years for which U is available.
-    dataTable <- subset(dataTable, !is.na(iU))
+    data <- subset(data, !is.na(iU))
   }
   # We need to do the CES fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
-  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
-  return(dataTable)
+  data <- replaceColName(data, energyType, "iEToFit")
+  return(data)
 }
 
 cesModelNoEnergy <- function(countryAbbrev){
