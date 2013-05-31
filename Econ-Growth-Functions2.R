@@ -740,7 +740,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   return(fig)    
 }
 
-cdModel <- function(countryAbbrev, dataTable=loadData(countryAbbrev), ...){
+cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
   # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
@@ -755,7 +755,7 @@ cdModel <- function(countryAbbrev, dataTable=loadData(countryAbbrev), ...){
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
-  modelCD <- nls(formula=model, data=dataTable, start=start,
+  modelCD <- nls(formula=model, data=data, start=start,
                  #Include the next 3 lines to fit with constraints.
                  #algorithm = "port",
                  #lower = list(lambda=-Inf, alpha=0),
