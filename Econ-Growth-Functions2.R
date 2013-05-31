@@ -764,16 +764,15 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   return(modelCD)
 }
 
-cdeModel <- function(countryAbbrev, energyType,...){
+cdeModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
   # energyType is one of "Q", "X", or "U".
   ##
-  dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
-  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  data <- replaceColName(data, energyType, "iEToFit")
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.9
@@ -793,7 +792,7 @@ cdeModel <- function(countryAbbrev, energyType,...){
   # * beta = b - a
   # * gamma = 1 - max(a, b)
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
-  modelCDe <- nls(formula=model, data = dataTable, start = start,
+  modelCDe <- nls(formula=model, data = data, start = start,
                   control = nls.control(maxiter = 200, 
                                         tol = 1e-05, 
                                         minFactor = 1/1024, 
