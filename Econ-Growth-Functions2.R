@@ -806,26 +806,25 @@ cdeModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev), ..
   return(modelCDe)
 }
 
-cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
+cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(countryAbbrev), ...){
   ##############################
   # Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
   ##
-  dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
-  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  data <- replaceColName(data, energyType, "iEToFit")
   # We're fixing the value of gamma.
   # Calculate a new column iEGamma = iEToFit^gamma
-  iEGamma <- with(dataTable, iEToFit^gamma)
-  dataTable <- cbind(dataTable, iEGamma)
+  iEGamma <- with(data, iEToFit^gamma)
+  data <- cbind(data, iEGamma)
   # We already know the value of gamma. We don't want to estimate it.
   # Establish guess values for lambda and alpha.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
-  modelCDe <- nls(formula=model, data = dataTable, start = start,
+  modelCDe <- nls(formula=model, data = data, start = start,
                   control = nls.control(maxiter = 200, 
                                         tol = 1e-05, 
                                         minFactor = 1/1024, 
