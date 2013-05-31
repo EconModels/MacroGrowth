@@ -1424,14 +1424,15 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType=NA, data=loadData(co
   return(data)
 }
 
-cesModelNoEnergy <- function(countryAbbrev){
+cesModelNoEnergy <- function(countryAbbrev, 
+                             data=loadAndPrepDataForCES(countryAbbrev=countryAbbrev, 
+                                                        energyType=NA)){
   ########################
   # Returns a cesEst model (without energy) for the country specified.
   ##
   # Load the data that we need.
-  dataTable <- loadAndPrepDataForCES(countryAbbrev, energyType=NA)
   control=nls.lm.control(maxiter=1000, maxfev=2000)
-  modelCES <- cesEst(data=dataTable, yName=yName, xNames=xNamesWithoutEnergy, tName=tName, control=control)
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNamesWithoutEnergy, tName=tName, control=control)
   return(modelCES)
 }
 
