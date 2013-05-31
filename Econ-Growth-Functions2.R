@@ -172,7 +172,9 @@ doPadRows <- function(dataToBePadded, dataThatSuppliesRowCount) {
   # Returns dataToBePadded with NA rows at the bottom.
   ##
   nRowsToAdd <- nrow(dataThatSuppliesRowCount) - nrow(dataToBePadded)
-  if (nRowsToAdd < 0) stop( paste( "Model data frame has", abs(nRowsToAdd), "fewer rows than target."))
+  if (nRowsToAdd < 0){
+    stop(paste("Model data frame has", abs(nRowsToAdd), "fewer rows than target."))
+  }
   dfToAppend <- as.data.frame(matrix(NA, ncol=ncol(dataToBePadded), nrow=nRowsToAdd))
   colnames(dfToAppend) <- colnames(dataToBePadded)
   return(rbind(dataToBePadded, dfToAppend))
@@ -738,13 +740,14 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   return(fig)    
 }
 
-cdModel <- function(countryAbbrev,...){
+cdModel <- function(countryAbbrev, dataTable=loadData(countryAbbrev), ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
   # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
   # No energy is included in the function to be fitted.
+  # Note that the argument countryAbbrev is first so that we can use lapply 
+  # with a list of country abbreviations.
   ##
-  dataTable <- loadData(countryAbbrev) #Load the data that we need.
   # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
   # Establish guess values for alpha and lambda.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
@@ -2662,7 +2665,7 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 }
 
 ## <<PartialResidualPlots, eval=TRUE>>=
-calcResiduals <- function(countryAbbrev, modelType, energyType){
+createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyType){
   #############################
   # Creates a data.frame containing raw data and residuals for given arguments.
   # The residuals are for a model that does not use energy.
@@ -2708,7 +2711,7 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
   yLabelString <- paste("$y$ residuals (", modelType, " without energy)", sep="")
   if (! is.na(countryAbbrev)){
     # An individual graph for a single country is desired.
-    data <- calcResiduals(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
+    data <- createDataForPartialResidualPlot(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
     plot <- xyplot(resid ~ iEToFit, data=data,
                    type=c("p"),
                    col="black",
@@ -2719,7 +2722,7 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
     )
   } else {
     # Lattice graph will all countries is desired.
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, calcResiduals, modelType=modelType, energyType=energyType))
+    data <- do.call("rbind", lapply(X=countryAbbrevsAlph, FUN=createDataForPartialResidualPlot, modelType=modelType, energyType=energyType))
     # If useful work is desired, need to trim the data set.
     if (energyType == "U"){
       # Use data from only those countries that have U defined.
