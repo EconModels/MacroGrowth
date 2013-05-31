@@ -206,7 +206,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Pruim: At present, we are doing simple ± t-value * std. dev. for
       confidence intervals of, e.g., $1-\alpha-\beta$ in some places. 
       Is that still correct if we move to a different approach for 
-      estimating confidence intervals?}
+      estimating confidence intervals? See especially \texttt{cesData} 
+      and possibly other places.}
 \item{Pruim: At present, we are doing \texttt{deltaMethod} for determining CIs on 
       $1-\alpha-\beta$ terms. Is that OK if we move to a different approach
       for estimating confidence intervals?}
