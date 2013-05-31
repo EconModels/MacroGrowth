@@ -163,21 +163,31 @@ haveDataLINEX <- function(countryAbbrev, energyType){
   return(haveDataCD(countryAbbrev, energyType))
 }
 
-padRows1 <- function( data, otherData) {
-  nRowsToAdd <- nrow(otherData) - nrow(data)
+doPadRows <- function(dataToBePadded, dataThatSuppliesRowCount) {
+  #####################
+  # This function adds NA rows to the bottom of data.frame dataToBePadded
+  # to ensure that it has the the number of observations (rows) as 
+  # dataThatSuppliesRowCount. The number of columns comes from dataToBePadded
+  # Execution halts if nrow(dataThatSuppliesRowCount) < nrow(dataToBePadded)
+  # Returns dataToBePadded with NA rows at the bottom.
+  ##
+  nRowsToAdd <- nrow(dataThatSuppliesRowCount) - nrow(dataToBePadded)
   if (nRowsToAdd < 0) stop( paste( "Model data frame has", abs(nRowsToAdd), "fewer rows than target."))
-  dfToAppend <- as.data.frame(matrix(NA, ncol=ncol(data), nrow=nRowsToAdd))
-  colnames(dfToAppend) <- colnames(data)
-  return(rbind(data, dfToAppend))
+  dfToAppend <- as.data.frame(matrix(NA, ncol=ncol(dataToBePadded), nrow=nRowsToAdd))
+  colnames(dfToAppend) <- colnames(dataToBePadded)
+  return(rbind(dataToBePadded, dfToAppend))
 }
 
 padRows <- function(countryAbbrev, df){
 #####################
-# This function adds NA rows to the end of a data.frame to ensure that the df is 
-# the same length as the country data set
+# This function adds NA rows to the bottom of data.frame df to ensure that it has the 
+# the number of observations (rows) as the country data set for countryAbbrev
+# This function is a convenience wrapper function that simply loads 
+# the data.frame for countryAbbrev and then calls doPadRows
 # returns a modified version of df that includes the padded rows filled with "NA".
 ##
-  return( padRows1(loadData(countryAbbrev), df ) ) 
+  countryData <- loadData(countryAbbrev)
+  return(doPadRows(dataToBePadded=df, dataThatSuppliesRowCount=countryData))
 }
 
 columnIndex <- function(dataTable, factor){
@@ -2655,9 +2665,15 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 calcResiduals <- function(countryAbbrev, modelType, energyType){
   #############################
   # Creates a data.frame containing raw data and residuals for given arguments.
+  # The residuals are for a model that does not use energy.
+  # The name of the column of energyType for countryAbbrev is changed to 
+  # "iEToFit"
   # modelType: one of "CD" or "CES"
   # countryAbbrev: the country of interest to you
   # energyType: one of "Q", "X", or "U"
+  # returns: a data.frame containing data for countryAbbrev with an additional
+  #          column containing the residual for each year. The name of the 
+  #          column for energyType is changed to "iEToFit"
   ##
   # Get the model
   if (modelType == "CD"){
@@ -2665,7 +2681,7 @@ calcResiduals <- function(countryAbbrev, modelType, energyType){
   } else if (modelType == "CES"){
     model <- cesModelNoEnergy(countryAbbrev)
   } else {
-    print(paste("Unknown modelType:", modelType, "in partialResidualPlot."))
+    stop(paste("Unknown modelType:", modelType, "in partialResidualPlot."))
     return(NULL)
   }
   # Get the residuals
@@ -2673,7 +2689,7 @@ calcResiduals <- function(countryAbbrev, modelType, energyType){
   resid <- data.frame(resid)
   resid <- padRows(countryAbbrev=countryAbbrev, df=resid)
   # Load data
-  data <- loadData(countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev)
   data <- cbind(data, resid)
   # Replace name of column we want with the name "iEToFit"
   data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
