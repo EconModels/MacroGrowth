@@ -1947,14 +1947,18 @@ printCESParamsTableB <- function(energyType){
 }
 
 ## <<LINEX functions, eval=TRUE>>=
-linexModel <- function(countryAbbrev, energyType){
+linexModel <- function(countryAbbrev, energyType, dataTable=loadData(countryAbbrev=countryAbbrev)){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType should be one of Q", "X", or "U".
+  # 
+  # If you want to supply your own data, you need to specify ALL arguments.
+  # Also, be VERY SURE that countryAbbrev is appropriate for the data you are supplying,
+  # because decisions about guess values for parameters and optimization methods
+  # are made based upon countryAbbrev, and there is no way to verify that 
+  # countryAbbrev is associated with data.    
   ##
-  # Load the data that we need.
-  dataTable <- loadData(countryAbbrev)
-  # We need to do the CES fit with the desired energyType.
+  # We need to do the Linex fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   dataTable <- replaceColName(dataTable, energyType, "iEToFit")
@@ -1964,7 +1968,6 @@ linexModel <- function(countryAbbrev, energyType){
     # Need adjusted guess values, becasue k and l are above GDP for SA.
     a_0Guess <- -1
     c_tGuess <- -6
-    
   }
   # Runs a non-linear least squares fit to the data with constraints
   modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
