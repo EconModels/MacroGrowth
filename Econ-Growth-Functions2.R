@@ -838,7 +838,7 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(c
   return(modelCDe)
 }
 
-cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
+cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(countryAbbrev), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
   # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType=NA 
@@ -848,14 +848,17 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
   ##
   if (is.na(energyType)){
     # Fit the Cobb-Douglas model without energy.
-    return(cdModel(countryAbbrev=countryAbbrev,...))
+    #return(cdModel(countryAbbrev=countryAbbrev, ...))
+    return(cdModel(data=data, ...))
   }
   if (!missing(gamma)){
     # Fit the Cobb-Douglas model with fixed value of gamma
-    return(cdeFixedGammaModel(countryAbbrev=countryAbbrev, energyType=energyType, gamma=gamma,...))
+    #return(cdeFixedGammaModel(countryAbbrev=countryAbbrev, energyType=energyType, gamma=gamma, ...))
+    return(cdeFixedGammaModel(data=data, energyType=energyType, gamma=gamma, ...))
   }
   # Fit the Cobb-Douglas model with gamma as a free parameter
-  return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType,...))
+  #return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType, ...))
+  return(cdeModel(data=data, energyType=energyType, ...))
 }
 
 cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
