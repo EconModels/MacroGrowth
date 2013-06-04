@@ -841,55 +841,71 @@ cdeModel <- function(countryAbbrev,
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
   # We can allow only one to be outside its boundary. If more than 
   # one are outside their boundary, we can't recover.
-  hitBoundary <- FALSE
+  hitABoundary <- FALSE
+  hitBBoundary <- FALSE
+  hitCBoundary <- FALSE
+  hitDBoundary <- FALSE
   a <- coef(modelCDe)["a"]
   if (a<0 || a>1){
     # We hit the boundary with a, so set a and 
     # redo the optimization allowing lambda and b to float.
-    hitBoundary <- TRUE
+    hitABoundary <- TRUE
     ifelse (a<0, a <- 0, a <- 1)
     start <- list(lambda=lambdaGuess, b=bGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    return(modelCDe)
   }
   b <- coef(modelCDe)["b"]
   if (b<0 || b>1){
     # Check to see if we already hit the boundary
-    if (hitBoundary){
+    if (hitABoundary){
       stop("Second boundary hit when checking b in cdeModel. Don't know how to recover.")
     }
-    hitBoundary <- TRUE
+    hitBBoundary <- TRUE
     # We hit the boundary with b, so set b and 
     # redo the optimization allowing lambda and a to float.
     ifelse (b<0, b <- 0, b <- 1)
     start <- list(lambda=lambdaGuess, a=aGuess)
-    modelCDe <- nls(formula=model, data=data, start=start, control=control)                    
-    return(modelCDe)
+    modelCDe <- nls(formula=model, data=data, start=start, control=control)
   }
   c <- coef(modelCDe2)["c"]
   if (c<0 || c>1){
-    if (hitBoundary){
+    if (hitABoundary || hitBBoundary){
       stop("Second boundary hit when checking c in cdeModel. Don't know how to recover.")
     }
-    hitBoundary <- TRUE
+    hitCBoundary <- TRUE
     # We hit the boundary with c, so set c and
     # redo the optimization allowing lambda and d to float.
     ifelse (c<0, c <- 0, c <- 1)
     start2 <- list(lambda=lambdaGuess, d=dGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
-    return(modelCDe2)
   }
   d <- coef(modelCDe2)["d"]
   if (d<0 || d>1){
-    if (hitBoundary){
+    if (hitABoundary || hitBBoundary || hitCBoundary){
+      # Checking for the value of d going beyond the constraint MAY BE REDUNDANT.
+      # Why? We already checked above whether a is hitting the 
+      # the constraint. If a hits the constraint, that means that alpha is 
+      # either <0 or >1.  
+      # Now, if d is hitting a constraint, it means that
+      # alpha is either <0 or >1, which we already knew, and hitABoundary
+      # will be TRUE leading execution to stop in the next line.
+      # I left this code in here for now.
+      # But, if we start hitting this stop condition, it probably 
+      # means that we have tested for alpha hitting the boundary twice
+      # and we can delete the code block that follows the test
+      # if (d<0 || d>1){
       stop("Second boundary hit when checking d in cdeModel. Don't know how to recover.")
     }
     # We hit the boundary with d, so set d and
     # redo the optimization allowing lambda and c to float.
-    hitBoundary <- TRUE
+    hitDBoundary <- TRUE
     ifelse (d<0, d <- 0, d <- 1)
     start2 <- list(lambda=lambdaGuess, c=cGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
+  }
+  if (hitABoundary || hitBBoundary){
+    return(modelCDe)    
+  } else if (hitCBoundary || hitDBoundary){
     return(modelCDe2)
   }
   # If we get here, we didn't run into any boundaries. Simply return
