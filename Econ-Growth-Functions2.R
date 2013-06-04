@@ -829,8 +829,7 @@ cdeModel <- function(countryAbbrev,
   # on alpha, beta, and gamma.
   #############################
   # Try the curve fit again, this time with a reparameterization that
-  # puts gamma as the parameter determined by the difference of the 
-  # new parameters:
+  # puts gamma as the parameter determined by the difference of c and d:
   # * 0 < c < 1
   # * 0 < d < 1
   # * beta = min(c, d)
