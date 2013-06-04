@@ -802,8 +802,13 @@ cdeModel <- function(countryAbbrev,
   # * alpha = min(a, b)
   # * beta = abs(b - a)
   # * gamma = 1 - max(a, b)
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
+  model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
   start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+  modelCDe <- nls(formula=model, data=data, start=start, control=control)
+  #Include the next 3 lines to fit with constraints.
+  #                   algorithm = "port",
+  #                   lower = list(lambda=-Inf, a=0, b=0),
+  #                   upper = list(lambda= Inf, a=1, b=1)
   if (! respectRangeConstraints){
     # We're not worried about the range constraints:
     # 0 ≤ alpha, beta, gamma ≤ 1
@@ -811,16 +816,7 @@ cdeModel <- function(countryAbbrev,
     # If possible, calculate alpha, beta, and gamma and their
     # associated confidence intervals and 
     # stuff them into the return object.
-    modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    #Include the next 3 lines to fit with constraints.
-    #                   algorithm = "port",
-    #                   lower = list(lambda=-Inf, a=0, b=0),
-    #                   upper = list(lambda= Inf, a=1, b=1)
     return(modelCDe)
-  } else {
-    # Warnings suppressed here, because we'll be doing more fits below where we'll see
-    # the warnings if they occur.
-    modelCDe <- suppressWarnings(nls(formula=model, data=data, start=start, control=control))
   }
   #############################
   # The following code checks the result for nearness to boundaries and tries again.
@@ -833,15 +829,26 @@ cdeModel <- function(countryAbbrev,
   # * 0 < c < 1
   # * 0 < d < 1
   # * beta = min(c, d)
-  # * gamma = abs(d - c)
+  # * gamma = abs(d-c)
   # * alpha = 1 - max(c, d)
   cGuess <- betaGuess
   dGuess <- betaGuess + gammaGuess
-  model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^max(c,d) * iLabor^min(c,d) * iEToFit^abs(d-c)
+  model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
   start2 <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
   # Warnings suppressed here, because we'll be doing more fits below where we'll see
   # the warnings if they occur.
-  modelCDe2 <- suppressWarnings(nls(formula=model2, data=data, start=start2, control=control))
+  modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+  # We've done the curve fit in two different ways. They should 
+  # provide the same answers. We'll verify here.
+  a <- coef(modelCDe)["a"]
+  b <- coef(modelCDe)["b"]
+  c <- coef(modelCDe2)["c"]
+  d <- coef(modelCDe2)["d"]
+  lambda <- coef(modelCDe)["lambda"]; lambda2 <- coef(modelCDe2)["lambda"]
+  alpha <- min(a,b);  beta <- abs(b-a);  gamma <- 1-max(a,b)
+  alpha2 <- 1-max(c,d); beta2 <- min(c,d); gamma2 <- abs(d-c)
+print(paste("lambda =", lambda, "alpha =", alpha, "beta =", beta, "gamma =", gamma))
+print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 =", gamma2))
   # Check whether a, b, c, or d are outside of their
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
   # We can allow only one to be outside its boundary. If more than 
@@ -850,7 +857,6 @@ cdeModel <- function(countryAbbrev,
   hitBBoundary <- FALSE
   hitCBoundary <- FALSE
   hitDBoundary <- FALSE
-  a <- coef(modelCDe)["a"]
   if (a<0 || a>1){
     # We hit the boundary with a, so set a and 
     # redo the optimization allowing lambda and b to float.
@@ -859,7 +865,6 @@ cdeModel <- function(countryAbbrev,
     start <- list(lambda=lambdaGuess, b=bGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
   }
-  b <- coef(modelCDe)["b"]
   if (b<0 || b>1){
     # Check to see if we already hit the boundary
     if (hitABoundary){
@@ -872,7 +877,6 @@ cdeModel <- function(countryAbbrev,
     start <- list(lambda=lambdaGuess, a=aGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
   }
-  c <- coef(modelCDe2)["c"]
   if (c<0 || c>1){
     if (hitABoundary || hitBBoundary){
       stop("Second boundary hit when checking c in cdeModel. Don't know how to recover.")
@@ -884,7 +888,6 @@ cdeModel <- function(countryAbbrev,
     start2 <- list(lambda=lambdaGuess, d=dGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
   }
-  d <- coef(modelCDe2)["d"]
   if (d<0 || d>1){
     if (hitABoundary || hitBBoundary || hitCBoundary){
       # Checking for the value of d going beyond the constraint MAY BE REDUNDANT.
