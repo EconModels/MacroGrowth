@@ -804,11 +804,6 @@ cdeModel <- function(countryAbbrev,
   # * gamma = 1 - max(a, b)
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
   start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
-  modelCDe <- nls(formula=model, data=data, start=start, control=control)
-                  #Include the next 3 lines to fit with constraints.
-                  #                   algorithm = "port",
-                  #                   lower = list(lambda=-Inf, a=0, b=0),
-                  #                   upper = list(lambda= Inf, a=1, b=1)
   if (! respectRangeConstraints){
     # We're not worried about the range constraints:
     # 0 ≤ alpha, beta, gamma ≤ 1
@@ -816,7 +811,16 @@ cdeModel <- function(countryAbbrev,
     # If possible, calculate alpha, beta, and gamma and their
     # associated confidence intervals and 
     # stuff them into the return object.
+    modelCDe <- nls(formula=model, data=data, start=start, control=control)
+    #Include the next 3 lines to fit with constraints.
+    #                   algorithm = "port",
+    #                   lower = list(lambda=-Inf, a=0, b=0),
+    #                   upper = list(lambda= Inf, a=1, b=1)
     return(modelCDe)
+  } else {
+    # Warnings suppressed here, because we'll be doing more fits below where we'll see
+    # the warnings if they occur.
+    modelCDe <- suppressWarnings(nls(formula=model, data=data, start=start, control=control))
   }
   #############################
   # The following code checks the result for nearness to boundaries and tries again.
@@ -836,7 +840,9 @@ cdeModel <- function(countryAbbrev,
   dGuess <- betaGuess + gammaGuess
   model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^max(c,d) * iLabor^min(c,d) * iEToFit^abs(d-c)
   start2 <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
-  modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+  # Warnings suppressed here, because we'll be doing more fits below where we'll see
+  # the warnings if they occur.
+  modelCDe2 <- suppressWarnings(nls(formula=model2, data=data, start=start2, control=control))
   # Check whether a, b, c, or d are outside of their
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
   # We can allow only one to be outside its boundary. If more than 
