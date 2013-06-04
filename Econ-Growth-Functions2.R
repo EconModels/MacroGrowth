@@ -764,10 +764,16 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   return(modelCD)
 }
 
-cdeModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev), ...){
+cdeModel <- function(countryAbbrev, 
+                     energyType, 
+                     data=loadData(countryAbbrev), 
+                     respectRangeConstraints=FALSE, ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
+  # countryAbbrev is one of the 2-letter abbreviations
   # energyType is one of "Q", "X", or "U".
+  # respectConstraints tells whether you want to constrain
+  # 0 ≤ alpha, beta, and gamma ≤ 1
   ##
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
@@ -779,7 +785,11 @@ cdeModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev), ..
   betaGuess <- 1.0 - alphaGuess
   aGuess <- alphaGuess
   bGuess <- alphaGuess + betaGuess
-  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+  control <- nls.control(maxiter = 200, 
+                         tol = 1e-05, 
+                         minFactor = 1/1024,
+                         printEval=FALSE, #Tells whether to print details of curve fit process.
+                         warnOnly=TRUE)
   # Now actually do the fit, using the column name "iEToFit".
   # gamma is a free parameter.
   # Reparameterize to ensure that we meet the constraints:
@@ -789,20 +799,63 @@ cdeModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev), ..
   # * 0 < a < 1
   # * 0 < b < 1
   # * alpha = min(a, b)
-  # * beta = b - a
+  # * beta = abs(b - a)
   # * gamma = 1 - max(a, b)
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
-  modelCDe <- nls(formula=model, data = data, start = start,
-                  control = nls.control(maxiter = 200, 
-                                        tol = 1e-05, 
-                                        minFactor = 1/1024, 
-                                        printEval=FALSE, #Tells whether to print details of curve fit process.
-                                        warnOnly=TRUE),
+  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+  modelCDe <- nls(formula=model, data=data, start=start, control=control)
                   #Include the next 3 lines to fit with constraints.
                   #                   algorithm = "port",
                   #                   lower = list(lambda=-Inf, a=0, b=0),
                   #                   upper = list(lambda= Inf, a=1, b=1)
-  )
+  if (respectRangeConstraints == FALSE){
+    # We're not worried about the range constraints:
+    # 0 ≤ alpha, beta, gamma ≤ 1
+    # So, just return the model as we have it already.
+    # If possible, calculate alpha, beta, and gamma and their
+    # associated confidence intervals and 
+    # stuff them into the return object.
+    return(modelCDe)
+  }
+  #############################
+  # The following code checks the result for nearness to boundaries and tries again.
+  # Code added on 3 June 2013 after discussions between
+  # Randy Prium and Matt Heun about how to deal effectively with the constraints
+  # on alpha, beta, and gamma.
+  #############################
+  # First thing to check is whether a or b are outside of their
+  # allowable ranges, 0 ≤ a ≤ 1 and 0 ≤ b ≤ 1, set the parameter 
+  # equal to its bounding value
+  a <- coef(modelCDe)["a"]; b <- coef(modelCDe)["b"]
+  redo <- FALSE
+  if (a<0 || a>1){
+    # We hit the boundary with a, so set a and 
+    # redo the optimization allowing lambda and b to float.
+    redo <- TRUE
+    start <- list(lambda=lambdaGuess, b=bGuess)
+    if (a < 0){
+      a <- 0
+    } else {
+      a <- 1
+    }
+  }
+  if (b<0 || b>1){
+    # We hit the boundary with b, so set b and 
+    # redo the optimization allowing lambda and a to float.
+    redo <- TRUE
+    start <- list(lambda=lambdaGuess, a=aGuess)
+    if (b < 0){
+      b <- 0
+    } else {
+      b <- 1
+    }
+  }
+  if (redo){
+    modelCDe <- nls(formula=model, data=data, start=start, control=control)                    
+  }
+  # If possible, calculate alpha, beta, and gamma and their
+  # associated confidence intervals and 
+  # stuff them into the return object.
   return(modelCDe)
 }
 
