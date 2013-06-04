@@ -779,9 +779,9 @@ cdeModel <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  control <- nls.control(maxiter = 200, 
-                         tol = 1e-05, 
-                         minFactor = 1/1024,
+  control <- nls.control(maxiter=200, 
+                         tol=1e-05, 
+                         minFactor=1/1024,
                          printEval=FALSE, #Tells whether to print details of curve fit process.
                          warnOnly=TRUE)
   # Establish guess values for lambda, alpha, and beta.
@@ -809,7 +809,7 @@ cdeModel <- function(countryAbbrev,
                   #                   algorithm = "port",
                   #                   lower = list(lambda=-Inf, a=0, b=0),
                   #                   upper = list(lambda= Inf, a=1, b=1)
-  if (respectRangeConstraints == FALSE){
+  if (! respectRangeConstraints){
     # We're not worried about the range constraints:
     # 0 ≤ alpha, beta, gamma ≤ 1
     # So, just return the model as we have it already.
@@ -892,6 +892,9 @@ cdeModel <- function(countryAbbrev,
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
     return(modelCDe2)
   }
+  # If we get here, we didn't run into any boundaries. Simply return
+  # the original model
+  return(modelCDe)
 }
 
 cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(countryAbbrev), ...){
