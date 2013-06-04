@@ -779,17 +779,18 @@ cdeModel <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  # Establish guess values for lambda, alpha, and beta.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.9
-  betaGuess <- 1.0 - alphaGuess
-  aGuess <- alphaGuess
-  bGuess <- alphaGuess + betaGuess
   control <- nls.control(maxiter = 200, 
                          tol = 1e-05, 
                          minFactor = 1/1024,
                          printEval=FALSE, #Tells whether to print details of curve fit process.
                          warnOnly=TRUE)
+  # Establish guess values for lambda, alpha, and beta.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.899
+  betaGuess <- 1.0 - alphaGuess
+  gammaGuess <- 0.001
+  aGuess <- alphaGuess
+  bGuess <- alphaGuess + betaGuess
   # Now actually do the fit, using the column name "iEToFit".
   # gamma is a free parameter.
   # Reparameterize to ensure that we meet the constraints:
@@ -823,40 +824,74 @@ cdeModel <- function(countryAbbrev,
   # Randy Prium and Matt Heun about how to deal effectively with the constraints
   # on alpha, beta, and gamma.
   #############################
-  # First thing to check is whether a or b are outside of their
-  # allowable ranges, 0 ≤ a ≤ 1 and 0 ≤ b ≤ 1, set the parameter 
-  # equal to its bounding value
-  a <- coef(modelCDe)["a"]; b <- coef(modelCDe)["b"]
-  redo <- FALSE
+  # Try the curve fit again, this time with a reparameterization that
+  # puts gamma as the parameter determined by the difference of the 
+  # new parameters:
+  # * 0 < c < 1
+  # * 0 < d < 1
+  # * beta = min(c, d)
+  # * gamma = abs(d - c)
+  # * alpha = 1 - max(c, d)
+  cGuess <- betaGuess
+  dGuess <- betaGuess + gammaGuess
+  model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^max(c,d) * iLabor^min(c,d) * iEToFit^abs(d-c)
+  start2 <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
+  modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+  # Check whether a, b, c, or d are outside of their
+  # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
+  # We can allow only one to be outside its boundary. If more than 
+  # one are outside their boundary, we can't recover.
+  hitBoundary <- FALSE
+  a <- coef(modelCDe)["a"]
   if (a<0 || a>1){
     # We hit the boundary with a, so set a and 
     # redo the optimization allowing lambda and b to float.
-    redo <- TRUE
+    hitBoundary <- TRUE
+    ifelse (a<0, a <- 0, a <- 1)
     start <- list(lambda=lambdaGuess, b=bGuess)
-    if (a < 0){
-      a <- 0
-    } else {
-      a <- 1
-    }
+    modelCDe <- nls(formula=model, data=data, start=start, control=control)
+    return(modelCDe)
   }
+  b <- coef(modelCDe)["b"]
   if (b<0 || b>1){
+    # Check to see if we already hit the boundary
+    if (hitBoundary){
+      stop("Second boundary hit when checking b in cdeModel. Don't know how to recover.")
+    }
+    hitBoundary <- TRUE
     # We hit the boundary with b, so set b and 
     # redo the optimization allowing lambda and a to float.
-    redo <- TRUE
+    ifelse (b<0, b <- 0, b <- 1)
     start <- list(lambda=lambdaGuess, a=aGuess)
-    if (b < 0){
-      b <- 0
-    } else {
-      b <- 1
-    }
-  }
-  if (redo){
     modelCDe <- nls(formula=model, data=data, start=start, control=control)                    
+    return(modelCDe)
   }
-  # If possible, calculate alpha, beta, and gamma and their
-  # associated confidence intervals and 
-  # stuff them into the return object.
-  return(modelCDe)
+  c <- coef(modelCDe2)["c"]
+  if (c<0 || c>1){
+    if (hitBoundary){
+      stop("Second boundary hit when checking c in cdeModel. Don't know how to recover.")
+    }
+    hitBoundary <- TRUE
+    # We hit the boundary with c, so set c and
+    # redo the optimization allowing lambda and d to float.
+    ifelse (c<0, c <- 0, c <- 1)
+    start2 <- list(lambda=lambdaGuess, d=dGuess)
+    modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+    return(modelCDe2)
+  }
+  d <- coef(modelCDe2)["d"]
+  if (d<0 || d>1){
+    if (hitBoundary){
+      stop("Second boundary hit when checking d in cdeModel. Don't know how to recover.")
+    }
+    # We hit the boundary with d, so set d and
+    # redo the optimization allowing lambda and c to float.
+    hitBoundary <- TRUE
+    ifelse (d<0, d <- 0, d <- 1)
+    start2 <- list(lambda=lambdaGuess, c=cGuess)
+    modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
+    return(modelCDe2)
+  }
 }
 
 cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(countryAbbrev), ...){
