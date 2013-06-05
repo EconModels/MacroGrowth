@@ -1,0 +1,20 @@
+Some Resampling
+========================================================
+
+```{r include=FALSE}
+require(mosaic)
+source('Econ-Growth-Functions2.R')
+```
+
+```{r, warning=FALSE}
+n <- 100
+set.seed(123)
+sims <- do(n) * attr(cdeModel(data=resample(loadData("US")), energyType="Q", respectRangeConstraints=TRUE), "naturalCoefs") 
+tally( ~ b == 1.0, data= sims )
+xyplot( beta ~ alpha, data= sims)
+qdata( c(0.025, 0.975), alpha, data = sims)
+```
+
+```{r}
+save(sims, n, file="someSimulations.Rda")
+```

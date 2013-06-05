@@ -847,10 +847,10 @@ cdeModel <- function(countryAbbrev,
   lambda <- coef(modelCDe)["lambda"]; lambda2 <- coef(modelCDe2)["lambda"]
   alpha <- min(a,b);  beta <- abs(b-a);  gamma <- 1-max(a,b)
   alpha2 <- 1-max(c,d); beta2 <- min(c,d); gamma2 <- abs(d-c)
-print(paste("a =", a, "b =", b))
-print(paste("lambda =", lambda, "alpha =", alpha, "beta =", beta, "gamma =", gamma))
-print(paste("c =", c, "d =", d))
-print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 =", gamma2))
+# print(paste("a =", a, "b =", b))
+# print(paste("lambda =", lambda, "alpha =", alpha, "beta =", beta, "gamma =", gamma))
+# print(paste("c =", c, "d =", d))
+# print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 =", gamma2))
   # Check whether a, b, c, or d are outside of their
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
   # We can allow only one to be outside its boundary. If more than 
@@ -866,6 +866,19 @@ print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 
     ifelse (a<0, a <- 0, a <- 1)
     start <- list(lambda=lambdaGuess, b=bGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
+    b = coef(modelCDe)['b']
+    naturalCoefs <- listc(
+      a = as.vector(a),
+      b = as.vector(b),
+      c = NA,
+      d = NA,
+      alpha = min(a,b) ,
+      beta = as.vector(abs(b-a)),
+      gamma = 1 - max(a,b),
+      lambda = as.vector(coef( modelCDe)['lambda']),
+      sse = sum(resid(modelCDe)^2)
+    )
+    attr(modelCDe, "naturalCoefs") <- naturalCoefs
   }
   if (b<0 || b>1){
     # Check to see if we already hit the boundary
@@ -878,6 +891,20 @@ print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 
     ifelse (b<0, b <- 0, b <- 1)
     start <- list(lambda=lambdaGuess, a=aGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
+    a <- coef(modelCDe) ['a']
+    naturalCoefs <- c(
+      a = as.vector(a),
+      b = as.vector(b),
+      c = NA,
+      d = NA,
+      alpha = min(a,b) ,
+      beta = as.vector(abs(b-a)),
+      gamma = 1 - max(a,b),
+      lambda = as.vector(coef( modelCDe)['lambda']),
+      sse = sum(resid(modelCDe)^2)
+    )
+    attr(modelCDe, "naturalCoefs") <- naturalCoefs
+    
   }
   if (c<0 || c>1){
     if (hitABoundary || hitBBoundary){
@@ -889,6 +916,19 @@ print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 
     ifelse (c<0, c <- 0, c <- 1)
     start2 <- list(lambda=lambdaGuess, d=dGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+    d <- coef(modelCDe2)['d']
+    naturalCoefs <- c(
+      a = NA,
+      b = NA, 
+      c = c,
+      d,
+      alpha = 1 - max(c,d),
+      beta = min(c,d),
+      gamma = as.vector(abs( d-c)),
+      lambda = as.vector(coef( modelCDe2)['lambda']),
+      sse = sum(resid(modelCDe2)^2)
+    )
+    attr(modelCDe2, "naturalCoefs") <- naturalCoefs
   }
   if (d<0 || d>1){
     if (hitABoundary || hitBBoundary || hitCBoundary){
@@ -909,9 +949,22 @@ print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 
     # We hit the boundary with d, so set d and
     # redo the optimization allowing lambda and c to float.
     hitDBoundary <- TRUE
-    ifelse (d<0, d <- 0, d <- 1)
+    d <- ifelse (d < 0, 0, 1)
     start2 <- list(lambda=lambdaGuess, c=cGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
+    c = coef(modelCDe2)['c']
+    naturalCoefs <- c(
+      a = NA,
+      b = NA, 
+      c,
+      d = d,
+      alpha = 1 - max(c,d),
+      beta = min(c,d),
+      gamma = as.vector(abs( d-c)),
+      lambda = as.vecotr(coef( modelCDe2)['lambda']),
+      sse = sum(resid(modelCDe2)^2)
+    )
+    attr(modelCDe2, "naturalCoefs") <- naturalCoefs
   }
   if (hitABoundary || hitBBoundary){
     return(modelCDe)    
@@ -920,6 +973,18 @@ print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 
   }
   # If we get here, we didn't run into any boundaries. Simply return
   # the original model
+    naturalCoefs <- c(
+      a = as.vector(coef(modelCDe)['a']),
+      b = as.vector(coef(modelCDe)['b']),
+      c = NA,
+      d = NA,
+      alpha = min(a,b),
+      beta = as.vector(abs(b-a)),
+      gamma = 1 - max(a,b),
+      lambda = as.vector(coef( modelCDe)['lambda']),
+      sse = sum(resid(modelCDe)^2)
+    )
+    attr(modelCDe, "naturalCoefs") <- naturalCoefs
   return(modelCDe)
 }
 
