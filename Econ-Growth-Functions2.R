@@ -847,7 +847,9 @@ cdeModel <- function(countryAbbrev,
   lambda <- coef(modelCDe)["lambda"]; lambda2 <- coef(modelCDe2)["lambda"]
   alpha <- min(a,b);  beta <- abs(b-a);  gamma <- 1-max(a,b)
   alpha2 <- 1-max(c,d); beta2 <- min(c,d); gamma2 <- abs(d-c)
+print(paste("a =", a, "b =", b))
 print(paste("lambda =", lambda, "alpha =", alpha, "beta =", beta, "gamma =", gamma))
+print(paste("c =", c, "d =", d))
 print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 =", gamma2))
   # Check whether a, b, c, or d are outside of their
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
