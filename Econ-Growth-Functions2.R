@@ -15,6 +15,7 @@ require(reshape2) # Provides access to data melting. See http://cran.r-project.o
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
+ciVals <- c(lower=1-ciHalfLevel, upper=ciHalfLevel)
 # List of countries
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 countryAbbrevsAlph <- sort(countryAbbrevs)
@@ -844,13 +845,6 @@ cdeModel <- function(countryAbbrev,
   b <- coef(modelCDe)["b"]
   c <- coef(modelCDe2)["c"]
   d <- coef(modelCDe2)["d"]
-  lambda <- coef(modelCDe)["lambda"]; lambda2 <- coef(modelCDe2)["lambda"]
-  alpha <- min(a,b);  beta <- abs(b-a);  gamma <- 1-max(a,b)
-  alpha2 <- 1-max(c,d); beta2 <- min(c,d); gamma2 <- abs(d-c)
-# print(paste("a =", a, "b =", b))
-# print(paste("lambda =", lambda, "alpha =", alpha, "beta =", beta, "gamma =", gamma))
-# print(paste("c =", c, "d =", d))
-# print(paste("lambda2 =", lambda2, "alpha2 =", alpha2, "beta2 =", beta2, "gamma2 =", gamma2))
   # Check whether a, b, c, or d are outside of their
   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
   # We can allow only one to be outside its boundary. If more than 
@@ -863,22 +857,21 @@ cdeModel <- function(countryAbbrev,
     # We hit the boundary with a, so set a and 
     # redo the optimization allowing lambda and b to float.
     hitABoundary <- TRUE
-    ifelse (a<0, a <- 0, a <- 1)
+    a <- ifelse (a<0, 0, 1)
     start <- list(lambda=lambdaGuess, b=bGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    b = coef(modelCDe)['b']
-    naturalCoefs <- listc(
-      a = as.vector(a),
-      b = as.vector(b),
-      c = NA,
-      d = NA,
-      alpha = min(a,b) ,
-      beta = as.vector(abs(b-a)),
-      gamma = 1 - max(a,b),
-      lambda = as.vector(coef( modelCDe)['lambda']),
-      sse = sum(resid(modelCDe)^2)
-    )
-    attr(modelCDe, "naturalCoefs") <- naturalCoefs
+    b = coef(modelCDe)["b"]
+    naturalCoeffs <- c(a = as.vector(a),
+                       b = as.vector(b),
+                       c = NA,
+                       d = NA,
+                       alpha = min(a,b),
+                       beta = as.vector(abs(b-a)),
+                       gamma = 1 - max(a,b),
+                       lambda = as.vector(coef(modelCDe)['lambda']),
+                       sse = sum(resid(modelCDe)^2)
+                       )
+    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
   }
   if (b<0 || b>1){
     # Check to see if we already hit the boundary
@@ -888,23 +881,21 @@ cdeModel <- function(countryAbbrev,
     hitBBoundary <- TRUE
     # We hit the boundary with b, so set b and 
     # redo the optimization allowing lambda and a to float.
-    ifelse (b<0, b <- 0, b <- 1)
+    b <- ifelse (b<0, 0, 1)
     start <- list(lambda=lambdaGuess, a=aGuess)
     modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    a <- coef(modelCDe) ['a']
-    naturalCoefs <- c(
-      a = as.vector(a),
-      b = as.vector(b),
-      c = NA,
-      d = NA,
-      alpha = min(a,b) ,
-      beta = as.vector(abs(b-a)),
-      gamma = 1 - max(a,b),
-      lambda = as.vector(coef( modelCDe)['lambda']),
-      sse = sum(resid(modelCDe)^2)
-    )
-    attr(modelCDe, "naturalCoefs") <- naturalCoefs
-    
+    a <- coef(modelCDe)["a"]
+    naturalCoeffs <- c(a = as.vector(a),
+                       b = as.vector(b),
+                       c = NA,
+                       d = NA,
+                       alpha = min(a,b),
+                       beta = as.vector(abs(b-a)),
+                       gamma = 1 - max(a,b),
+                       lambda = as.vector(coef(modelCDe)["lambda"]),
+                       sse = sum(resid(modelCDe)^2)
+                       )
+    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
   }
   if (c<0 || c>1){
     if (hitABoundary || hitBBoundary){
@@ -913,22 +904,21 @@ cdeModel <- function(countryAbbrev,
     hitCBoundary <- TRUE
     # We hit the boundary with c, so set c and
     # redo the optimization allowing lambda and d to float.
-    ifelse (c<0, c <- 0, c <- 1)
+    c <- ifelse (c<0, 0, 1)
     start2 <- list(lambda=lambdaGuess, d=dGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
     d <- coef(modelCDe2)['d']
-    naturalCoefs <- c(
-      a = NA,
-      b = NA, 
-      c = c,
-      d,
-      alpha = 1 - max(c,d),
-      beta = min(c,d),
-      gamma = as.vector(abs( d-c)),
-      lambda = as.vector(coef( modelCDe2)['lambda']),
-      sse = sum(resid(modelCDe2)^2)
-    )
-    attr(modelCDe2, "naturalCoefs") <- naturalCoefs
+    naturalCoeffs <- c(a = NA,
+                       b = NA, 
+                       c = as.vector(c),
+                       d = as.vector(d),
+                       alpha = 1 - max(c,d),
+                       beta = min(c,d),
+                       gamma = as.vector(abs(d-c)),
+                       lambda = as.vector(coef(modelCDe2)["lambda"]),
+                       sse = sum(resid(modelCDe2)^2)
+                       )
+    attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
   }
   if (d<0 || d>1){
     if (hitABoundary || hitBBoundary || hitCBoundary){
@@ -949,22 +939,21 @@ cdeModel <- function(countryAbbrev,
     # We hit the boundary with d, so set d and
     # redo the optimization allowing lambda and c to float.
     hitDBoundary <- TRUE
-    d <- ifelse (d < 0, 0, 1)
+    d <- ifelse (d<0, 0, 1)
     start2 <- list(lambda=lambdaGuess, c=cGuess)
     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
     c = coef(modelCDe2)['c']
-    naturalCoefs <- c(
-      a = NA,
-      b = NA, 
-      c,
-      d = d,
-      alpha = 1 - max(c,d),
-      beta = min(c,d),
-      gamma = as.vector(abs( d-c)),
-      lambda = as.vecotr(coef( modelCDe2)['lambda']),
-      sse = sum(resid(modelCDe2)^2)
-    )
-    attr(modelCDe2, "naturalCoefs") <- naturalCoefs
+    naturalCoeffs <- c(a = NA,
+                       b = NA, 
+                       c = as.vector(c),
+                       d = as.vector(d),
+                       alpha = 1 - max(c,d),
+                       beta = min(c,d),
+                       gamma = as.vector(abs(d-c)),
+                       lambda = as.vector(coef(modelCDe2)['lambda']),
+                       sse = sum(resid(modelCDe2)^2)
+                       )
+    attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
   }
   if (hitABoundary || hitBBoundary){
     return(modelCDe)    
@@ -973,18 +962,17 @@ cdeModel <- function(countryAbbrev,
   }
   # If we get here, we didn't run into any boundaries. Simply return
   # the original model
-    naturalCoefs <- c(
-      a = as.vector(coef(modelCDe)['a']),
-      b = as.vector(coef(modelCDe)['b']),
-      c = NA,
-      d = NA,
-      alpha = min(a,b),
-      beta = as.vector(abs(b-a)),
-      gamma = 1 - max(a,b),
-      lambda = as.vector(coef( modelCDe)['lambda']),
-      sse = sum(resid(modelCDe)^2)
-    )
-    attr(modelCDe, "naturalCoefs") <- naturalCoefs
+    naturalCoeffs <- c(a = as.vector(coef(modelCDe)["a"]),
+                       b = as.vector(coef(modelCDe)["b"]),
+                       c = NA,
+                       d = NA,
+                       alpha = min(a,b),
+                       beta = as.vector(abs(b-a)),
+                       gamma = 1 - max(a,b),
+                       lambda = as.vector(coef(modelCDe)['lambda']),
+                       sse = sum(resid(modelCDe)^2)
+                       )
+    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
   return(modelCDe)
 }
 
