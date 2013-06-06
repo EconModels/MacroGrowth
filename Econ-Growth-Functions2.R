@@ -765,6 +765,160 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   return(modelCD)
 }
 
+cdeModelAB <- function(countryAbbrev, 
+                       energyType, 
+                       data=loadData(countryAbbrev), 
+                       respectRangeConstraints=FALSE, ...){
+  #################
+  # This function does a Cobb-Douglas fit for the 
+  # given data using the "ab" reparameterization, namely
+  # * alpha + beta + gamma = 1.0.
+  # * alpha, beta, and gamma are all between 0.0 and 1.0.
+  # To do this, we reparameterize as
+  # * 0 < a < 1
+  # * 0 < b < 1
+  # * alpha = min(a, b)
+  # * beta = abs(b - a)
+  # * gamma = 1 - max(a, b)
+  ##
+  # We need to do the Cobb-Douglas fit with the desired energy data.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function. 
+  data <- replaceColName(data, energyType, "iEToFit")
+  control <- nls.control(maxiter=200, 
+                         tol=1e-05, 
+                         minFactor=1/1024,
+                         printEval=FALSE, #Tells whether to print details of curve fit process.
+                         warnOnly=TRUE)
+  # Establish guess values for lambda, alpha, and beta.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.899
+  betaGuess <- 1.0 - alphaGuess
+  gammaGuess <- 0.001
+  aGuess <- alphaGuess
+  bGuess <- alphaGuess + betaGuess
+  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
+  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  #Include the next 3 lines to fit with constraints.
+  #                   algorithm = "port",
+  #                   lower = list(lambda=-Inf, a=0, b=0),
+  #                   upper = list(lambda= Inf, a=1, b=1)
+  if (respectRangeConstraints){
+    # Need to do a bit more work to finish the fit.
+    hitABoundary <- FALSE; hitBBoundary <- FALSE
+    a <- coef(modelCDe)["a"]
+    b <- coef(modelCDe)["b"]
+    if (a<0 || a>1){
+      hitABoundary <- TRUE
+      a <- ifelse (a<0, 0, 1)
+    }
+    if (b<0 || b>1){
+      hitBBoundary <- TRUE
+      b <- ifelse (b<0, 0, 1)
+    }
+    if (hitABoundary && hitBboundary){
+      start <- list(lambda=lambdaGuess)
+    } else if (hitABoundary){
+      start <- list(lambda=lambdaGuess, b=bGuess)
+    } else if (hitBBoundary){
+      start <- list(lambda=lambdaGuess, a=aGuess)
+    }
+    # Now re-fit
+    modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  }
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(a = as.vector(a), 
+                     b = as.vector(b),
+                     c = NA,
+                     d = NA,
+                     lambda = as.vector(coef(modelCDe)["lambda"]),
+                     alpha = min(a,b),
+                     beta = as.vector(abs(b-a)),
+                     gamma = 1 - max(a,b),
+                     sse = sum(resid(modelCDe)^2)
+                     )
+  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
+  return(modelCDe)
+}
+
+cdeModelCD <- function(countryAbbrev, 
+                       energyType, 
+                       data=loadData(countryAbbrev), 
+                       respectRangeConstraints=FALSE, ...){
+  #################
+  # This function does a Cobb-Douglas fit for the 
+  # given data using the "cd" reparameterization, namely
+  # * alpha + beta + gamma = 1.0.
+  # * alpha, beta, and gamma are all between 0.0 and 1.0.
+  # * 0 < c < 1
+  # * 0 < d < 1
+  # * beta = min(c, d)
+  # * gamma = abs(d-c)
+  # * alpha = 1 - max(c, d)
+  ##
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function. 
+  data <- replaceColName(data, energyType, "iEToFit")
+  control <- nls.control(maxiter=200, 
+                         tol=1e-05, 
+                         minFactor=1/1024,
+                         printEval=FALSE, #Tells whether to print details of curve fit process.
+                         warnOnly=TRUE)
+  # Establish guess values for lambda, alpha, and beta.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.899
+  betaGuess <- 1.0 - alphaGuess
+  gammaGuess <- 0.001
+  cGuess <- betaGuess
+  dGuess <- betaGuess + gammaGuess
+  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
+  start <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
+  # Warnings suppressed here, because we'll be doing more fits below where we'll see
+  # the warnings if they occur.
+  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  #Include the next 3 lines to fit with constraints.
+  #                   algorithm = "port",
+  #                   lower = list(lambda=-Inf, a=0, b=0),
+  #                   upper = list(lambda= Inf, a=1, b=1)
+  if (respectRangeConstraints){
+    # Need to do a bit more work to finish the fit.
+    hitCBoundary <- FALSE; hitDBoundary <- FALSE
+    c <- coef(modelCDe)["c"]
+    d <- coef(modelCDe)["d"]
+    if (c<0 || c>1){
+      hitCBoundary <- TRUE
+      c <- ifelse (c<0, 0, 1)
+    }
+    if (d<0 || d>1){
+      hitDBoundary <- TRUE
+      d <- ifelse (d<0, 0, 1)
+    }
+    if (hitCBoundary && hitDBoundary){
+      start <- list(lambda=lambdaGuess)
+    } else if (hitCBoundary){
+      start <- list(lambda=lambdaGuess, d=dGuess)
+    } else if (hitDBoundary){
+      start <- list(lambda=lambdaGuess, c=cGuess)
+    }
+    # Now re-fit
+    modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  }
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(a = NA, 
+                     b = NA,
+                     c = as.vector(c),
+                     d = as.vector(d),
+                     lambda = as.vector(coef(modelCDe)["lambda"]),
+                     alpha = 1 - max(c,d),
+                     beta = min(c,d),
+                     gamma = as.vector(abs(d-c)),
+                     sse = sum(resid(modelCDe)^2)
+                     )
+  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
+  return(modelCDe)
+}
+
 cdeModel <- function(countryAbbrev, 
                      energyType, 
                      data=loadData(countryAbbrev), 
@@ -826,7 +980,7 @@ cdeModel <- function(countryAbbrev,
                        lambda = as.vector(coef(modelCDe)['lambda']),
                        sse = sum(resid(modelCDe)^2)
     )
-    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
+    attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
     return(modelCDe)
   }
   #############################
