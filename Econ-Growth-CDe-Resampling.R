@@ -62,18 +62,19 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
 }
 
 set.seed(123) # Provide reproducible results
-n <- 100000 # number of resamples desired
+n <- 100 # number of resamples desired
 
 # alpha 95% CIs for different amounts of resampling (with seed = 123)
+# CDe with Q for the U.S.
 # n      lower     upper   time [s]
-# 10     0.2477    0.3151    0.62
-# 100    0.2124    0.3351    5.2
-# 1000   0.1987    0.3398   47.5
-# 10000  0.1971    0.3356  484.7
+# 10     0.2477    0.3151     0.62
+# 100    0.2124    0.3351     5.2
+# 1000   0.1987    0.3398    47.5
+# 10000  0.1971    0.3356   484.7 (8 minutes)
 # 30000  0.1960    0.3360
-# 100000 0.1975    0.3360 14823.3
+# 100000 0.1975    0.3360 14823.3 (4.2 hours)
 ptm <- proc.time()
-data <- cdeResampleFits(countryAbbrev="US", energyType="Q", respectRangeConstraints=TRUE, n=n)
+data <- cdeResampleFits(countryAbbrev="ZM", energyType="Q", respectRangeConstraints=TRUE, n=n)
 statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
 print(statProps)
 print(proc.time() - ptm)
