@@ -1,3 +1,21 @@
+# The code below will perform two nls fits, one for each 
+# reparameterization (AB and CD)
+# The answers are similar for the US, but seemingly significantly
+# different for, say, TZ
+countryAbbrev <- "US"
+energyType <- "Q"
+respectRangeConstraints <- TRUE
+modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, 
+                      energyType=energyType, 
+                      respectRangeConstraints=respectRangeConstraints)
+print(attr(x=modelAB, which="naturalCoeffs"))
+modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, 
+                      energyType=energyType, 
+                      respectRangeConstraints=respectRangeConstraints)
+print(attr(x=modelCD, which="naturalCoeffs"))
+
+
+
 # This file contains code to resample data for economic growth
 # functions. The idea is that we can resample the historical
 # data and then develop statistical confidence intervals
@@ -62,22 +80,6 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
 }
 
 set.seed(123) # Provide reproducible results
-
-# The code below will perform two nls fits, one for each 
-# reparameterization (AB and CD)
-# The answers are similar for the US, but seemingly significantly
-# different for, say, TZ
-countryAbbrev <- "US"
-energyType <- "Q"
-respectRangeConstraints <- TRUE
-modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, 
-                      energyType=energyType, 
-                      respectRangeConstraints=respectRangeConstraints)
-print(attr(x=modelAB, which="naturalCoeffs"))
-modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, 
-                      energyType=energyType, 
-                      respectRangeConstraints=respectRangeConstraints)
-print(attr(x=modelCD, which="naturalCoeffs"))
 
 # Code for doing lots of resamples
 
