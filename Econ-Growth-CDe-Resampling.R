@@ -62,6 +62,25 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
 }
 
 set.seed(123) # Provide reproducible results
+
+# The code below will perform two nls fits, one for each 
+# reparameterization (AB and CD)
+# The answers are similar for the US, but seemingly significantly
+# different for, say, TZ
+countryAbbrev <- "US"
+energyType <- "Q"
+respectRangeConstraints <- TRUE
+modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, 
+                      energyType=energyType, 
+                      respectRangeConstraints=respectRangeConstraints)
+print(attr(x=modelAB, which="naturalCoeffs"))
+modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, 
+                      energyType=energyType, 
+                      respectRangeConstraints=respectRangeConstraints)
+print(attr(x=modelCD, which="naturalCoeffs"))
+
+# Code for doing lots of resamples
+
 n <- 100 # number of resamples desired
 
 # alpha 95% CIs for different amounts of resampling (with seed = 123)
@@ -73,11 +92,12 @@ n <- 100 # number of resamples desired
 # 10000  0.1971    0.3356   484.7 (8 minutes)
 # 30000  0.1960    0.3360
 # 100000 0.1975    0.3360 14823.3 (4.2 hours)
-ptm <- proc.time()
-data <- cdeResampleFits(countryAbbrev="ZM", energyType="Q", respectRangeConstraints=TRUE, n=n)
-statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
-print(statProps)
-print(proc.time() - ptm)
+
+# ptm <- proc.time()
+# data <- cdeResampleFits(countryAbbrev="ZM", energyType="Q", respectRangeConstraints=TRUE, n=n)
+# statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
+# print(statProps)
+# print(proc.time() - ptm)
 
 # tally( ~ b == 1.0, data= sims )
 # xyplot( beta ~ alpha, data= sims)
