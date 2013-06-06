@@ -62,26 +62,21 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
 }
 
 set.seed(123) # Provide reproducible results
-n <- 100 # number of resamples desired
+n <- 100000 # number of resamples desired
 
 # alpha 95% CIs for different amounts of resampling (with seed = 123)
-# n      lower     upper
-# 10     0.2477    0.3151
-# 100    0.2124    0.3351
-# 1000   0.1987    0.3398
-# 10000  0.1971    0.3356
+# n      lower     upper   time [s]
+# 10     0.2477    0.3151    0.62
+# 100    0.2124    0.3351    5.2
+# 1000   0.1987    0.3398   47.5
+# 10000  0.1971    0.3356  484.7
 # 30000  0.1960    0.3360
-# 100000 
+# 100000 0.1975    0.3360 14823.3
 ptm <- proc.time()
 data <- cdeResampleFits(countryAbbrev="US", energyType="Q", respectRangeConstraints=TRUE, n=n)
 statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
 print(statProps)
 print(proc.time() - ptm)
-
-
-
-
-
 
 # tally( ~ b == 1.0, data= sims )
 # xyplot( beta ~ alpha, data= sims)
