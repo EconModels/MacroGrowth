@@ -814,9 +814,19 @@ cdeModel <- function(countryAbbrev,
     # We're not worried about the range constraints:
     # 0 ≤ alpha, beta, gamma ≤ 1
     # So, just return the model as we have it already.
-    # If possible, calculate alpha, beta, and gamma and their
-    # associated confidence intervals and 
-    # stuff them into the return object.
+    # as.vector ensures that the name is correct. If we didn't put 
+    # as.vector here, we would obtain a variable named a.a.
+    naturalCoeffs <- c(a = as.vector(a), 
+                       b = as.vector(b),
+                       c = NA,
+                       d = NA,
+                       alpha = min(a,b),
+                       beta = as.vector(abs(b-a)),
+                       gamma = 1 - max(a,b),
+                       lambda = as.vector(coef(modelCDe)['lambda']),
+                       sse = sum(resid(modelCDe)^2)
+    )
+    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
     return(modelCDe)
   }
   #############################
@@ -876,7 +886,8 @@ cdeModel <- function(countryAbbrev,
   if (b<0 || b>1){
     # Check to see if we already hit the boundary
     if (hitABoundary){
-      stop("Second boundary hit when checking b in cdeModel. Don't know how to recover.")
+      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+      stop("Crossed second boundary when checking b in cdeModel. Don't know how to recover.")
     }
     hitBBoundary <- TRUE
     # We hit the boundary with b, so set b and 
@@ -899,7 +910,8 @@ cdeModel <- function(countryAbbrev,
   }
   if (c<0 || c>1){
     if (hitABoundary || hitBBoundary){
-      stop("Second boundary hit when checking c in cdeModel. Don't know how to recover.")
+      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+      stop("Crossed second boundary when checking c in cdeModel. Don't know how to recover.")
     }
     hitCBoundary <- TRUE
     # We hit the boundary with c, so set c and
@@ -921,20 +933,13 @@ cdeModel <- function(countryAbbrev,
     attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
   }
   if (d<0 || d>1){
-    if (hitABoundary || hitBBoundary || hitCBoundary){
-      # Checking for the value of d going beyond the constraint MAY BE REDUNDANT.
-      # Why? We already checked above whether a is hitting the 
-      # the constraint. If a hits the constraint, that means that alpha is 
-      # either <0 or >1.  
-      # Now, if d is hitting a constraint, it means that
-      # alpha is either <0 or >1, which we already knew, and hitABoundary
-      # will be TRUE leading execution to stop in the next line.
-      # I left this code in here for now.
-      # But, if we start hitting this stop condition, it probably 
-      # means that we have tested for alpha hitting the boundary twice
-      # and we can delete the code block that follows the test
-      # if (d<0 || d>1){
-      stop("Second boundary hit when checking d in cdeModel. Don't know how to recover.")
+    if (hitBBoundary || hitCBoundary){
+      # We check only for b and c boundary problems here, because if we 
+      # hit the a boundary, we have a problem with alpha.  If we have a problem
+      # with alpha, we'll also have a problem with d, because 
+      # a and d determine alpha.  
+      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+      stop(paste("Crossed second boundary when checking d in cdeModel. Don't know how to recover."))    
     }
     # We hit the boundary with d, so set d and
     # redo the optimization allowing lambda and c to float.
