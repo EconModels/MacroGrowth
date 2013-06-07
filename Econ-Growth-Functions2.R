@@ -970,6 +970,8 @@ cdeModel <- function(countryAbbrev,
     # So, just return the model as we have it already.
     # as.vector ensures that the name is correct. If we didn't put 
     # as.vector here, we would obtain a variable named a.a.
+    a <- coef(modelCDe)["a"]
+    b <- coef(modelCDe)["b"]
     naturalCoeffs <- c(a = as.vector(a), 
                        b = as.vector(b),
                        c = NA,
@@ -1370,20 +1372,31 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
   }
   # We have a combination of country and energy type for which we have data.
   modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
-  #print(str(modelCD))
   summaryCD <- summary(modelCD) # Gives the nls summary table.
-  #print(summaryCD)
-  #print("Before CI calculation")
   # Calculates confidence intervals for the CD model.
-  
-  ciCD <- tryCatch( confint( profile(modelCD, ...) , level=ciLevel,...), error=function(e) { modelCD } )
-  if (inherits( ciCD, "nls") ) {
-    warning("Early exit from CobbDouglassData");
+  ciCD <- tryCatch(expr=confint(profile(modelCD, ...), 
+                                level=ciLevel,...), 
+                   error=function(e){
+                     # If we have a problem, send the error as a warning.
+                     warning(e)
+                     # And, return the model itself, not the 
+                     # confidence intervals that we tried (and failed)
+                     # to calculate.
+                     return(modelCD)
+                   }
+                   )
+  # Now check to see if the return object is the model itself 
+  # If the return object is the nls model itself, instead
+  # of confidence intervals, we know there was a problem.
+  # Returning the model itself, instead of confidence 
+  # intervals is sure to cause a problem in whatever
+  # code called this function. So, we'll also add 
+  # a message.
+  if (inherits(ciCD, "nls")) {
+    warning(paste("Early exit from CobbDouglasData due to a problem with a Cobb-Douglas nls fit for", 
+                  countryAbbrev, "and", energyType));
     return(ciCD)
   }
-  #print("After CI calculation")
-  
-  #print(ciCD)
   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
   tvalCD <- qt(ciHalfLevel, df = dofCD)
   if (is.na(energyType)){
