@@ -817,7 +817,7 @@ cdeModelAB <- function(countryAbbrev,
       hitBBoundary <- TRUE
       b <- ifelse (b<0, 0, 1)
     }
-    if (hitABoundary && hitBboundary){
+    if (hitABoundary && hitBBoundary){
       start <- list(lambda=lambdaGuess)
     } else if (hitABoundary){
       start <- list(lambda=lambdaGuess, b=bGuess)
