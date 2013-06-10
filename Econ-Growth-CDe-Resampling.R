@@ -28,6 +28,19 @@
 require(mosaic)
 source('Econ-Growth-Functions2.R')
 
+# countryAbbrev <- "US" # US is pretty close
+countryAbbrev <- "TZ" # TZ is very different
+energyType <- "Q"
+
+print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
+modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+# print(summary(modelAB))
+print(attr(x=modelAB, which="naturalCoeffs"))
+print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
+modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+# print(summary(modelCD))
+print(attr(x=modelCD, which="naturalCoeffs"))
+
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
   ##################
   # n = number of resamples
@@ -83,7 +96,7 @@ set.seed(123) # Provide reproducible results
 
 # Code for doing lots of resamples
 
-n <- 10000 # number of resamples desired
+n <- 10 # number of resamples desired
 
 # alpha 95% CIs for different amounts of resampling (with seed = 123)
 # CDe with Q for the U.S.
@@ -94,12 +107,12 @@ n <- 10000 # number of resamples desired
 # 10000  0.1971    0.3356   484.7 (8 minutes)
 # 30000  0.1960    0.3360
 # 100000 0.1975    0.3360 14823.3 (4.2 hours)
-
-ptm <- proc.time()
-data <- cdeResampleFits(countryAbbrev="SA", energyType="Q", respectRangeConstraints=TRUE, n=n)
-statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
-print(statProps)
-print(proc.time() - ptm)
+# 
+# ptm <- proc.time()
+# data <- cdeResampleFits(countryAbbrev="SA", energyType="Q", respectRangeConstraints=TRUE, n=n)
+# statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
+# print(statProps)
+# print(proc.time() - ptm)
 
 # tally( ~ b == 1.0, data= sims )
 # xyplot( beta ~ alpha, data= sims)
