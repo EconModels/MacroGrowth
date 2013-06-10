@@ -819,20 +819,30 @@ cdeModelAB <- function(countryAbbrev,
     }
     if (hitABoundary && hitBBoundary){
       start <- list(lambda=lambdaGuess)
+      # Now re-fit. a an b have been set. Get a new value for lambda.
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
     } else if (hitABoundary){
       start <- list(lambda=lambdaGuess, b=bGuess)
+      # Now re-fit
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # a has been set. Grab a new value for b
+      b <- coef(modelCDe)["b"]
     } else if (hitBBoundary){
       start <- list(lambda=lambdaGuess, a=aGuess)
+      # Now re-fit
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # b has been set. Grab a new value for a.
+      a <- coef(modelCDe)["a"]      
     }
-    # Now re-fit
-    modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+    # Get the new value for lambda
+    lambda <- coef(modelCDe)["lambda"]
   }
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a = as.vector(a), 
                      b = as.vector(b),
                      c = NA,
                      d = NA,
-                     lambda = as.vector(coef(modelCDe)["lambda"]),
+                     lambda = as.vector(lambda),
                      alpha = min(a,b),
                      beta = as.vector(abs(b-a)),
                      gamma = 1 - max(a,b),
@@ -886,6 +896,7 @@ cdeModelCD <- function(countryAbbrev,
     hitCBoundary <- FALSE; hitDBoundary <- FALSE
     c <- coef(modelCDe)["c"]
     d <- coef(modelCDe)["d"]
+print(paste("c =", as.vector(c), "d =", as.vector(d)))
     if (c<0 || c>1){
       hitCBoundary <- TRUE
       c <- ifelse (c<0, 0, 1)
@@ -896,20 +907,31 @@ cdeModelCD <- function(countryAbbrev,
     }
     if (hitCBoundary && hitDBoundary){
       start <- list(lambda=lambdaGuess)
+      # Now re-fit. c and d both hit the boundary and have been reset.
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
     } else if (hitCBoundary){
       start <- list(lambda=lambdaGuess, d=dGuess)
+      # Now re-fit
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # c has been reset. Grab the new value for d
+      d <- coef(modelCDe)["d"]
     } else if (hitDBoundary){
       start <- list(lambda=lambdaGuess, c=cGuess)
+      # Now re-fit
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # D has been reset. Grab the new value for c
+      c <- coef(modelCDe)["c"]
     }
-    # Now re-fit
-    modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+    # lambda has been re-fitted. Grab the new value.
+    lambda <- coef(modelCDe)["lambda"]
   }
+print(paste("c =", as.vector(c), "d =", as.vector(d)))
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a = NA, 
                      b = NA,
                      c = as.vector(c),
                      d = as.vector(d),
-                     lambda = as.vector(coef(modelCDe)["lambda"]),
+                     lambda = as.vector(lambda),
                      alpha = 1 - max(c,d),
                      beta = min(c,d),
                      gamma = as.vector(abs(d-c)),
