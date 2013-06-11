@@ -807,6 +807,7 @@ cdeModelAB <- function(countryAbbrev,
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitABoundary <- FALSE; hitBBoundary <- FALSE
+    lambda <- coef(modelCDe)["lambda"]
     a <- coef(modelCDe)["a"]
     b <- coef(modelCDe)["b"]
     if (a<0 || a>1){
@@ -818,17 +819,17 @@ cdeModelAB <- function(countryAbbrev,
       b <- ifelse (b<0, 0, 1)
     }
     if (hitABoundary && hitBBoundary){
-      start <- list(lambda=lambdaGuess)
+      start <- list(lambda=lambda)
       # Now re-fit. a an b have been set. Get a new value for lambda.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
     } else if (hitABoundary){
-      start <- list(lambda=lambdaGuess, b=bGuess)
+      start <- list(lambda=lambda, b=b)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # a has been set. Grab a new value for b
       b <- coef(modelCDe)["b"]
     } else if (hitBBoundary){
-      start <- list(lambda=lambdaGuess, a=aGuess)
+      start <- list(lambda=lambda, a=a)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # b has been set. Grab a new value for a.
@@ -894,8 +895,11 @@ cdeModelCD <- function(countryAbbrev,
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitCBoundary <- FALSE; hitDBoundary <- FALSE
+    lambda <- coef(modelCDe)["lambda"]
     c <- coef(modelCDe)["c"]
     d <- coef(modelCDe)["d"]
+print(paste("After first fit. lambda =", coef(modelCDe)["lambda"], "c =", c, "d =", d, "sse =", 
+            sum(resid(modelCDe)^2)))
     if (c<0 || c>1){
       hitCBoundary <- TRUE
       c <- ifelse (c<0, 0, 1)
@@ -903,23 +907,27 @@ cdeModelCD <- function(countryAbbrev,
     if (d<0 || d>1){
       hitDBoundary <- TRUE
       d <- ifelse (d<0, 0, 1)
+print(paste("After identified d boundary crossed. lambda =", coef(modelCDe)["lambda"], "c =", c, 
+            "d =", d, "sse =", sum(resid(modelCDe)^2)))
     }
     if (hitCBoundary && hitDBoundary){
-      start <- list(lambda=lambdaGuess)
+      start <- list(lambda=lambda)
       # Now re-fit. c and d both hit the boundary and have been reset.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
     } else if (hitCBoundary){
-      start <- list(lambda=lambdaGuess, d=dGuess)
+      start <- list(lambda=lambda, d=d)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # c has been reset. Grab the new value for d
       d <- coef(modelCDe)["d"]
     } else if (hitDBoundary){
-      start <- list(lambda=lambdaGuess, c=cGuess)
+      start <- list(lambda=lambda, c=c)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # D has been reset. Grab the new value for c
       c <- coef(modelCDe)["c"]
+print(paste("After refitting with constraints. lambda =" , coef(modelCDe)["lambda"], "c =", c, 
+            "d =", d, "sse =", sum(resid(modelCDe)^2)))
     }
     # lambda has been re-fitted. Grab the new value.
     lambda <- coef(modelCDe)["lambda"]
