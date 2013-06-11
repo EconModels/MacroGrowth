@@ -896,7 +896,6 @@ cdeModelCD <- function(countryAbbrev,
     hitCBoundary <- FALSE; hitDBoundary <- FALSE
     c <- coef(modelCDe)["c"]
     d <- coef(modelCDe)["d"]
-print(paste("c =", as.vector(c), "d =", as.vector(d)))
     if (c<0 || c>1){
       hitCBoundary <- TRUE
       c <- ifelse (c<0, 0, 1)
@@ -925,7 +924,6 @@ print(paste("c =", as.vector(c), "d =", as.vector(d)))
     # lambda has been re-fitted. Grab the new value.
     lambda <- coef(modelCDe)["lambda"]
   }
-print(paste("c =", as.vector(c), "d =", as.vector(d)))
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a = NA, 
                      b = NA,
