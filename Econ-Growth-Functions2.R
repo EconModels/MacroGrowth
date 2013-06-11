@@ -800,16 +800,12 @@ cdeModelAB <- function(countryAbbrev,
   formula <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
   start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
   modelCDe <- nls(formula=formula, data=data, start=start, control=control)
-  #Include the next 3 lines to fit with constraints.
-  #                   algorithm = "port",
-  #                   lower = list(lambda=-Inf, a=0, b=0),
-  #                   upper = list(lambda= Inf, a=1, b=1)
+  lambda <- coef(modelCDe)["lambda"]
+  a <- coef(modelCDe)["a"]
+  b <- coef(modelCDe)["b"]
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitABoundary <- FALSE; hitBBoundary <- FALSE
-    lambda <- coef(modelCDe)["lambda"]
-    a <- coef(modelCDe)["a"]
-    b <- coef(modelCDe)["b"]
     if (a<0 || a>1){
       hitABoundary <- TRUE
       a <- ifelse (a<0, 0, 1)
@@ -822,21 +818,36 @@ cdeModelAB <- function(countryAbbrev,
       start <- list(lambda=lambda)
       # Now re-fit. a an b have been set. Get a new value for lambda.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      lambda <- coef(modelCDe)["lambda"]
     } else if (hitABoundary){
       start <- list(lambda=lambda, b=b)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # a has been set. Grab a new value for b
+      lambda <- coef(modelCDe)["lambda"]
       b <- coef(modelCDe)["b"]
+      # Test to see if b is out of range and re-fit if needed.
+      if (b<0 || b>1){
+        b <- ifelse (b<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+      }
     } else if (hitBBoundary){
       start <- list(lambda=lambda, a=a)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # b has been set. Grab a new value for a.
-      a <- coef(modelCDe)["a"]      
+      lambda <- coef(modelCDe)["lambda"]
+      a <- coef(modelCDe)["a"]
+      # Test to see if a is out of range and re-fit if needed.
+      if (a<0 || a>1){
+        a <- ifelse (a<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+      }
     }
-    # Get the new value for lambda
-    lambda <- coef(modelCDe)["lambda"]
   }
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a = as.vector(a), 
@@ -885,19 +896,13 @@ cdeModelCD <- function(countryAbbrev,
   dGuess <- betaGuess + gammaGuess
   formula <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
   start <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
-  # Warnings suppressed here, because we'll be doing more fits below where we'll see
-  # the warnings if they occur.
   modelCDe <- nls(formula=formula, data=data, start=start, control=control)
-  #Include the next 3 lines to fit with constraints.
-  #                   algorithm = "port",
-  #                   lower = list(lambda=-Inf, a=0, b=0),
-  #                   upper = list(lambda= Inf, a=1, b=1)
+  lambda <- coef(modelCDe)["lambda"]
+  c <- coef(modelCDe)["c"]
+  d <- coef(modelCDe)["d"]
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitCBoundary <- FALSE; hitDBoundary <- FALSE
-    lambda <- coef(modelCDe)["lambda"]
-    c <- coef(modelCDe)["c"]
-    d <- coef(modelCDe)["d"]
     if (c<0 || c>1){
       hitCBoundary <- TRUE
       c <- ifelse (c<0, 0, 1)
@@ -910,21 +915,36 @@ cdeModelCD <- function(countryAbbrev,
       start <- list(lambda=lambda)
       # Now re-fit. c and d both hit the boundary and have been reset.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      lambda <- coef(modelCDe)["lambda"]
     } else if (hitCBoundary){
       start <- list(lambda=lambda, d=d)
-      # Now re-fit
+      # Now re-fit with c at its boundary.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # c has been reset. Grab the new value for d
+      lambda <- coef(modelCDe)["lambda"]
       d <- coef(modelCDe)["d"]
+      # Test to see if d is out of range and re-fit if needed.
+      if (d<0 || d>1){
+        d <- ifelse (d<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+      }
     } else if (hitDBoundary){
       start <- list(lambda=lambda, c=c)
       # Now re-fit
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
-      # D has been reset. Grab the new value for c
+      # d has been reset. Grab the new value for c
+      lambda <- coef(modelCDe)["lambda"]
       c <- coef(modelCDe)["c"]
+      # Test to see if c is out of range and re-fit if needed.
+      if (c<0 || c>1){
+        c <- ifelse(c<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+      }
     }
-    # lambda has been re-fitted. Grab the new value.
-    lambda <- coef(modelCDe)["lambda"]
   }
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a = NA, 
@@ -945,219 +965,251 @@ cdeModel <- function(countryAbbrev,
                      energyType, 
                      data=loadData(countryAbbrev), 
                      respectRangeConstraints=FALSE, ...){
-  ####################
-  # Returns an nls Cobb-Douglas model for the country specified
-  # countryAbbrev is one of the 2-letter abbreviations
-  # energyType is one of "Q", "X", or "U".
-  # respectConstraints tells whether you want to constrain
-  # 0 ≤ alpha, beta, and gamma ≤ 1
+  ###################
+  # This function fits the CDe model to historical data.
+  # If the ab reparameterization doesn't converge, we try the 
+  # cd reparameterization.
+  # If neither converge, we stop execution.
   ##
-  # We need to do the Cobb-Douglas fit with the desired energy data.
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function. 
-  data <- replaceColName(data, energyType, "iEToFit")
-  control <- nls.control(maxiter=200, 
-                         tol=1e-05, 
-                         minFactor=1/1024,
-                         printEval=FALSE, #Tells whether to print details of curve fit process.
-                         warnOnly=TRUE)
-  # Establish guess values for lambda, alpha, and beta.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.899
-  betaGuess <- 1.0 - alphaGuess
-  gammaGuess <- 0.001
-  aGuess <- alphaGuess
-  bGuess <- alphaGuess + betaGuess
-  # Now actually do the fit, using the column name "iEToFit".
-  # gamma is a free parameter.
-  # Reparameterize to ensure that we meet the constraints:
-  # * alpha + beta + gamma = 1.0.
-  # * alpha, beta, and gamma are all between 0.0 and 1.0.
-  # To do this, we reparameterize as
-  # * 0 < a < 1
-  # * 0 < b < 1
-  # * alpha = min(a, b)
-  # * beta = abs(b - a)
-  # * gamma = 1 - max(a, b)
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
-  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
-  modelCDe <- nls(formula=model, data=data, start=start, control=control)
-  #Include the next 3 lines to fit with constraints.
-  #                   algorithm = "port",
-  #                   lower = list(lambda=-Inf, a=0, b=0),
-  #                   upper = list(lambda= Inf, a=1, b=1)
-  if (! respectRangeConstraints){
-    # We're not worried about the range constraints:
-    # 0 ≤ alpha, beta, gamma ≤ 1
-    # So, just return the model as we have it already.
-    # as.vector ensures that the name is correct. If we didn't put 
-    # as.vector here, we would obtain a variable named a.a.
-    a <- coef(modelCDe)["a"]
-    b <- coef(modelCDe)["b"]
-    naturalCoeffs <- c(a = as.vector(a), 
-                       b = as.vector(b),
-                       c = NA,
-                       d = NA,
-                       alpha = min(a,b),
-                       beta = as.vector(abs(b-a)),
-                       gamma = 1 - max(a,b),
-                       lambda = as.vector(coef(modelCDe)['lambda']),
-                       sse = sum(resid(modelCDe)^2)
-    )
-    attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
-    return(modelCDe)
+  cdeModelAB <- cdeModelAB(countryAbbrev=countryAbbrev,
+                           energyType=energyType,
+                           data=data,
+                           respectRangeConstraints=respectRangeConstraints, ...)
+  if (cdeModelAB$convInfo$isConv){
+    # We obtained a good model that converged.
+    return(cdeModelAB)
   }
-  #############################
-  # The following code checks the result for nearness to boundaries and tries again.
-  # Code added on 3 June 2013 after discussions between
-  # Randy Prium and Matt Heun about how to deal effectively with the constraints
-  # on alpha, beta, and gamma.
-  #############################
-  # Try the curve fit again, this time with a reparameterization that
-  # puts gamma as the parameter determined by the difference of c and d:
-  # * 0 < c < 1
-  # * 0 < d < 1
-  # * beta = min(c, d)
-  # * gamma = abs(d-c)
-  # * alpha = 1 - max(c, d)
-  cGuess <- betaGuess
-  dGuess <- betaGuess + gammaGuess
-  model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
-  start2 <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
-  # Warnings suppressed here, because we'll be doing more fits below where we'll see
-  # the warnings if they occur.
-  modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
-  # We've done the curve fit in two different ways. They should 
-  # provide the same answers. We'll verify here.
-  a <- coef(modelCDe)["a"]
-  b <- coef(modelCDe)["b"]
-  c <- coef(modelCDe2)["c"]
-  d <- coef(modelCDe2)["d"]
-  # Check whether a, b, c, or d are outside of their
-  # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
-  # We can allow only one to be outside its boundary. If more than 
-  # one are outside their boundary, we can't recover.
-  hitABoundary <- FALSE
-  hitBBoundary <- FALSE
-  hitCBoundary <- FALSE
-  hitDBoundary <- FALSE
-  if (a<0 || a>1){
-    # We hit the boundary with a, so set a and 
-    # redo the optimization allowing lambda and b to float.
-    hitABoundary <- TRUE
-    a <- ifelse (a<0, 0, 1)
-    start <- list(lambda=lambdaGuess, b=bGuess)
-    modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    b = coef(modelCDe)["b"]
-    naturalCoeffs <- c(a = as.vector(a),
-                       b = as.vector(b),
-                       c = NA,
-                       d = NA,
-                       alpha = min(a,b),
-                       beta = as.vector(abs(b-a)),
-                       gamma = 1 - max(a,b),
-                       lambda = as.vector(coef(modelCDe)['lambda']),
-                       sse = sum(resid(modelCDe)^2)
-                       )
-    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
+  # Well, the model didn't converge. Try again with a different reparameterization
+  cdeModelCD <- cdeModelCD(countryAbbrev=countryAbbrev,
+                           energyType=energyType,
+                           data=data,
+                           respectRangeConstraints=respectRangeConstraints, ...)
+  if (cdeModelCD$convInfo$isConv){
+    # OK, that one worked. Return it.
+    return(cdeModelCD)
   }
-  if (b<0 || b>1){
-    # Check to see if we already hit the boundary
-    if (hitABoundary){
-      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
-      stop("Crossed second boundary when checking b in cdeModel. Don't know how to recover.")
-    }
-    hitBBoundary <- TRUE
-    # We hit the boundary with b, so set b and 
-    # redo the optimization allowing lambda and a to float.
-    b <- ifelse (b<0, 0, 1)
-    start <- list(lambda=lambdaGuess, a=aGuess)
-    modelCDe <- nls(formula=model, data=data, start=start, control=control)
-    a <- coef(modelCDe)["a"]
-    naturalCoeffs <- c(a = as.vector(a),
-                       b = as.vector(b),
-                       c = NA,
-                       d = NA,
-                       alpha = min(a,b),
-                       beta = as.vector(abs(b-a)),
-                       gamma = 1 - max(a,b),
-                       lambda = as.vector(coef(modelCDe)["lambda"]),
-                       sse = sum(resid(modelCDe)^2)
-                       )
-    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
-  }
-  if (c<0 || c>1){
-    if (hitABoundary || hitBBoundary){
-      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
-      stop("Crossed second boundary when checking c in cdeModel. Don't know how to recover.")
-    }
-    hitCBoundary <- TRUE
-    # We hit the boundary with c, so set c and
-    # redo the optimization allowing lambda and d to float.
-    c <- ifelse (c<0, 0, 1)
-    start2 <- list(lambda=lambdaGuess, d=dGuess)
-    modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
-    d <- coef(modelCDe2)['d']
-    naturalCoeffs <- c(a = NA,
-                       b = NA, 
-                       c = as.vector(c),
-                       d = as.vector(d),
-                       alpha = 1 - max(c,d),
-                       beta = min(c,d),
-                       gamma = as.vector(abs(d-c)),
-                       lambda = as.vector(coef(modelCDe2)["lambda"]),
-                       sse = sum(resid(modelCDe2)^2)
-                       )
-    attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
-  }
-  if (d<0 || d>1){
-    if (hitBBoundary || hitCBoundary){
-      # We check only for b and c boundary problems here, because if we 
-      # hit the a boundary, we have a problem with alpha.  If we have a problem
-      # with alpha, we'll also have a problem with d, because 
-      # a and d determine alpha.  
-      print(paste("a =", a, "b =", b, "c =", c, "d =", d))
-      stop(paste("Crossed second boundary when checking d in cdeModel. Don't know how to recover."))    
-    }
-    # We hit the boundary with d, so set d and
-    # redo the optimization allowing lambda and c to float.
-    hitDBoundary <- TRUE
-    d <- ifelse (d<0, 0, 1)
-    start2 <- list(lambda=lambdaGuess, c=cGuess)
-    modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
-    c = coef(modelCDe2)['c']
-    naturalCoeffs <- c(a = NA,
-                       b = NA, 
-                       c = as.vector(c),
-                       d = as.vector(d),
-                       alpha = 1 - max(c,d),
-                       beta = min(c,d),
-                       gamma = as.vector(abs(d-c)),
-                       lambda = as.vector(coef(modelCDe2)['lambda']),
-                       sse = sum(resid(modelCDe2)^2)
-                       )
-    attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
-  }
-  if (hitABoundary || hitBBoundary){
-    return(modelCDe)    
-  } else if (hitCBoundary || hitDBoundary){
-    return(modelCDe2)
-  }
-  # If we get here, we didn't run into any boundaries. Simply return
-  # the original model
-    naturalCoeffs <- c(a = as.vector(coef(modelCDe)["a"]),
-                       b = as.vector(coef(modelCDe)["b"]),
-                       c = NA,
-                       d = NA,
-                       alpha = min(a,b),
-                       beta = as.vector(abs(b-a)),
-                       gamma = 1 - max(a,b),
-                       lambda = as.vector(coef(modelCDe)['lambda']),
-                       sse = sum(resid(modelCDe)^2)
-                       )
-    attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
-  return(modelCDe)
+  # If we get to this point, neither reparameterization worked. Stop execution
+  stop(paste("Neither reparameterization worked. countryAbbrev =", countryAbbrev, 
+             "energyType =", energyType))
 }
+
+# cdeModel <- function(countryAbbrev, 
+#                      energyType, 
+#                      data=loadData(countryAbbrev), 
+#                      respectRangeConstraints=FALSE, ...){
+#   ####################
+#   # Returns an nls Cobb-Douglas model for the country specified
+#   # countryAbbrev is one of the 2-letter abbreviations
+#   # energyType is one of "Q", "X", or "U".
+#   # respectConstraints tells whether you want to constrain
+#   # 0 ≤ alpha, beta, and gamma ≤ 1
+#   ##
+#   # We need to do the Cobb-Douglas fit with the desired energy data.
+#   # To achieve the correct fit, we'll change the name of the desired column
+#   # to "iEToFit" and use "iEToFit" in the nls function. 
+#   data <- replaceColName(data, energyType, "iEToFit")
+#   control <- nls.control(maxiter=200, 
+#                          tol=1e-05, 
+#                          minFactor=1/1024,
+#                          printEval=FALSE, #Tells whether to print details of curve fit process.
+#                          warnOnly=TRUE)
+#   # Establish guess values for lambda, alpha, and beta.
+#   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+#   alphaGuess <- 0.899
+#   betaGuess <- 1.0 - alphaGuess
+#   gammaGuess <- 0.001
+#   aGuess <- alphaGuess
+#   bGuess <- alphaGuess + betaGuess
+#   # Now actually do the fit, using the column name "iEToFit".
+#   # gamma is a free parameter.
+#   # Reparameterize to ensure that we meet the constraints:
+#   # * alpha + beta + gamma = 1.0.
+#   # * alpha, beta, and gamma are all between 0.0 and 1.0.
+#   # To do this, we reparameterize as
+#   # * 0 < a < 1
+#   # * 0 < b < 1
+#   # * alpha = min(a, b)
+#   # * beta = abs(b - a)
+#   # * gamma = 1 - max(a, b)
+#   model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
+#   start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
+#   modelCDe <- nls(formula=model, data=data, start=start, control=control)
+#   #Include the next 3 lines to fit with constraints.
+#   #                   algorithm = "port",
+#   #                   lower = list(lambda=-Inf, a=0, b=0),
+#   #                   upper = list(lambda= Inf, a=1, b=1)
+#   if (! respectRangeConstraints){
+#     # We're not worried about the range constraints:
+#     # 0 ≤ alpha, beta, gamma ≤ 1
+#     # So, just return the model as we have it already.
+#     # as.vector ensures that the name is correct. If we didn't put 
+#     # as.vector here, we would obtain a variable named a.a.
+#     a <- coef(modelCDe)["a"]
+#     b <- coef(modelCDe)["b"]
+#     naturalCoeffs <- c(a = as.vector(a), 
+#                        b = as.vector(b),
+#                        c = NA,
+#                        d = NA,
+#                        alpha = min(a,b),
+#                        beta = as.vector(abs(b-a)),
+#                        gamma = 1 - max(a,b),
+#                        lambda = as.vector(coef(modelCDe)['lambda']),
+#                        sse = sum(resid(modelCDe)^2)
+#     )
+#     attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
+#     return(modelCDe)
+#   }
+#   #############################
+#   # The following code checks the result for nearness to boundaries and tries again.
+#   # Code added on 3 June 2013 after discussions between
+#   # Randy Prium and Matt Heun about how to deal effectively with the constraints
+#   # on alpha, beta, and gamma.
+#   #############################
+#   # Try the curve fit again, this time with a reparameterization that
+#   # puts gamma as the parameter determined by the difference of c and d:
+#   # * 0 < c < 1
+#   # * 0 < d < 1
+#   # * beta = min(c, d)
+#   # * gamma = abs(d-c)
+#   # * alpha = 1 - max(c, d)
+#   cGuess <- betaGuess
+#   dGuess <- betaGuess + gammaGuess
+#   model2 <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
+#   start2 <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
+#   # Warnings suppressed here, because we'll be doing more fits below where we'll see
+#   # the warnings if they occur.
+#   modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+#   # We've done the curve fit in two different ways. They should 
+#   # provide the same answers. We'll verify here.
+#   a <- coef(modelCDe)["a"]
+#   b <- coef(modelCDe)["b"]
+#   c <- coef(modelCDe2)["c"]
+#   d <- coef(modelCDe2)["d"]
+#   # Check whether a, b, c, or d are outside of their
+#   # allowable ranges, 0 ≤ a, b, c, d ≤ 1.
+#   # We can allow only one to be outside its boundary. If more than 
+#   # one are outside their boundary, we can't recover.
+#   hitABoundary <- FALSE
+#   hitBBoundary <- FALSE
+#   hitCBoundary <- FALSE
+#   hitDBoundary <- FALSE
+#   if (a<0 || a>1){
+#     # We hit the boundary with a, so set a and 
+#     # redo the optimization allowing lambda and b to float.
+#     hitABoundary <- TRUE
+#     a <- ifelse (a<0, 0, 1)
+#     start <- list(lambda=lambdaGuess, b=bGuess)
+#     modelCDe <- nls(formula=model, data=data, start=start, control=control)
+#     b = coef(modelCDe)["b"]
+#     naturalCoeffs <- c(a = as.vector(a),
+#                        b = as.vector(b),
+#                        c = NA,
+#                        d = NA,
+#                        alpha = min(a,b),
+#                        beta = as.vector(abs(b-a)),
+#                        gamma = 1 - max(a,b),
+#                        lambda = as.vector(coef(modelCDe)['lambda']),
+#                        sse = sum(resid(modelCDe)^2)
+#                        )
+#     attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
+#   }
+#   if (b<0 || b>1){
+#     # Check to see if we already hit the boundary
+#     if (hitABoundary){
+#       print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+#       stop("Crossed second boundary when checking b in cdeModel. Don't know how to recover.")
+#     }
+#     hitBBoundary <- TRUE
+#     # We hit the boundary with b, so set b and 
+#     # redo the optimization allowing lambda and a to float.
+#     b <- ifelse (b<0, 0, 1)
+#     start <- list(lambda=lambdaGuess, a=aGuess)
+#     modelCDe <- nls(formula=model, data=data, start=start, control=control)
+#     a <- coef(modelCDe)["a"]
+#     naturalCoeffs <- c(a = as.vector(a),
+#                        b = as.vector(b),
+#                        c = NA,
+#                        d = NA,
+#                        alpha = min(a,b),
+#                        beta = as.vector(abs(b-a)),
+#                        gamma = 1 - max(a,b),
+#                        lambda = as.vector(coef(modelCDe)["lambda"]),
+#                        sse = sum(resid(modelCDe)^2)
+#                        )
+#     attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
+#   }
+#   if (c<0 || c>1){
+#     if (hitABoundary || hitBBoundary){
+#       print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+#       stop("Crossed second boundary when checking c in cdeModel. Don't know how to recover.")
+#     }
+#     hitCBoundary <- TRUE
+#     # We hit the boundary with c, so set c and
+#     # redo the optimization allowing lambda and d to float.
+#     c <- ifelse (c<0, 0, 1)
+#     start2 <- list(lambda=lambdaGuess, d=dGuess)
+#     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)
+#     d <- coef(modelCDe2)['d']
+#     naturalCoeffs <- c(a = NA,
+#                        b = NA, 
+#                        c = as.vector(c),
+#                        d = as.vector(d),
+#                        alpha = 1 - max(c,d),
+#                        beta = min(c,d),
+#                        gamma = as.vector(abs(d-c)),
+#                        lambda = as.vector(coef(modelCDe2)["lambda"]),
+#                        sse = sum(resid(modelCDe2)^2)
+#                        )
+#     attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
+#   }
+#   if (d<0 || d>1){
+#     if (hitBBoundary || hitCBoundary){
+#       # We check only for b and c boundary problems here, because if we 
+#       # hit the a boundary, we have a problem with alpha.  If we have a problem
+#       # with alpha, we'll also have a problem with d, because 
+#       # a and d determine alpha.  
+#       print(paste("a =", a, "b =", b, "c =", c, "d =", d))
+#       stop(paste("Crossed second boundary when checking d in cdeModel. Don't know how to recover."))    
+#     }
+#     # We hit the boundary with d, so set d and
+#     # redo the optimization allowing lambda and c to float.
+#     hitDBoundary <- TRUE
+#     d <- ifelse (d<0, 0, 1)
+#     start2 <- list(lambda=lambdaGuess, c=cGuess)
+#     modelCDe2 <- nls(formula=model2, data=data, start=start2, control=control)                    
+#     c = coef(modelCDe2)['c']
+#     naturalCoeffs <- c(a = NA,
+#                        b = NA, 
+#                        c = as.vector(c),
+#                        d = as.vector(d),
+#                        alpha = 1 - max(c,d),
+#                        beta = min(c,d),
+#                        gamma = as.vector(abs(d-c)),
+#                        lambda = as.vector(coef(modelCDe2)['lambda']),
+#                        sse = sum(resid(modelCDe2)^2)
+#                        )
+#     attr(modelCDe2, "naturalCoeffs") <- naturalCoeffs
+#   }
+#   if (hitABoundary || hitBBoundary){
+#     return(modelCDe)    
+#   } else if (hitCBoundary || hitDBoundary){
+#     return(modelCDe2)
+#   }
+#   # If we get here, we didn't run into any boundaries. Simply return
+#   # the original model
+#     naturalCoeffs <- c(a = as.vector(coef(modelCDe)["a"]),
+#                        b = as.vector(coef(modelCDe)["b"]),
+#                        c = NA,
+#                        d = NA,
+#                        alpha = min(a,b),
+#                        beta = as.vector(abs(b-a)),
+#                        gamma = 1 - max(a,b),
+#                        lambda = as.vector(coef(modelCDe)['lambda']),
+#                        sse = sum(resid(modelCDe)^2)
+#                        )
+#     attr(modelCDe, "naturalCoeffs") <- naturalCoeffs
+#   return(modelCDe)
+# }
 
 cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(countryAbbrev), ...){
   ##############################
