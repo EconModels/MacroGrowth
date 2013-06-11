@@ -898,8 +898,6 @@ cdeModelCD <- function(countryAbbrev,
     lambda <- coef(modelCDe)["lambda"]
     c <- coef(modelCDe)["c"]
     d <- coef(modelCDe)["d"]
-print(paste("After first fit. lambda =", coef(modelCDe)["lambda"], "c =", c, "d =", d, "sse =", 
-            sum(resid(modelCDe)^2)))
     if (c<0 || c>1){
       hitCBoundary <- TRUE
       c <- ifelse (c<0, 0, 1)
@@ -907,8 +905,6 @@ print(paste("After first fit. lambda =", coef(modelCDe)["lambda"], "c =", c, "d 
     if (d<0 || d>1){
       hitDBoundary <- TRUE
       d <- ifelse (d<0, 0, 1)
-print(paste("After identified d boundary crossed. lambda =", coef(modelCDe)["lambda"], "c =", c, 
-            "d =", d, "sse =", sum(resid(modelCDe)^2)))
     }
     if (hitCBoundary && hitDBoundary){
       start <- list(lambda=lambda)
@@ -926,8 +922,6 @@ print(paste("After identified d boundary crossed. lambda =", coef(modelCDe)["lam
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       # D has been reset. Grab the new value for c
       c <- coef(modelCDe)["c"]
-print(paste("After refitting with constraints. lambda =" , coef(modelCDe)["lambda"], "c =", c, 
-            "d =", d, "sse =", sum(resid(modelCDe)^2)))
     }
     # lambda has been re-fitted. Grab the new value.
     lambda <- coef(modelCDe)["lambda"]
