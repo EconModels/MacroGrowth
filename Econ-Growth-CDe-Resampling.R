@@ -2,17 +2,18 @@
 # reparameterization (AB and CD)
 # The answers are similar for the US, but seemingly significantly
 # different for, say, TZ
-# countryAbbrev <- "US"
-# energyType <- "Q"
-# respectRangeConstraints <- TRUE
-# modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, 
-#                       energyType=energyType, 
-#                       respectRangeConstraints=respectRangeConstraints)
-# print(attr(x=modelAB, which="naturalCoeffs"))
-# modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, 
-#                       energyType=energyType, 
-#                       respectRangeConstraints=respectRangeConstraints)
-# print(attr(x=modelCD, which="naturalCoeffs"))
+# countryAbbrev <- "US" # US is pretty close
+countryAbbrev <- "UK" # UK is pretty close
+# countryAbbrev <- "TZ" # TZ is very different
+energyType <- "X"
+respectRangeConstraints <- TRUE
+
+print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
+modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+print(attr(x=modelAB, which="naturalCoeffs"))
+print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
+modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+print(attr(x=modelCD, which="naturalCoeffs"))
 
 
 
@@ -27,19 +28,6 @@
 
 require(mosaic)
 source('Econ-Growth-Functions2.R')
-
-# countryAbbrev <- "US" # US is pretty close
-countryAbbrev <- "TZ" # TZ is very different
-energyType <- "Q"
-
-print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
-modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-# print(summary(modelAB))
-print(attr(x=modelAB, which="naturalCoeffs"))
-print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
-modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-# print(summary(modelCD))
-print(attr(x=modelCD, which="naturalCoeffs"))
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
   ##################
