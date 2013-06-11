@@ -1,20 +1,48 @@
+require(mosaic)
+source('Econ-Growth-Functions2.R')
+
+
 # The code below will perform two nls fits, one for each 
 # reparameterization (AB and CD)
 # The answers are similar for the US, but seemingly significantly
 # different for, say, TZ
 # countryAbbrev <- "US" # US is pretty close
-countryAbbrev <- "UK" # UK is pretty close
-# countryAbbrev <- "TZ" # TZ is very different
+# countryAbbrev <- "UK" # UK is pretty close
+# countryAbbrev <- "JP"
+# countryAbbrev <- "CN"
+# countryAbbrev <- "ZA"
+# countryAbbrev <- "SA"
+# countryAbbrev <- "IR"
+# countryAbbrev <- "TZ"
+countryAbbrev <- "ZM"
 energyType <- "X"
 respectRangeConstraints <- TRUE
 
-print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
-modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-print(attr(x=modelAB, which="naturalCoeffs"))
-print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
-modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-print(attr(x=modelCD, which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="US", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="UK", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="JP", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="CN", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="ZA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="SA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="IR", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="TZ", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+print(attr(x=cdeModel(countryAbbrev="ZM", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
 
+# print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
+# modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+# print(attr(x=modelAB, which="naturalCoeffs"))
+# print(modelAB$convInfo$stopMessage)
+# if (!modelAB$convInfo$isConv){
+#   print(paste("stopCode =", modelAB$convInfo$stopCode, "stopMessage =", modelAB$convInfo$stopMessage))
+# }
+# 
+# print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
+# modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
+# print(attr(x=modelCD, which="naturalCoeffs"))
+# print(modelCD$convInfo$stopMessage)
+# if (!modelCD$convInfo$isConv){
+#   print(paste("stopCode =", modelCD$convInfo$stopCode, "stopMessage =", modelCD$convInfo$stopMessage))
+# }
 
 
 # This file contains code to resample data for economic growth
@@ -26,8 +54,6 @@ print(attr(x=modelCD, which="naturalCoeffs"))
 # We do this multiple times and save a file that contains 
 # the results for later investigation
 
-require(mosaic)
-source('Econ-Growth-Functions2.R')
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
   ##################
