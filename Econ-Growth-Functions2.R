@@ -829,7 +829,7 @@ cdeModelAB <- function(countryAbbrev,
       lambda <- coef(modelCDe)["lambda"]
       b <- coef(modelCDe)["b"]
       isConv <- modelCDe$convInfo$isConv
-      # Test to see if b is out of range and re-fit if needed.
+      # Test to see if b has been pushed out of range and re-fit if needed.
       if (b<0 || b>1){
         b <- ifelse (b<0, 0, 1)
         start <- list(lambda=lambda)
@@ -845,7 +845,7 @@ cdeModelAB <- function(countryAbbrev,
       lambda <- coef(modelCDe)["lambda"]
       a <- coef(modelCDe)["a"]
       isConv <- modelCDe$convInfo$isConv
-      # Test to see if a is out of range and re-fit if needed.
+      # Test to see if a has been pushed out of range and re-fit if needed.
       if (a<0 || a>1){
         a <- ifelse (a<0, 0, 1)
         start <- list(lambda=lambda)
@@ -933,7 +933,7 @@ cdeModelCD <- function(countryAbbrev,
       lambda <- coef(modelCDe)["lambda"]
       d <- coef(modelCDe)["d"]
       isConv <- modelCDe$convInfo$isConv
-      # Test to see if d is out of range and re-fit if needed.
+      # Test to see if d has been pushed out of range and re-fit if needed.
       if (d<0 || d>1){
         d <- ifelse (d<0, 0, 1)
         start <- list(lambda=lambda)
@@ -949,7 +949,7 @@ cdeModelCD <- function(countryAbbrev,
       lambda <- coef(modelCDe)["lambda"]
       c <- coef(modelCDe)["c"]
       isConv <- modelCDe$convInfo$isConv
-      # Test to see if c is out of range and re-fit if needed.
+      # Test to see if c has been pushed out of range and re-fit if needed.
       if (c<0 || c>1){
         c <- ifelse(c<0, 0, 1)
         start <- list(lambda=lambda)
@@ -1002,9 +1002,27 @@ cdeModel <- function(countryAbbrev,
     # OK, that one worked. Return it.
     return(cdeModelCD)
   }
-  # If we get to this point, neither reparameterization worked. Stop execution
-  stop(paste("Neither reparameterization converged for CDe. countryAbbrev =", 
-             countryAbbrev, "energyType =", energyType))
+  # If we get to this point, neither reparameterization converged. Print some
+  # information about both.
+  warning(paste("Neither ab nor cd reparameterization converged for CDe. countryAbbrev =", 
+                ifelse(missing(countryAbbrev), "missing", countryAbbrev), 
+                "energyType =", energyType,
+                "This should happen rarely. Returning the reparameterization with smallest SSE."))
+  print("data")
+  print(data)
+  print("cdeModelAB")
+  print(summary(cdeModelAB))
+  print(attr(x=cdeModelAB, which="naturalCoeffs"))
+  print("cdeModelCD")
+  print(summary(cdeModelCD))
+  print(attr(x=cdeModelCD, which="naturalCoeffs"))
+  sseAB <- attr(x=cdeModelAB, which="naturalCoeffs")["sse"]
+  sseCD <- attr(x=cdeModelCD, which="naturalCoeffs")["sse"]
+  if (sseAB < sseCD){
+    return(cdeModelAB)
+  } else {
+    return(cdeModelCD)
+  }
 }
 
 # cdeModel <- function(countryAbbrev, 
