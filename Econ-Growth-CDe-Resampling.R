@@ -1,21 +1,6 @@
 require(mosaic)
 source('Econ-Growth-Functions2.R')
 
-
-# energyType <- "X"
-# respectRangeConstraints <- TRUE
-# 
-# print(attr(x=cdeModel(countryAbbrev="US", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="UK", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="JP", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="CN", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="ZA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="SA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="IR", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="TZ", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-# print(attr(x=cdeModel(countryAbbrev="ZM", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-
-
 # This file contains code to resample data for economic growth
 # functions. The idea is that we can resample the historical
 # data and then develop statistical confidence intervals
@@ -24,41 +9,31 @@ source('Econ-Growth-Functions2.R')
 #
 # We do this multiple times and save a file that contains 
 # the results for later investigation
-
-
-cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
-  ##################
-  # n = number of resamples
-  # countryAbbrev = the country you want to study
-  # energyType = the type of energy of interest to you
-  ##
-  # First do a fit without resampling and get these coefficients
-  baseFitCoeffs <- attr(x=cdeModel(countryAbbrev=countryAbbrev,
-                                   energyType=energyType,
-                                   respectRangeConstraints=respectRangeConstraints),
-                        which="naturalCoeffs")
-  # Now do a fit with resampling n times and get all of the coefficients
-  resampleFitCoeffs <- do(n) * attr(x=cdeModel(data=resample(loadData(countryAbbrev=countryAbbrev)), 
-                                               energyType=energyType, 
-                                               respectRangeConstraints=respectRangeConstraints),
-                                    which="naturalCoeffs")
-  # Combine the results and return
-  out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
-  return(out)
-}
+#
+# alpha 95% CIs for different amounts of resampling (with seed = 123)
+# CDe with Q for the U.S.
+# n      lower     upper   time [s]
+# 10     0.2477    0.3151     0.62
+# 100    0.2124    0.3351     5.2
+# 1000   0.1987    0.3398    47.5
+# 10000  0.1971    0.3356   484.7 (8 minutes)
+# 30000  0.1960    0.3360
+# 100000 0.1975    0.3360 14823.3 (4.2 hours)
 
 genAllCDeResampleData <- function(){
   #############################
   # This script generates resample data for all countries
   # and saves to disk.
   ##
+  t_0 <- proc.time()
+  n=100 # 10,000 samples are probably sufficient
   energyType <- "Q"
-  n=10 # 10,000 samples are probably sufficient
   lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
-  #   energyType <- "X"
-  #   lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
-  #   energyType <- "U"
-  #   lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n)
+  energyType <- "X"
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
+  energyType <- "U"
+  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n)
+  print(proc.time() - t_0)
 }
 
 genCDeResampleData <- function(countryAbbrev, energyType, n){
@@ -69,7 +44,6 @@ genCDeResampleData <- function(countryAbbrev, energyType, n){
   # when it is loaded back from disk. 
   # We found that 10,000 resamples is sufficient to obtain good results
   ## 
-  set.seed(123) # Provide reproducible results
   # This next call returns a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
   resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
@@ -100,9 +74,6 @@ getPathForCDeResampleData <- function(countryAbbrev, energyType){
   # Returns a string identifying the filename in which we 
   # hold Cobb-Douglas resampled data
   ## 
-#   folder <- getFolderForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
-#   filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
-#   path <- paste(folder, filename, sep="")
   filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
   path <- file.path("data_resample", "cde", countryAbbrev, energyType, filename)
   return(path)
@@ -146,27 +117,24 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
   return(dataCD)
 }
 
-# Code for doing lots of resamples
-
-# alpha 95% CIs for different amounts of resampling (with seed = 123)
-# CDe with Q for the U.S.
-# n      lower     upper   time [s]
-# 10     0.2477    0.3151     0.62
-# 100    0.2124    0.3351     5.2
-# 1000   0.1987    0.3398    47.5
-# 10000  0.1971    0.3356   484.7 (8 minutes)
-# 30000  0.1960    0.3360
-# 100000 0.1975    0.3360 14823.3 (4.2 hours)
-
-# n <- 1000 # number of resamples desired
-# t_0 <- proc.time()
-# data <- cdeResampleFits(countryAbbrev="ZM", energyType="X", respectRangeConstraints=TRUE, n=n)
-# statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
-# print(statProps)
-# print(proc.time() - t_0)
-
-# tally( ~ b == 1.0, data= sims )
-# xyplot( beta ~ alpha, data= sims)
-# qdata( c(0.025, 0.975), alpha, data = sims)
-# 
-# save(sims, n, file="someSimulations.Rda")
+cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
+  ##################
+  # n = number of resamples
+  # countryAbbrev = the country you want to study
+  # energyType = the type of energy of interest to you
+  ##
+  set.seed(123) # Provide reproducible results
+  # First do a fit without resampling and get these coefficients
+  baseFitCoeffs <- attr(x=cdeModel(countryAbbrev=countryAbbrev,
+                                   energyType=energyType,
+                                   respectRangeConstraints=respectRangeConstraints),
+                        which="naturalCoeffs")
+  # Now do a fit with resampling n times and get all of the coefficients
+  resampleFitCoeffs <- do(n) * attr(x=cdeModel(data=resample(loadData(countryAbbrev=countryAbbrev)), 
+                                               energyType=energyType, 
+                                               respectRangeConstraints=respectRangeConstraints),
+                                    which="naturalCoeffs")
+  # Combine the results and return
+  out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
+  return(out)
+}
