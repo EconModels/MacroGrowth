@@ -803,6 +803,7 @@ cdeModelAB <- function(countryAbbrev,
   lambda <- coef(modelCDe)["lambda"]
   a <- coef(modelCDe)["a"]
   b <- coef(modelCDe)["b"]
+  isConv <- modelCDe$convInfo$isConv
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitABoundary <- FALSE; hitBBoundary <- FALSE
@@ -819,6 +820,7 @@ cdeModelAB <- function(countryAbbrev,
       # Now re-fit. a an b have been set. Get a new value for lambda.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       lambda <- coef(modelCDe)["lambda"]
+      isConv <- modelCDe$convInfo$isConv
     } else if (hitABoundary){
       start <- list(lambda=lambda, b=b)
       # Now re-fit
@@ -826,12 +828,14 @@ cdeModelAB <- function(countryAbbrev,
       # a has been set. Grab a new value for b
       lambda <- coef(modelCDe)["lambda"]
       b <- coef(modelCDe)["b"]
+      isConv <- modelCDe$convInfo$isConv
       # Test to see if b is out of range and re-fit if needed.
       if (b<0 || b>1){
         b <- ifelse (b<0, 0, 1)
         start <- list(lambda=lambda)
         modelCDe <- nls(formula=formula, data=data, start=start, control=control)
         lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
       }
     } else if (hitBBoundary){
       start <- list(lambda=lambda, a=a)
@@ -840,12 +844,14 @@ cdeModelAB <- function(countryAbbrev,
       # b has been set. Grab a new value for a.
       lambda <- coef(modelCDe)["lambda"]
       a <- coef(modelCDe)["a"]
+      isConv <- modelCDe$convInfo$isConv
       # Test to see if a is out of range and re-fit if needed.
       if (a<0 || a>1){
         a <- ifelse (a<0, 0, 1)
         start <- list(lambda=lambda)
         modelCDe <- nls(formula=formula, data=data, start=start, control=control)
         lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
       }
     }
   }
@@ -858,7 +864,8 @@ cdeModelAB <- function(countryAbbrev,
                      alpha = min(a,b),
                      beta = as.vector(abs(b-a)),
                      gamma = 1 - max(a,b),
-                     sse = sum(resid(modelCDe)^2)
+                     sse = sum(resid(modelCDe)^2),
+                     isConv = isConv
                      )
   attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
   return(modelCDe)
@@ -900,6 +907,7 @@ cdeModelCD <- function(countryAbbrev,
   lambda <- coef(modelCDe)["lambda"]
   c <- coef(modelCDe)["c"]
   d <- coef(modelCDe)["d"]
+  isConv <- modelCDe$convInfo$isConv
   if (respectRangeConstraints){
     # Need to do a bit more work to finish the fit.
     hitCBoundary <- FALSE; hitDBoundary <- FALSE
@@ -916,6 +924,7 @@ cdeModelCD <- function(countryAbbrev,
       # Now re-fit. c and d both hit the boundary and have been reset.
       modelCDe <- nls(formula=formula, data=data, start=start, control=control)
       lambda <- coef(modelCDe)["lambda"]
+      isConv <- modelCDe$convInfo$isConv
     } else if (hitCBoundary){
       start <- list(lambda=lambda, d=d)
       # Now re-fit with c at its boundary.
@@ -923,12 +932,14 @@ cdeModelCD <- function(countryAbbrev,
       # c has been reset. Grab the new value for d
       lambda <- coef(modelCDe)["lambda"]
       d <- coef(modelCDe)["d"]
+      isConv <- modelCDe$convInfo$isConv
       # Test to see if d is out of range and re-fit if needed.
       if (d<0 || d>1){
         d <- ifelse (d<0, 0, 1)
         start <- list(lambda=lambda)
         modelCDe <- nls(formula=formula, data=data, start=start, control=control)
         lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
       }
     } else if (hitDBoundary){
       start <- list(lambda=lambda, c=c)
@@ -937,12 +948,14 @@ cdeModelCD <- function(countryAbbrev,
       # d has been reset. Grab the new value for c
       lambda <- coef(modelCDe)["lambda"]
       c <- coef(modelCDe)["c"]
+      isConv <- modelCDe$convInfo$isConv
       # Test to see if c is out of range and re-fit if needed.
       if (c<0 || c>1){
         c <- ifelse(c<0, 0, 1)
         start <- list(lambda=lambda)
         modelCDe <- nls(formula=formula, data=data, start=start, control=control)
         lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
       }
     }
   }
@@ -955,7 +968,8 @@ cdeModelCD <- function(countryAbbrev,
                      alpha = 1 - max(c,d),
                      beta = min(c,d),
                      gamma = as.vector(abs(d-c)),
-                     sse = sum(resid(modelCDe)^2)
+                     sse = sum(resid(modelCDe)^2),
+                     isConv = isConv
                      )
   attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
   return(modelCDe)
@@ -989,8 +1003,8 @@ cdeModel <- function(countryAbbrev,
     return(cdeModelCD)
   }
   # If we get to this point, neither reparameterization worked. Stop execution
-  stop(paste("Neither reparameterization worked. countryAbbrev =", countryAbbrev, 
-             "energyType =", energyType))
+  stop(paste("Neither reparameterization converged for CDe. countryAbbrev =", 
+             countryAbbrev, "energyType =", energyType))
 }
 
 # cdeModel <- function(countryAbbrev, 

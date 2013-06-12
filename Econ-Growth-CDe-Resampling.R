@@ -2,47 +2,18 @@ require(mosaic)
 source('Econ-Growth-Functions2.R')
 
 
-# The code below will perform two nls fits, one for each 
-# reparameterization (AB and CD)
-# The answers are similar for the US, but seemingly significantly
-# different for, say, TZ
-# countryAbbrev <- "US" # US is pretty close
-# countryAbbrev <- "UK" # UK is pretty close
-# countryAbbrev <- "JP"
-# countryAbbrev <- "CN"
-# countryAbbrev <- "ZA"
-# countryAbbrev <- "SA"
-# countryAbbrev <- "IR"
-# countryAbbrev <- "TZ"
-countryAbbrev <- "ZM"
-energyType <- "X"
-respectRangeConstraints <- TRUE
-
-print(attr(x=cdeModel(countryAbbrev="US", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="UK", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="JP", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="CN", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="ZA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="SA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="IR", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="TZ", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-print(attr(x=cdeModel(countryAbbrev="ZM", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
-
-# print(paste("ab reparameterization, country =", countryAbbrev, "energy =", energyType))
-# modelAB <- cdeModelAB(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-# print(attr(x=modelAB, which="naturalCoeffs"))
-# print(modelAB$convInfo$stopMessage)
-# if (!modelAB$convInfo$isConv){
-#   print(paste("stopCode =", modelAB$convInfo$stopCode, "stopMessage =", modelAB$convInfo$stopMessage))
-# }
+# energyType <- "X"
+# respectRangeConstraints <- TRUE
 # 
-# print(paste("cd reparameterization, country =", countryAbbrev, "energy =", energyType))
-# modelCD <- cdeModelCD(countryAbbrev=countryAbbrev, energyType=energyType, respectRangeConstraints=TRUE)
-# print(attr(x=modelCD, which="naturalCoeffs"))
-# print(modelCD$convInfo$stopMessage)
-# if (!modelCD$convInfo$isConv){
-#   print(paste("stopCode =", modelCD$convInfo$stopCode, "stopMessage =", modelCD$convInfo$stopMessage))
-# }
+# print(attr(x=cdeModel(countryAbbrev="US", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="UK", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="JP", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="CN", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="ZA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="SA", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="IR", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="TZ", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
+# print(attr(x=cdeModel(countryAbbrev="ZM", energyType=energyType, respectRangeConstraints=respectRangeConstraints), which="naturalCoeffs"))
 
 
 # This file contains code to resample data for economic growth
@@ -76,6 +47,75 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   return(out)
 }
 
+genAllCDeResampleData <- function(){
+  #############################
+  # This script generates resample data for all countries
+  # and saves to disk.
+  ##
+  energyType <- "Q"
+  n=10 # 10,000 samples are probably sufficient
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
+  #   energyType <- "X"
+  #   lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
+  #   energyType <- "U"
+  #   lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n)
+}
+
+genCDeResampleData <- function(countryAbbrev, energyType, n){
+  #########################
+  # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
+  # production function and stores them to disk. The data are stored in an 
+  # object called "resampleData". This object will have the same name
+  # when it is loaded back from disk. 
+  # We found that 10,000 resamples is sufficient to obtain good results
+  ## 
+  set.seed(123) # Provide reproducible results
+  # This next call returns a list that contains two named data.frames: 
+  # baseFitCoeffs and resampleFitCoeffs. 
+  resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
+                                  energyType=energyType, 
+                                  respectRangeConstraints=TRUE, 
+                                  n=n)
+  folder <- getFolderForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  # Ensure that the folder exists. showWarnings=FALSE, because 
+  dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
+  path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  save(resampleData, file=path)
+}
+
+loadCDeResampleData <- function(countryAbbrev, energyType){
+  #############################
+  # This function loads previously-saved Cobb-Douglas with energy
+  # curve fits from resampled data. The loaded object is
+  # a list that contains two named data.frames: 
+  # baseFitCoeffs and resampleFitCoeffs. 
+  ##
+  path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  load(file=path)
+  return(resampleData)
+}
+
+getPathForCDeResampleData <- function(countryAbbrev, energyType){
+  ######################
+  # Returns a string identifying the filename in which we 
+  # hold Cobb-Douglas resampled data
+  ## 
+#   folder <- getFolderForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+#   filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
+#   path <- paste(folder, filename, sep="")
+  filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
+  path <- file.path("data_resample", "cde", countryAbbrev, energyType, filename)
+  return(path)
+}
+
+getFolderForCDeResampleData <- function(countryAbbrev, energyType){
+  ##################
+  # Returns a string identifying a folder for resampled data.
+  ##
+  folder <- file.path("data_resample", "cde", countryAbbrev, energyType)
+  return(folder)
+}
+
 cdeResampleCoeffProps <- function(cdeResampleFits, ...){
   ####### 
   # This function creates a table of confidence intervals for the cde model
@@ -106,11 +146,7 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
   return(dataCD)
 }
 
-set.seed(123) # Provide reproducible results
-
 # Code for doing lots of resamples
-
-n <- 10 # number of resamples desired
 
 # alpha 95% CIs for different amounts of resampling (with seed = 123)
 # CDe with Q for the U.S.
@@ -121,12 +157,13 @@ n <- 10 # number of resamples desired
 # 10000  0.1971    0.3356   484.7 (8 minutes)
 # 30000  0.1960    0.3360
 # 100000 0.1975    0.3360 14823.3 (4.2 hours)
-# 
-# ptm <- proc.time()
-# data <- cdeResampleFits(countryAbbrev="SA", energyType="Q", respectRangeConstraints=TRUE, n=n)
+
+# n <- 1000 # number of resamples desired
+# t_0 <- proc.time()
+# data <- cdeResampleFits(countryAbbrev="ZM", energyType="X", respectRangeConstraints=TRUE, n=n)
 # statProps <- cdeResampleCoeffProps(cdeResampleFits=data)
 # print(statProps)
-# print(proc.time() - ptm)
+# print(proc.time() - t_0)
 
 # tally( ~ b == 1.0, data= sims )
 # xyplot( beta ~ alpha, data= sims)
