@@ -1,4 +1,3 @@
-## <<setup_parent, echo=FALSE, message=FALSE, eval=TRUE>>=
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
@@ -1207,6 +1206,66 @@ cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(
   # Fit the Cobb-Douglas model with gamma as a free parameter
   #return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType, ...))
   return(cdeModel(data=data, energyType=energyType, ...))
+}
+
+loadCDeResampleData <- function(countryAbbrev, energyType){
+  #############################
+  # This function loads previously-saved Cobb-Douglas with energy
+  # curve fits from resampled data. The loaded object is
+  # a list that contains two named data.frames: 
+  # baseFitCoeffs and resampleFitCoeffs. 
+  ##
+  path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  load(file=path)
+  return(resampleData)
+}
+
+getPathForCDeResampleData <- function(countryAbbrev, energyType){
+  ######################
+  # Returns a string identifying the filename in which we 
+  # hold Cobb-Douglas resampled data
+  ## 
+  filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
+  path <- file.path("data_resample", "cde", countryAbbrev, energyType, filename)
+  return(path)
+}
+
+getFolderForCDeResampleData <- function(countryAbbrev, energyType){
+  ##################
+  # Returns a string identifying a folder for resampled data.
+  ##
+  folder <- file.path("data_resample", "cde", countryAbbrev, energyType)
+  return(folder)
+}
+
+cdeResampleCoeffProps <- function(cdeResampleFits, ...){
+  ####### 
+  # This function creates a table of confidence intervals for the cde model
+  ##
+  baseFitCoeffs <- cdeResampleFits$baseFitCoeffs
+  resampleFitCoeffs <- cdeResampleFits$resampleFitCoeffs
+  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  alphaCI <- qdata(p=ciVals, vals=alpha, data=resampleFitCoeffs)
+  betaCI <- qdata(p=ciVals, vals=beta, data=resampleFitCoeffs)
+  gammaCI <- qdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
+  # Now make a data.frame that contains the information.
+  lower <- data.frame(lambda=lambdaCI["2.5%"],
+                      alpha=alphaCI["2.5%"],
+                      beta=betaCI["2.5%"],
+                      gamma=gammaCI["2.5%"])
+  row.names(lower) <- "-95% CI"
+  mid <- data.frame(lambda=baseFitCoeffs["lambda"],
+                    alpha=baseFitCoeffs["alpha"],
+                    beta=baseFitCoeffs["beta"],
+                    gamma=baseFitCoeffs["gamma"])
+  row.names(mid) <- "CDe"
+  upper <- data.frame(lambda=lambdaCI["97.5%"],
+                      alpha=alphaCI["97.5%"],
+                      beta=betaCI["97.5%"],
+                      gamma=gammaCI["97.5%"])
+  row.names(upper) <- "+95% CI"
+  dataCD <- rbind(upper, mid, lower)
+  return(dataCD)
 }
 
 cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
