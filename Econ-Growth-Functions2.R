@@ -860,6 +860,8 @@ cdeModelAB <- function(countryAbbrev,
                      b = as.vector(b),
                      c = NA,
                      d = NA,
+                     e = NA,
+                     f = NA,
                      lambda = as.vector(lambda),
                      alpha = min(a,b),
                      beta = as.vector(abs(b-a)),
@@ -964,6 +966,8 @@ cdeModelCD <- function(countryAbbrev,
                      b = NA,
                      c = as.vector(c),
                      d = as.vector(d),
+                     e = NA,
+                     f = NA,
                      lambda = as.vector(lambda),
                      alpha = 1 - max(c,d),
                      beta = min(c,d),
@@ -971,6 +975,112 @@ cdeModelCD <- function(countryAbbrev,
                      sse = sum(resid(modelCDe)^2),
                      isConv = isConv
                      )
+  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
+  return(modelCDe)
+}
+
+cdeModelEF <- function(countryAbbrev, 
+                       energyType, 
+                       data=loadData(countryAbbrev), 
+                       respectRangeConstraints=FALSE, ...){
+  #################
+  # This function does a Cobb-Douglas fit for the 
+  # given data using the "ef" reparameterization, namely
+  # * alpha + beta + gamma = 1.0.
+  # * alpha, beta, and gamma are all between 0.0 and 1.0.
+  # * 0 < e < 1
+  # * 0 < f < 1
+  # * gamma = min(e, f)
+  # * alpha = abs(f-e)
+  # * beta = 1 - max(e, f)
+  ##
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function. 
+  data <- replaceColName(data, energyType, "iEToFit")
+  control <- nls.control(maxiter=200, 
+                         tol=1e-05, 
+                         minFactor=1/1024,
+                         printEval=FALSE, #Tells whether to print details of curve fit process.
+                         warnOnly=TRUE)
+  # Establish guess values for lambda, alpha, and beta.
+  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.899
+  betaGuess <- 1.0 - alphaGuess
+  gammaGuess <- 0.001
+  eGuess <- gammaGuess
+  fGuess <- gammaGuess + alphaGuess
+  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^abs(f - e) * iLabor^(1 - max(e, f)) * iEToFit^min(e, f)
+  start <- list(lambda=lambdaGuess, e=eGuess, f=fGuess)
+  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  lambda <- coef(modelCDe)["lambda"]
+  e <- coef(modelCDe)["e"]
+  f <- coef(modelCDe)["f"]
+  isConv <- modelCDe$convInfo$isConv
+  if (respectRangeConstraints){
+    # Need to do a bit more work to finish the fit.
+    hitEBoundary <- FALSE; hitFBoundary <- FALSE
+    if (e<0 || e>1){
+      hitEBoundary <- TRUE
+      e <- ifelse (e<0, 0, 1)
+    }
+    if (f<0 || f>1){
+      hitFBoundary <- TRUE
+      f <- ifelse (f<0, 0, 1)
+    }
+    if (hitEBoundary && hitFBoundary){
+      start <- list(lambda=lambda)
+      # Now re-fit. c and d both hit the boundary and have been reset.
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      lambda <- coef(modelCDe)["lambda"]
+      isConv <- modelCDe$convInfo$isConv
+    } else if (hitEBoundary){
+      start <- list(lambda=lambda, f=f)
+      # Now re-fit with e at its boundary.
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # e has been reset. Grab the new value for f
+      lambda <- coef(modelCDe)["lambda"]
+      f <- coef(modelCDe)["f"]
+      isConv <- modelCDe$convInfo$isConv
+      # Test to see if f has been pushed out of range and re-fit if needed.
+      if (f<0 || f>1){
+        f <- ifelse (f<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
+      }
+    } else if (hitFBoundary){
+      start <- list(lambda=lambda, e=e)
+      # Now re-fit
+      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      # f has been reset. Grab the new value for e
+      lambda <- coef(modelCDe)["lambda"]
+      e <- coef(modelCDe)["e"]
+      isConv <- modelCDe$convInfo$isConv
+      # Test to see if e has been pushed out of range and re-fit if needed.
+      if (e<0 || e>1){
+        e <- ifelse(e<0, 0, 1)
+        start <- list(lambda=lambda)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        lambda <- coef(modelCDe)["lambda"]
+        isConv <- modelCDe$convInfo$isConv
+      }
+    }
+  }
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(a = NA, 
+                     b = NA,
+                     c = NA,
+                     d = NA,
+                     e = as.vector(e),
+                     f = as.vector(f),
+                     lambda = as.vector(lambda),
+                     alpha = as.vector(abs(f-e)),
+                     beta = 1 - max(e,f),
+                     gamma = min(e,f),
+                     sse = sum(resid(modelCDe)^2),
+                     isConv = isConv
+  )
   attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
   return(modelCDe)
 }
@@ -1002,9 +1112,17 @@ cdeModel <- function(countryAbbrev,
     # OK, that one worked. Return it.
     return(cdeModelCD)
   }
+  # Try one more time with the ef reparameterization.
+  cdeModelEF <- cdeModelEF(countryAbbrev=countryAbbrev,
+                           energyType=energyType,
+                           data=data,
+                           respectRangeConstraints=respectRangeConstraints, ...)
+  if (cdeModelEF$convInfo$isConv){
+    return (cdeModelEF)
+  }    
   # If we get to this point, neither reparameterization converged. Print some
   # information about both.
-  warning(paste("Neither ab nor cd reparameterization converged for CDe. countryAbbrev =", 
+  warning(paste("None of the ab, cd, or ef reparameterizations converged for CDe. countryAbbrev =", 
                 ifelse(missing(countryAbbrev), "missing", countryAbbrev), 
                 "energyType =", energyType,
                 "This should happen rarely. Returning the reparameterization with smallest SSE."))
@@ -1016,13 +1134,24 @@ cdeModel <- function(countryAbbrev,
   print("cdeModelCD")
   print(summary(cdeModelCD))
   print(attr(x=cdeModelCD, which="naturalCoeffs"))
+  print("cdeModelEF")
+  print(summary(cdeModelEF))
+  print(attr(x=cdeModelEF, which="naturalCoeffs"))
   sseAB <- attr(x=cdeModelAB, which="naturalCoeffs")["sse"]
   sseCD <- attr(x=cdeModelCD, which="naturalCoeffs")["sse"]
+  sseEF <- attr(x=cdeModelEF, which="naturalCoeffs")["sse"]
+  # Return the reparameterization with least sse
   if (sseAB < sseCD){
-    return(cdeModelAB)
+    bestsse <- sseAB
+    out <- cdeModelAB
   } else {
-    return(cdeModelCD)
+    bestsse <- sseCD
+    out <- cdeModelCD
   }
+  if (sseEF < bestsse){
+    out <- cdeModelEF
+  }
+  return(out)
 }
 
 # cdeModel <- function(countryAbbrev, 
