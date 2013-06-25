@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # Allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1079,6 +1079,14 @@ for the parameters for the Cobb-Douglas model (with $u$).
 <<CDu_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType="U")
 @
+
+Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$). **** Need to add the sloped triangle lines if we decide to use graphs like this. ****
+
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.", eval=TRUE>>=
+cdeResampleTrianglePlot(energyType="Q")
+@
+
+**** Add triangle cloud plots for $x$ and $u$ if we decide to use these plots. ****
 
 Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 
 from the Cobb-Douglas models 
