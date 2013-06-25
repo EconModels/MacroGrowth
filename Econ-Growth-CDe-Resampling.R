@@ -87,3 +87,19 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
   return(out)
 }
+
+cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
+  ###################
+  # Gives the fraction of resample fits that did not converge
+  ##
+  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  nObs <- nrow(data[["resampleFitCoeffs"]])
+  tallyResults <- tally(~isConv, data=data[["resampleFitCoeffs"]], format="proportion")
+  # Grabs the fraction that is converged. We can't simply gather the fraction that
+  # has not converged (tallyResults[["0"]]), because there are some times when
+  # all resampled fits converge, and there is no "0" item in the 
+  # result from tally.
+  fracConverged <- tallyResults[["1"]]
+  fracUnconverged <- 1.0 - fracConverged
+  return(fracUnconverged)
+}
