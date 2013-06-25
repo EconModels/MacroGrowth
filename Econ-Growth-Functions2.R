@@ -1079,7 +1079,7 @@ cdeModelEF <- function(countryAbbrev,
                      gamma = min(e,f),
                      sse = sum(resid(modelCDe)^2),
                      isConv = isConv
-  )
+                     )
   attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
   return(modelCDe)
 }
@@ -1218,6 +1218,30 @@ loadCDeResampleData <- function(countryAbbrev, energyType){
   path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
   load(file=path)
   return(resampleData)
+}
+
+loadCDeResampleDataRefitsOnly <- function(countryAbbrev, energyType){
+  ####################
+  # Loads coefficients for resampled data only from a previously-run set of resample curve fits
+  ##
+  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
+  # Make a factor column for the country
+  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
+  colnames(countryAbbrev) <- "countryAbbrev"
+  data <- cbind(data, countryAbbrev)
+  return(data)
+}
+
+loadCDeResampleDataBaseFitOnly <- function(countryAbbrev, energyType){
+  ####################
+  # Loads the base fit coefficients only from a previously-run curve fit
+  ##
+  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["baseFitCoeffs"]] 
+  # Make a factor column for the country
+  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
+  colnames(countryAbbrev) <- "countryAbbrev"
+  data <- cbind(data, countryAbbrev)
+  return(data)
 }
 
 getPathForCDeResampleData <- function(countryAbbrev, energyType){
@@ -1861,6 +1885,60 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                   xlab=list(label="", cex=textScaling), 
                   ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
   )
+  return(graph)
+}
+
+
+
+abgTriangleTransform <- function(alpha, beta, gamma){
+  ###########################
+  # Transforms alpha, beta, and gamma into a triangle plot
+  # This transform assumes that alpha + beta + gamma = 1.0
+  # gamma is measured on the vertical axis (y).
+  # Along the bottom side of the triangle, gamma = 0.
+  # Along the left side of the triangle, alpha = 0.
+  # Along the right side of the triangle, beta = 0.
+  # Halfway up the triangle and in the middle (horizontally), we
+  # have alpha = 0.25, beta = 0.25, and gamma = 0.5.
+  # alpha and beta are split proportionally along the horizontal
+  # axis. 
+  # This function returns a data.frame that contains x, y pairs for 
+  # give alpha, beta, and gamma vectors input
+  # to the function.
+  ##
+  x <- alpha + 0.5*gamma
+  y <- gamma
+  return(data.frame(x=x, y=y))
+}
+
+triangleCloudPlot <- function(resampleCoeffs, ...){
+  ########################
+  # This function makes a triangle cloud plot from 
+  # resample data. The resample data should be in the form of a 
+  # data.frame containing columns named x, y, and countryAbbrev.
+  # This function makes a lattice plot from the information.
+  ##
+  # Attach the xy data to the original resample data so that we retain the country information
+  graph <- xyplot(y ~ x | countryAbbrev, data=resampleCoeffs, 
+                  pch=16, 
+                  alpha=0.1, 
+                  cex=1,
+                  xlim=c(0,1), 
+                  ylim=c(0,1)
+  )
+  ladd(panel.xyplot(c(0.0, 1.0, 0.5, 0.0) , c(0.0 ,0.0 ,1.0 ,0.0), type="l"))
+  return(graph)
+}
+
+cdeResampleTrianglePlot <- function(energyType, ...){
+  ##################
+  # A wrapper function for triangleCloudPlot
+  ##
+  # data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadCDeResampleDataRefitsOnly, energyType=energyType))
+  xy <- abgTriangleTransform(data[["alpha"]], data[["beta"]], data[["gamma"]])
+  data <- cbind(data, xy)
+  graph <- triangleCloudPlot(resampleCoeffs=data)
   return(graph)
 }
 

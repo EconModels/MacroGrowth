@@ -30,7 +30,7 @@ genAllCDeResampleData <- function(){
   # and saves to disk.
   ##
   t_0 <- proc.time()
-  n=10000 # 10,000 samples are probably sufficient
+  n=100 # 10,000 samples are probably sufficient
   energyType <- "Q"
   lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
   energyType <- "X"
@@ -79,7 +79,8 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
                                    respectRangeConstraints=respectRangeConstraints),
                         which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
-  resampleFitCoeffs <- do(n) * attr(x=cdeModel(data=resample(loadData(countryAbbrev=countryAbbrev)), 
+  data <- loadData(countryAbbrev=countryAbbrev)
+  resampleFitCoeffs <- do(n) * attr(x=cdeModel(data=resample(data), 
                                                energyType=energyType, 
                                                respectRangeConstraints=respectRangeConstraints),
                                     which="naturalCoeffs")
