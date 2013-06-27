@@ -74,9 +74,10 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   ##
   set.seed(123) # Provide reproducible results
   # First do a fit without resampling and get these coefficients
-  baseFitCoeffs <- attr(x=cdeModel(countryAbbrev=countryAbbrev,
-                                   energyType=energyType,
-                                   respectRangeConstraints=respectRangeConstraints),
+  origModel <- cdeModel(countryAbbrev=countryAbbrev,
+                        energyType=energyType,
+                        respectRangeConstraints=respectRangeConstraints)
+  baseFitCoeffs <- attr(x = origModel,
                         which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
   data <- loadData(countryAbbrev=countryAbbrev)
