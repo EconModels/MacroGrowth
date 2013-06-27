@@ -99,7 +99,7 @@
 
 \begin{document}
 
-<<setup, echo=FALSE, message=FALSE, eval=FALSE>>=
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
