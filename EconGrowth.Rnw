@@ -259,26 +259,6 @@ We may need to run with warnings turned off to view the problems.}
 \item{\st{Heun: Get Pruim set up on the GitHub repository.}}
 \end{itemize}
 
-
-
-<<FindError, eval=TRUE>>=
-# print(cobbDouglasCountryRow(countryAbbrev="US", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="UK", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="JP", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="CN", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="ZA", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="SA", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="IR", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="TZ", energyType="X"))
-
-cobbDouglasData(countryAbbrev="TZ", energyType="X")
-
-# print(cobbDouglasModel(countryAbbrev="TZ", energyType="X"))
-# print(cdeModel(countryAbbrev="TZ", energyType="X"))
-# print(cobbDouglasCountryRow(countryAbbrev="ZM", energyType="X"))
-@
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction} 
 \label{sec:Introduction}
@@ -588,20 +568,14 @@ applying CES to describe the Swedish economy, and \citet{Warr:2012cg}
 using LINEX and Cobb-Douglas to describe the Austrian, 
 American, British, and Japanese economies.
 
-But, the nearly-complete focus on developed economies closes off 
+But, the near-exclusive focus on developed economies closes off 
 the possibility of discovering any role that energy plays 
-in the development process. In this paper we analyze at least 
+in the economic development process. In this paper we analyze at least 
 two economies in each of the following four categories: 
-Developed (technologically advanced with high standards of living), 
-BRICS\footnote{Brazil, Russia, India, China, and South Africa} 
-(rapid economic growth with standards of living below that of 
-developed economies), 
-Petrol (petroleum is a substantial source of GDP 
-**** Martin: Is this the right way to describe the 
-petrol economies? ****); and 
-LDCs\footnote{Lesser Developed Countries} 
-(living standards near subsistence levels 
-**** Martin: Is this the right way to describe the LDC economies? ****). 
+Developed, 
+NICs,\footnote{Newly Industrialized Countries}
+OPEC, and 
+LDCs.\footnote{Lesser Developed Countries} 
 (See Table~\ref{tab:Economy_Examples}.)
 
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
@@ -611,13 +585,13 @@ LDCs\footnote{Lesser Developed Countries}
                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
       \hline
-      \multirow{2}{*}{BRICS}     & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
+      \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
       \hline
-      \multirow{2}{*}{Petrol}    & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
+      \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
       \hline
-      \multirow{2}{*}{LDC}       & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
+      \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
     \end{tabular}
   \end{center}
@@ -1082,7 +1056,7 @@ createCDParamsGraph(energyType="U")
 
 Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$). **** Need to add the sloped triangle lines if we decide to use graphs like this. ****
 
-<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.", eval=TRUE>>=
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
 cdeResampleTrianglePlot(energyType="Q")
 @
 
