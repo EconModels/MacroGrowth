@@ -10,7 +10,7 @@ require(micEconCES)
 require(reshape2) # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
-require(tikzDevice) 
+if (! require(tikzDevice) ) warning( "tikzDevice not loaded" )
 
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
