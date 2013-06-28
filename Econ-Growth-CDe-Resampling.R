@@ -31,16 +31,17 @@ genAllCDeResampleData <- function(){
   ##
   t_0 <- proc.time()
   n=100 # 10,000 samples are probably sufficient
+  method="resample"
   energyType <- "Q"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
   energyType <- "X"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n)
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
   energyType <- "U"
-  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n)
+  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n, method=method)
   print(proc.time() - t_0)
 }
 
-genCDeResampleData <- function(countryAbbrev, energyType, n){
+genCDeResampleData <- function(countryAbbrev, energyType, n, method=c('resample','residuals','wild')){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -53,37 +54,15 @@ genCDeResampleData <- function(countryAbbrev, energyType, n){
   resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
                                   energyType=energyType, 
                                   respectRangeConstraints=TRUE, 
-                                  n=n)
+                                  n=n, 
+                                  method=method,
+                                  )
   folder <- getFolderForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
   # Ensure that the folder exists. showWarnings=FALSE, because we don't care 
   # if the directory already exists.
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
   path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
   save(resampleData, file=path)
-}
-
-Resample <- function( data, model, energyType=c("X","U","Q"), method=c('resample','residuals','wild')) {
-  # data: original data frame
-  # model: model returned from nls
-  # energyType: one of those listed
-  # wild: if true, randomly select sign of resampled residuals
-  
-  energyType <- match.arg(energyType)
-  method = match.arg(method)
-  energyType <- paste('i', energyType, sep="")
-  keep.ind <- sort( setdiff(1:nrow(data), model$na.action) )
-  
-  if(method == "resample") {
-    return( resample( data[keep.ind,] ) )
-  }
-  
-  data[,energyType] <-NA
-  data[keep.ind, energyType] <- 
-    switch(method,
-           "residuals" = fitted(model) + resample(resid(model)),
-           "wild"      = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
-    )  
-  return(data)
 }
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
@@ -108,14 +87,38 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   # Now do a fit with resampling n times and get all of the coefficients
   data <- loadData(countryAbbrev=countryAbbrev)
   resampleFitCoeffs <- 
-    do(n) * attr(x=cdeModel(data=Resample(data, model=origModel, 
-                                               energyType=energyType, method=method),
+    do(n) * attr(x=cdeModel(data=doResample(data, model=origModel, 
+                                            energyType=energyType, method=method),
                             energyType=energyType, 
                             respectRangeConstraints=respectRangeConstraints),
                             which="naturalCoeffs")
   # Combine the results and return
   out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
   return(out)
+}
+
+doResample <- function( data, model, energyType=c("X","U","Q"), method=c('resample','residuals','wild')) {
+  # data: original data frame
+  # model: model returned from nls
+  # energyType: one of those listed
+  # wild: if true, randomly select sign of resampled residuals
+  
+  energyType <- match.arg(energyType)
+  method = match.arg(method)
+  energyType <- paste('i', energyType, sep="")
+  keep.ind <- sort( setdiff(1:nrow(data), model$na.action) )
+  
+  if(method == "resample") {
+    return( resample( data[keep.ind,] ) )
+  }
+  
+  data[,energyType] <-NA
+  data[keep.ind, energyType] <- 
+    switch(method,
+           "residuals" = fitted(model) + resample(resid(model)),
+           "wild"      = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
+    )  
+  return(data)
 }
 
 cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
