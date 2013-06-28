@@ -31,7 +31,7 @@ genAllCDeResampleData <- function(){
   ##
   t_0 <- proc.time()
   n=100 # 10,000 samples are probably sufficient
-  method="resample"
+  method="wild"
   energyType <- "Q"
   lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
   energyType <- "X"
@@ -97,22 +97,28 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   return(out)
 }
 
-doResample <- function( data, model, energyType=c("X","U","Q"), method=c('resample','residuals','wild')) {
-  # data: original data frame
-  # model: model returned from nls
+doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residuals", "wild")) {
+  ######################
+  # data: original data frame for country of interest. This data should NOT be resampled.
+  # model: original model returned from nls
   # energyType: one of those listed
-  # wild: if true, randomly select sign of resampled residuals
+  # method:
+  #         resample:  resample rows from data. Can result in repeated years
+  #         residuals: resamples the residuals and applies them to the data. All years are present.
+  #         wild:      same as residuals but randomly select sign of resampled residuals
+  ##
   
   energyType <- match.arg(energyType)
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
-  keep.ind <- sort( setdiff(1:nrow(data), model$na.action) )
+  # model$na.action contains indices of rows that couldn't be used due to missingness.
+  keep.ind <- sort(setdiff(1:nrow(data), model$na.action))
   
   if(method == "resample") {
     return( resample( data[keep.ind,] ) )
   }
   
-  data[,energyType] <-NA
+  data[,energyType] <- NA
   data[keep.ind, energyType] <- 
     switch(method,
            "residuals" = fitted(model) + resample(resid(model)),
@@ -122,6 +128,10 @@ doResample <- function( data, model, energyType=c("X","U","Q"), method=c('resamp
 }
 
 cdeFracUnconvergedResampleFitsAll <- function(){
+  ###########################
+  # Calculates the fraction of unconverged resamples stored on disk 
+  # for all countries and all energy types
+  ## 
   energyType <- "Q"
   qUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
   energyType <- "X"
