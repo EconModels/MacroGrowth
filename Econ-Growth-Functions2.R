@@ -81,8 +81,8 @@ loadData <- function(countryAbbrev){
   ##
   # Read the data file as a table with a header.  
   fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
-  dataTable <- read.table(file=fileName, header=TRUE)
-  return(dataTable)
+  data <- read.table(file=fileName, header=TRUE)
+  return(data)
 }
 
 haveDataSF <- function(countryAbbrev, factor){
@@ -192,10 +192,10 @@ padRows <- function(countryAbbrev, df){
   return(doPadRows(dataToBePadded=df, dataThatSuppliesRowCount=countryData))
 }
 
-columnIndex <- function(dataTable, factor){
+columnIndex <- function(data, factor){
   ##############################
   # Returns an integer representing the column index for some data
-  # dataTable the data.frame in which you want to change column names
+  # data the data.frame in which you want to change column names
   # factor should be a string and one of Year, Y, K, L, Q, X, or U
   ##
   if (factor == "Year"){
@@ -217,21 +217,21 @@ columnIndex <- function(dataTable, factor){
     quit()
   }
   # Get the desired column index.
-  colIndex <- which(names(dataTable) %in% colName) #Find index of desired column
+  colIndex <- which(names(data) %in% colName) #Find index of desired column
   return(colIndex)  
 }
 
-replaceColName <- function(dataTable, factor, newName){
+replaceColName <- function(data, factor, newName){
   ##############################
   # Replaces a column name with the given string
-  # dataTable the data.frame that you're working with
+  # data the data.frame that you're working with
   # factor should be a string and one of Year, Y, K, L, Q, X, or U
   # newName should be a string and the desired new name of the column
-  # returns dataTable with a new name for one of its factor column.
+  # returns data.frame with a new name for one of its factor column.
   ##
-  colIndex <- columnIndex(dataTable=dataTable, factor=factor)
-  colnames(dataTable)[colIndex] <- newName #Change desired column name to newName
-  return(dataTable)
+  colIndex <- columnIndex(data=data, factor=factor)
+  colnames(data)[colIndex] <- newName #Change desired column name to newName
+  return(data)
 }
 
 covarianceTable <- function(countryAbbrev){
@@ -294,14 +294,14 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
   # Code that deals with items that are specific to whether we want all countries or a specific country.
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
-    dataTable <- loadData("All")
+    data <- loadData("All")
     factorLevels <- countryNamesAlph # We want all countries shown
     indexCond <- list(countryOrderForGraphs) # We want all countries in this order
     layout <- ninePanelLayoutSpec # Show all countries
     yLimits <- yLimitsForGDPGraphs
   } else {
     # We want only a specific country
-    dataTable <- loadData(countryAbbrev)
+    data <- loadData(countryAbbrev)
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
     # The following lines use [index:index] as a convenient way of subsetting.
@@ -311,7 +311,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=data,
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
@@ -364,8 +364,6 @@ singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, facto
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=data, start = start)
-  #   model <- iGDP ~ exp(lambda*iYear) * f^m
-  #   modelSF <- wrapnls(formula=model, data=dataTable, start=list(lambda=lambdaGuess, m=mGuess))
   return(modelSF)
 }
 
@@ -406,14 +404,14 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
-  dataTable <- loadData("All") #Grab the raw data
+  data <- loadData("All") #Grab the raw data
   predictionsK <- singleFactorPredictionsColumn("K") #Predictions from SF with K
   predictionsL <- singleFactorPredictionsColumn("L") #Predictions from SF with L
   predictionsQ <- singleFactorPredictionsColumn("Q") #Predictions from SF with Q
   predictionsX <- singleFactorPredictionsColumn("X") #Predictions from SF with X
   predictionsU <- singleFactorPredictionsColumn("U") #Predictions from SF with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU)
+  data <- cbind(data, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU)
   # Code for all graphs, regardless of whether we want to focus on a specific country
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
@@ -429,7 +427,7 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     layout <- ninePanelLayoutSpec # Show all countries
   } else {
     # We want only a specific country
-    dataTable <- subset(dataTable, Country == countryAbbrev)    
+    data <- subset(data, Country == countryAbbrev)    
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
     # The following lines use [index:index] as a convenient way of subsetting.
@@ -439,7 +437,7 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }  
-  graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout, #indicates a 3x3 arrangement of panels.
@@ -618,9 +616,9 @@ createSFParamsGraph <- function(factor){
   }
   # Create a data table with the following columns:
   # country abbrev, parameter (lambda or m), -95% CI, value, +95% CI
-  dataTable <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRowsForParamsGraph, factor=factor))
+  data <- do.call("rbind", lapply(countryAbbrevs, singleFactorCountryRowsForParamsGraph, factor=factor))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                   data = dataTable,
+                   data = data,
                    centers = value, #identifies where the dots should be placed
                    draw.bands = FALSE, #provides nicer error bars
                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
@@ -1764,9 +1762,9 @@ createCDParamsGraph <- function(energyType){
   if (is.na(energyType)){
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-    dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=NA))
+    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=NA))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                     data = dataTable, 
+                     data = data, 
                      centers = value, #identifies where the dots should be placed
                      draw.bands = FALSE, #provides nicer error bars
                      horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
@@ -1792,9 +1790,9 @@ createCDParamsGraph <- function(energyType){
   } else {
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-    dataTable <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
+    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                     data = dataTable, 
+                     data = data, 
                      centers = value, #identifies where the dots should be placed
                      draw.bands = FALSE, #provides nicer error bars
                      horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
@@ -1826,13 +1824,13 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   ##############################
   # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
   ##
-  dataTable <- loadData("All") #Grab the raw data
+  data <- loadData("All") #Grab the raw data
   predictions  <- cobbDouglasPredictionsColumn(energyType=NA)  #Predictions from CD without energy
   predictionsQ <- cobbDouglasPredictionsColumn(energyType="Q") #Predictions from CD with Q
   predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
   predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictions, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
@@ -1847,7 +1845,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     layout <- ninePanelLayoutSpec # Show all countries
   } else {
     # We want only a specific country
-    dataTable <- subset(dataTable, Country == countryAbbrev)    
+    data <- subset(data, Country == countryAbbrev)    
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
     # The following lines use [index:index] as a convenient way of subsetting.
@@ -1857,7 +1855,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout, #indicates a 3x3 arrangement of panels.
@@ -2142,13 +2140,13 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
-  dataTable <- loadData("All") #Grab the raw data
+  data <- loadData("All") #Grab the raw data
   predictions  <- cesPredictionsColumn(energyType=NA)  #Predictions from CES without energy
   predictionsQ <- cesPredictionsColumn(energyType="Q") #Predictions from CES with Q
   predictionsX <- cesPredictionsColumn(energyType="X") #Predictions from CES with X
   predictionsU <- cesPredictionsColumn(energyType="U") #Predictions from CES with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictions, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictions, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
@@ -2163,7 +2161,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
     layout <- ninePanelLayoutSpec # Show all countries
   } else {
     # We want only a specific country
-    dataTable <- subset(dataTable, Country == countryAbbrev)    
+    data <- subset(data, Country == countryAbbrev)    
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
     # The following lines use [index:index] as a convenient way of subsetting.
@@ -2173,7 +2171,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -2462,9 +2460,9 @@ createCESParamsGraph <- function(energyType){
   ##
   # Create a data table with the following columns:
   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
-  dataTable <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                   data = dataTable, 
+                   data = data, 
                    centers = value, #identifies where the dots should be placed
                    as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                    draw.bands = FALSE, #provides nicer error bars
@@ -2515,7 +2513,7 @@ printCESParamsTableB <- function(energyType){
 }
 
 ## <<LINEX functions, eval=TRUE>>=
-linexModel <- function(countryAbbrev, energyType, dataTable=loadData(countryAbbrev=countryAbbrev)){
+linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev=countryAbbrev)){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType should be one of Q", "X", or "U".
@@ -2529,7 +2527,7 @@ linexModel <- function(countryAbbrev, energyType, dataTable=loadData(countryAbbr
   # We need to do the Linex fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
-  dataTable <- replaceColName(dataTable, energyType, "iEToFit")
+  data <- replaceColName(data, energyType, "iEToFit")
   a_0Guess <- 0.5
   c_tGuess <- 1.0
   if (countryAbbrev == "SA"){
@@ -2539,7 +2537,7 @@ linexModel <- function(countryAbbrev, energyType, dataTable=loadData(countryAbbr
   }
   # Runs a non-linear least squares fit to the data with constraints
   modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
-                    data=dataTable,
+                    data=data,
                     start=list(a_0=a_0Guess, c_t=c_tGuess),
                     control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, printEval=FALSE, warnOnly=TRUE),
                     #                   algorithm = "port",
@@ -2586,12 +2584,12 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
-  dataTable <- loadData("All") #Grab the raw data
+  data <- loadData("All") #Grab the raw data
   predictionsQ <- linexPredictionsColumn("Q") #Predictions from LINEX with Q
   predictionsX <- linexPredictionsColumn("X") #Predictions from LINEX with X
   predictionsU <- linexPredictionsColumn("U") #Predictions from LINEX with U
   #Now add the predictions columns to the data.
-  dataTable <- cbind(dataTable, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
@@ -2606,7 +2604,7 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
     layout <- ninePanelLayoutSpec # Show all countries
   } else {
     # We want only a specific country
-    dataTable <- subset(dataTable, Country == countryAbbrev)    
+    data <- subset(data, Country == countryAbbrev)    
     # Select the correct y limits
     index <- which(countryAbbrevsAlph %in% countryAbbrev)
     # The following lines use [index:index] as a convenient way of subsetting.
@@ -2616,7 +2614,7 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }  
-  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -2736,9 +2734,9 @@ createLINEXParamsGraph <- function(energyType){
   ##
   # Create a data table with the following columns:
   # country abbrev, parameter (a_0, c_t), -95% CI, value, +95% CI
-  dataTable <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                   data = dataTable, 
+                   data = data, 
                    centers = value, #identifies where the dots should be placed
                    draw.bands = FALSE, #provides nicer error bars
                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
@@ -3253,7 +3251,7 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   data <- loadData(countryAbbrev=countryAbbrev)
   data <- cbind(data, resid)
   # Replace name of column we want with the name "iEToFit"
-  data <- replaceColName(dataTable=data, factor=energyType, newName="iEToFit")
+  data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
   return(data)
 }
 
