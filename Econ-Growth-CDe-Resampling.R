@@ -41,7 +41,7 @@ genAllCDeResampleData <- function(){
   print(proc.time() - t_0)
 }
 
-genCDeResampleData <- function(countryAbbrev, energyType, n, method=c('resample','residuals','wild')){
+genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample","residual","wild")){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -66,7 +66,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c('resample'
 }
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
-                            method=c("resample","residuals","wild"), ...){
+                            method=c("resample","residual","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a list with the first item being the base fit to the 
@@ -97,14 +97,14 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   return(out)
 }
 
-doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residuals", "wild")) {
+doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residual", "wild")) {
   ######################
   # data: original data frame for country of interest. This data should NOT be resampled.
   # model: original model returned from nls
   # energyType: one of those listed
   # method:
   #         resample:  resample rows from data. Can result in repeated years
-  #         residuals: resamples the residuals and applies them to the data. All years are present.
+  #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   ##
   
@@ -121,8 +121,8 @@ doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resampl
   data[,energyType] <- NA
   data[keep.ind, energyType] <- 
     switch(method,
-           "residuals" = fitted(model) + resample(resid(model)),
-           "wild"      = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
+           "residual" = fitted(model) + resample(resid(model)),
+           "wild"     = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
     )  
   return(data)
 }
