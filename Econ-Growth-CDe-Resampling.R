@@ -121,6 +121,16 @@ doResample <- function( data, model, energyType=c("X","U","Q"), method=c('resamp
   return(data)
 }
 
+cdeFracUnconvergedResampleFitsAll <- function(){
+  energyType <- "Q"
+  qResults <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
+  energyType <- "X"
+  xResults <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
+  energyType <- "U"
+  uResults <- lapply(countryAbbrevsU, cdeFracUnconvergedResampleFits, energyType=energyType)
+  return(cbind(qResults, xResults, uResults))
+}
+
 cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
   ###################
   # Gives the fraction of resample fits that did not converge
