@@ -556,7 +556,9 @@ singleFactorParamsTable <- function(factor){
                         " ", factorString,  " ")
   rownames(dataSF) <- countryAbbrevs
   tableSF <- xtable(dataSF, 
-                    caption=paste("Single-factor model (with $", tolower(factor), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    caption=paste("Single-factor model (with $", tolower(factor), 
+                                  "$) parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                                  sep=""), 
                     label=paste("tab:SF_Parameters_With_", factor, sep=""),
                     digits = c(1, 4,4,4, 2,2,2),
                     align = "r|ccc|ccc") #Sets alignment of the numbers in the columns
@@ -1693,7 +1695,7 @@ cobbDouglasParamsTableNoEnergy <- function(){
                         " ", "$\\beta$",   " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption="Cobb-Douglas model (without energy) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                    caption="Cobb-Douglas model (without energy) parameters for 1980-2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)",
                     label="tab:CD_Parameters_No_Energy",
                     digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
@@ -1727,7 +1729,10 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
                         " ", "$\\gamma$",  " ")
   rownames(dataCD) <- countryAbbrevs
   tableCD <- xtable(dataCD, 
-                    caption=paste("Cobb-Douglas model (with $", tolower(energyType), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                    caption=paste("Cobb-Douglas model (with $", 
+                                  tolower(energyType), 
+                                  "$) parameters for 1980-2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                                  sep=""), 
                     label=paste("tab:CD_Parameters_With_", energyType, sep=""),
                     digits = c(1, 4,4,4, 2,2,2, 2,2,2, 2,2,2),
                     align = "r|ccc|ccc|ccc|ccc") #Sets alignment of the numbers in the columns
@@ -2418,7 +2423,10 @@ cesParamsTableA <- function(energyType){
     energyStringLabel <- paste("_With_", energyType, sep="")
   }
   tableCESa <- xtable(dataCES[,c(4,5,6, 10,11,12, 16,17,18)], #Picks up lambda, delta, sigma
-                      caption=paste("CES model ", energyStringCaption, ". $\\lambda$, $\\delta$, and $\\sigma$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                      caption=paste("CES model ", 
+                                    energyStringCaption, 
+                                    ". $\\lambda$, $\\delta$, and $\\sigma$ parameters for 1980-2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
+                                    sep=""), 
                       label=paste("tab:CES_Parameters_A", energyStringLabel, sep=""),
                       digits = c(1, 4,4,4, 2,2,2, 2,2,2),
                       align = "r|ccc|ccc|ccc" #Sets alignment of the numbers in the columns
@@ -2446,7 +2454,7 @@ cesParamsTableB <- function(energyType){
     energyStringLabel <- paste("_With_", energyType, sep="")
   }
   tableCESb <- xtable(dataCES[,c(1,2,3, 7,8,9, 13,14,15)], #Picks up gamma, delta_1, and sigma_1
-                      caption=paste("CES model ", energyStringCaption, ". $\\gamma$, $\\delta_1$, and $\\sigma_1$ parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                      caption=paste("CES model ", energyStringCaption, ". $\\gamma$, $\\delta_1$, and $\\sigma_1$ parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                       label=paste("tab:CES_Parameters_B", energyStringLabel, sep=""),
                       digits = c(1, 2,2,2, 2,2,2, 2,2,2),
                       align = "r|ccc|ccc|ccc"  #Sets alignment of the numbers in the columns
@@ -2778,7 +2786,7 @@ linexParamsTable <- function(energyType){
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
   tableLINEX <- xtable(dataLINEX, 
-                       caption=paste("LINEX model (with $", tolower(energyType), "$) parameters for 1980-2011 (US, UK, JP), 1991-2010 (CN and ZA), and 1991-2011 (SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                       caption=paste("LINEX model (with $", tolower(energyType), "$) parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                        label=paste("tab:LINEX_Parameters_With_", energyType, sep=""),
                        digits = c(1, 2,2,2, 2,2,2),
                        align = "r|ccc|ccc") #Sets alignment of the numbers in the columns
