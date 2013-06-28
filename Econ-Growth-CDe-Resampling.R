@@ -123,12 +123,14 @@ doResample <- function( data, model, energyType=c("X","U","Q"), method=c('resamp
 
 cdeFracUnconvergedResampleFitsAll <- function(){
   energyType <- "Q"
-  qResults <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
+  qUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
   energyType <- "X"
-  xResults <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
+  xUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
   energyType <- "U"
-  uResults <- lapply(countryAbbrevsU, cdeFracUnconvergedResampleFits, energyType=energyType)
-  return(cbind(qResults, xResults, uResults))
+  uUnconverged <- lapply(countryAbbrevsU, cdeFracUnconvergedResampleFits, energyType=energyType)
+  uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+  uUnconverged <- c(uUnconverged, uNA)
+  return(cbind(qUnconverged, xUnconverged, uUnconverged))
 }
 
 cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
