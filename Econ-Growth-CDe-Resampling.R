@@ -71,13 +71,14 @@ Resample <- function( data, model, energyType=c("X","U","Q"), method=c('resample
   energyType <- match.arg(energyType)
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
+  keep.ind <- sort( setdiff(1:nrow(data), model$na.action) )
   
   if(method == "resample") {
-    return( resample( data[-(model$na.action),] ) )
+    return( resample( data[keep.ind,] ) )
   }
   
   data[,energyType] <-NA
-  data[-(model$na.action), energyType] <- 
+  data[keep.ind, energyType] <- 
     switch(method,
            "residuals" = fitted(model) + resample(resid(model)),
            "wild"      = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
