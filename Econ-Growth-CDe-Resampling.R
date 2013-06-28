@@ -62,7 +62,31 @@ genCDeResampleData <- function(countryAbbrev, energyType, n){
   save(resampleData, file=path)
 }
 
-cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, ...){
+Resample <- function( data, model, energyType=c("X","U","Q"), method=c('resample','residuals','wild')) {
+  # data: original data frame
+  # model: model returned from nls
+  # energyType: one of those listed
+  # wild: if true, randomly select sign of resampled residuals
+  
+  energyType <- match.arg(energyType)
+  method = match.arg(method)
+  energyType <- paste('i', energyType, sep="")
+  
+  if(method == "resample") {
+    return( resample( data[-(mod$na.action),] ) )
+  }
+  
+  data[,energyType] <-NA
+  data[-(mod$na.action), energyType] <- 
+    switch(method,
+           "residuals" = fitted(model) + shuffle(resid(model)),
+           "wild"      = fitted(model) + shuffle(resid(model)) * resample(c(-1,1), length(resid(model)))
+    )  
+  return(data)
+}
+
+cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
+                            method=c("resample","residuals","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a list with the first item being the base fit to the 
@@ -72,6 +96,7 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   # countryAbbrev = the country you want to study
   # energyType = the type of energy of interest to you
   ##
+  method = match.arg(method)
   set.seed(123) # Provide reproducible results
   # First do a fit without resampling and get these coefficients
   origModel <- cdeModel(countryAbbrev=countryAbbrev,
@@ -81,10 +106,12 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
                         which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
   data <- loadData(countryAbbrev=countryAbbrev)
-  resampleFitCoeffs <- do(n) * attr(x=cdeModel(data=resample(data), 
-                                               energyType=energyType, 
-                                               respectRangeConstraints=respectRangeConstraints),
-                                    which="naturalCoeffs")
+  resampleFitCoeffs <- 
+    do(n) * attr(x=cdeModel(data=Resample(data, model=origModel, 
+                                               energyType=energyType, method=method),
+                            energyType=energyType, 
+                            respectRangeConstraints=respectRangeConstraints),
+                            which="naturalCoeffs")
   # Combine the results and return
   out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
   return(out)
