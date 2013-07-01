@@ -30,18 +30,18 @@ genAllCDeResampleData <- function(){
   # and saves to disk.
   ##
   t_0 <- proc.time()
-  n=100 # 10,000 samples are probably sufficient
+  n=getNResamples()
   method="wild"
   energyType <- "Q"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
   energyType <- "X"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
+  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
   energyType <- "U"
-  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n, method=method)
+  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
   print(proc.time() - t_0)
 }
 
-genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample","residual","wild")){
+genCDeResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resample","residual","wild")){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -54,6 +54,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample"
   resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
                                   energyType=energyType, 
                                   respectRangeConstraints=TRUE, 
+                                  fitFun=fitFun,
                                   n=n, 
                                   method=method,
                                   )
@@ -65,7 +66,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample"
   save(resampleData, file=path)
 }
 
-cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
+cdeResampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstraints=FALSE, n, 
                             method=c("resample","residual","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
@@ -77,11 +78,11 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   # energyType = the type of energy of interest to you
   ##
   method = match.arg(method)
-  set.seed(123) # Provide reproducible results
+  set.seed(getSeed()) # Provide reproducible results
   # First do a fit without resampling and get these coefficients
-  origModel <- cdeModel(countryAbbrev=countryAbbrev,
-                        energyType=energyType,
-                        respectRangeConstraints=respectRangeConstraints)
+  origModel <- fitFun(countryAbbrev=countryAbbrev,
+                      energyType=energyType,
+                      respectRangeConstraints=respectRangeConstraints)
   baseFitCoeffs <- attr(x = origModel,
                         which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
@@ -157,4 +158,22 @@ cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
   fracConverged <- tallyResults[["1"]]
   fracUnconverged <- 1.0 - fracConverged
   return(fracUnconverged)
+}
+
+getSeed <- function(){
+  ######################
+  # Returns the seed that we'll use for all resampling. I'm putting 
+  # the seed into a function so that it is accessible from 
+  # many places (including the paper, should we choose to include it there).
+  ##
+  return(123)
+}
+
+getNResamples <- function(){
+  #######################
+  # Returns the number of resamples we want to use for each 
+  # model. I'm putting n into a function so that it is accessible from 
+  # many places (including the paper, should we choose to include it there).
+  ##
+  return(10) # 10,000 samples are probably sufficient
 }
