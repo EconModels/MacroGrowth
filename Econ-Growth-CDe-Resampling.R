@@ -115,7 +115,7 @@ doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resampl
   keep.ind <- sort(setdiff(1:nrow(data), model$na.action))
   
   if(method == "resample") {
-    return( resample( data[keep.ind,] ) )
+    return(resample(data[keep.ind,]))
   }
   
   data[,energyType] <- NA
