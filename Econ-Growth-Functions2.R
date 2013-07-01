@@ -1270,8 +1270,10 @@ cdeResampleCoeffProps <- function(cdeResampleFits, ...){
   ####### 
   # This function creates a table of confidence intervals for the cde model
   ##
-  baseFitCoeffs <- cdeResampleFits$baseFitCoeffs
-  resampleFitCoeffs <- cdeResampleFits$resampleFitCoeffs
+  # Grab the original curve fit
+  baseFitCoeffs <- cdeResampleFits[cdeResampleFits[["method"]]=="orig", ]
+  # Grab the resample curve fits
+  resampleFitCoeffs <- cdeResampleFits[cdeResampleFits[["method"]] != "orig", ]
   lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
   alphaCI <- qdata(p=ciVals, vals=alpha, data=resampleFitCoeffs)
   betaCI <- qdata(p=ciVals, vals=beta, data=resampleFitCoeffs)
