@@ -1195,16 +1195,13 @@ cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(
   ##
   if (is.na(energyType)){
     # Fit the Cobb-Douglas model without energy.
-    #return(cdModel(countryAbbrev=countryAbbrev, ...))
     return(cdModel(data=data, ...))
   }
   if (!missing(gamma)){
     # Fit the Cobb-Douglas model with fixed value of gamma
-    #return(cdeFixedGammaModel(countryAbbrev=countryAbbrev, energyType=energyType, gamma=gamma, ...))
     return(cdeFixedGammaModel(data=data, energyType=energyType, gamma=gamma, ...))
   }
   # Fit the Cobb-Douglas model with gamma as a free parameter
-  #return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType, ...))
   return(cdeModel(data=data, energyType=energyType, ...))
 }
 
