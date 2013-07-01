@@ -66,7 +66,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample"
 }
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
-                            method=c("resample","residual","wild"), ...){
+                            method=c("resample","residual","wild", "debug"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a list with the first item being the base fit to the 
@@ -93,11 +93,17 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
                             respectRangeConstraints=respectRangeConstraints),
                             which="naturalCoeffs")
   # Combine the results and return
-  out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
+  # out <- list(baseFitCoeffs=baseFitCoeffs, resampleFitCoeffs=resampleFitCoeffs)
+
+  baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
+  names(baseFitCoeffsDF) <- names(baseFitCoeffs)
+  resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
+  baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
+  out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
   return(out)
 }
 
-doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residual", "wild")) {
+doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residual", "wild", "debug")) {
   ######################
   # data: original data frame for country of interest. This data should NOT be resampled.
   # model: original model returned from nls
@@ -122,7 +128,8 @@ doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resampl
   data[keep.ind, energyType] <- 
     switch(method,
            "residual" = fitted(model) + resample(resid(model)),
-           "wild"     = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model)))
+           "wild"     = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model))),
+           "debug"    = fitted(model) + (resid(model)) 
     )  
   return(data)
 }
