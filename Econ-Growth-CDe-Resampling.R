@@ -1,4 +1,6 @@
 require(mosaic)
+require(foreach)
+require(doParallel)
 source('Econ-Growth-Functions2.R')
 
 # This file contains code to resample data for economic growth
@@ -24,24 +26,33 @@ source('Econ-Growth-Functions2.R')
 # 30000  0.1960    0.3360
 # 100000 0.1975    0.3360 14823.3 (4.2 hours)
 
-genAllCDeResampleData <- function(){
-  #############################
-  # This script generates resample data for all countries
-  # and saves to disk.
+genAllResampleData <- function(n, method=c("resample","residual","wild")){
+  #######################
+  # Generates all resampling data for all models using the method specified
   ##
+  if (missing(n)){
+    n <- getNResamples()
+  }
+  if (missing(method)){
+    method <- getResampleMethod()
+  }
+  # Establish the parallel computing resources
+  registerDoParallel()
+  # Establish the timer
   t_0 <- proc.time()
-  n=100 # 10,000 samples are probably sufficient
-  method="wild"
-  energyType <- "Q"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
-  energyType <- "X"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method)
-  energyType <- "U"
-  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n, method=method)
+  # Use the foreach package 
+  foreach(countryAbbrev=countryAbbrevs, .errorhandling="pass") %dopar% {
+    genResampleData(countryAbbrev=countryAbbrev, energyType="Q", n=n, fitFun=cdeModel, method=method)
+    genResampleData(countryAbbrev=countryAbbrev, energyType="X", n=n, fitFun=cdeModel, method=method)
+  }  
+  foreach(countryAbbrev=countryAbbrevsU, .errorhandling="pass") %dopar% {
+    genResampleData(countryAbbrev=countryAbbrev, energyType="U", n=n, fitFun=cdeModel, method=method)
+  }  
+  # Report timer results
   print(proc.time() - t_0)
 }
 
-genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample","residual","wild")){
+genResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resample","residual","wild")){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -51,9 +62,10 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample"
   ## 
   # This next call returns a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
-  resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
+  resampleData <- resampleFits(countryAbbrev=countryAbbrev, 
                                   energyType=energyType, 
                                   respectRangeConstraints=TRUE, 
+                                  fitFun=fitFun,
                                   n=n, 
                                   method=method,
                                   )
@@ -67,6 +79,8 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, method=c("resample"
 
 cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
                             method=c("resample","residual","wild", "debug"), ...){
+resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstraints=FALSE, n, 
+                            method=c("resample","residual","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a list with the first item being the base fit to the 
@@ -77,11 +91,11 @@ cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=F
   # energyType = the type of energy of interest to you
   ##
   method = match.arg(method)
-  set.seed(123) # Provide reproducible results
+  set.seed(getSeed()) # Provide reproducible results
   # First do a fit without resampling and get these coefficients
-  origModel <- cdeModel(countryAbbrev=countryAbbrev,
-                        energyType=energyType,
-                        respectRangeConstraints=respectRangeConstraints)
+  origModel <- fitFun(countryAbbrev=countryAbbrev,
+                      energyType=energyType,
+                      respectRangeConstraints=respectRangeConstraints)
   baseFitCoeffs <- attr(x = origModel,
                         which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
@@ -121,7 +135,7 @@ doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resampl
   keep.ind <- sort(setdiff(1:nrow(data), model$na.action))
   
   if(method == "resample") {
-    return( resample( data[keep.ind,] ) )
+    return(resample(data[keep.ind,]))
   }
   
   data[,energyType] <- NA
