@@ -159,21 +159,3 @@ cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
   fracUnconverged <- 1.0 - fracConverged
   return(fracUnconverged)
 }
-
-getSeed <- function(){
-  ######################
-  # Returns the seed that we'll use for all resampling. I'm putting 
-  # the seed into a function so that it is accessible from 
-  # many places (including the paper, should we choose to include it there).
-  ##
-  return(123)
-}
-
-getNResamples <- function(){
-  #######################
-  # Returns the number of resamples we want to use for each 
-  # model. I'm putting n into a function so that it is accessible from 
-  # many places (including the paper, should we choose to include it there).
-  ##
-  return(10) # 10,000 samples are probably sufficient
-}
