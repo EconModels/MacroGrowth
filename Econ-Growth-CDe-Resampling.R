@@ -35,6 +35,8 @@ genAllResampleData <- function(n, method=c("resample","residual","wild")){
   }
   if (missing(method)){
     method <- getResampleMethod()
+  } else {
+    method <- match.arg(method)
   }
   # Establish the parallel computing resources
   registerDoParallel()
