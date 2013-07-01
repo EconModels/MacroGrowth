@@ -42,13 +42,18 @@ genAllResampleData <- function(n, method=c("resample","residual","wild")){
   registerDoParallel()
   # Establish the timer
   t_0 <- proc.time()
-  # Use the foreach package 
-  foreach(countryAbbrev=countryAbbrevs, .errorhandling="pass") %dopar% {
-    genResampleData(countryAbbrev=countryAbbrev, energyType="Q", n=n, fitFun=cdeModel, method=method)
-    genResampleData(countryAbbrev=countryAbbrev, energyType="X", n=n, fitFun=cdeModel, method=method)
+  # Use the foreach package
+  
+  ############################
+  # Cobb-Douglas with energy #
+  ############################
+  foreach(countryAbbrev=countryAbbrevs) %dopar% {
+#     genResampleData(countryAbbrev=countryAbbrev, energyType=NA,  n=n, fitFun=cobbDouglasModel, method=method)
+    genResampleData(countryAbbrev=countryAbbrev, energyType="Q", n=n, fitFun=cobbDouglasModel, method=method)
+    genResampleData(countryAbbrev=countryAbbrev, energyType="X", n=n, fitFun=cobbDouglasModel, method=method)
   }  
-  foreach(countryAbbrev=countryAbbrevsU, .errorhandling="pass") %dopar% {
-    genResampleData(countryAbbrev=countryAbbrev, energyType="U", n=n, fitFun=cdeModel, method=method)
+  foreach(countryAbbrev=countryAbbrevsU) %dopar% {
+    genResampleData(countryAbbrev=countryAbbrev, energyType="U", n=n, fitFun=cobbDouglasModel, method=method)
   }  
   # Report timer results
   print(proc.time() - t_0)
@@ -101,7 +106,7 @@ resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstrai
   # Now do a fit with resampling n times and get all of the coefficients
   data <- loadData(countryAbbrev=countryAbbrev)
   resampleFitCoeffs <- 
-    do(n) * attr(x=cdeModel(data=doResample(data, model=origModel, 
+    do(n) * attr(x=fitFun(data=doResample(data, origModel=origModel, 
                                             energyType=energyType, method=method),
                             energyType=energyType, 
                             respectRangeConstraints=respectRangeConstraints),
@@ -117,10 +122,10 @@ resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstrai
   return(out)
 }
 
-doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resample", "residual", "wild", "debug")) {
+doResample <- function(data, origModel, energyType=c("X","U","Q"), method=c("resample", "residual", "wild", "debug")) {
   ######################
   # data: original data frame for country of interest. This data should NOT be resampled.
-  # model: original model returned from nls
+  # origModel: original model returned from nls
   # energyType: one of those listed
   # method:
   #         resample:  resample rows from data. Can result in repeated years
@@ -132,19 +137,20 @@ doResample <- function(data, model, energyType=c("X","U","Q"), method=c("resampl
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
   # model$na.action contains indices of rows that couldn't be used due to missingness.
-  keep.ind <- sort(setdiff(1:nrow(data), model$na.action))
+  keep.ind <- sort(setdiff(1:nrow(data), origModel$na.action))
   
   if(method == "resample") {
-    return(resample(data[keep.ind,]))
+    out <- resample(data[keep.ind,])
+    return(out)
   }
   
-  data[,energyType] <- NA
+  data[ , energyType] <- NA
   data[keep.ind, energyType] <- 
     switch(method,
-           "residual" = fitted(model) + resample(resid(model)),
-           "wild"     = fitted(model) + resample(resid(model)) * resample(c(-1,1), length(resid(model))),
-           "debug"    = fitted(model) + (resid(model)) 
-    )  
+           "residual" = fitted(origModel) + resample(resid(origModel)),
+           "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
+           "debug"    = fitted(origModel) + (resid(origModel)) 
+    )
   return(data)
 }
 
