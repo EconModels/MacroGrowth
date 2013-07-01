@@ -3339,5 +3339,14 @@ getNResamples <- function(){
   # model. I'm putting n into a function so that it is accessible from 
   # many places (including the paper, should we choose to include it there).
   ##
-  return(2) # 10,000 samples are probably sufficient
+  return(100) # 10,000 samples are probably sufficient
+}
+
+getResampleMethod <- function(){
+  ###########################
+  # Returns the resample method to be used. I'm putting this in a function
+  # so that it is accessible from 
+  # many places (including the paper, should we choose to include it there).
+  ##
+  return("wild")
 }
