@@ -79,8 +79,6 @@ genResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resa
   save(resampleData, file=path)
 }
 
-cdeResampleFits <- function(countryAbbrev, energyType, respectRangeConstraints=FALSE, n, 
-                            method=c("resample","residual","wild", "debug"), ...){
 resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstraints=FALSE, n, 
                             method=c("resample","residual","wild"), ...){
   ##################
