@@ -144,6 +144,13 @@ doResample <- function(data, origModel, energyType=c("X","U","Q"), method=c("res
     return(out)
   }
   
+  ##########################
+  # !!!!!!!!! 
+  # Should we be adding resampled residuals to the energy column? 
+  # We're predicting the GDP column. 
+  # Should we rather be adding resampled residuals to the GDP data?
+  # !!!!!!!!!
+  ##########################
   data[ , energyType] <- NA
   data[keep.ind, energyType] <- 
     switch(method,
