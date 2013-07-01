@@ -1224,7 +1224,9 @@ loadCDeResampleDataRefitsOnly <- function(countryAbbrev, energyType){
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
   ##
-  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
+  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+  # Select only those rows that aren't the original curve fit
+  data <- data[data[["method"]]!="orig", ]
   # Make a factor column for the country
   countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
   colnames(countryAbbrev) <- "countryAbbrev"
@@ -1236,7 +1238,9 @@ loadCDeResampleDataBaseFitOnly <- function(countryAbbrev, energyType){
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
   ##
-  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["baseFitCoeffs"]] 
+  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType) 
+  # Select the row containing the original data fit
+  data <- data[data[["method"]]=="orig" , ]
   # Make a factor column for the country
   countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
   colnames(countryAbbrev) <- "countryAbbrev"
