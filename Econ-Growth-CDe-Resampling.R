@@ -1,4 +1,6 @@
 require(mosaic)
+require(foreach)
+require(doParallel)
 source('Econ-Growth-Functions2.R')
 
 # This file contains code to resample data for economic growth
@@ -24,24 +26,33 @@ source('Econ-Growth-Functions2.R')
 # 30000  0.1960    0.3360
 # 100000 0.1975    0.3360 14823.3 (4.2 hours)
 
-genAllCDeResampleData <- function(){
-  #############################
-  # This script generates resample data for all countries
-  # and saves to disk.
+genAllResampleData <- function(n, method=c("resample","residual","wild")){
+  #######################
+  # Generates all resampling data for all models using the method specified
   ##
+  if (missing(n)){
+    n <- getNResamples()
+  }
+  if (missing(method)){
+    method <- getResampleMethod()
+  }
+  # Establish the parallel computing resources
+  registerDoParallel()
+  # Establish the timer
   t_0 <- proc.time()
-  n=getNResamples()
-  method="wild"
-  energyType <- "Q"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
-  energyType <- "X"
-  lapply(countryAbbrevs, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
-  energyType <- "U"
-  lapply(countryAbbrevsU, genCDeResampleData, energyType=energyType, n=n, method=method, fitFun=cdeModel)
+  # Use the foreach package 
+  foreach(countryAbbrev=countryAbbrevs, .errorhandling="pass") %dopar% {
+    genResampleData(countryAbbrev=countryAbbrev, energyType="Q", n=n, fitFun=cdeModel, method=method)
+    genResampleData(countryAbbrev=countryAbbrev, energyType="X", n=n, fitFun=cdeModel, method=method)
+  }  
+  foreach(countryAbbrev=countryAbbrevsU, .errorhandling="pass") %dopar% {
+    genResampleData(countryAbbrev=countryAbbrev, energyType="U", n=n, fitFun=cdeModel, method=method)
+  }  
+  # Report timer results
   print(proc.time() - t_0)
 }
 
-genCDeResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resample","residual","wild")){
+genResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resample","residual","wild")){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -51,7 +62,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("r
   ## 
   # This next call returns a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
-  resampleData <- cdeResampleFits(countryAbbrev=countryAbbrev, 
+  resampleData <- resampleFits(countryAbbrev=countryAbbrev, 
                                   energyType=energyType, 
                                   respectRangeConstraints=TRUE, 
                                   fitFun=fitFun,
@@ -66,7 +77,7 @@ genCDeResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("r
   save(resampleData, file=path)
 }
 
-cdeResampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstraints=FALSE, n, 
+resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstraints=FALSE, n, 
                             method=c("resample","residual","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
