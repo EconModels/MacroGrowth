@@ -1224,10 +1224,6 @@ loadCDeResampleDataRefitsOnly <- function(countryAbbrev, energyType){
   data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
   # Select only those rows that aren't the original curve fit
   data <- data[data[["method"]]!="orig", ]
-  # Make a factor column for the country
-  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
-  colnames(countryAbbrev) <- "countryAbbrev"
-  data <- cbind(data, countryAbbrev)
   return(data)
 }
 
@@ -1238,10 +1234,6 @@ loadCDeResampleDataBaseFitOnly <- function(countryAbbrev, energyType){
   data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType) 
   # Select the row containing the original data fit
   data <- data[data[["method"]]=="orig" , ]
-  # Make a factor column for the country
-  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(data)))
-  colnames(countryAbbrev) <- "countryAbbrev"
-  data <- cbind(data, countryAbbrev)
   return(data)
 }
 
@@ -1893,8 +1885,6 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   )
   return(graph)
 }
-
-
 
 abgTriangleTransform <- function(alpha, beta, gamma){
   ###########################
