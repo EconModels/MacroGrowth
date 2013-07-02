@@ -120,6 +120,10 @@ resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstrai
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
   baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
   out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
+  # Make a factor column for the country
+  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(out)))
+  colnames(countryAbbrev) <- "countryAbbrev"
+  out <- cbind(out, countryAbbrev)
   return(out)
 }
 
@@ -133,7 +137,6 @@ doResample <- function(data, origModel, energyType=c("X","U","Q"), method=c("res
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   ##
-print("In doResample")
   energyType <- match.arg(energyType)
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
