@@ -59,7 +59,7 @@ genAllResampleData <- function(n, method=c("resample","residual","wild")){
   print(proc.time() - t_0)
 }
 
-genResampleData <- function(countryAbbrev, energyType, n, fitFun, method=c("resample","residual","wild")){
+genResampleData <- function(countryAbbrev, energyType, n, fitFun=CobbDouglasModel, method=c("resample","residual","wild")){
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -88,9 +88,10 @@ resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstrai
                             method=c("resample","residual","wild"), ...){
   ##################
   # This function creates n resampled curve fits and returns them.
-  # The returned object is a list with the first item being the base fit to the 
+  # The returned object is a data frame.  The first row is the base fit to the 
   # actual historical data
-  # The second object is a a data.frame of n resampled fits.
+  # The remaining rows are for the n resampled fits.
+  # The method column identifies these and simplifies plotting of results.
   # n = number of resamples
   # countryAbbrev = the country you want to study
   # energyType = the type of energy of interest to you
@@ -107,7 +108,7 @@ resampleFits <- function(countryAbbrev, energyType, fitFun, respectRangeConstrai
   data <- loadData(countryAbbrev=countryAbbrev)
   resampleFitCoeffs <- 
     do(n) * attr(x=fitFun(data=doResample(data, origModel=origModel, 
-                                            energyType=energyType, method=method),
+                                          energyType=energyType, method=method),
                             energyType=energyType, 
                             respectRangeConstraints=respectRangeConstraints),
                             which="naturalCoeffs")
@@ -132,7 +133,7 @@ doResample <- function(data, origModel, energyType=c("X","U","Q"), method=c("res
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   ##
-  
+print("In doResample")
   energyType <- match.arg(energyType)
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
@@ -143,16 +144,8 @@ doResample <- function(data, origModel, energyType=c("X","U","Q"), method=c("res
     out <- resample(data[keep.ind,])
     return(out)
   }
-  
-  ##########################
-  # !!!!!!!!! 
-  # Should we be adding resampled residuals to the energy column? 
-  # We're predicting the GDP column. 
-  # Should we rather be adding resampled residuals to the GDP data?
-  # !!!!!!!!!
-  ##########################
-  data[ , energyType] <- NA
-  data[keep.ind, energyType] <- 
+  data[ , "iGDP" ] <- NA
+  data[ keep.ind, "iGDP" ] <- 
     switch(method,
            "residual" = fitted(origModel) + resample(resid(origModel)),
            "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
