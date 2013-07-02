@@ -1886,9 +1886,11 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   return(graph)
 }
 
-abgTriangleTransform <- function(alpha, beta, gamma){
+abgTriangleTransform <- function(data){
   ###########################
-  # Transforms alpha, beta, and gamma into a triangle plot
+  # data should be a data.frame with columns of alpha, beta, and gamma.
+  # Calculates x and y for the triangle plot. Then, cbinds 
+  # x and y onto data and returns data. 
   # This transform assumes that alpha + beta + gamma = 1.0
   # gamma is measured on the vertical axis (y).
   # Along the bottom side of the triangle, gamma = 0.
@@ -1902,18 +1904,22 @@ abgTriangleTransform <- function(alpha, beta, gamma){
   # give alpha, beta, and gamma vectors input
   # to the function.
   ##
-  x <- alpha + 0.5*gamma
-  y <- gamma
-  return(data.frame(x=x, y=y))
+  x <- data[["alpha"]] + 0.5*data[["gamma"]]
+  y <- data[["gamma"]]
+  data <- cbind(data, x, y)
+  return(data)
 }
 
 triangleCloudPlot <- function(resampleCoeffs, textScaling = 1.0, ...){
   ########################
   # This function makes a triangle cloud plot from 
-  # resample data. The resample data should be in the form of a 
-  # data.frame containing columns named x, y, and countryAbbrev.
-  # This function makes a lattice plot from the information.
+  # resampleCoeffs. The resampleCoeffs object should be a
+  # data.frame containing columns named alpha, beta, gamma, and countryAbbrev.
+  # This function constructs a lattice plot from the information.
   ##
+  # Calculate x and y for the plot
+  resampleCoeffs <- abgTriangleTransform(resampleCoeffs)
+  # Identify the factor levels.
   factorLevels <- countryNamesAlph # We want all countries shown
   # Attach the xy data to the original resample data so that we retain the country information
   graph <- xyplot(y ~ x | countryAbbrev, data=resampleCoeffs, 
@@ -1949,8 +1955,7 @@ cdeResampleTrianglePlot <- function(energyType, ...){
   ##
   # data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadCDeResampleDataRefitsOnly, energyType=energyType))
-  xy <- abgTriangleTransform(data[["alpha"]], data[["beta"]], data[["gamma"]])
-  data <- cbind(data, xy)
+print(data)
   graph <- triangleCloudPlot(resampleCoeffs=data)
   return(graph)
 }
