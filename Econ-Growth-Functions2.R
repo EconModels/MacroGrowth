@@ -1955,7 +1955,6 @@ cdeResampleTrianglePlot <- function(energyType, ...){
   ##
   # data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadCDeResampleDataRefitsOnly, energyType=energyType))
-print(data)
   graph <- triangleCloudPlot(resampleCoeffs=data)
   return(graph)
 }
