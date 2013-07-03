@@ -2536,7 +2536,6 @@ linexModel <- function(countryAbbrev, energyType, data){
   # We need to do the Linex fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
-print(countryAbbrev)
   if (missing(data)){
     data=loadData(countryAbbrev=countryAbbrev)    
   }
