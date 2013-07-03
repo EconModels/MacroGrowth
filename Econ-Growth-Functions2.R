@@ -1995,9 +1995,11 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   modelCES <- cesEst(data=data, yName="iGDP", xNames=c("iCapStk", "iLabor"), 
                      tName="iYear", control=control)
   # Build the additional object to add as an atrribute to the output
+  rho_1 <- coef(modelCES)["rho"]
   naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
                      delta_1 = as.vector(coef(modelCES)["delta"]),
-                     rho_1 = as.vector(coef(modelCES)["rho"]),
+                     rho_1 = as.vector(rho_1),
+                     sigma_1 = as.vector(1 / (1 + rho_1)),
                      gamma = as.vector(coef(modelCES)["gamma"]),
                      sse = sum(resid(modelCES)^2),
                      isConv = modelCES$convergence
@@ -2129,6 +2131,21 @@ cesModel <- function(countryAbbrev, energyType=NA, data=loadData(countryAbbrev=c
                        rho=0.0
     )
   }
+  # Build the additional object to add as an atrribute to the output
+  rho_1 <- coef(modelCES)["rho_1"]
+  rho <- coef(modelCES)["rho"]
+  naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
+                     delta_1 = as.vector(coef(modelCES)["delta_1"]),
+                     rho_1 = as.vector(rho_1),
+                     sigma_1 = as.vector(1 / (1 + rho_1)),
+                     gamma = as.vector(coef(modelCES)["gamma"]),
+                     delta = as.vector(coef(modelCES)["delta"]),
+                     rho = as.vector(rho),
+                     sigma = as.vector(1 / (1 + rho)),
+                     sse = sum(resid(modelCES)^2),
+                     isConv = modelCES$convergence
+  )
+  attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)
 }
 
