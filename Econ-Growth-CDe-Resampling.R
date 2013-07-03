@@ -210,9 +210,9 @@ doResample <- function(data, origModel, energyType=energyTypes, method=resampleM
   energyType <- match.arg(energyType)
   method = match.arg(method)
   energyType <- paste('i', energyType, sep="")
-  # model$na.action contains indices of rows that couldn't be used due to missingness.
+
   keep.ind <- sort(setdiff(1:nrow(data), origModel$na.action))
-  
+print(keep.ind)
   if(method == "resample") {
     out <- resample(data[keep.ind,])
     return(out)
