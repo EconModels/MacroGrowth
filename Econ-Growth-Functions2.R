@@ -2144,7 +2144,7 @@ cesModel <- function(countryAbbrev, energyType=NA, data=loadData(countryAbbrev=c
                      sigma = as.vector(1 / (1 + rho)),
                      sse = sum(resid(modelCES)^2),
                      isConv = modelCES$convergence
-  )
+                     )
   attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)
 }
@@ -2595,10 +2595,14 @@ linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev=co
                     data=data,
                     start=list(a_0=a_0Guess, c_t=c_tGuess),
                     control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, printEval=FALSE, warnOnly=TRUE),
-                    #                   algorithm = "port",
-                    #                   lower = list(a_0=-INF, c_t=-INF),
-                    #                   upper = list(a_0= INF, c_t= INF)
   )
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(a_0 = as.vector(coef(modelLINEX)["a_0"]),
+                     c_t = as.vector(coef(modelLINEX)["c_t"]),
+                     sse = sum(resid(modelLINEX)^2),
+                     isConv = modelLINEX$convInfo$isConv
+  )
+  attr(x=modelLINEX, which="naturalCoeffs") <- naturalCoeffs
   return(modelLINEX)
 }
 
