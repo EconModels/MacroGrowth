@@ -1992,10 +1992,17 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   ##
   # Load the data that we need.
   control=nls.lm.control(maxiter=1000, maxfev=2000)
-  tName <- "iYear"
-  yName <- "iGDP"
-  modelCES <- cesEst(data=data, yName=yName, xNames=c("iCapStk", "iLabor"), 
-                     tName=tName, control=control)
+  modelCES <- cesEst(data=data, yName="iGDP", xNames=c("iCapStk", "iLabor"), 
+                     tName="iYear", control=control)
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
+                     delta_1 = as.vector(coef(modelCES)["delta"]),
+                     rho_1 = as.vector(coef(modelCES)["rho"]),
+                     gamma = as.vector(coef(modelCES)["gamma"]),
+                     sse = sum(resid(modelCES)^2),
+                     isConv = modelCES$convergence
+                     )
+  attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)
 }
 
