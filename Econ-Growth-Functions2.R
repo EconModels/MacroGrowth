@@ -23,9 +23,10 @@ countryAbbrevsAlphU <- sort(countryAbbrevsU)
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
 countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
+modelTypes <- c(sf="sf", cd="cd", cde="cde", ces="ces", cese="cese", linex="linex") # list of model types
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
-modelTypes <- c(sf="sf", cd="cd", cde="cde", ces="ces", cese="cese", linex="linex") # list of model types
+resampleMethods <- c("resample", "residual", "wild", "debug")
 ########### Several global parameters for graphs. Set here and use below to ensure consistent appearance of graphs.
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
 # "1" means first alphabetically.
@@ -1231,56 +1232,6 @@ cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(
   return(cdeModel(data=data, energyType=energyType, ...))
 }
 
-loadCDeResampleData <- function(countryAbbrev, energyType){
-  #############################
-  # This function loads previously-saved Cobb-Douglas with energy
-  # curve fits from resampled data. The loaded object is
-  # a list that contains two named data.frames: 
-  # baseFitCoeffs and resampleFitCoeffs. 
-  ##
-  path <- getPathForCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
-  load(file=path)
-  return(resampleData)
-}
-
-loadCDeResampleDataRefitsOnly <- function(countryAbbrev, energyType){
-  ####################
-  # Loads coefficients for resampled data only from a previously-run set of resample curve fits
-  ##
-  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
-  # Select only those rows that aren't the original curve fit
-  data <- data[data[["method"]]!="orig", ]
-  return(data)
-}
-
-loadCDeResampleDataBaseFitOnly <- function(countryAbbrev, energyType){
-  ####################
-  # Loads the base fit coefficients only from a previously-run curve fit
-  ##
-  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType) 
-  # Select the row containing the original data fit
-  data <- data[data[["method"]]=="orig" , ]
-  return(data)
-}
-
-getPathForCDeResampleData <- function(countryAbbrev, energyType){
-  ######################
-  # Returns a string identifying the entire file path in which we 
-  # hold Cobb-Douglas resampled data
-  ## 
-  filename <- paste("cdeResampleData-", countryAbbrev, "-", energyType, ".Rdata", sep="")
-  path <- file.path("data_resample", "cde", countryAbbrev, energyType, filename)
-  return(path)
-}
-
-getFolderForCDeResampleData <- function(countryAbbrev, energyType){
-  ##################
-  # Returns a string identifying a folder for resampled data.
-  ##
-  folder <- file.path("data_resample", "cde", countryAbbrev, energyType)
-  return(folder)
-}
-
 cdeResampleCoeffProps <- function(cdeResampleFits, ...){
   ####### 
   # This function creates a table of confidence intervals for the cde model
@@ -2008,7 +1959,7 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   return(modelCES)
 }
 
-cesModel <- function(countryAbbrev, energyType=NA, data=loadData(countryAbbrev=countryAbbrev)){
+cesModel <- function(countryAbbrev, energyType=NA, data){
   ####################
   # Returns a cesEst model for the country and energyType specified.
   # energyType should be one of Q", "X", "U", or NA.
@@ -2022,6 +1973,9 @@ cesModel <- function(countryAbbrev, energyType=NA, data=loadData(countryAbbrev=c
   ##
   if (is.na(energyType)){
     return(cesModelNoEnergy(data=data))
+  }
+  if (missing(data)){
+    data <- loadData(countryAbbrev=countryAbbrev)
   }
   # We need to include energy in the production function.
   # We have an energyType argument. Do some additional checking.
@@ -2568,7 +2522,7 @@ printCESParamsTableB <- function(energyType){
 }
 
 ## <<LINEX functions, eval=TRUE>>=
-linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev=countryAbbrev)){
+linexModel <- function(countryAbbrev, energyType, data){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType should be one of Q", "X", or "U".
@@ -2582,6 +2536,10 @@ linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev=co
   # We need to do the Linex fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
+print(countryAbbrev)
+  if (missing(data)){
+    data=loadData(countryAbbrev=countryAbbrev)    
+  }
   data <- replaceColName(data, energyType, "iEToFit")
   a_0Guess <- 0.5
   c_tGuess <- 1.0
@@ -3400,4 +3358,110 @@ getResampleMethod <- function(){
   # many places (including the paper, should we choose to include it there).
   ##
   return("wild")
+}
+
+loadResampleData <- function(modelType=modelTypes, 
+                             countryAbbrev=countryAbbrevs, 
+                             energyType=energyTypes,
+                             factor=factors){
+  #############################
+  # This function loads previously-saved Cobb-Douglas with energy
+  # curve fits from resampled data. The loaded object is
+  # a list that contains two named data.frames: 
+  # baseFitCoeffs and resampleFitCoeffs. 
+  ##
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  path <- getPathForResampleData(modelType=modelType, method=method, countryAbbrev=countryAbbrev, energyType=energyType)
+  load(file=path)
+  return(resampleData)
+}
+
+loadResampleDataRefitsOnly <- function(modelType=modelTypes, 
+                                       countryAbbrev=countryAbbrevs, 
+                                       energyType=energyTypes,
+                                       factor=factors){
+  ####################
+  # Loads coefficients for resampled data only from a previously-run set of resample curve fits
+  ##
+  model <- match.arg(model)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleData(method=method, countryAbbrev=countryAbbrev, energyType=energyType)
+  # Select only those rows that aren't the original curve fit
+  data <- data[data[["method"]]!="orig", ]
+  return(data)
+}
+
+loadResampleDataBaseFitOnly <- function(model=modelTypes, 
+                                        countryAbbrev=countryAbbrevs, 
+                                        energyType=energyTypes,
+                                        factor=factors){
+  ####################
+  # Loads the base fit coefficients only from a previously-run curve fit
+  ##
+  model <- match.arg(model)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleData(method=method, countryAbbrev=countryAbbrev, energyType=energyType) 
+  # Select the row containing the original data fit
+  data <- data[data[["method"]]=="orig", ]
+  return(data)
+}
+
+getPathForResampleData <- function(modelType=modelTypes, 
+                                   countryAbbrev=countryAbbrevs, 
+                                   energyType=energyTypes,
+                                   factor=factors){
+  ######################
+  # Returns a string identifying the entire file path in which we 
+  # hold Cobb-Douglas resampled data
+  ##
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  rd <- "ResampleData-"
+  rdat <- ".Rdata"
+  filename <- switch(modelType,
+                     "sf"    = paste(rd, modelType, "-", countryAbbrev, "-", factor, rdat, sep=""),
+                     "cd"    = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
+                     "cde"   = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "ces"   = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
+                     "cese"  = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     )
+  folder <- getFolderForResampleData(modelType=modelType, 
+                                     countryAbbrev=countryAbbrev, 
+                                     energyType=energyType, 
+                                     factor=factor)  
+  path <- file.path(folder, filename)
+  return(path)
+}
+
+getFolderForResampleData <- function(modelType=modelTypes, 
+                                     countryAbbrev=countryAbbrevs, 
+                                     energyType=energyTypes,
+                                     factor=factors){
+  ##################
+  # Returns a string identifying a folder for resampled data.
+  ##
+  dr <- "data_resample"
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+#   energyType <- match.arg(energyType)
+#   factor <- match.arg(factor)
+  folder <- switch(modelType,
+                   "sf"    = file.path(dr, modelType, countryAbbrev, factor),
+                   "cd"    = file.path(dr, modelType, countryAbbrev, "NA"),
+                   "cde"   = file.path(dr, "cd",      countryAbbrev, energyType),
+                   "ces"   = file.path(dr, modelType, countryAbbrev, "NA"),
+                   "cese"  = file.path(dr, "ces",     countryAbbrev, energyType),
+                   "linex" = file.path(dr, modelType, countryAbbrev, energyType)
+                   )
+  return(folder)
 }
