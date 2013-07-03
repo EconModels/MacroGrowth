@@ -25,6 +25,7 @@ countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetic
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
+modelTypes <- c(sf="sf", cd="cd", cde="cde", ces="ces", cese="cese", linex="linex") # list of model types
 ########### Several global parameters for graphs. Set here and use below to ensure consistent appearance of graphs.
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
 # "1" means first alphabetically.
@@ -364,6 +365,13 @@ singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, facto
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=data, start = start)
+  # Build the additional object to add as an atrribute to the output
+  naturalCoeffs <- c(lambda = as.vector(coef(modelSF)["lambda"]),
+                     m = as.vector(coef(modelSF)["m"]),
+                     sse = sum(resid(modelSF)^2),
+                     isConv = modelSF$convInfo$isConv
+                     )
+  attr(x=modelSF, which="naturalCoeffs") <- naturalCoeffs
   return(modelSF)
 }
 
@@ -754,13 +762,22 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   alphaGuess <- 0.7 #0.7 gives good results for all countries.  
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
+  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
   modelCD <- nls(formula=model, data=data, start=start,
                  #Include the next 3 lines to fit with constraints.
                  #algorithm = "port",
                  #lower = list(lambda=-Inf, alpha=0),
                  #upper = list(lambda=Inf, alpha=1)
   )
+  # Build the additional object to add as an atrribute to the output
+  alpha <- coef(modelCD)["alpha"]
+  naturalCoeffs <- c(lambda = as.vector(coef(modelCD)["lambda"]),
+                     alpha = as.vector(alpha),
+                     beta = as.vector(1.0 - alpha),
+                     sse = sum(resid(modelCD)^2),
+                     isConv = modelCD$convInfo$isConv
+                     )
+  attr(x=modelCD, which="naturalCoeffs") <- naturalCoeffs
   return(modelCD)
 }
 
