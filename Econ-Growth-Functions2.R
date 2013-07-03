@@ -748,7 +748,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   return(fig)    
 }
 
-cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
+cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
   # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
@@ -763,17 +763,26 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), ...){
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
-  modelCD <- nls(formula=model, data=data, start=start,
-                 #Include the next 3 lines to fit with constraints.
-                 #algorithm = "port",
-                 #lower = list(lambda=-Inf, alpha=0),
-                 #upper = list(lambda=Inf, alpha=1)
-  )
+  modelCD <- nls(formula=model, data=data, start=start)
   # Build the additional object to add as an atrribute to the output
   alpha <- coef(modelCD)["alpha"]
+  if (respectRangeConstraints){
+    if (alpha < 0.0 || alpha > 1.0){
+      # Need to adjust alpha, because we are beyond 0.0 or 1.0
+      if (alpha < 0.0){
+        alpha <- 0.0
+      } else {
+        alpha <- 1.0
+      }
+      # Refit for lambda only
+      start <- list(lambda=lambdaGuess)
+      modelCD <- nls(formula=model, data=data, start=start)
+    }
+  }
   naturalCoeffs <- c(lambda = as.vector(coef(modelCD)["lambda"]),
                      alpha = as.vector(alpha),
                      beta = as.vector(1.0 - alpha),
+                     gamma = 0.0, # Energy is not a factor for this model.
                      sse = sum(resid(modelCD)^2),
                      isConv = modelCD$convInfo$isConv
                      )
