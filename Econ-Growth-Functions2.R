@@ -3455,12 +3455,12 @@ getFolderForResampleData <- function(modelType=modelTypes,
 #   energyType <- match.arg(energyType)
 #   factor <- match.arg(factor)
   folder <- switch(modelType,
-                   "sf"    = file.path(dr, modelType, countryAbbrev, factor),
-                   "cd"    = file.path(dr, modelType, countryAbbrev, "NA"),
-                   "cde"   = file.path(dr, "cd",      countryAbbrev, energyType),
-                   "ces"   = file.path(dr, modelType, countryAbbrev, "NA"),
-                   "cese"  = file.path(dr, "ces",     countryAbbrev, energyType),
-                   "linex" = file.path(dr, modelType, countryAbbrev, energyType)
+                   "sf"    = file.path(dr, modelType, countryAbbrev),
+                   "cd"    = file.path(dr, modelType, countryAbbrev),
+                   "cde"   = file.path(dr, "cd",      countryAbbrev),
+                   "ces"   = file.path(dr, modelType, countryAbbrev),
+                   "cese"  = file.path(dr, "ces",     countryAbbrev),
+                   "linex" = file.path(dr, modelType, countryAbbrev)
                    )
   return(folder)
 }
