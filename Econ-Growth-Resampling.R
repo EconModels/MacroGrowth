@@ -205,12 +205,13 @@ doResample <- function(data, origModel, method=resampleMethods){
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   ##
+  method <- match.arg(method)
   if(method == "resample") {
     out <- resample(data)
     return(out)
   }
-  data[ , "iGDP" ] <- NA
-  data[ , "iGDP" ] <- 
+  data[ , "iGDP"] <- NA
+  data[ , "iGDP"] <- 
     switch(method,
            "residual" = fitted(origModel) + resample(resid(origModel)),
            "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
