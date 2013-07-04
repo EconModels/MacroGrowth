@@ -43,23 +43,25 @@ genAllResampleData <- function(method=resampleMethods, n){
   # Establish the timer
   t_0 <- proc.time()
   # Use the foreach package
-  foreach(countryAbbrev=countryAbbrevs, .errorhandling="pass") %dopar% {
-    genResampleData(modelType="sf",   countryAbbrev=countryAbbrev, factor="K",     n=n, method=method)
-    genResampleData(modelType="sf",   countryAbbrev=countryAbbrev, factor="L",     n=n, method=method)
-    genResampleData(modelType="sf",   countryAbbrev=countryAbbrev, factor="Q",     n=n, method=method)
-    genResampleData(modelType="sf",   countryAbbrev=countryAbbrev, factor="X",     n=n, method=method)
-    genResampleData(modelType="cd",   countryAbbrev=countryAbbrev,                 n=n, method=method)
-    genResampleData(modelType="cde",  countryAbbrev=countryAbbrev, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cde",  countryAbbrev=countryAbbrev, energyType="X", n=n, method=method)
-    genResampleData(modelType="ces",  countryAbbrev=countryAbbrev,                 n=n, method=method)
-    genResampleData(modelType="cese", countryAbbrev=countryAbbrev, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cese", countryAbbrev=countryAbbrev, energyType="X", n=n, method=method)
-    
+  foreach(ca=countryAbbrevs, .errorhandling="pass") %dopar% {
+    genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method)
+    genResampleData(modelType="sf",    countryAbbrev=ca, factor="L",     n=n, method=method)
+    genResampleData(modelType="sf",    countryAbbrev=ca, factor="Q",     n=n, method=method)
+    genResampleData(modelType="sf",    countryAbbrev=ca, factor="X",     n=n, method=method)
+    genResampleData(modelType="cd",    countryAbbrev=ca,                 n=n, method=method)
+    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="Q", n=n, method=method)
+    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="X", n=n, method=method)
+    genResampleData(modelType="ces",   countryAbbrev=ca,                 n=n, method=method)
+    genResampleData(modelType="cese",  countryAbbrev=ca, energyType="Q", n=n, method=method)
+    genResampleData(modelType="cese",  countryAbbrev=ca, energyType="X", n=n, method=method)
+    genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method)
+    genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method)
   }  
   foreach(countryAbbrev=countryAbbrevsU, .errorhandling="pass") %dopar% {
-    genResampleData(modelType="sf",   countryAbbrev=countryAbbrev, factor="U",     n=n, method=method)
-    genResampleData(modelType="cde",  countryAbbrev=countryAbbrev, energyType="U", n=n, method=method)
-    genResampleData(modelType="cese", countryAbbrev=countryAbbrev, energyType="U", n=n, method=method)
+    genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method)
+    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method)
+    genResampleData(modelType="cese",  countryAbbrev=ca, energyType="U", n=n, method=method)
+    genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method)
   }  
   # Report timer results
   out <- proc.time() - t_0
@@ -133,7 +135,7 @@ resampleFits <- function(modelType=modelTypes,
   # Load the raw economic and energy data for the country of interest.
   data <- loadData(countryAbbrev=countryAbbrev)
   # If useful work (U) is desired, subset to available data only.
-  if (energyType == "U"){
+  if (factor == "U" || energyType == "U"){
     # Trim the dataset to include only those years for which U is available.
     data <- subset(data, !is.na(iU))
   }
