@@ -132,6 +132,11 @@ resampleFits <- function(modelType=modelTypes,
   set.seed(getSeed()) # Provide reproducible results
   # Load the raw economic and energy data for the country of interest.
   data <- loadData(countryAbbrev=countryAbbrev)
+  # If useful work (U) is desired, subset to available data only.
+  if (energyType == "U"){
+    # Trim the dataset to include only those years for which U is available.
+    data <- subset(data, !is.na(iU))
+  }
   # First do a fit without resampling and get these coefficients
   origModel <- switch(modelType,
                       "sf"    = singleFactorModel(data=data, factor=factor),
@@ -146,40 +151,34 @@ resampleFits <- function(modelType=modelTypes,
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
-                                                                                         energyType=energyType, 
                                                                                          method=method),
                                                                          factor=factor),
                                                      which="naturalCoeffs"),
                               "cd"    = do(n) * attr(x=cdModel(data=doResample(data=data, 
                                                                                origModel=origModel, 
-                                                                               energyType=energyType, 
                                                                                method=method),
                                                                respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
                               "cde"   = do(n) * attr(x=cdeModel(data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                energyType=energyType, 
                                                                                 method=method),
                                                                 energyType=energyType, 
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
                               "ces"   = do(n) * attr(x=cesModelNoEnergy(data=doResample(data=data, 
                                                                                         origModel=origModel, 
-                                                                                        energyType=energyType, 
                                                                                         method=method)),
                                                      which="naturalCoeffs"),
                               "cese"  = do(n) * attr(x=cesModel(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                energyType=energyType, 
                                                                                 method=method)),
                                                      which="naturalCoeffs"),
                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
                                                                   energyType=energyType,
                                                                   data=doResample(data=data, 
                                                                                   origModel=origModel, 
-                                                                                  energyType=energyType, 
                                                                                   method=method)),
                                                      which="naturalCoeffs")
                               )
@@ -196,29 +195,22 @@ resampleFits <- function(modelType=modelTypes,
   return(out)
 }
 
-doResample <- function(data, origModel, energyType=energyTypes, method=resampleMethods){
+doResample <- function(data, origModel, method=resampleMethods){
   ######################
   # data: original data frame for country of interest. This data should NOT be resampled.
   #       this should contain the raw economic and energy data
   # origModel: original model returned from nls or cesEst.
-  # energyType: one of those listed
   # method:
   #         resample:  resample rows from data. Can result in repeated years
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   ##
-  energyType <- match.arg(energyType)
-  method = match.arg(method)
-  energyType <- paste('i', energyType, sep="")
-
-  keep.ind <- sort(setdiff(1:nrow(data), origModel$na.action))
-print(keep.ind)
   if(method == "resample") {
-    out <- resample(data[keep.ind,])
+    out <- resample(data)
     return(out)
   }
   data[ , "iGDP" ] <- NA
-  data[ keep.ind, "iGDP" ] <- 
+  data[ , "iGDP" ] <- 
     switch(method,
            "residual" = fitted(origModel) + resample(resid(origModel)),
            "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
