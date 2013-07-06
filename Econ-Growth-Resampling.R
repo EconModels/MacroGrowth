@@ -57,7 +57,7 @@ genAllResampleData <- function(method=resampleMethods, n){
     genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method)
     genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method)
   }  
-  foreach(countryAbbrev=countryAbbrevsU, .errorhandling="pass") %dopar% {
+  foreach(ca=countryAbbrevsU, .errorhandling="pass") %dopar% {
     genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method)
     genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method)
     genResampleData(modelType="cese",  countryAbbrev=ca, energyType="U", n=n, method=method)
