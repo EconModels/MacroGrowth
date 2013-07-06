@@ -1930,8 +1930,7 @@ cdeResampleTrianglePlot <- function(energyType, ...){
   # A wrapper function for triangleCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  # data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)[["resampleFitCoeffs"]]
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadCDeResampleDataRefitsOnly, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
   graph <- triangleCloudPlot(resampleCoeffs=data)
   return(graph)
 }
@@ -3373,7 +3372,7 @@ loadResampleData <- function(modelType=modelTypes,
   countryAbbrev <- match.arg(countryAbbrev)
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
-  path <- getPathForResampleData(modelType=modelType, method=method, countryAbbrev=countryAbbrev, energyType=energyType)
+  path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   load(file=path)
   return(resampleData)
 }
@@ -3385,29 +3384,29 @@ loadResampleDataRefitsOnly <- function(modelType=modelTypes,
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
   ##
-  model <- match.arg(model)
+  modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
-  data <- loadResampleData(method=method, countryAbbrev=countryAbbrev, energyType=energyType)
+  data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
   # Select only those rows that aren't the original curve fit
   data <- data[data[["method"]]!="orig", ]
   return(data)
 }
 
-loadResampleDataBaseFitOnly <- function(model=modelTypes, 
+loadResampleDataBaseFitOnly <- function(modelType=modelTypes, 
                                         countryAbbrev=countryAbbrevs, 
                                         energyType=energyTypes,
                                         factor=factors){
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
   ##
-  model <- match.arg(model)
+  modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
-  data <- loadResampleData(method=method, countryAbbrev=countryAbbrev, energyType=energyType) 
-  # Select the row containing the original data fit
+  data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor) 
+  # Select the row containing the original curve fit
   data <- data[data[["method"]]=="orig", ]
   return(data)
 }
