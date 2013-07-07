@@ -1486,7 +1486,7 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
   # We have a combination of country and energy type for which we have data.
   if (! is.na(energyType)){
     # We want Cobb-Douglas with energy
-    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType=energyType)
+    resampledData <- loadResampleData(modelType="cde", countryAbbrev=countryAbbrev, energyType=energyType)
     statisticalProperties <- cdeResampleCoeffProps(resampledData)
     return(statisticalProperties)
   }
