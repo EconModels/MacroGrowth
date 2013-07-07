@@ -203,36 +203,23 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Pruim: At present, we are doing simple ± t-value * std. dev. for
-      confidence intervals of, e.g., $1-\alpha-\beta$ in some places. 
-      Is that still correct if we move to a different approach for 
-      estimating confidence intervals? See especially \texttt{cesData} 
-      and possibly other places.}
-\item{Pruim: At present, we are doing \texttt{deltaMethod} for determining CIs on 
-      $1-\alpha-\beta$ terms. Is that OK if we move to a different approach
-      for estimating confidence intervals?}
-\item{Heun: Fix error when calculating confidence intervals for 
-Cobb-Douglas model for TZ with X. The problem occurs in function 
-\texttt{cobbDouglasData}. To repeat the problem, call \\* 
-\texttt{cobbDouglasData(countryAbbrev="TZ", energyType="X")}. \\* 
-The code fails on the line \\* 
-\texttt{  ciCD <- confint(object=modelCD, level=ciLevel)}. \\* 
-There is code after the to-do list in this file that exposes the problem.}
-\item{Heun: Get function \texttt{cdModel} working with constraints. 
-Note that the unconstrained solutions are sometimes within the constraints. 
-But, sometimes they aren't. All solutions need to be within constraints. 
-We may need to run with warnings turned off to view the problems.}
-\item{Heun: Get function \texttt{cdeModel} working with constraints. 
-Note that the unconstrained solutions are sometimes within the constraints. 
-But, sometimes they aren't. All solutions need to be within constraints. 
-We may need to run with warnings turned off to view the problems.}
+\item{Heun: Figure out why CESe for ZA with X fails during resampling.}
+\item{Heun: Review all assumptions for CES with energy models. 
+There are several assumptions for rho and rho1 for various countries. 
+When we are resampling, we probably don't want to specify those values.}
+\item{Heun: Implement confidence interval calculations for 
+all resampling methods.}
+\item{Heun: Decide if the single factor models should include constraints
+on $\alpha$, $\beta$, and $\gamma$. At present, the single-factor model allows
+values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}
+\item{Heun: Make smaller cloud plots for resample coefficients for those 
+countries where $u$ is involved.}
 \item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
+\item{Heun: Get AIC calculations working again.}
 \item{Heun: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include adjusted sankey diagram in the seminar}
 \item{Heun: Add CES production function fits}
       \begin{itemize}
-      \item{Get values and se for $\sigma$s directly from the 
-            \texttt{cesModel} object in the \texttt{cesData} function}
       \item{Write up the decisions about parameter estimation for the 
             CES production function fits}
       \item{Revisit my assumptions for the CES production function 
@@ -244,19 +231,8 @@ We may need to run with warnings turned off to view the problems.}
             Need to find a way to calculate AIC for the object that is 
             returned from the \texttt{cesEst} function.}
       \end{itemize}
-\item{Heun: Eliminate blanks in the coefficient tables for the 
-      95\% CIs in the Cobb-Douglas with energy rows}
-      \begin{itemize}
-      \item{ZA: lower bound on $\lambda$ and upper bound on $\alpha$}
-      \item{ZM: lower bound on $\lambda$}
-      \end{itemize}
-\item{Heun: Eliminate blanks in the coefficient tables for the 95\% CIs in the LINEX model}
-      \begin{itemize}
-      \item{ZM: upper bound on $c_t$}
-      \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{de Wit: review, critique, and contextualize.}
-\item{\st{Heun: Get Pruim set up on the GitHub repository.}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
