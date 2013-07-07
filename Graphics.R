@@ -89,7 +89,8 @@ exampleData <- rbind(
   resampleFits( "cde", "CN", "X", method="wild", n=100)
 )
 
-triPlot( data=exampleData, lambda, alpha, beta, n.grid=5, 
-         aes_string="color=method", size=3, alpha=.5 ) + 
-  geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
-  facet_wrap( ~ countryAbbrev ) 
+
+triPlot( data=exampleData, gamma, alpha, beta, n.grid=5, labels=c("gamma","alpha","beta"), 
+         aes_string="color=lambda", size=3, alpha=.5 ) + 
+     geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
+     facet_wrap( ~ countryAbbrev )
