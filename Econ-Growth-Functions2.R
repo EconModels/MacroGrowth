@@ -3346,20 +3346,13 @@ getResampleMethod <- function(){
   return("wild")
 }
 
-loadResampleData <- function(modelType=modelTypes, 
-                             countryAbbrev=countryAbbrevs, 
-                             energyType=energyTypes,
-                             factor=factors){
+loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
   # a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
   ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # The name of the object loaded by this call is resampleData.
   load(file=path)
@@ -3370,7 +3363,6 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, fac
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
   ##
-print(paste("factor =", factor))
   data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # Select only those rows that aren't the original curve fit
   data <- data[data[["method"]]!="orig", ]
@@ -3381,28 +3373,17 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
   ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
   data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor) 
   # Select the row containing the original curve fit
   data <- data[data[["method"]]=="orig", ]
   return(data)
 }
 
-getPathForResampleData <- function(modelType=modelTypes, 
-                                   countryAbbrev=countryAbbrevs, 
-                                   energyType=energyTypes,
-                                   factor=factors){
+getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold Cobb-Douglas resampled data
   ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
   rd <- "ResampleData-"
   rdat <- ".Rdata"
