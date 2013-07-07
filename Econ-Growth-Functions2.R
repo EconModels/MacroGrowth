@@ -70,6 +70,13 @@ linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
 scaleTextSize <- 0.8  #Multiple of normal size
 scaleTickSize <- -0.5 #50% of normal size and pointing INWARD!
+# Controls nls curve fits. Important thing is warnOnly=TRUE allows resamples to continue, 
+# even if there is an error.
+nlsControl <- nls.control(maxiter=200, 
+                          tol=1e-05, 
+                          minFactor=1/1024,
+                          printEval=FALSE, #Tells whether to print details of curve fit process.
+                          warnOnly=TRUE)
 
 loadData <- function(countryAbbrev){
   #################################
@@ -365,7 +372,7 @@ singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, facto
   start <- list(lambda=lambdaGuess, m=mGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * f^m
-  modelSF <- nls(formula=model, data=data, start = start)
+  modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(lambda = as.vector(coef(modelSF)["lambda"]),
                      m = as.vector(coef(modelSF)["m"]),
@@ -764,7 +771,7 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
-  modelCD <- nls(formula=model, data=data, start=start)
+  modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
   # Build the additional object to add as an atrribute to the output
   alpha <- coef(modelCD)["alpha"]
   if (respectRangeConstraints){
@@ -777,7 +784,7 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
       }
       # Refit for lambda only
       start <- list(lambda=lambdaGuess)
-      modelCD <- nls(formula=model, data=data, start=start)
+      modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
     }
   }
   naturalCoeffs <- c(lambda = as.vector(coef(modelCD)["lambda"]),
@@ -811,11 +818,6 @@ cdeModelAB <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  control <- nls.control(maxiter=200, 
-                         tol=1e-05, 
-                         minFactor=1/1024,
-                         printEval=FALSE, #Tells whether to print details of curve fit process.
-                         warnOnly=TRUE)
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.899
@@ -825,7 +827,7 @@ cdeModelAB <- function(countryAbbrev,
   bGuess <- alphaGuess + betaGuess
   formula <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
   start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
   lambda <- coef(modelCDe)["lambda"]
   a <- coef(modelCDe)["a"]
   b <- coef(modelCDe)["b"]
@@ -844,13 +846,13 @@ cdeModelAB <- function(countryAbbrev,
     if (hitABoundary && hitBBoundary){
       start <- list(lambda=lambda)
       # Now re-fit. a an b have been set. Get a new value for lambda.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       lambda <- coef(modelCDe)["lambda"]
       isConv <- modelCDe$convInfo$isConv
     } else if (hitABoundary){
       start <- list(lambda=lambda, b=b)
       # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # a has been set. Grab a new value for b
       lambda <- coef(modelCDe)["lambda"]
       b <- coef(modelCDe)["b"]
@@ -859,14 +861,14 @@ cdeModelAB <- function(countryAbbrev,
       if (b<0 || b>1){
         b <- ifelse (b<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
     } else if (hitBBoundary){
       start <- list(lambda=lambda, a=a)
       # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # b has been set. Grab a new value for a.
       lambda <- coef(modelCDe)["lambda"]
       a <- coef(modelCDe)["a"]
@@ -875,7 +877,7 @@ cdeModelAB <- function(countryAbbrev,
       if (a<0 || a>1){
         a <- ifelse (a<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
@@ -917,11 +919,6 @@ cdeModelCD <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  control <- nls.control(maxiter=200, 
-                         tol=1e-05, 
-                         minFactor=1/1024,
-                         printEval=FALSE, #Tells whether to print details of curve fit process.
-                         warnOnly=TRUE)
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.899
@@ -931,7 +928,7 @@ cdeModelCD <- function(countryAbbrev,
   dGuess <- betaGuess + gammaGuess
   formula <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
   start <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
   lambda <- coef(modelCDe)["lambda"]
   c <- coef(modelCDe)["c"]
   d <- coef(modelCDe)["d"]
@@ -950,13 +947,13 @@ cdeModelCD <- function(countryAbbrev,
     if (hitCBoundary && hitDBoundary){
       start <- list(lambda=lambda)
       # Now re-fit. c and d both hit the boundary and have been reset.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       lambda <- coef(modelCDe)["lambda"]
       isConv <- modelCDe$convInfo$isConv
     } else if (hitCBoundary){
       start <- list(lambda=lambda, d=d)
       # Now re-fit with c at its boundary.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # c has been reset. Grab the new value for d
       lambda <- coef(modelCDe)["lambda"]
       d <- coef(modelCDe)["d"]
@@ -965,14 +962,14 @@ cdeModelCD <- function(countryAbbrev,
       if (d<0 || d>1){
         d <- ifelse (d<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
     } else if (hitDBoundary){
       start <- list(lambda=lambda, c=c)
       # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # d has been reset. Grab the new value for c
       lambda <- coef(modelCDe)["lambda"]
       c <- coef(modelCDe)["c"]
@@ -981,7 +978,7 @@ cdeModelCD <- function(countryAbbrev,
       if (c<0 || c>1){
         c <- ifelse(c<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
@@ -1023,11 +1020,6 @@ cdeModelEF <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  control <- nls.control(maxiter=200, 
-                         tol=1e-05, 
-                         minFactor=1/1024,
-                         printEval=FALSE, #Tells whether to print details of curve fit process.
-                         warnOnly=TRUE)
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.899
@@ -1037,7 +1029,7 @@ cdeModelEF <- function(countryAbbrev,
   fGuess <- gammaGuess + alphaGuess
   formula <- iGDP ~ exp(lambda*iYear) * iCapStk^abs(f - e) * iLabor^(1 - max(e, f)) * iEToFit^min(e, f)
   start <- list(lambda=lambdaGuess, e=eGuess, f=fGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
   lambda <- coef(modelCDe)["lambda"]
   e <- coef(modelCDe)["e"]
   f <- coef(modelCDe)["f"]
@@ -1056,13 +1048,13 @@ cdeModelEF <- function(countryAbbrev,
     if (hitEBoundary && hitFBoundary){
       start <- list(lambda=lambda)
       # Now re-fit. c and d both hit the boundary and have been reset.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       lambda <- coef(modelCDe)["lambda"]
       isConv <- modelCDe$convInfo$isConv
     } else if (hitEBoundary){
       start <- list(lambda=lambda, f=f)
       # Now re-fit with e at its boundary.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # e has been reset. Grab the new value for f
       lambda <- coef(modelCDe)["lambda"]
       f <- coef(modelCDe)["f"]
@@ -1071,14 +1063,14 @@ cdeModelEF <- function(countryAbbrev,
       if (f<0 || f>1){
         f <- ifelse (f<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
     } else if (hitFBoundary){
       start <- list(lambda=lambda, e=e)
       # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
       # f has been reset. Grab the new value for e
       lambda <- coef(modelCDe)["lambda"]
       e <- coef(modelCDe)["e"]
@@ -1087,7 +1079,7 @@ cdeModelEF <- function(countryAbbrev,
       if (e<0 || e>1){
         e <- ifelse(e<0, 0, 1)
         start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=control)
+        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
         lambda <- coef(modelCDe)["lambda"]
         isConv <- modelCDe$convInfo$isConv
       }
@@ -1199,11 +1191,7 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(c
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
   modelCDe <- nls(formula=model, data = data, start = start,
-                  control = nls.control(maxiter = 200, 
-                                        tol = 1e-05, 
-                                        minFactor = 1/1024, 
-                                        printEval=FALSE, #Tells whether to print details of curve fit process.
-                                        warnOnly=TRUE),
+                  control = nlsControl,
                   #Include the next 3 lines to fit with constraints.
                   algorithm = "port",
                   lower = list(lambda=-Inf, alpha=0),
@@ -2049,9 +2037,9 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   } else if (countryAbbrev == "ZA"){
     # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
     # between k and l.  sigma = 0.03, indicating complementarity between (kl) and (e).
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control, 
                        method="LM",
-    )
+                       )
   } else if (countryAbbrev == "SA"){
     # An unconstrained fit gives rho = -6.33, rho1 = 9.36 (sigma1 = 0.0965) and R^2 = 0.9892.  
     # This result is not economically meaningful.
@@ -2059,8 +2047,8 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
     # So, do a grid search over meaningful regions to see what is best.
     # The result (to with +/- 0.1) is rho = 0.0 and rho1 = 5.7, with R^2 = 0.9885.
     # However, neither the the rho or nor the sigma values are statistically significant.
-    rho1 = 5.7
-    rho = 0.0
+    rho1 <- 5.7
+    rho <- 0.0
     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
                        rho1 = rho1,
@@ -2550,7 +2538,7 @@ linexModel <- function(countryAbbrev, energyType, data){
   modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
                     data=data,
                     start=list(a_0=a_0Guess, c_t=c_tGuess),
-                    control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, printEval=FALSE, warnOnly=TRUE),
+                    control=nlsControl
   )
   # Build the additional object to add as an atrribute to the output
   naturalCoeffs <- c(a_0 = as.vector(coef(modelLINEX)["a_0"]),
@@ -3373,31 +3361,23 @@ loadResampleData <- function(modelType=modelTypes,
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  # The name of the object loaded by this call is resampleData.
   load(file=path)
   return(resampleData)
 }
 
-loadResampleDataRefitsOnly <- function(modelType=modelTypes, 
-                                       countryAbbrev=countryAbbrevs, 
-                                       energyType=energyTypes,
-                                       factor=factors){
+loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
   ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
-  data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
+print(paste("factor =", factor))
+  data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # Select only those rows that aren't the original curve fit
   data <- data[data[["method"]]!="orig", ]
   return(data)
 }
 
-loadResampleDataBaseFitOnly <- function(modelType=modelTypes, 
-                                        countryAbbrev=countryAbbrevs, 
-                                        energyType=energyTypes,
-                                        factor=factors){
+loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor){
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
   ##
@@ -3423,6 +3403,7 @@ getPathForResampleData <- function(modelType=modelTypes,
   countryAbbrev <- match.arg(countryAbbrev)
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
+  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
   rd <- "ResampleData-"
   rdat <- ".Rdata"
   filename <- switch(modelType,
@@ -3433,26 +3414,17 @@ getPathForResampleData <- function(modelType=modelTypes,
                      "cese"  = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      )
-  folder <- getFolderForResampleData(modelType=modelType, 
-                                     countryAbbrev=countryAbbrev, 
-                                     energyType=energyType, 
-                                     factor=factor)  
   path <- file.path(folder, filename)
   return(path)
 }
 
-getFolderForResampleData <- function(modelType=modelTypes, 
-                                     countryAbbrev=countryAbbrevs, 
-                                     energyType=energyTypes,
-                                     factor=factors){
+getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs){
   ##################
   # Returns a string identifying a folder for resampled data.
   ##
   dr <- "data_resample"
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
-#   energyType <- match.arg(energyType)
-#   factor <- match.arg(factor)
   folder <- switch(modelType,
                    "sf"    = file.path(dr, modelType, countryAbbrev),
                    "cd"    = file.path(dr, modelType, countryAbbrev),
