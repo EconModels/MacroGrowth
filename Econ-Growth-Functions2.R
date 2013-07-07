@@ -753,8 +753,62 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
                    ylim = c(0.0, 1.0), # gamma axis
                    zlim = c(0, 30) # sse axis
   )
-  return(fig)    
+  return(fig)
 }
+
+twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.0, ...){
+  ########################
+  # This function makes a cloud plot from 
+  # data. The data object should be a
+  # data.frame containing columns named xCoef and yCoef and 
+  # a column named countryAbbrev.
+  # This function constructs a lattice plot from the information.
+  ##
+  # Calculate x and y for the plot
+  # Identify the factor levels.
+  factorLevels <- countryNamesAlph # We want all countries shown
+  # Attach the xy data to the original resample data so that we retain the country information
+  graph <- xyplot(yCoef ~ xCoef | countryAbbrev, data=data, 
+                  pch=16, 
+                  alpha=0.1, 
+                  cex=1,
+                  col.symbol = "black", #Controls symbol parameters
+                  as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+                  index.cond = list(countryOrderForGraphs), #orders the panels.
+                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+                              alternating=FALSE # eliminates left-right, top-bot alternating of axes
+                  ), 
+                  strip=strip.custom(factor.levels=factorLevels, # Sets text for factor levels
+                                     bg="transparent", # Sets background transparent to match the graph itself.
+                                     par.strip.text=list(cex=textScaling) # Scales text in the strip.
+                  ),
+                  xlab=list(label=xLabel, cex=textScaling), 
+                  ylab=list(label=yLabel, cex=textScaling)
+  )
+  return(graph)
+}
+
+sfResamplePlot <- function(factor, ...){
+  ##################
+  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
+  xLabel <- switch(factor,
+                   "K" = "$\\alpha$",
+                   "L" = "$\\beta$",
+                   "Q" = "$\\gamma$",
+                   "X" = "$\\gamma$",
+                   "U" = "$\\gamma$"
+                   )
+  yLabel <- "$\\lambda$"
+  graph <- twoVarCloudPlot(data=data, xCoef=data$m, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
+  return(graph)
+}
+
+
+
 
 cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
