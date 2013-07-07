@@ -96,9 +96,8 @@ genResampleData <- function(modelType=modelTypes,
                                method=method,
                                n=n)
   folder <- getFolderForResampleData(modelType=modelType,
-                                     countryAbbrev=countryAbbrev, 
-                                     energyType=energyType,
-                                     factor=factor)
+                                     countryAbbrev=countryAbbrev
+                                     )
   # Ensure that the folder exists. showWarnings=FALSE, because we don't care 
   # if the directory already exists.
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
@@ -238,13 +237,20 @@ cdeFracUnconvergedResampleFitsAll <- function(){
   return(cbind(qUnconverged, xUnconverged, uUnconverged))
 }
 
-cdeFracUnconvergedResampleFits <- function(countryAbbrev, energyType, ...){
+fracUnconvergedResampleFits <- function(modelType=modelTypes, 
+                                        countryAbbrev=countryAbbrevs, 
+                                        energyType=energyTypes, 
+                                        factor=factors, ...){
   ###################
   # Gives the fraction of resample fits that did not converge
   ##
-  data <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
-  nObs <- nrow(data[["resampleFitCoeffs"]])
-  tallyResults <- tally(~isConv, data=data[["resampleFitCoeffs"]], format="proportion")
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  nObs <- nrow(data)
+  tallyResults <- tally(~isConv, data=data, format="proportion")
   # Grabs the fraction that is converged. We can't simply gather the fraction that
   # has not converged (tallyResults[["0"]]), because there are some times when
   # all resampled fits converge, and there is no "0" item in the 
