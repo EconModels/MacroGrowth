@@ -762,6 +762,8 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
   # data. The data object should be a
   # data.frame containing columns named xCoef and yCoef and 
   # a column named countryAbbrev.
+  # xCoef and yCoef should be vectors containing information to be plotted, 
+  # typically data$something.
   # This function constructs a lattice plot from the information.
   ##
   # Calculate x and y for the plot
@@ -806,9 +808,6 @@ sfResamplePlot <- function(factor, ...){
   graph <- twoVarCloudPlot(data=data, xCoef=data$m, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
   return(graph)
 }
-
-
-
 
 cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
@@ -1487,7 +1486,7 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
   # We have a combination of country and energy type for which we have data.
   if (! is.na(energyType)){
     # We want Cobb-Douglas with energy
-    resampledData <- loadCDeResampleData(countryAbbrev=countryAbbrev, energyType=energyType)
+    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType=energyType)
     statisticalProperties <- cdeResampleCoeffProps(resampledData)
     return(statisticalProperties)
   }
@@ -2012,11 +2011,11 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   # are made based upon countryAbbrev, and there is no way to verify that 
   # countryAbbrev is associated with data.
   ##
-  if (is.na(energyType)){
-    return(cesModelNoEnergy(data=data))
-  }
   if (missing(data)){
     data <- loadData(countryAbbrev=countryAbbrev)
+  }
+  if (is.na(energyType)){
+    return(cesModelNoEnergy(data=data))
   }
   # We need to include energy in the production function.
   # We have an energyType argument. Do some additional checking.
