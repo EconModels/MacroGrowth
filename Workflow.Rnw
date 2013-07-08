@@ -13,7 +13,6 @@ require(knitr)
 opts_chunk$set(
   tidy=FALSE
 )
-require(tikzDevice)
 @
 
 \maketitle
