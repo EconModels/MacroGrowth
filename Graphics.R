@@ -2,11 +2,11 @@ require(ggplot2)
 require(mosaic)
 
 tri2x <- function(x,y,z) {
-  return( x * 0 + y * 1 + z * 0.5 )
+  return( x * 0.5 + y * 0 + z * 1 )
 }
 
 tri2y <- function(x,y,z) {
-  return( x * 0 + y * 0 + z * 1 )
+  return( x * 1 + y * 0 + z * 0 )
 }
 
 
@@ -80,6 +80,7 @@ ddd <- transform(ddd, country=resample(toupper(letters[1:4]), 80))
 # This is probably still a bit brittle and may not look good at extreme sizes, but
 # this will get us started.
 
+if(FALSE) {  # examples moved to workflow document on 2013-07-08
 triPlot( ddd, x,y,z, labels=c('x','y','z'), size=3, alpha=.5 ) + 
   facet_wrap( ~ country )
 
@@ -98,3 +99,4 @@ triPlot( data=exampleData, gamma, alpha, beta,
          size=3, alpha=.5 ) + 
      geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
      facet_wrap( ~ countryAbbrev )
+}
