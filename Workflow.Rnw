@@ -61,6 +61,10 @@ Another example:
 head(loadAllResampleData(model="sf", factor="K"), n=5)
 @
 \end{enumerate}
+\end{enumerate}
+
+\section{Ternary Plots}
+\begin{enumerate}
 \item
 Plots of distributions of coefficients for the Cobb-Douglas 
 with energy model can be made with \function{triPlot()} in 
@@ -79,4 +83,5 @@ triPlot( subset(resData, method=="wild"),
 @
 Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
 \end{enumerate}
+
 \end{document}
