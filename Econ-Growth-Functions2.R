@@ -3412,6 +3412,14 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   return(resampleData)
 }
 
+loadAllResampleData <- function(modelType, energyType, factor){
+  ##################
+  # Loads resample data for all countries for the given modelType and energyType or factor
+  ##
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType))
+  return(data)
+}
+
 loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
