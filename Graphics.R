@@ -23,7 +23,7 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             )
   }  
 
-triPlot <- function(data, x, y, z, labels=c("lambda", "alpha", "beta"), 
+triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
                     parse=TRUE, n.grid=4, aes_string="", ...) {
   h <- seq(0, 1, by=1/n.grid)
   points <- data.frame( h=h )
@@ -80,7 +80,8 @@ ddd <- transform(ddd, country=resample(toupper(letters[1:4]), 80))
 # This is probably still a bit brittle and may not look good at extreme sizes, but
 # this will get us started.
 
-triPlot( ddd, x,y,z, size=3, alpha=.5 ) + facet_wrap( ~ country )
+triPlot( ddd, x,y,z, labels=c('x','y','z'), size=3, alpha=.5 ) + 
+  facet_wrap( ~ country )
 
 exampleData <- rbind(
   resampleFits( "cde", "TZ", "X", method="wild", n=100),
@@ -90,7 +91,10 @@ exampleData <- rbind(
 )
 
 
-triPlot( data=exampleData, gamma, alpha, beta, n.grid=5, labels=c("gamma","alpha","beta"), 
-         aes_string="color=lambda", size=3, alpha=.5 ) + 
+triPlot( data=exampleData, gamma, alpha, beta, 
+         labels=c("gamma","alpha","beta"), 
+         n.grid=5, 
+         aes_string="color=lambda", 
+         size=3, alpha=.5 ) + 
      geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
      facet_wrap( ~ countryAbbrev )
