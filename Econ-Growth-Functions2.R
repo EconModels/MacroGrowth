@@ -3416,7 +3416,7 @@ loadAllResampleData <- function(modelType, energyType, factor){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
   return(data)
 }
 
