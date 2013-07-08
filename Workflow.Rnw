@@ -8,6 +8,13 @@
 \author{Heun/Pruim}
 \begin{document}
 
+<<setup, include=FALSE>>=
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE
+)
+@
+
 \maketitle
 
 \section{Resampling Workflow}
@@ -24,8 +31,9 @@ A reasonable workflow is this:
 source("Econ-Growth-Resampling.R")
 @
 \item
-Execute the function called \function{genAllResampleData()} in this file 
-from the Console. A typical call would be 
+Execute the function called \function{genAllResampleData()}.
+
+A typical call would be 
 <<eval=FALSE>>=
 genAllResampleData(method="wild", n=100)
 @
@@ -52,5 +60,20 @@ Another example:
 head(loadAllResampleData(model="sf", factor="K"), n=5)
 @
 \end{enumerate}
+\item
+Plots of resampling distributions can be made with \function{triPlot()}.
+<<>>=
+source("Graphics.R")
+resData <- loadAllResampleData(modelType="cde", energyType="Q")
+triPlot( subset(resData, method=="wild"), 
+         gamma, alpha, beta,
+         labels=c("gamma", "alpha", "beta"),
+         n.grid=5,  aes_string="color=lambda", 
+         size=3, alpha=.5 ) + 
+     geom_point( data=subset(resData, method=="orig"), 
+                 color="red", alpha=1, size=3) +
+     facet_wrap( ~ countryAbbrev )
+@
+Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
 \end{enumerate}
 \end{document}
