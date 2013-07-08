@@ -20,6 +20,7 @@ Workflow.pdf
 *.vrb
 *.bbl
 figure/
+data_resample/
 #
 # Files created by beamer
 #
