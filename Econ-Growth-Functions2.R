@@ -10,6 +10,7 @@ require(reshape2) # Provides access to data melting. See http://cran.r-project.o
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
 # require(tikzDevice) 
+source("Graphics.R")
 
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
@@ -18,6 +19,7 @@ ciVals <- c(lower=1-ciHalfLevel, upper=ciHalfLevel)
 # List of countries
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 countryAbbrevsAlph <- sort(countryAbbrevs)
+countryAbbrevsForGraph <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", TZ="TZ", SA="SA", IR="IR", ZM="ZM")
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryAbbrevsAlphU <- sort(countryAbbrevsU)
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
@@ -1971,8 +1973,17 @@ cdeResampleTrianglePlot <- function(energyType, ...){
   # A wrapper function for triangleCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
-  graph <- triangleCloudPlot(resampleCoeffs=data)
+#   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
+#   graph <- triangleCloudPlot(resampleCoeffs=data)
+  resampleData <- loadAllResampleData(modelType="cde", energyType="Q")
+  graph <- triPlot(subset(resampleData, method != "orig"),
+                   gamma, alpha, beta,
+                   labels=c("gamma", "alpha", "beta"),
+                   n.grid=5,  aes_string="color=lambda",
+                   size=3, alpha=.5 ) +
+    geom_point(data=subset(resampleData, method=="orig"),
+               color="red", alpha=1, size=3) +
+    facet_wrap( ~ countryAbbrev )
   return(graph)
 }
 
@@ -3416,7 +3427,7 @@ loadAllResampleData <- function(modelType, energyType, factor){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
+  data <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
   return(data)
 }
 
