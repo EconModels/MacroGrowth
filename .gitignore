@@ -8,6 +8,7 @@
 #
 EconGrowth.pdf
 EconGrowthSeminar.pdf
+Workflow.pdf
 *.log
 *.gz
 *.tikz
