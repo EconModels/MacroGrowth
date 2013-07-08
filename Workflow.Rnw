@@ -1,0 +1,56 @@
+
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{language}
+\usepackage{underscore}
+
+\title{Workflow and Software Documentation}
+\author{Heun/Pruim}
+\begin{document}
+
+\maketitle
+
+\section{Resampling Workflow}
+
+Because it takes significant time to generate all the resampling data,
+this data is cached to save model coefficients generated 
+from resampled data into files for each country and each model. 
+The files are stored in a directory called \texttt{data_resample}.
+
+A reasonable workflow is this:
+\begin{enumerate}
+\item 
+<<message=FALSE>>=
+source("Econ-Growth-Resampling.R")
+@
+\item
+Execute the function called \function{genAllResampleData()} in this file 
+from the Console. A typical call would be 
+<<eval=FALSE>>=
+genAllResampleData(method="wild", n=100)
+@
+\item Reload the data using one of the various "load" functions
+from file \texttt{Econ-Growth-Functions2.R}:
+
+<<eval=FALSE>>=
+loadResampleData <- function(modelType, countryAbbrev, energyType, factor)
+loadAllResampleData <- function(modelType, energyType, factor)
+loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType,  factor)
+loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor)
+@
+
+
+\begin{enumerate}
+\item
+A typical call for loadAllResampleData would be
+<<eval=FALSE>>=
+loadAllResampleData(modelType="cde", energyType="Q")
+@
+\item
+Another example:
+<<>>=
+head(loadAllResampleData(model="sf", factor="K"), n=5)
+@
+\end{enumerate}
+\end{enumerate}
+\end{document}
