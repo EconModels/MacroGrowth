@@ -24,7 +24,7 @@ resample data is cached on disk. Model coefficients generated
 from resampled data are stored in files for each country and each model. 
 The files are stored in a directory called \texttt{data_resample}.
 
-A reasonable workflow is this:
+A reasonable workflow is:
 \begin{enumerate}
 \item 
 <<message=FALSE>>=
@@ -72,13 +72,13 @@ file \texttt{Graphics.R}.
 <<>>=
 source("Graphics.R")
 resData <- loadAllResampleData(modelType="cde", energyType="Q")
-triPlot( subset(resData, method=="wild"), 
-         gamma, alpha, beta,
-         labels=c("gamma", "alpha", "beta"),
-         n.grid=5,  aes_string="color=lambda", 
-         size=3, alpha=.5 ) + 
-     geom_point( data=subset(resData, method=="orig"), 
-                 color="red", alpha=1, size=3) +
+triPlot(subset(resData, method!="orig"), 
+        gamma, alpha, beta,
+        labels=c("gamma", "alpha", "beta"),
+        n.grid=5,  aes_string="color=lambda", 
+        size=3, alpha=.5 ) + 
+     geom_point(data=subset(resData, method=="orig"), 
+                color="red", alpha=1, size=3) +
      facet_wrap( ~ countryAbbrev )
 @
 Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
