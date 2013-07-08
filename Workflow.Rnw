@@ -1,8 +1,8 @@
 
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{language}
-\usepackage{underscore}
+\usepackage{language} % Obtain language.sty from https://github.com/rpruim/latex
+\usepackage{underscore} % Should be part of any LaTeX distribution.
 
 \title{Workflow and Software Documentation}
 \author{Heun/Pruim}
@@ -13,6 +13,7 @@ require(knitr)
 opts_chunk$set(
   tidy=FALSE
 )
+require(tikzDevice)
 @
 
 \maketitle
@@ -20,8 +21,8 @@ opts_chunk$set(
 \section{Resampling Workflow}
 
 Because it takes significant time to generate all the resampling data,
-this data is cached to save model coefficients generated 
-from resampled data into files for each country and each model. 
+resample data is cached on disk. Model coefficients generated 
+from resampled data are stored in files for each country and each model. 
 The files are stored in a directory called \texttt{data_resample}.
 
 A reasonable workflow is this:
@@ -30,6 +31,8 @@ A reasonable workflow is this:
 <<message=FALSE>>=
 source("Econ-Growth-Resampling.R")
 @
+which, in turn, sources the file named \texttt{Econ-Growth_Functions2.R}.
+
 \item
 Execute the function called \function{genAllResampleData()}.
 
@@ -37,7 +40,7 @@ A typical call would be
 <<eval=FALSE>>=
 genAllResampleData(method="wild", n=100)
 @
-\item Reload the data using one of the various "load" functions
+\item Reload the data using one of the various ``load'' functions
 from file \texttt{Econ-Growth-Functions2.R}:
 
 <<eval=FALSE>>=
@@ -46,7 +49,6 @@ loadAllResampleData <- function(modelType, energyType, factor)
 loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType,  factor)
 loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor)
 @
-
 
 \begin{enumerate}
 \item
@@ -61,7 +63,9 @@ head(loadAllResampleData(model="sf", factor="K"), n=5)
 @
 \end{enumerate}
 \item
-Plots of resampling distributions can be made with \function{triPlot()}.
+Plots of distributions of coefficients for the Cobb-Douglas 
+with energy model can be made with \function{triPlot()} in 
+file \texttt{Graphics.R}.
 <<>>=
 source("Graphics.R")
 resData <- loadAllResampleData(modelType="cde", energyType="Q")
