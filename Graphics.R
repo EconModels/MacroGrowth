@@ -24,10 +24,23 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
   }  
 
 triPlot <- function(data, x, y, z, labels=c("lambda", "alpha", "beta"), 
-                    parse=TRUE, n.grid=4, ...) {
-  h <- seq(0,1,by=1/n.grid)
+                    parse=TRUE, n.grid=4, aes_string="", ...) {
+  h <- seq(0, 1, by=1/n.grid)
   points <- data.frame( h=h )
-  ggplot( aes(x=tri2x(x,y,z), y=tri2y(x,y,z)), data=data, ...) + 
+  if ( nchar(aes_string) > 0 ) aes_string <- paste(",", aes_string)
+  
+  command <- paste("ggplot( aes(x=tri2x(", 
+                   deparse(substitute(x)), ",", 
+                   deparse(substitute(y)), ",", 
+                   deparse(substitute(z)),
+                   "), y=tri2y(",
+                   deparse(substitute(x)), ",", 
+                   deparse(substitute(y)), ",", 
+                   deparse(substitute(z)),
+                   ")", aes_string, "), data=", deparse(substitute(data)), " )", sep="")
+
+    p <- eval(parse(text=command),envir=parent.frame())                   
+    p + 
     expand_limits( x=c(-.1,1.1), y=c(-.05,1.15) ) +
     tri_theme() + 
     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
@@ -39,7 +52,7 @@ triPlot <- function(data, x, y, z, labels=c("lambda", "alpha", "beta"),
     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
                      data=points, color="gray70") +
-    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), 
+    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="black", 
               data=data.frame(label=rep(labels, length.out=3),
                               x=c(.5,-.02,1.02), 
                               y=c(1.02,0,0),
@@ -68,3 +81,16 @@ ddd <- transform(ddd, country=resample(toupper(letters[1:4]), 80))
 # this will get us started.
 
 triPlot( ddd, x,y,z, size=3, alpha=.5 ) + facet_wrap( ~ country )
+
+exampleData <- rbind(
+  resampleFits( "cde", "TZ", "X", method="wild", n=100),
+  resampleFits( "cde", "US", "X", method="wild", n=100),
+  resampleFits( "cde", "UK", "X", method="wild", n=100),
+  resampleFits( "cde", "CN", "X", method="wild", n=100)
+)
+
+
+triPlot( data=exampleData, gamma, alpha, beta, n.grid=5, labels=c("gamma","alpha","beta"), 
+         aes_string="color=lambda", size=3, alpha=.5 ) + 
+     geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
+     facet_wrap( ~ countryAbbrev )
