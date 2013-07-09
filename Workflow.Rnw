@@ -76,10 +76,11 @@ triPlot(subset(resData, method!="orig"),
         gamma, alpha, beta,
         labels=c("gamma[1]", "alpha[2]", "sqrt(beta[3])"),
         n.grid=5,  aes_string="color=lambda", 
-        size=3, alpha=.5 ) + 
+        size=1.7, alpha=.5 ) + 
      geom_point(data=subset(resData, method=="orig"), 
                 color="red", alpha=1, size=3) +
-     facet_wrap( ~ countryAbbrev )
+     facet_wrap( ~ countryAbbrev ) +
+     scale_colour_gradient(expression(lambda), high="navy", low="skyblue")
 @
 Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
 \end{enumerate}
