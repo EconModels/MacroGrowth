@@ -1913,11 +1913,16 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
                      tName="iYear", control=control)
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho"]
+  # rho <- -1.0 gives the equation without energy, although it makes sigma blow up.
+  rho <- -1.0 
   naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
                      delta_1 = as.vector(coef(modelCES)["delta"]),
                      rho_1 = as.vector(rho_1),
                      sigma_1 = as.vector(1 / (1 + rho_1)),
                      gamma = as.vector(coef(modelCES)["gamma"]),
+                     delta = 1.0,
+                     rho = as.vector(rho),
+                     sigma = as.vector(1 / (1 + rho)),
                      sse = sum(resid(modelCES)^2),
                      isConv = modelCES$convergence
                      )
@@ -2223,7 +2228,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
   return(graph)
 }
 
-cesData <- function(countryAbbrev, energyType){
+cesData <- function(countryAbbrev, energyType=NA){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the CES production function given a country and an energyType.
@@ -2238,108 +2243,30 @@ cesData <- function(countryAbbrev, energyType){
   # Third row is the -95% CI on all parameters
   # Each column has names: gamma, lambda, delta_1, delta, rho_1, rho
   ##
-  # Determine whether we want an energy term or not
-  if (is.na(energyType)){
-    wantEnergyTerm <- FALSE
-  } else {
-    wantEnergyTerm <- TRUE
-  }
   #First, check to see if we want useful work (U) AND one of the countries for which we don't have data.
   if (!haveDataCES(countryAbbrev, energyType)){
     #Return a column of NAs if we don't have data available for this combination of country and energy type.
     nRows <- 3 # +95% CI, CDe, and -95% CI.
-    nCols <- 6 # gamma, lambda, delta_1, delta, sigma_1, and sigma
+    nCols <- 8 # gamma, lambda, delta_1, delta, sigma_1, and sigma
     df <- as.data.frame(matrix(NA, ncol = nCols, nrow = nRows))
-    colnames(df) <- c("gamma", "lambda", "delta_1", "delta", "sigma_1", "sigma")
+    colnames(df) <- c("gamma", "lambda", "delta_1", "rho_1", "sigma_1", "delta", "rho", "sigma")
     rownames(df) <- c("+95% CI", "CES", "-95% CI")
     return(df)
-  }
-  # We have a combination of country and energy type for which we have data.
-  modelCES <- cesModel(countryAbbrev, energyType)
-  summaryCES <- summary(modelCES) # Gives a summary table.
-  # The number of observations is the same as the number of residuals
-  nObs <- length(modelCES$residuals)
-  # Calculate the degrees of freedom as N_obs - N_params. 
-  if (wantEnergyTerm){
-    # For a CES model with energy, we have 6 parameters: gamma, lambda, delta, rho, delta_1, and rho_1
-    dofCES <- nObs - 6 # Gives the degrees of freedom for the model.
+  } else if (is.na(energyType)){
+    # We want CES without energy
+    resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev)
   } else {
-    # For a CES model without energy, we have 4 parameters: gamma, lambda, delta, and rho
-    dofCES <- nObs - 4 # Gives the degrees of freedom for the model.   
+    # We want CES with energy
+    resampleData <- loadResampleData(modelType="cese", countryAbbrev=countryAbbrev, energyType=energyType)
   }
-  tvalCES <- qt(ciHalfLevel, df = dofCES)
-  # Calculate confidence intervals for the parameters of the model
-  ciCES <- confint(modelCES, level = ciLevel)  # Calculates confidence intervals for the CES model.
-  # Get confidence intervals for the elasticities of substitution.
-  #######################
-  # Note: I would rather get the value of sigma and its standard error directly from the cesModel object.
-  # The information is all in there. You can see it as the E terms at the bottom of the
-  # print(summaryCES) results.
-  #######################
-  sigma.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho)") # Estimates sigma and its standard error (SE)
-  sigmaCI <- with(sigma.est, Estimate + c(-1.0, 1.0) * tvalCES * SE)
-  if (wantEnergyTerm){
-    sigma_1.est <- deltaMethod(modelCES, "1.0 / (1.0 + rho_1)") # Estimates sigma_1 and its standard error (SE)
-    sigma_1CI <- with(sigma_1.est, Estimate + c(-1.0, 1.0) * tvalCES * SE)
-  }
-  if (!wantEnergyTerm){
-    # We're not using energy in this fit.
-    gamma <- coef(modelCES)["gamma"]
-    lambda <- coef(modelCES)["lambda"]
-    # Without energy, we get the delta coefficient that means the split between 
-    # capital and labor.
-    # With energy, delta_1 means the split between energy and labor.
-    # To be consistent, we map the delta from the "without energy" model to variable name "delta_1"
-    delta_1 <- coef(modelCES)["delta"]
-    # The without energy model can be obtained with delta = 1.0. So, we set it here.
-    delta <- 1.0
-    # The without energy model has a sigma (elasticity of substitution between k and l) that is 
-    # equivalent to the sigma_1 parameter from the "with energy" model. So, we map the names 
-    # here.
-    sigma_1 <- sigma.est$Estimate
-    # With delta = 1.0, rho has no meaning (there is no energy term). Therefore, sigma has no meaning.
-    # So, set sigma to NA
-    sigma <- NA
-    # Combine all estimates and their confidence intervals into data frames with intelligent row names
-    estCES <- data.frame(gamma=gamma, lambda=lambda, delta_1=delta_1, delta=delta, sigma_1=sigma_1, sigma=sigma)
-    row.names(estCES) <- "CES"
-    # The [1] subscripts pick off the lower confidence interval
-    # The size of the CI on delta is 0.0 for the CES model without energy, so we set the upper and lower bounds to 1.0
-    # The CI on delta_1 shows up with the variable delta for the CES model without energy.
-    lowerCES <- data.frame(gamma=ciCES["gamma","2.5 %"], lambda=ciCES["lambda", "2.5 %"],
-                           delta_1=ciCES["delta", "2.5 %"], delta=1.0,
-                           sigma_1=sigmaCI[1], sigma=NA)
-    row.names(lowerCES) <- "-95% CI"
-    # The [2] subscripts pick off the upper confidence interval
-    upperCES <- data.frame(gamma=ciCES["gamma","97.5 %"], lambda=ciCES["lambda", "97.5 %"],
-                           delta_1=ciCES["delta", "97.5 %"], delta=1.0,
-                           sigma_1=sigmaCI[2], sigma=NA)
-    row.names(upperCES) <- "+95% CI"
+  statisticalProperties <- cesResampleCoeffProps(resampleData)
+  # Set the correct label in the row that shows the base values.
+  if (is.na(energyType)){
+    rownames(statisticalProperties) <- c("+95% CI", "CES", "-95% CI")
   } else {
-    # We're using energy in this fit.
-    gamma <- coef(modelCES)["gamma"]
-    lambda <- coef(modelCES)["lambda"]
-    delta_1 <- coef(modelCES)["delta_1"]
-    delta <- coef(modelCES)["delta"]
-    sigma_1 <- sigma_1.est$Estimate
-    sigma <- sigma.est$Estimate
-    # Combine all estimates and their confidence intervals into data frames with intelligent row names
-    estCES <- data.frame(gamma=gamma, lambda=lambda, delta_1=delta_1, delta=delta, sigma_1=sigma_1, sigma=sigma)
-    row.names(estCES) <- "CES"
-    # The [1] subscripts pick off the lower confidence interval
-    lowerCES <- data.frame(gamma=ciCES["gamma","2.5 %"], lambda=ciCES["lambda", "2.5 %"],
-                           delta_1=ciCES["delta_1", "2.5 %"], delta=ciCES["delta", "2.5 %"],
-                           sigma_1=sigma_1CI[1], sigma=sigmaCI[1])
-    row.names(lowerCES) <- "-95% CI"
-    # The [2] subscripts pick off the upper confidence interval
-    upperCES <- data.frame(gamma=ciCES["gamma","97.5 %"], lambda=ciCES["lambda", "97.5 %"],
-                           delta_1=ciCES["delta_1", "97.5 %"], delta=ciCES["delta", "97.5 %"],
-                           sigma_1=sigma_1CI[2], sigma=sigmaCI[2])
-    row.names(upperCES) <- "+95% CI"
+    rownames(statisticalProperties) <- c("+95% CI", "CESe", "-95% CI")
   }
-  # Now create the data for a table and return it
-  dataCES <- rbind(upperCES, estCES, lowerCES)
-  return(dataCES)
+  return(statisticalProperties)
 }
 
 cesCountryRow <- function(countryAbbrev, energyType){
@@ -3354,24 +3281,6 @@ getSeed <- function(){
   # many places (including the paper, should we choose to include it there).
   ##
   return(123)
-}
-
-getNResamples <- function(){
-  #######################
-  # Returns the number of resamples we want to use for each 
-  # model. I'm putting n into a function so that it is accessible from 
-  # many places (including the paper, should we choose to include it there).
-  ##
-  return(100) # 10,000 samples are probably sufficient
-}
-
-getResampleMethod <- function(){
-  ###########################
-  # Returns the resample method to be used. I'm putting this in a function
-  # so that it is accessible from 
-  # many places (including the paper, should we choose to include it there).
-  ##
-  return("wild")
 }
 
 loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
