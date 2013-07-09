@@ -1968,14 +1968,20 @@ triangleCloudPlot <- function(resampleCoeffs, textScaling = 1.0, ...){
   return(graph)
 }
 
-cdeResampleTrianglePlot <- function(energyType, ...){
+cdResampleTrianglePlot <- function(energyType, ...){
   ##################
   # A wrapper function for triangleCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
 #   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
 #   graph <- triangleCloudPlot(resampleCoeffs=data)
-  resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cde", energyType=energyType))
+  if (is.na(energyType)){
+    resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cd"))
+  } else if (energyType == "U"){
+    resampleData <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType="cde", energyType=energyType))
+  } else {
+    resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cde", energyType=energyType))
+  }
   graph <- triPlot(subset(resampleData, method != "orig"),
                    gamma, alpha, beta,
                    labels=c("gamma", "alpha", "beta"),
