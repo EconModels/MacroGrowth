@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -945,6 +945,13 @@ contains tables with numerical values of model parameters and confidence interva
 createCDParamsGraph(energyType=NA)
 @
 
+Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
+
+<<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
+cdResampleTrianglePlot(energyType=NA)
+@
+
+
 To qualitatively assess whether augmenting the Cobb-Douglas model with energy 
 will be beneficial, we created partial residual plots as shown in 
 Figures~\ref{fig:CDPartialResidualsQ}--\ref{fig:CDPartialResidualsU} below. 
@@ -1033,18 +1040,21 @@ createCDParamsGraph(energyType="U")
 
 Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$).
 
-<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.", eval=TRUE>>=
-cdeResampleTrianglePlot(energyType="Q")
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="Q")
 @
 
 Figure~\ref{fig:CDx_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $x$).
 
-<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.", eval=TRUE>>=
-cdeResampleTrianglePlot(energyType="X")
+<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="X")
 @
 
+Figure~\ref{fig:CDu_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $u$).
 
-**** Add triangle cloud plots for $x$ and $u$ if we decide to use these plots. ****
+<<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="U")
+@
 
 Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 
 from the Cobb-Douglas models 
