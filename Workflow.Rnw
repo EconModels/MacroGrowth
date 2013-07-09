@@ -68,13 +68,13 @@ head(loadAllResampleData(model="sf", factor="K"), n=5)
 \item
 Plots of distributions of coefficients for the Cobb-Douglas 
 with energy model can be made with \function{triPlot()} in 
-file \texttt{Graphics.R}.
+file \texttt{Graphics.R}.  (Goofy labels here just to demonstrate what is possible.)
 <<>>=
 source("Graphics.R")
 resData <- loadAllResampleData(modelType="cde", energyType="Q")
 triPlot(subset(resData, method!="orig"), 
         gamma, alpha, beta,
-        labels=c("gamma", "alpha", "beta"),
+        labels=c("gamma[1]", "alpha[2]", "sqrt(beta[3])"),
         n.grid=5,  aes_string="color=lambda", 
         size=3, alpha=.5 ) + 
      geom_point(data=subset(resData, method=="orig"), 
