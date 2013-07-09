@@ -12,18 +12,11 @@ source('Econ-Growth-Functions2.R')
 # We do this multiple times and save a file that contains 
 # the results for later investigation
 
-genAllResampleData <- function(method=resampleMethods, n){
+genAllResampleData <- function(method="wild", n=100){
   #######################
   # Generates all resampling data for all models using the method specified
   ##
-  if (missing(n)){
-    n <- getNResamples()
-  }
-  if (missing(method)){
-    method <- getResampleMethod()
-  } else {
-    method <- match.arg(method)
-  }
+  method <- match.arg(method)
   # Establish the parallel computing resources
   registerDoParallel()
   # Establish the timer
@@ -174,6 +167,7 @@ resampleFits <- function(modelType=modelTypes,
   baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
   names(baseFitCoeffsDF) <- names(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
+print(head(resampleFitCoeffs, n=5))
   baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
   out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
   # Make a factor column for the country
