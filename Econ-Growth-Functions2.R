@@ -1303,14 +1303,15 @@ cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(
   return(cdeModel(data=data, energyType=energyType, ...))
 }
 
-cdeResampleCoeffProps <- function(cdeResampleFits, ...){
+cdResampleCoeffProps <- function(cdResampleFits, ...){
   ####### 
-  # This function creates a table of confidence intervals for the cde model
+  # This function creates a table of confidence intervals for the cd and cde models
+  # from the data supplied
   ##
   # Grab the original curve fit
-  baseFitCoeffs <- cdeResampleFits[cdeResampleFits[["method"]]=="orig", ]
+  baseFitCoeffs <- cdResampleFits[cdResampleFits[["method"]]=="orig", ]
   # Grab the resample curve fits
-  resampleFitCoeffs <- cdeResampleFits[cdeResampleFits[["method"]] != "orig", ]
+  resampleFitCoeffs <- cdResampleFits[cdResampleFits[["method"]] != "orig", ]
   lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
   alphaCI <- qdata(p=ciVals, vals=alpha, data=resampleFitCoeffs)
   betaCI <- qdata(p=ciVals, vals=beta, data=resampleFitCoeffs)
@@ -1512,141 +1513,21 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
     colnames(df) <- c("lambda", "alpha", "beta", "gamma")
     rownames(df) <- c("+95% CI", "CDe", "-95% CI")
     return(df)
-  }
-  # We have a combination of country and energy type for which we have data.
-  if (! is.na(energyType)){
+  } else if (is.na(energyType)){
+    # We want Cobb-Douglas without energy
+    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev)
+  } else {
     # We want Cobb-Douglas with energy
     resampledData <- loadResampleData(modelType="cde", countryAbbrev=countryAbbrev, energyType=energyType)
-    statisticalProperties <- cdeResampleCoeffProps(resampledData)
-    return(statisticalProperties)
   }
-  # Well, we want Cobb-Douglas without energy
-  modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
-  summaryCD <- summary(modelCD) # Gives the nls summary table.
-  # Calculates confidence intervals for the CD model.
-  ciCD <- tryCatch(expr=confint(profile(modelCD, ...), 
-                                level=ciLevel,...), 
-                   error=function(e){
-                     # If we have a problem, send the error as a warning.
-                     warning(e)
-                     # And, return the model itself, not the 
-                     # confidence intervals that we tried (and failed)
-                     # to calculate.
-                     return(modelCD)
-                   }
-                   )
-  # Now check to see if the return object is the model itself 
-  # If the return object is the nls model itself, instead
-  # of confidence intervals, we know there was a problem.
-  # Returning the model itself, instead of confidence 
-  # intervals is sure to cause a problem in whatever
-  # code called this function. So, we'll also add 
-  # a message.
-  if (inherits(ciCD, "nls")) {
-    warning(paste("Early exit from CobbDouglasData due to a problem with a Cobb-Douglas nls fit for", 
-                  countryAbbrev, "and", energyType));
-    return(ciCD)
+  statisticalProperties <- cdResampleCoeffProps(resampledData)
+  # Set the correct label in the row that shows the base values.
+  if (is.na(energyType)){
+    rownames(statisticalProperties) <- c("+95% CI", "CD", "-95% CI")
+  } else {
+    rownames(statisticalProperties) <- c("+95% CI", "CDe", "-95% CI")
   }
-  dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
-  tvalCD <- qt(ciHalfLevel, df = dofCD)
-  #Cobb-Douglas without energy
-  alpha <- as.numeric(coef(modelCD)["alpha"])
-  beta <- 1.0 - alpha
-  beta.est <- deltaMethod(modelCD, "1 - alpha") # Estimates beta and its standard error (SE).
-  # Calculate beta and its confidence interval and report it.
-  # Now calculate a confidence interval on beta
-  betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.  
-  # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estCD <- data.frame(lambda=coef(modelCD)["lambda"], alpha=coef(modelCD)["alpha"], beta=beta, gamma=0)
-  row.names(estCD) <- "CD"
-  # The [1] subscripts pick off the lower confidence interval
-  lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["alpha", "2.5%"], beta=betaCICD[1], gamma=NA) 
-  row.names(lowerCD) <- "-95% CI"
-  # The [2] subscripts pick off the lower confidence interval
-  upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["alpha", "97.5%"], beta=betaCICD[2], gamma=NA)
-  row.names(upperCD) <- "+95% CI"
-  # Now create the data for a table and return it
-  dataCD <- rbind(upperCD, estCD, lowerCD)
-  return(dataCD)
-
-#   modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
-#   summaryCD <- summary(modelCD) # Gives the nls summary table.
-#   # Calculates confidence intervals for the CD model.
-#   ciCD <- tryCatch(expr=confint(profile(modelCD, ...), 
-#                                 level=ciLevel,...), 
-#                    error=function(e){
-#                      # If we have a problem, send the error as a warning.
-#                      warning(e)
-#                      # And, return the model itself, not the 
-#                      # confidence intervals that we tried (and failed)
-#                      # to calculate.
-#                      return(modelCD)
-#                    }
-#                    )
-#   # Now check to see if the return object is the model itself 
-#   # If the return object is the nls model itself, instead
-#   # of confidence intervals, we know there was a problem.
-#   # Returning the model itself, instead of confidence 
-#   # intervals is sure to cause a problem in whatever
-#   # code called this function. So, we'll also add 
-#   # a message.
-#   if (inherits(ciCD, "nls")) {
-#     warning(paste("Early exit from CobbDouglasData due to a problem with a Cobb-Douglas nls fit for", 
-#                   countryAbbrev, "and", energyType));
-#     return(ciCD)
-#   }
-#   dofCD <- summaryCD$df[2] # Gives the degrees of freedom for the model.
-#   tvalCD <- qt(ciHalfLevel, df = dofCD)
-#   if (is.na(energyType)){
-#     #Cobb-Douglas without energy
-#     alpha <- as.numeric(coef(modelCD)["alpha"])
-#     beta <- 1.0 - alpha
-#     beta.est <- deltaMethod(modelCD, "1 - alpha") # Estimates beta and its standard error (SE).
-#     # Calculate beta and its confidence interval and report it.
-#     # Now calculate a confidence interval on beta
-#     betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.  
-#     # Combine all estimates and their confidence intervals into data frames with intelligent row names
-#     estCD <- data.frame(lambda=coef(modelCD)["lambda"], alpha=coef(modelCD)["alpha"], beta=beta, gamma=0)
-#     row.names(estCD) <- "CD"
-#     # The [1] subscripts pick off the lower confidence interval
-#     lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], alpha=ciCD["alpha", "2.5%"], beta=betaCICD[1], gamma=NA) 
-#     row.names(lowerCD) <- "-95% CI"
-#     # The [2] subscripts pick off the lower confidence interval
-#     upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], alpha=ciCD["alpha", "97.5%"], beta=betaCICD[2], gamma=NA)
-#     row.names(upperCD) <- "+95% CI"
-#   } else {
-#     #Cobb-Douglas with energy
-#     a <- as.numeric(coef(modelCD)["a"])
-#     b <- as.numeric(coef(modelCD)["b"])
-#     lambda <- as.numeric(coef(modelCD)["lambda"])
-#     alpha <- a
-#     beta <- b - a
-#     gamma <- 1.0 - b
-#     # Report results with SE
-#     beta.est <- deltaMethod(modelCD, "b-a") # Reports results for beta, because beta = b - a.
-#     gamma.est <- deltaMethod(modelCD, "1-b") # Reports results for gamma, because gamma = 1 - b.
-#     # Now calculate confidence intervals.
-#     betaCICD <- with(beta.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on beta.
-#     gammaCICD <- with(gamma.est, Estimate + c(-1.0, 1.0) * tvalCD * SE) # Gives the confidence interval on gamma.
-#     # Combine all estimates and their confidence intervals into data frames with intelligent row names
-#     estCD <- data.frame(lambda = lambda, alpha = alpha, beta = beta, gamma = gamma)
-#     row.names(estCD) <- "CDe"
-#     # The [1] subscripts pick off the lower confidence interval
-#     lowerCD <- data.frame(lambda=ciCD["lambda","2.5%"], 
-#                           alpha=ciCD["a", "2.5%"], 
-#                           beta=betaCICD[1], 
-#                           gamma=gammaCICD[1])
-#     row.names(lowerCD) <- "-95% CI"
-#     # The [2] subscripts pick off the upper confidence interval
-#     upperCD <- data.frame(lambda=ciCD["lambda","97.5%"], 
-#                           alpha=ciCD["a", "97.5%"], 
-#                           beta=betaCICD[2], 
-#                           gamma=gammaCICD[2])
-#     row.names(upperCD) <- "+95% CI"
-#   }
-#   # Now create the data for a table and return it
-#   dataCD <- rbind(upperCD, estCD, lowerCD)
-#   return(dataCD)
+  return(statisticalProperties)
 }
 
 cobbDouglasCountryRow <- function(countryAbbrev, energyType){

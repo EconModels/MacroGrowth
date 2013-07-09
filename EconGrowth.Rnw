@@ -213,7 +213,7 @@ When we are resampling, we probably don't want to specify those values.}
 resampling methods.}
       \begin{itemize}
       \item{SF}
-      \item{CD}
+      \item{\st{CD}}
       \item{\st{CDe}}
       \item{CES}
       \item{CESe}
@@ -223,7 +223,7 @@ resampling methods.}
 estimated by resampling methods.}
       \begin{itemize}
       \item{\st{SF}}
-      \item{CD}
+      \item{\st{CD}}
       \item{\st{CDe}}
       \item{CES}
       \item{CESe}
