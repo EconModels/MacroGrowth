@@ -1975,7 +1975,7 @@ cdeResampleTrianglePlot <- function(energyType, ...){
   ##
 #   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
 #   graph <- triangleCloudPlot(resampleCoeffs=data)
-  resampleData <- loadAllResampleData(modelType="cde", energyType="Q")
+  resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cde", energyType=energyType))
   graph <- triPlot(subset(resampleData, method != "orig"),
                    gamma, alpha, beta,
                    labels=c("gamma", "alpha", "beta"),
@@ -3427,7 +3427,7 @@ loadAllResampleData <- function(modelType, energyType, factor){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
+  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
   return(data)
 }
 
