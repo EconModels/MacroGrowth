@@ -11,34 +11,6 @@ source('Econ-Growth-Functions2.R')
 #
 # We do this multiple times and save a file that contains 
 # the results for later investigation
-# 
-# Because it takes significant time to generate all the data,
-# this code is designed to save model coefficients generated from
-# resampled data into files for each country and each model. 
-# The files are stored in a directory called data_resample.
-# 
-# A reasonable workflow is this:
-# 1) Execute the function called genAllResampleData in this file 
-# from the Console. A typical call would be 
-#   genAllResampleData(method="wild", n=100)
-# 2) Reload the data using one of the various "load" functions
-# from file Econ-Growth-Functions2.R:
-# 
-#   loadResampleData <- function(modelType, countryAbbrev, energyType, factor)
-#   loadAllResampleData <- function(modelType, energyType, factor)
-#   loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, factor)
-#   loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor)
-#         
-# A typical call for loadAllResampleData would be
-#   loadAllResampleData(modelType="cde", energyType="Q")
-# Another example is:
-# >head(loadAllResampleData(model="sf", factor="K"), n=5)
-#          lambda         m       sse isConv method countryAbbrev
-# CN.1 0.06441251 0.3224450 0.1681983      1   orig            CN
-# CN.2 0.03082291 0.6255630 0.1373428      1   wild            CN
-# CN.3 0.06156743 0.3499150 0.1654181      1   wild            CN
-# CN.4 0.04589561 0.4901169 0.1918265      1   wild            CN
-# CN.5 0.04740657 0.4768386 0.1658097      1   wild            CN
 
 genAllResampleData <- function(method=resampleMethods, n){
   #######################
@@ -154,7 +126,7 @@ resampleFits <- function(modelType=modelTypes,
   }
   # First do a fit without resampling and get these coefficients
   origModel <- switch(modelType,
-                      "sf"    = singleFactorModel(data=data, factor=factor),
+                      "sf"    = singleFactorModel(data=data, factor=factor, respectRangeConstraints=TRUE),
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
@@ -167,7 +139,8 @@ resampleFits <- function(modelType=modelTypes,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
                                                                                          method=method),
-                                                                         factor=factor),
+                                                                         factor=factor,
+                                                                         respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
                               "cd"    = do(n) * attr(x=cdModel(data=doResample(data=data, 
                                                                                origModel=origModel, 
