@@ -355,7 +355,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 ## <<single-factor functions, eval=TRUE>>=
-singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, factor){
+singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, factor, respectRangeConstraints=FALSE){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -371,13 +371,21 @@ singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, facto
 #   if (countryAbbrev == "IR" && factor == "X"){
 #     mGuess <- 0.7
 #   }
-  start <- list(lambda=lambdaGuess, m=mGuess)
+  if (respectRangeConstraints){
+    m <- 1.0
+    start <- list(lambda=lambdaGuess)
+  } else {
+    start <- list(lambda=lambdaGuess, m=mGuess)
+  }
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   model <- iGDP ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
   # Build the additional object to add as an atrribute to the output
+  if (!respectRangeConstraints){
+    m <- coef(modelSF)["m"]
+  }
   naturalCoeffs <- c(lambda = as.vector(coef(modelSF)["lambda"]),
-                     m = as.vector(coef(modelSF)["m"]),
+                     m = as.vector(m),
                      sse = sum(resid(modelSF)^2),
                      isConv = modelSF$convInfo$isConv
                      )
@@ -770,7 +778,22 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
   ##
   # Calculate x and y for the plot
   # Identify the factor levels.
-  factorLevels <- countryNamesAlph # We want all countries shown
+  nFactors <- length(unique(data$countryAbbrev))
+  if (nFactors == 3){
+    # We have U data
+    factorLevels <- countryNamesAlphU
+    countryOrder <- countryOrderForGraphsU
+    layoutSpec <- threePanelLayoutSpec
+  } else if (nFactors == 9){
+    # We have any other factor
+    factorLevels <- countryNamesAlph
+    countryOrder <- countryOrderForGraphs
+    layoutSpec <- ninePanelLayoutSpec
+  } else {
+    stop(paste("Found", nFactors, "factors in twoVarCloudPlot.",
+                "Specifically:", unique(data$countryAbbrev), 
+                "Expected 3 or 9 countries. Don't know how to continue."))
+  }
   # Attach the xy data to the original resample data so that we retain the country information
   graph <- xyplot(yCoef ~ xCoef | countryAbbrev, data=data, 
                   pch=16, 
@@ -778,7 +801,8 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
                   cex=1,
                   col.symbol = "black", #Controls symbol parameters
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-                  index.cond = list(countryOrderForGraphs), #orders the panels.
+                  index.cond = list(countryOrder), #orders the panels.
+                  layout=layoutSpec,
                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                               alternating=FALSE # eliminates left-right, top-bot alternating of axes
@@ -798,7 +822,11 @@ sfResamplePlot <- function(factor, ...){
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
+  if (factor == "U"){
+    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
+  } else {
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
+  }
   xLabel <- switch(factor,
                    "K" = "$\\alpha$",
                    "L" = "$\\beta$",
