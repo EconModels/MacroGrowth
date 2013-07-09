@@ -408,7 +408,9 @@ and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$,
 the elasticity of substitution between ($kl$) and ($e$) is given by 
 $\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance 
 of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, 
-expected to be close to unity. 
+expected to be close to unity. As $\sigma \rightarrow \infty$, 
+($kl$) and ($e$) are perfect substitutes. As $\sigma \rightarrow 0$, 
+($kl$) and ($e$) are perfect complements: no substitution is possible. 
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production 
 functions for 12 OECD countries with respect to climate change policy. 
