@@ -2069,6 +2069,55 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   return(modelCES)
 }
 
+cesResampleCoeffProps <- function(cesResampleFits, ...){
+  #######
+  # This function creates a table of confidence intervals for the ces and cese models
+  # from the data supplied
+  ##
+  # Grab the original curve fit
+  baseFitCoeffs <- cesResampleFits[cesResampleFits[["method"]]=="orig", ]
+  # Grab the resample curve fits
+  resampleFitCoeffs <- cesResampleFits[cesResampleFits[["method"]] != "orig", ]
+  gammaCI <- qdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
+  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  delta_1CI <- qdata(p=ciVals, vals=delta_1, data=resampleFitCoeffs)  
+  rho_1CI <- qdata(p=ciVals, vals=rho_1, data=resampleFitCoeffs)  
+  sigma_1CI <- qdata(p=ciVals, vals=sigma_1, data=resampleFitCoeffs)  
+  deltaCI <- qdata(p=ciVals, vals=delta, data=resampleFitCoeffs)  
+  rhoCI <- qdata(p=ciVals, vals=rho, data=resampleFitCoeffs)  
+  sigmaCI <- qdata(p=ciVals, vals=sigma, data=resampleFitCoeffs)  
+  # Now make a data.frame that contains the information.
+  lower <- data.frame(gamma=gammaCI["2.5%"],
+                      lambda=lambdaCI["2.5%"],
+                      delta_1=delta_1CI["2.5%"],
+                      rho_1=rho_1CI["2.5%"],
+                      sigma_1=sigma_1CI["2.5%"],
+                      delta=deltaCI["2.5%"],
+                      rho=rhoCI["2.5%"],
+                      sigma=sigmaCI["2.5%"])
+  row.names(lower) <- "-95% CI"
+  mid <- data.frame(gamma=baseFitCoeffs["gamma"],
+                    lambda=baseFitCoeffs["lambda"],
+                    delta_1=baseFitCoeffs["delta_1"],
+                    rho_1=baseFitCoeffs["rho_1"],
+                    sigma_1=baseFitCoeffs["sigma_1"],
+                    delta=baseFitCoeffs["delta"],
+                    rho=baseFitCoeffs["rho"],
+                    sigma=baseFitCoeffs["sigma"])
+  row.names(mid) <- "CESe"
+  upper <- data.frame(gamma=gammaCI["97.5%"],
+                      lambda=lambdaCI["9.75%"],
+                      delta_1=delta_1CI["97.5%"],
+                      rho_1=rho_1CI["97.5%"],
+                      sigma_1=sigma_1CI["97.5%"],
+                      delta=deltaCI["97.5%"],
+                      rho=rhoCI["97.5%"],
+                      sigma=sigmaCI["97.5%"])
+  row.names(upper) <- "+95% CI"
+  dataCD <- rbind(upper, mid, lower)
+  return(dataCD)
+}
+
 cesPredictions <- function(countryAbbrev, energyType){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
