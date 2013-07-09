@@ -204,17 +204,36 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Figure out why CESe for ZA with X fails during resampling.}
+\item{Heun: Add option for $m = 1$ in single-factor models.}
+\item{Heun: Figure out why CESe for ZA with $x$ fails during resampling.}
 \item{Heun: Review all assumptions for CES with energy models. 
 There are several assumptions for rho and rho1 for various countries. 
 When we are resampling, we probably don't want to specify those values.}
-\item{Heun: Implement confidence interval calculations for 
-all resampling methods.}
-\item{Heun: Decide if the single factor models should include constraints
+\item{Heun: Re-implement confidence interval calculations to use
+resampling methods.}
+      \begin{itemize}
+      \item{SF}
+      \item{CD}
+      \item{\st{CDe}}
+      \item{CES}
+      \item{CESe}
+      \item{LINEX}
+      \end{itemize}
+\item{Heun: Include cloud graphs for model parameters 
+estimated by resampling methods.}
+      \begin{itemize}
+      \item{\st{SF}}
+      \item{CD}
+      \item{\st{CDe}}
+      \item{CES}
+      \item{CESe}
+      \item{LINEX}
+      \end{itemize}
+\item{\st{Heun: Decide if the single factor models should include constraints
 on $\alpha$, $\beta$, and $\gamma$. At present, the single-factor model allows
-values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}
-\item{Heun: Make smaller cloud plots for resample coefficients for those 
-countries where $u$ is involved.}
+values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}}
+\item{\st{Heun: Make smaller cloud plots for resample coefficients for those 
+countries where $u$ is involved.}}
 \item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
 \item{Heun: Get AIC calculations working again.}
 \item{Heun: Fix the energy sankey diagram from the seminar}
@@ -1638,6 +1657,30 @@ createSFParamsGraph(factor="X")
 
 <<SFu_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createSFParamsGraph(factor="U")
+@
+
+Coefficients derived from resampling are shown in 
+Figures~\ref{fig:SFk_Resample_Graph}--\ref{fig:SFu_Resample_Graph}. 
+In each case, the exponent on the factor of production is assumed to be $m = 1$.
+
+<<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.">>=
+sfResamplePlot(factor="K")
+@
+
+<<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.">>=
+sfResamplePlot(factor="L")
+@
+
+<<SFq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = q$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="Q")
+@
+
+<<SFx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = x$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="X")
+@
+
+<<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="U")
 @
 
 Figure~\ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions 
