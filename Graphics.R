@@ -19,7 +19,8 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             axis.title = element_blank(),
             panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank(),
-            plot.background = element_blank()
+            plot.background = element_blank(),
+            strip.background =  element_rect(fill = NA, colour = "gray50")
             )
   }  
 
@@ -41,7 +42,7 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
 
     p <- eval(parse(text=command),envir=parent.frame())                   
     p + 
-    expand_limits( x=c(-.1,1.1), y=c(-.05,1.15) ) +
+    expand_limits( x=c(-.2,1.2), y=c(-.05,1.15) ) +
     tri_theme() + 
     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
                      y=tri2y(h,0,1-h), yend = tri2y(h, 1-h, 0)),
