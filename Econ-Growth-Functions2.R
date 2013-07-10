@@ -805,6 +805,7 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
                   alpha=0.1, 
                   cex=1,
                   col.symbol = "black", #Controls symbol parameters
+                  groups = method,
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   index.cond = list(countryOrder), #orders the panels.
                   layout=layoutSpec,
@@ -827,11 +828,7 @@ sfResamplePlot <- function(factor, ...){
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  if (factor == "U"){
-    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
-  } else {
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="sf", factor=factor))
-  }
+  data <- loadAllResampleData(modelType="sf", factor=factor)
   xLabel <- switch(factor,
                    "K" = "$\\alpha$",
                    "L" = "$\\beta$",
@@ -1887,8 +1884,6 @@ cdResampleTrianglePlot <- function(energyType, ...){
   # A wrapper function for triangleCloudPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-#   data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cde", energyType=energyType))
-#   graph <- triangleCloudPlot(resampleCoeffs=data)
   if (is.na(energyType)){
     resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cd"))
   } else if (energyType == "U"){
@@ -2474,12 +2469,9 @@ cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
-  }
-  else if (energyType == "U"){
-    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="ces")
   } else {
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="cese", energyType=energyType)
   }
   xLabel <- "$\\gamma$"
   yLabel <- "$\\lambda$"
@@ -2493,12 +2485,9 @@ cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
-  }
-  else if (energyType == "U"){
-    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="ces")
   } else {
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="cese", energyType=energyType)
   }
   xLabel <- "$\\delta_1$"
   yLabel <- "$\\sigma_1$"
@@ -2515,12 +2504,9 @@ cesSigmaDeltaResamplePlot <- function(energyType, ...){
   # graphed.
   ##
   if (is.na(energyType)){
-    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
-  }
-  else if (energyType == "U"){
-    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="ces")
   } else {
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+    data <- loadAllResampleData(modelType="cese", energyType=energyType)
   }
   xLabel <- "$\\delta$"
   yLabel <- "$\\sigma$"
@@ -2833,11 +2819,7 @@ linexResamplePlot <- function(energyType, ...){
   # energyType does not have a default value here, because
   # energyType=NA doesn't make sense for LINEX.
   ##
-  if (energyType == "U"){
-    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="linex", energyType=energyType))
-  } else {
-    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="linex", energyType=energyType))
-  }
+  data <- loadAllResampleData(modelType="linex", energyType=energyType)
   xLabel <- "$a_0$"
   yLabel <- "$c_t$"
   graph <- twoVarCloudPlot(data=data, xCoef=data$a_0, yCoef=data$c_t, xLabel=xLabel, yLabel=yLabel)
@@ -3390,7 +3372,26 @@ loadAllResampleData <- function(modelType, energyType, factor){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
-  data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleData, modelType=modelType, energyType=energyType, factor=factor))
+  if (!missing(energyType) && !missing(factor)){
+    stop(paste("energyType =", energyType, "and factor =", factor, 
+               "in loadAllResampleData. Didn't expect both to be specified. Can't proceed."))
+  }
+  if (!missing(energyType)){
+    if (energyType == "U"){
+      data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType=modelType, energyType=energyType))
+    } else {
+      data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType, energyType=energyType))
+    }
+  } else if (!missing(factor)){
+    if (factor == "U"){
+      data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType=modelType, factor=factor))
+    } else {
+      data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType, factor=factor))
+    }
+  } else {
+    # Neither energyType nor factor were specified
+    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType))
+  }
   return(data)
 }
 
