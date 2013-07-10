@@ -2826,6 +2826,25 @@ printLINEXParamsTable <- function(energyType){
         table.placement="H")
 }
 
+linexResamplePlot <- function(energyType, ...){
+  ##################
+  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # and sends to the graphing function.
+  # energyType does not have a default value here, because
+  # energyType=NA doesn't make sense for LINEX.
+  ##
+  if (energyType == "U"){
+    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="linex", energyType=energyType))
+  } else {
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="linex", energyType=energyType))
+  }
+  xLabel <- "$a_0$"
+  yLabel <- "$c_t$"
+  graph <- twoVarCloudPlot(data=data, xCoef=data$a_0, yCoef=data$c_t, xLabel=xLabel, yLabel=yLabel)
+  return(graph)
+}
+
+
 ## <<AIC_Table_Functions, eval=TRUE>>=
 createAICTable <- function(){
   ###############################
