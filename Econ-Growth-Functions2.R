@@ -2468,6 +2468,25 @@ printCESParamsTableB <- function(energyType){
         table.placement="H")
 }
 
+cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
+  ##################
+  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  if (is.na(energyType)){
+    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
+  }
+  else if (energyType == "U"){
+    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  } else {
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  }
+  xLabel <- "$\\gamma$"
+  yLabel <- "$\\lambda$"
+  graph <- twoVarCloudPlot(data=data, xCoef=data$gamma, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
+  return(graph)
+}
+
 ## <<LINEX functions, eval=TRUE>>=
 linexModel <- function(countryAbbrev, energyType, data){
   ####################
