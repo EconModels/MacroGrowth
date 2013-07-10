@@ -962,15 +962,19 @@ Figure~\ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals
 for $\lambda$ and $\alpha$. Appendix~\ref{sec:Model_Parameters} 
 contains tables with numerical values of model parameters and confidence intervals.
 
-<<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType=NA)
-@
-
 Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
 
 <<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
 cdResampleTrianglePlot(energyType=NA)
 @
+
+Converting the resample data into 95\% confidence intervls 
+provides data for Figure~\ref{fig:CD_Params_Graph}.
+
+<<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph(energyType=NA)
+@
+
 
 
 To qualitatively assess whether augmenting the Cobb-Douglas model with energy 
@@ -1035,6 +1039,24 @@ Also, scaling on the axis labels and scales is not being picked up. ****
 cdeGridLattice(energyType="Q")
 @
 
+Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$).
+
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="Q")
+@
+
+Figure~\ref{fig:CDx_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $x$).
+
+<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="X")
+@
+
+Figure~\ref{fig:CDu_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $u$).
+
+<<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="U")
+@
+
 Figure~\ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals 
 for the parameters for the Cobb-Douglas model (with $q$).
 
@@ -1059,23 +1081,6 @@ for the parameters for the Cobb-Douglas model (with $u$).
 createCDParamsGraph(energyType="U")
 @
 
-Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$).
-
-<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="Q")
-@
-
-Figure~\ref{fig:CDx_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $x$).
-
-<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="X")
-@
-
-Figure~\ref{fig:CDu_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $u$).
-
-<<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="U")
-@
 
 Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1117,9 +1122,6 @@ The \texttt{R} \citep{R} package \texttt{micEconCES}
 $\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. 
 **** More details here about which algorithms were used, etc. 
 Complete after our work this summer. **** 
-Elasticities of substitution $\sigma_1$ and $\sigma$ 
-(see Section~\ref{sec:CES}) were estimated by the delta method 
-(**** is this correct? Ask Pruim. ****).
 
 % \citet{Henningsen:2011td}, in their detailed analysis of 
 % \citet{Kemfert:1998vd}, found that 
@@ -1131,6 +1133,66 @@ Elasticities of substitution $\sigma_1$ and $\sigma$
 % where the PORT algorithm can be used to restrict the estimates 
 % to the economically meaningful region.
 % \end{quote}
+
+Coefficients for each resampled CES model (without energy)
+are shown in Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph} 
+and \ref{fig:CES_sigma_1_delta_1_Cloud_Graph}.
+
+<<CES_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.", eval=TRUE>>=
+cesLambdaGammaResamplePlot(energyType=NA)
+@
+
+<<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.", eval=TRUE>>=
+cesSigma_1Delta_1ResamplePlot(energyType=NA)
+@
+
+Coefficients for each resampled CES model (with $q$)
+are shown in 
+Figures~\ref{fig:CESq_lambda_gamma_Cloud_Graph}--\ref{fig:CESq_sigma_delta_Cloud_Graph}.
+
+<<CESq_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\lambda$ and $\\gamma$.", eval=TRUE>>=
+cesLambdaGammaResamplePlot(energyType="Q")
+@
+
+<<CESq_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\sigma_1$ and $\\delta_1$.", eval=TRUE>>=
+cesSigma_1Delta_1ResamplePlot(energyType="Q")
+@
+
+<<CESq_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\sigma$ and $\\delta$.", eval=TRUE>>=
+cesSigmaDeltaResamplePlot(energyType="Q")
+@
+
+Coefficients for each resampled CES model (with $x$)
+are shown in 
+Figures~\ref{fig:CESx_lambda_gamma_Cloud_Graph}--\ref{fig:CESx_sigma_delta_Cloud_Graph}.
+
+<<CESx_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\lambda$ and $\\gamma$.", eval=TRUE>>=
+cesLambdaGammaResamplePlot(energyType="X")
+@
+
+<<CESx_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\sigma_1$ and $\\delta_1$.", eval=TRUE>>=
+cesSigma_1Delta_1ResamplePlot(energyType="X")
+@
+
+<<CESx_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\sigma$ and $\\delta$.", eval=TRUE>>=
+cesSigmaDeltaResamplePlot(energyType="X")
+@
+
+Coefficients for each resampled CES model (with $u$)
+are shown in 
+Figures~\ref{fig:CESu_lambda_gamma_Cloud_Graph}--\ref{fig:CESu_sigma_delta_Cloud_Graph}.
+
+<<CESu_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\lambda$ and $\\gamma$.", eval=TRUE>>=
+cesLambdaGammaResamplePlot(energyType="U")
+@
+
+<<CESu_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\sigma_1$ and $\\delta_1$.", eval=TRUE>>=
+cesSigma_1Delta_1ResamplePlot(energyType="U")
+@
+
+<<CESu_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\sigma$ and $\\delta$.", eval=TRUE>>=
+cesSigmaDeltaResamplePlot(energyType="U")
+@
 
 Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals 
 for the parameters for the CES model (without energy).
@@ -1641,26 +1703,6 @@ one of $k$, $l$, $q$, $x$, or $u$, and
 the exponent ($m$) is $\alpha$ for $k$, $\beta$ for $l$, 
 or $\gamma$ for $q$, $x$, and $u$.
 
-<<SFk_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="K")
-@
-
-<<SFl_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="L")
-@
-
-<<SFq_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="Q")
-@
-
-<<SFx_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="X")
-@
-
-<<SFu_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createSFParamsGraph(factor="U")
-@
-
 Coefficients derived from resampling are shown in 
 Figures~\ref{fig:SFk_Resample_Graph}--\ref{fig:SFu_Resample_Graph}. 
 In each case, the exponent on the factor of production is assumed to be $m = 1$.
@@ -1683,6 +1725,30 @@ sfResamplePlot(factor="X")
 
 <<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.">>=
 sfResamplePlot(factor="U")
+@
+
+Converting the resampling data to 95\% confidence intervals
+provides results shown in 
+Figures~\ref{fig:SFk_Params_Graph}--\ref{fig:SFu_Params_Graph}.
+
+<<SFk_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="K")
+@
+
+<<SFl_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $l$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="L")
+@
+
+<<SFq_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $q$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="Q")
+@
+
+<<SFx_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $x$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="X")
+@
+
+<<SFu_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $u$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createSFParamsGraph(factor="U")
 @
 
 Figure~\ref{fig:SF_GDP_Lattice_Graph} compares single-factor model predictions 
