@@ -494,6 +494,31 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
   return(graph)
 }
 
+sfResampleCoeffProps <- function(sfResampleFits, ...){
+  ####### 
+  # This function creates a table of confidence intervals for the sf models
+  # from the data supplied
+  ##
+  # Grab the original curve fit
+  baseFitCoeffs <- sfResampleFits[sfResampleFits[["method"]]=="orig", ]
+  # Grab the resample curve fits
+  resampleFitCoeffs <- sfResampleFits[sfResampleFits[["method"]] != "orig", ]
+  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  mCI <- qdata(p=ciVals, vals=m, data=resampleFitCoeffs)
+  # Now make a data.frame that contains the information.
+  lower <- data.frame(lambda=lambdaCI["2.5%"],
+                      m=mCI["2.5%"])
+  row.names(lower) <- "-95% CI"
+  mid <- data.frame(lambda=baseFitCoeffs["lambda"],
+                    m=baseFitCoeffs["m"])
+  row.names(mid) <- "SF"
+  upper <- data.frame(lambda=lambdaCI["97.5%"],
+                      m=mCI["97.5%"])
+  row.names(upper) <- "+95% CI"
+  dataCD <- rbind(upper, mid, lower)
+  return(dataCD)
+}
+
 singleFactorData <- function(countryAbbrev, factor){
   #################################################
   # Calculates parameter estimates and confidence intervals
@@ -518,29 +543,9 @@ singleFactorData <- function(countryAbbrev, factor){
     rownames(df) <- c("+95% CI", "SF", "-95% CI")
     return(df)
   }
-  # We have a combination of country and factor for which we have data.
-  modelSF <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
-  summarySF <- summary(modelSF) # Gives the nls summary table.
-  ciSF <- confint(modelSF, level = ciLevel)  # Calculates confidence intervals for the SF model.
-  dofSF <- summarySF$df[2] # Gives the degrees of freedom for the model.
-  tvalSF <- qt(ciHalfLevel, df = dofSF)
-  #Single factor model
-  lambda <- as.numeric(coef(modelSF)["lambda"])
-  m <- as.numeric(coef(modelSF)["m"])
-  # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estSF <- data.frame(lambda = lambda, m = m)
-  row.names(estSF) <- "SF"
-  # The [1] subscripts pick off the lower confidence interval
-  lowerSF <- data.frame(lambda=ciSF["lambda","2.5%"], 
-                        m=ciSF["m", "2.5%"])
-  row.names(lowerSF) <- "-95% CI"
-  # The [2] subscripts pick off the upper confidence interval
-  upperSF <- data.frame(lambda=ciSF["lambda","97.5%"], 
-                        m=ciSF["m", "97.5%"])
-  row.names(upperSF) <- "+95% CI"
-  # Now create the data for a table and return it
-  dataSF <- rbind(upperSF, estSF, lowerSF)
-  return(dataSF)
+  resampledData <- loadResampleData(modelType="sf", countryAbbrev=countryAbbrev, factor=factor)
+  statisticalProperties <- sfResampleCoeffProps(resampledData)
+  return(statisticalProperties)
 }
 
 singleFactorCountryRow <- function(countryAbbrev, factor){
