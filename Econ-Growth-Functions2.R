@@ -2494,7 +2494,7 @@ cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
   return(graph)
 }
 
-cesSigmaDeltaResamplePlot <- function(energyType, ...){
+cesSigmaDeltaResamplePlot <- function(energyType=NA, ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2503,13 +2503,19 @@ cesSigmaDeltaResamplePlot <- function(energyType, ...){
   # graphed.
   ##
   if (is.na(energyType)){
+    # When energyType=NA, we have rho=-1, and sigma-->infinity. So, 
+    # we'll plot this a delta vs. rho. This is not particularly intersting,
+    # because when energyType=NA, delta = 1.0.  So, the graph is boring.
     data <- loadAllResampleData(modelType="ces")
+    xLabel <- "$\\delta$"
+    yLabel <- "$\\rho$"
+    graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$rho, xLabel=xLabel, yLabel=yLabel)
   } else {
     data <- loadAllResampleData(modelType="cese", energyType=energyType)
+    xLabel <- "$\\delta$"
+    yLabel <- "$\\sigma$"
+    graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
   }
-  xLabel <- "$\\delta$"
-  yLabel <- "$\\sigma$"
-  graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
   return(graph)
 }
 
