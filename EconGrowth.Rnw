@@ -204,36 +204,17 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Add option for $m = 1$ in single-factor models.}
+\item{Heun: Add base fit red dots to all cloud plots.}
+      \begin{itemize}
+      \item{SF}
+      \item{CES}
+      \item{CESe}
+      \item{LINEX}
+      \end{itemize}
 \item{Heun: Figure out why CESe for ZA with $x$ fails during resampling.}
 \item{Heun: Review all assumptions for CES with energy models. 
 There are several assumptions for rho and rho1 for various countries. 
 When we are resampling, we probably don't want to specify those values.}
-\item{Heun: Re-implement confidence interval calculations to use
-resampling methods.}
-      \begin{itemize}
-      \item{\st{SF}}
-      \item{\st{CD}}
-      \item{\st{CDe}}
-      \item{\st{CES}}
-      \item{\st{CESe}}
-      \item{LINEX}
-      \end{itemize}
-\item{Heun: Include cloud graphs for model parameters 
-estimated by resampling methods.}
-      \begin{itemize}
-      \item{\st{SF}}
-      \item{\st{CD}}
-      \item{\st{CDe}}
-      \item{\st{CES}}
-      \item{\st{CESe}}
-      \item{LINEX}
-      \end{itemize}
-\item{\st{Heun: Decide if the single factor models should include constraints
-on $\alpha$, $\beta$, and $\gamma$. At present, the single-factor model allows
-values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}}
-\item{\st{Heun: Make smaller cloud plots for resample coefficients for those 
-countries where $u$ is involved.}}
 \item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
 \item{Heun: Get AIC calculations working again.}
 \item{Heun: Fix the energy sankey diagram from the seminar}
@@ -253,6 +234,32 @@ countries where $u$ is involved.}}
       \end{itemize}
 \item{Heun: Fix warnings of the form \texttt{Warning:  step factor 0.000488281 reduced below ’minFactor’ of 0.000976562} in the code that generates the Cobb-Douglas with energy fits.}
 \item{de Wit: review, critique, and contextualize.}
+\item{\st{Heun: Add option for $m = 1$ in single-factor models.}}
+\item{\st{Heun: Re-implement confidence interval calculations to use
+resampling methods.}}
+      \begin{itemize}
+      \item{\st{SF}}
+      \item{\st{CD}}
+      \item{\st{CDe}}
+      \item{\st{CES}}
+      \item{\st{CESe}}
+      \item{\st{LINEX}}
+      \end{itemize}
+\item{\st{Heun: Include cloud graphs for model parameters 
+estimated by resampling methods.}}
+      \begin{itemize}
+      \item{\st{SF}}
+      \item{\st{CD}}
+      \item{\st{CDe}}
+      \item{\st{CES}}
+      \item{\st{CESe}}
+      \item{\st{LINEX}}
+      \end{itemize}
+\item{\st{Heun: Decide if the single factor models should include constraints
+on $\alpha$, $\beta$, and $\gamma$. At present, the single-factor model allows
+values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}}
+\item{\st{Heun: Make smaller cloud plots for resample coefficients for those 
+countries where $u$ is involved.}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1361,15 +1368,15 @@ in \texttt{R} \citep{R}.
 Figures~\ref{fig:LINEXq_Resample_Graph}--\ref{fig:LINEXu_Resample_Graph}
 show the coefficients estimated from resampled data.
 
-<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results.", eval=TRUE>>=
+<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results." >>=
 linexResamplePlot(energyType="Q")
 @
 
-<<LINEXx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $x$) resampling results.", eval=TRUE>>=
+<<LINEXx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $x$) resampling results.">>=
 linexResamplePlot(energyType="X")
 @
 
-<<LINEXu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="LINEX model (with $u$) resampling results.", eval=TRUE>>=
+<<LINEXu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="LINEX model (with $u$) resampling results.">>=
 linexResamplePlot(energyType="U")
 @
 
