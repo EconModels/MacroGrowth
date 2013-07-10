@@ -2487,6 +2487,47 @@ cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
   return(graph)
 }
 
+cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
+  ##################
+  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  if (is.na(energyType)){
+    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
+  }
+  else if (energyType == "U"){
+    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  } else {
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  }
+  xLabel <- "$\\delta_1$"
+  yLabel <- "$\\sigma_1$"
+  graph <- twoVarCloudPlot(data=data, xCoef=data$delta_1, yCoef=data$sigma_1, xLabel=xLabel, yLabel=yLabel)
+  return(graph)
+}
+
+cesSigmaDeltaResamplePlot <- function(energyType, ...){
+  ##################
+  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # and sends to the graphing function.
+  # energyType does not have a default value here, because
+  # energyType=NA makes sigma --> Inf. Inf values can't be
+  # graphed.
+  ##
+  if (is.na(energyType)){
+    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleDataRefitsOnly, modelType="ces"))
+  }
+  else if (energyType == "U"){
+    data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  } else {
+    data <- do.call("rbind", lapply(countryAbbrevsAlph, loadResampleDataRefitsOnly, modelType="cese", energyType=energyType))
+  }
+  xLabel <- "$\\delta$"
+  yLabel <- "$\\sigma$"
+  graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
+  return(graph)
+}
+
 ## <<LINEX functions, eval=TRUE>>=
 linexModel <- function(countryAbbrev, energyType, data){
   ####################
