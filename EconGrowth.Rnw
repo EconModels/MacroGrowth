@@ -212,11 +212,11 @@ When we are resampling, we probably don't want to specify those values.}
 \item{Heun: Re-implement confidence interval calculations to use
 resampling methods.}
       \begin{itemize}
-      \item{SF}
+      \item{\st{SF}}
       \item{\st{CD}}
       \item{\st{CDe}}
-      \item{CES}
-      \item{CESe}
+      \item{\st{CES}}
+      \item{\st{CESe}}
       \item{LINEX}
       \end{itemize}
 \item{Heun: Include cloud graphs for model parameters 
