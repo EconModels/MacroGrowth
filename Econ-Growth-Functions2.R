@@ -2668,6 +2668,31 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
   return(graph)
 }
 
+linexResampleCoeffProps <- function(linexResampleFits, ...){
+  ####### 
+  # This function creates a table of confidence intervals for the LINEX models
+  # from the data supplied
+  ##
+  # Grab the original curve fit
+  baseFitCoeffs <- linexResampleFits[linexResampleFits[["method"]]=="orig", ]
+  # Grab the resample curve fits
+  resampleFitCoeffs <- linexResampleFits[linexResampleFits[["method"]] != "orig", ]
+  a_0CI <- qdata(p=ciVals, vals=a_0, data=resampleFitCoeffs)
+  c_tCI <- qdata(p=ciVals, vals=c_t, data=resampleFitCoeffs)
+  # Now make a data.frame that contains the information.
+  lower <- data.frame(a_0=a_0CI["2.5%"],
+                      c_t=c_tCI["2.5%"])
+  row.names(lower) <- "-95% CI"
+  mid <- data.frame(a_0=baseFitCoeffs["a_0"],
+                    c_t=baseFitCoeffs["c_t"])
+  row.names(mid) <- "LINEX"
+  upper <- data.frame(a_0=a_0CI["97.5%"],
+                      c_t=c_tCI["97.5%"])
+  row.names(upper) <- "+95% CI"
+  dataCD <- rbind(upper, mid, lower)
+  return(dataCD)
+}
+
 linexData <- function(countryAbbrev, energyType){
   #################################################
   # Calculates parameter estimates and confidence intervals
@@ -2692,27 +2717,9 @@ linexData <- function(countryAbbrev, energyType){
     rownames(df) <- c("+95% CI", "LINEX", "-95% CI")
     return(df)
   }
-  # We have a combination of country and energy type for which we have data.
-  modelLINEX <- linexModel(countryAbbrev, energyType)
-  summaryLINEX <- summary(modelLINEX) # Gives the nls summary table.
-  dofLINEX <- summaryLINEX$df[2] # Gives the degrees of freedom for the model.
-  tvalLINEX <- qt(ciHalfLevel, df = dofLINEX)
-  ciLINEX <- confint(modelLINEX, level = ciLevel)  # Calculates confidence intervals for the LINEX model.
-  # Report results with SE
-  a_0 <- as.numeric(coef(modelLINEX)["a_0"])
-  c_t <- as.numeric(coef(modelLINEX)["c_t"])
-  # Combine all estimates and their confidence intervals into data frames with intelligent row names
-  estLINEX <- data.frame(a_0 = a_0, c_t = c_t)
-  row.names(estLINEX) <- "LINEX"
-  # The [1] subscripts pick off the lower confidence interval
-  lowerLINEX <- data.frame(a_0=ciLINEX["a_0","2.5%"], c_t=ciLINEX["c_t", "2.5%"])
-  row.names(lowerLINEX) <- "-95% CI"
-  # The [2] subscripts pick off the upper confidence interval
-  upperLINEX <- data.frame(a_0=ciLINEX["a_0","97.5%"], c_t=ciLINEX["c_t", "97.5%"])
-  row.names(upperLINEX) <- "+95% CI"
-  # Now create the data for a table and return it
-  dataLINEX <- rbind(upperLINEX, estLINEX, lowerLINEX)
-  return(dataLINEX)
+  resampledData <- loadResampleData(modelType="linex", countryAbbrev=countryAbbrev, energyType=energyType)
+  statisticalProperties <- linexResampleCoeffProps(resampledData)
+  return(statisticalProperties)
 }
 
 linexCountryRow <- function(countryAbbrev, energyType){
