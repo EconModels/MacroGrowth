@@ -795,7 +795,7 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
     countryOrder <- countryOrderForGraphs
     layoutSpec <- ninePanelLayoutSpec
   } else {
-    stop(paste("Found", nFactors, "factors in twoVarCloudPlot.",
+    stop(paste("Found", nFactors, "countries in twoVarCloudPlot.",
                 "Specifically:", unique(data$countryAbbrev), 
                 "Expected 3 or 9 countries. Don't know how to continue."))
   }
@@ -805,7 +805,6 @@ twoVarCloudPlot <- function(data, xCoef, yCoef, xLabel, yLabel, textScaling = 1.
                   alpha=0.1, 
                   cex=1,
                   col.symbol = "black", #Controls symbol parameters
-                  groups = method,
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   index.cond = list(countryOrder), #orders the panels.
                   layout=layoutSpec,
