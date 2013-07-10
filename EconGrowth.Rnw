@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1142,8 +1142,8 @@ Complete after our work this summer. ****
 % \end{quote}
 
 Coefficients for each resampled CES model (without energy)
-are shown in Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph} 
-and \ref{fig:CES_sigma_1_delta_1_Cloud_Graph}.
+are shown in 
+Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph}--\ref{fig:CES_sigma_delta_Cloud_Graph}.
 
 <<CES_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
 cesLambdaGammaResamplePlot(energyType=NA)
@@ -1151,6 +1151,16 @@ cesLambdaGammaResamplePlot(energyType=NA)
 
 <<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
 cesSigma_1Delta_1ResamplePlot(energyType=NA)
+@
+
+The next graph is not particularly interesting, 
+because $\delta \rightarrow 1.0$, 
+$\rho \rightarrow -1$, and 
+$\sigma \rightarrow \infty$
+for the CES without energy model.
+
+<<CES_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\rho$ and $\\delta$.">>=
+cesSigmaDeltaResamplePlot(energyType=NA)
 @
 
 Coefficients for each resampled CES model (with $q$)
