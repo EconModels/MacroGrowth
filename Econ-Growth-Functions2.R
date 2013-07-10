@@ -2844,7 +2844,6 @@ linexResamplePlot <- function(energyType, ...){
   return(graph)
 }
 
-
 ## <<AIC_Table_Functions, eval=TRUE>>=
 createAICTable <- function(){
   ###############################

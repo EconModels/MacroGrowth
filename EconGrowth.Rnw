@@ -1357,6 +1357,22 @@ it takes energy to make both captial stock and labor available to generate econo
 The LINEX model is given in Equation~\ref{eq:LINEX}. 
 Parameters $a_0$ and $c_t$ were estimated using the \texttt{nls} function 
 in \texttt{R} \citep{R}. 
+
+Figures~\ref{fig:LINEXq_Resample_Graph}--\ref{fig:LINEXu_Resample_Graph}
+show the coefficients estimated from resampled data.
+
+<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results.", eval=TRUE>>=
+linexResamplePlot(energyType="Q")
+@
+
+<<LINEXx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $x$) resampling results.", eval=TRUE>>=
+linexResamplePlot(energyType="X")
+@
+
+<<LINEXu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="LINEX model (with $u$) resampling results.", eval=TRUE>>=
+linexResamplePlot(energyType="U")
+@
+
 Figure~\ref{fig:LINEXq_Params_Graph} shows values and 95\% confidence intervals 
 for the parameters for the LINEX model (with $q$).
 
