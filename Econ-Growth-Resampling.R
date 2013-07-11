@@ -202,20 +202,55 @@ doResample <- function(data, origModel, method=resampleMethods){
   return(data)
 }
 
-cdeFracUnconvergedResampleFitsAll <- function(){
+fracUnconvergedResampleFitsAll <- function(){
   ###########################
   # Calculates the fraction of unconverged resamples stored on disk 
   # for all countries and all energy types
-  ## 
-  energyType <- "Q"
-  qUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
-  energyType <- "X"
-  xUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
-  energyType <- "U"
-  uUnconverged <- lapply(countryAbbrevsU, cdeFracUnconvergedResampleFits, energyType=energyType)
-  uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
-  uUnconverged <- c(uUnconverged, uNA)
-  return(cbind(qUnconverged, xUnconverged, uUnconverged))
+  ##
+  out <- data.frame()
+  modelType <- "sf"
+  for (factor in factors){
+    if (factor == "U"){
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+      uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+      unconverged <- c(unconverged, uNA)
+    } else {
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+    }
+    unconverged <- c(modelType=modelType, energyType=NA, factor=factor, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))
+  }
+  for (modelType in c("cd", "ces")){
+    unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+    unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))    
+  }
+  for (modelType in c("cde", "cese", "linex")){
+    for (energyType in energyTypes){
+      if (energyType == "U"){
+        unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+        uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+        unconverged <- c(unconverged, uNA)
+      } else {
+        unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      }
+      unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
+      out <- rbind(out, as.data.frame(unconverged))
+    }
+  }
+  
+  
+  
+  return(out)
+#   energyType <- "Q"
+#   qUnconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType="cde", energyType=energyType)
+#   energyType <- "X"
+#   xUnconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType="cde", energyType=energyType)
+#   energyType <- "U"
+#   uUnconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType="cde", energyType=energyType)
+#   uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+#   uUnconverged <- c(uUnconverged, uNA)
+#   return(cbind(qUnconverged, xUnconverged, uUnconverged))
 }
 
 fracUnconvergedResampleFits <- function(modelType=modelTypes, 
