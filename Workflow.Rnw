@@ -80,9 +80,23 @@ triPlot(subset(resData, method!="orig"),
      geom_point(data=subset(resData, method=="orig"), 
                 color="red", alpha=1, size=3) +
      facet_wrap( ~ countryAbbrev ) +
-     scale_colour_gradient(expression(lambda), high="navy", low="skyblue")
+     scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 @
 Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
+
+\section*{Scatterplots with two variables}
+
+<<>>=
+ggplot(data=subset(resData, method!="orig"), 
+        aes(x=alpha, y=beta, color=lambda)) +
+  geom_point() +
+  xlab(expression(alpha)) +
+  ylab(expression(beta)) +
+  geom_point(data=subset(resData, method=="orig"), 
+                color="red", alpha=1, size=3) +
+  facet_wrap( ~ countryAbbrev ) +
+  scale_colour_gradient(expression(lambda), high="navy", low="skyblue")
+@
 \end{enumerate}
 
 \end{document}
