@@ -245,7 +245,7 @@ resampling methods.}}
       \item{\st{CESe}}
       \item{\st{LINEX}}
       \end{itemize}
-\item{\st{Heun: Include cloud graphs for model parameters 
+\item{\st{Heun: Include scatter graphs for model parameters 
 estimated by resampling methods.}}
       \begin{itemize}
       \item{\st{SF}}
@@ -258,8 +258,10 @@ estimated by resampling methods.}}
 \item{\st{Heun: Decide if the single factor models should include constraints
 on $\alpha$, $\beta$, and $\gamma$. At present, the single-factor model allows
 values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in (0,1)$.}}
-\item{\st{Heun: Make smaller cloud plots for resample coefficients for those 
+\item{\st{Heun: Make smaller scatter plots for resample coefficients for those 
 countries where $u$ is involved.}}
+\item{\st{Heun: Add a table that shows the fraction of unconverged resample fits
+for each model, energy type, and factor.}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
