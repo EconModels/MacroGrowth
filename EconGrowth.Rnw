@@ -1607,7 +1607,7 @@ Covariances are calculated for the following years:
         $y$, $k$, $l$, $q$, and $x$ for developing\\*economies.}
 \end{itemize}
 
-<<Print_Covariance_Tables, results='asis', eval=TRUE>>=
+<<Print_Covariance_Tables, results='asis'>>=
 #I wish I could say the following, but I get bogus "$US" strings appearing in the LaTeX output.
 #lapply(countryAbbrevs, printCovarTable)
 printCovarTable(countryAbbrev="US"); printCovarTable(countryAbbrev="UK")
@@ -1706,6 +1706,22 @@ print(createAICTable(),
       sanitize.rownames.function = identity,
       size="\\tiny",
       table.placement="H")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Convergence of Resample Models}
+\label{sec:Convergence_Resample_Models}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following table shows the fraction of resample models 
+that did not achieve convergence when estimating model parameters.
+
+<<Unconverged_Frac_Table, results='asis', eval=TRUE>>=
+printFracUnconvergedXtable()
 @
 
 
