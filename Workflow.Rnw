@@ -84,7 +84,7 @@ triPlot(subset(resData, method!="orig"),
 @
 Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
 
-\section*{Scatterplots with two variables}
+\section{Scatterplots with two variables}
 
 <<>>=
 ggplot(data=subset(resData, method!="orig"), 
