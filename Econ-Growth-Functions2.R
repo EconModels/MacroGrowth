@@ -3546,7 +3546,7 @@ printFracUnconvergedXtable <- function(){
                        caption="Fraction of unconverged resample models", 
                        label="tab:frac_unconverged_models",
                        digits = 3,
-                       align = "rc|cc|rrrrrrrrr") #Sets alignment of the numbers in the columns)
+                       align = "rl|cc|ccccccccc") #Sets alignment of the numbers in the columns)
   print(dataXtable, 
         caption.placement="top", 
         size="\\tiny",
