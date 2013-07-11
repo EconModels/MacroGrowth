@@ -3457,3 +3457,99 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
                    )
   return(folder)
 }
+
+fracUnconvergedResampleFitsAll <- function(){
+  ###########################
+  # Calculates the fraction of unconverged resamples stored on disk 
+  # for all countries and all energy types
+  ##
+  out <- data.frame()
+  modelType <- "sf"
+  for (factor in factors){
+    if (factor == "U"){
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+      uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+      unconverged <- c(unconverged, uNA)
+    } else {
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+    }
+    unconverged <- c(modelType=modelType, energyType=NA, factor=factor, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))
+  }
+  
+  modelType <- "cd"
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  out <- rbind(out, as.data.frame(unconverged))    
+  
+  modelType <- "cde"
+  for (energyType in energyTypes){
+    if (energyType == "U"){
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+      unconverged <- c(unconverged, uNA)
+    } else {
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+    }
+    unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))
+  }
+  
+  modelType <- "ces"
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  out <- rbind(out, as.data.frame(unconverged))    
+  
+  for (modelType in c("cese", "linex")){
+    for (energyType in energyTypes){
+      if (energyType == "U"){
+        unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+        uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+        unconverged <- c(unconverged, uNA)
+      } else {
+        unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      }
+      unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
+      out <- rbind(out, as.data.frame(unconverged))
+    }
+  }
+  colnames(out) <- c("Model", "Energy", "Factor", countryAbbrevs)
+  return(out)
+}
+
+fracUnconvergedResampleFits <- function(modelType=modelTypes, 
+                                        countryAbbrev=countryAbbrevs, 
+                                        energyType=energyTypes, 
+                                        factor=factors, ...){
+  ###################
+  # Gives the fraction of resample fits that did not converge
+  ##
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  nObs <- nrow(data)
+  tallyResults <- tally(~isConv, data=data, format="proportion")
+  # Grabs the fraction that is converged. We can't simply gather the fraction that
+  # has not converged (tallyResults[["0"]]), because there are some times when
+  # all resampled fits converge, and there is no "0" item in the 
+  # result from tally.
+  fracConverged <- tallyResults[["1"]]
+  fracUnconverged <- 1.0 - fracConverged
+  return(fracUnconverged)
+}
+
+printFracUnconvergedXtable <- function(){
+  data <- fracUnconvergedResampleFitsAll()
+  dataXtable <- xtable(x=data, 
+                       caption="Fraction of unconverged resample models", 
+                       label="tab:frac_unconverged_models",
+                       digits = 3,
+                       align = "rc|cc|rrrrrrrrr") #Sets alignment of the numbers in the columns)
+  print(dataXtable, 
+        caption.placement="top", 
+        size="\\tiny",
+        table.placement="H",
+        include.rownames=FALSE)
+}
