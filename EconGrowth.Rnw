@@ -207,6 +207,8 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 \item{Heun: Add base fit red dots to all cloud plots.}
       \begin{itemize}
       \item{SF}
+      \item{\st{CD}}
+      \item{\st{CDe}}
       \item{CES}
       \item{CESe}
       \item{LINEX}
@@ -216,7 +218,6 @@ economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
 There are several assumptions for rho and rho1 for various countries. 
 When we are resampling, we probably don't want to specify those values.}
 \item{Heun: Investigate possible conflicting use of exergy by Warr and Ayres.}
-\item{Heun: Get AIC calculations working again.}
 \item{Heun: Fix the energy sankey diagram from the seminar}
 \item{Heun: Include adjusted sankey diagram in the seminar}
 \item{Heun: Add CES production function fits}
@@ -262,6 +263,7 @@ values outside the ranges $\alpha \in (0,1)$, $\beta \in (0,1)$, and $\gamma \in
 countries where $u$ is involved.}}
 \item{\st{Heun: Add a table that shows the fraction of unconverged resample fits
 for each model, energy type, and factor.}}
+\item{\st{Heun: Get AIC calculations working again.}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -983,8 +985,6 @@ provides data for Figure~\ref{fig:CD_Params_Graph}.
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
 @
-
-
 
 To qualitatively assess whether augmenting the Cobb-Douglas model with energy 
 will be beneficial, we created partial residual plots as shown in 
