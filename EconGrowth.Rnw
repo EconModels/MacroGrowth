@@ -192,7 +192,7 @@ source("Graphics.R")
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-economic growth \sep energy \sep cobb-douglas \sep CES \sep LINEX
+economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
 \end{keyword}
@@ -975,11 +975,11 @@ contains tables with numerical values of model parameters and confidence interva
 
 Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
 
-<<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
+<<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
 cdResampleTrianglePlot(energyType=NA)
 @
 
-Converting the resample data into 95\% confidence intervls 
+Converting the resample data into 95\% confidence intervals 
 provides data for Figure~\ref{fig:CD_Params_Graph}.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
@@ -1050,19 +1050,19 @@ cdeGridLattice(energyType="Q")
 
 Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$).
 
-<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
 cdResampleTrianglePlot(energyType="Q")
 @
 
 Figure~\ref{fig:CDx_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $x$).
 
-<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
+<<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
 cdResampleTrianglePlot(energyType="X")
 @
 
 Figure~\ref{fig:CDu_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $u$).
 
-<<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
+<<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
 cdResampleTrianglePlot(energyType="U")
 @
 

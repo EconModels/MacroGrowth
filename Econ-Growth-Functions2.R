@@ -44,8 +44,10 @@ threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panel
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 threePanelGraphWidth <- maxWidth
 threePanelGraphHeight <- 3.17 #Inches
+threePanelTernaryGraphHeight <- 2.0 #Inches
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
+ninePanelTernaryGraphHeight <- 5.1 #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth <- 2 #Inches
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
