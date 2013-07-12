@@ -167,7 +167,6 @@ resampleFits <- function(modelType=modelTypes,
   baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
   names(baseFitCoeffsDF) <- names(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
-print(head(resampleFitCoeffs, n=5))
   baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
   out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
   # Make a factor column for the country

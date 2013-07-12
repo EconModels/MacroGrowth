@@ -2537,25 +2537,44 @@ linexModel <- function(countryAbbrev, energyType, data){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   if (missing(data)){
-    data=loadData(countryAbbrev=countryAbbrev)    
+    data <- loadData(countryAbbrev=countryAbbrev)    
   }
   data <- replaceColName(data, energyType, "iEToFit")
-  a_0Guess <- 0.5
-  c_tGuess <- 1.0
   if (countryAbbrev == "SA"){
     # Need adjusted guess values, becasue k and l are above GDP for SA.
-    a_0Guess <- -1
-    c_tGuess <- -6
+    start <- list(a_0=-1.0, a_1=6.0)
+  } else if (countryAbbrev == "ZM"){
+    # Set up the initial guess for ZM to be the coefficients for the 
+    # base model
+    # start <- list(a_0=0.35, c_t=2.85)
+    start <- list(a_0=0.35, a_1=1.0)
+  } else {
+    start <- list(a_0=0.5, a_1=0.5)
   }
   # Runs a non-linear least squares fit to the data with constraints
-  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
+  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_1*(iLabor/iEToFit - 1.0)), 
                     data=data,
-                    start=list(a_0=a_0Guess, c_t=c_tGuess),
+                    start=start,
                     control=nlsControl
   )
+  if (!modelLINEX$convInfo$isConv){
+    origData <- loadData(countryAbbrev=countryAbbrev)
+    origModel <- linexModel(countryAbbrev=countryAbbrev, data=origData, energyType=energyType)
+    print(xyplot(fitted(origModel) + origData$iGDP + fitted(modelLINEX) + data$iGDP ~ origData$Year, 
+                 type="b", 
+                 pch=c(NA, 1, NA, 8),
+                 lty=c(1, 0, 3, 0),
+                 cex=2
+                 )
+          )
+  }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- c(a_0 = as.vector(coef(modelLINEX)["a_0"]),
-                     c_t = as.vector(coef(modelLINEX)["c_t"]),
+  a_0 <- coef(modelLINEX)["a_0"]
+  a_1 <- coef(modelLINEX)["a_1"]
+  c_t <- a_1 / a_0
+  naturalCoeffs <- c(a_0 = as.vector(a_0),
+                     a_1 = as.vector(a_1),
+                     c_t = as.vector(a_1 / a_0),
                      sse = sum(resid(modelLINEX)^2),
                      isConv = modelLINEX$convInfo$isConv
   )
