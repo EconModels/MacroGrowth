@@ -355,7 +355,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 ## <<single-factor functions, eval=TRUE>>=
-singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, factor, respectRangeConstraints=FALSE){
+singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -2840,46 +2840,46 @@ createAICTable <- function(){
   # Single-factor models
   ######################
   # Single-factor with K
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K")
+  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE)
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L")
+  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE)
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q")
+  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE)
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X")
+  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE)
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U")), 
-                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U")), 
-                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U")),
+  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE)), 
+                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE)), 
+                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA)
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA, respectRangeConstraints=TRUE)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
+  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE)
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
+  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE)
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
-                  UK=AIC(cobbDouglasModel("UK", "U")), 
-                  JP=AIC(cobbDouglasModel("JP", "U")),
+  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE)), 
+                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE)), 
+                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################
@@ -2922,9 +2922,9 @@ createAICTable <- function(){
   aicLINEXx <- data.frame(lapply(linexXModels, AIC))
   rownames(aicLINEXx) <- "LINEX$x$"  
   # LINEX with U
-  aicLINEXu <- cbind(US=AIC(linexModel("US", "U")), 
-                     UK=AIC(linexModel("UK", "U")), 
-                     JP=AIC(linexModel("JP", "U")),
+  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U")), 
+                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U")), 
+                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U")),
                      CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicLINEXu) <- "LINEX$u$"
   
@@ -3522,7 +3522,8 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
                                         energyType=energyTypes, 
                                         factor=factors, ...){
   ###################
-  # Gives the fraction of resample fits that did not converge
+  # Gives the fraction of resample fits that did not converge for the 
+  # given parameters.
   ##
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
@@ -3541,6 +3542,10 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
 }
 
 printFracUnconvergedXtable <- function(){
+  #####################################
+  # This function prints a table containing the fraction of unconverged
+  # resample models.
+  ##
   data <- fracUnconvergedResampleFitsAll()
   dataXtable <- xtable(x=data, 
                        caption="Fraction of unconverged resample models", 
