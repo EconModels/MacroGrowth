@@ -204,7 +204,7 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Add base fit red dots to all cloud plots.}
+\item{Pruim: Add base fit red dots to all cloud plots.}
       \begin{itemize}
       \item{SF}
       \item{\st{CD}}
@@ -476,7 +476,7 @@ Energy ($e$), as the only factor of production, is enhanced by $A$ if either
 
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
-      of energy ($e$) and labor ($l$), i.e. if $\rho_k >$ 1, or}
+      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
 \item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
 
@@ -486,10 +486,12 @@ and energy ($e$) will experience an increase in output ($y$) in excess
 of its increase of energy consumption ($e$), because $A$ will be 
 greater than 1. Similarly, an economy benefits by increasing labor ($l$) 
 without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an 
-efficiency of using labor and energy to make capital available to the 
-economy, and $\rho_l$ is an efficiency of using energy to make labor 
-available to the economy. $a_0$ represents the overall importance 
-of these efficiencies, and $c_t$ represents the relative importance 
+efficiency of using additional labor and energy to make 
+additional capital stock available to the economy, 
+and $\rho_l$ is an efficiency of using additional energy to make 
+additional labor available to the economy. 
+$a_0$ represents the overall importance of these efficiencies, 
+and $c_t$ represents the relative importance 
 of the labor efficiency term compared to the capital stock efficiency term. 
 We treat $a_0$ and $c_t$ as fitting parameters; 
 both are assumed constant with respect to time. 
