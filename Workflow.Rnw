@@ -97,7 +97,9 @@ standardScatterPlot( loadAllResampleData(model="sf", factor="K"),
 @
 
 <<>>=
-standardScatterPlot( loadAllResampleData(model="linex", energyType = "Q"), 
+standardScatterPlot( loadAllResampleData(model="linex", energyType = "Q", 
+                                         countryAbbrevsOrder=c("US", "UK", "JP", "CN", 
+                                                               "ZA", "TZ", "SA", "IR", "ZM")), 
                      aes(a_0, c_t) ) +
   labs(title="Model = linex; energy=Q", x=expression(a[0]), y=expression(c[t]))
 @
