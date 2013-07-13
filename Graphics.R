@@ -24,9 +24,19 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             )
   }  
 
+
+xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
+  base_theme(base_size = base_size, base_family = base_family) %+replace% 
+    theme(panel.border = element_blank(), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          plot.background = element_blank(),
+          strip.background =  element_rect(fill = NA, colour = "gray50")
+    )
+}  
 triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
-                    parse=TRUE, n.grid=4, aes_string="", ...) {
-  h <- seq(0, 1, by=1/n.grid)
+                    parse=TRUE, grid_lines=4, aes_string="", ...) {
+  h <- seq(0, 1, by=1/grid_lines)
   points <- data.frame( h=h )
   if ( nchar(aes_string) > 0 ) aes_string <- paste(",", aes_string)
   
@@ -64,40 +74,32 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     geom_point(...)
 }
 
-# an example use
-
-# first we create some fake data with four "countries"
-ddd <- data.frame( x=runif(80) ) 
-ddd <- transform(ddd, y = runif(80, 0, 1-x))
-ddd <- transform(ddd, z = runif(80, 0, 1-x-y))
-ddd <- transform(ddd, country=resample(toupper(letters[1:4]), 80))
-
-# Now we plot the data by providing a data frame, the x, y, and z coordinates
-# computed in that data frame, and any optional arguments (like size and alpha).
-# The order of x, y, and z is top, lower left, lower right.
-# The guidelines are at fixed values of one of the three.  n.grid determines the 
-# number of gridlines to use.
-#
-# This is probably still a bit brittle and may not look good at extreme sizes, but
-# this will get us started.
-
-if(FALSE) {  # examples moved to workflow document on 2013-07-08
-triPlot( ddd, x,y,z, labels=c('x','y','z'), size=3, alpha=.5 ) + 
-  facet_wrap( ~ country )
-
-exampleData <- rbind(
-  resampleFits( "cde", "TZ", "X", method="wild", n=100),
-  resampleFits( "cde", "US", "X", method="wild", n=100),
-  resampleFits( "cde", "UK", "X", method="wild", n=100),
-  resampleFits( "cde", "CN", "X", method="wild", n=100)
-)
-
-
-triPlot( data=exampleData, gamma, alpha, beta, 
-         labels=c("gamma","alpha","beta"), 
-         n.grid=5, 
-         aes_string="color=lambda", 
-         size=3, alpha=.5 ) + 
-     geom_point( data=subset(exampleData, method=="orig"), color="red", alpha=1, size=3) +
-     facet_wrap( ~ countryAbbrev )
+standardTriPlot <- function(data, 
+                            grid_lines=5, 
+                            aes_string="color=lambda", 
+                            size=1.7, 
+                            alpha=.5){
+  triPlot(subset(data, method!="orig"), 
+          gamma, alpha, beta,
+          labels=c("gamma", "alpha", "beta"),
+          grid_lines=grid_lines,  aes_string="color=lambda", 
+          size=size, alpha=alpha ) + 
+    geom_point(data=subset(data, method=="orig"), 
+               color="red", alpha=1, size=3) +
+    facet_wrap( ~ countryAbbrev ) +
+    scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
+
+
+standardScatterPlot <- function(data, mapping, size=1, alpha=.5) {
+    p <- ggplot( data=subset(data, method != "orig"), mapping ) 
+    p <- p + geom_point(size=1, alpha=alpha) 
+    p <- p + geom_point(data=subset(data, method=="orig"),  color="red", alpha=1, size=3) 
+    p <- p + facet_wrap( ~ countryAbbrev ) 
+    if ("color" %in% mapping || "colour" %in% mapping) {
+      p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+    }
+    p + xy_theme()
+} 
+
+
