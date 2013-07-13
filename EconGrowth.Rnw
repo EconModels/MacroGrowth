@@ -1167,6 +1167,32 @@ for the CES without energy model.
 cesSigmaDeltaResamplePlot(energyType=NA)
 @
 
+Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals 
+for the parameters for the CES model (without energy).
+
+<<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType=NA)
+@
+
+Similar to the analysis of the Cobb-Douglas model in 
+Section~\ref{sec:CD_Parameter_Estimation}, 
+we make partial residual plots for the CES model (without energy) in 
+Figures~\ref{fig:CESPartialResidualsQ}--\ref{fig:CESPartialResidualsU} below. 
+Again, no strong monotonic trend is observed, suggesting the 
+energy-augmentation of the CES model will not significantly improve the model.
+
+<<CESPartialResidualsQ, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).">>=
+createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
+@
+
+<<CESPartialResidualsX, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).">>=
+createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
+@
+
+<<CESPartialResidualsU, fig.pos="H", fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).">>=
+createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
+@
+
 Coefficients for each resampled CES model (with $q$)
 are shown in 
 Figures~\ref{fig:CESq_lambda_gamma_Cloud_Graph}--\ref{fig:CESq_sigma_delta_Cloud_Graph}.
@@ -1213,32 +1239,6 @@ cesSigma_1Delta_1ResamplePlot(energyType="U")
 
 <<CESu_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\sigma$ and $\\delta$.">>=
 cesSigmaDeltaResamplePlot(energyType="U")
-@
-
-Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals 
-for the parameters for the CES model (without energy).
-
-<<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType=NA)
-@
-
-Similar to the analysis of the Cobb-Douglas model in 
-Section~\ref{sec:CD_Parameter_Estimation}, 
-we make partial residual plots for the CES model (without energy) in 
-Figures~\ref{fig:CESPartialResidualsQ}--\ref{fig:CESPartialResidualsU} below. 
-Again, no strong monotonic trend is observed, suggesting the 
-energy-augmentation of the CES model will not significantly improve the model.
-
-<<CESPartialResidualsQ, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for thermal energy ($q$).">>=
-createPartialResidualPlot(modelType="CES", energyType="Q", countryAbbrev=NA)
-@
-
-<<CESPartialResidualsX, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for exergy ($x$).">>=
-createPartialResidualPlot(modelType="CES", energyType="X", countryAbbrev=NA)
-@
-
-<<CESPartialResidualsU, fig.pos="H", fig.width=threePanelGraphWidth, fig.height=threePanelGraphHeight, fig.align="center", fig.cap="CES partial residuals plot for useful work ($u$).">>=
-createPartialResidualPlot(modelType="CES", energyType="U", countryAbbrev=NA)
 @
 
 Figure~\ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals 
