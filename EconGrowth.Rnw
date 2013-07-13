@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1724,7 +1724,7 @@ print(createAICTable(),
 The following table shows the fraction of resample models 
 that did not achieve convergence when estimating model parameters.
 
-<<Unconverged_Frac_Table, results='asis', eval=TRUE>>=
+<<Unconverged_Frac_Table, results='asis'>>=
 printFracUnconvergedXtable()
 @
 
@@ -1760,8 +1760,12 @@ Coefficients derived from resampling are shown in
 Figures~\ref{fig:SFk_Resample_Graph}--\ref{fig:SFu_Resample_Graph}. 
 In each case, the exponent on the factor of production is assumed to be $m = 1$.
 
-<<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.">>=
-sfResamplePlot(factor="K")
+<<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.", eval=TRUE>>=
+standardScatterPlot(loadAllResampleData(model="sf", factor="K", 
+                                        countryAbbrevsOrder=countryAbbrevsForGraph,
+                                        countryAbbrevsOrderU=countryAbbrevsForGraphU), 
+                    aes(m, lambda)) + 
+  labs(x=expression(alpha), y=expression(lambda))
 @
 
 <<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.">>=
@@ -1780,8 +1784,8 @@ sfResamplePlot(factor="X")
 sfResamplePlot(factor="U")
 @
 
-Converting the resampling data to 95\% confidence intervals
-provides results shown in 
+Converting the resample model coefficient data to 95\% confidence intervals
+gives the results shown in 
 Figures~\ref{fig:SFk_Params_Graph}--\ref{fig:SFu_Params_Graph}.
 
 <<SFk_Params_Graph, fig.pos="H", fig.width=sfParameterGraphWidth, fig.height=sfParameterGraphHeight, fig.cap="Single-factor (with $k$) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
