@@ -2475,9 +2475,8 @@ cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
   } else {
     data <- loadAllResampleData(modelType="cese", energyType=energyType)
   }
-  xLabel <- "$\\gamma$"
-  yLabel <- "$\\lambda$"
-  graph <- twoVarCloudPlot(data=data, xCoef=data$gamma, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
+  graph <- standardScatterPlot(data, aes(gamma, lambda)) +
+    labs(x=expression(gamma), y=expression(lambda))
   return(graph)
 }
 
@@ -2491,9 +2490,8 @@ cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
   } else {
     data <- loadAllResampleData(modelType="cese", energyType=energyType)
   }
-  xLabel <- "$\\delta_1$"
-  yLabel <- "$\\sigma_1$"
-  graph <- twoVarCloudPlot(data=data, xCoef=data$delta_1, yCoef=data$sigma_1, xLabel=xLabel, yLabel=yLabel)
+  graph <- standardScatterPlot(data, aes(delta_1, sigma_1)) +
+    labs(x=expression(delta_1), y=expression(sigma_1))
   return(graph)
 }
 
@@ -2510,14 +2508,18 @@ cesSigmaDeltaResamplePlot <- function(energyType=NA, ...){
     # we'll plot this a delta vs. rho. This is not particularly intersting,
     # because when energyType=NA, delta = 1.0.  So, the graph is boring.
     data <- loadAllResampleData(modelType="ces")
-    xLabel <- "$\\delta$"
-    yLabel <- "$\\rho$"
-    graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$rho, xLabel=xLabel, yLabel=yLabel)
+#     xLabel <- "$\\delta$"
+#     yLabel <- "$\\rho$"
+#     graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$rho, xLabel=xLabel, yLabel=yLabel)
+    graph <- standardScatterPlot(data, aes(delta, rho)) +
+      labs(x=expression(delta), y=expression(rho))
   } else {
     data <- loadAllResampleData(modelType="cese", energyType=energyType)
-    xLabel <- "$\\delta$"
-    yLabel <- "$\\sigma$"
-    graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
+#     xLabel <- "$\\delta$"
+#     yLabel <- "$\\sigma$"
+#     graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
+    graph <- standardScatterPlot(data, aes(delta, sigma)) +
+      labs(x=expression(delta), y=expression(sigma))
   }
   return(graph)
 }
