@@ -91,7 +91,7 @@ standardTriPlot <- function(data,
 }
 
 
-standardScatterPlot <- function(data, mapping, size=1, alpha=.5) {
+standardScatterPlot <- function(data, mapping, size=1, alpha=0.1) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
     p <- p + geom_point(size=1, alpha=alpha) 
     p <- p + geom_point(data=subset(data, method=="orig"),  color="red", alpha=1, size=3) 
