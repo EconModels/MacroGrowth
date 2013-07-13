@@ -22,6 +22,7 @@ countryAbbrevsAlph <- sort(countryAbbrevs)
 countryAbbrevsForGraph <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", TZ="TZ", SA="SA", IR="IR", ZM="ZM")
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryAbbrevsAlphU <- sort(countryAbbrevsU)
+countryAbbrevsForGraphU <- c(US="US", UK="UK", JP="JP")
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
 countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
@@ -3383,7 +3384,9 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   return(resampleData)
 }
 
-loadAllResampleData <- function(modelType, energyType, factor){
+loadAllResampleData <- function(modelType, energyType, factor, 
+                                countryAbbrevsOrder=countryAbbrevs,
+                                countryAbbrevsOrderU=countryAbbrevsU){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
@@ -3393,19 +3396,19 @@ loadAllResampleData <- function(modelType, energyType, factor){
   }
   if (!missing(energyType)){
     if (energyType == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind", lapply(countryAbbrevsOrderU, loadResampleData, modelType=modelType, energyType=energyType))
     } else {
-      data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind", lapply(countryAbbrevsOrderU, loadResampleData, modelType=modelType, factor=factor))
     } else {
-      data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
     }
   } else {
     # Neither energyType nor factor were specified
-    data <- do.call("rbind", lapply(countryAbbrevs, loadResampleData, modelType=modelType))
+    data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType))
   }
   return(data)
 }
@@ -3549,6 +3552,23 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
   fracConverged <- tallyResults[["1"]]
   fracUnconverged <- 1.0 - fracConverged
   return(fracUnconverged)
+}
+
+nResamples <- function(modelType=modelTypes, 
+                       countryAbbrev=countryAbbrevs, 
+                       energyType=energyTypes, 
+                       factor=factors, ...){
+  ###################
+  # Gives the number of resample fits that did not converge for the 
+  # given parameters.
+  ##
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  nObs <- nrow(data)
+  return(nObs)
 }
 
 printFracUnconvergedXtable <- function(){
