@@ -13,6 +13,7 @@ require(knitr)
 opts_chunk$set(
   tidy=FALSE
 )
+source("Econ-Growth-Functions2.R")
 @
 
 \maketitle
@@ -96,10 +97,26 @@ standardScatterPlot( loadAllResampleData(model="sf", factor="K"),
   labs(title="Model = sf; factor=K", x=expression(lambda))
 @
 
+You can change the order of the countries on the graph 
+with the \texttt{countryAbbrevsOrder} argument 
+to \texttt{loadAllResampleData}. 
+The default order is 
+<<>>=
+countryAbbrevs
+@
+However, for the 9-panel graphs, 
+I like to plot in the order shown below, 
+so that the SA/IR and TZ/ZM pairs 
+are adjacent and atop one another, respectively.
+The variable 
+<<>>=
+countryAbbrevsForGraph
+@
+\noindent in file \texttt{Econ-Growth-Functions2.R} contains the preferred
+order for 9-panel graphs, as demonstrated below.
 <<>>=
 standardScatterPlot( loadAllResampleData(model="linex", energyType = "Q", 
-                                         countryAbbrevsOrder=c("US", "UK", "JP", "CN", 
-                                                               "ZA", "TZ", "SA", "IR", "ZM")), 
+                                         countryAbbrevsOrder=countryAbbrevsForGraph), 
                      aes(a_0, c_t) ) +
   labs(title="Model = linex; energy=Q", x=expression(a[0]), y=expression(c[t]))
 @
