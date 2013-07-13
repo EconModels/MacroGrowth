@@ -27,8 +27,8 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
 
 xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
   base_theme(base_size = base_size, base_family = base_family) %+replace% 
-    theme(panel.border = element_blank(), 
-          panel.grid.major = element_blank(), 
+    theme(# panel.border = element_blank(), 
+          # panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           plot.background = element_blank(),
           strip.background =  element_rect(fill = NA, colour = "gray50")
