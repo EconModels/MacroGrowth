@@ -2539,7 +2539,7 @@ linexModel <- function(countryAbbrev, energyType, data){
   if (missing(data)){
     data <- loadData(countryAbbrev=countryAbbrev)    
   }
-  data <- replaceColName(data, energyType, "iEToFit")
+  data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
   if (countryAbbrev == "SA"){
     # Need adjusted guess values, becasue k and l are above GDP for SA.
     start <- list(a_0=-1.0, a_1=6.0)
@@ -2557,17 +2557,6 @@ linexModel <- function(countryAbbrev, energyType, data){
                     start=start,
                     control=nlsControl
   )
-  if (!modelLINEX$convInfo$isConv){
-    origData <- loadData(countryAbbrev=countryAbbrev)
-    origModel <- linexModel(countryAbbrev=countryAbbrev, data=origData, energyType=energyType)
-    print(xyplot(fitted(origModel) + origData$iGDP + fitted(modelLINEX) + data$iGDP ~ origData$Year, 
-                 type="b", 
-                 pch=c(NA, 1, NA, 8),
-                 lty=c(1, 0, 3, 0),
-                 cex=2
-                 )
-          )
-  }
   # Build the additional object to add as an atrribute to the output
   a_0 <- coef(modelLINEX)["a_0"]
   a_1 <- coef(modelLINEX)["a_1"]
