@@ -31,14 +31,19 @@ A reasonable workflow is:
 source("Econ-Growth-Resampling.R")
 @
 which, in turn, sources the file named \texttt{Econ-Growth_Functions2.R}.
+\item
+<<>>=
+source("Graphics.R")
+@
 
 \item
-Execute the function called \function{genAllResampleData()}.
+Execute the function called \function{genAllResampleData()} to cache the resampling data.
 
 A typical call would be 
 <<eval=FALSE>>=
 genAllResampleData(method="wild", n=100)
 @
+
 \item Reload the data using one of the various ``load'' functions
 from file \texttt{Econ-Growth-Functions2.R}:
 
@@ -52,51 +57,48 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
 \begin{enumerate}
 \item
 A typical call for loadAllResampleData would be
-<<eval=FALSE>>=
-loadAllResampleData(modelType="cde", energyType="Q")
-@
-\item
-Another example:
+
 <<>>=
-head(loadAllResampleData(model="sf", factor="K"), n=5)
+head( loadAllResampleData(modelType="cde", energyType="Q"), n=3 )
+@
+
+
+\item
+Other examples:
+<<>>=
+head( loadAllResampleData(model="sf", factor="K"), n=3 )
+head( loadAllResampleData(model="linex", energyType = "Q"), n=3 )
+head( loadAllResampleData(model="cese", energyType = "Q"), n=3 )
 @
 \end{enumerate}
 \end{enumerate}
 
 \section{Ternary Plots}
-\begin{enumerate}
-\item
-Plots of distributions of coefficients for the Cobb-Douglas 
-with energy model can be made with \function{triPlot()} in 
-file \texttt{Graphics.R}.  (Goofy labels here just to demonstrate what is possible.)
+Plots of distributions of coefficients for the Cobb-Douglas-Energy
+model can be made with \function{standardTriPlot()} in 
+file \texttt{Graphics.R}.  
 <<>>=
-source("Graphics.R")
-resData <- loadAllResampleData(modelType="cde", energyType="Q")
-triPlot(subset(resData, method!="orig"), 
-        gamma, alpha, beta,
-        labels=c("gamma[1]", "alpha[2]", "sqrt(beta[3])"),
-        n.grid=5,  aes_string="color=lambda", 
-        size=1.7, alpha=.5 ) + 
-     geom_point(data=subset(resData, method=="orig"), 
-                color="red", alpha=1, size=3) +
-     facet_wrap( ~ countryAbbrev ) +
-     scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+standardTriPlot( loadAllResampleData(modelType="cde", energyType="Q") ) +
+  labs(title="Model = CDE; energy=Q")
 @
-Eventually, we can build a wrapper that loads the data and builds the plot with our favorite settings.
 
 \section{Scatterplots with two variables}
 
 <<>>=
-ggplot(data=subset(resData, method!="orig"), 
-        aes(x=alpha, y=beta, color=lambda)) +
-  geom_point() +
-  xlab(expression(alpha)) +
-  ylab(expression(beta)) +
-  geom_point(data=subset(resData, method=="orig"), 
-                color="red", alpha=1, size=3) +
-  facet_wrap( ~ countryAbbrev ) +
-  scale_colour_gradient(expression(lambda), high="navy", low="skyblue")
+standardScatterPlot( loadAllResampleData(model="sf", factor="K"), 
+                     aes(lambda, m) ) +
+  labs(title="Model = sf; factor=K", x=expression(lambda))
 @
-\end{enumerate}
 
+<<>>=
+standardScatterPlot( loadAllResampleData(model="linex", energyType = "Q"), 
+                     aes(a_0, c_t) ) +
+  labs(title="Model = linex; energy=Q", x=expression(a[0]), y=expression(c[t]))
+@
+
+<<>>=
+standardScatterPlot( loadAllResampleData(model="cese", energyType = "Q"), 
+                     aes(delta, rho) ) +
+  labs(title="Model = cese; energy=Q", x=expression(delta), y=expression(rho))
+@
 \end{document}
