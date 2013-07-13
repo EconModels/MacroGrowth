@@ -44,8 +44,10 @@ threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panel
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
 threePanelGraphWidth <- maxWidth
 threePanelGraphHeight <- 3.17 #Inches
+threePanelTernaryGraphHeight <- 2.0 #Inches
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
+ninePanelTernaryGraphHeight <- 5.1 #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth <- 2 #Inches
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
@@ -355,7 +357,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 ## <<single-factor functions, eval=TRUE>>=
-singleFactorModel <- function(data=loadData(countryAbbrev), countryAbbrev, factor, respectRangeConstraints=FALSE){
+singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -2535,25 +2537,44 @@ linexModel <- function(countryAbbrev, energyType, data){
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   if (missing(data)){
-    data=loadData(countryAbbrev=countryAbbrev)    
+    data <- loadData(countryAbbrev=countryAbbrev)    
   }
   data <- replaceColName(data, energyType, "iEToFit")
-  a_0Guess <- 0.5
-  c_tGuess <- 1.0
   if (countryAbbrev == "SA"){
     # Need adjusted guess values, becasue k and l are above GDP for SA.
-    a_0Guess <- -1
-    c_tGuess <- -6
+    start <- list(a_0=-1.0, a_1=6.0)
+  } else if (countryAbbrev == "ZM"){
+    # Set up the initial guess for ZM to be the coefficients for the 
+    # base model
+    # start <- list(a_0=0.35, c_t=2.85)
+    start <- list(a_0=0.35, a_1=1.0)
+  } else {
+    start <- list(a_0=0.5, a_1=0.5)
   }
   # Runs a non-linear least squares fit to the data with constraints
-  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
+  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_1*(iLabor/iEToFit - 1.0)), 
                     data=data,
-                    start=list(a_0=a_0Guess, c_t=c_tGuess),
+                    start=start,
                     control=nlsControl
   )
+  if (!modelLINEX$convInfo$isConv){
+    origData <- loadData(countryAbbrev=countryAbbrev)
+    origModel <- linexModel(countryAbbrev=countryAbbrev, data=origData, energyType=energyType)
+    print(xyplot(fitted(origModel) + origData$iGDP + fitted(modelLINEX) + data$iGDP ~ origData$Year, 
+                 type="b", 
+                 pch=c(NA, 1, NA, 8),
+                 lty=c(1, 0, 3, 0),
+                 cex=2
+                 )
+          )
+  }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- c(a_0 = as.vector(coef(modelLINEX)["a_0"]),
-                     c_t = as.vector(coef(modelLINEX)["c_t"]),
+  a_0 <- coef(modelLINEX)["a_0"]
+  a_1 <- coef(modelLINEX)["a_1"]
+  c_t <- a_1 / a_0
+  naturalCoeffs <- c(a_0 = as.vector(a_0),
+                     a_1 = as.vector(a_1),
+                     c_t = as.vector(a_1 / a_0),
                      sse = sum(resid(modelLINEX)^2),
                      isConv = modelLINEX$convInfo$isConv
   )
@@ -2840,46 +2861,46 @@ createAICTable <- function(){
   # Single-factor models
   ######################
   # Single-factor with K
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K")
+  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE)
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L")
+  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE)
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q")
+  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE)
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X")
+  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE)
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U")), 
-                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U")), 
-                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U")),
+  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE)), 
+                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE)), 
+                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA)
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA, respectRangeConstraints=TRUE)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
+  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE)
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
+  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE)
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
-                  UK=AIC(cobbDouglasModel("UK", "U")), 
-                  JP=AIC(cobbDouglasModel("JP", "U")),
+  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE)), 
+                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE)), 
+                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################
@@ -2922,9 +2943,9 @@ createAICTable <- function(){
   aicLINEXx <- data.frame(lapply(linexXModels, AIC))
   rownames(aicLINEXx) <- "LINEX$x$"  
   # LINEX with U
-  aicLINEXu <- cbind(US=AIC(linexModel("US", "U")), 
-                     UK=AIC(linexModel("UK", "U")), 
-                     JP=AIC(linexModel("JP", "U")),
+  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U")), 
+                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U")), 
+                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U")),
                      CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicLINEXu) <- "LINEX$u$"
   
@@ -3456,4 +3477,105 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
                    "linex" = file.path(dr, modelType, countryAbbrev)
                    )
   return(folder)
+}
+
+fracUnconvergedResampleFitsAll <- function(){
+  ###########################
+  # Calculates the fraction of unconverged resamples stored on disk 
+  # for all countries and all energy types
+  ##
+  out <- data.frame()
+  modelType <- "sf"
+  for (factor in factors){
+    if (factor == "U"){
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+      uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+      unconverged <- c(unconverged, uNA)
+    } else {
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+    }
+    unconverged <- c(modelType=modelType, energyType=NA, factor=factor, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))
+  }
+  
+  modelType <- "cd"
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  out <- rbind(out, as.data.frame(unconverged))    
+  
+  modelType <- "cde"
+  for (energyType in energyTypes){
+    if (energyType == "U"){
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+      unconverged <- c(unconverged, uNA)
+    } else {
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+    }
+    unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
+    out <- rbind(out, as.data.frame(unconverged))
+  }
+  
+  modelType <- "ces"
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  out <- rbind(out, as.data.frame(unconverged))    
+  
+  for (modelType in c("cese", "linex")){
+    for (energyType in energyTypes){
+      if (energyType == "U"){
+        unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+        uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
+        unconverged <- c(unconverged, uNA)
+      } else {
+        unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      }
+      unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
+      out <- rbind(out, as.data.frame(unconverged))
+    }
+  }
+  colnames(out) <- c("Model", "Energy", "Factor", countryAbbrevs)
+  return(out)
+}
+
+fracUnconvergedResampleFits <- function(modelType=modelTypes, 
+                                        countryAbbrev=countryAbbrevs, 
+                                        energyType=energyTypes, 
+                                        factor=factors, ...){
+  ###################
+  # Gives the fraction of resample fits that did not converge for the 
+  # given parameters.
+  ##
+  modelType <- match.arg(modelType)
+  countryAbbrev <- match.arg(countryAbbrev)
+  energyType <- match.arg(energyType)
+  factor <- match.arg(factor)
+  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  nObs <- nrow(data)
+  tallyResults <- tally(~isConv, data=data, format="proportion")
+  # Grabs the fraction that is converged. We can't simply gather the fraction that
+  # has not converged (tallyResults[["0"]]), because there are some times when
+  # all resampled fits converge, and there is no "0" item in the 
+  # result from tally.
+  fracConverged <- tallyResults[["1"]]
+  fracUnconverged <- 1.0 - fracConverged
+  return(fracUnconverged)
+}
+
+printFracUnconvergedXtable <- function(){
+  #####################################
+  # This function prints a table containing the fraction of unconverged
+  # resample models.
+  ##
+  data <- fracUnconvergedResampleFitsAll()
+  dataXtable <- xtable(x=data, 
+                       caption="Fraction of unconverged resample models", 
+                       label="tab:frac_unconverged_models",
+                       digits = 3,
+                       align = "rl|cc|ccccccccc") #Sets alignment of the numbers in the columns)
+  print(dataXtable, 
+        caption.placement="top", 
+        size="\\tiny",
+        table.placement="H",
+        include.rownames=FALSE)
 }

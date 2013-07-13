@@ -167,7 +167,6 @@ resampleFits <- function(modelType=modelTypes,
   baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
   names(baseFitCoeffsDF) <- names(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
-print(head(resampleFitCoeffs, n=5))
   baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
   out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
   # Make a factor column for the country
@@ -200,43 +199,4 @@ doResample <- function(data, origModel, method=resampleMethods){
            "debug"    = fitted(origModel) + (resid(origModel)) 
     )
   return(data)
-}
-
-cdeFracUnconvergedResampleFitsAll <- function(){
-  ###########################
-  # Calculates the fraction of unconverged resamples stored on disk 
-  # for all countries and all energy types
-  ## 
-  energyType <- "Q"
-  qUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
-  energyType <- "X"
-  xUnconverged <- lapply(countryAbbrevs, cdeFracUnconvergedResampleFits, energyType=energyType)
-  energyType <- "U"
-  uUnconverged <- lapply(countryAbbrevsU, cdeFracUnconvergedResampleFits, energyType=energyType)
-  uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
-  uUnconverged <- c(uUnconverged, uNA)
-  return(cbind(qUnconverged, xUnconverged, uUnconverged))
-}
-
-fracUnconvergedResampleFits <- function(modelType=modelTypes, 
-                                        countryAbbrev=countryAbbrevs, 
-                                        energyType=energyTypes, 
-                                        factor=factors, ...){
-  ###################
-  # Gives the fraction of resample fits that did not converge
-  ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
-  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
-  nObs <- nrow(data)
-  tallyResults <- tally(~isConv, data=data, format="proportion")
-  # Grabs the fraction that is converged. We can't simply gather the fraction that
-  # has not converged (tallyResults[["0"]]), because there are some times when
-  # all resampled fits converge, and there is no "0" item in the 
-  # result from tally.
-  fracConverged <- tallyResults[["1"]]
-  fracUnconverged <- 1.0 - fracConverged
-  return(fracUnconverged)
 }
