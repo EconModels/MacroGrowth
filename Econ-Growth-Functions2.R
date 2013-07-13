@@ -839,7 +839,12 @@ sfResamplePlot <- function(factor, ...){
                    "U" = "$\\gamma$"
                    )
   yLabel <- "$\\lambda$"
-  graph <- twoVarCloudPlot(data=data, xCoef=data$m, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
+  #graph <- twoVarCloudPlot(data=data, xCoef=data$m, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
+  graph <- standardScatterPlot(loadAllResampleData(model="sf", factor=factor, 
+                                                   countryAbbrevsOrder=countryAbbrevsForGraph), 
+                               aes(m, lambda)) + 
+    labs(x=xLabel, y=expression(lambda))
+  
   return(graph)
 }
 
@@ -1887,20 +1892,16 @@ cdResampleTrianglePlot <- function(energyType, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cd"))
+    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else if (energyType == "U"){
-    resampleData <- do.call("rbind", lapply(countryAbbrevsU, loadResampleData, modelType="cde", energyType=energyType))
+    data <- loadAllResampleData(modelType="cde", 
+                                energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraphU)
   } else {
-    resampleData <- do.call("rbind", lapply(countryAbbrevsForGraph, loadResampleData, modelType="cde", energyType=energyType))
+    data <- loadAllResampleData(modelType="cde", energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- triPlot(subset(resampleData, method != "orig"),
-                   gamma, alpha, beta,
-                   labels=c("gamma", "alpha", "beta"),
-                   n.grid=5,  aes_string="color=lambda",
-                   size=3, alpha=.5 ) +
-    geom_point(data=subset(resampleData, method=="orig"),
-               color="red", alpha=1, size=3) +
-    facet_wrap( ~ countryAbbrev )
+  graph <- standardTriPlot(data)
   return(graph)
 }
 
@@ -2835,10 +2836,11 @@ linexResamplePlot <- function(energyType, ...){
   # energyType does not have a default value here, because
   # energyType=NA doesn't make sense for LINEX.
   ##
-  data <- loadAllResampleData(modelType="linex", energyType=energyType)
-  xLabel <- "$a_0$"
-  yLabel <- "$c_t$"
-  graph <- twoVarCloudPlot(data=data, xCoef=data$a_0, yCoef=data$c_t, xLabel=xLabel, yLabel=yLabel)
+  data <- loadAllResampleData(model="linex", 
+                              energyType = energyType, 
+                              countryAbbrevsOrder=countryAbbrevsForGraph)
+  graph <- standardScatterPlot(data, aes(a_0, c_t) ) +
+    labs(x=expression(a[0]), y=expression(c[t]))
   return(graph)
 }
 
@@ -3394,13 +3396,13 @@ loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrd
   }
   if (!missing(energyType)){
     if (energyType == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
     } else {
       data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, factor=factor))
     } else {
       data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
     }
