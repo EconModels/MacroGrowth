@@ -71,6 +71,12 @@ head( loadAllResampleData(model="linex", energyType = "Q"), n=3 )
 head( loadAllResampleData(model="cese", energyType = "Q"), n=3 )
 @
 \end{enumerate}
+
+\item To find the fraction of resample models that do not converge, say
+<<>>=
+fracUnconvergedResampleFitsAll()
+@
+
 \end{enumerate}
 
 \section{Ternary Plots}
