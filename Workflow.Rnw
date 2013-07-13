@@ -121,6 +121,12 @@ standardScatterPlot( loadAllResampleData(model="linex", energyType = "Q",
   labs(title="Model = linex; energy=Q", x=expression(a[0]), y=expression(c[t]))
 @
 
+Note that in the above plot, we have an apparent singularity 
+at $a_0 = 0.0$ which drives the $c_t$ axis scale to be very large.
+To change the axes on a graph, 
+
+**** Randy: insert an example of fixing the axes here? ****
+
 <<>>=
 standardScatterPlot( loadAllResampleData(model="cese", energyType = "Q"), 
                      aes(delta, rho) ) +
