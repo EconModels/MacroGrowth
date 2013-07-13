@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1382,7 +1382,8 @@ in \texttt{R} \citep{R}.
 Figures~\ref{fig:LINEXq_Resample_Graph}--\ref{fig:LINEXu_Resample_Graph}
 show the coefficients estimated from resampled data.
 
-<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results." >>=
+<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results.">>=
+# linexResamplePlot(energyType="Q")
 linexResamplePlot(energyType="Q")
 @
 
@@ -1760,39 +1761,24 @@ Coefficients derived from resampling are shown in
 Figures~\ref{fig:SFk_Resample_Graph}--\ref{fig:SFu_Resample_Graph}. 
 In each case, the exponent on the factor of production is assumed to be $m = 1$.
 
-<<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.", eval=TRUE>>=
-standardScatterPlot(loadAllResampleData(model="sf", factor="K", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
-                    aes(m, lambda)) + 
-  labs(x=expression(alpha), y=expression(lambda))
+<<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.">>=
+sfResamplePlot(factor="K")
 @
 
-<<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.", eval=TRUE>>=
-standardScatterPlot(loadAllResampleData(model="sf", factor="L", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
-                    aes(m, lambda)) + 
-  labs(x=expression(beta), y=expression(lambda))
+<<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.">>=
+sfResamplePlot(factor="L")
 @
 
-<<SFq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = q$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
-standardScatterPlot(loadAllResampleData(model="sf", factor="Q", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
-                    aes(m, lambda)) + 
-  labs(x=expression(gamma), y=expression(lambda))
+<<SFq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = q$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="Q")
 @
 
-<<SFx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = x$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
-standardScatterPlot(loadAllResampleData(model="sf", factor="X", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
-                    aes(m, lambda)) + 
-  labs(x=expression(gamma), y=expression(lambda))
+<<SFx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = x$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="X")
 @
 
-<<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
-standardScatterPlot(loadAllResampleData(model="sf", factor="U", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraphU), 
-                    aes(m, lambda)) + 
-  labs(x=expression(gamma), y=expression(lambda))
+<<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.">>=
+sfResamplePlot(factor="U")
 @
 
 Converting the resample model coefficient data to 95\% confidence intervals
