@@ -1762,26 +1762,37 @@ In each case, the exponent on the factor of production is assumed to be $m = 1$.
 
 <<SFk_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = k$ and $m = \\alpha$) resampling results.", eval=TRUE>>=
 standardScatterPlot(loadAllResampleData(model="sf", factor="K", 
-                                        countryAbbrevsOrder=countryAbbrevsForGraph,
-                                        countryAbbrevsOrderU=countryAbbrevsForGraphU), 
+                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
                     aes(m, lambda)) + 
   labs(x=expression(alpha), y=expression(lambda))
 @
 
-<<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.">>=
-sfResamplePlot(factor="L")
+<<SFl_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = l$ and $m = \\beta$) resampling results.", eval=TRUE>>=
+standardScatterPlot(loadAllResampleData(model="sf", factor="L", 
+                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
+                    aes(m, lambda)) + 
+  labs(x=expression(beta), y=expression(lambda))
 @
 
-<<SFq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = q$ and $m = \\gamma$) resampling results.">>=
-sfResamplePlot(factor="Q")
+<<SFq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = q$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
+standardScatterPlot(loadAllResampleData(model="sf", factor="Q", 
+                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
+                    aes(m, lambda)) + 
+  labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<SFx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = x$ and $m = \\gamma$) resampling results.">>=
-sfResamplePlot(factor="X")
+<<SFx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Single factor model (with $f = x$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
+standardScatterPlot(loadAllResampleData(model="sf", factor="X", 
+                                        countryAbbrevsOrder=countryAbbrevsForGraph), 
+                    aes(m, lambda)) + 
+  labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.">>=
-sfResamplePlot(factor="U")
+<<SFu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="Single factor model (with $f = u$ and $m = \\gamma$) resampling results.", eval=TRUE>>=
+standardScatterPlot(loadAllResampleData(model="sf", factor="U", 
+                                        countryAbbrevsOrder=countryAbbrevsForGraphU), 
+                    aes(m, lambda)) + 
+  labs(x=expression(gamma), y=expression(lambda))
 @
 
 Converting the resample model coefficient data to 95\% confidence intervals

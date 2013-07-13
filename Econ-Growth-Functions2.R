@@ -3384,9 +3384,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   return(resampleData)
 }
 
-loadAllResampleData <- function(modelType, energyType, factor, 
-                                countryAbbrevsOrder=countryAbbrevs,
-                                countryAbbrevsOrderU=countryAbbrevsU){
+loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrder=countryAbbrevs){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
@@ -3396,13 +3394,13 @@ loadAllResampleData <- function(modelType, energyType, factor,
   }
   if (!missing(energyType)){
     if (energyType == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrderU, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
     } else {
       data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrderU, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
     } else {
       data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
     }
