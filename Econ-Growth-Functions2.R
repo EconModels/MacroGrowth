@@ -839,7 +839,6 @@ sfResamplePlot <- function(factor, ...){
                    "U" = "$\\gamma$"
                    )
   yLabel <- "$\\lambda$"
-  #graph <- twoVarCloudPlot(data=data, xCoef=data$m, yCoef=data$lambda, xLabel=xLabel, yLabel=yLabel)
   graph <- standardScatterPlot(loadAllResampleData(model="sf", factor=factor, 
                                                    countryAbbrevsOrder=countryAbbrevsForGraph), 
                                aes(m, lambda)) + 
