@@ -77,8 +77,8 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
 standardTriPlot <- function(data, 
                             grid_lines=5, 
                             aes_string="color=lambda", 
-                            size=1.7, 
-                            alpha=.5){
+                            size=1.0, 
+                            alpha=0.2){
   triPlot(subset(data, method!="orig"), 
           gamma, alpha, beta,
           labels=c("gamma", "alpha", "beta"),
@@ -91,9 +91,9 @@ standardTriPlot <- function(data,
 }
 
 
-standardScatterPlot <- function(data, mapping, size=1, alpha=0.1) {
+standardScatterPlot <- function(data, mapping, size=1.0, alpha=0.1) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
-    p <- p + geom_point(size=1, alpha=alpha) 
+    p <- p + geom_point(size=size, alpha=alpha) 
     p <- p + geom_point(data=subset(data, method=="orig"),  color="red", alpha=1, size=3) 
     p <- p + facet_wrap( ~ countryAbbrev ) 
     if ("color" %in% mapping || "colour" %in% mapping) {
