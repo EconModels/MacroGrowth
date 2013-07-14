@@ -2471,9 +2471,10 @@ cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces")
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType)
+    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardScatterPlot(data, aes(gamma, lambda)) +
     labs(x=expression(gamma), y=expression(lambda))
@@ -2486,9 +2487,10 @@ cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces")
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType)
+    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardScatterPlot(data, aes(delta_1, sigma_1)) +
     labs(x=expression(delta_1), y=expression(sigma_1))
@@ -2507,17 +2509,12 @@ cesSigmaDeltaResamplePlot <- function(energyType=NA, ...){
     # When energyType=NA, we have rho=-1, and sigma-->infinity. So, 
     # we'll plot this a delta vs. rho. This is not particularly intersting,
     # because when energyType=NA, delta = 1.0.  So, the graph is boring.
-    data <- loadAllResampleData(modelType="ces")
-#     xLabel <- "$\\delta$"
-#     yLabel <- "$\\rho$"
-#     graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$rho, xLabel=xLabel, yLabel=yLabel)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
     graph <- standardScatterPlot(data, aes(delta, rho)) +
       labs(x=expression(delta), y=expression(rho))
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType)
-#     xLabel <- "$\\delta$"
-#     yLabel <- "$\\sigma$"
-#     graph <- twoVarCloudPlot(data=data, xCoef=data$delta, yCoef=data$sigma, xLabel=xLabel, yLabel=yLabel)
+    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
     graph <- standardScatterPlot(data, aes(delta, sigma)) +
       labs(x=expression(delta), y=expression(sigma))
   }
