@@ -1,4 +1,3 @@
-
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{language} % Obtain language.sty from https://github.com/rpruim/latex
