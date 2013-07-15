@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -394,7 +394,7 @@ or statistical evaluation in each of these studies? ****
 %------------------------------
 
 Other energy economists use an energy-augmented 
-Constant Elasticity of Substitution (CESe) production function to 
+Constant Elasticity of Substitution (CES$e$) production function to 
 describe economic growth. The \texttt{R} \citep{R} package 
 \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
 functions of the following forms (among others):
@@ -417,7 +417,14 @@ capital stock ($k$) and labor ($l$) factors of production.
 Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
 using a ($kl$)($e$) nesting structure, as is typical in the literature. 
 Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
-where $\delta = 1$ and $\rho = -1$. The elasticity of substitution 
+where $\delta \rightarrow 1$ and $\rho \rightarrow -1$. 
+
+Constraints on the fitting parameters include 
+$\delta_1 \in (0,1)$,
+$\delta \in (0,1)$,
+$\rho_1 \in (-1,0) \cup (0,\infty)$, and
+$\rho \in (-1,0) \cup (0,\infty)$.
+The elasticity of substitution 
 between capital ($k$) and labor ($l$) is given by 
 $\sigma_1 = \frac{1}{1+\rho_1}$, 
 the elasticity of substitution between ($kl$) and ($e$) is given by 
@@ -426,13 +433,14 @@ $\delta_1 \in [0, 1]$ describes the relative importance of capital ($k$)
 and labor ($l$), 
 $\delta \in [0, 1]$ describes the importance 
 of ($kl$) relative to ($e$), 
-and $\gamma$ is a fitting parameter, 
-expected to be close to unity. 
+and $\gamma$ is a fitting parameter that represents productivity. 
 As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
 ($kl$) and ($e$) are perfect substitutes. 
 As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
 ($kl$) and ($e$) are perfect complements: 
 no substitution is possible. Similarly, 
+as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production 
 functions for 12 OECD countries with respect to climate change policy. 
