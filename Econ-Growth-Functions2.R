@@ -1974,12 +1974,12 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
     # here at rho1=0.0, which makes the elasticity of substitution between k and l sigma1 = 1.0, 
     # giving the Cobb-Douglas form for the k l portion of the CES function. Similar results are found
     # for X and U.
-    rho1 = 0.0
+#    rho1 = 0.0
     # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
     # complimentary.  We'll let the estCES function solve for the best value.
     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
                        method="LM",
-                       rho1=rho1
+#                       rho1=rho1
     )
   } else if (countryAbbrev == "UK") {
     # The unconstrained optimization leads to rho1 = -2.4 and sigma1 = -0.71, which is not economically meaningful.
