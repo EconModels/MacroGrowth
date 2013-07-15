@@ -206,6 +206,8 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 \begin{itemize}
 \item{Heun: Look into constraining $\delta \in [0,1]$
 and $\delta_1 \in [0,1]$ in the CES and CES$e$ models.}
+\item{Heun: Investigate why wew obtain $\rho_1 < -1$ 
+for some US CES$e$ resample models.}
 \item{Pruim: Respond to Heun's wish list for graphs.}
 \item{Heun: Figure out why CESe for ZA with $x$ fails during resampling.}
 \item{Heun: Review all assumptions for CES with energy models. 
@@ -419,21 +421,20 @@ using a ($kl$)($e$) nesting structure, as is typical in the literature.
 Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
 where $\delta \rightarrow 1$ and $\rho \rightarrow -1$. 
 
-Constraints on the fitting parameters include 
-$\delta_1 \in (0,1)$,
-$\delta \in (0,1)$,
-$\rho_1 \in (-1,0) \cup (0,\infty)$, and
-$\rho \in (-1,0) \cup (0,\infty)$.
+$\gamma$ is a fitting parameter that represents productivity. 
+The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
+of substitution ($\sigma_1$ and $\sigma$).
 The elasticity of substitution 
 between capital ($k$) and labor ($l$) is given by 
-$\sigma_1 = \frac{1}{1+\rho_1}$, 
+$\sigma_1 = \frac{1}{1+\rho_1}$, and
 the elasticity of substitution between ($kl$) and ($e$) is given by 
-$\sigma = \frac{1}{1+\rho}$, 
-$\delta_1 \in [0, 1]$ describes the relative importance of capital ($k$)
-and labor ($l$), 
-$\delta \in [0, 1]$ describes the importance 
-of ($kl$) relative to ($e$), 
-and $\gamma$ is a fitting parameter that represents productivity. 
+$\sigma = \frac{1}{1+\rho}$. 
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
 As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
 ($kl$) and ($e$) are perfect substitutes. 
 As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
@@ -441,6 +442,16 @@ As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$),
 no substitution is possible. Similarly, 
 as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
 $k$ and $l$ are perfect complements.
+$\delta_1$ describes the relative importance of capital ($k$)
+and labor ($l$), and
+$\delta$ describes the importance of ($kl$) relative to ($e$).
+
+Constraints on the fitting parameters include 
+$\delta_1 \in (0,1)$,
+$\delta \in (0,1)$,
+$\rho_1 \in (-1,0) \cup (0,\infty)$, and
+$\rho \in (-1,0) \cup (0,\infty)$. **** Describe here how 
+we implemented the constraints. ****
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production 
 functions for 12 OECD countries with respect to climate change policy. 
