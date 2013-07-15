@@ -204,8 +204,8 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\itme{Heun: Look into constraining $\delta \in [0,1]$
-and $\delta_1 \in [0,1]$}
+\item{Heun: Look into constraining $\delta \in [0,1]$
+and $\delta_1 \in [0,1]$ in the CES and CES$e$ models.}
 \item{Pruim: Respond to Heun's wish list for graphs.}
 \item{Heun: Figure out why CESe for ZA with $x$ fails during resampling.}
 \item{Heun: Review all assumptions for CES with energy models. 
