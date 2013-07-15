@@ -12,7 +12,7 @@ source('Econ-Growth-Functions2.R')
 # We do this multiple times and save a file that contains 
 # the results for later investigation
 
-genAllResampleData <- function(method="wild", n=100){
+genAllResampleData <- function(method="wild", n=numResamples()){
   #######################
   # Generates all resampling data for all models using the method specified
   ##

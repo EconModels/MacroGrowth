@@ -2465,7 +2465,7 @@ printCESParamsTableB <- function(energyType){
         table.placement="H")
 }
 
-cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
+cesResamplePlotLambdaGamma <- function(energyType=NA, ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2481,7 +2481,7 @@ cesLambdaGammaResamplePlot <- function(energyType=NA, ...){
   return(graph)
 }
 
-cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
+cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2497,7 +2497,7 @@ cesSigma_1Delta_1ResamplePlot <- function(energyType=NA, ...){
   return(graph)
 }
 
-cesSigmaDeltaResamplePlot <- function(energyType=NA, ...){
+cesResamplePlotSigmaDelta <- function(energyType=NA, ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -3585,4 +3585,8 @@ printFracUnconvergedXtable <- function(){
         size="\\tiny",
         table.placement="H",
         include.rownames=FALSE)
+}
+
+numResamples <- function(){
+  return(1000)
 }

@@ -204,15 +204,9 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Pruim: Add base fit red dots to all cloud plots.}
-      \begin{itemize}
-      \item{SF}
-      \item{\st{CD}}
-      \item{\st{CDe}}
-      \item{CES}
-      \item{CESe}
-      \item{LINEX}
-      \end{itemize}
+\itme{Heun: Look into constraining $\delta \in [0,1]$
+and $\delta_1 \in [0,1]$}
+\item{Pruim: Respond to Heun's wish list for graphs.}
 \item{Heun: Figure out why CESe for ZA with $x$ fails during resampling.}
 \item{Heun: Review all assumptions for CES with energy models. 
 There are several assumptions for rho and rho1 for various countries. 
@@ -264,6 +258,15 @@ countries where $u$ is involved.}}
 \item{\st{Heun: Add a table that shows the fraction of unconverged resample fits
 for each model, energy type, and factor.}}
 \item{\st{Heun: Get AIC calculations working again.}}
+\item{\st{Pruim: Add base fit red dots to all cloud plots.}}
+      \begin{itemize}
+      \item{\st{SF}}
+      \item{\st{CD}}
+      \item{\st{CDe}}
+      \item{\st{CES}}
+      \item{\st{CESe}}
+      \item{\st{LINEX}}
+      \end{itemize}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -414,14 +417,22 @@ capital stock ($k$) and labor ($l$) factors of production.
 Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
 using a ($kl$)($e$) nesting structure, as is typical in the literature. 
 Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
-where $\delta = 1$. The elasticity of substitution between capital ($k$) 
-and labor ($l$) is given by $\sigma_1 = \frac{1}{1+\rho_1}$, 
+where $\delta = 1$ and $\rho = -1$. The elasticity of substitution 
+between capital ($k$) and labor ($l$) is given by 
+$\sigma_1 = \frac{1}{1+\rho_1}$, 
 the elasticity of substitution between ($kl$) and ($e$) is given by 
-$\sigma = \frac{1}{1+\rho}$, $\delta \in [0, 1]$ describes the importance 
-of ($kl$) relative to ($e$), and $\gamma$ is a fitting parameter, 
-expected to be close to unity. As $\sigma \rightarrow \infty$, 
-($kl$) and ($e$) are perfect substitutes. As $\sigma \rightarrow 0$, 
-($kl$) and ($e$) are perfect complements: no substitution is possible. 
+$\sigma = \frac{1}{1+\rho}$, 
+$\delta_1 \in [0, 1]$ describes the relative importance of capital ($k$)
+and labor ($l$), 
+$\delta \in [0, 1]$ describes the importance 
+of ($kl$) relative to ($e$), 
+and $\gamma$ is a fitting parameter, 
+expected to be close to unity. 
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. Similarly, 
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production 
 functions for 12 OECD countries with respect to climate change policy. 
@@ -480,7 +491,7 @@ Energy ($e$), as the only factor of production, is enhanced by $A$ if either
 \item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
 
-\noindent According to the LINEX model, an economy that can increase 
+\noindent According to the LINEX model, an economy that increases 
 capital stock ($k$) without a commensurate increase in labor ($l$) 
 and energy ($e$) will experience an increase in output ($y$) in excess 
 of its increase of energy consumption ($e$), because $A$ will be 
@@ -958,7 +969,7 @@ parameter estimation methods and interpret the results.
 %++++++++++++++++++++++++++++++
 
 The Cobb-Douglas model without energy is given by 
-Equation~\ref{eq:CD}. The Cobb-Douglas production function was 
+Equation~\ref{eq:CD}. The Cobb-Douglas production function was
 reparameterized as
 
 \begin{equation} \label{eq:CD_reparam}
@@ -966,14 +977,11 @@ reparameterized as
 \end{equation}
 
 \noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
-By constraining $\alpha \in [0,1]$, we ensure that $\beta \in [0,1]$ also. 
-**** Is this truly how we implemented the constraints? 
-Finish after we actually implement the constraints. **** 
-$\lambda$ and $\alpha$ were estimated by the \citet{R} function \texttt{nls}. 
-The value of $\beta$ can be found with $\beta = 1 - \alpha$. 
-Figure~\ref{fig:CD_Params_Graph} shows values of and 95\% confidence intervals 
-for $\lambda$ and $\alpha$. Appendix~\ref{sec:Model_Parameters} 
-contains tables with numerical values of model parameters and confidence intervals.
+$\lambda$ and $\alpha$ were estimated by the 
+\texttt{R} \citep{R} function \texttt{nls}. 
+If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
+we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
+The value of $\beta$ was found with $\beta = 1 - \alpha$. 
 
 Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
 
@@ -983,6 +991,9 @@ cdResampleTrianglePlot(energyType=NA)
 
 Converting the resample data into 95\% confidence intervals 
 provides data for Figure~\ref{fig:CD_Params_Graph}.
+Appendix~\ref{sec:Model_Parameters} 
+contains tables with numerical values of 
+Cobb-Douglas model parameters and 95\% confidence intervals.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
@@ -1013,23 +1024,21 @@ To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$
 in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
 was reparameterized as
 
-\begin{equation} \label{eq:CDe_reparam}
-  y = A k^{\min(a,b)}l^{|b-a|}e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
+\begin{equation} \label{eq:CDe_AB_reparam}
+  y = A k^{\min(a,b)} l^{|b-a|} e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 
-\noindent to ensure that $\alpha + \beta + \gamma = 1$. 
-By constraining $a \in [0,1]$ and $b \in [0,1]$, 
-we ensure that $\alpha \in [0,1]$, $\beta \in [0,1]$, and $\gamma \in [0,1]$. 
-Given values of $a$ and $b$ that represent the least-squares parameter 
-optimization for a given economy, 
+\noindent with 
 $\alpha = \min(a,b)$, 
 $\beta = |b-a|$, and 
-$\gamma = \max(a,b)$ 
-can be calculated. 
-The \citet{R} function \texttt{nls} was used to estimate the 
-least-squares values of $\lambda$, $a$, and $b$.
+$\gamma = 1 - \max(a,b)$.
+The reparameterization ensures that $\alpha + \beta + \gamma = 1$. 
+The \texttt{R} \citep{R} function \texttt{nls} was used to estimate 
+values of $\lambda$, $a$, and $b$.
+If the fitted value for $a$ ($b$) fell outside $[0,1]$, it was 
+set equal to its boundary value and $\lambda$ and $b$ ($a$) 
+were re-estimated.
 
-The Cobb-Douglas with energy parameter estimation process is challenging. 
 To demonstrate the characteristics of the parameter estimation process, 
 we performed a grid search over values of $\gamma$, 
 wherein we re-estimated values of $\lambda$, $\alpha$, and 
@@ -1037,20 +1046,41 @@ $\beta$ at each value of $\gamma$.
 Figure~\ref{fig:CDeGridLattice} shows the sum of squared errors ($SSE$), 
 $\alpha$, and $\beta$ as a function of the fixed value of 
 $\gamma$ with thermal energy ($q$). 
-For most economies, the minimum $SSE$ occurs at a boundary of $\alpha$, 
-$\beta$, or $\gamma$. 
-The parameter estimation algorithm has difficulty assessing confidence 
-intervals for $\alpha$, $\beta$, and $\gamma$, because the constrained 
-model behaves very differently on either side of the constraint.
 
-**** Fix the right y axis label. SSE should be italicized. 
+**** Fix the right y axis label. SSE should be italicized ($SSE$). 
 Also, scaling on the axis labels and scales is not being picked up. ****
 
 <<CDeGridLattice, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Grid search over $\\gamma$ for Cobb-Douglas model with thermal energy ($q$).">>=
 cdeGridLattice(energyType="Q")
 @
 
-Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $q$).
+Figure~\ref{fig:CDeGridLattice} shows that, for most economies,
+the minimum $SSE$ occurs at or near a boundary of 
+$\alpha$, $\beta$, or $\gamma$. 
+The parameter estimation algorithm (\texttt{nls}) had difficulty converging when
+the optimal value for the parameter represented by the absolute value function 
+(in Equation~\ref{eq:CDe_AB_reparam}, $\beta$) 
+was near a boundary. If the absolute value caused non-convergence of the 
+\texttt{nls} function, second and, if necessary, third reparameterizations 
+were attempted:
+
+\begin{equation} \label{eq:CDe_CD_reparam}
+  y = A k^{1 - \max(c,d)} l^{\min(c,d)} e^{|d-c|}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\begin{equation} \label{eq:CDe_FG_reparam}
+  y = A k^{|g-f|} l^{1 - \max(f,g)} e^{\min(f,g)}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent If none of the three reparameterizations converged, 
+the parameterization with the smallest $SSE$
+was used. \ref{sec:Convergence_Resample_Models} shows the 
+fraction of unconverged models for each model type. The above approach
+resulted in very few unconverged resample models, 
+even with \Sexpr{numResamples()} resamples.
+
+Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ 
+parameter values for Cobb-Douglas (with $q$) resample models.
 
 <<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
 cdResampleTrianglePlot(energyType="Q")
@@ -1150,11 +1180,11 @@ are shown in
 Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph}--\ref{fig:CES_sigma_delta_Cloud_Graph}.
 
 <<CES_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesLambdaGammaResamplePlot(energyType=NA)
+cesResamplePlotLambdaGamma(energyType=NA)
 @
 
 <<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesSigma_1Delta_1ResamplePlot(energyType=NA)
+cesResamplePlotSigma_1Delta_1(energyType=NA)
 @
 
 The next graph is not particularly interesting, 
@@ -1164,7 +1194,7 @@ $\sigma \rightarrow \infty$
 for the CES without energy model.
 
 <<CES_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\rho$ and $\\delta$.">>=
-cesSigmaDeltaResamplePlot(energyType=NA)
+cesResamplePlotSigmaDelta(energyType=NA)
 @
 
 Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals 
@@ -1198,15 +1228,15 @@ are shown in
 Figures~\ref{fig:CESq_lambda_gamma_Cloud_Graph}--\ref{fig:CESq_sigma_delta_Cloud_Graph}.
 
 <<CESq_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesLambdaGammaResamplePlot(energyType="Q")
+cesResamplePlotLambdaGamma(energyType="Q")
 @
 
 <<CESq_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesSigma_1Delta_1ResamplePlot(energyType="Q")
+cesResamplePlotSigma_1Delta_1(energyType="Q")
 @
 
 <<CESq_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesSigmaDeltaResamplePlot(energyType="Q")
+cesResamplePlotSigmaDelta(energyType="Q")
 @
 
 Coefficients for each resampled CES model (with $x$)
@@ -1214,15 +1244,15 @@ are shown in
 Figures~\ref{fig:CESx_lambda_gamma_Cloud_Graph}--\ref{fig:CESx_sigma_delta_Cloud_Graph}.
 
 <<CESx_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesLambdaGammaResamplePlot(energyType="X")
+cesResamplePlotLambdaGamma(energyType="X")
 @
 
 <<CESx_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesSigma_1Delta_1ResamplePlot(energyType="X")
+cesResamplePlotSigma_1Delta_1(energyType="X")
 @
 
 <<CESx_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesSigmaDeltaResamplePlot(energyType="X")
+cesResamplePlotSigmaDelta(energyType="X")
 @
 
 Coefficients for each resampled CES model (with $u$)
@@ -1230,15 +1260,15 @@ are shown in
 Figures~\ref{fig:CESu_lambda_gamma_Cloud_Graph}--\ref{fig:CESu_sigma_delta_Cloud_Graph}.
 
 <<CESu_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesLambdaGammaResamplePlot(energyType="U")
+cesResamplePlotLambdaGamma(energyType="U")
 @
 
 <<CESu_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesSigma_1Delta_1ResamplePlot(energyType="U")
+cesResamplePlotSigma_1Delta_1(energyType="U")
 @
 
 <<CESu_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesSigmaDeltaResamplePlot(energyType="U")
+cesResamplePlotSigmaDelta(energyType="U")
 @
 
 Figure~\ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals 
