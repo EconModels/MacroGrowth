@@ -9,7 +9,6 @@ tri2y <- function(x,y,z) {
   return( x * 1 + y * 0 + z * 0 )
 }
 
-
 tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
     base_theme(base_size = base_size, base_family = base_family) %+replace% 
       theme(panel.border = element_blank(), 
@@ -22,8 +21,7 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             plot.background = element_blank(),
             strip.background =  element_rect(fill = NA, colour = "gray50")
             )
-  }  
-
+}  
 
 xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
   base_theme(base_size = base_size, base_family = base_family) %+replace% 
@@ -33,7 +31,8 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
           plot.background = element_blank(),
           strip.background =  element_rect(fill = NA, colour = "gray50")
     )
-}  
+}
+
 triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
                     parse=TRUE, grid_lines=4, aes_string="", ...) {
   h <- seq(0, 1, by=1/grid_lines)
@@ -90,7 +89,6 @@ standardTriPlot <- function(data,
     scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
-
 standardScatterPlot <- function(data, mapping, size=1.0, alpha=0.1) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
     p <- p + geom_point(size=size, alpha=alpha) 
@@ -100,6 +98,4 @@ standardScatterPlot <- function(data, mapping, size=1.0, alpha=0.1) {
       p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
     }
     p + xy_theme()
-} 
-
-
+}
