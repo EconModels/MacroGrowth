@@ -1978,7 +1978,8 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
     # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
     # complimentary.  We'll let the estCES function solve for the best value.
     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM",
+                       method="L-BFGS-B"
+#                       method="LM",
 #                       rho1=rho1
     )
   } else if (countryAbbrev == "UK") {
