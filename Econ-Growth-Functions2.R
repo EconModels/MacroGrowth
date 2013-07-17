@@ -1909,10 +1909,11 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   ########################
   # Returns a cesEst model (without energy) for the country specified.
   ##
-  # Load the data that we need.
-  control=nls.lm.control(maxiter=1000, maxfev=2000)
-  modelCES <- cesEst(data=data, yName="iGDP", xNames=c("iCapStk", "iLabor"), 
-                     tName="iYear", control=control)
+  # control=nls.lm.control(maxiter=1000, maxfev=2000)
+  xNamesToUse <- c("iCapStk", "iLabor")
+  tName <- "iYear"
+  yName <- "iGDP"
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho"]
   # rho <- -1.0 gives the equation without energy, although it makes sigma blow up.
@@ -1961,104 +1962,104 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   # to "iEToFit" and use "iEToFit" in the nls function.
   data <- replaceColName(data, energyType, "iEToFit")
   # Set up the controls for the cesEst function.
-  control=nls.lm.control(maxiter=1000, maxfev=2000)
+  # control <- nls.lm.control(maxiter=1000, maxfev=2000)
   # Decide which independent variables we want to use
   xNamesToUse <- c("iCapStk", "iLabor", "iEToFit")    
   tName <- "iYear"
   yName <- "iGDP"
   # Now estimate the parameters for the CES production function.
-  if (countryAbbrev == "US") {
-    # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
-    # economically meaningful.  So, a grid search was performed, and it confirmed that low values of 
-    # rho1 yield a better fit. In fact, the lower the value of rho1, the better. So, we'll set it 
-    # here at rho1=0.0, which makes the elasticity of substitution between k and l sigma1 = 1.0, 
-    # giving the Cobb-Douglas form for the k l portion of the CES function. Similar results are found
-    # for X and U.
-#    rho1 = 0.0
-    # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
-    # complimentary.  We'll let the estCES function solve for the best value.
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="L-BFGS-B"
-#                       method="LM",
-#                       rho1=rho1
-    )
-  } else if (countryAbbrev == "UK") {
-    # The unconstrained optimization leads to rho1 = -2.4 and sigma1 = -0.71, which is not economically meaningful.
-    # So, a grid search was performed, and it confirmed that low values of rho1 yield a better fit. In fact, the 
-    # lower the value of rho1, the better. So, we'll set it here at rho1=0.0, which makes the elasticity of 
-    # substitution between k and l sigma1 = 1.0, giving the Cobb-Douglas form for the k l portion of the CES function.
-    # rho1 = c(0.00, 0.01, 0.02)
-    rho1 = 0.0
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM",
-                       rho1=rho1
-    )
-  } else if (countryAbbrev == "JP") {
-    # The unconstrained optimization leads to rho1 = 7.99 and sigma1 = 0.11, indicating complementarity between k & l,
-    # but different from the results for the US and UK (where k & l were found to be substitutes).  However, the
-    # p value for rho1 is very high (0.3), indicating that rho1 is not making a significant contribution to the model. 
-    # The unconstrained fit gives R^ = 0.996 and sigma = 0.103, indicating complementarity between (kl) and (e).
-    # 
-    # In fact, we could force rho1 = 0.0 and achieve rho = 280 and sigma = 0.00356 with R^2 = 0.988, a very small
-    # decrease, indeed.  Note that both the constrained and unconstrained fits give small sigma, indicating
-    # that (kl) and (e) are complimentary.
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM"
-    )
-  } else if (countryAbbrev == "CN"){
-    # Unconstrained optimization: rho1 < -0.2290, rho = 14.1651, R^2 = 0.9984. This corresponds to sigma1 = 1.297
-    # and sigma = 0.0659, indicating that (kl) and (e) are complements and k & l are substitutes.  However, none of the
-    # rho or sigma values are statistically significant.
-    # Now, sigma1 > 1 is not economically meaningful, so we'll set rho1 = 0 to force sigma1 = 1.0. When we do that, 
-    # we obtain sigma1 = 1.0 (so perfect substitution between k and l) and sigma = 7.19 (again, not economically
-    # meaningful) with R^2 = 0.9983.  Again, none of the rho or sigma values are statistically significant.
-    # Furthermore, the only significant varluable is gamma = 1.0731.
-    # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 0.9983.
-    rho1 = 0.0
-    rho = 0.0
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM",
-                       rho1=rho1,
-                       rho=rho                     
-    )
-  } else if (countryAbbrev == "ZA"){
-    # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
-    # between k and l.  sigma = 0.03, indicating complementarity between (kl) and (e).
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control, 
-                       method="LM",
-                       )
-  } else if (countryAbbrev == "SA"){
-    # An unconstrained fit gives rho = -6.33, rho1 = 9.36 (sigma1 = 0.0965) and R^2 = 0.9892.  
-    # This result is not economically meaningful.
-    # Constraining rho = 0 gives rho1 = -582, again not economically meaningful.
-    # So, do a grid search over meaningful regions to see what is best.
-    # The result (to with +/- 0.1) is rho = 0.0 and rho1 = 5.7, with R^2 = 0.9885.
-    # However, neither the the rho or nor the sigma values are statistically significant.
-    rho1 <- 5.7
-    rho <- 0.0
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM",
-                       rho1 = rho1,
-                       rho = rho
-    )
-  } else if (countryAbbrev == "IR"){
-    # Iran works with an unconstrained fit.
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="LM",
-    )
-  } else if (countryAbbrev == "TZ"){
-    # Using the PORT algorithm yields convergence and R^2 = 0.9974 with economically menaingful results.
-    # However, none of the rho or sigma values are statistically significant.
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="PORT",
-    )
-  } else if (countryAbbrev == "ZM"){
-    # ZM works with the PORT algorithm, but not the LM algorithm.
-    modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-                       method="PORT",
-                       rho=0.0
-    )
-  }
+#   if (countryAbbrev == "US") {
+#     # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
+#     # economically meaningful.  So, a grid search was performed, and it confirmed that low values of 
+#     # rho1 yield a better fit. In fact, the lower the value of rho1, the better. So, we'll set it 
+#     # here at rho1=0.0, which makes the elasticity of substitution between k and l sigma1 = 1.0, 
+#     # giving the Cobb-Douglas form for the k l portion of the CES function. Similar results are found
+#     # for X and U.
+# #    rho1 = 0.0
+#     # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
+#     # complimentary.  We'll let the estCES function solve for the best value.
+# #     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+# #                        method="LM",
+# #                        rho1=rho1)
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
+#   } else if (countryAbbrev == "UK") {
+#     # The unconstrained optimization leads to rho1 = -2.4 and sigma1 = -0.71, which is not economically meaningful.
+#     # So, a grid search was performed, and it confirmed that low values of rho1 yield a better fit. In fact, the 
+#     # lower the value of rho1, the better. So, we'll set it here at rho1=0.0, which makes the elasticity of 
+#     # substitution between k and l sigma1 = 1.0, giving the Cobb-Douglas form for the k l portion of the CES function.
+#     # rho1 = c(0.00, 0.01, 0.02)
+#     rho1 = 0.0
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="LM",
+#                        rho1=rho1
+#     )
+#   } else if (countryAbbrev == "JP") {
+#     # The unconstrained optimization leads to rho1 = 7.99 and sigma1 = 0.11, indicating complementarity between k & l,
+#     # but different from the results for the US and UK (where k & l were found to be substitutes).  However, the
+#     # p value for rho1 is very high (0.3), indicating that rho1 is not making a significant contribution to the model. 
+#     # The unconstrained fit gives R^ = 0.996 and sigma = 0.103, indicating complementarity between (kl) and (e).
+#     # 
+#     # In fact, we could force rho1 = 0.0 and achieve rho = 280 and sigma = 0.00356 with R^2 = 0.988, a very small
+#     # decrease, indeed.  Note that both the constrained and unconstrained fits give small sigma, indicating
+#     # that (kl) and (e) are complimentary.
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="LM"
+#     )
+#   } else if (countryAbbrev == "CN"){
+#     # Unconstrained optimization: rho1 < -0.2290, rho = 14.1651, R^2 = 0.9984. This corresponds to sigma1 = 1.297
+#     # and sigma = 0.0659, indicating that (kl) and (e) are complements and k & l are substitutes.  However, none of the
+#     # rho or sigma values are statistically significant.
+#     # Now, sigma1 > 1 is not economically meaningful, so we'll set rho1 = 0 to force sigma1 = 1.0. When we do that, 
+#     # we obtain sigma1 = 1.0 (so perfect substitution between k and l) and sigma = 7.19 (again, not economically
+#     # meaningful) with R^2 = 0.9983.  Again, none of the rho or sigma values are statistically significant.
+#     # Furthermore, the only significant varluable is gamma = 1.0731.
+#     # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 0.9983.
+#     rho1 = 0.0
+#     rho = 0.0
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="LM",
+#                        rho1=rho1,
+#                        rho=rho                     
+#     )
+#   } else if (countryAbbrev == "ZA"){
+#     # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
+#     # between k and l.  sigma = 0.03, indicating complementarity between (kl) and (e).
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control, 
+#                        method="LM",
+#                        )
+#   } else if (countryAbbrev == "SA"){
+#     # An unconstrained fit gives rho = -6.33, rho1 = 9.36 (sigma1 = 0.0965) and R^2 = 0.9892.  
+#     # This result is not economically meaningful.
+#     # Constraining rho = 0 gives rho1 = -582, again not economically meaningful.
+#     # So, do a grid search over meaningful regions to see what is best.
+#     # The result (to with +/- 0.1) is rho = 0.0 and rho1 = 5.7, with R^2 = 0.9885.
+#     # However, neither the the rho or nor the sigma values are statistically significant.
+#     rho1 <- 5.7
+#     rho <- 0.0
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="LM",
+#                        rho1 = rho1,
+#                        rho = rho
+#     )
+#   } else if (countryAbbrev == "IR"){
+#     # Iran works with an unconstrained fit.
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="LM",
+#     )
+#   } else if (countryAbbrev == "TZ"){
+#     # Using the PORT algorithm yields convergence and R^2 = 0.9974 with economically menaingful results.
+#     # However, none of the rho or sigma values are statistically significant.
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="PORT",
+#     )
+#   } else if (countryAbbrev == "ZM"){
+#     # ZM works with the PORT algorithm, but not the LM algorithm.
+#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
+#                        method="PORT",
+#                        rho=0.0
+#     )
+#   }
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho_1"]
   rho <- coef(modelCES)["rho"]
