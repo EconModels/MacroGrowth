@@ -114,13 +114,53 @@ estimates that violate the constraints above.
 
 <<>>=
 dataUK <- loadData(countryAbbrev="UK")
-modelUKQ_LM <- cesEst(data=dataUK, yName="iGDP", xNames=c("iCapStk", "iLabor", "iQ"), tName="iYear")
+modelUKQ_LM <- cesEst(data=dataUK, 
+                      yName="iGDP", 
+                      xNames=c("iCapStk", "iLabor", "iQ"), 
+                      tName="iYear")
 summary(modelUKQ_LM)
 @
 
-In the above example, we obtain $\rho_1 = $ \Sexpr{coef(modelUKQ_LM)["rho_1"]} 
-which violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$.
+In the above example, we obtain convergence of the curve-fitting routine.
+But, we also obtain an estimate of $\rho_1 = $ \Sexpr{coef(modelUKQ_LM)["rho_1"]} 
+that violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$. 
+This violation leads to $\sigma_1$ (\texttt{E_1_2 (HM)}) being undefined (\texttt{NA})
+in the model summary.
 
+To respect the constraints, we can use the \texttt{L-BFGS-B} optimization
+method. The default guess parameters are 
+
+<<>>=
+modelUKQ_LBFGSB <- cesEst(data=dataUK, 
+                          yName="iGDP", 
+                          xNames=c("iCapStk", "iLabor", "iQ"), 
+                          tName="iYear",
+                          method="L-BFGS-B")
+summary(modelUKQ_LBFGSB)
+@
+
+This approach correctly respects the constraints, 
+but the \texttt{LM} algorithm does not converge.
+
+To assess what is happening, we can use the built-in grid search
+capability of \texttt{cesEst}. Grid search is accessed by specifying
+rho or rho1 arguments and a range of values.
+
+<<>>=
+modelUKQ_grid <- cesEst(data=dataUK, yName="iGDP", xNames=c("iCapStk", "iLabor", "iQ"), tName="iYear")
+modelUKQ_grid <- cesEst(data=dataUK, 
+                        yName="iGDP", 
+                        xNames=c("iCapStk", "iLabor", "iQ"), 
+                        tName="iYear",
+                        method="L-BFGS-B",
+                        rho=seq(from=1, to=20, by=2), 
+                        rho1=seq(from=1, to=2, by=0.2))
+summary(modelUKQ_grid)
+@
+
+<<>>=
+plot(modelUKQ_grid)
+@
 
 
 \end{document}
