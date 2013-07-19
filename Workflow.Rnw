@@ -131,4 +131,5 @@ standardScatterPlot( loadAllResampleData(model="cese", energyType = "Q"),
                      aes(delta, rho) ) +
   labs(title="Model = cese; energy=Q", x=expression(delta), y=expression(rho))
 @
+
 \end{document}
