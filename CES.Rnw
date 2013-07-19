@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{language} % Obtain language.sty from https://github.com/rpruim/latex
+\usepackage{underscore} % Should be part of any LaTeX distribution.
+
+\title{Parameter Estimation for the CES Model}
+\author{Matthew Kuperus Heun}
+\begin{document}
+
+<<setup, include=FALSE>>=
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE
+)
+source("Econ-Growth-Functions2.R")
+@
+
+\maketitle
+
+%------------------------------
+\section{Energy-augmented CES Production Function (CESe)} 
+\label{sec:CES}
+%------------------------------
+
+The CES model without energy is
+
+\begin{equation} \label{eq:CES}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\begin{itemize}
+\item
+Equation~\ref{eq:CES} is a CES production function with 
+capital stock ($k$) and labor ($l$) factors of production. 
+\item
+$\gamma$ is a fitting parameter that represents productivity. 
+\item
+$\delta_1$ describes the importance of ($k$) relative to ($l$).
+\item
+The fitting parameter $\rho_1$ indicates elasticity
+of substitution ($\sigma_1$) between capital ($k$) 
+and labor ($l$). $\sigma_1 = \frac{1}{1+\rho_1}$.
+\item
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+\item
+As $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
+\item
+As $\sigma_1 \rightarrow \infty$ ($\rho_1 \rightarrow -1$),
+$k$ and $l$ are perfect substitutes.
+\item
+Constraints on the fitting parameters include 
+  \begin{itemize}
+  \item $\delta_1 \in (0,1)$
+  \item $\rho_1 \in (-1,0) \cup (0,\infty)$
+  \item $\sigma_1 \in (0,1) \cup (1,\infty)$
+  \end{itemize}
+
+\end{itemize}
+
+The CES model with energy is
+
+\begin{equation} \label{eq:CESe}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\begin{itemize}
+\item
+Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+\item
+$\delta$ describes the importance of the capital/labor pair ($kl$) relative to ($e$).
+\item
+The fitting parameter $\rho$ indicates elasticity
+of substitution ($\sigma$) between the capital/labor pair ($kl$) 
+and energy ($e$). $\sigma = \frac{1}{1+\rho}$.
+\item
+As $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
+\item
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+\item
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. 
+\item 
+Constraints on the fitting parameters include 
+  \begin{itemize}
+  \item $\delta \in (0,1)$,
+  \item $\rho \in (-1,0) \cup (0,\infty)$.
+  \item $\sigma \in (0,1) \cup (1,\infty)$
+  \end{itemize}
+\item
+Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
+where $\delta \rightarrow 1$ and $\rho \rightarrow -1$ 
+($\sigma \rightarrow \infty$). 
+\end{itemize}
+
+The \texttt{R} package \texttt{micEcon} provide function 
+\texttt{cesEst} for estimating the parameters of the CES model.
+If we use cesEst ``out of the box,'' which uses the
+Levenberg-Marquardt (\texttt{LM}) optimization method, 
+we often obtain parameter
+estimates that violate the constraints above. 
+
+<<>>=
+dataUK <- loadData(countryAbbrev="UK")
+modelUKQ_LM <- cesEst(data=dataUK, yName="iGDP", xNames=c("iCapStk", "iLabor", "iQ"), tName="iYear")
+summary(modelUKQ_LM)
+@
+
+In the above example, we obtain $\rho_1 = $ \Sexpr{coef(modelUKQ_LM)["rho_1"]} 
+which violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$.
+
+
+
+\end{document}
