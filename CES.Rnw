@@ -2,6 +2,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{language} % Obtain language.sty from https://github.com/rpruim/latex
 \usepackage{underscore} % Should be part of any LaTeX distribution.
+\usepackage{float} % For precise figure positioning.
 
 \title{Parameter Estimation for the CES Model}
 \author{Matthew Kuperus Heun}
@@ -139,7 +140,7 @@ modelUKQ_LBFGSB <- cesEst(data=dataUK,
 summary(modelUKQ_LBFGSB)
 @
 
-This approach correctly respects the constraints, 
+The above approach correctly respects the constraints, 
 but the \texttt{LM} algorithm does not converge.
 
 To assess what is happening, we can use the built-in grid search
@@ -147,20 +148,46 @@ capability of \texttt{cesEst}. Grid search is accessed by specifying
 rho or rho1 arguments and a range of values.
 
 <<>>=
-modelUKQ_grid <- cesEst(data=dataUK, yName="iGDP", xNames=c("iCapStk", "iLabor", "iQ"), tName="iYear")
 modelUKQ_grid <- cesEst(data=dataUK, 
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
                         method="L-BFGS-B",
-                        rho=seq(from=1, to=20, by=2), 
-                        rho1=seq(from=-0.5, to=2, by=0.5))
+                        rho=seq(from=5, to=30, by=5), 
+                        rho1=seq(from=-0.5, to=1.5, by=0.5))
 summary(modelUKQ_grid)
 @
 
-<<>>=
+The negative of the $SSE$ values from the grid search can be plotted as a function of 
+$\rho$ and $\rho_1$ quite easily, as shown in Figure~\ref{fig:UKQ-grid-coarse}.
+The \texttt{plot} function puts the negative of $SSE$ on the $z$ axis, 
+so better curve fits appear as higher on the $z$ axis of this plot.
+
+<<UKQ-grid-coarse, fig.pos="H", fig.cap="$-SSE$ vs. $\\rho$ and $\\rho_1$. Coarse grid.">>=
 plot(modelUKQ_grid)
 @
+ 
+To explore the details at high values of $\rho$ and values of 
+$\rho_1 \rightarrow -1$, we can do a detailed analysis\dots
+
+<<>>=
+modelUKQ_grid_detail <- cesEst(data=dataUK, 
+                        yName="iGDP", 
+                        xNames=c("iCapStk", "iLabor", "iQ"), 
+                        tName="iYear",
+                        method="L-BFGS-B",
+                        rho=seq(from=14, to=20, by=1), 
+                        rho1=seq(from=-0.95, to=-0.5, by=0.05))
+summary(modelUKQ_grid_detail)
+@
+
+{\dots}and build a graph as shown in Figure~\ref{fig:UKQ-grid-fine}.
+
+<<UKQ-grid-fine, fig.pos="H", fig.cap="$-SSE$ vs. $\\rho$ and $\\rho_1$. Fine grid.">>=
+plot(modelUKQ_grid_detail)
+@
+
+The best fit for the UK appears to be $\rho_1 \rightarrow -1$ ($\sigma_1 \rightarrow \infty$, meaning perfect subsitutibility between $k$ and $l$). It is unclear why there is a sudden dropoff in $-SSE$ at larger values of $\rho$.
 
 
 \end{document}
