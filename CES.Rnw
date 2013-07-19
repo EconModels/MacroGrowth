@@ -187,7 +187,16 @@ summary(modelUKQ_grid_detail)
 plot(modelUKQ_grid_detail)
 @
 
-The best fit for the UK appears to be $\rho_1 \rightarrow -1$ ($\sigma_1 \rightarrow \infty$, meaning perfect subsitutibility between $k$ and $l$). It is unclear why there is a sudden dropoff in $-SSE$ at larger values of $\rho$.
+The best fit for the UK appears to be $\rho_1 \rightarrow -1$ 
+($\sigma_1 \rightarrow \infty$, 
+meaning perfect subsitutibility between $k$ and $l$). 
+The sudden dropoff in $-SSE$ at larger values of $\rho$ 
+should be investigated.
+
+Figure~\ref{fig:UKQ-grid-fine} makes it clear 
+that it will be difficult to achieve convergence 
+for the UK CES model with $q$ unless the cause of the steep
+dropoff can be understood.
 
 
 \end{document}
