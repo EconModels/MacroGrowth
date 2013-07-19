@@ -128,6 +128,12 @@ resampleFits <- function(modelType=modelTypes,
                       )
   baseFitCoeffs <- attr(x = origModel, which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
+  safeCES <- function(data,origModel,method) {
+    myData <- doResample(data=data, origModel=origModel, method=method)
+    tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
+             error=function(e) { save(myData, file="CESfail.Rdata"); return(NULL) }
+    )
+  }
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
@@ -146,10 +152,7 @@ resampleFits <- function(modelType=modelTypes,
                                                                 energyType=energyType, 
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
-                              "ces"   = do(n) * attr(x=cesModelNoEnergy(data=doResample(data=data, 
-                                                                                        origModel=origModel, 
-                                                                                        method=method)),
-                                                     which="naturalCoeffs"),
+                              "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
                               "cese"  = do(n) * attr(x=cesModel(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 data=doResample(data=data, 
