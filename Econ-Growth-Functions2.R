@@ -3559,7 +3559,7 @@ nResamples <- function(modelType=modelTypes,
                        energyType=energyTypes, 
                        factor=factors, ...){
   ###################
-  # Gives the number of resample fits that did not converge for the 
+  # Gives the number of resample fits for the 
   # given parameters.
   ##
   modelType <- match.arg(modelType)
