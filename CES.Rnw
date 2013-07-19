@@ -154,7 +154,7 @@ modelUKQ_grid <- cesEst(data=dataUK,
                         tName="iYear",
                         method="L-BFGS-B",
                         rho=seq(from=1, to=20, by=2), 
-                        rho1=seq(from=1, to=2, by=0.2))
+                        rho1=seq(from=-0.5, to=2, by=0.5))
 summary(modelUKQ_grid)
 @
 
