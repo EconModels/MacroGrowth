@@ -204,8 +204,7 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \section*{To-do List}
 \begin{itemize}
-\item{Heun: Look into constraining $\delta \in [0,1]$
-and $\delta_1 \in [0,1]$ in the CES and CES$e$ models.}
+\item{Heun: Figure out why CES$q$ model fails to converge with original data for JP and CN.}
 \item{Heun: Investigate why wew obtain $\rho_1 < -1$ 
 for some US CES$e$ resample models.}
 \item{Pruim: Respond to Heun's wish list for graphs.}
@@ -269,6 +268,8 @@ for each model, energy type, and factor.}}
       \item{\st{CESe}}
       \item{\st{LINEX}}
       \end{itemize}
+\item{\st{Heun: Look into constraining $\delta \in [0,1]$
+and $\delta_1 \in [0,1]$ in the CES and CES$e$ models.}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
