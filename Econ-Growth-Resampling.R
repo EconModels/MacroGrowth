@@ -12,6 +12,12 @@ source('Econ-Growth-Functions2.R')
 # We do this multiple times and save a file that contains 
 # the results for later investigation
 
+timeFileName <- function(pre="",post="") {
+  dt <- Sys.time()
+  dt <- gsub(" ","-", dt)
+  return(paste(pre, dt, post, sep=""))
+}
+
 genAllResampleData <- function(method="wild", n=numResamples()){
   #######################
   # Generates all resampling data for all models using the method specified
@@ -128,6 +134,12 @@ resampleFits <- function(modelType=modelTypes,
                       )
   baseFitCoeffs <- attr(x = origModel, which="naturalCoeffs")
   # Now do a fit with resampling n times and get all of the coefficients
+  safeCES <- function(data,origModel,method) {
+    myData <- doResample(data=data, origModel=origModel, method=method)
+    tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
+             error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
+    )
+  }
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
@@ -146,10 +158,7 @@ resampleFits <- function(modelType=modelTypes,
                                                                 energyType=energyType, 
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
-                              "ces"   = do(n) * attr(x=cesModelNoEnergy(data=doResample(data=data, 
-                                                                                        origModel=origModel, 
-                                                                                        method=method)),
-                                                     which="naturalCoeffs"),
+                              "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
                               "cese"  = do(n) * attr(x=cesModel(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 data=doResample(data=data, 
