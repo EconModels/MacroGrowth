@@ -198,5 +198,15 @@ that it will be difficult to achieve convergence
 for the UK CES model with $q$ unless the cause of the steep
 dropoff can be understood.
 
+It is possible to set $\rho_1$ to a specific number 
+(in this case, we could choose $\rho_1 = -0.99$; $-1.0$ would 
+blow up)
+and have \texttt{cesEst} fit the remaining parameters.
+If we went this route, we would be going in a direction that
+is similar to our approach to the constraints
+on the Cobb-Douglas model, wherein we fit the unconstrained 
+model first. If the unconstrained fit violates any constraints, 
+we set the offending parameter at the constraint 
+and re-fit the remaining the parameters.
 
 \end{document}
