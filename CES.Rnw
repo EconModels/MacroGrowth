@@ -106,8 +106,9 @@ Constraints on the fitting parameters include
   \end{itemize}
 \item
 Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
-where $\delta \rightarrow 1$ and $\rho \rightarrow -1$ 
-($\sigma \rightarrow \infty$). 
+where $\delta \rightarrow 1$ and $\rho$ is undefined in 
+the sense that energy ($e$) is unimportant regardless of the 
+value of $\rho$.
 \end{itemize}
 
 
