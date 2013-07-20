@@ -18,8 +18,9 @@ source("Econ-Growth-Functions2.R")
 
 \maketitle
 
+
 %------------------------------
-\section{Energy-augmented CES Production Function (CESe)} 
+\section{CES Production Function} 
 \label{sec:CES}
 %------------------------------
 
@@ -79,6 +80,9 @@ using a ($kl$)($e$) nesting structure, as is typical in the literature.
 \item
 $\delta$ describes the importance of the capital/labor pair ($kl$) relative to ($e$).
 \item
+As $\delta \rightarrow 1$, the energy term ($e$) 
+becomes increasingly unimportant for the model.
+\item
 The fitting parameter $\rho$ indicates elasticity
 of substitution ($\sigma$) between the capital/labor pair ($kl$) 
 and energy ($e$). $\sigma = \frac{1}{1+\rho}$.
@@ -106,12 +110,29 @@ where $\delta \rightarrow 1$ and $\rho \rightarrow -1$
 ($\sigma \rightarrow \infty$). 
 \end{itemize}
 
+
+%------------------------------
+\section{Fitting Without Constraints} 
+\label{sec:CES-without-constraints}
+%------------------------------
+
 The \texttt{R} package \texttt{micEcon} provide function 
 \texttt{cesEst} for estimating the parameters of the CES model.
-If we use cesEst ``out of the box,'' which uses the
+If we use \texttt{cesEst} ``out of the box,'' which uses the
 Levenberg-Marquardt (\texttt{LM}) optimization method, 
 we often obtain parameter
 estimates that violate the constraints above. 
+The default starting values for the fitting parameters are 
+\begin{itemize}
+\item $\lambda = 0.015$
+\item $\gamma = $ a value that makes the mean of the residuals is zero under certain assumptions
+\item $\delta = 0.5$
+\item $\delta_1 = 0.5$
+\item $\rho = 0.25$ (implying that $\sigma = 0.8$) (if not otherwise specified)
+\item $\rho_1 = 0.25$ (implying that $\sigma_1 = 0.8$) (if not otherwise specified)
+\end{itemize}
+
+We can perform unconstrained parameter estimation with the following code.
 
 <<>>=
 dataUK <- loadData(countryAbbrev="UK")
@@ -122,14 +143,26 @@ modelUKQ_LM <- cesEst(data=dataUK,
 summary(modelUKQ_LM)
 @
 
-In the above example, we obtain convergence of the curve-fitting routine.
-But, we also obtain an estimate of $\rho_1 = $ \Sexpr{coef(modelUKQ_LM)["rho_1"]} 
-that violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$. 
+In the above example, we obtain convergence of the curve-fitting routine. 
+However, there are two problems.
+
+\begin{enumerate}
+\item The estimate of $\rho_1 = $ \Sexpr{coef(modelUKQ_LM)["rho_1"]}
+violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$. 
 This violation leads to $\sigma_1$ (\texttt{E_1_2 (HM)}) being undefined (\texttt{NA})
 in the model summary.
+\item $\delta \rightarrow 1$, meaning that the energy term
+is unnecessary.
+\end{enumerate}
 
-To respect the constraints, we can use the \texttt{L-BFGS-B} optimization
-method. The default guess parameters are 
+
+%------------------------------
+\section{Fitting With Constraints} 
+\label{sec:CES-with-constraints}
+%------------------------------
+
+To fit while respecting the constraints, we can use the \texttt{L-BFGS-B} optimization
+method. 
 
 <<>>=
 modelUKQ_LBFGSB <- cesEst(data=dataUK, 
@@ -140,12 +173,15 @@ modelUKQ_LBFGSB <- cesEst(data=dataUK,
 summary(modelUKQ_LBFGSB)
 @
 
-The above approach correctly respects the constraints, 
+\noindent The above approach correctly respects the constraints, 
 but the \texttt{LM} algorithm does not converge.
 
 To assess what is happening, we can use the built-in grid search
 capability of \texttt{cesEst}. Grid search is accessed by specifying
-rho or rho1 arguments and a range of values.
+\texttt{rho} and/or \texttt{rho1} arguments and a range of values. 
+Note that specifying a range of values for $\rho$ or $\rho_1$ that 
+contains values less than $-1$ results in an error. 
+The model with lowest $SSE$ will be returned from the grid search.
 
 <<>>=
 modelUKQ_grid <- cesEst(data=dataUK, 
@@ -161,14 +197,21 @@ summary(modelUKQ_grid)
 The negative of the $SSE$ values from the grid search can be plotted as a function of 
 $\rho$ and $\rho_1$ quite easily, as shown in Figure~\ref{fig:UKQ-grid-coarse}.
 The \texttt{plot} function puts the negative of $SSE$ on the $z$ axis, 
-so better curve fits appear as higher on the $z$ axis of this plot.
+so better curve fits appear higher on the $z$ axis of this plot.
 
 <<UKQ-grid-coarse, fig.pos="H", fig.cap="$-SSE$ vs. $\\rho$ and $\\rho_1$. Coarse grid.">>=
 plot(modelUKQ_grid)
 @
  
+The best fit occurs when $\rho_1 \rightarrow -1$ (its boundary) and $\rho$ is large, 
+but not so large that you fall over the cliff. In Figure~\ref{fig:UKQ-grid-coarse},
+that is at $\rho = 15$ and $\rho_1 = -0.5$ (the lowest value of $\rho_1$ in the grid search).
+Although, it should be noted that $\frac{\partial^2 SSE}{\partial \rho_1^2}$
+is very small.
+
 To explore the details at high values of $\rho$ and values of 
-$\rho_1 \rightarrow -1$, we can do a detailed analysis\dots
+$\rho_1 \rightarrow -1$, we can do a detailed analysis with 
+a finer grid.
 
 <<>>=
 modelUKQ_grid_detail <- cesEst(data=dataUK, 
@@ -181,32 +224,85 @@ modelUKQ_grid_detail <- cesEst(data=dataUK,
 summary(modelUKQ_grid_detail)
 @
 
-{\dots}and build a graph as shown in Figure~\ref{fig:UKQ-grid-fine}.
+We can build a graph as shown in Figure~\ref{fig:UKQ-grid-fine}.
 
 <<UKQ-grid-fine, fig.pos="H", fig.cap="$-SSE$ vs. $\\rho$ and $\\rho_1$. Fine grid.">>=
 plot(modelUKQ_grid_detail)
 @
 
-The best fit for the UK appears to be $\rho_1 \rightarrow -1$ 
-($\sigma_1 \rightarrow \infty$, 
-meaning perfect subsitutibility between $k$ and $l$). 
+The best fit occurs when $\rho_1 \rightarrow -1$ (at its boundary
+and indicating perfect substitutibility between $k$ and $l$)
+and $\delta \rightarrow 1$ (indicating that energy is unnecessary
+in this production function). Interestingly, the Cobb-Douglas
+model with $q$ for the UK indicates that energy is important
+($\gamma \approx 0.5$). Are the Cobb-Douglas and CES models
+indicating different things?
+
 The sudden dropoff in $-SSE$ at larger values of $\rho$ 
 should be investigated.
 
-Figure~\ref{fig:UKQ-grid-fine} makes it clear 
-that it will be difficult to achieve convergence 
-for the UK CES model with $q$ unless the cause of the steep
-dropoff can be understood.
 
-It is possible to set $\rho_1$ to a specific number 
+%------------------------------
+\section{Fitting Without Energy} 
+\label{sec:CES-without-energy}
+%------------------------------
+
+Based on the fact that the best fit constrained model gives
+$\delta \rightarrow 1$, we can try a no-energy CES model 
+with the following code. 
+(Note that the value of \texttt{rho} below 
+corresponds to the parameter $\rho_1$ in Equation~\ref{eq:CES}.)
+
+<<>>=
+modelUK <- cesEst(data=dataUK, 
+                        yName="iGDP", 
+                        xNames=c("iCapStk", "iLabor"), 
+                        tName="iYear",
+                        method="L-BFGS-B")
+summary(modelUK)
+@
+
+With the no-energy model, we have achieved reasonable values for
+all parameters. And, the parameter estimation algorithm converges.
+However, we may be in a situation where Cobb-Douglas and CES
+are in conflict regarding the role of energy in economic growth.
+
+
+%------------------------------
+\section{Possible Ways Forward} 
+\label{sec:CES-way-forward}
+%------------------------------
+
+Here are some brainstorm-y ideas on how to proceed.
+
+\begin{enumerate}
+\item I think we need to understand the cause of the 
+steep dropoff in Figures~\ref{fig:UKQ-grid-coarse} and
+\ref{fig:UKQ-grid-fine}.
+
+\item We may want to consider an algorithm to detect when
+$\delta \rightarrow 1$ and switch to a no-energy
+model as shown above.
+
+\item Perhaps there is a degenerate form of the model that is 
+easier to fit if we detect that $\rho_1 \rightarrow -1$.
+
+\item It is possible to set $\rho_1$ to a specific number 
 (in this case, we could choose $\rho_1 = -0.99$; $-1.0$ would 
 blow up)
 and have \texttt{cesEst} fit the remaining parameters.
-If we went this route, we would be going in a direction that
-is similar to our approach to the constraints
-on the Cobb-Douglas model, wherein we fit the unconstrained 
-model first. If the unconstrained fit violates any constraints, 
-we set the offending parameter at the constraint 
-and re-fit the remaining the parameters.
+(This is accomplished by supplying \texttt{rho} and/or
+\texttt{rho1} parameters as single values, not 
+ranges.)
+A possible algorithm using this mechanism would be
+similar to our algorithm for respecting the constraints
+on the Cobb-Douglas model.
+  \begin{enumerate}
+  \item{Fit the unconstrained model}
+  \item{If the unconstrained fit violates any constraints, 
+  set the offending parameter at the constraint}
+  \item{Re-fit the remaining the parameters}
+  \end{enumerate}
+\end{enumerate}
 
 \end{document}
