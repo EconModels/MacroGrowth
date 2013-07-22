@@ -121,7 +121,7 @@ options(width=75)
 options(show.signif.stars=TRUE)
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -328,6 +328,12 @@ attempts to contribute to the literature by applying statistically rigorous
 methods along three coordinates of analysis: form of the energy augmented 
 production function, energy quantification, and type of economy.
 
+**** Additional references requested by Martin. Incorporate into paper? ****
+
+\citet{Lindenberger:2011dx}
+
+\citet{Stresing:2008cq}
+
 The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
 discusses the coordinates of analysis described above. 
 Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
@@ -384,7 +390,9 @@ energy and coal energy. \citet{Serrenho:2010vq} use the log transform of
 the energy-augmented Cobb-Douglas function with thermal energy 
 quantification ($q$) to describe output for the EU-15 countries. 
 Serrenho divides thermal energy into renewables, non-renewables, 
-wastes, and imports.
+wastes, and imports. The main argument of these papers is that 
+energy is an important driver of growth and needs to be included
+as an essential factor of production.
 
 **** Martin: add more here about the conclusions of each paper regarding 
 the role of energy in economic growth? Add additional literature? 
@@ -463,7 +471,10 @@ options for nesting the energy factor of production affect predictive ability.
 \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). 
 \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy 
 from 1800-2000 and demonstrate the importance of the transition from wood to 
-fossil fuels for economic growth.
+fossil fuels for economic growth. \citet{Shen:2013vp} included energy 
+in nested aggregated CES production functions 
+for China and found that the best nesting structure is ($le$)($k$).
+
 
 **** Martin: add more here about the conclusions of each paper regarding 
 the role of energy in economic growth? Add additional literature? 
@@ -538,6 +549,9 @@ for the economies of the U.S., Japan, and Germany.
 \citet{Warr:2010ga} compare the LINEX production function with 
 the Cobb-Douglas production function to assess economic growth 
 for Austria, the United Kingdom, the United States, and Japan. 
+\citet{Ayres:2005kn} argued that introducing energy inputs 
+in traditional production functions does not improve its explanatory power, 
+but including useful work in a LINEX function does. 
 
 **** Martin: add more here about the conclusions of each paper 
 regarding the role of energy in economic growth? Add additional literature? 
