@@ -19,12 +19,12 @@ source("Econ-Growth-Functions2.R")
 \maketitle
 
 
-%------------------------------
+%++++++++++++++++++++++++++++++
 \section{CES Production Function} 
 \label{sec:CES}
-%------------------------------
+%++++++++++++++++++++++++++++++
 
-The CES model without energy is
+The Constant Elasticity of Substitution (CES) model without energy is
 
 \begin{equation} \label{eq:CES}
   y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
@@ -112,9 +112,13 @@ value of $\rho$.
 \end{itemize}
 
 
-%------------------------------
+%++++++++++++++++++++++++++++++
 \section{Fitting Without Constraints} 
 \label{sec:CES-without-constraints}
+%++++++++++++++++++++++++++++++
+
+%------------------------------
+\subsection{Standard Energy Nesting ($kl$)($e$)}
 %------------------------------
 
 The \texttt{R} package \texttt{micEcon} provide function 
@@ -153,14 +157,49 @@ violates the constraint $\rho_1 \in (-1,0) \cup (0,\infty)$.
 This violation leads to $\sigma_1$ (\texttt{E_1_2 (HM)}) being undefined (\texttt{NA})
 in the model summary.
 \item $\delta \rightarrow 1$, meaning that the energy term
-is unnecessary.
+is unnecessary. The Cobb-Douglas model indicated that the 
+capital stock term was unnecessary ($\alpha = 0$). So, the 
+Cobb-Douglas and CES models seem to be in conflict.
 \end{enumerate}
 
-
 %------------------------------
+\subsection{Alternative Energy Nesting ($le$)($k$)}
+%------------------------------
+
+A second option is to use a different nesting structure
+for the CES model, namely ($le$)($k$), as shown in Equation~\ref{eq:CESe2}.
+
+\begin{equation} \label{eq:CESe2}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+In Equation~\ref{eq:CESe2}, $\delta \rightarrow 1$ indicates that capital stock ($k$)
+is unnecessary.
+
+<<>>=
+modelUKQ_LM2 <- cesEst(data=dataUK, 
+                      yName="iGDP", 
+                      xNames=c("iLabor", "iQ", "iCapStk"), 
+                      tName="iYear")
+summary(modelUKQ_LM2)
+@
+
+With ($le$)($k$) nesting, the fitting routine converges, and we find that 
+$\delta = $ \Sexpr{coef(modelUKQ_LM2)["delta"]}, 
+which violates the constraint $\delta \in (0,1)$. This result might indicate 
+that capital stock ($k$) is unnecessary.
+
+So, the indications about relative importance of different factors 
+of production may be a function of nesting method in the CES model.
+
+
+%++++++++++++++++++++++++++++++
 \section{Fitting With Constraints} 
 \label{sec:CES-with-constraints}
-%------------------------------
+%++++++++++++++++++++++++++++++
 
 To fit while respecting the constraints, we can use the \texttt{L-BFGS-B} optimization
 method. 
@@ -243,10 +282,10 @@ The sudden dropoff in $-SSE$ at larger values of $\rho$
 should be investigated.
 
 
-%------------------------------
+%++++++++++++++++++++++++++++++
 \section{Fitting Without Energy} 
 \label{sec:CES-without-energy}
-%------------------------------
+%++++++++++++++++++++++++++++++
 
 Based on the fact that the best fit constrained model gives
 $\delta \rightarrow 1$, we can try a no-energy CES model 
@@ -269,17 +308,21 @@ However, we may be in a situation where Cobb-Douglas and CES
 are in conflict regarding the role of energy in economic growth.
 
 
-%------------------------------
+%++++++++++++++++++++++++++++++
 \section{Possible Ways Forward} 
 \label{sec:CES-way-forward}
-%------------------------------
+%++++++++++++++++++++++++++++++
 
-Here are some brainstorm-y ideas on how to proceed.
+Here are some brainstorm-y ideas on how to proceed, in no particular order.
 
 \begin{enumerate}
 \item I think we need to understand the cause of the 
 steep dropoff in Figures~\ref{fig:UKQ-grid-coarse} and
 \ref{fig:UKQ-grid-fine}.
+
+\item We need to understand why the nesting structure appears
+to affect the indications of which parameters are important.
+This may involve a little bit of literature searching by Martin.
 
 \item We may want to consider an algorithm to detect when
 $\delta \rightarrow 1$ and switch to a no-energy
