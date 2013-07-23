@@ -351,6 +351,7 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
                   xNames=xNames, 
                   tName="iYear",
                   method=method)
+  return(model)
 }
 
 # Make all the models
