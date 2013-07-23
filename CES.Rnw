@@ -333,6 +333,7 @@ all three nesting options
 \end{itemize}
 
 <<eval=TRUE>>=
+require(plyr)
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
 fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
   data <- loadData(countryAbbrev=countryAbbrev)
@@ -351,16 +352,16 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
                   xNames=xNames, 
                   tName="iYear",
                   method=method)
-  return(model)
+  return(c(coef( model ), c(country=countryAbbrev, nest=nest)) )
 }
 
 # Make all the models
-kleModels <- lapply(countryAbbrevs, fitCES, nest="(kl)e")
-lekModels <- lapply(countryAbbrevs, fitCES, nest="(le)k")
-eklModels <- lapply(countryAbbrevs, fitCES, nest="(ek)l")
-
-modelMatrix <- cbind(kleModels, lekModels, eklModels)
-colnames(modelTable) <- nestingOptions
+kleModels <- ldply(countryAbbrevs, fitCES, nest="(kl)e")
+lekModels <- ldply(countryAbbrevs, fitCES, nest="(le)k")
+eklModels <- ldply(countryAbbrevs, fitCES, nest="(ek)l")
+allModels <- rbind(kleModels, lekModels, eklModels)
+#modelMatrix <- cbind(kleModels, lekModels, eklModels)
+#colnames(modelTable) <- nestingOptions
 
 # Now, extract coefficients from each model in the matrix
 # to make data.frames of coefficients. Each data.frame has 
