@@ -364,7 +364,7 @@ colnames(modelTable) <- nestingOptions
 
 # Now, extract coefficients from each model in the matrix
 # to make data.frames of coefficients. Each data.frame has 
-# countries in rows and nesting options in columns 
+# countries in rows and nesting options in columns, 
 # (same structure) as modelMatrix
 
 # gamma
