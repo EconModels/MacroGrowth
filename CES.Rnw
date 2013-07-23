@@ -169,6 +169,13 @@ Cobb-Douglas and CES models seem to be in conflict.
 A second option is to use a different nesting structure
 for the CES model, namely ($le$)($k$), as shown in Equation~\ref{eq:CESe2}.
 
+\begin{equation} \label{eq:CESe}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
 \begin{equation} \label{eq:CESe2}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
       + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
