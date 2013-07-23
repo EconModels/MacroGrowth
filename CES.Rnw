@@ -11,7 +11,8 @@
 <<setup, include=FALSE>>=
 require(knitr)
 opts_chunk$set(
-  tidy=FALSE
+  tidy=FALSE,
+  eval=FALSE
 )
 source("Econ-Growth-Functions2.R")
 @
@@ -76,9 +77,9 @@ The CES model with energy is
 \begin{itemize}
 \item
 Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
-using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+using a ($kl$)$e$ nesting structure, as is typical in the literature. 
 \item
-$\delta$ describes the importance of the capital/labor pair ($kl$) relative to ($e$).
+$\delta$ describes the importance of the capital/labor pair ($kl$) relative to energy ($e$).
 \item
 As $\delta \rightarrow 1$, the energy term ($e$) 
 becomes increasingly unimportant for the model.
@@ -92,10 +93,10 @@ and the CES production function for $(kl)$ and $(e)$ degenerates
 to the Cobb-Douglas production function.
 \item
 As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
-($kl$) and ($e$) are perfect substitutes. 
+($kl$) and $e$ are perfect substitutes. 
 \item
 As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
-($kl$) and ($e$) are perfect complements: 
+($kl$) and $e$ are perfect complements: 
 no substitution is possible. 
 \item 
 Constraints on the fitting parameters include 
@@ -118,7 +119,8 @@ value of $\rho$.
 %++++++++++++++++++++++++++++++
 
 %------------------------------
-\subsection{Standard Energy Nesting ($kl$)($e$)}
+\subsection{Standard Energy Nesting ($kl$)$e$}
+\label{sec:kle-nesting}
 %------------------------------
 
 The \texttt{R} package \texttt{micEcon} provide function 
@@ -163,7 +165,8 @@ Cobb-Douglas and CES models seem to be in conflict.
 \end{enumerate}
 
 %------------------------------
-\subsection{Alternative Energy Nesting ($le$)($k$)}
+\subsection{Alternative Energy Nesting ($le$)$k$}
+\label{sec:lek-nesting}
 %------------------------------
 
 A second option is to use a different nesting structure
@@ -313,6 +316,51 @@ With the no-energy model, we have achieved reasonable values for
 all parameters. And, the parameter estimation algorithm converges.
 However, we may be in a situation where Cobb-Douglas and CES
 are in conflict regarding the role of energy in economic growth.
+
+
+%++++++++++++++++++++++++++++++
+\section{Effect of Nesting} 
+\label{sec:effect-of-nesting}
+%++++++++++++++++++++++++++++++
+In Section~\ref{sec:lek-nesting}, we found that different results were
+obtained with standard nesting ($kl$)$e$ vs. a differnet nesting
+($le$)$k$. To explore that further, we run all 9 countries with 
+all three nesting options 
+\begin{itemize}
+\item{($kl$)$e$} 
+\item{($le$)$k$}
+\item{($ek$)$l$}
+\end{itemize}
+
+<<eval=TRUE>>=
+nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
+fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
+  data <- loadData(countryAbbrev=countryAbbrev)
+  data <- replaceColName(data, energyType, "iEToFit")
+  if (nest == "(kl)e"){
+    xNames <- c("iCapStk", "iLabor", "iEToFit")
+  } else if (nest == "(le)k"){
+    xNames <- c("iLabor", "iEToFit", "iCapStk")
+  } else if (nest == "(ek)l"){
+    xNames <- c("iEToFit", "iCapStk", "iLabor")
+  } else {
+    stop(paste("Unknown nesting option", nest, "in fitCES."))
+  }
+  model <- cesEst(data=data, 
+                  yName="iGDP", 
+                  xNames=xNames, 
+                  tName="iYear",
+                  method=method)
+}
+
+# Make all the models
+kleModels <- lapply(countryAbbrevs, fitCES, nest="(kl)e")
+lekModels <- lapply(countryAbbrevs, fitCES, nest="(le)k")
+eklModels <- lapply(countryAbbrevs, fitCES, nest="(ek)l")
+
+# Now, extract coefficients to make a table
+coef(kleModels["US"])
+@
 
 
 %++++++++++++++++++++++++++++++
