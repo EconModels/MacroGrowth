@@ -358,8 +358,26 @@ kleModels <- lapply(countryAbbrevs, fitCES, nest="(kl)e")
 lekModels <- lapply(countryAbbrevs, fitCES, nest="(le)k")
 eklModels <- lapply(countryAbbrevs, fitCES, nest="(ek)l")
 
-# Now, extract coefficients to make a table
-coef(kleModels["US"])
+modelMatrix <- cbind(kleModels, lekModels, eklModels)
+colnames(modelTable) <- nestingOptions
+
+# Now, extract coefficients from each model in the matrix
+# to make data.frames of coefficients. Each data.frame has 
+# countries in rows and nesting options in columns 
+# (same structure) as modelMatrix
+
+# gamma
+
+# lambda
+
+# delta
+
+# delta1
+
+# rho
+
+# rho1
+
 @
 
 
