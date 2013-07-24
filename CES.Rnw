@@ -364,6 +364,9 @@ all three nesting options:
 \end{itemize}
 \cesekl{\label{eq:cesekl}}
 
+We use the \texttt{L-BFGS-B} method (as shown in Section~\ref{sec:CES-with-constraints}),
+which respects constraints on the model parameters.
+
 <<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
 fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
@@ -385,7 +388,6 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
                   method=method)
   res <- do(1) * coef( model ) 
   res <- transform( res, country=countryAbbrev, nest=nest, converge=model$convergence ) 
-  
   return(res)
 }
 
@@ -396,15 +398,15 @@ eklModels <- ldply(countryAbbrevs, fitCES, nest="(ek)l")
 allModels <- rbind(kleModels, lekModels, eklModels)
 # Ignore the leading .id column
 allModels <- allModels[ , 2:10] 
-# Sort based on country
+# Sort rows based on country
 allModels_ordered <- allModels[order(allModels$country) , ] 
-# Reorder the columns
+# Reorder the columns to put the meta information first
 allModels_ordered <- allModels_ordered[c("country", "nest", "converge", "gamma", "lambda", 
                                          "delta_1", "delta", "rho_1", "rho")]
-
+# Create the LaTeX table
 CESTable <- xtable(allModels_ordered, caption="CES coefficients for three nesting options.", 
                    label="tab:CES-coeffs-table",
-                   table.placement="")
+                   table.placement="H")
 @
 
 <<Print_CES_Tables, results='asis'>>=
