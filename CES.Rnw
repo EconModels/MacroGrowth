@@ -353,7 +353,8 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
                   tName="iYear",
                   method=method)
   res <- do(1) * coef( model ) 
-  res <- transform( res, country=countryAbbrev, nest=nest ) 
+  res <- transform( res, country=countryAbbrev, nest=nest, converge=model$convergence ) 
+  
   return(res)
 }
 
