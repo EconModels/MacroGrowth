@@ -10,15 +10,46 @@
 
 <<setup, include=FALSE>>=
 require(knitr)
+require(plyr)
 opts_chunk$set(
   tidy=FALSE,
-  eval=FALSE
+  eval=TRUE
 )
 source("Econ-Growth-Functions2.R")
 @
 
 \maketitle
 
+% Add an argument if you want a label. Example: "\label{eq:CES}"
+\newcommand{\ceskl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}}
+
+\newcommand{\ceskle}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\ceslek}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\cesekl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
 
 %++++++++++++++++++++++++++++++
 \section{CES Production Function} 
@@ -27,11 +58,7 @@ source("Econ-Growth-Functions2.R")
 
 The Constant Elasticity of Substitution (CES) model without energy is
 
-\begin{equation} \label{eq:CES}
-  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceskl{\label{eq:CES}}
 
 \begin{itemize}
 \item
@@ -67,12 +94,13 @@ Constraints on the fitting parameters include
 
 The CES model with energy is
 
-\begin{equation} \label{eq:CESe}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceskle{\label{eq:CESe}}
+% \begin{equation} \label{eq:CESe}
+%   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+%       + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+%       + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+%       A = \mathrm{e}^{\lambda (t-t_0)}
+% \end{equation}
 
 \begin{itemize}
 \item
@@ -170,23 +198,20 @@ Cobb-Douglas and CES models seem to be in conflict.
 %------------------------------
 
 A second option is to use a different nesting structure
-for the CES model, namely ($le$)($k$), as shown in Equation~\ref{eq:CESe2}.
+for the CES model, namely ($le$)($k$), as shown in Equation~\ref{eq:ceslek}.
 
-\begin{equation} \label{eq:CESe}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceskle{}
 
-\begin{equation} \label{eq:CESe2}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
-      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
-      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceslek{\label{eq:ceslek}}
 
-In Equation~\ref{eq:CESe2}, $\delta \rightarrow 1$ indicates that capital stock ($k$)
+% \begin{equation} \label{eq:CESe2}
+%   y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+%       + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+%       + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+%       A = \mathrm{e}^{\lambda (t-t_0)}
+% \end{equation}
+
+In Equation~\ref{eq:ceslek}, $\delta \rightarrow 1$ indicates that capital stock ($k$)
 is unnecessary.
 
 <<>>=
@@ -323,17 +348,23 @@ are in conflict regarding the role of energy in economic growth.
 \label{sec:effect-of-nesting}
 %++++++++++++++++++++++++++++++
 In Section~\ref{sec:lek-nesting}, we found that different results were
-obtained with standard nesting ($kl$)$e$ vs. a differnet nesting
-($le$)$k$. To explore that further, we run all 9 countries with 
-all three nesting options 
+obtained with standard nesting ($kl$)$e$ vs. a differnet nesting, namely
+($le$)$k$. To explore that further, we fit all 9 countries with 
+all three nesting options:
 \begin{itemize}
 \item{($kl$)$e$} 
+\end{itemize}
+\ceskle{}
+\begin{itemize}
 \item{($le$)$k$}
+\end{itemize}
+\ceslek{}
+\begin{itemize}
 \item{($ek$)$l$}
 \end{itemize}
+\cesekl{\label{eq:cesekl}}
 
-<<eval=TRUE>>=
-require(plyr)
+<<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
 fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
   data <- loadData(countryAbbrev=countryAbbrev)
@@ -363,33 +394,25 @@ kleModels <- ldply(countryAbbrevs, fitCES, nest="(kl)e")
 lekModels <- ldply(countryAbbrevs, fitCES, nest="(le)k")
 eklModels <- ldply(countryAbbrevs, fitCES, nest="(ek)l")
 allModels <- rbind(kleModels, lekModels, eklModels)
+# Ignore the leading .id column
+allModels <- allModels[ , 2:10] 
+# Sort based on country
+allModels_ordered <- allModels[order(allModels$country) , ] 
+# Reorder the columns
+allModels_ordered <- allModels_ordered[c("country", "nest", "converge", "gamma", "lambda", 
+                                         "delta_1", "delta", "rho_1", "rho")]
 
-CESTable <- xtable(allModels, caption="CES coefficients.", label="tab:CES-coeffs-table")
-
-#modelMatrix <- cbind(kleModels, lekModels, eklModels)
-#colnames(modelTable) <- nestingOptions
-
-# Now, extract coefficients from each model in the matrix
-# to make data.frames of coefficients. Each data.frame has 
-# countries in rows and nesting options in columns, 
-# (same structure) as modelMatrix
-
-# gamma
-
-# lambda
-
-# delta
-
-# delta1
-
-# rho
-
-# rho1
-
+CESTable <- xtable(allModels_ordered, caption="CES coefficients for three nesting options.", 
+                   label="tab:CES-coeffs-table",
+                   table.placement="")
 @
 
 <<Print_CES_Tables, results='asis'>>=
-CESTable
+print(CESTable,
+      caption.placement="top", 
+      table.placement="H",
+      include.rownames=FALSE,
+      hline.after=c(-1,0,3,6,9,12,15,18,21,24,nrow(CESTable)))
 @
 
  
