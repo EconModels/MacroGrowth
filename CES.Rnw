@@ -3,6 +3,8 @@
 \usepackage{language} % Obtain language.sty from https://github.com/rpruim/latex
 \usepackage{underscore} % Should be part of any LaTeX distribution.
 \usepackage{float} % For precise figure positioning.
+\usepackage{multirow} % To create multirow tables
+\usepackage{amssymb} % To provide check marks
 
 \title{Parameter Estimation for the CES Model}
 \author{Matthew Kuperus Heun}
@@ -192,6 +194,11 @@ capital stock term was unnecessary ($\alpha = 0$). So, the
 Cobb-Douglas and CES models seem to be in conflict.
 \end{enumerate}
 
+However, we should note that we are not respecting the constraints here. 
+To assess whether the models are actually telling us 
+something different, we need to be sure to respect constraints
+with the CES model.
+
 %------------------------------
 \subsection{Alternative Energy Nesting ($le$)$k$}
 \label{sec:lek-nesting}
@@ -225,10 +232,13 @@ summary(modelUKQ_LM2)
 With ($le$)($k$) nesting, the fitting routine converges, and we find that 
 $\delta = $ \Sexpr{coef(modelUKQ_LM2)["delta"]}, 
 which violates the constraint $\delta \in (0,1)$. This result might indicate 
-that capital stock ($k$) is unnecessary.
+that capital stock ($k$) is unnecessary, thereby agreeing with 
+results from the Cobb-Douglas model.
 
 So, the indications about relative importance of different factors 
 of production may be a function of nesting method in the CES model.
+However, we need to be careful about convergence and respecting 
+constraints.
 
 
 %++++++++++++++++++++++++++++++
@@ -365,7 +375,8 @@ all three nesting options:
 \cesekl{\label{eq:cesekl}}
 
 We use the \texttt{L-BFGS-B} method (as shown in Section~\ref{sec:CES-with-constraints}),
-which respects constraints on the model parameters.
+which respects constraints on the model parameters, and thermal energy ($q$) is 
+used for the energy quantification.
 
 <<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
@@ -409,7 +420,7 @@ CESTable <- xtable(allModels_ordered, caption="CES coefficients for three nestin
                    table.placement="H")
 @
 
-<<Print_CES_Tables, results='asis'>>=
+<<CESResultsTable, results='asis'>>=
 print(CESTable,
       caption.placement="top", 
       table.placement="H",
@@ -417,7 +428,53 @@ print(CESTable,
       hline.after=c(-1,0,3,6,9,12,15,18,21,24,nrow(CESTable)))
 @
 
- 
+One way to assess the data in Table~\ref{tab:CES-coeffs-table} is to compare indications 
+from the Cobb-Douglas and CES models. 
+Table~\ref{tab:cd-ces-comparison} does so.
+
+\begin{table}[H] \caption{Comparison of indications from Cobb-Douglas and CES models with energy.} \label{tab:cd-ces-comparison} 
+  \begin{center}
+    \begin{tabular}{c|l|l|c}
+Country & CD                                     & CES                                            & Agree? \\
+\hline
+US      & $\gamma = 0 \rightarrow e$ unnecessary & ($kl$)$e$, ($le$)$k \rightarrow e$ unnecessary & \checkmark \\
+\hline
+UK      & $\alpha = 0 \rightarrow k$ unnecessary & ($kl$)$e$, ($le$)$k \rightarrow k$ unnecessary & \checkmark \\
+\hline
+JP      & $\gamma = 0 \rightarrow e$ unnecessary & ($ek$)$l \rightarrow e$ unnecessary            & \checkmark $\:$ but no CES convergence\\
+\hline
+CN      & $\gamma = 0 \rightarrow e$ unnecessary & No indications                                 & Note: no CES convergence\\
+\hline
+ZA      & $\beta  = 0 \rightarrow l$ unnecessary & No indications                                 &      \\
+\hline
+SA      & No indications                         & No indications                                 & \checkmark \\
+\hline
+IR      & $\gamma = 0 \rightarrow e$ unnecessary & All nestings $\rightarrow e$ unnecessary       & \checkmark \\
+\hline
+TZ      & $\beta  = 0 \rightarrow l$ unnecessary & No indications                                 &      \\
+\hline
+\multirow{2}{*}{ZM} & $\beta  = 0 \rightarrow l$ unnecessary & \multirow{2}{*}{All nestings $\rightarrow l$ unnecessary} & \multirow{2}{*}{-- (partial)}\\
+        & $\gamma = 0 \rightarrow e$ unnecessary &                                                &        \\
+
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Table~\ref{tab:cd-ces-comparison} looks better than I was expecting. 
+Note that in Section~\ref{sec:CES-without-constraints},
+I was not assessing the indications from the CES model 
+\emph{while also respecting the constraints}. 
+When the constraints are respected, both Cobb-Douglas and CES
+give similar indications for most economies.
+
+I suspect that clearing up the non-convergence issues 
+for the UK, JP, and CN will provide additional insights.
+Martin may be able to provide additional insight on the South African (ZA)
+and Tanzanian (TZ) situations, as ZA and TZ are the only countries with both 
+(a) dissimilar indications from Cobb-Douglas and CES and 
+(b) convergence of the CES models for all nestings.
+
+
 %++++++++++++++++++++++++++++++
 \section{Possible Ways Forward} 
 \label{sec:CES-way-forward}
