@@ -362,6 +362,9 @@ kleModels <- ldply(countryAbbrevs, fitCES, nest="(kl)e")
 lekModels <- ldply(countryAbbrevs, fitCES, nest="(le)k")
 eklModels <- ldply(countryAbbrevs, fitCES, nest="(ek)l")
 allModels <- rbind(kleModels, lekModels, eklModels)
+
+CESTable <- xtable(allModels, caption="CES coefficients.", label="tab:CES-coeffs-table")
+
 #modelMatrix <- cbind(kleModels, lekModels, eklModels)
 #colnames(modelTable) <- nestingOptions
 
@@ -382,6 +385,10 @@ allModels <- rbind(kleModels, lekModels, eklModels)
 
 # rho1
 
+@
+
+<<Print_CES_Tables, results='asis'>>=
+CESTable
 @
 
  
