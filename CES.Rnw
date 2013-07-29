@@ -20,6 +20,15 @@ opts_chunk$set(
 source("Econ-Growth-Functions2.R")
 @
 
+<<>>=
+extractRSSdata <- function(object, ...) {
+  res <- expand.grid( object$rho1Values, object$rhoValues )
+  names(res) <- c('rho1', 'rho')
+  res <- transform(res, RSS = as.vector(object$rssArray))
+  res
+}
+@
+
 \maketitle
 
 % Add an argument if you want a label. Example: "\label{eq:CES}"
@@ -286,6 +295,7 @@ so better curve fits appear higher on the $z$ axis of this plot.
 
 <<UKQ-grid-coarse, fig.pos="H", fig.cap="$-SSE$ vs. $\\rho$ and $\\rho_1$. Coarse grid.">>=
 plot(modelUKQ_grid)
+print(class(modelUKQ_grid))
 @
  
 The best fit occurs when $\rho_1 \rightarrow -1$ (its boundary) and $\rho$ is large, 
@@ -304,9 +314,12 @@ modelUKQ_grid_detail <- cesEst(data=dataUK,
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
                         method="L-BFGS-B",
-                        rho=seq(from=14, to=20, by=1), 
-                        rho1=seq(from=-0.95, to=-0.5, by=0.05))
+                        rho=seq(from=100, to=120, length.out=20), 
+                        rho1=seq(from=1, to=2, length.out=20))
 summary(modelUKQ_grid_detail)
+levelplot( RSS ~ rho1 + rho, data=extractRSSdata(modelUKQ_grid_detail), 
+           region=TRUE, 
+           col.regions=terrain.colors)
 @
 
 We can build a graph as shown in Figure~\ref{fig:UKQ-grid-fine}.
