@@ -466,6 +466,12 @@ observation that more than two factor will not be const. elasticities Uzawa 1962
 
 R programming dealt with nested CES see paper discussion on Kemfert.
 
+Next steps:
+
+Stages of growth crowd implicitly assumes countries at similar stage of growth will
+have similar values for $\alpha$, $\beta$, $\gamma$. However, our results show
+that not to be true. Needs further exploration to cover more (all?) countries.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coordinates of Analysis} 
