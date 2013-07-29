@@ -454,6 +454,9 @@ d. Is it possible to have evidence of diff stocks and diff importances across ph
 Maybe test this for a data rich nation that has worked through these stages, 
 we try to identify them and do partial analysis on time periods coinciding with these stages.
 
+Should we eliminate $u$ data? Only 3 countries. Only 20 years. Doesn't add much insight. 
+Too bad, but perhaps necessary to simplify paper.
+
 Discussions:
 
 Counterfactuals: energy, cap, labour what ifs for future.
