@@ -2006,7 +2006,12 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
 
   
 cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", ...) {
-  modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, ...)
+  control <- switch( algorithm,
+                     "PORT" = list(iter.max=2000, eval.max=2000),
+                     "L-BFGS-B" = list(maxit=5000),
+                     list()
+              )
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, control=control, ...)
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho_1"]
   rho <- coef(modelCES)["rho"]
