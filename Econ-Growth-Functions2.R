@@ -1936,7 +1936,7 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   return(modelCES)
 }
 
-cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFGS-B"), xNames, ...){
+cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-BFGS-B"), xNames, ...){
   ####################
   # Returns a cesEst model for the country and energyType specified.
   # energyType should be one of Q", "X", "U", or NA.
@@ -1949,12 +1949,12 @@ cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFG
   # countryAbbrev is associated with data.
   ##
   
-  CESmethods <- c("PORT", "L-BFGS-B")
-  methods <- toupper(methods)
-  badMethods <- setdiff(methods, CESmethods)
-  methods <- intersect(methods, CESmethods)
-  for (m in badMethods) {
-    warning(paste("Unrecognized method:", m))
+  CESalgorithms <- c("PORT", "L-BFGS-B")
+  algorithms <- toupper(algorithms)
+  badAlgorithms <- setdiff(algorithms, CESalgorithms)
+  algorithms <- intersect(algorithms, CESalgorithms)
+  for (m in badAlgorithms) {
+    warning(paste("Unrecognized algorithm:", m))
   }
   
   if (missing(data)){
@@ -1986,8 +1986,8 @@ cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFG
 
   models <- list()
   bestSSE <- Inf
-  for (method in methods) {
-    model <- cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method=method, ...)
+  for (algorithm in algorithms) {
+    model <- cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...)
     models[[1 + length(models)]] <- model
     if (sum(resid(model)^2) < bestSSE) {
       bestModel <- model
@@ -1997,7 +1997,7 @@ cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFG
   nC <- attr(bestModel,'naturalCoeffs')
   for (mod in models) {
     newNC <- naturalCoef(mod)
-    names(newNC) <- paste(names(newNC), newNC[1,"method"], sep=".")
+    names(newNC) <- paste(names(newNC), newNC[1,"algorithm"], sep=".")
     nC <- cbind( nC, newNC )
   }
   attr(bestModel, "naturalCoeffs") <- nC
@@ -2005,8 +2005,8 @@ cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFG
 }
 
   
-cesEstPlus <- function( data, yName, xNames, tName, method="PORT", ...) {
-  modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=method, ...)
+cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", ...) {
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, ...)
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho_1"]
   rho <- coef(modelCES)["rho"]
@@ -2020,7 +2020,7 @@ cesEstPlus <- function( data, yName, xNames, tName, method="PORT", ...) {
                      sigma = as.vector(1 / (1 + rho)),
                      sse = sum(resid(modelCES)^2),
                      isConv = modelCES$convergence,
-                     method = method
+                     algorithm = algorithm
                      )
   attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)

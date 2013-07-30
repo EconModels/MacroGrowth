@@ -263,7 +263,7 @@ modelUKQ_LBFGSB <- cesEstPlus(data=dataUK,
                           yName="iGDP", 
                           xNames=c("iCapStk", "iLabor", "iQ"), 
                           tName="iYear",
-                          method="L-BFGS-B")
+                          algorithm="L-BFGS-B")
 summary(modelUKQ_LBFGSB)
 @
 
@@ -282,7 +282,7 @@ modelUKQ_grid <- cesEstPlus(data=dataUK,
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
-                        method="L-BFGS-B",
+                        algorithm="L-BFGS-B",
                         rho=seq(from=5, to=30, by=5), 
                         rho1=seq(from=-0.5, to=1.5, by=0.5))
 summary(modelUKQ_grid)
@@ -313,7 +313,7 @@ modelUKQ_grid_detail <- cesEstPlus(data=dataUK,
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
-                        method="L-BFGS-B",
+                        algorithm="L-BFGS-B",
                         rho=seq(from=100, to=120, length.out=20), 
                         rho1=seq(from=1, to=2, length.out=20))
 summary(modelUKQ_grid_detail)
@@ -356,7 +356,7 @@ modelUK <- cesEstPlus(data=dataUK,
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor"), 
                         tName="iYear",
-                        method="L-BFGS-B")
+                        algorithm="L-BFGS-B")
 summary(modelUK)
 @
 
@@ -393,7 +393,7 @@ used for the energy quantification.
 
 <<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
-fitCES <- function(countryAbbrev, nest, energyType="Q", method=c("PORT","L-BFGS-B")){
+fitCES <- function(countryAbbrev, nest, energyType="Q", algorithm=c("PORT","L-BFGS-B")){
   data <- loadData(countryAbbrev=countryAbbrev)
   data <- replaceColName(data, energyType, "iEToFit")
   if (nest == "(kl)e"){
@@ -409,7 +409,7 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method=c("PORT","L-BFGS-
                   # yName="iGDP", 
                   xNames=xNames, 
                   # tName="iYear",
-                  method=method)
+                  algorithm=algorithm)
   res <- naturalCoef( model ) 
   res <- transform( res, nest=nest, country=countryAbbrev, nest=nest, converge=model$convergence ) 
   return(res)
@@ -427,7 +427,7 @@ allModels <- transform( allModels, max.sse = pmax(sse.PORT, sse.L.BFGS.B))
 allModels_ordered <- allModels[order(allModels$country) , ] 
 # Reorder the columns to put the meta information first
 allModels_ordered <- allModels_ordered[c("country", "nest", "converge", "gamma", "lambda", 
-                                         "delta_1", "delta", "rho_1", "rho", "method", "sse","max.sse")]
+                                         "delta_1", "delta", "rho_1", "rho", "algorithm", "sse","max.sse")]
 # Create the LaTeX table
 CESTable <- xtable(allModels_ordered, caption="CES coefficients for three nesting options.", 
                    label="tab:CES-coeffs-table", digits=3,

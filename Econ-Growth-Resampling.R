@@ -132,7 +132,7 @@ resampleFits <- function(modelType=modelTypes,
                       "cese"  = cesModel(countryAbbrev=countryAbbrev, energyType=energyType),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
                       )
-  baseFitCoeffs <- attr(x = origModel, which="naturalCoeffs")
+  baseFitCoeffs <- naturalCoef(origModel)
   # Now do a fit with resampling n times and get all of the coefficients
   safeCES <- function(data,origModel,method) {
     myData <- doResample(data=data, origModel=origModel, method=method)
@@ -173,15 +173,12 @@ resampleFits <- function(modelType=modelTypes,
                                                      which="naturalCoeffs")
                               )
   # Combine the results and return
-  baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
-  names(baseFitCoeffsDF) <- names(baseFitCoeffs)
+  # baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
+  # names(baseFitCoeffsDF) <- names(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
-  baseFitCoeffsDF <- transform(baseFitCoeffsDF, method="orig")
-  out <- rbind(as.data.frame(baseFitCoeffsDF), resampleFitCoeffs)
-  # Make a factor column for the country
-  countryAbbrev <- data.frame(rep(countryAbbrev, nrow(out)))
-  colnames(countryAbbrev) <- "countryAbbrev"
-  out <- cbind(out, countryAbbrev)
+  baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
+  out <- rbind(baseFitCoeffs, resampleFitCoeffs)
+  out <- transform(out, countryAbbrev=countryAbbrev)
   return(out)
 }
 
