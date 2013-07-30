@@ -1,0 +1,1179 @@
+% This article has been prepared for publication in Energy Economics in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2013-01-18
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{soul} % Provides strikethrough text
+\usepackage{float} % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath} % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow} % To create multirow tables
+\usepackage{hyperref} % To create hyperlinks in the paper
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\journal{Energy Economics}
+
+\begin{document}
+
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
+require(lattice)
+require(latticeExtra)
+require(ggplot2)
+require(car)
+require(mosaic)
+require(xtable)
+require(nlmrt)
+require(micEconCES)
+# Provides access to data melting. 
+# See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
+require(reshape2) 
+# tikz allows use of LaTeX formatting and font in graphs. 
+# Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions 
+# on installing tikzDevice.
+# require(tikzDevice) 
+trellis.par.set(theme=theme.mosaic())
+options(width=75)
+options(show.signif.stars=TRUE)
+opts_chunk$set(
+  # ********************************************************
+  eval=TRUE,
+  # ********************************************************
+  # tikz allows LaTeX code in graphical output. 
+  # E.g., "$y$" for a variable name in the legend for a graph.  
+  # dev='tikz',
+  tidy=FALSE,
+  comment=NA,
+  # Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  # However, references to LaTeX tables DO NOT WORK if cacheing is turned on.
+  cache=FALSE,
+  warning=FALSE,  #Tells whether to show warnings in the output.
+  # Turns off messages for all chunks. 
+  # Set TRUE on an individual chunk to see it.
+  message=FALSE, 
+  # Tells whether to echo code for all chunks. 
+  # Set TRUE on an individual chunk to see its code.
+  echo=FALSE     
+)
+source("Econ-Growth-Functions2.R")
+source("Graphics.R")
+@
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{An Empirical Analysis of the Role of Energy in Economic Growth}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[CalvinEngr]{Caleb Reese}
+\author[CalvinEngr]{Lucas Timmer}
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+\author[Stellenbosch]{Martin de Wit}
+\author[CalvinMath]{Randall J. Pruim}
+
+\cortext[cor1]{Corresponding author}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[Stellenbosch]{Faculty of Economics and Management Sciences, School of Public Leadership, Stellenbosch University, P.O. Box 610, Bellville 7535, South Africa}
+\address[CalvinMath]{Mathematics \& Statistics Department, Calvin College, Grand Rapids, MI 49546, USA}
+
+\begin{abstract}
+%% Text of abstract
+**** Add abstract ****
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+\section*{Notes from Martin}
+
+**** Additional references requested by Martin. Incorporate into paper? ****
+
+\citet{Lindenberger:2011dx}
+
+\citet{Stresing:2008cq}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
+discusses the coordinates of analysis described above. 
+Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
+generate time series for economic output and factors of production. The procedures 
+for and results from parameter estimation for the various production functions 
+are discussed in Section~\ref{sec:Parameter_Estimation}. 
+Section~\ref{sec:Implications} discusses implications of the parameter estimation 
+results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
+of all statistical results.
+
+**** Notes from Martin ****
+
+To be included somewhere.
+
+Big picture
+Why do we do this? Want to link energy and economics on national level 
+and in a modeled approach,informing energy policy during energy transitions.
+Usually macro energy economic models rely on PF with energy included. 
+Key papers using CES in energy economics incl high impact such as 
+Stern, Gerlagh, Tol etc. 
+Cite in introduction met energy economists using PF approaches, specially CES.
+But, which form to choose and using which parameters? 
+Literature is inconclusive, very little actual empirical testing of such functions. 
+Mostly CES in CGE models used by Wbank and others. 
+CD adviced to be used by CBO. 
+How do we select a functional form and what are the parameters to be used? On what basis do we select?
+
+We aim. to search for empirically robust solution, one that stands up to statistical testing.
+
+What we find is counterintuitive for many cases: dropping energy from the PF has little impact, 
+but some notable exceptions. 
+On other hand, only including energy in a PF of LINEX form also yields good results and stats tests. 
+Is not a simple case for dropping energy, but acknowledging its key role. 
+Do we support the call for better bottom-up understanding? 
+What do we say on the limitations of macroeconomic modelling approaches altogether? 
+(Note such limitations are well known in ME literature, for example capital controversy Robinson).
+We speculate on implications for choosing PF in energy economic models that inform growth policy.
+
+Points on paper so far
+1. Does the relative small differences in fit between different production functions warrant 
+such a large debate on validity of one vs other? Clearly not. 
+CD been used by economists for ease of use and extreme flexibility (Miller).  
+PF generally used on instrumentalist grounds if give reasonable good description of data. 
+NK econ theory provide poor causal explanation of observed data, 
+but yet CD shows very good fit (miller, p17). 
+CES is  more general, but is a liability in forecasting because difficult 
+to get estimate of EoS that is consistent across studies (Miller, p26). 
+Aggregation is problem of both CD and CES functional forms, 
+so being careful when making strong inferences that cannot be justified.
+
+2. We think we can contribute by emphasising the need 
+for proper stats testing or inconsistent reporting on use of preferred functions. 
+Problems with empirical testing presented by Shen, Serrenho.
+What are our issues with multivariate OLS (Serrenho)?
+
+3. Are we joining the forced choice between production functions or 
+acknowledge the similar problems with aggregate prod functions in general? 
+Do we see this as sufficient evidence to doubt the top-down approach to econ growth altogether?
+
+4. R2 is a very crude measure and only very minor improvements 
+are achieved when others factors such as energy is added in a CD. 
+We concur. Puzzling is conclusion that such minor improvements 
+does prove the need to include energy in PF (Serrenho).
+
+5. We do think it is a choice between CD and CES (Miller) as 
+both have serious deficiencies after stats tests.
+
+6. One central issue within PF is elasticity of subs (EoS). 
+That is the \%ch in factor proportions ( k,l, etc) 
+because of one unit ch in MRTS. 
+MRTS is rate at which one factor can be substituted for another holding output constant. 
+EoS is low in Leontief cases, L shaped isoquants.
+
+7. Miller makes the point that even if parameters in model are stats artifacts, 
+they are still useful for forecasting. Do we agree?
+
+8. Is Ockham's razor relevant to what we are doing?
+
+9. Assumptions of CD are strongly rejected by empirical work, Miller still makes case for using CD.
+
+11. What about energy augmented 
+
+10. TZ case
+CDno e: almost 80\% l
+CD with e: 25\% energy, rest c,importance of l drops to 0
+CES no e: 20\% c (sigma), 80\% l, but large range
+CES with e: fig 35 e may be NB
+LINEX: one of lowest ct parameters (low relative importance of labour eff compared to cap eff)
+Does this mean that relative small increases in cap eff can really lift the economy?
+
+11. ZA case
+CD no e: roughly half c, l
+CD with e: roughly half, c, e, importance of l drops to 0
+CES no e: 10% c, 25% l ??
+CES with e: fig 35 e may be NB
+LINEX: one of highest ct parameters (high relative importance of labour eff compared to cap eff)
+Does this mean that relative small increases in labour eff can really lift the economy?
+
+12. Capital starved Zambia. Very high importance. Understand CES param better.
+
+Discussion: What is Next?
+
+a. A comparative analysis between diff PF reveal interesting 
+enough information to warrant a more diffused approach to countries. 
+Thus, we have a case for doing this for  all countries in the world 
+(or at least those representative of countries in different groups 80/20)
+
+b. If c is relatively more important than labour or energy 
+for growth and if capital stock is low, a situation one would expect in LDCs, 
+a relative small addition of capital stock can give relatively large returns in terms of growth.
+
+c. Now it becomes interesting, in a 'stages of growth' approach, 
+using LT econ data it may be the case that the importance 
+of factors are different across growth stages. 
+It would need a composite type of analysis - both stock and importance.
+
+d. Is it possible to have evidence of diff stocks and diff importances across phases of growth? 
+Maybe test this for a data rich nation that has worked through these stages, 
+we try to identify them and do partial analysis on time periods coinciding with these stages.
+
+Should we eliminate $u$ data? Only 3 countries. Only 20 years. Doesn't add much insight. 
+Too bad, but perhaps necessary to simplify paper.
+
+Discussions:
+
+Counterfactuals: energy, cap, labour what ifs for future.
+
+interpretation of type of economies, what does the data presentation say 
+on relative change in each input and change in GDP?
+
+Forcing const elast of subs in CES thru nested structures violates 
+observation that more than two factor will not be const. elasticities Uzawa 1962.
+
+R programming dealt with nested CES see paper discussion on Kemfert.
+
+Next steps:
+
+Stages of growth crowd implicitly assumes countries at similar stage of growth will
+have similar values for $\alpha$, $\beta$, $\gamma$. However, our results show
+that not to be true. Needs further exploration to cover more (all?) countries.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+1. Set scene through energy economic modelling papers. 
+Point out that PF approaches are alive and well (Stern, Tol, Gerlagh, World Bank, IMF), 
+short lit review as part of a longer introduction.  
+Mention competing PF approaches and parameter choice. 
+On what basis selection and how estimate parameters? 
+
+2. Point out the need for adequate statistical testing and economic interpretation, 
+citing some earlier critical papers on PF limitations. Take issue with 
+
+3. Spell out the contribution we will be making in this paper, 
+we are taking the approach that all models are wrong but some are useful. 
+We are after generating insights even after deeper assumptions of econ growth theory are very limiting.
+
+4. Introduce coordinates of analysis.
+
+The remainder of this paper is organized as follows: **** complete this sentence ****.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coordinates of Analysis} 
+\label{sec:Coordinates}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section describes the three coordinates of analysis and briefly reviews 
+literature related to each.
+
+%++++++++++++++++++++++++++++++
+\subsection{Mathematical Forms of the Energy-augmented Production Function} 
+\label{sec:Prod_Func_Forms}
+%++++++++++++++++++++++++++++++
+
+In this paper, we assess three prominent energy-augmented production functions 
+appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
+Substitution (CESe), and LINear EXponential (LINEX). The following subsections 
+describe each.
+
+%------------------------------
+\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
+\label{sec:CDe}
+%------------------------------
+
+Similar to Equation~\ref{eq:CD}, the energy-augmented Cobb-Douglas 
+production function is
+
+\begin{equation} \label{eq:CDe}
+  y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
+\end{equation}
+
+\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
+typically TJ/year. The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha + \beta + \gamma = 1$.
+
+\citet{Ayres:2008cl} uses Equation~\ref{eq:CDe} with exergy ($x$) and 
+useful work ($u$) quantifications for $e$ to describe historic Japanese 
+and American economies from 1900-2000. \citet{Froling:2009vo} uses an 
+energy-augmented Cobb-Douglas production function with thermal energy 
+quantification ($q$) to describe output for the global economy from 
+1800--1970. Fr\"{o}ling's model endogenizes labor with respect to fertility 
+and mortality rates and separates thermal energy into two types: biomass 
+energy and coal energy. \citet{Serrenho:2010vq} use the log transform of 
+the energy-augmented Cobb-Douglas function with thermal energy 
+quantification ($q$) to describe output for the EU-15 countries. 
+Serrenho divides thermal energy into renewables, non-renewables, 
+wastes, and imports. The main argument of these papers is that 
+energy is an important driver of growth and needs to be included
+as an essential factor of production.
+
+**** Martin: add more here about the conclusions of each paper regarding 
+the role of energy in economic growth? Add additional literature? 
+Or, adjust as you see fit. Especially, are there any confidence intervals 
+or statistical evaluation in each of these studies? ****
+
+%------------------------------
+\subsubsection{Energy-augmented CES Production Function (CESe)} 
+\label{sec:CES}
+%------------------------------
+
+Other energy economists use an energy-augmented 
+Constant Elasticity of Substitution (CES$e$) production function to 
+describe economic growth. The \texttt{R} \citep{R} package 
+\texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
+functions of the following forms (among others):
+
+\begin{equation} \label{eq:CES}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\begin{equation} \label{eq:CESe}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent Equation~\ref{eq:CES} is a CES production function with 
+capital stock ($k$) and labor ($l$) factors of production. 
+Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
+where $\delta \rightarrow 1$ and $\rho \rightarrow -1$. 
+
+$\gamma$ is a fitting parameter that represents productivity. 
+The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
+of substitution ($\sigma_1$ and $\sigma$).
+The elasticity of substitution 
+between capital ($k$) and labor ($l$) is given by 
+$\sigma_1 = \frac{1}{1+\rho_1}$, and
+the elasticity of substitution between ($kl$) and ($e$) is given by 
+$\sigma = \frac{1}{1+\rho}$. 
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. Similarly, 
+as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
+$\delta_1$ describes the relative importance of capital ($k$)
+and labor ($l$), and
+$\delta$ describes the importance of ($kl$) relative to ($e$).
+
+Constraints on the fitting parameters include 
+$\delta_1 \in (0,1)$,
+$\delta \in (0,1)$,
+$\rho_1 \in (-1,0) \cup (0,\infty)$, and
+$\rho \in (-1,0) \cup (0,\infty)$. **** Describe here how 
+we implemented the constraints. ****
+
+\citet{VanderWerf:2008tc} evalutes various nested CES production 
+functions for 12 OECD countries with respect to climate change policy. 
+\citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure 
+best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of 
+CES production functions using a KLEM structure to determine how the various 
+options for nesting the energy factor of production affect predictive ability. 
+\citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). 
+\citeauthor{Stern:2012ey} apply their CES function to the Swedish economy 
+from 1800-2000 and demonstrate the importance of the transition from wood to 
+fossil fuels for economic growth. \citet{Shen:2013vp} included energy 
+in nested aggregated CES production functions 
+for China and found that the best nesting structure is ($le$)($k$).
+
+
+**** Martin: add more here about the conclusions of each paper regarding 
+the role of energy in economic growth? Add additional literature? 
+Or, adjust as you see fit. Especially, are there any confidence 
+intervals or statistical evaluation in each of these studies? ****
+
+%------------------------------
+\subsubsection{LINEX Production Function} 
+\label{sec:LINEX}
+%------------------------------
+
+A third production function, the LINear EXponential (LINEX) function 
+\citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}, 
+was derived from thermodynamic considerations:
+
+\begin{equation} \label{eq:LINEX}
+  y = Ae; 
+  A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
+\end{equation}
+
+\noindent where $e$ is indexed energy and e is the base of 
+the natural logarithm. The LINEX model assumes energy ($e$) 
+is the only factor of production. 
+The parameters $\rho_k$ and $\rho_l$ are defined as
+
+\begin{equation} \label{eq:rho_k}
+  \rho_k \equiv \frac{k}{(1/2)(l+e)}
+\end{equation}
+
+\noindent and
+
+\begin{equation} \label{eq:rho_l}
+  \rho_l \equiv \frac{l}{e}
+\end{equation}
+
+\noindent and represent 
+(a) capital stock increase relative to the average of labor and energy and 
+(b) labor increase relative to energy, respectively. 
+Energy ($e$), as the only factor of production, is enhanced by $A$ if either
+
+\begin{itemize}
+\item{capital stock ($k$) has increased more than the average 
+      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
+\item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
+\end{itemize}
+
+\noindent According to the LINEX model, an economy that increases 
+capital stock ($k$) without a commensurate increase in labor ($l$) 
+and energy ($e$) will experience an increase in output ($y$) in excess 
+of its increase of energy consumption ($e$), because $A$ will be 
+greater than 1. Similarly, an economy benefits by increasing labor ($l$) 
+without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an 
+efficiency of using additional labor and energy to make 
+additional capital stock available to the economy, 
+and $\rho_l$ is an efficiency of using additional energy to make 
+additional labor available to the economy. 
+$a_0$ represents the overall importance of these efficiencies, 
+and $c_t$ represents the relative importance 
+of the labor efficiency term compared to the capital stock efficiency term. 
+We treat $a_0$ and $c_t$ as fitting parameters; 
+both are assumed constant with respect to time. 
+
+In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
+\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES} and 
+\ref{eq:CESe}), the LINEX model (Equation~\ref{eq:LINEX}) accounts 
+for efficiencies among capital, labor, and energy directly and, 
+therefore, does not employ a time-dependent 
+technological progress term ($A$). \citet{Kummel:2002tx} use the 
+LINEX production function to describe economic output 
+for the economies of the U.S., Japan, and Germany. 
+\citet{Warr:2010ga} compare the LINEX production function with 
+the Cobb-Douglas production function to assess economic growth 
+for Austria, the United Kingdom, the United States, and Japan. 
+\citet{Ayres:2005kn} argued that introducing energy inputs 
+in traditional production functions does not improve its explanatory power, 
+but including useful work in a LINEX function does. 
+
+**** Martin: add more here about the conclusions of each paper 
+regarding the role of energy in economic growth? Add additional literature? 
+Or, adjust as you see fit. Especially, are there any confidence intervals 
+or statistical evaluation in each of these studies? ****
+
+%++++++++++++++++++++++++++++++
+\subsection{Quantification of Energy} 
+\label{sec:Quantification_of_Energy}
+%++++++++++++++++++++++++++++++
+
+The literature shows three quantifications of energy ($E$) used in 
+energy-augmented production functions: thermal energy ($Q$), 
+exergy ($X$), and useful work ($U$). Thermal energy ($Q$) 
+is the heat content of an energy carrier. Exergy ($X$) is 
+the maximum useful work that could be extracted from an energy carrier 
+by a process that brings the system into equilibrium with 
+a heat reservoir, typically the surrounding environment 
+\citep[p.~78]{Ayres:2010ug}. Like \citeauthor{Ayres:2010ug}, 
+we use chemical exergy (as opposed to thermal exergy or mechanical exergy) 
+as our quantification for exergy ($x$). Useful work ($U$) 
+includes the direct energy that goes into an economy, including work 
+from machines, human muscles, and animals. Firms pay for thermal energy ($Q$), 
+but useful work ($U$) alters the size and shape of materials, 
+keeps the lights on, and transports goods to consumers. 
+Not all forms of energy are created equal in terms of their ability 
+to generate economic activity \citep{Cleveland:2000vl, Warr:2010ht}. 
+Both exergy ($X$), and to a greater extent, useful work ($U$) 
+quantifications of energy are intended to account for the usefulness 
+of energy for generating economic activity, thereby reflecting 
+the ``quality'' of each energy type and the efficiency of machines 
+and devices typically used in energy conversion processes.
+
+Most energy economists use thermal energy ($q$) 
+for the energy factor of production ($e$) in energy-augmented 
+production functions, including \citet{Stern:2012ey}, 
+\citet{Froling:2009vo}, \citet{Serrenho:2010vq}, and 
+\citet{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
+\citet{Ayres:2003ec} introduced the idea that exergy ($x$) and 
+useful work ($u$) were important factors of production. 
+
+**** Martin: add more here about the conclusions of each paper 
+regarding the role of energy in economic growth? 
+Add additional literature? Or, adjust as you see fit. 
+Especially, are there any confidence intervals or 
+statistical evaluation in each of these studies? ****
+
+We know of no statistically-rigorous comparisons of the 
+predictive ability of each energy quantification in the 
+various types of production functions discussed in 
+Section~\ref{sec:Prod_Func_Forms}. We analyze all 
+three quantifications of energy ($Q$, $X$, and $U$) 
+for developed economies and thermal energy ($Q$) and 
+exergy ($X$) for all other economies.
+
+%++++++++++++++++++++++++++++++
+\subsection{Economy Types} 
+\label{sec:Economy_Types}
+%++++++++++++++++++++++++++++++
+
+In the energy-economic growth literature, the focus is 
+almost exclusively on developed economies from North America 
+or Europe. Examples include \citet{Kummel:1980wx} applying 
+LINEX to describe the West German economy, \citet{Serrenho:2010vq} 
+applying Cobb-Douglas variants to EU-15 countries, 
+\citet{VanderWerf:2008tc} applying CES nesting variants 
+to the 12 OECD countries, \citet{Lecca:2011kr} applying 
+CES nesting variants to the Scottish economy, \citet{Stern:2012ey} 
+applying CES to describe the Swedish economy, and \citet{Warr:2012cg} 
+using LINEX and Cobb-Douglas to describe the Austrian, 
+American, British, and Japanese economies.
+
+But, the near-exclusive focus on developed economies closes off 
+the possibility of discovering any role that energy plays 
+in the economic development process. In this paper we analyze at least 
+two economies in each of the following four categories: 
+Developed, 
+NICs,\footnote{Newly Industrialized Countries}
+OPEC, and 
+LDCs.\footnote{Lesser Developed Countries} 
+(See Table~\ref{tab:Economy_Examples}.)
+
+\begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
+  \begin{center}
+    \begin{tabular}{r c c l l} 
+      \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
+                                 & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
+                                 & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
+      \hline
+      \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
+      \hline
+      \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
+                                 & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
+      \hline
+      \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sources of Data}
+\label{sec:Sources_of_Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To assess energy-augmented models of economic growth along the 
+coordinates of analysis outlined in Section~\ref{sec:Coordinates}, 
+historical data for economic output ($Y$), capital stock ($K$), 
+labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) 
+are required. Subsections below describe sources for and calculations 
+to obtain historical data. A final subsection presents the historical 
+data in graphical form.
+
+%++++++++++++++++++++++++++++++
+\subsection{Economic Output} 
+\label{sec:Economic_Output_Data}
+%++++++++++++++++++++++++++++++
+
+We measure economic output ($Y$) by gross domestic product (GDP). 
+GDP data in real 2005 U.S. dollars for developed countries (1980--2011) 
+and all other countries (1991--2011) was obtained from 
+the World Bank's Global Economic Prospects (GEP) database 
+\citep{WorldBankGEP:2013a}.
+
+%++++++++++++++++++++++++++++++
+\subsection{Capital Stock} 
+\label{sec:Capital_Stock_Data}
+%++++++++++++++++++++++++++++++
+
+Gross capital stock in real 2005 U.S. dollars 
+for developed countries (1980--2011) and 
+all other countries (1991--2011) was obtained from 
+the World Bank's Global Economic Prospects (GEP) database 
+\citep{WorldBankGEP:2013a}.
+
+%++++++++++++++++++++++++++++++
+\subsection{Labor and Employment}
+\label{sec:Labor_Data}
+%++++++++++++++++++++++++++++++
+
+Total employment and average hours worked per worker per year 
+for the developed nations (United States, United Kingdom, and Japan) 
+for 1980--2011 were obtained from the United States 
+\citet[Tables 6 and 7]{BLS:2013a}. Total hours worked per year was 
+calculated by multiplying total employment by average hours worked 
+per worker per year.  
+
+The World Bank's World Development Indicators database 
+\citep{WorldBankWDI:2013a} provides the employment to population 
+ratio for people fifteen and older, total population, and a percentage 
+of people under fifteen for other economies (South Africa, China, Iran, 
+Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population 
+of people under fifteen years of age was subtracted from total population 
+to calculate the population of people fifteen and older. 
+Total employment was calculated by multiplying the employment to 
+population ratio of people fifteen and older by the population 
+of people fifteen and older.
+
+%++++++++++++++++++++++++++++++
+\subsection{Thermal Energy, Exergy, and Useful Work} 
+\label{sec:Energy_Data}
+%++++++++++++++++++++++++++++++
+
+To account for all energy input to an economy, we summed consumption data 
+for many energy sources, including coal, oil and petroleum products, 
+dry natural gas and natural gas plant liquids, nuclear power generation, 
+and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, 
+and hydro). In the style of work by Warr and Ayres 
+\citep{Ayres:2003ec, Ayres:2005kn, Warr:2010ht, Warr:2010ga, Warr:2012cg}, 
+energy from human and animal muscle power was also included. 
+Similar to the economic data discussed in 
+Sections~\ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, 
+we generated energy data for developed countries from 1980--2011, 
+with the exception of useful work data (1980--2000). For all other countries, 
+we generated thermal energy and exergy data for 1991--2011. 
+Details on each energy quantifications are given in subsections below.
+
+%------------------------------
+\subsubsection{Thermal Energy} 
+\label{sec:Q_Data}
+%------------------------------
+
+Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
+
+\begin{equation} \label{eq:thermal_energy}
+  Q_{fuel} = C_{fuel}h_{fuel}
+\end{equation}
+
+\noindent where $C_{fuel}$ is the consumption rate of the fuel 
+(in units of short tons/year for coal, barrels/year for oil and petroleum, 
+ft$^3$/year for dry natural gas and natural gas plant liquids, 
+and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is 
+the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, 
+kJ/ft$^3$ for dry natural gas and natural gas plant liquids, 
+and kJ/kg for biomass/fuel wood). Fuel wood density of 300~kg/m$^3$ 
+was taken from \citet{Ragland:2013wp} at the low end of the range 
+of density of dry wood and bark.
+
+Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, 
+dry natural gas and natural gas plant liquids, and biofuels 
+(ethanol and biodiesel) were obtained from the \citet{EIA:2013a} 
+for all economies. Yearly average heat content data for coal, oil, 
+and natural gas and natural gas plant liquids was obtained from the 
+EIA for all economies. We used lower (net) heating values of 
+26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg 
+\citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol 
+and corn-based biodiesel, respectively. Yearly consumption and 
+heat content data for biomass/fuel wood was obtained from the 
+``Fuelwood'' time series of the FAO Statistics Database 
+\citep{FAO:2013a}.
+
+For renewable and nuclear energy sources, yearly electricity 
+generation (in BTU/year) was available directly from 
+the \citet{EIA:2013a} for all economies, so 
+Equation~\ref{eq:thermal_energy} was unnecessary.
+
+Animal and human muscle work was estimated using an approach 
+similar to \citet{Ayres:2010ug}, using some data from Warr's 
+REXS database \citep{Warr:2012a} and results from 
+\citet{Wirsenius:2000vi}. For animal work, our analysis was 
+restricted to draught animals (horses and mules). Muscle work 
+from animals ($Q_{animals}$) was calculated using
+
+\begin{equation} \label{eq:animal_muscle}
+  Q_{animals} = Q_{m,horse}N_{horses} + Q_{m,mule}N_{mules}
+\end{equation}
+
+\noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) 
+and $N$ is the number of animals. Metabolizable energy values 
+($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 
+7,215 kcal/day-mule) were taken from \citet{Warr:2012a}. 
+$Q_m$ represents the amount of energy in the feed consumed by 
+animals for a day of work, and they are assumed constant for 
+all countries and years. The number of horses and mules for 
+each economy was taken from the ``Live Animals'' section of the 
+FAO Statistics online database \citep{FAO:2013a}.
+
+Human muscle power was calculated in a similar manner:
+
+\begin{equation} \label{eq:human_muscle}
+  Q_{workers} = Q_{m,workers} N_{workers}
+\end{equation}
+
+\noindent where the value of $Q_{m,workers}$ is the ``the amount 
+of food available for human consumption'' (i.e., at the wholesale level) 
+taken from the 
+\citet[``\texttt{Dietary~Energy~Cons.~Countries}'' tab]{FAO:2013b}. 
+The value for $N_{workers}$ was obtained from the labor time series 
+for each economy as discussed in Section~\ref{sec:Labor_Data}.
+
+%------------------------------
+\subsubsection{Exergy} 
+\label{sec:X_Data}
+%------------------------------
+
+Exergy ($X$), expressed in TJ/year, was calculated by multiplying 
+the thermal energy ($Q$) values discussed in Section~\ref{sec:Q_Data} 
+by a unitless exergy-to-thermal-energy allocation factor 
+($f_{exergy-allocation}$) shown in Table~\ref{tab:Exergy_Allocation}.
+
+\begin{equation} \label{eq:exergy}
+  X_{fuel} = f_{exergy-allocation} Q_{fuel}
+\end{equation}
+
+\begin{table} \caption{Exergy allocation factors.} \label{tab:Exergy_Allocation} 
+  \begin{center}
+    \begin{tabular}{r l} 
+      Fuel                                    & $f_{exergy-allocation}$ \\
+      \hline
+      Coal                                    & 1.088    \\
+      Oil and petroleum                       & 1.073   \\      
+      Dry natural gas and                     & \multirow{2}{*}{1.04}    \\
+      natural gas liquids                     &         \\
+      Corn-based biodiesel                    & 1.07  \\
+      Biomass/fuel wood                       & 1.15   \\
+      Ethanol biofuel                         & 1.099 \\
+      Nuclear, wind,                          & \multirow{2}{*}{1.0}   \\
+      solar PV, and hydro                     &                        \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\noindent For carbon-based energy sources, $f_{exergy-allocation}$ 
+is the ratio of chemical exergy to lower (net) heating value. 
+The exergy allocation factors for coal, oil, natural gas, 
+biodiesel, and biomass/fuel wood were obtained from 
+\citet[Table~A-2]{Ayres:2003ec}. The exergy allocation ratio for 
+liquid ethanol was calculated from the standard molar chemical exergy 
+of 1357.7~kJ/mol \citep[Table~II]{Szargut:1988wv} and its lower 
+(net) heating value of 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww}. 
+$f_{exergy-allocation}$ for each fuel was assumed to be constant 
+through time across all economies. For nuclear, wind, 
+solar photovoltaic, and hydro energy sources, the electricity generated 
+is already pure exergy, so $f_{exergy-allocation}$ is unity.
+
+To calculate the exergy of animal and human muscle power, 
+the food-to-work conversion efficiency ($\eta_{food \rightarrow work}$) 
+and the ratio of food intake to food available at wholesale 
+($f_{intake/wholesale}$) were included. 
+
+\begin{equation} \label{eq:animal_muscle_exergy}
+  X_{animals} = \eta_{food \rightarrow work,animals} Q_{animals}
+\end{equation}
+
+\begin{equation} \label{eq:human_muscle_exergy}
+  X_{workers} = \eta_{food \rightarrow work,workers} f_{intake/wholesale} Q_{workers}
+\end{equation}
+
+\noindent $\eta_{food \rightarrow work, animals}$ and 
+$\eta_{food \rightarrow work, workers}$ are animal and worker efficiency 
+of converting food into energy, respectively. The animal feed-to-work 
+conversion efficiency ($\eta_{feed \rightarrow work, animals}$ = 0.4) 
+was taken from \citet{Warr:2012a} and assumed equal across all economies. 
+The food-to-work efficiency for workers 
+($\eta_{food \rightarrow work, workers}$ = 0.2) was taken from 
+\citet[Table~B.1]{Ayres:2010ug}. Following \citet[p.~315]{Ayres:2010ug} 
+and methodology from \citet{Warr:2012a}, an additional factor 
+($f_{intake/wholesale}$) was included to account for ``wastage and 
+losses of food in the household, e.g. during storage, in preparation 
+and cooking, as plate-waste, or quantities fed to domestic animals 
+and pets'' \citep[\texttt{notes} tab]{FAO:2013b}. 
+Values of $f_{intake/wholesale}$ were calculated from 
+\citet[Table~3.3 for wholesale and Table~3.4 for intake]{Wirsenius:2000vi}. 
+$f_{intake/wholesale}$ varies by country as shown in 
+Table~\ref{tab:f_intake_wholesale}. A similar intake-to-wholesale ratio 
+could also be applied to animal work, but data to calculate the ratio was 
+unavailable from \citet{Wirsenius:2000vi}, and $f_{intake/wholesale,animals}$ 
+is assumed to be unity.\footnote{The error in total exergy input to 
+any economy caused by assuming $f_{intake/wholesale,animals} = 1.0$ 
+is very small, because animal muscle exergy is a small fraction of the 
+total exergy supply to any economy, with a maximum of 0.41\% for China in 1992. 
+It could also be argued that $f_{intake/wholesale, animals}$ is likely 
+to be closer to unity than $f_{intake/wholesale, workers}$.}
+
+\begin{table} \caption{Food intake-to-wholesale ratios 
+                        ($f_{intake/wholesale}$) for all countries.} 
+                        \label{tab:f_intake_wholesale}
+  \begin{center}
+    \begin{tabular}{r c c c c c c c c c}
+      Country & US & UK & JP & CN & ZA & SA & IR & TZ & ZM \\
+      \hline
+      $f_{intake/wholesale}$ & 0.62 & 0.65 & 0.76 & 0.76 & 0.87 & 0.72 & 0.72 & 0.72 & 0.72\\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+%------------------------------
+\subsubsection{Useful Work} 
+\label{sec:U_Data}
+%------------------------------
+
+The conversion of a raw energy carrier (e.g., coal) into 
+productive energy for an economy (e.g., electricity) necessarily 
+involves inefficiencies. In the case of coal consumption, 
+only about one-third of the coal exergy is converted to useful electricity: 
+the rest is waste heat. The concept of ``useful work,'' pioneered by 
+Ayres and Warr \citep{Ayres:2003ec, Ayres:2005kn}, builds upon 
+exergy analysis to consider efficiencies of both energy production and enduse. 
+To calculate useful work ($U$), the total exergy input to an 
+economy ($X$) is decomposed into several end uses: 
+high temperature industrial heat (e.g., steel production), 
+medium temperature heat (e.g., steam production), 
+low temperature space heat (for residential heating), 
+mechanical drive (energy used for prime mover engines of all types except electric motors), 
+electricity (excluding lighting), 
+lighting (from both electricity and fuels), and 
+muscle work (from animals and workers) as shown in the following equation:
+
+\begin{equation} \label{eq:useful_work}
+  U = \sum_i{\varepsilon_i \phi_i X}
+\end{equation}
+
+\noindent where the subscript $i$ indicates the energy enduse, 
+$\varepsilon_i$ is the efficiency of converting exergy into 
+useful energy for each enduse, and $\phi_i$ gives 
+the fraction of exergy input to an economy that goes toward 
+the $i^\mathrm{th}$ enduse.
+
+Values of $\varepsilon_i$ and $\phi_i$ were calculated from 
+the REXS database supplied by \citet{Warr:2012a}. 
+Values of $X$ were calculated by methods discussed in 
+Section~\ref{sec:X_Data}. For most countries, values of 
+$\phi_i$ are not constant with time, as economic sectors with 
+different distributions of raw exergy inputs grow at different rates. 
+\citeapos{Warr:2012a} REXS database contains information for 
+developed economies (United States, United Kingdom, and Japan) 
+from 1900--2000, and we used data from the 1980--2000 timeframe. 
+Extending the REXS database to the BRICS, petrol, and LDC economies 
+is beyond the scope of this work, because longitudinal data for 
+the efficiency of different end uses ($\varepsilon_i$) and 
+the distribution of exergy sources to end uses 
+($\phi_i$) are extremely difficult to obtain.
+
+%++++++++++++++++++++++++++++++
+\subsection{Historical Data} 
+\label{sec:Historical_Data}
+%++++++++++++++++++++++++++++++
+
+Figure~\ref{fig:Historical_Lattice_Graph} presents historical data, 
+including indexed values for 
+output ($y$), 
+capital stock ($k$), 
+labor ($l$), and 
+the various energy quantifications ($q$, $x$, and $u$) 
+for 1980--2011 (developed economies) and 1991--2011 (other economies). 
+Factors of production track each other closely, 
+and high covariances among these variables can be seen in 
+Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
+**** Discuss the covariances in more detail after we 
+finalize the covariances for U. ****
+
+<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+createHistoricalLatticeGraph()
+@
+
+Figure~\ref{fig:Historical_Lattice_Graph} indicates the importance 
+of energy quantification for economic growth modeling. 
+Thermal energy ($q$) and exergy ($x$) grow at similar rates, 
+unless there is a significant raw energy carrier substitution in the economy 
+(such as China's rapid increase of coal and natural gas consumption 
+relative to petroleum since 2000). The growth rate of $u$ is 
+significantly different from $q$ and $x$ for most countries, however. 
+\citet{Warr:2012cg} show that from 1950-1990, useful work ($u$) 
+grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains 
+in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest 
+that the time-dependent technological progress term ($A$) 
+in the Cobb-Douglas and CES production functions 
+(Equations~\ref{eq:CD}--\ref{eq:CESe}) may be a proxy for 
+increasing energy efficiency in the U.S. economy.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation}
+\label{sec:ParameterEstimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section should cover both technique and results. 
+Organize along coordinates of analysis.
+
+1. Discuss parameter estimation for each model here.
+
+2. Show scatter plot results.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion of Results}
+\label{sec:DiscussionOfResults}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Drive towards new insights from our stats tested comparative approach
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Funding for Caleb Reese and Lucas Timmer was provided 
+by the Jack and Lois Kuipers Applied Mathematics Endowment and 
+the Calvin College Alumni Association. 
+Partial support for Matthew Kuperus Heun was 
+provided by a Calvin College Research Followship. 
+Partial funding for Martin de Wit was provided 
+by the South African National Research Foundation (NRF).\footnote{Any opinion, 
+findings, and conclusions or recommendations expressed herein are those 
+of the authors, and, therefore, NRF does not accept any liability in regard thereto.} 
+The authors are grateful to Benjamin S. Warr (INSEAD) for providing 
+the REXS database \citep{Warr:2012a}. 
+The authors thank Loren L. Heun (Western Michigan University) 
+for insightful critique of the statistical analyses presented herein.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
+all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
+associated with this paper can be found at\\*
+\protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Covariance Tables}
+\label{sec:Covariance_Tables}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+\bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+\bibliography{EconGrowth.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
