@@ -182,7 +182,7 @@ We can perform unconstrained parameter estimation with the following code.
 
 <<>>=
 dataUK <- loadData(countryAbbrev="UK")
-modelUKQ_LM <- cesEst(data=dataUK, 
+modelUKQ_LM <- cesEstPlus(data=dataUK, 
                       yName="iGDP", 
                       xNames=c("iCapStk", "iLabor", "iQ"), 
                       tName="iYear")
@@ -231,7 +231,7 @@ In Equation~\ref{eq:ceslek}, $\delta \rightarrow 1$ indicates that capital stock
 is unnecessary.
 
 <<>>=
-modelUKQ_LM2 <- cesEst(data=dataUK, 
+modelUKQ_LM2 <- cesEstPlus(data=dataUK, 
                       yName="iGDP", 
                       xNames=c("iLabor", "iQ", "iCapStk"), 
                       tName="iYear")
@@ -259,7 +259,7 @@ To fit while respecting the constraints, we can use the \texttt{L-BFGS-B} optimi
 method. 
 
 <<>>=
-modelUKQ_LBFGSB <- cesEst(data=dataUK, 
+modelUKQ_LBFGSB <- cesEstPlus(data=dataUK, 
                           yName="iGDP", 
                           xNames=c("iCapStk", "iLabor", "iQ"), 
                           tName="iYear",
@@ -271,14 +271,14 @@ summary(modelUKQ_LBFGSB)
 but the \texttt{LM} algorithm does not converge.
 
 To assess what is happening, we can use the built-in grid search
-capability of \texttt{cesEst}. Grid search is accessed by specifying
+capability of \texttt{cesEstPlus}. Grid search is accessed by specifying
 \texttt{rho} and/or \texttt{rho1} arguments and a range of values. 
 Note that specifying a range of values for $\rho$ or $\rho_1$ that 
 contains values less than $-1$ results in an error. 
 The model with lowest $SSE$ will be returned from the grid search.
 
 <<>>=
-modelUKQ_grid <- cesEst(data=dataUK, 
+modelUKQ_grid <- cesEstPlus(data=dataUK, 
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
@@ -309,7 +309,7 @@ $\rho_1 \rightarrow -1$, we can do a detailed analysis with
 a finer grid.
 
 <<>>=
-modelUKQ_grid_detail <- cesEst(data=dataUK, 
+modelUKQ_grid_detail <- cesEstPlus(data=dataUK, 
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor", "iQ"), 
                         tName="iYear",
@@ -352,7 +352,7 @@ with the following code.
 corresponds to the parameter $\rho_1$ in Equation~\ref{eq:CES}.)
 
 <<>>=
-modelUK <- cesEst(data=dataUK, 
+modelUK <- cesEstPlus(data=dataUK, 
                         yName="iGDP", 
                         xNames=c("iCapStk", "iLabor"), 
                         tName="iYear",
@@ -393,7 +393,7 @@ used for the energy quantification.
 
 <<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
-fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
+fitCES <- function(countryAbbrev, nest, energyType="Q", method=c("PORT","L-BFGS-B")){
   data <- loadData(countryAbbrev=countryAbbrev)
   data <- replaceColName(data, energyType, "iEToFit")
   if (nest == "(kl)e"){
@@ -405,13 +405,13 @@ fitCES <- function(countryAbbrev, nest, energyType="Q", method="L-BFGS-B"){
   } else {
     stop(paste("Unknown nesting option", nest, "in fitCES."))
   }
-  model <- cesEst(data=data, 
-                  yName="iGDP", 
+  model <- cesModel(data=data, energyType=energyType, 
+                  # yName="iGDP", 
                   xNames=xNames, 
-                  tName="iYear",
+                  # tName="iYear",
                   method=method)
-  res <- do(1) * coef( model ) 
-  res <- transform( res, country=countryAbbrev, nest=nest, converge=model$convergence ) 
+  res <- naturalCoef( model ) 
+  res <- transform( res, nest=nest, country=countryAbbrev, nest=nest, converge=model$convergence ) 
   return(res)
 }
 
@@ -421,15 +421,16 @@ lekModels <- ldply(countryAbbrevs, fitCES, nest="(le)k")
 eklModels <- ldply(countryAbbrevs, fitCES, nest="(ek)l")
 allModels <- rbind(kleModels, lekModels, eklModels)
 # Ignore the leading .id column
-allModels <- allModels[ , 2:10] 
+allModels <- subset( allModels, select= -.id )
+allModels <- transform( allModels, max.sse = pmax(sse.PORT, sse.L.BFGS.B))
 # Sort rows based on country
 allModels_ordered <- allModels[order(allModels$country) , ] 
 # Reorder the columns to put the meta information first
 allModels_ordered <- allModels_ordered[c("country", "nest", "converge", "gamma", "lambda", 
-                                         "delta_1", "delta", "rho_1", "rho")]
+                                         "delta_1", "delta", "rho_1", "rho", "method", "sse","max.sse")]
 # Create the LaTeX table
 CESTable <- xtable(allModels_ordered, caption="CES coefficients for three nesting options.", 
-                   label="tab:CES-coeffs-table",
+                   label="tab:CES-coeffs-table", digits=3,
                    table.placement="H")
 @
 
@@ -438,7 +439,9 @@ print(CESTable,
       caption.placement="top", 
       table.placement="H",
       include.rownames=FALSE,
-      hline.after=c(-1,0,3,6,9,12,15,18,21,24,nrow(CESTable)))
+      hline.after=c(-1,0,3,6,9,12,15,18,21,24,nrow(CESTable)),
+      digits=3
+      )
 @
 
 One way to assess the data in Table~\ref{tab:CES-coeffs-table} is to compare indications 

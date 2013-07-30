@@ -357,6 +357,9 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
   return(graph)
 }
 
+naturalCoef <- function(object) {
+  return( attr(object, "naturalCoeffs") )
+}
 ## <<single-factor functions, eval=TRUE>>=
 singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
   ####################
@@ -387,7 +390,7 @@ singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), facto
   if (!respectRangeConstraints){
     m <- coef(modelSF)["m"]
   }
-  naturalCoeffs <- c(lambda = as.vector(coef(modelSF)["lambda"]),
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelSF)["lambda"]),
                      m = as.vector(m),
                      sse = sum(resid(modelSF)^2),
                      isConv = modelSF$convInfo$isConv
@@ -878,7 +881,7 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
       modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
     }
   }
-  naturalCoeffs <- c(lambda = as.vector(coef(modelCD)["lambda"]),
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCD)["lambda"]),
                      alpha = as.vector(alpha),
                      beta = as.vector(1.0 - alpha),
                      gamma = 0.0, # Energy is not a factor for this model.
@@ -975,7 +978,7 @@ cdeModelAB <- function(countryAbbrev,
     }
   }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- c(a = as.vector(a), 
+  naturalCoeffs <- data.frame(a = as.vector(a), 
                      b = as.vector(b),
                      c = NA,
                      d = NA,
@@ -1076,7 +1079,7 @@ cdeModelCD <- function(countryAbbrev,
     }
   }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- c(a = NA, 
+  naturalCoeffs <- data.frame(a = NA, 
                      b = NA,
                      c = as.vector(c),
                      d = as.vector(d),
@@ -1177,7 +1180,7 @@ cdeModelEF <- function(countryAbbrev,
     }
   }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- c(a = NA, 
+  naturalCoeffs <- data.frame(a = NA, 
                      b = NA,
                      c = NA,
                      d = NA,
@@ -1918,7 +1921,7 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   rho_1 <- coef(modelCES)["rho"]
   # rho <- -1.0 gives the equation without energy, although it makes sigma blow up.
   rho <- -1.0 
-  naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCES)["lambda"]),
                      delta_1 = as.vector(coef(modelCES)["delta"]),
                      rho_1 = as.vector(rho_1),
                      sigma_1 = as.vector(1 / (1 + rho_1)),
@@ -1933,7 +1936,7 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   return(modelCES)
 }
 
-cesModel <- function(countryAbbrev, energyType=NA, data){
+cesModel <- function(countryAbbrev, energyType=NA, data, methods=c("PORT","L-BFGS-B"), xNames, ...){
   ####################
   # Returns a cesEst model for the country and energyType specified.
   # energyType should be one of Q", "X", "U", or NA.
@@ -1945,6 +1948,15 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   # are made based upon countryAbbrev, and there is no way to verify that 
   # countryAbbrev is associated with data.
   ##
+  
+  CESmethods <- c("PORT", "L-BFGS-B")
+  methods <- toupper(methods)
+  badMethods <- setdiff(methods, CESmethods)
+  methods <- intersect(methods, CESmethods)
+  for (m in badMethods) {
+    warning(paste("Unrecognized method:", m))
+  }
+  
   if (missing(data)){
     data <- loadData(countryAbbrev=countryAbbrev)
   }
@@ -1964,106 +1976,41 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
   # Set up the controls for the cesEst function.
   # control <- nls.lm.control(maxiter=1000, maxfev=2000)
   # Decide which independent variables we want to use
-  xNamesToUse <- c("iCapStk", "iLabor", "iEToFit")    
+  if (missing (xNames) ) {
+    xNamesToUse <- c("iCapStk", "iLabor", "iEToFit")    
+  } else {
+    xNamesToUse <- xNames
+  }
   tName <- "iYear"
   yName <- "iGDP"
-  # Now estimate the parameters for the CES production function.
-#   if (countryAbbrev == "US") {
-#     # With Q, The unconstrained optimization leads to rho1 = -0.72 and sigma1 = 3.57, which is not 
-#     # economically meaningful.  So, a grid search was performed, and it confirmed that low values of 
-#     # rho1 yield a better fit. In fact, the lower the value of rho1, the better. So, we'll set it 
-#     # here at rho1=0.0, which makes the elasticity of substitution between k and l sigma1 = 1.0, 
-#     # giving the Cobb-Douglas form for the k l portion of the CES function. Similar results are found
-#     # for X and U.
-# #    rho1 = 0.0
-#     # Unconstrained optimization leads to rho = 25.7 and sigma = 0.0374, indicating that (kl) and (e) are 
-#     # complimentary.  We'll let the estCES function solve for the best value.
-# #     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-# #                        method="LM",
-# #                        rho1=rho1)
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
-#   } else if (countryAbbrev == "UK") {
-#     # The unconstrained optimization leads to rho1 = -2.4 and sigma1 = -0.71, which is not economically meaningful.
-#     # So, a grid search was performed, and it confirmed that low values of rho1 yield a better fit. In fact, the 
-#     # lower the value of rho1, the better. So, we'll set it here at rho1=0.0, which makes the elasticity of 
-#     # substitution between k and l sigma1 = 1.0, giving the Cobb-Douglas form for the k l portion of the CES function.
-#     # rho1 = c(0.00, 0.01, 0.02)
-#     rho1 = 0.0
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="LM",
-#                        rho1=rho1
-#     )
-#   } else if (countryAbbrev == "JP") {
-#     # The unconstrained optimization leads to rho1 = 7.99 and sigma1 = 0.11, indicating complementarity between k & l,
-#     # but different from the results for the US and UK (where k & l were found to be substitutes).  However, the
-#     # p value for rho1 is very high (0.3), indicating that rho1 is not making a significant contribution to the model. 
-#     # The unconstrained fit gives R^ = 0.996 and sigma = 0.103, indicating complementarity between (kl) and (e).
-#     # 
-#     # In fact, we could force rho1 = 0.0 and achieve rho = 280 and sigma = 0.00356 with R^2 = 0.988, a very small
-#     # decrease, indeed.  Note that both the constrained and unconstrained fits give small sigma, indicating
-#     # that (kl) and (e) are complimentary.
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="LM"
-#     )
-#   } else if (countryAbbrev == "CN"){
-#     # Unconstrained optimization: rho1 < -0.2290, rho = 14.1651, R^2 = 0.9984. This corresponds to sigma1 = 1.297
-#     # and sigma = 0.0659, indicating that (kl) and (e) are complements and k & l are substitutes.  However, none of the
-#     # rho or sigma values are statistically significant.
-#     # Now, sigma1 > 1 is not economically meaningful, so we'll set rho1 = 0 to force sigma1 = 1.0. When we do that, 
-#     # we obtain sigma1 = 1.0 (so perfect substitution between k and l) and sigma = 7.19 (again, not economically
-#     # meaningful) with R^2 = 0.9983.  Again, none of the rho or sigma values are statistically significant.
-#     # Furthermore, the only significant varluable is gamma = 1.0731.
-#     # So, for the final fit, I'll put rho1 = 0.0 and rho = 0.0. The final R^2 = 0.9983.
-#     rho1 = 0.0
-#     rho = 0.0
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="LM",
-#                        rho1=rho1,
-#                        rho=rho                     
-#     )
-#   } else if (countryAbbrev == "ZA"){
-#     # An unconstrained fit works for South Africa.  Results are sigma1 = 0.05, signalling complementarity
-#     # between k and l.  sigma = 0.03, indicating complementarity between (kl) and (e).
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control, 
-#                        method="LM",
-#                        )
-#   } else if (countryAbbrev == "SA"){
-#     # An unconstrained fit gives rho = -6.33, rho1 = 9.36 (sigma1 = 0.0965) and R^2 = 0.9892.  
-#     # This result is not economically meaningful.
-#     # Constraining rho = 0 gives rho1 = -582, again not economically meaningful.
-#     # So, do a grid search over meaningful regions to see what is best.
-#     # The result (to with +/- 0.1) is rho = 0.0 and rho1 = 5.7, with R^2 = 0.9885.
-#     # However, neither the the rho or nor the sigma values are statistically significant.
-#     rho1 <- 5.7
-#     rho <- 0.0
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="LM",
-#                        rho1 = rho1,
-#                        rho = rho
-#     )
-#   } else if (countryAbbrev == "IR"){
-#     # Iran works with an unconstrained fit.
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="LM",
-#     )
-#   } else if (countryAbbrev == "TZ"){
-#     # Using the PORT algorithm yields convergence and R^2 = 0.9974 with economically menaingful results.
-#     # However, none of the rho or sigma values are statistically significant.
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="PORT",
-#     )
-#   } else if (countryAbbrev == "ZM"){
-#     # ZM works with the PORT algorithm, but not the LM algorithm.
-#     modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, control=control,
-#                        method="PORT",
-#                        rho=0.0
-#     )
-#   }
-  modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
+
+  models <- list()
+  bestSSE <- Inf
+  for (method in methods) {
+    model <- cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method=method, ...)
+    models[[1 + length(models)]] <- model
+    if (sum(resid(model)^2) < bestSSE) {
+      bestModel <- model
+      bestSSE <- sum(resid(model)^2)
+    }
+  }
+  nC <- attr(bestModel,'naturalCoeffs')
+  for (mod in models) {
+    newNC <- naturalCoef(mod)
+    names(newNC) <- paste(names(newNC), newNC[1,"method"], sep=".")
+    nC <- cbind( nC, newNC )
+  }
+  attr(bestModel, "naturalCoeffs") <- nC
+  return(bestModel)
+}
+
+  
+cesEstPlus <- function( data, yName, xNames, tName, method="PORT", ...) {
+  modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=method, ...)
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho_1"]
   rho <- coef(modelCES)["rho"]
-  naturalCoeffs <- c(lambda = as.vector(coef(modelCES)["lambda"]),
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCES)["lambda"]),
                      delta_1 = as.vector(coef(modelCES)["delta_1"]),
                      rho_1 = as.vector(rho_1),
                      sigma_1 = as.vector(1 / (1 + rho_1)),
@@ -2072,11 +2019,13 @@ cesModel <- function(countryAbbrev, energyType=NA, data){
                      rho = as.vector(rho),
                      sigma = as.vector(1 / (1 + rho)),
                      sse = sum(resid(modelCES)^2),
-                     isConv = modelCES$convergence
+                     isConv = modelCES$convergence,
+                     method = method
                      )
   attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)
 }
+  
 
 cesResampleCoeffProps <- function(cesResampleFits, ...){
   #######
@@ -2563,7 +2512,7 @@ linexModel <- function(countryAbbrev, energyType, data){
   a_0 <- coef(modelLINEX)["a_0"]
   a_1 <- coef(modelLINEX)["a_1"]
   c_t <- a_1 / a_0
-  naturalCoeffs <- c(a_0 = as.vector(a_0),
+  naturalCoeffs <- data.frame(a_0 = as.vector(a_0),
                      a_1 = as.vector(a_1),
                      c_t = as.vector(a_1 / a_0),
                      sse = sum(resid(modelLINEX)^2),
