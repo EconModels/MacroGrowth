@@ -344,6 +344,138 @@ Section~\ref{sec:Implications} discusses implications of the parameter estimatio
 results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
 of all statistical results.
 
+**** Notes from Martin ****
+
+To be included somewhere.
+
+Big picture
+Why do we do this? Want to link energy and economics on national level 
+and in a modeled approach,informing energy policy during energy transitions.
+Usually macro energy economic models rely on PF with energy included. 
+Key papers using CES in energy economics incl high impact such as 
+Stern, Gerlagh, Tol etc. 
+Cite in introduction met energy economists using PF approaches, specially CES.
+But, which form to choose and using which parameters? 
+Literature is inconclusive, very little actual empirical testing of such functions. 
+Mostly CES in CGE models used by Wbank and others. 
+CD adviced to be used by CBO. 
+How do we select a functional form and what are the parameters to be used? On what basis do we select?
+
+We aim. to search for empirically robust solution, one that stands up to statistical testing.
+
+What we find is counterintuitive for many cases: dropping energy from the PF has little impact, 
+but some notable exceptions. 
+On other hand, only including energy in a PF of LINEX form also yields good results and stats tests. 
+Is not a simple case for dropping energy, but acknowledging its key role. 
+Do we support the call for better bottom-up understanding? 
+What do we say on the limitations of macroeconomic modelling approaches altogether? 
+(Note such limitations are well known in ME literature, for example capital controversy Robinson).
+We speculate on implications for choosing PF in energy economic models that inform growth policy.
+
+Points on paper so far
+1. Does the relative small differences in fit between different production functions warrant 
+such a large debate on validity of one vs other? Clearly not. 
+CD been used by economists for ease of use and extreme flexibility (Miller).  
+PF generally used on instrumentalist grounds if give reasonable good description of data. 
+NK econ theory provide poor causal explanation of observed data, 
+but yet CD shows very good fit (miller, p17). 
+CES is  more general, but is a liability in forecasting because difficult 
+to get estimate of EoS that is consistent across studies (Miller, p26). 
+Aggregation is problem of both CD and CES functional forms, 
+so being careful when making strong inferences that cannot be justified.
+
+2. We think we can contribute by emphasising the need 
+for proper stats testing or inconsistent reporting on use of preferred functions. 
+Problems with empirical testing presented by Shen, Serrenho.
+What are our issues with multivariate OLS (Serrenho)?
+
+3. Are we joining the forced choice between production functions or 
+acknowledge the similar problems with aggregate prod functions in general? 
+Do we see this as sufficient evidence to doubt the top-down approach to econ growth altogether?
+
+4. R2 is a very crude measure and only very minor improvements 
+are achieved when others factors such as energy is added in a CD. 
+We concur. Puzzling is conclusion that such minor improvements 
+does prove the need to include energy in PF (Serrenho).
+
+5. We do think it is a choice between CD and CES (Miller) as 
+both have serious deficiencies after stats tests.
+
+6. One central issue within PF is elasticity of subs (EoS). 
+That is the \%ch in factor proportions ( k,l, etc) 
+because of one unit ch in MRTS. 
+MRTS is rate at which one factor can be substituted for another holding output constant. 
+EoS is low in Leontief cases, L shaped isoquants.
+
+7. Miller makes the point that even if parameters in model are stats artifacts, 
+they are still useful for forecasting. Do we agree?
+
+8. Is Ockham's razor relevant to what we are doing?
+
+9. Assumptions of CD are strongly rejected by empirical work, Miller still makes case for using CD.
+
+11. What about energy augmented 
+
+10. TZ case
+CDno e: almost 80\% l
+CD with e: 25\% energy, rest c,importance of l drops to 0
+CES no e: 20\% c (sigma), 80\% l, but large range
+CES with e: fig 35 e may be NB
+LINEX: one of lowest ct parameters (low relative importance of labour eff compared to cap eff)
+Does this mean that relative small increases in cap eff can really lift the economy?
+
+11. ZA case
+CD no e: roughly half c, l
+CD with e: roughly half, c, e, importance of l drops to 0
+CES no e: 10% c, 25% l ??
+CES with e: fig 35 e may be NB
+LINEX: one of highest ct parameters (high relative importance of labour eff compared to cap eff)
+Does this mean that relative small increases in labour eff can really lift the economy?
+
+12. Capital starved Zambia. Very high importance. Understand CES param better.
+
+Discussion: What is Next?
+
+a. A comparative analysis between diff PF reveal interesting 
+enough information to warrant a more diffused approach to countries. 
+Thus, we have a case for doing this for  all countries in the world 
+(or at least those representative of countries in different groups 80/20)
+
+b. If c is relatively more important than labour or energy 
+for growth and if capital stock is low, a situation one would expect in LDCs, 
+a relative small addition of capital stock can give relatively large returns in terms of growth.
+
+c. Now it becomes interesting, in a 'stages of growth' approach, 
+using LT econ data it may be the case that the importance 
+of factors are different across growth stages. 
+It would need a composite type of analysis - both stock and importance.
+
+d. Is it possible to have evidence of diff stocks and diff importances across phases of growth? 
+Maybe test this for a data rich nation that has worked through these stages, 
+we try to identify them and do partial analysis on time periods coinciding with these stages.
+
+Should we eliminate $u$ data? Only 3 countries. Only 20 years. Doesn't add much insight. 
+Too bad, but perhaps necessary to simplify paper.
+
+Discussions:
+
+Counterfactuals: energy, cap, labour what ifs for future.
+
+interpretation of type of economies, what does the data presentation say 
+on relative change in each input and change in GDP?
+
+Forcing const elast of subs in CES thru nested structures violates 
+observation that more than two factor will not be const. elasticities Uzawa 1962.
+
+R programming dealt with nested CES see paper discussion on Kemfert.
+
+Next steps:
+
+Stages of growth crowd implicitly assumes countries at similar stage of growth will
+have similar values for $\alpha$, $\beta$, $\gamma$. However, our results show
+that not to be true. Needs further exploration to cover more (all?) countries.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coordinates of Analysis} 
 \label{sec:Coordinates}
