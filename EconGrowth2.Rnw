@@ -347,6 +347,85 @@ that not to be true. Needs further exploration to cover more (all?) countries.
 \label{sec:Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Thoughts on literature review and contextualisation of our work
+
+Imagine ourselves walking into a conversation on the role of energy in the economy.
+
+1. Listen to what others say
+
+Identify key issues and important voices
+
+\begin{itemize}
+\item{energy has become an important strategic issue, shocks in 1970s, spikes in energy prices generated renewed interest (IEA, IMF), supported by analysis on more structural depletion and technology race over time (Hamilton), cite reviews on energy and economics (Stern,...), cite articles that show close correlations energy use and economic growth (Cleveland etc)}
+\item{economic theoretical frameworks adjusted: energy theory of value; Energy fundamental in biophysical economics (Cleveland, Hall), energy as one cost in production set; energy plays a role in production (extended Solow-Swan or CES (who introduced CES first) framework)}
+\item{how to account for energy on a macro economic level? taken up in economic growth theory by (1) including energy in PF (stern, froling, tahvonen, Gerlagh, Tol, Kemfert, FEEM crowd, Cooper, Nel) or (2) new thermodynamically rooted Function (kümmel, lindenberger, ayres, warr). Mention energy in endogenous growth theory models (smulders, Mulder, vd Bergh) in SD modelling}
+\item{countries are going through different stages in their development, and the role of energy in such phases is now started to be explored (frohling, tahvonen, dalgaard)}
+\item{some have started to do work on empirical testing of PF with energy (Shen, walley, Serrenho,) and some have started doing comparative analysis of PF CD vs CES (miller)}
+\end{itemize}
+
+2. Find our own voice
+
+What is our own argument?
+
+We argue that macroeconomic modelling is real, but needs to be used in a very careful way. Throughout decades, there are Enough signals that macroeconomic growth theory has serious limitations. Not revisiting but refer to reviews (mishra, others). 
+
+We argue that the basis on which a choice between ME and energy models and parameters are made, needs more detailed work, specifically detailed statistical testing.
+
+We also argue that different types of countries may need different PF parameters to be used in modelling approaches, leave possibility open for different explanations of growth in different countries and at different stages of their development.
+
+We present a comparative analysis between countries and of commonly used approaches in PF and LINEX, focussing on the insights one may drawn on a detailed comparative analysis, rather then run with one selected PF or LINEX.
+
+What is general tone of conversation? Controversial, established? Cross-disciplinary?
+
+We provide insights from cross-disciplinary work between statistics, engineering and environmental economics. This is not established work, and possibly controversial.
+
+We are taking issue with untested applications of PF, incl energy. Also taking issue with idea that importance of energy in growth also means it is necessary to include it as a factor in PF. Opens up a argument for the need of richer than just aggregate modelling approaches.
+
+Who makes arguments we want to amplify?
+
+Amplify need to account for energy in understanding growth in economies (Stern, Tol, Gerlagh)
+
+Amplify those who call for caution in applying aggregate PF and just adding energy to it.
+
+Amplify those who call for testing what value of adding energy really is.
+
+Amplify comparative analysis of role of energy between countries.
+
+What established sources we build on? Question? Contradict? In our writing.
+
+Build on articles using R to test econ growth PF, question what is reported when doing these tests. Contradict literature that calls for incl. energy in all PF, without testing whether that make sense at all.
+
+What methods apply to what we do?
+
+R software, makes detailed testing possible. R2 not a good measure, limited insights t and p values (confirm?)
+Grid search etc. (Matt, Randy to populate)
+
+Does analysis differ from others in the conversation?
+
+Yes, differs as follows:
+\begin{itemize}
+\item{if one do these test, report on all delta, sigma values as well as sse. Best fits not evidence of best values, must report uncertainties as well.}
+\item{What motivates nesting of CES? Not well behaved rho results, driving sigmas.
+Different type of CES with parsimonious factors, sigmas can be generated but not that easy (idea Randy)}
+\item{different factors in PF for countries in diff. development status}
+\end{itemize}
+
+What do we add to the conversation?
+\begin{itemize}
+\item{Richer insights from detailed testing across all functional relationships.}
+\item{Energy is not necessary to be included in all PF.}
+\item{What does that mean? Energy remains important for growth, 
+but its function in economies need deeper understanding}
+\item{Also signals that different types of countries likely to react differently to energy constraints. Interpret $\sigma$ here, substitution possibilities.}
+\end{itemize}
+
+More work?
+
+
+
+
+**** Notes on the introduction from Martin ****
+
 1. Set scene through energy economic modelling papers. 
 Point out that PF approaches are alive and well (Stern, Tol, Gerlagh, World Bank, IMF), 
 short lit review as part of a longer introduction.  
@@ -361,6 +440,8 @@ we are taking the approach that all models are wrong but some are useful.
 We are after generating insights even after deeper assumptions of econ growth theory are very limiting.
 
 4. Introduce coordinates of analysis.
+
+**** Orignial introduction that MKH wrote ****
 
 Neoclassical economic growth theory attributes output ($Y$) to factors of production:
 capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the 
@@ -1042,8 +1123,7 @@ for 1980--2011 (developed economies) and 1991--2011 (other economies).
 Factors of production track each other closely, 
 and high covariances among these variables can be seen in 
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
-**** Discuss the covariances in more detail after we 
-finalize the covariances for U. ****
+**** Do we want to discuss the covariances? ****
 
 <<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
@@ -1089,6 +1169,14 @@ but nevertheless reach a better solution (smaller sse).
 Drive towards new insights from our stats tested comparative approach..
 
 **** Notes for interpretation of results ****
+
+CD assumes $\sigma_1 = 1$. CES doesn't assume a value for $\sigma_1$. 
+The $\sigma_1$ vs. $\delta_1$ graphs for CES without energy often have 
+two frequent values for $\sigma_1$.  One of those frequent values is
+nearer to $\sigma_1 = 1$. When CD and CES without energy do not agree on 
+share values (CD: $\alpha$ compared to $\beta$, CES: $\delta_1$) for the 
+base curve fit (red dot), they do agree for the data that clusters near 
+$\sigma_1 = 1$ for the CES fits.
 
 Country interpretation
 
@@ -1260,37 +1348,47 @@ Consistent signal that labour is unnec.
 $\sigma$: labour and energy complements, not as strong. 
 Capital and energy perfect substitutes.
 
-% 
-% 
-% Discussion of results: How to get better consistent signals?
-% - Use CD as starting points and do CES convergence on that basis.
-% - Do scatterplots to get range of uncertainty inputs, then re-interpret. delta against sigma plots, as well as delta_1 and sigma_1 plots.
-% 
-% Thus, to do the fitting well we need to understand:
-% - nesting
-% - algorithm
-% - starting values
-% esp. for CES. 
-% (Maybe illustrate with one case study such as China what implications are).
-% 
-% How do we compare witj LINEX results?
-% CES is a broader specification of CD, LINEX is not. In LINEX no delta's nor sigmas are generated. Only efficiency terms are generated in LINEX, thus in other words economic growth is only possible by increased efficiency. 
-% The efficiency of using energy is driven by capital stock. The objective/growth engine is to increase capital at a rate that is faster then growth in labour and energy.  Increasing labour relative to energy gives a muted benefit. 
-% LINEX derived for Germany: only really applicable when energy and capital are complements.
-% 
-% Discussion in relation to other papers. 
-% Problems with other papers:
-% - If not giving you all parameters
-% - Not explain nesting approach 
-% - No CI on data
-% 
-% 
-% Economic interpretation (revisit after scatterplot information)
-% Developed economies: Capital and energy is complementary (US: labour and energy substitutable)
-% NICs: Capital and energy complementary, but labour and energy more substitutable
-% OPEC: Labour and energy complementary (mixed results on capital and energy)
-% LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
-% 
+
+
+Discussion of results: 
+
+How to get better consistent signals?
+
+\begin{itemize}
+\item{Use CD as starting points and do CES convergence on that basis.}
+\item{Do scatterplots to get range of uncertainty inputs, then re-interpret. delta against sigma plots, as well as $\delta_1$ and $\sigma_1$ plots.}
+\end{itemize}
+
+Thus, to do the fitting well we need to understand:
+\begin{itemize}
+\item{nesting}
+\item{algorithm}
+\item{starting values}
+\end{itemize}
+esp. for CES.
+
+(Maybe illustrate with one case study such as China what implications are).
+
+How do we compare with LINEX results?
+
+CES is a broader specification of CD, LINEX is not. In LINEX no delta's nor sigmas are generated. Only efficiency terms are generated in LINEX, thus in other words economic growth is only possible by increased efficiency. 
+The efficiency of using energy is driven by capital stock. The objective/growth engine is to increase capital at a rate that is faster then growth in labour and energy.  Increasing labour relative to energy gives a muted benefit. 
+LINEX derived for Germany: only really applicable when energy and capital are complements.
+
+Discussion in relation to other papers. 
+Problems with other papers:
+\begin{itemize}
+\item{If not giving you all parameters}
+\item{Not explain nesting approach}
+\item{No CI on data}
+\end{itemize}
+
+Economic interpretation (revisit after scatterplot information)
+Developed economies: Capital and energy is complementary (US: labour and energy substitutable)
+NICs: Capital and energy complementary, but labour and energy more substitutable
+OPEC: Labour and energy complementary (mixed results on capital and energy)
+LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
+
 
 
 
