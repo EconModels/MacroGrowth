@@ -356,67 +356,127 @@ Imagine ourselves walking into a conversation on the role of energy in the econo
 Identify key issues and important voices
 
 \begin{itemize}
-\item{energy has become an important strategic issue, shocks in 1970s, spikes in energy prices generated renewed interest (IEA, IMF), supported by analysis on more structural depletion and technology race over time (Hamilton), cite reviews on energy and economics (Stern,...), cite articles that show close correlations energy use and economic growth (Cleveland etc)}
+
+\item{energy has become an important strategic issue for economic growth, shocks in 1970s, spikes in energy prices generated renewed interest (IEA, IMF), supported by analysis on more structural depletion and technology race over time (Hamilton), cite reviews on energy and economics (Stern,...), cite articles that show close correlations energy use and economic growth (Cleveland etc)}
+
 \item{economic theoretical frameworks adjusted: energy theory of value; Energy fundamental in biophysical economics (Cleveland, Hall), energy as one cost in production set; energy plays a role in production (extended Solow-Swan or CES (who introduced CES first) framework)}
-\item{how to account for energy on a macro economic level? taken up in economic growth theory by (1) including energy in PF (stern, froling, tahvonen, Gerlagh, Tol, Kemfert, FEEM crowd, Cooper, Nel) or (2) new thermodynamically rooted Function (kümmel, lindenberger, ayres, warr). Mention energy in endogenous growth theory models (smulders, Mulder, vd Bergh) in SD modelling}
+
+\item{how to account for energy on a macro economic modeling? taken up in economic growth theory by (1) including energy in PF (stern, froling, tahvonen, Gerlagh, Tol, Kemfert, FEEM crowd, Cooper, Nel) or (2) new thermodynamically rooted Function (kümmel, lindenberger, ayres, warr). Mention energy in endogenous growth theory models (smulders, Mulder, vd Bergh) in SD modelling}
+
 \item{countries are going through different stages in their development, and the role of energy in such phases is now started to be explored (frohling, tahvonen, dalgaard)}
-\item{some have started to do work on empirical testing of PF with energy (Shen, walley, Serrenho,) and some have started doing comparative analysis of PF CD vs CES (miller)}
+
+\item{some have started to do work on empirical/statistical testing of PF with energy (Shen, walley, Serrenho,) and some have started doing comparative analysis of PF CD vs CES (miller)}
+
 \end{itemize}
 
 2. Find our own voice
 
 What is our own argument?
 
-We argue that macroeconomic modelling is real, but needs to be used in a very careful way. Throughout decades, there are Enough signals that macroeconomic growth theory has serious limitations. Not revisiting but refer to reviews (mishra, others). 
+We argue that macroeconomic modelling is a reality (being used for policy analysis), 
+but needs to be used in a very careful way. 
+Throughout decades, there are enough signals that 
+macroeconomic growth theory has serious limitations. 
+Not revisiting but refer to reviews (mishra, others). 
 
-We argue that the basis on which a choice between ME and energy models and parameters are made, needs more detailed work, specifically detailed statistical testing.
+We argue that the basis on which choice version of energy-augmented macroeconomic model 
+and parameters are made, needs more detailed work, 
+specifically detailed statistical testing and/or data analysis, including
+the quantification of energy ($q$, $x$, or $u$).
 
-We also argue that different types of countries may need different PF parameters to be used in modelling approaches, leave possibility open for different explanations of growth in different countries and at different stages of their development.
+We also argue that different types of countries may need different PF parameters 
+to be used in modelling approaches, 
+leave possibility open for different explanations of growth 
+in different countries and at different stages of their development.
 
-We present a comparative analysis between countries and of commonly used approaches in PF and LINEX, focussing on the insights one may drawn on a detailed comparative analysis, rather then run with one selected PF or LINEX.
+We present a comparative analysis among countries and of commonly used approaches in PF, 
+focussing on the insights one may drawn on a detailed comparative analysis, 
+rather then run with one selected PF.
 
 What is general tone of conversation? Controversial, established? Cross-disciplinary?
+We provide insights from cross-disciplinary work among statistics, engineering,
+and environmental economics. This is a new approach to issues that have been 
+discussed in recent years in the literature.
 
-We provide insights from cross-disciplinary work between statistics, engineering and environmental economics. This is not established work, and possibly controversial.
-
-We are taking issue with untested applications of PF, incl energy. Also taking issue with idea that importance of energy in growth also means it is necessary to include it as a factor in PF. Opens up a argument for the need of richer than just aggregate modelling approaches.
+We are taking issue with untested (statistically) applications of functional forms 
+of energy-augmented PF across different countries, with different energy quantifications. 
+Also taking issue with idea that importance of energy in growth 
+also means it is necessary to include it as a factor in PF (unnecessary vs. unimportant). 
+Opens up a argument for the need of richer than just aggregate modelling approaches.
 
 Who makes arguments we want to amplify?
 
-Amplify need to account for energy in understanding growth in economies (Stern, Tol, Gerlagh)
+Amplify voices who claim energy is important in understanding growth in economies (Stern, Tol, Gerlagh)
 
-Amplify those who call for caution in applying aggregate PF and just adding energy to it.
+Amplify those who call for caution in applying aggregate PF by just adding energy to it. (who?)
 
-Amplify those who call for testing what value of adding energy really is.
+Amplify those who call for testing (statistically) the benefit of energy-augmentation. (shen/whalley)
 
-Amplify comparative analysis of role of energy between countries.
+Amplify comparative analysis of role of energy between countries indifferent stages of development. (who?)
 
 What established sources we build on? Question? Contradict? In our writing.
 
-Build on articles using R to test econ growth PF, question what is reported when doing these tests. Contradict literature that calls for incl. energy in all PF, without testing whether that make sense at all.
-
-What methods apply to what we do?
-
-R software, makes detailed testing possible. R2 not a good measure, limited insights t and p values (confirm?)
-Grid search etc. (Matt, Randy to populate)
+Build on articles using R to test econ growth PF, 
+question what is reported when doing these tests (shen/whalley and others who have used micEconCES). 
+Critique literature that calls for uncritical energy-augmentation of PF, 
+without testing whether that make sense at all.
 
 Does analysis differ from others in the conversation?
 
 Yes, differs as follows:
 \begin{itemize}
-\item{if one do these test, report on all delta, sigma values as well as sse. Best fits not evidence of best values, must report uncertainties as well.}
-\item{What motivates nesting of CES? Not well behaved rho results, driving sigmas.
-Different type of CES with parsimonious factors, sigmas can be generated but not that easy (idea Randy)}
-\item{different factors in PF for countries in diff. development status}
+\item{if one do these test, report on all $\delta$, $\sigma$, $\gamma$, and $\lambda$ 
+values as well as sse. 
+Good fits not evidence of best values, must report uncertainties as well.}
+\item{What motivates nesting of CES? Not well behaved $\rho$ results, driving $\sigma$s.
+Different type of CES with parsimonious factors, sigmas can be generated but not that easy (idea Randy).
+If you run all 3 nesting options, you can identify elasticities of all three factors in relation to each 
+other. Furthermore, you can determine which two factors are driving overall behavior in the aggregate function.}
+\item{necessary of different factors in PF to explain growth for countries in diff. development status}
 \end{itemize}
 
 What do we add to the conversation?
+
 \begin{itemize}
-\item{Richer insights from detailed testing across all functional relationships.}
-\item{Energy is not necessary to be included in all PF.}
-\item{What does that mean? Energy remains important for growth, 
-but its function in economies need deeper understanding}
-\item{Also signals that different types of countries likely to react differently to energy constraints. Interpret $\sigma$ here, substitution possibilities.}
+
+\item{We are able to gain rich insights 
+on what really drives growth from detailed analysis (including uncertainties) 
+by testing all functional forms across many different 
+economy types.}
+
+\item{We were unable to gain new insights from the various energy quantifications that we tried.}
+
+\item{We find, surprisingly, that energy is not necessary 
+to be included alongside $k$ and $l$ in all PF. Models with energy and models without energy
+all perform well on an R$^2$ basis.}
+
+\item{We also find that 
+
+(1) covariance of energy($e$) with both $k$ and $l$ is very high, with few exceptions (UK?).
+
+(2) with few exceptions, $\sigma_{(kl)e}$, $\sigma_{ke}$, and $\sigma_{le}$ 
+are all very low (indicating complementarity) (verify!!!!), and 
+
+(3) energy-only models (SF$e$ and LINEX) achieve very good fits, just like CD$e$ and CES$e$.
+(should we make this point or not?)}
+
+\item{What does that mean? 
+It is a fallacy to think that saying energy is unnecessary 
+to include in an equation means energy is unimportant for economic growth. How to support this argument?
+
+If you find that energy is unnecessary to include alongside capital and labor 
+to explain growth in one economy at the macro, aggregated level, 
+you should not assume that energy is unimportant as a driver for economic growth for all economies.
+For developed economies, energy is captial intensive: you need to have large capital to make use 
+of energy. In developing economies, you don't need capital to make use of energy. 
+Rather, you need labor.
+
+We need to verify the above by comparison with our results.}
+
+\item{Also signals that different types of countries likely 
+to react differently to energy constraints. 
+Interpret $\sigma$ here, substitution possibilities.}
+
 \end{itemize}
 
 More work?
@@ -440,6 +500,10 @@ we are taking the approach that all models are wrong but some are useful.
 We are after generating insights even after deeper assumptions of econ growth theory are very limiting.
 
 4. Introduce coordinates of analysis.
+
+
+
+
 
 **** Orignial introduction that MKH wrote ****
 
@@ -1149,6 +1213,15 @@ increasing energy efficiency in the U.S. economy.
 \section{Parameter Estimation}
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\texttt{R} software, makes detailed testing possible. R$^2$ not a good measure, 
+limited insights t and p values, especially on PFs that have parameters with constraints
+
+We found that we are able to maintain good fits while respecting theoretical foundations
+of the models (i.e., respect parameter constraints). No need to relax parameter constraints
+and, thereby, contradict micro foundations.
+
+Grid search etc. (Matt, Randy to populate)
 
 This section should cover both technique and results. 
 Organize along coordinates of analysis.
