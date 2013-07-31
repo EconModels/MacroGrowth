@@ -358,8 +358,16 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 naturalCoef <- function(object) {
+  if (! "naturalCoeffs" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
   return( attr(object, "naturalCoeffs") )
 }
+
+safeDF <- function(object, nrow=1, ncol=0){
+  if (inherits(object,"data.frame")) return (object)
+  if (is.null(object)) return (data.frame(matrix(nrow=nrow, ncol=ncol)))
+  return(as.data.frame(object))
+}
+
 ## <<single-factor functions, eval=TRUE>>=
 singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
   ####################
@@ -1951,12 +1959,13 @@ fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("POR
   } else {
     stop(paste("Unknown nesting option", nest, "in fitCES."))
   }
+  
   model <- cesModel(data=data, energyType=energyType, 
                     xNames=xNames, 
                     algorithm=algorithm)
   nC <- naturalCoef( model ) 
   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
-  attr(model, "naturalCoefficients") <- nC
+  attr(model, "naturalCoeffs") <- nC
   return(model)
 }
 
@@ -2010,15 +2019,19 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
 
   models <- list()
   bestSSE <- Inf
+  bestModel <- NULL
   for (algorithm in algorithms) {
-    model <- cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...)
+    model <- tryCatch(
+      cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...),
+      error = function(e) { NULL }
+    )
     models[[1 + length(models)]] <- model
-    if (sum(resid(model)^2) < bestSSE) {
+    if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
       bestModel <- model
       bestSSE <- sum(resid(model)^2)
     }
   }
-  nC <- attr(bestModel,'naturalCoeffs')
+  nC <- naturalCoef(bestModel)
   for (mod in models) {
     newNC <- naturalCoef(mod)
     names(newNC) <- paste(names(newNC), newNC[1,"algorithm"], sep=".")

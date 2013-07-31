@@ -1,6 +1,7 @@
 require(mosaic)
 require(foreach)
 require(doParallel)
+require(plyr)
 source('Econ-Growth-Functions2.R')
 
 # This file contains code to resample data for economic growth
@@ -151,6 +152,16 @@ resampleFits <- function(
              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
     )
   }
+  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data) {
+    myData <- doResample(data=data, origModel=origModel, method=method)
+    nC <- tryCatch( naturalCoef(fitCES(countryAbbrev=countryAbbrev,
+                                energyType=energyType,
+                                nest="(kl)e",
+                                data=myData)),
+             error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
+    )
+    return( rbind.fill(naturalCoef(origModel), nC)[-1,] )
+  }
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
@@ -175,24 +186,24 @@ resampleFits <- function(
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
                                                                                 method=method))),
-                              "cese-(kl)e" = do(n) * naturalCoef(fitCES(countryAbbrev=countryAbbrev,
+                              "cese-(kl)e" = do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(kl)e",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method))),
-                              "cese-(le)k" =  do(n) * naturalCoef(fitCES(countryAbbrev=countryAbbrev,
+                                                                                method=method)),
+                              "cese-(le)k" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(le)k",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method))),
-                              "cese-(ek)l" =  do(n) * naturalCoef(fitCES(countryAbbrev=countryAbbrev,
+                                                                                method=method)),
+                              "cese-(ek)l" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(ek)l",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method))),
+                                                                                method=method)),
                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
                                                                   energyType=energyType,
                                                                   data=doResample(data=data, 
@@ -209,7 +220,7 @@ resampleFits <- function(
 #  print(setdiff(names(resampleFitCoeffs), names(baseFitCoeffs)))
 #  print(setdiff(names(baseFitCoeffs), names(resampleFitCoeffs)))
   baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
-  print(str(resampleFitCoeffs))
+#  print(str(resampleFitCoeffs))
   resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
   out <- rbind(baseFitCoeffs, resampleFitCoeffs)
   out <- transform(out, countryAbbrev=countryAbbrev)
