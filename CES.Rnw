@@ -393,27 +393,6 @@ used for the energy quantification.
 
 <<>>=
 nestingOptions <- c(kle="(kl)e", lek="(le)k", ekl="(ek)l")
-fitCES <- function(countryAbbrev, nest, energyType="Q", algorithm=c("PORT","L-BFGS-B")){
-  data <- loadData(countryAbbrev=countryAbbrev)
-  data <- replaceColName(data, energyType, "iEToFit")
-  if (nest == "(kl)e"){
-    xNames <- c("iCapStk", "iLabor", "iEToFit")
-  } else if (nest == "(le)k"){
-    xNames <- c("iLabor", "iEToFit", "iCapStk")
-  } else if (nest == "(ek)l"){
-    xNames <- c("iEToFit", "iCapStk", "iLabor")
-  } else {
-    stop(paste("Unknown nesting option", nest, "in fitCES."))
-  }
-  model <- cesModel(data=data, energyType=energyType, 
-                  # yName="iGDP", 
-                  xNames=xNames, 
-                  # tName="iYear",
-                  algorithm=algorithm)
-  res <- naturalCoef( model ) 
-  res <- transform( res, nest=nest, country=countryAbbrev, nest=nest, converge=model$convergence ) 
-  return(res)
-}
 
 # Make all the models
 kleModels <- ldply(countryAbbrevs, fitCES, nest="(kl)e")
