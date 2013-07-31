@@ -210,16 +210,6 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \citet{Stresing:2008cq}
 
-The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
-discusses the coordinates of analysis described above. 
-Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output and factors of production. The procedures 
-for and results from parameter estimation for the various production functions 
-are discussed in Section~\ref{sec:Parameter_Estimation}. 
-Section~\ref{sec:Implications} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
-of all statistical results.
-
 **** Notes from Martin ****
 
 To be included somewhere.
@@ -303,7 +293,7 @@ Does this mean that relative small increases in cap eff can really lift the econ
 11. ZA case
 CD no e: roughly half c, l
 CD with e: roughly half, c, e, importance of l drops to 0
-CES no e: 10% c, 25% l ??
+CES no e: 10\% c, 25\% l ??
 CES with e: fig 35 e may be NB
 LINEX: one of highest ct parameters (high relative importance of labour eff compared to cap eff)
 Does this mean that relative small increases in labour eff can really lift the economy?
@@ -372,7 +362,66 @@ We are after generating insights even after deeper assumptions of econ growth th
 
 4. Introduce coordinates of analysis.
 
-The remainder of this paper is organized as follows: **** complete this sentence ****.
+Neoclassical economic growth theory attributes output ($Y$) to factors of production:
+capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the 
+canonical representation of indexed economic output ($y$) as a function of indexed 
+labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent 
+technological progress term ($A$):
+
+\begin{equation} \label{eq:CD}
+  y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
+\end{equation}
+
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and 
+$l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in 
+currency units, $L$ expressed in workers or work-hours/year, time ($t$) measured in years, 
+with e being the base of the natural logarithm, and subscripts ``0'' indicating values 
+at an initial year. $A$ is a unitless technological progress term, with $\lambda$ 
+indicating the pace of technological progress (in units of 
+year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by 
+lower-case symbols 
+($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+quantities are represented by upper-case symbols 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical 
+progress term $A$, which is dimensionless but written upper-case by convention.} 
+Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
+function makes no attempt to describe the mechanisms by which technological 
+progress ($A$) affects economic growth, nor does it attempt to describe how 
+technological progress ($A$) might vary from one economy to the next. Mathematically, 
+$A$ is a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} 
+with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, 
+indicating constant returns to scale.
+
+As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
+include an explicit term for the role of energy in economic growth. However, 
+\citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, 
+\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, and others indicate that the 
+importance of energy for economic growth may far outweigh its cost share in the 
+economy. That neoclassical economic growth theory ignores energy is, therefore, 
+cause for concern, and inquiry into the proper approach for including energy 
+as a factor of production in economic growth modeling is both relevant and important.
+
+Some energy economists augment economic growth models by including energy as an 
+additional (or the only) factor of production. However, there is little agreement 
+on how this should be done. Neither the mathematical form of the energy-augmented 
+production function nor the quantification of energy are consistent in the 
+literature. There has been little empirical work assessing the predictive ability 
+of various energy-augmented production functions for different types of economies. 
+And, very few studies of the importance of energy in economic growth include 
+rigorous statistical assessments of energy-related fitting parameters. This paper 
+attempts to contribute to the literature by applying statistically rigorous 
+methods along three coordinates of analysis: form of the energy augmented 
+production function, energy quantification, and type of economy.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
+discusses the coordinates of analysis described above. 
+Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
+generate time series for economic output and factors of production. The procedures 
+for and results from parameter estimation for the various production functions 
+are discussed in Section~\ref{sec:Parameter_Estimation}. 
+Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
+results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
+of all statistical results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1018,7 +1067,7 @@ increasing energy efficiency in the U.S. economy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
-\label{sec:ParameterEstimation}
+\label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This section should cover both technique and results. 
@@ -1026,15 +1075,224 @@ Organize along coordinates of analysis.
 
 1. Discuss parameter estimation for each model here.
 
+CES Model: It is possible for L-BFGS-B to report convergence and PORT to report non-convergence 
+but nevertheless reach a better solution (smaller sse).
+
 2. Show scatter plot results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion of Results}
-\label{sec:DiscussionOfResults}
+\label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Drive towards new insights from our stats tested comparative approach
+Drive towards new insights from our stats tested comparative approach..
+
+**** Notes for interpretation of results ****
+
+Country interpretation
+
+Comparison Cobb Douglas and CES results.
+
+%++++++++++++++++++++++++++++++
+\subsection{United States} 
+\label{sec:InterpUS}
+%++++++++++++++++++++++++++++++
+
+CD: Energy is unnecessary
+
+CES:
+
+($kl$)$e$: energy is unnec ($\delta$ is 1); also ($el$)$k$ energy is unnec. 
+($\delta_1$ is 0); 
+
+($le$)$k$ no indication
+Relative consistent signal that energy is unnec.
+
+$\sigma$:
+capital and energy are complements
+labour and energy are subsitutable
+
+%++++++++++++++++++++++++++++++
+\subsection{United Kingdom} 
+\label{sec:InterpUK}
+%++++++++++++++++++++++++++++++
+
+CD: Capital is unnec.
+
+CES: 
+
+($kl$)$e$: energy is unnec ($\delta =1$); 
+
+($le$)$k$ capital is unnec. ($\delta = 1$); 
+
+($ek$)$l$ ($\delta_1 = 0$) energy is unnec.
+
+Thus, inconsistent results, possibly look at different time series 
+as massive changes in economic policy in Uk economic history
+
+$\sigma$: energy is not substitutable with capital or labour, totally complementary
+
+%++++++++++++++++++++++++++++++
+\subsection{Japan} 
+\label{sec:InterpJP}
+%++++++++++++++++++++++++++++++
+
+CD: energy is unnec.
+
+CES: 
+
+($kl$)$e$; ($le$)$k$; ($ek$)$l$: no indications, all are important. 
+
+weak signal that labour is less necessary 
+(($kl$)$e$ $delta_1 = 0.86$ and ($ek$)$l$ $\delta = 0.89$)
+
+Thus, inconsistent results.
+
+$\sigma$: labour and energy are complements, capital and energy complements
+
+%++++++++++++++++++++++++++++++
+\subsection{China} 
+\label{sec:InterpCN}
+%++++++++++++++++++++++++++++++
+
+CD: energy not necessary, capital less necessary
+
+CES: 
+
+($kl$)$e$: energy is unnec. ($\delta = 1$); 
+
+($le$)$k$: labour is unnnec ($\delta_1 = 0$); 
+
+($ek$)$l$ energy is unnec. ($\delta_1 \rightarrow 0$)
+
+Strong signal that energy is unnec, but the labour and capital signals are conflicting
+
+$\sigma$: capital and energy is complementary, but labour and energy more substitutable
+
+%++++++++++++++++++++++++++++++
+\subsection{South Africa} 
+\label{sec:InterpZA}
+%++++++++++++++++++++++++++++++
+
+CD: Labour is unnec.
+
+CES: 
+
+($kl$)$e$: labour is unnec. ($\delta_1 = 1$); 
+
+($le$)$k$ labour is unnec. ($\delta_1 = 0$); 
+
+($ek$)$l$ labour is unnec. ($\delta = 1$)
+
+Consistent signal that labour is unnec.
+
+$\sigma$: capital and energy is complementary, labour and energy is substitutable
+
+%++++++++++++++++++++++++++++++
+\subsection{Saudi Arabia} 
+\label{sec:InterpSA}
+%++++++++++++++++++++++++++++++
+
+CD: no indications
+
+CES: no indications, but weak signal that labour is unnec in ($ek$)$l$ ($\delta = 0.93$)
+
+Almost consistent signal that no indocations.
+
+$\sigma$: labour and energy are complements, capital and energy are substitutes
+
+%++++++++++++++++++++++++++++++
+\subsection{Iran} 
+\label{sec:InterpIR}
+%++++++++++++++++++++++++++++++
+
+CD: energy is unnec.
+
+CES: 
+
+($kl$)$e$: energy is unnec ($\delta=1$);
+
+($le$)$k$: energy is unnec. ($\delta_1=1$); 
+
+($ek$)$l$: labour is unnec. ($\delta=1$)
+
+$\sigma$: labour and energy still complements, 
+but not as strong capital and energy complements
+
+%++++++++++++++++++++++++++++++
+\subsection{Tanzania} 
+\label{sec:InterpTZ}
+%++++++++++++++++++++++++++++++
+
+CD: labour in unnec.
+
+CES: 
+
+($kl$)$e$: labour is unnec ($\delta_1=0.97$); 
+
+($le$)$k$: weak signal that energy is unnec. ($\delta_1=0.92$); 
+very weal signal capital is unnec ($\delta=0.84$); 
+
+($ek$)$l$: labour is unnec. $\delta=0.96$
+
+Consistent signal that labour is unnec, with exception of one nesting.
+
+$\sigma$: labour and energy complements, capital and energy perfect substitutes
+
+%++++++++++++++++++++++++++++++
+\subsection{Zambia} 
+\label{sec:InterpZM}
+%++++++++++++++++++++++++++++++
+
+CD: labour is unnec; energy is unnec.
+
+CES: 
+
+($kl$)$e$: labour is unnec. ($\delta_1=1$); labour is unnec 
+
+($le$)$k$: ($\delta_1=0$); 
+
+($ek$)$l$: labour is unnec. ($\delta=1$)
+
+Consistent signal that labour is unnec.
+
+$\sigma$: labour and energy complements, not as strong. 
+Capital and energy perfect substitutes.
+
+% 
+% 
+% Discussion of results: How to get better consistent signals?
+% - Use CD as starting points and do CES convergence on that basis.
+% - Do scatterplots to get range of uncertainty inputs, then re-interpret. delta against sigma plots, as well as delta_1 and sigma_1 plots.
+% 
+% Thus, to do the fitting well we need to understand:
+% - nesting
+% - algorithm
+% - starting values
+% esp. for CES. 
+% (Maybe illustrate with one case study such as China what implications are).
+% 
+% How do we compare witj LINEX results?
+% CES is a broader specification of CD, LINEX is not. In LINEX no delta's nor sigmas are generated. Only efficiency terms are generated in LINEX, thus in other words economic growth is only possible by increased efficiency. 
+% The efficiency of using energy is driven by capital stock. The objective/growth engine is to increase capital at a rate that is faster then growth in labour and energy.  Increasing labour relative to energy gives a muted benefit. 
+% LINEX derived for Germany: only really applicable when energy and capital are complements.
+% 
+% Discussion in relation to other papers. 
+% Problems with other papers:
+% - If not giving you all parameters
+% - Not explain nesting approach 
+% - No CI on data
+% 
+% 
+% Economic interpretation (revisit after scatterplot information)
+% Developed economies: Capital and energy is complementary (US: labour and energy substitutable)
+% NICs: Capital and energy complementary, but labour and energy more substitutable
+% OPEC: Labour and energy complementary (mixed results on capital and energy)
+% LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
+% 
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

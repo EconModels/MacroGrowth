@@ -15,6 +15,7 @@ CES.pdf
 *.tikz
 *.aux
 *.spl
+*.synctex.gz
 *-concordance.tex
 *-tikzDictionary
 *.tex
