@@ -210,16 +210,6 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 \citet{Stresing:2008cq}
 
-The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
-discusses the coordinates of analysis described above. 
-Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output and factors of production. The procedures 
-for and results from parameter estimation for the various production functions 
-are discussed in Section~\ref{sec:Parameter_Estimation}. 
-Section~\ref{sec:Implications} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
-of all statistical results.
-
 **** Notes from Martin ****
 
 To be included somewhere.
@@ -372,7 +362,66 @@ We are after generating insights even after deeper assumptions of econ growth th
 
 4. Introduce coordinates of analysis.
 
-The remainder of this paper is organized as follows: **** complete this sentence ****.
+Neoclassical economic growth theory attributes output ($Y$) to factors of production:
+capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the 
+canonical representation of indexed economic output ($y$) as a function of indexed 
+labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent 
+technological progress term ($A$):
+
+\begin{equation} \label{eq:CD}
+  y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
+\end{equation}
+
+\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and 
+$l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in 
+currency units, $L$ expressed in workers or work-hours/year, time ($t$) measured in years, 
+with e being the base of the natural logarithm, and subscripts ``0'' indicating values 
+at an initial year. $A$ is a unitless technological progress term, with $\lambda$ 
+indicating the pace of technological progress (in units of 
+year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by 
+lower-case symbols 
+($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+quantities are represented by upper-case symbols 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical 
+progress term $A$, which is dimensionless but written upper-case by convention.} 
+Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
+function makes no attempt to describe the mechanisms by which technological 
+progress ($A$) affects economic growth, nor does it attempt to describe how 
+technological progress ($A$) might vary from one economy to the next. Mathematically, 
+$A$ is a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} 
+with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, 
+indicating constant returns to scale.
+
+As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
+include an explicit term for the role of energy in economic growth. However, 
+\citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, 
+\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, and others indicate that the 
+importance of energy for economic growth may far outweigh its cost share in the 
+economy. That neoclassical economic growth theory ignores energy is, therefore, 
+cause for concern, and inquiry into the proper approach for including energy 
+as a factor of production in economic growth modeling is both relevant and important.
+
+Some energy economists augment economic growth models by including energy as an 
+additional (or the only) factor of production. However, there is little agreement 
+on how this should be done. Neither the mathematical form of the energy-augmented 
+production function nor the quantification of energy are consistent in the 
+literature. There has been little empirical work assessing the predictive ability 
+of various energy-augmented production functions for different types of economies. 
+And, very few studies of the importance of energy in economic growth include 
+rigorous statistical assessments of energy-related fitting parameters. This paper 
+attempts to contribute to the literature by applying statistically rigorous 
+methods along three coordinates of analysis: form of the energy augmented 
+production function, energy quantification, and type of economy.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
+discusses the coordinates of analysis described above. 
+Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
+generate time series for economic output and factors of production. The procedures 
+for and results from parameter estimation for the various production functions 
+are discussed in Section~\ref{sec:Parameter_Estimation}. 
+Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
+results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
+of all statistical results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1018,7 +1067,7 @@ increasing energy efficiency in the U.S. economy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
-\label{sec:ParameterEstimation}
+\label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This section should cover both technique and results. 
@@ -1026,12 +1075,15 @@ Organize along coordinates of analysis.
 
 1. Discuss parameter estimation for each model here.
 
+CES Model: It is possible for L-BFGS-B to report convergence and PORT to report non-convergence 
+but nevertheless reach a better solution (smaller sse).
+
 2. Show scatter plot results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion of Results}
-\label{sec:DiscussionOfResults}
+\label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Drive towards new insights from our stats tested comparative approach..
