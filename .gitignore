@@ -12,7 +12,6 @@ EconGrowthSeminar.pdf
 Workflow.pdf
 CES.pdf
 *.log
-*.gz
 *.tikz
 *.aux
 *.spl
