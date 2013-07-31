@@ -26,7 +26,7 @@ countryAbbrevsForGraphU <- c(US="US", UK="UK", JP="JP")
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
 countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
-modelTypes <- c(sf="sf", cd="cd", cde="cde", ces="ces", cese="cese", linex="linex") # list of model types
+modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 resampleMethods <- c("resample", "residual", "wild", "debug")
@@ -1936,6 +1936,30 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   return(modelCES)
 }
 
+fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data){
+
+  if(missing(data)) {
+    data <- loadData(countryAbbrev=countryAbbrev)
+  }
+  data <- replaceColName(data, energyType, "iEToFit")
+  if ( nest %in% c("(kl)e", "(lk)e") ){
+    xNames <- c("iCapStk", "iLabor", "iEToFit")
+  } else if ( nest %in% c("(le)k", "(el)k") ){
+    xNames <- c("iLabor", "iEToFit", "iCapStk")
+  } else if ( nest %in% c("(ek)l", "(ke)l") ){
+    xNames <- c("iEToFit", "iCapStk", "iLabor")
+  } else {
+    stop(paste("Unknown nesting option", nest, "in fitCES."))
+  }
+  model <- cesModel(data=data, energyType=energyType, 
+                    xNames=xNames, 
+                    algorithm=algorithm)
+  nC <- naturalCoef( model ) 
+  nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
+  attr(model, "naturalCoefficients") <- nC
+  return(model)
+}
+
 cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-BFGS-B"), xNames, ...){
   ####################
   # Returns a cesEst model for the country and energyType specified.
@@ -2005,12 +2029,14 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
 }
 
   
-cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", ...) {
-  control <- switch( algorithm,
+cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, ...) {
+  if (missing(control)) {
+    control <- switch( algorithm,
                      "PORT" = list(iter.max=2000, eval.max=2000),
                      "L-BFGS-B" = list(maxit=5000),
                      list()
               )
+  }
   modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, control=control, ...)
   # Build the additional object to add as an atrribute to the output
   rho_1 <- coef(modelCES)["rho_1"]
@@ -2214,8 +2240,8 @@ cesData <- function(countryAbbrev, energyType=NA){
     # We want CES without energy
     resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev)
   } else {
-    # We want CES with energy
-    resampleData <- loadResampleData(modelType="cese", countryAbbrev=countryAbbrev, energyType=energyType)
+    # We want CES with energy  -- might want all three for this later.
+    resampleData <- loadResampleData(modelType="cese-(kl)e", countryAbbrev=countryAbbrev, energyType=energyType)
   }
   statisticalProperties <- cesResampleCoeffProps(resampleData)
   # Set the correct label in the row that shows the base values.
@@ -2429,7 +2455,7 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, ...){
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardScatterPlot(data, aes(gamma, lambda)) +
@@ -2445,7 +2471,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, ...){
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardScatterPlot(data, aes(delta_1, sigma_1)) +
@@ -2469,7 +2495,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, ...){
     graph <- standardScatterPlot(data, aes(delta, rho)) +
       labs(x=expression(delta), y=expression(rho))
   } else {
-    data <- loadAllResampleData(modelType="cese", energyType=energyType, 
+    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
     graph <- standardScatterPlot(data, aes(delta, sigma)) +
       labs(x=expression(delta), y=expression(sigma))
@@ -3398,10 +3424,10 @@ getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor)
   filename <- switch(modelType,
                      "sf"    = paste(rd, modelType, "-", countryAbbrev, "-", factor, rdat, sep=""),
                      "cd"    = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     "cde"   = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     #"cde"   = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "ces"   = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     "cese"  = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     #"linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep="")
                      )
   path <- file.path(folder, filename)
   return(path)
@@ -3415,12 +3441,8 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
-                   "sf"    = file.path(dr, modelType, countryAbbrev),
-                   "cd"    = file.path(dr, modelType, countryAbbrev),
                    "cde"   = file.path(dr, "cd",      countryAbbrev),
-                   "ces"   = file.path(dr, modelType, countryAbbrev),
-                   "cese"  = file.path(dr, "ces",     countryAbbrev),
-                   "linex" = file.path(dr, modelType, countryAbbrev)
+                   file.path(dr, modelType, countryAbbrev)
                    )
   return(folder)
 }
@@ -3467,7 +3489,7 @@ fracUnconvergedResampleFitsAll <- function(){
   unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
-  for (modelType in c("cese", "linex")){
+  for (modelType in c("cese-(kl)e", "cese-(le)k", "cese-(ek)l", "linex")){
     for (energyType in energyTypes){
       if (energyType == "U"){
         unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
