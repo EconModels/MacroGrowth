@@ -2042,7 +2042,7 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
     names(newNC) <- paste(names(newNC), newNC[1,"algorithm"], sep=".")
     nC <- cbind( nC, newNC )
   }
-  attr(bestModel, "naturalCoeffs") <- nC
+  if (!is.null(bestModel)) attr(bestModel, "naturalCoeffs") <- nC
   return(bestModel)
 }
 
