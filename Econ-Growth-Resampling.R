@@ -80,7 +80,7 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   }  
   # Report timer results
   timing <- proc.time() - t_0
-  message(timing)
+  print(timing)
   return(status)
 }
 
@@ -104,7 +104,7 @@ genResampleData <- function(modelType=modelTypes,
     }
     if (! clobber) {
       status[[path]] <- "file existed; not clobbered"
-      return()
+      return(status)
     } else {
       status[[path]] <- "file existed; going to clobber"
     }
