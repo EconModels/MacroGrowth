@@ -19,7 +19,7 @@ timeFileName <- function(pre="",post="") {
   return(paste(pre, dt, post, sep=""))
 }
 
-genAllResampleData <- function(method="wild", n=numResamples()){
+genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   #######################
   # Generates all resampling data for all models using the method specified
   ##
@@ -29,35 +29,60 @@ genAllResampleData <- function(method="wild", n=numResamples()){
   # Establish the timer
   t_0 <- proc.time()
   # Use the foreach package
-  foreach(ca=countryAbbrevs, .errorhandling="pass") %dopar% {
-    genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method)
-    genResampleData(modelType="sf",    countryAbbrev=ca, factor="L",     n=n, method=method)
-    genResampleData(modelType="sf",    countryAbbrev=ca, factor="Q",     n=n, method=method)
-    genResampleData(modelType="sf",    countryAbbrev=ca, factor="X",     n=n, method=method)
-    genResampleData(modelType="cd",    countryAbbrev=ca,                 n=n, method=method)
-    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="X", n=n, method=method)
-    genResampleData(modelType="ces",   countryAbbrev=ca,                 n=n, method=method)
-    genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="Q", n=n, method=method)
-    genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="X", n=n, method=method)
-    genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="X", n=n, method=method)
-    genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="X", n=n, method=method)
-    genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method)
-    genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method)
+  status <- list()
+  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .combine=c) %dopar% {
+    status <- c(status,
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="L",     n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="Q",     n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="X",     n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cd",    countryAbbrev=ca,                 n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="X", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="ces",   countryAbbrev=ca,                 n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method,...))
   }  
-  foreach(ca=countryAbbrevsU, .errorhandling="pass") %dopar% {
-    genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method)
-    genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method)
-    genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="U", n=n, method=method)
-    genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="U", n=n, method=method)
-    genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="U", n=n, method=method)
-    genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method)
+  status2 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .combine=c) %dopar% {
+    status <- c(status,
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status <- c(status,
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status
   }  
   # Report timer results
-  out <- proc.time() - t_0
-  return(out)
+  timing <- proc.time() - t_0
+  print(timing)
+  return(list(other=status, U=status2))
 }
 
 genResampleData <- function(modelType=modelTypes,
@@ -65,8 +90,30 @@ genResampleData <- function(modelType=modelTypes,
                             energyType=energyTypes, 
                             factor=factors,
                             method=resampleMethods,
-                            n
-                            ){
+                            n,
+                            clobber=TRUE,
+                            verbose=FALSE){
+  status <- list()
+  path <- getPathForResampleData(modelType=modelType,
+                                 countryAbbrev=countryAbbrev, 
+                                 energyType=energyType,
+                                 factor=factor)
+  
+  status[[path]] <- "attempted"
+  
+  if (file.exists(path)) {
+    if (verbose) {
+      cat(paste(path, "exists"))
+    }
+    if (! clobber) {
+      status[[path]] <- "file existed; not clobbered"
+      return(status)
+    } else {
+      status[[path]] <- "file existed; going to clobber"
+    }
+  }
+  if (verbose) cat(paste('Data will be saved in', path))
+  status[[path]] <- "creating new file"
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -93,11 +140,10 @@ genResampleData <- function(modelType=modelTypes,
   # Ensure that the folder exists. showWarnings=FALSE, because we don't care 
   # if the directory already exists.
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
-  path <- getPathForResampleData(modelType=modelType,
-                                 countryAbbrev=countryAbbrev, 
-                                 energyType=energyType,
-                                 factor=factor)
+
   save(resampleData, file=path)
+  status[[path]] <- "file saved"
+  return(status)
 }
 
 resampleFits <- function(
