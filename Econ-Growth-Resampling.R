@@ -66,7 +66,8 @@ genResampleData <- function(modelType=modelTypes,
                             factor=factors,
                             method=resampleMethods,
                             n,
-                            clobber=TRUE){
+                            clobber=TRUE,
+                            verbose=FALSE){
   
   path <- getPathForResampleData(modelType=modelType,
                                  countryAbbrev=countryAbbrev, 
@@ -74,9 +75,10 @@ genResampleData <- function(modelType=modelTypes,
                                  factor=factor)
   
   if (file.exists(path) && ! clobber) {
+    if (verbose) message(paste(path, "exists"))
     return()
   }
-  message(paste('Data will be saved in', path))
+  if (verbose) message(paste('Data will be saved in', path))
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
