@@ -3450,7 +3450,8 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   ##################
   # Returns a string identifying a folder for resampled data.
   ##
-  dr <- "data_resample"
+  dr <- getOption('heun_data_resample')
+  if (is.null(dr)) dr <- "data_resample"
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
