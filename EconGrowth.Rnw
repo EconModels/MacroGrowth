@@ -1349,7 +1349,7 @@ cesResamplePlotLambdaGamma(energyType=NA)
 @
 
 <<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType=NA)
+cesResamplePlotSigma_1Delta_1(energyType=NA) + ylim(0, 2)
 @
 
 The next graph is not particularly interesting, 
@@ -1623,40 +1623,7 @@ createLINEXLatticeGraph()
 \label{sec:Interpretation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-**** Notes for interpretation of results ****
-
-Discussion of results: How to get better consistent signals?
-- Use CD as starting points and do CES convergence on that basis.
-- Do scatterplots to get range of uncertainty inputs, then re-interpret. delta against sigma plots, as well as delta_1 and sigma_1 plots.
-
-Thus, to do the fitting well we need to understand:
-- nesting
-- algorithm
-- starting values
-esp. for CES. 
-(Maybe illustrate with one case study such as China what implications are).
-
-How do we compare witj LINEX results?
-CES is a broader specification of CD, LINEX is not. In LINEX no delta's nor sigmas are generated. Only efficiency terms are generated in LINEX, thus in other words economic growth is only possible by increased efficiency. 
-The efficiency of using energy is driven by capital stock. The objective/growth engine is to increase capital at a rate that is faster then growth in labour and energy.  Increasing labour relative to energy gives a muted benefit. 
-LINEX derived for Germany: only really applicable when energy and capital are complements.
-
-Discussion in relation to other papers. 
-Problems with other papers:
-- If not giving you all parameters
-- Not explain nesting approach 
-- No CI on data
-
-
-Economic interpretation (revisit after scatterplot information)
-Developed economies: Capital and energy is complementary (US: labour and energy substitutable)
-NICs: Capital and energy complementary, but labour and energy more substitutable
-OPEC: Labour and energy complementary (mixed results on capital and energy)
-LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
-
-
-
-
+**** Need to complete this ****
 
 
 
