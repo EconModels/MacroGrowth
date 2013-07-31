@@ -30,7 +30,7 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   t_0 <- proc.time()
   # Use the foreach package
   status <- list()
-  foreach(ca=countryAbbrevs, .errorhandling="pass") %dopar% {
+  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .combine=c) %dopar% {
     status <- c(status,
                 genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method,...))
     status <- c(status,
@@ -64,7 +64,7 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
     status <- c(status,
                 genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method,...))
   }  
-  foreach(ca=countryAbbrevsU, .errorhandling="pass") %dopar% {
+  status2 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .combine=c) %dopar% {
     status <- c(status,
                 genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method,...))
     status <- c(status,
@@ -77,11 +77,12 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
                 genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
     status <- c(status,
                 genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method,...))
+    status
   }  
   # Report timer results
   timing <- proc.time() - t_0
   print(timing)
-  return(status)
+  return(list(other=status, U=status2))
 }
 
 genResampleData <- function(modelType=modelTypes,

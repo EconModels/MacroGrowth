@@ -244,7 +244,8 @@ replaceColName <- function(data, factor, newName){
   # returns data.frame with a new name for one of its factor column.
   ##
   colIndex <- columnIndex(data=data, factor=factor)
-  colnames(data)[colIndex] <- newName #Change desired column name to newName
+  # colnames(data)[colIndex] <- newName #Change desired column name to newName
+  data[,newName] <- data[,colIndex]
   return(data)
 }
 
@@ -1021,6 +1022,7 @@ cdeModelCD <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
+  
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.899
@@ -1122,6 +1124,7 @@ cdeModelEF <- function(countryAbbrev,
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
+  
   # Establish guess values for lambda, alpha, and beta.
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.899
@@ -1280,7 +1283,7 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(c
   ##
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function. 
+  # to "iEToFit" and use "iEToFit" in the nls function.
   data <- replaceColName(data, energyType, "iEToFit")
   # We're fixing the value of gamma.
   # Calculate a new column iEGamma = iEToFit^gamma
@@ -1950,6 +1953,7 @@ fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("POR
     data <- loadData(countryAbbrev=countryAbbrev)
   }
   data <- replaceColName(data, energyType, "iEToFit")
+  
   if ( nest %in% c("(kl)e", "(lk)e") ){
     xNames <- c("iCapStk", "iLabor", "iEToFit")
   } else if ( nest %in% c("(le)k", "(el)k") ){
@@ -2006,6 +2010,7 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   data <- replaceColName(data, energyType, "iEToFit")
+  
   # Set up the controls for the cesEst function.
   # control <- nls.lm.control(maxiter=1000, maxfev=2000)
   # Decide which independent variables we want to use
@@ -2535,6 +2540,7 @@ linexModel <- function(countryAbbrev, energyType, data){
     data <- loadData(countryAbbrev=countryAbbrev)    
   }
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
+  
   if (countryAbbrev == "SA"){
     # Need adjusted guess values, becasue k and l are above GDP for SA.
     start <- list(a_0=-1.0, a_1=6.0)
@@ -3293,6 +3299,7 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   data <- cbind(data, resid)
   # Replace name of column we want with the name "iEToFit"
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
+  
   return(data)
 }
 
