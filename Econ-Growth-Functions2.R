@@ -2478,7 +2478,7 @@ printCESParamsTableB <- function(energyType){
         table.placement="H")
 }
 
-cesResamplePlotLambdaGamma <- function(energyType=NA, ...){
+cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2494,7 +2494,7 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, ...){
   return(graph)
 }
 
-cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, ...){
+cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2502,7 +2502,8 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, ...){
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardScatterPlot(data, aes(delta_1, sigma_1)) +
@@ -2510,7 +2511,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, ...){
   return(graph)
 }
 
-cesResamplePlotSigmaDelta <- function(energyType=NA, ...){
+cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
