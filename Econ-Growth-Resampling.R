@@ -29,8 +29,8 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   # Establish the timer
   t_0 <- proc.time()
   # Use the foreach package
-  status <- list()
-  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .combine=c) %dopar% {
+  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+    status <- c()
     status <- c(status,
                 genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method,...))
     status <- c(status,
@@ -63,8 +63,10 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
                 genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method,...))
     status <- c(status,
                 genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method,...))
+    status
   }  
-  status2 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .combine=c) %dopar% {
+  status2 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .combine=c, .init=c()) %dopar% {
+    status <- c()
     status <- c(status,
                 genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method,...))
     status <- c(status,
@@ -81,8 +83,37 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   }  
   # Report timer results
   timing <- proc.time() - t_0
-  print(timing)
-  return(list(other=status, U=status2))
+  return(list(s1=status, s2=status2, timing=timing) )
+}
+
+
+genAllResampleData2 <- function(method="wild", n=numResamples(), ...) {
+  #######################
+  # Generates all resampling data for all models using the method specified
+  ##
+  method <- match.arg(method)
+  # Establish the parallel computing resources
+  registerDoParallel()
+  # Establish the timer
+  t_0 <- proc.time()
+  # Use the foreach package
+  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .init=c(testing="no"), .combine=c, .inorder=FALSE) %:%
+    foreach( mt = modelTypes, .errorhandling="pass", .combine=c, .init=c(), .inorder=FALSE) %dopar% {
+      for( et in factors ) {
+        print(c(ca, mt, et))
+        result <- tryCatch(
+                    genResampleData(modelType=mt, countryAbbrev=ca, energyType=et, factor=et, n=n, method=method, ...),
+                    error = function(e) { as.character(e) } ) 
+        # print(result)
+        names(result) <- paste(ca, mt, et, sep=":")
+        print(result)
+        result
+      }
+  }
+    
+  # Report timer results
+  timing <- proc.time() - t_0
+  return(list(status=status, timing=timing) )
 }
 
 genResampleData <- function(modelType=modelTypes,
@@ -93,27 +124,28 @@ genResampleData <- function(modelType=modelTypes,
                             n,
                             clobber=TRUE,
                             verbose=FALSE){
-  status <- list()
+  
   path <- getPathForResampleData(modelType=modelType,
                                  countryAbbrev=countryAbbrev, 
                                  energyType=energyType,
                                  factor=factor)
   
-  status[[path]] <- "attempted"
+  status <- "attempted"
   
   if (file.exists(path)) {
     if (verbose) {
       cat(paste(path, "exists"))
     }
     if (! clobber) {
-      status[[path]] <- "file existed; not clobbered"
+      status <- "file existed; not clobbered"
+      names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
       return(status)
     } else {
-      status[[path]] <- "file existed; going to clobber"
+      status <- "file existed; going to clobber"
     }
   }
   if (verbose) cat(paste('Data will be saved in', path))
-  status[[path]] <- "creating new file"
+  status <- "creating new file"
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
   # production function and stores them to disk. The data are stored in an 
@@ -142,7 +174,8 @@ genResampleData <- function(modelType=modelTypes,
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
 
   save(resampleData, file=path)
-  status[[path]] <- "file saved"
+  status <- "file saved"
+  names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
   return(status)
 }
 
