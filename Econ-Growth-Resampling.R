@@ -23,7 +23,7 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   #######################
   # Generates all resampling data for all models using the method specified
   ##
-  method <- match.arg(method)
+  # method <- match.arg(method)
   # Establish the parallel computing resources
   registerDoParallel()
   # Establish the timer
@@ -91,29 +91,42 @@ genAllResampleData2 <- function(method="wild", n=numResamples(), ...) {
   #######################
   # Generates all resampling data for all models using the method specified
   ##
-  method <- match.arg(method)
+  # method <- match.arg(method)
   # Establish the parallel computing resources
   registerDoParallel()
   # Establish the timer
   t_0 <- proc.time()
   # Use the foreach package
-  status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .init=c(testing="no"), .combine=c, .inorder=FALSE) %:%
+  status1 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .init=c(), .combine=c, .inorder=FALSE) %:%
     foreach( mt = modelTypes, .errorhandling="pass", .combine=c, .init=c(), .inorder=FALSE) %dopar% {
-      for( et in factors ) {
-        print(c(ca, mt, et))
+      results <- c()
+      for( fac in factorsForModel(mt) ) {
+        et <- fac
+        if (! et %in% energyTypes ) et <- energyTypes[1] 
         result <- tryCatch(
-                    genResampleData(modelType=mt, countryAbbrev=ca, energyType=et, factor=et, n=n, method=method, ...),
-                    error = function(e) { as.character(e) } ) 
-        # print(result)
-        names(result) <- paste(ca, mt, et, sep=":")
-        print(result)
-        result
+                    genResampleData(modelType=mt, countryAbbrev=ca, energyType=et, factor=fac, n=n, method=method, ...),
+                    error = function(e) { res <- substr(as.character(e), 1,30); names(res) <- paste(ca, mt, et, sep=":"); res} )
+        results <- c(results,result)
       }
+      results
   }
     
+  status2 <- foreach(ca=setdiff(countryAbbrevs,countryAbbrevsU), .errorhandling="pass", .init=c(), .combine=c, .inorder=FALSE) %:%
+    foreach( mt = modelTypes, .errorhandling="pass", .combine=c, .init=c(), .inorder=FALSE) %dopar% {
+      results <- c()
+      for( fac in setdiff(factorsForModel(mt),"U") ) {
+        et <- fac
+        if (! et %in% energyTypes ) et <- energyTypes[1] 
+        result <- tryCatch(
+                    genResampleData(modelType=mt, countryAbbrev=ca, energyType=et, factor=fac, n=n, method=method, ...),
+                    error = function(e) { res <- substr(as.character(e), 1,30); names(res) <- paste(ca, mt, et, sep=":"); res} )
+        results <- c(results,result)
+      }
+      results
+  }
   # Report timer results
   timing <- proc.time() - t_0
-  return(list(status=status, timing=timing) )
+  return(list(status=c(status1, status2), status1=status1, status2=status2, timing=timing) )
 }
 
 genResampleData <- function(modelType=modelTypes,

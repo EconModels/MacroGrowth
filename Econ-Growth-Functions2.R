@@ -26,10 +26,23 @@ countryAbbrevsForGraphU <- c(US="US", UK="UK", JP="JP")
 countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="Tanzania", UK="United Kingdom", US="USA", ZA="South Africa", ZM="Zambia") #In alphabetical order.
 countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
-modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
+modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 resampleMethods <- c("resample", "residual", "wild", "debug")
+
+factorsForModel <- function(modelType) {
+  if (modelType %in% c('sf')) return(factors)
+  if (modelType %in% c('cd')) return("K")
+  return(energyTypes)
+}
+
+safeMatchArg <- function(arg, choices, several.ok=FALSE) {
+  return( tryCatch( match.arg( arg, choices, several.ok=several.ok), 
+            error=function(e) { choices[1] } )
+  )
+}
+
 ########### Several global parameters for graphs. Set here and use below to ensure consistent appearance of graphs.
 # Set the order for presenting countries in 3x3 lattice graphs. Default is alphabetical. 
 # "1" means first alphabetically.
