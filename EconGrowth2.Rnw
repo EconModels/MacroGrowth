@@ -143,6 +143,39 @@ source("Econ-Growth-Functions2.R")
 source("Graphics.R")
 @
 
+
+% Add an argument if you want a label. Example: "\label{eq:CES}"
+\newcommand{\ceskl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}}
+
+\newcommand{\ceskle}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\ceslek}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\cesekl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+
 \begin{frontmatter}
 
 %% Title, authors and addresses
@@ -285,7 +318,7 @@ they are still useful for forecasting. Do we agree?
 10. TZ case
 CDno e: almost 80\% l
 CD with e: 25\% energy, rest c,importance of l drops to 0
-CES no e: 20\% c (sigma), 80\% l, but large range
+CES no e: 20\% c ($\sigma$), 80\% l, but large range
 CES with e: fig 35 e may be NB
 LINEX: one of lowest ct parameters (low relative importance of labour eff compared to cap eff)
 Does this mean that relative small increases in cap eff can really lift the economy?
@@ -592,8 +625,8 @@ describe each.
 \label{sec:CDe}
 %------------------------------
 
-Similar to Equation~\ref{eq:CD}, the energy-augmented Cobb-Douglas 
-production function is
+The capital-labor Cobb-Douglas production function is shown in Equation~\ref{eq:CD}.
+Similarly, the energy-augmented Cobb-Douglasproduction function is
 
 \begin{equation} \label{eq:CDe}
   y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
@@ -635,24 +668,15 @@ describe economic growth. The \texttt{R} \citep{R} package
 \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
 functions of the following forms (among others):
 
-\begin{equation} \label{eq:CES}
-  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceskl{\label{eq:CES}}
 
-\begin{equation} \label{eq:CESe}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
+\ceskle{\label{eq:CESkle}}
 
 \noindent Equation~\ref{eq:CES} is a CES production function with 
 capital stock ($k$) and labor ($l$) factors of production. 
-Equation~\ref{eq:CESe} augments Equation~\ref{eq:CES} with energy 
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CES} with energy 
 using a ($kl$)($e$) nesting structure, as is typical in the literature. 
-Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESe} 
+Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESkle} 
 where $\delta \rightarrow 1$ and $\rho \rightarrow -1$. 
 
 $\gamma$ is a fitting parameter that represents productivity. 
@@ -684,7 +708,24 @@ Constraints on the fitting parameters include
 $\delta_1 \in (0,1)$,
 $\delta \in (0,1)$,
 $\rho_1 \in (-1,0) \cup (0,\infty)$, and
-$\rho \in (-1,0) \cup (0,\infty)$. **** Describe here how 
+$\rho \in (-1,0) \cup (0,\infty)$. 
+
+Two other nestings of the factors of production ($k$, $l$, and $e$)
+are possible with the CES model.
+
+\ceslek{\label{eq:CESlek}}
+
+\cesekl{\label{eq:CESekl}}
+
+\noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
+meanings that depend upon the nesting of the factors of production.
+**** Do we want to define different variables that indicate meaning, 
+such as $\sigma_{kl}, \sigma_{(kl)e}, \delta_{(ek)l}$, and the like? If so, we'll 
+need to translate from $\rho$ and $\sigma$ in \texttt{cesEst} to the correct
+variable names in the paper. ****
+
+
+**** Describe here how 
 we implemented the constraints. ****
 
 \citet{VanderWerf:2008tc} evalutes various nested CES production 
@@ -764,7 +805,7 @@ We treat $a_0$ and $c_t$ as fitting parameters;
 both are assumed constant with respect to time. 
 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
-\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES} and 
+\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CESkle} and 
 \ref{eq:CESe}), the LINEX model (Equation~\ref{eq:LINEX}) accounts 
 for efficiencies among capital, labor, and energy directly and, 
 therefore, does not employ a time-dependent 
@@ -1189,7 +1230,7 @@ and high covariances among these variables can be seen in
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 **** Do we want to discuss the covariances? ****
 
-<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).", eval=FALSE>>=
+<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -1214,12 +1255,117 @@ increasing energy efficiency in the U.S. economy.
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\texttt{R} software, makes detailed testing possible. R$^2$ not a good measure, 
-limited insights t and p values, especially on PFs that have parameters with constraints
+Each of the economic growth models discussed in 
+Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
+for each economy (see Section~\ref{sec:Economy_Types}) and 
+each energy quantification (see Section~\ref{sec:Quantification_of_Energy}) 
+via least-squares methods. We used \texttt{R} \citep{R}, specifically the \texttt{nls} and 
+\texttt{cesEst} \citep{Henningsen:2011td} functions for the parameter estimation process. 
 
-We found that we are able to maintain good fits while respecting theoretical foundations
-of the models (i.e., respect parameter constraints). No need to relax parameter constraints
-and, thereby, contradict micro foundations.
+The following subsections discuss 
+parameter estimation methods and results. 
+
+%++++++++++++++++++++++++++++++
+\subsection{Resampling}
+\label{sec:Resampling}
+%++++++++++++++++++++++++++++++
+
+**** To be completed by Randy Prium ****
+
+Discuss resampling theory.
+
+Discuss our resampling approach.  
+
+Be sure to include references on resampling. 
+Resampling will be new territory for the readers of \emph{Energy Economics}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas Models}
+\label{sec:CD_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The Cobb-Douglas model without energy is given by 
+Equation~\ref{eq:CD}. The Cobb-Douglas (without energy) production function was
+reparameterized as
+
+\begin{equation} \label{eq:CD_reparam}
+  y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
+$\lambda$ and $\alpha$ were estimated by the 
+\texttt{R} \citep{R} function \texttt{nls}. 
+If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
+we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
+The value of $\beta$ was found with $\beta = 1 - \alpha$. 
+
+**** CD without energy results here. Scatter plots? CIs? 
+Partial residual plots? TBD which to include. ****
+
+To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
+in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
+was reparameterized as
+
+\begin{equation} \label{eq:CDe_AB_reparam}
+  y = A k^{\min(a,b)} l^{|b-a|} e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent with 
+$\alpha = \min(a,b)$, 
+$\beta = |b-a|$, and 
+$\gamma = 1 - \max(a,b)$.
+The reparameterization ensures that $\alpha + \beta + \gamma = 1$,
+thereby providing constant returns to scale.
+The \texttt{R} \citep{R} function \texttt{nls} was used to estimate 
+values of $\lambda$, $a$, and $b$.
+If the fitted value for $a$ ($b$) fell outside $[0,1]$, it was 
+set equal to its boundary value and $\lambda$ and $b$ ($a$) 
+were re-estimated.
+
+The \texttt{nls} parameter estimation algorithm can encounter convergence difficulty 
+when the optimal value for the parameter represented by the absolute value function 
+(in Equation~\ref{eq:CDe_AB_reparam}, $\beta$) 
+lies near a boundary. If the absolute value exponent caused non-convergence of the 
+\texttt{nls} function, second and, if necessary, third reparameterizations 
+were attempted:
+
+\begin{equation} \label{eq:CDe_CD_reparam}
+  y = A k^{1 - \max(c,d)} l^{\min(c,d)} e^{|d-c|}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\begin{equation} \label{eq:CDe_FG_reparam}
+  y = A k^{|g-f|} l^{1 - \max(f,g)} e^{\min(f,g)}; A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+
+\noindent If none of the three reparameterizations converged, 
+the parameterization with the smallest sum of square errors ($SSE$)
+was used. \ref{sec:Convergence_Resample_Models} shows the 
+fraction of unconverged models for each model type. 
+The above approach resulted in very few unconverged
+Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
+
+**** Include CD$e$ graphs here. Ternary plots? CIs? TBD which to include. ****
+
+Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 
+from the Cobb-Douglas models 
+(without energy, with $e=q$, with $e=x$, and with $e=u$) to historical data.
+
+<<CD_GDP_Lattice_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas fitted models.">>=
+createCDLatticeGraph()
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Parameter Estimation Summary}
+\label{sec:Parameter_Estimation_Summary}
+%++++++++++++++++++++++++++++++
+
+**** Include a table here of important values. 
+Include a table of convergence? (In appendix?)
+Martin to suggest the form of this table after working 
+on the interpretation for a while. ****
+
 
 Grid search etc. (Matt, Randy to populate)
 
@@ -1239,9 +1385,17 @@ but nevertheless reach a better solution (smaller sse).
 \label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Drive towards new insights from our stats tested comparative approach..
+Drive towards new insights from our stats tested comparative approach.
 
 **** Notes for interpretation of results ****
+
+R$^2$ not a good measure. 
+Limited insights are obtained from $t$ and $p$ values, 
+especially on PFs that have parameters with constraints (CD, CES).
+
+We found that we are able to maintain good fits while respecting theoretical foundations
+of the models (i.e., respect parameter constraints). No need to relax parameter constraints
+and, thereby, contradict micro foundations.
 
 CD assumes $\sigma_1 = 1$. CES doesn't assume a value for $\sigma_1$. 
 The $\sigma_1$ vs. $\delta_1$ graphs for CES without energy often have 
@@ -1589,6 +1743,22 @@ associated with this paper can be found at\\*
 \setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
 \setcounter{equation}{0} % Restarts equation counter to 0 in this section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Convergence of Resample Models}
+\label{sec:Convergence_Resample_Models}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following table shows the fraction of resample models 
+that did not achieve convergence when estimating model parameters.
+
+<<Unconverged_Frac_Table, results='asis'>>=
+printFracUnconvergedXtable()
+@
 
 
 %% References
