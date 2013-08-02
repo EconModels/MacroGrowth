@@ -1357,6 +1357,67 @@ createCDLatticeGraph()
 
 
 %++++++++++++++++++++++++++++++
+\subsection{CES Models}
+\label{sec:CES_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The CES model without and with energy is given by 
+Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
+The \texttt{R} \citep{R} package \texttt{micEconCES} 
+\citep{Henningsen:2011td} was used to estimate parameters 
+$\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. 
+**** Adjust these parameter names if we decide to 
+change them. **** The \texttt{cesEst} function of \texttt{micEconCES} provides 
+several algorithm options for parameter estimation.
+The default algorithm (Levenberg-Marquardt) does not respect
+parameter constraints (see Section~\ref{sec:CES}) and, 
+in our testing, nearly always violated them, often returning
+negative values for elasticity of substitution ($\sigma$) parameters.
+
+Two algorithms available in \texttt{cesEst} 
+(\texttt{PORT} and \texttt{L-BFGS-B}) respect coefficient constraints. 
+Our CES parameter estimation algorithm tries both
+with default starting values and selects the
+result with lowest $sse$, regardless
+of convergence status. If one algorithm
+fails during the fitting process 
+(due to division by zero or another numerical error), 
+we use coefficients from the algorithm that didn't.
+In event that both algorithms fail, 
+we skip that resampled data point.
+
+\citet{Henningsen:2011td}, 
+in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+
+\begin{quote}
+\ldots the Levenberg-Marquardt and the PORT algorithms 
+are---at least in this study---most likely to find the 
+coefficients that give the best fit to the model, 
+where the PORT algorithm can be used to restrict the estimates 
+to the economically meaningful region.
+\end{quote}
+
+In our testing, we found that to be mostly true. 
+\texttt{PORT} nearly always provided lower
+$sse$ than \texttt{L-BFGS-B}, despite the fact that 
+\texttt{L-BFGS-B} often reports convergence
+and \texttt{PORT} does not for the same economic data.
+
+**** Include CES graphs here. Need to cover
+all options: without energy and the three nesting
+options. CIs? TBD which to include. ****
+
+Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
+to historical data for the $(kl)e$ nesting.
+
+<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.">>=
+createCESLatticeGraph()
+@
+
+**** Include other nestings here? ****
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Parameter Estimation Summary}
 \label{sec:Parameter_Estimation_Summary}
 %++++++++++++++++++++++++++++++
