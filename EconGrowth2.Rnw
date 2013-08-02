@@ -1269,15 +1269,57 @@ parameter estimation methods and results.
 \label{sec:Resampling}
 %++++++++++++++++++++++++++++++
 
-**** To be completed by Randy Prium ****
+Resampling is a statistical technique for estimating the 
+precision of coefficient estimates. We implemented
+residual resampling in our parameter estimation processes. 
 
-Discuss resampling theory.
+When resampling, the modeler assumes that the residuals ($r_t$) between 
+observed data (in our case historical GDP values, $y_{act,t}$) and
+model predictions (in our case, $y_{pred,t}$) at
+time $t$ are representative 
+of the uncertainty and random scatter in the observed historical data. 
 
-Discuss our resampling approach.  
+\begin{equation} \label{eq:residual}
+  r_t = y_{pred,t} - y_{act,t}
+\end{equation}
 
-Be sure to include references on resampling. 
-Resampling will be new territory for the readers of \emph{Energy Economics}
+Under that assumption, it would not be surprising if the residual from 
+any one year had been observed on a different year. 
+By applying randomly selected residuals (with randomly selected signs)
+to model predictions at each year of the GDP time series, we create a resampled
+GDP time series ($y_{resample,t}$) that can be re-fitted using the techniques
+described below.
 
+\begin{equation} \label{eq:resample_y}
+  y_{resample,t} = y_{pred,t} + \mathrm{rand}(-1, 1) \cdot \mathrm{abs}(\mathrm{rand}(r_t))
+\end{equation}
+
+We repeated the resampling process \Sexpr{numResamples()} times for each
+combination of growth model, energy quantification, and country.
+
+The coefficients from the fit to the resampled time series
+(the ``resample coefficients'') will be different from the coefficients 
+obtained from the fit to historical data (the ``base coefficients'').
+Large residuals in the base fit
+are expected to produce large variation in resample coefficients, 
+indicating less certainty in the knowledge
+of those coefficients. 
+Similarly, small base fit residuals are expected to produce small
+variation in resample coefficients, indicating better knowledge
+of the model coefficients. 
+
+It is important to note that large residuals can arise from 
+(a) poor quality historical time series data ($y_{act}$) or 
+(b) a mathematical model that does not describe the underlying phenomena well.
+In either case, we would not want to claim precise knowledge of the 
+fitted coefficients for a model. The resampling technique that we employed
+provides looser coefficient distributions when either of the above
+is true. After discussing the fitting technique for each 
+growth model, we show scatter plots of fitted coefficients
+to provide visual indication of the uncertainty 
+of the coefficients for each model.
+
+**** Randy Pruim review the above text and supply some text and references. ****
 
 %++++++++++++++++++++++++++++++
 \subsection{Cobb-Douglas Models}
