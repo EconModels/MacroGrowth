@@ -1436,11 +1436,6 @@ cesResamplePlotSigma_1Delta_1(energyType="U", nest="(kl)e") + ylim(0, 2.5)
 cesResamplePlotSigmaDelta(energyType="U", nest="(kl)e") + ylim(0, 2.5)
 @
 
-
-
-
-
-
 Coefficients for each resampled CES model (with $q$) for the ($le$)$k$ nesting
 are shown in 
 Figures~\ref{fig:CESq_lambda_gamma_Cloud_Graph_lek}--\ref{fig:CESq_sigma_delta_Cloud_Graph_lek}.
@@ -1489,14 +1484,6 @@ cesResamplePlotSigma_1Delta_1(energyType="U", nest="(le)k") + ylim(0, 2.5)
 cesResamplePlotSigmaDelta(energyType="U", nest="(le)k") + ylim(0, 2.5)
 @
 
-
-
-
-
-
-
-
-
 Coefficients for each resampled CES model (with $q$) for the ($ek$)$l$ nesting
 are shown in 
 Figures~\ref{fig:CESq_lambda_gamma_Cloud_Graph_ekl}--\ref{fig:CESq_sigma_delta_Cloud_Graph_ekl}.
@@ -1544,12 +1531,6 @@ cesResamplePlotSigma_1Delta_1(energyType="U", nest="(ek)l") + ylim(0, 2.5)
 <<CESu_sigma_delta_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
 cesResamplePlotSigmaDelta(energyType="U", nest="(ek)l") + ylim(0, 2.5)
 @
-
-
-
-
-
-
 
 Figure~\ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals 
 for the parameters for the CES model (with $q$, ($kl$)$e$ nesting).
