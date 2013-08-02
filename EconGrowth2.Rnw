@@ -1501,11 +1501,14 @@ CD: Energy is unnecessary
 
 CES with $q$:
 
-($kl$): $\delta_1 = 0.3, \sigma_1 = 0.8$. $k$ is less necessary. Complements, but close to substitutes.
+($kl$): $\delta_1 = 0.3, \sigma_1 = 0.8$. $k$ is less necessary. 
+Complements, but close to substitutes.
 signal of substitutability in the spread.
 
-($kl$)$e$: energy is unnec ($\delta = 1$). $\delta_1 = 0.45$: $k$ and $l$ are about equally necessary.
-$\sigma_1 = 0.8$: $k$ and $l$ are slight complements. Spread on $0.25 < \sigma_1 < \infty$, signalling 
+($kl$)$e$: energy is unnec ($\delta = 1$). 
+$\delta_1 = 0.45$: $k$ and $l$ are about equally necessary.
+$\sigma_1 = 0.8$: $k$ and $l$ are slight complements. 
+Spread on $0.25 < \sigma_1 < \infty$, signalling 
 possibilities of substitution.
 
 ($el$)$k$: energy is unnec. ($\delta_1$ is 0); 
@@ -1515,11 +1518,12 @@ Relative consistent signal that energy is unnec.
 
 CES with $u$: 
 
-($kl$)$e$: $\delta = 1$, signalling $e$ unnecessary. $\sigma = 0.8$, indicating clost to substitutability,
+($kl$)$e$: $\delta = 1$, signalling $e$ unnecessary. 
+$\sigma = 0.8$, indicating clost to substitutability,
 but still complementary. 
 $\delta_1 = 0.25$, with large spread. not strong for $k$.
-$\sigma_1 \rightarrow \infty$, but with large spread from 0.2 upward. Signals complementarity
-between $k$ and $l$.
+$\sigma_1 \rightarrow \infty$, but with large spread from 0.2 upward. 
+Signals complementarity between $k$ and $l$.
 
 %++++++++++++++++++++++++++++++
 \subsection{United Kingdom} 
@@ -1530,9 +1534,13 @@ CD: Capital is unnec.
 
 CES with $q$: 
 
-($kl$): $\delta_1 = 0.7, \sigma_1 = 0.35$. $kl$ complementary, $k$ is more important, because $\delta_1 > 0.5$. Large spread on $\delta_1$. Complementary signal is consistent, however.
+($kl$): $\delta_1 = 0.7, \sigma_1 = 0.35$. 
+$kl$ complementary, $k$ is more important, because $\delta_1 > 0.5$. 
+Large spread on $\delta_1$. 
+Complementary signal is consistent, however.
 
-($kl$)$e$: energy is unnec ($\delta = 1$). $\delta_1 = 0.25$, $k$ is less necessary. 
+($kl$)$e$: energy is unnec ($\delta = 1$). 
+$\delta_1 = 0.25$, $k$ is less necessary. 
 $\sigma_1 \rightarrow \infty$, giving strong $kl$ substitutability signal.
 
 ($le$)$k$ capital is unnec. ($\delta = 1$); 
@@ -1544,8 +1552,10 @@ as massive changes in economic policy in Uk economic history
 
 CES with $u$: 
 
-($kl$)$e$: $\delta = 1$, $u$ is unnecessary. $\sigma = 0.8$, approache complementarity between $kl$ and $e$.
-$\delta_1 = 0.1$. $\sigma_1 \rightarrow \infty$, indicating substitutability between $k$ and $l$.
+($kl$)$e$: $\delta = 1$, $u$ is unnecessary. 
+$\sigma = 0.8$, approache complementarity between $kl$ and $e$.
+$\delta_1 = 0.1$. 
+$\sigma_1 \rightarrow \infty$, indicating substitutability between $k$ and $l$.
 
 
 %++++++++++++++++++++++++++++++
@@ -1563,7 +1573,8 @@ $l$ is close to unnecessary. $k$ and $l$ are complements.
 ($kl$)$e$: no indications, all are important. $\delta = 0.6$, both $kl$ and $e$ are necessary.
 $0.5 < \delta < 1$.
 $\sigma=0.1$ signalling complementarity betwen $kl$ and $e$.
-$\delta_1 = 0.8$ signalling $l$ is almost unnecessary. $\sigma_1 = 0.1$, signalling complementarity 
+$\delta_1 = 0.8$ signalling $l$ is almost unnecessary. 
+$\sigma_1 = 0.1$, signalling complementarity 
 between $k$ and $l$.
 
 ($le$)$k$: no indications, all are important. 
@@ -1642,10 +1653,13 @@ CD: no indications
 
 CES with $q$: 
 
-($kl$): $\delta_1 = 0.85$. $l$ is unnecessary. $\sigma_1 = 0.1$ indicating strong complementarity between 
-$k$ and $l$. Spread of $0.15 < \delta_1 < 1$. $0 < \sigma_1 < 0.8$, signalling complementarity.
+($kl$): $\delta_1 = 0.85$. $l$ is unnecessary. 
+$\sigma_1 = 0.1$ indicating strong complementarity between 
+$k$ and $l$. Spread of $0.15 < \delta_1 < 1$. 
+$0 < \sigma_1 < 0.8$, signalling complementarity.
 
-($kl$)$e$: $\delta = 0.6$, $e$ is less necessary (weak signal). Big spread on $\delta$ between 0 and 0.8.
+($kl$)$e$: $\delta = 0.6$, $e$ is less necessary (weak signal). 
+Big spread on $\delta$ between 0 and 0.8.
 $\sigma = 0.1$ indicating complementarity between $kl$ and $e$. $\delta_1 = 0.8$ 
 (with large spread between 0.3 and 1), labor is less necessary.
 $\sigma_1 = 0.1$: very complementary between $k$ and $l$.
@@ -1668,7 +1682,8 @@ CES with $q$:
 ($kl$): $\delta_1 = 0.3$. Spread $0 < \delta_1 < 0.7$. $0 < \sigma_1 < 0.8$. $\sigma_1 = 0$. 
 Strong complementarity. $k$ is less necessary compared to $l$.
 
-($kl$)$e$: energy is unnec ($\delta=1$). $\sigma = 0.75$ indicating complementarity between $kl$ and $e$, approaching substitutibility.
+($kl$)$e$: energy is unnec ($\delta=1$). 
+$\sigma = 0.75$ indicating complementarity between $kl$ and $e$, approaching substitutibility.
 $\delta_1 = 0.3, \sigma_1 = 0$ indicating strong perfect complementarity between $k$ and $l$.
 
 ($le$)$k$: energy is unnec. ($\delta_1=1$); 
@@ -1687,9 +1702,11 @@ CES with $q$:
 ($kl$): $\delta_1 = 0.8$ $0.3 < \delta_1 < 1$ signalling labor is less necessary.
 $\sigma_1 = 0.1$ $0 < \sigma_1 < 0.8$, signalling complementary $k$ and $l$.
 
-($kl$)$e$: labour is unnec ($\delta_1=0.97$). $\delta = 0.45$, so $kl$ and $e$ both necessary, but 
+($kl$)$e$: labour is unnec ($\delta_1=0.97$). 
+$\delta = 0.45$, so $kl$ and $e$ both necessary, but 
 $\sigma \rightarrow \infty$, so $kl$ and $e$ has perfect substitutibility.
-$\sigma_1 = 0.1$, so $k$ and $l$ are perfect complements. Spread on $\delta$ is large (0.2 to 1).
+$\sigma_1 = 0.1$, so $k$ and $l$ are perfect complements. 
+Spread on $\delta$ is large (0.2 to 1).
 So, we are unsure about the value of $\delta$.
 
 ($le$)$k$: weak signal that energy is unnec. ($\delta_1=0.92$); 
@@ -1708,12 +1725,15 @@ CD: labour is unnec; energy is unnec.
 
 CES with $q$: 
 
-($kl$): $\delta_1 = 1$: $l$ is unnecessary. $0.5 < \delta_1 < 1$. $\sigma_1 = 0.8$ without any 
+($kl$): $\delta_1 = 1$: $l$ is unnecessary. 
+$0.5 < \delta_1 < 1$. $\sigma_1 = 0.8$ without any 
 noticeable spread indicating complemetary.
 
-($kl$)$e$: labour is unnec. ($\delta_1=1$). $\delta = 0.6$, $kl$ and $e$ are both necessary. 
-$\sigma \rightarrow \infty$, signalling substitutability between $kl$ and $e$. $\sigma_1 = 0.8$ with very
-large spread between 0 and 2. Approaching substitutability between $k$ and $l$ and perfect substitutibility
+($kl$)$e$: labour is unnec. ($\delta_1=1$). 
+$\delta = 0.6$, $kl$ and $e$ are both necessary. 
+$\sigma \rightarrow \infty$, signalling substitutability between $kl$ and $e$. 
+$\sigma_1 = 0.8$ with very large spread between 0 and 2. 
+Approaching substitutability between $k$ and $l$ and perfect substitutibility
 between $kl$ and $e$. Very little certainty here.
 
 ($le$)$k$: ($\delta_1=0$); 
@@ -1729,7 +1749,8 @@ How to get better consistent signals?
 
 \begin{itemize}
 \item{Use CD as starting points and do CES convergence on that basis.}
-\item{Do scatterplots to get range of uncertainty inputs, then re-interpret. delta against sigma plots, as well as $\delta_1$ and $\sigma_1$ plots.}
+\item{Do scatterplots to get range of uncertainty inputs, then re-interpret. 
+$\delta$ against $\sigma$ plots, as well as $\delta_1$ and $\sigma_1$ plots.}
 \end{itemize}
 
 Thus, to do the fitting well we need to understand:
@@ -1744,8 +1765,14 @@ esp. for CES.
 
 How do we compare with LINEX results?
 
-CES is a broader specification of CD, LINEX is not. In LINEX no delta's nor sigmas are generated. Only efficiency terms are generated in LINEX, thus in other words economic growth is only possible by increased efficiency. 
-The efficiency of using energy is driven by capital stock. The objective/growth engine is to increase capital at a rate that is faster then growth in labour and energy.  Increasing labour relative to energy gives a muted benefit. 
+CES is a broader specification of CD, LINEX is not. 
+In LINEX neither $\delta$s nor $\sigma$s are generated. 
+Only efficiency terms are generated in LINEX, 
+thus in other words economic growth is only possible by increased efficiency. 
+The efficiency of using energy is driven by capital stock. 
+The objective/growth engine is to increase capital 
+at a rate that is faster then growth in labour and energy.  
+Increasing labour relative to energy gives a muted benefit. 
 LINEX derived for Germany: only really applicable when energy and capital are complements.
 
 Discussion in relation to other papers. 
