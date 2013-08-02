@@ -1259,10 +1259,9 @@ Each of the economic growth models discussed in
 Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
 for each economy (see Section~\ref{sec:Economy_Types}) and 
 each energy quantification (see Section~\ref{sec:Quantification_of_Energy}) 
-via least-squares methods. We used \texttt{R} \citep{R}, specifically the \texttt{nls} and 
-\texttt{cesEst} \citep{Henningsen:2011td} functions for the parameter estimation process. 
-
-The following subsections discuss 
+via least-squares methods. We used \texttt{R} \citep{R} functions
+\texttt{nls} and \texttt{cesEst} \citep{Henningsen:2011td} 
+for that purpose. The following subsections discuss 
 parameter estimation methods and results. 
 
 %++++++++++++++++++++++++++++++
@@ -1339,7 +1338,7 @@ were attempted:
 \end{equation}
 
 \noindent If none of the three reparameterizations converged, 
-the parameterization with the smallest sum of square errors ($SSE$)
+the parameterization with the smallest sum of square errors ($sse$)
 was used. \ref{sec:Convergence_Resample_Models} shows the 
 fraction of unconverged models for each model type. 
 The above approach resulted in very few unconverged
@@ -1390,7 +1389,7 @@ we skip that resampled data point.
 in their detailed analysis of \citet{Kemfert:1998vd}, found that 
 
 \begin{quote}
-\ldots the Levenberg-Marquardt and the PORT algorithms 
+\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
 are---at least in this study---most likely to find the 
 coefficients that give the best fit to the model, 
 where the PORT algorithm can be used to restrict the estimates 
@@ -1401,7 +1400,8 @@ In our testing, we found that to be mostly true.
 \texttt{PORT} nearly always provided lower
 $sse$ than \texttt{L-BFGS-B}, despite the fact that 
 \texttt{L-BFGS-B} often reports convergence
-and \texttt{PORT} does not for the same economic data.
+and \texttt{PORT} does not for the same data
+(i.e., for the same $y$, $k$, $l$, and $e$ data).
 
 **** Include CES graphs here. Need to cover
 all options: without energy and the three nesting
@@ -1418,6 +1418,41 @@ createCESLatticeGraph()
 
 
 %++++++++++++++++++++++++++++++
+\subsection{LINEX Models}
+\label{sec:LINEX_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The LINEX model is given in Equation~\ref{eq:LINEX}. 
+If the fitting algorithm drives $a_0 \rightarrow 0$, 
+any changes to $c_t$ have no effect on $sse$, 
+leading the fitting algorithm to report non-convergence. 
+To avoid this problem, we transformed the LINEX model into
+
+\begin{equation} \label{eq:LINEX_transformed}
+  y = Ae; 
+  A = \mathrm{e}^{\left[2 a_0 \left(1 - \frac{1}{\rho_k} \right) 
+    + a_1 \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
+\end{equation}
+
+\noindent where $a_1 \equiv a_0 c_t$. 
+We used the \texttt{nls} function in \texttt{R}
+\citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
+Equation~\ref{eq:LINEX_transformed}. We recovered
+a value for $c_t$ with $c_t = a_1 / a_0$. The reparameterization
+of Equation~\ref{eq:LINEX_transformed} reduced the number of 
+unconverged resample fits to nearly zero.
+
+**** Include LINEX scatter graphs here. Cover all 
+quantifications of energy? CIs? TBD which to include. ****
+
+Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
+
+<<LINEX_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
+createLINEXLatticeGraph()
+@
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Parameter Estimation Summary}
 \label{sec:Parameter_Estimation_Summary}
 %++++++++++++++++++++++++++++++
@@ -1426,19 +1461,6 @@ createCESLatticeGraph()
 Include a table of convergence? (In appendix?)
 Martin to suggest the form of this table after working 
 on the interpretation for a while. ****
-
-
-Grid search etc. (Matt, Randy to populate)
-
-This section should cover both technique and results. 
-Organize along coordinates of analysis.
-
-1. Discuss parameter estimation for each model here.
-
-CES Model: It is possible for L-BFGS-B to report convergence and PORT to report non-convergence 
-but nevertheless reach a better solution (smaller sse).
-
-2. Show scatter plot results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
