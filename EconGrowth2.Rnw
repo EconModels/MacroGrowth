@@ -805,8 +805,8 @@ We treat $a_0$ and $c_t$ as fitting parameters;
 both are assumed constant with respect to time. 
 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
-\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CESkle} and 
-\ref{eq:CESe}), the LINEX model (Equation~\ref{eq:LINEX}) accounts 
+\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
+the LINEX model (Equation~\ref{eq:LINEX}) accounts 
 for efficiencies among capital, labor, and energy directly and, 
 therefore, does not employ a time-dependent 
 technological progress term ($A$). \citet{Kummel:2002tx} use the 
@@ -1246,7 +1246,7 @@ grew much faster than $q$, $x$, $k$, or $l$ due to efficiency gains
 in the U.S. economy. The results of \citeauthor{Warr:2012cg} suggest 
 that the time-dependent technological progress term ($A$) 
 in the Cobb-Douglas and CES production functions 
-(Equations~\ref{eq:CD}--\ref{eq:CESe}) may be a proxy for 
+(Equations~\ref{eq:CD}--\ref{eq:CESekl}) may be a proxy for 
 increasing energy efficiency in the U.S. economy.
 
 
