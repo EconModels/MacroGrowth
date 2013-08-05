@@ -1448,6 +1448,11 @@ $sse$ than \texttt{L-BFGS-B}, despite the fact that
 and \texttt{PORT} does not for the same data
 (i.e., for the same $y$, $k$, $l$, and $e$ data).
 
+**** Do we want to report on the fraction of non-convergence
+reported? Maybe we should write a function that 
+searches all the countries to find which 
+country reports least convergence for a given model. ****
+
 **** Include CES graphs here. Need to cover
 all options: without energy and the three nesting
 options. CIs? TBD which to include. ****
