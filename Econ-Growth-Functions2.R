@@ -3486,7 +3486,7 @@ fracUnconvergedResampleFitsAll <- function(){
   ###########################
   # Calculates the fraction of unconverged resamples stored on disk 
   # for all countries and all energy types
-  ##
+  ## 
   out <- data.frame()
   modelType <- "sf"
   for (factor in factors){
@@ -3560,7 +3560,7 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
   # has not converged (tallyResults[["0"]]), because there are some times when
   # all resampled fits converge, and there is no "0" item in the 
   # result from tally.
-  fracConverged <- tallyResults[["1"]]
+  fracConverged <- tallyResults[["TRUE"]]
   fracUnconverged <- 1.0 - fracConverged
   return(fracUnconverged)
 }
