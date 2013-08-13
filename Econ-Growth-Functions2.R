@@ -1960,7 +1960,7 @@ cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryA
   return(modelCES)
 }
 
-fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data){
+fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data, gridPlus=FALSE, ...){
 
   if(missing(data)) {
     data <- loadData(countryAbbrev=countryAbbrev)
@@ -1979,7 +1979,15 @@ fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("POR
   
   model <- cesModel(data=data, energyType=energyType, 
                     xNames=xNames, 
-                    algorithm=algorithm)
+                    algorithm=algorithm,
+                    ...)
+  if (gridPlus) {
+    model <- cesModel(data=data, energyType=energyType, 
+                      xNames=xNames, 
+                      algorithm=algorithm,
+                      start=coef(model))
+  }
+  
   nC <- naturalCoef( model ) 
   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
   attr(model, "naturalCoeffs") <- nC
@@ -3397,6 +3405,12 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # The name of the object loaded by this call is resampleData.
   load(file=path)
+  if (sigma %in% names(resampleData) ){
+    resampleData <- transform( resampleData, sigmaTrans = ifelse(sigma < 2, sigma, 1.5 - rho ))
+  }  
+  if (sigma_1 %in% names(resampleData) ){
+    resampleData <- transform( resampleData, sigmaTrans_1 = ifelse(sigma_1 < 2, sigma_1, 1.5 - rho_1 ))
+  }
   return(resampleData)
 }
 

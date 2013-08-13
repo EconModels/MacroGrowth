@@ -147,7 +147,7 @@ genResampleData <- function(modelType=modelTypes,
   
   if (file.exists(path)) {
     if (verbose) {
-      cat(paste(path, "exists"))
+      cat(paste(path, "exists\n"))
     }
     if (! clobber) {
       status <- "file existed; not clobbered"
@@ -157,7 +157,7 @@ genResampleData <- function(modelType=modelTypes,
       status <- "file existed; going to clobber"
     }
   }
-  if (verbose) cat(paste('Data will be saved in', path))
+  if (verbose) cat(paste('Data will be saved in', path, "\n"))
   status <- "creating new file"
   #########################
   # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
@@ -189,6 +189,7 @@ genResampleData <- function(modelType=modelTypes,
   save(resampleData, file=path)
   status <- "file saved"
   names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
+  paste(status)
   return(status)
 }
 
@@ -198,7 +199,10 @@ resampleFits <- function(
   energyType=energyTypes, 
   factor=factors,
   method=resampleMethods,
-  n
+  n,
+  gridPoints=10,
+  rho=seq(-0.9, 10, length.out=gridPoints),
+  rho1=seq(-0.9, 10, length.out=gridPoints)
   ){
   ##################
   # This function creates n resampled curve fits and returns them.
@@ -223,16 +227,17 @@ resampleFits <- function(
     # Trim the dataset to include only those years for which U is available.
     data <- subset(data, !is.na(iU))
   }
+  
   # First do a fit without resampling and get these coefficients
   origModel <- switch(modelType,
                       "sf"    = singleFactorModel(data=data, factor=factor, respectRangeConstraints=TRUE),
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
-                      "cese"  = cesModel(countryAbbrev=countryAbbrev, energyType=energyType),
-                      "cese-(kl)e"  = fitCES(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType),
-                      "cese-(le)k"  = fitCES(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType),
-                      "cese-(ek)l"  = fitCES(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType),
+                      "cese"  = stop("Why did you call with cese?"),#cesModel(countryAbbrev=countryAbbrev, energyType=energyType),
+                      "cese-(kl)e"  = fitCES(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(le)k"  = fitCES(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(ek)l"  = fitCES(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
                       )
   baseFitCoeffs <- naturalCoef(origModel)
@@ -244,12 +249,12 @@ resampleFits <- function(
              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
     )
   }
-  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data) {
+  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data, ...) {
     myData <- doResample(data=data, origModel=origModel, method=method)
     nC <- tryCatch( naturalCoef(fitCES(countryAbbrev=countryAbbrev,
                                 energyType=energyType,
                                 nest="(kl)e",
-                                data=myData)),
+                                data=myData, ...)),
              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
     )
     return( rbind.fill(naturalCoef(origModel), nC)[-1,] )
@@ -283,19 +288,22 @@ resampleFits <- function(
                                                                 nest="(kl)e",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method)),
+                                                                                method=method),
+                                                                start=coef(origModel)),
                               "cese-(le)k" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(le)k",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method)),
+                                                                                method=method),
+                                                                start=coef(origModel)),
                               "cese-(ek)l" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(ek)l",
                                                                 data=doResample(data=data, 
                                                                                 origModel=origModel, 
-                                                                                method=method)),
+                                                                                method=method),
+                                                                start=coef(origModel)),
                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
                                                                   energyType=energyType,
                                                                   data=doResample(data=data, 
