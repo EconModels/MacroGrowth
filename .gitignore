@@ -23,6 +23,7 @@ CES.pdf
 *.bbl
 figure/
 data_resample/
+data_failures/
 #
 # Files created by beamer
 #
