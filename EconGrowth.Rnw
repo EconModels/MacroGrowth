@@ -1342,7 +1342,27 @@ Complete after our work this summer. ****
 
 Coefficients for each resampled CES model (without energy)
 are shown in 
-Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph}--\ref{fig:CES_sigma_delta_Cloud_Graph}.
+Figures~\ref{fig:CES_lambda_gamma_Cloud_Graph}--\ref{fig:CES_sigma_delta_Cloud_Graph}. 
+Note that transformed $\sigma$ and $\sigma_1$ values 
+($\sigma^{\prime}$ and $\sigma_1^{\prime}$) are plotted to compress 
+$2 < \sigma < \infty$ into $2 < \sigma^{\prime} \le 2.5$
+($2 < \sigma_1 < \infty$ into $2 < \sigma_1^{\prime} \le 2.5$):
+
+\begin{equation} \label{eq:sigma_transform}
+  \sigma^{\prime} = 
+    \begin{cases}
+      \sigma,   & 0 \le \sigma \le 2\\
+      1.5-\rho, & \sigma > 2
+    \end{cases}
+\end{equation}
+
+\begin{equation} \label{eq:sigma_1_transform}
+  \sigma_1^{\prime} = 
+    \begin{cases}
+      \sigma_1,   & 0 \le \sigma_1 \le 2\\
+      1.5-\rho_1, & \sigma_1 > 2
+    \end{cases}
+\end{equation}
 
 <<CES_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
 cesResamplePlotLambdaGamma(energyType=NA)
