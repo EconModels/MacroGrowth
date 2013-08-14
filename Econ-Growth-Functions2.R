@@ -1981,13 +1981,19 @@ fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("POR
                     xNames=xNames, 
                     algorithm=algorithm,
                     ...)
+print("finished with base model.")
+print(summary(model))
   if (gridPlus) {
+print("inside gridPlus branch.")
+print("start =")
+print(coef(model))
     model <- cesModel(data=data, energyType=energyType, 
                       xNames=xNames, 
                       algorithm=algorithm,
                       start=coef(model))
   }
-  
+print("finished with gridPlus model.")  
+print(summary(model))
   nC <- naturalCoef( model ) 
   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
   attr(model, "naturalCoeffs") <- nC
