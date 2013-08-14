@@ -2514,7 +2514,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardScatterPlot(data, aes(delta_1, sigma_1)) +
+  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1)) +
     labs(x=expression(delta_1), y=expression(sigma_1))
   return(graph)
 }
@@ -2537,7 +2537,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   } else {
     data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
-    graph <- standardScatterPlot(data, aes(delta, sigma)) +
+    graph <- standardScatterPlot(data, aes(delta, sigmaTrans)) +
       labs(x=expression(delta), y=expression(sigma))
   }
   return(graph)
