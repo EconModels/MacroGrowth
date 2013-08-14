@@ -1987,6 +1987,24 @@ print(summary(model))
 print("inside gridPlus branch.")
 print("start =")
 print(coef(model))
+print(energyType)
+print(xNames)
+print(algorithm)
+#
+#
+#
+#
+#
+# If you say 
+# model <- fitCES(countryAbbrev="ZA", nest="(kl)e", energyType="Q", rho=seq(-0.9, 10, length.out=10), rho1=seq(-0.9, 10, length.out=10), gridPlus=TRUE)
+# at the console, this next call will fail.  
+# If you change countryAbbrev="US", it works.
+# When it fails, you get a null object back. I don't see any error message, so it is difficult to debug.
+#
+#
+#
+#
+#
     model <- cesModel(data=data, energyType=energyType, 
                       xNames=xNames, 
                       algorithm=algorithm,
@@ -1994,6 +2012,8 @@ print(coef(model))
   }
 print("finished with gridPlus model.")  
 print(summary(model))
+print(class(model))
+  
   nC <- naturalCoef( model ) 
   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
   attr(model, "naturalCoeffs") <- nC
