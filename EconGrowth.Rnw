@@ -1426,7 +1426,7 @@ cesResamplePlotSigmaDelta(energyType="Q", nest="(kl)e") + ylim(0, 2.5)
 
 Coefficients for each resampled CES model (with $x$, ($kl$)$e$ nesting)
 are shown in 
-Figures~\ref{fig:CESx_lambda_gamma_Cloud_Graph_kle}--\ref{fig:CESx_sigma_delta_Cloud_Graph}.
+Figures~\ref{fig:CESx_lambda_gamma_Cloud_Graph_kle}--\ref{fig:CESx_sigma_delta_Cloud_Graph_kle}.
 
 <<CESx_lambda_gamma_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($kl$)$e$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
 cesResamplePlotLambdaGamma(energyType="X", nest="(kl)e")
