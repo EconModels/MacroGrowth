@@ -1984,12 +1984,12 @@ fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("POR
 print("finished with base model.")
 print(summary(model))
   if (gridPlus) {
-print("inside gridPlus branch.")
-print("start =")
-print(coef(model))
-print(energyType)
-print(xNames)
-print(algorithm)
+# print("inside gridPlus branch.")
+# print("start =")
+# print(coef(model))
+# print(energyType)
+# print(xNames)
+# print(algorithm)
 #
 #
 #
@@ -2010,9 +2010,9 @@ print(algorithm)
                       algorithm=algorithm,
                       start=coef(model))
   }
-print("finished with gridPlus model.")  
-print(summary(model))
-print(class(model))
+# print("finished with gridPlus model.")  
+# print(summary(model))
+# print(class(model))
   
   nC <- naturalCoef( model ) 
   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
@@ -2077,6 +2077,7 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
       cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...),
       error = function(e) { NULL }
     )
+print(summary(model))
     models[[1 + length(models)]] <- model
     if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
       bestModel <- model

@@ -203,6 +203,8 @@ resampleFits <- function(
   gridPoints=10,
   rho=seq(-0.9, 10, length.out=gridPoints),
   rho1=seq(-0.9, 10, length.out=gridPoints)
+#   rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+#   rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)
   ){
   ##################
   # This function creates n resampled curve fits and returns them.
@@ -234,7 +236,6 @@ resampleFits <- function(
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
-                      "cese"  = stop("Why did you call with cese?"),#cesModel(countryAbbrev=countryAbbrev, energyType=energyType),
                       "cese-(kl)e"  = fitCES(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "cese-(le)k"  = fitCES(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "cese-(ek)l"  = fitCES(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
@@ -278,11 +279,6 @@ resampleFits <- function(
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
                               "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
-                              "cese"  =  do(n) * naturalCoef(cesModel(countryAbbrev=countryAbbrev,
-                                                                energyType=energyType,
-                                                                data=doResample(data=data, 
-                                                                                origModel=origModel, 
-                                                                                method=method))),
                               "cese-(kl)e" = do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(kl)e",
