@@ -2122,6 +2122,157 @@ cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, .
   attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
   return(modelCES)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cesModel2 <- function(countryAbbrev, 
+                      energyType=NA, 
+                      data, 
+                      fittingToOrigData,
+                      algorithms=c("PORT","L-BFGS-B"), 
+                      nest="(kl)e", 
+                      rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      origModel=NULL,
+                      ...){
+  ###################
+  # This function fits a CES model to original data.
+  # You can send "control" in ... to affect how the cesEst algorithm works.
+  # If you set isResample=TRUE, you should also supply a value for the origModel argument,
+  # because origModel will be used to obtain the starting point for a gradient search.
+  ##
+  # Get data if we need it
+  if (missing(data)){
+    data <- loadData(countryAbbrev=countryAbbrev)
+  }
+  # Verify that an original model has been supplied if not fitting to original data (i.e., if resampling)
+  if ((!fittingToOrigData) && is.null(origModel)){
+    stop("Need to supply origModel when !fittingToOrigData")
+  }
+  # If energy was not specified, fit without energy.
+  if (is.na(energyType)){
+    return(cesModelNoEnergy(data=data))
+  }
+  # We need to include energy in the production function.
+  # We have an energyType argument. Do some additional checking.
+  if (energyType == "U"){
+    # Trim the dataset to include only those years for which U is available.
+    data <- subset(data, !is.na(iU))
+  }
+  # We need to do the CES fit with the desired energyType.
+  # To achieve the correct fit, we'll change the name of the desired column
+  # to "iEToFit" and use "iEToFit" in the nls function.
+  data <- replaceColName(data, energyType, "iEToFit")
+  # Verify algorithm
+  cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
+  algorithms <- toupper(algorithms)
+  badAlgorithms <- setdiff(algorithms, cesAlgorithms)
+  algorithms <- intersect(algorithms, cesAlgorithms)
+  for (m in badAlgorithms) {
+    warning(paste("Unrecognized algorithm:", m))
+  }
+  # Set up xNames for the desired nest
+  if (nest %in% c("(kl)e", "(lk)e")){
+    xNames <- c("iCapStk", "iLabor", "iEToFit")
+  } else if (nest %in% c("(le)k", "(el)k")){
+    xNames <- c("iLabor", "iEToFit", "iCapStk")
+  } else if (nest %in% c("(ek)l", "(ke)l")){
+    xNames <- c("iEToFit", "iCapStk", "iLabor")
+  } else {
+    stop(paste("Unknown nesting option", nest, "in cesModelOrig"))
+  }
+  # Establish key variable names  
+  tName <- "iYear"
+  yName <- "iGDP"
+  # Keep track of results as we go.
+  models <- list()
+  bestSSE <- Inf
+  bestModel <- NULL
+  if (fittingToOrigData){
+    for (algorithm in algorithms) {
+      control <- switch(algorithm,
+                        "PORT" = list(iter.max=2000, eval.max=2000),
+                        "L-BFGS-B" = list(maxit=5000),
+                        list()
+                        )
+      # Try gradient fits with the default start points (no start argument)
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               control=control, ...),
+        error = function(e) { NULL }
+      )
+      models[[1 + length(models)]] <- model
+      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
+        bestModel <- model
+        bestSSE <- sum(resid(model)^2)
+      }
+      # Try grid search with the given rho and rho_1 lists.
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               rho=rho, rho1=rho1, control=control, ...),
+        error = function(e) { NULL }
+      )
+      models[[1 + length(models)]] <- model
+      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
+        bestModel <- model
+        bestSSE <- sum(resid(model)^2)
+      }
+    }
+    # Now try gradient search starting from the best place found thus far or
+    # starting from the original model (if doing resampling)
+    if (fittingToOrigData){
+      start <- coef(bestModel)
+    } else {
+      start <- coef(origModel)
+    }
+    for (algorithm in algorithms) {
+      control <- switch(algorithm,
+                        "PORT" = list(iter.max=2000, eval.max=2000),
+                        "L-BFGS-B" = list(maxit=5000),
+                        list()
+      )
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               control=control, start=start, ...),
+        error = function(e) { NULL }
+      )
+      models[[1 + length(models)]] <- model
+      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
+        bestModel <- model
+        bestSSE <- sum(resid(model)^2)
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
 cesResampleCoeffProps <- function(cesResampleFits, ...){
