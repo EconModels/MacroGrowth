@@ -2215,11 +2215,15 @@ cesModel2 <- function(countryAbbrev,
                control=control, ...),
         error = function(e) { NULL }
       )
+      sse <- sum(resid(model)^2)
       models[[1 + length(models)]] <- model
-      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
+      if (! is.null (model) && sse < bestSSE) {
         bestModel <- model
-        bestSSE <- sum(resid(model)^2)
+        bestSSE <- sse
       }
+print(paste("After gradient fit with default start. algorithm =", algorithm))
+print(bestSSE)
+print(coef(bestModel))
       # Try grid search with the given rho and rho_1 lists.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
@@ -2231,6 +2235,10 @@ cesModel2 <- function(countryAbbrev,
         bestModel <- model
         bestSSE <- sum(resid(model)^2)
       }
+print(paste("After grid search. algorithm =", algorithm))
+print(bestSSE)
+print(coef(bestModel))
+
     }
     # Now try gradient search starting from the best place found thus far or
     # starting from the original model (if doing resampling)
@@ -2257,6 +2265,7 @@ cesModel2 <- function(countryAbbrev,
       }
     }
   }
+  return(bestModel)
 }
 
 
