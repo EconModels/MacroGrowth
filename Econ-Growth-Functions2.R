@@ -2205,7 +2205,7 @@ cesModel2 <- function(countryAbbrev,
   } else if (nest %in% c("(ek)l", "(ke)l")){
     xNames <- c("iEToFit", "iCapStk", "iLabor")
   } else {
-    stop(paste("Unknown nesting option", nest, "in cesModelOrig"))
+    stop(paste("Unknown nesting option", nest, "in cesModel2"))
   }
   # Establish key variable names  
   tName <- "iYear"
@@ -2221,8 +2221,8 @@ cesModel2 <- function(countryAbbrev,
                control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))  ## add meta data
-      models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
+      model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))
+      models[[length(models)+1]] <- model
       #
       # Try grid search with the given rho and rho_1 lists.
       #
@@ -2231,8 +2231,8 @@ cesModel2 <- function(countryAbbrev,
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))  ## add meta data
-      models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
+      model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))
+      models[[length(models)+1]] <- model
     }
   }
   #
@@ -2256,7 +2256,7 @@ cesModel2 <- function(countryAbbrev,
       error = function(e) { NULL }
     )
     model <- addMetaData(model, history=paste(algorithm, "[", getHistory(seedModel), "]", sep=""))
-    models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
+    models[[length(models)+1]] <- model
   }
   return(models)
 }
@@ -2394,7 +2394,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   return(dataCD)
 }
 
-cesPredictions <- function(countryAbbrev, energyType){
+cesPredictions <- function(countryAbbrev, energyType, nest="(kl)e"){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -2409,7 +2409,8 @@ cesPredictions <- function(countryAbbrev, energyType){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- cesModel(countryAbbrev=countryAbbrev, energyType=energyType)
+#   model <- cesModel(countryAbbrev=countryAbbrev, energyType=energyType)
+  model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -3171,17 +3172,17 @@ createAICTable <- function(){
   # in the micEcon package does not provide its data in the correct format for the AIC function?
   # --Matthew Kuperus Heun, 10 April 2013.
   #   # CES with Q
-  #   cesQModels <- lapply(countryAbbrevs, cesModel, energyType="Q")
+  #   cesQModels <- lapply(countryAbbrevs, cesModel2, energyType="Q")
   #   aicCESq <- data.frame(lapply(cesQModels, AIC))
   #   rownames(aicCESq) <- "CES$q$"
   #   # CES with X
-  #   cesXModels <- lapply(countryAbbrevs, cesModel, energyType="X")
+  #   cesXModels <- lapply(countryAbbrevs, cesModel2, energyType="X")
   #   aicDEXx <- data.frame(lapply(cesXModels, AIC))
   #   rownames(aicCESx) <- "CES$x$"
   #   # CES with U
-  #   aicCESu <- cbind(US=AIC(cesModel("US", "U")), 
-  #                   UK=AIC(cesModel("UK", "U")), 
-  #                   JP=AIC(cesModel("JP", "U")),
+  #   aicCESu <- cbind(US=AIC(cesModel2("US", "U")), 
+  #                   UK=AIC(cesModel2("UK", "U")), 
+  #                   JP=AIC(cesModel2("JP", "U")),
   #                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   #   rownames(aicCESu) <- "CES$u$"
   aicCES  <- data.frame(US=NA, UK=NA, JP=NA, CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
