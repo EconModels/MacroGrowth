@@ -236,12 +236,12 @@ resampleFits <- function(
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
-                      "cese-(kl)e"  = fitCES(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
-                      "cese-(le)k"  = fitCES(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
-                      "cese-(ek)l"  = fitCES(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
                       )
-  baseFitCoeffs <- naturalCoef(origModel)
+  baseFitCoeffs <- extractAllMetaData(origModel)
 
   # Now do a fit with resampling n times and get all of the coefficients
   safeCES <- function(data,origModel,method) {
@@ -250,16 +250,18 @@ resampleFits <- function(
              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
     )
   }
+  ####### we interupt this broadcast ... ########
   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data, ...) {
     myData <- doResample(data=data, origModel=origModel, method=method)
-    nC <- tryCatch( naturalCoef(fitCES(countryAbbrev=countryAbbrev,
+    nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                 energyType=energyType,
                                 nest="(kl)e",
                                 data=myData, ...)),
              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
     )
-    return( rbind.fill(naturalCoef(origModel), nC)[-1,] )
+    return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
   }
+  ###################################
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
