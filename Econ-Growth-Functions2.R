@@ -2088,7 +2088,6 @@ cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-
       cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...),
       error = function(e) { NULL }
     )
-print(summary(model))
     models[[1 + length(models)]] <- model
     if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
       bestModel <- model
