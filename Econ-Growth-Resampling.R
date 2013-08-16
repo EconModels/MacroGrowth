@@ -236,7 +236,7 @@ resampleFits <- function(
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
-                      "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType),
                       "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
@@ -251,7 +251,9 @@ resampleFits <- function(
     )
   }
   ####### we interupt this broadcast ... ########
-  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data, ...) {
+  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
+                         algorithm=c("PORT","L-BFGS-B"), 
+                         data=loadData(countryAbbrev), method, origModel, ...) {
     myData <- doResample(data=data, origModel=origModel, method=method)
     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                 energyType=energyType,
@@ -281,13 +283,13 @@ resampleFits <- function(
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
                               "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
-                              "cese-(kl)e" = do(n) * safefitCES(countryAbbrev=countryAbbrev,
+                              "cese-(kl)e" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(kl)e",
                                                                 data=doResample(data=data, 
-                                                                                origModel=origModel, 
+                                                                                origModel=bestModel(origModel), 
                                                                                 method=method),
-                                                                start=coef(origModel)),
+                                                                prevModel=bestModel(origModel))),
                               "cese-(le)k" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
                                                                 energyType=energyType,
                                                                 nest="(le)k",
@@ -319,7 +321,7 @@ resampleFits <- function(
 #  print(setdiff(names(baseFitCoeffs), names(resampleFitCoeffs)))
   baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
 #  print(str(resampleFitCoeffs))
-  resampleFitCoeffs <- transform(resampleFitCoeffs, method=method)
+  resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild") ## method=method)
   out <- rbind(baseFitCoeffs, resampleFitCoeffs)
   out <- transform(out, countryAbbrev=countryAbbrev)
   return(out)
