@@ -2296,7 +2296,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
-  return(out)
+  return(out) 
 }
 
 extractAllMetaData <- function(model, digits=6, ...) {
