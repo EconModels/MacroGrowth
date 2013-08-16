@@ -2174,7 +2174,7 @@ cesModel2 <- function(countryAbbrev,
   badAlgorithms <- setdiff(algorithms, cesAlgorithms)
   algorithms <- intersect(algorithms, cesAlgorithms)
   for (m in badAlgorithms) {
-    warning(paste("Unrecognized algorithm:", m))
+    stop(paste("Unrecognized algorithm:", m))
   }
   # Set up xNames for the desired nest
   if (nest %in% c("(kl)e", "(lk)e")){
@@ -2192,13 +2192,12 @@ cesModel2 <- function(countryAbbrev,
   models <- list()
   if (fittingToOrigData){
     for (algorithm in algorithms) {
-      control <- chooseCESControl(algorithm)
       #
       # Try gradient fits with the default start points (no start argument)
       #
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=control, ...),
+               control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
       model <- addCESNaturalCoeffs(model, grid=FALSE)
@@ -2208,7 +2207,7 @@ cesModel2 <- function(countryAbbrev,
       #
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=control, ...),
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
       model <- addCESNaturalCoeffs(model, grid=TRUE)
@@ -2220,15 +2219,18 @@ cesModel2 <- function(countryAbbrev,
   # starting from the original model (if doing resampling)
   #
   if (fittingToOrigData){
+    # We're fitting original data. Try a gradient search from the 
+    # best solution found thus far.
+    # The best solution is in models[1].
     start <- coef(models[1])
   } else {
+    # We're doing resampling. Use the original model as the start point.
     start <- coef(origModel)
   }
   for (algorithm in algorithms) {
-    control <- chooseCESControl(algorithm)
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-             control=control, start=start, ...),
+             control=chooseCESControl(algorithm), start=start, ...),
       error = function(e) { NULL }
     )
     model <- addCESNaturalCoeffs(model, grid=FALSE)
