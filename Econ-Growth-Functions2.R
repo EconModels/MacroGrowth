@@ -2127,46 +2127,50 @@ cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, .
 
 
 
-
+bestModel <- function(models) {
+  o <- order(sapply( models, function(model) { sum(resid(model)^2) } ) )
+  models[[ o[1] ]]
+}
 
 
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
-                      data, 
-                      fittingToOrigData,
-                      origModel=NULL,
+                      data = loadData(countryAbbrev=countryAbbrev), 
+                      prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       nest="(kl)e", 
                       rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       ...){
+
   ###################
   # This function fits a CES model to original data.
   # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
   ##
+  
   # Get data if we need it
-  if (missing(data)){
-    data <- loadData(countryAbbrev=countryAbbrev)
-  }
-  # Verify that an original model has been supplied if not fitting to original data (i.e., if resampling)
-  if ((!fittingToOrigData) && is.null(origModel)){
-    stop("Need to supply origModel when !fittingToOrigData")
-  }
+#  if (missing(data)){
+#    data <- loadData(countryAbbrev=countryAbbrev)
+#  }
+  
+#  # Verify that an original model has been supplied if not fitting to original data (i.e., if resampling)
+#  if (is.null(origModel)){
+#    stop("Need to supply origModel when !fittingToOrigData")
+#  }
+  
   # If energy was not specified, fit without energy.
   if (is.na(energyType)){
     return(cesModelNoEnergy(data=data))
-  }
-  # We need to include energy in the production function.
-  # We have an energyType argument. Do some additional checking.
-  if (energyType == "U"){
-    # Trim the dataset to include only those years for which U is available.
-    data <- subset(data, !is.na(iU))
   }
   # We need to do the CES fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
   data <- replaceColName(data, energyType, "iEToFit")
+  
+  # Remove rows with missing energy information
+  data <- data[ !is.na(data[,"iEToFit"]), ]
+  
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
@@ -2189,7 +2193,7 @@ cesModel2 <- function(countryAbbrev,
   tName <- "iYear"
   yName <- "iGDP"
   models <- list()
-  if (fittingToOrigData){
+  if (is.null(prevModel)){
     for (algorithm in algorithms) {
       #
       # Try gradient fits with the default start points (no start argument)
@@ -2199,8 +2203,8 @@ cesModel2 <- function(countryAbbrev,
                control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addCESNaturalCoeffs(model, grid=FALSE)
-      models <- evalCESModel(model, models)
+      model <- addCESNaturalCoeffs(model, grid=FALSE)  ## add meta data
+      models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
       #
       # Try grid search with the given rho and rho_1 lists.
       #
@@ -2210,21 +2214,20 @@ cesModel2 <- function(countryAbbrev,
         error = function(e) { NULL }
       )
       model <- addCESNaturalCoeffs(model, grid=TRUE)
-      models <- evalCESModel(model, models)
+      models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
     }
   }
   #
   # Now try gradient search starting from the best place found thus far or
   # starting from the original model (if doing resampling)
   #
-  if (fittingToOrigData){
-    # We're fitting original data. Try a gradient search from the 
+  if (is.null(prevModel)){
+    # We're fitting "from scratch". Try a gradient search from the 
     # best solution found thus far.
-    # The best solution is in models[1].
-    start <- coef(models[1])
+    start <- coef(bestModel(models))   # coef(models[1])
   } else {
-    # We're doing resampling. Use the original model as the start point.
-    start <- coef(origModel)
+    # We're starting from a previous fit.
+    start <- coef(prevModel)
   }
   for (algorithm in algorithms) {
     model <- tryCatch(
@@ -2233,7 +2236,7 @@ cesModel2 <- function(countryAbbrev,
       error = function(e) { NULL }
     )
     model <- addCESNaturalCoeffs(model, grid=FALSE)
-    models <- evalCESModel(model, models)
+    models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
   }
   return(models)
 }
