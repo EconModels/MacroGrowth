@@ -2130,15 +2130,6 @@ cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, .
 
 
 
-
-
-
-
-
-
-
-
-
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
                       data, 
@@ -2216,13 +2207,17 @@ cesModel2 <- function(countryAbbrev,
         error = function(e) { NULL }
       )
       sse <- sum(resid(model)^2)
+print(paste("After gradient fit with default start. algorithm =", algorithm))
+print(paste("sse =", sse))
+print("coefs =")
+print(coef(model))
       models[[1 + length(models)]] <- model
       if (! is.null (model) && sse < bestSSE) {
         bestModel <- model
         bestSSE <- sse
       }
-print(paste("After gradient fit with default start. algorithm =", algorithm))
-print(bestSSE)
+print(paste("bestSSE =", bestSSE))
+print("best coeffs =")
 print(coef(bestModel))
       # Try grid search with the given rho and rho_1 lists.
       model <- tryCatch(
@@ -2230,15 +2225,19 @@ print(coef(bestModel))
                rho=rho, rho1=rho1, control=control, ...),
         error = function(e) { NULL }
       )
-      models[[1 + length(models)]] <- model
-      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
-        bestModel <- model
-        bestSSE <- sum(resid(model)^2)
-      }
+      sse <- sum(resid(model)^2)
 print(paste("After grid search. algorithm =", algorithm))
-print(bestSSE)
+print(paste("sse =", sse))
+print("coefs =")
+print(coef(model))
+      models[[1 + length(models)]] <- model
+      if (! is.null (model) && sse < bestSSE) {
+        bestModel <- model
+        bestSSE <- sse
+      }
+print(paste("bestSSE =", bestSSE))
+print("best coeffs =")
 print(coef(bestModel))
-
     }
     # Now try gradient search starting from the best place found thus far or
     # starting from the original model (if doing resampling)
@@ -2258,23 +2257,23 @@ print(coef(bestModel))
                control=control, start=start, ...),
         error = function(e) { NULL }
       )
+      sse <- sum(resid(model)^2)
+print(paste("After gradient search starting from best so far. algorithm =", algorithm))
+print(paste("sse =", sse))
+print("coefs =")
+print(coef(model))
       models[[1 + length(models)]] <- model
-      if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
+      if (! is.null (model) && sse < bestSSE) {
         bestModel <- model
-        bestSSE <- sum(resid(model)^2)
+        bestSSE <- sse
       }
+print(paste("bestSSE =", bestSSE))
+print("best coeffs =")
+print(coef(bestModel))
     }
   }
   return(bestModel)
 }
-
-
-
-
-
-
-
-
 
 
 
