@@ -2192,11 +2192,7 @@ cesModel2 <- function(countryAbbrev,
   models <- list()
   if (fittingToOrigData){
     for (algorithm in algorithms) {
-      control <- switch(algorithm,
-                        "PORT" = list(iter.max=2000, eval.max=2000),
-                        "L-BFGS-B" = list(maxit=5000),
-                        list()
-      )
+      control <- chooseCESControl(algorithm)
       #
       # Try gradient fits with the default start points (no start argument)
       #
@@ -2229,11 +2225,7 @@ cesModel2 <- function(countryAbbrev,
     start <- coef(origModel)
   }
   for (algorithm in algorithms) {
-    control <- switch(algorithm,
-                      "PORT" = list(iter.max=2000, eval.max=2000),
-                      "L-BFGS-B" = list(maxit=5000),
-                      list()
-    )
+    control <- chooseCESControl(algorithm)
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=control, start=start, ...),
@@ -2246,6 +2238,11 @@ cesModel2 <- function(countryAbbrev,
 }
 
 addCESNaturalCoeffs <- function(aCESModel, grid){
+  # ********************
+  # If we can get the "call" object from aCESModel, we could detect if we 
+  # used grid search by the presecne of both rho and rho1 arguments.
+  # If we did that, we could eliminate the "grid" argument above.
+  # ********************
   ###############
   # This function adds natural coefficients as an attribute of a CES model
   # aCESModel is the ces model to which you want to add natural coefficients
@@ -2280,7 +2277,8 @@ print(naturalCoeffs)
 evalCESModel <- function(model, prevModels, ...){
   ######################
   # This function compares model with otherModels and returns a 
-  # list of models, sorted by sse.
+  # list of models, sorted by sse. The best sse is in the first position
+  # of the return object.
   ##
   if (is.null(model)){
     # Had a failure. Nothing to do. Simply return.
@@ -2293,6 +2291,19 @@ evalCESModel <- function(model, prevModels, ...){
   # ***************************************
   
   return(prevModels)  
+}
+
+chooseCESControl <- function(algorithm){
+  ####################
+  # This function chooses the CES control parameter
+  # based on whether we want PORT or L-BRGS-B.
+  ##
+  control <- switch(algorithm,
+                    "PORT" = list(iter.max=2000, eval.max=2000),
+                    "L-BFGS-B" = list(maxit=5000),
+                    list()
+  )
+  return(control)
 }
 
 
