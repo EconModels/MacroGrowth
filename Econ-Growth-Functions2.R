@@ -2276,8 +2276,8 @@ print(naturalCoeffs)
 
 evalCESModel <- function(model, prevModels, ...){
   ######################
-  # This function compares model with otherModels and returns a 
-  # list of models, sorted by sse. The best sse is in the first position
+  # This function adds model to prevModels and returns prevModels,
+  # sorted by sse. The best sse is in the first position
   # of the return object.
   ##
   if (is.null(model)){
