@@ -2148,7 +2148,7 @@ extractAllMetaData <- function(model, digits=6, ...) {
   if (is.list(model) && all( sapply( model, function(x) inherits(x, "cesEst") ) ) ) { 
     model <- bestModel(model, digits=digits)
   }
-  cbind( naturalCoef(model), metaData(model) )
+  cbind( safeDF(naturalCoef(model)), safeDF(metaData(model)) )
 }
 
 cesModel2 <- function(countryAbbrev, 
