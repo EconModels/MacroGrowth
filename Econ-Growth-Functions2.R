@@ -2215,7 +2215,7 @@ cesModel2 <- function(countryAbbrev,
                rho=rho, rho1=rho1, control=control, ...),
         error = function(e) { NULL }
       )
-      model <- addCESNaturalCoeffs(model, grid=FALSE)
+      model <- addCESNaturalCoeffs(model, grid=TRUE)
       models <- evalCESModel(model, models)
     }
   }
@@ -2249,9 +2249,7 @@ addCESNaturalCoeffs <- function(aCESModel, grid){
   ###############
   # This function adds natural coefficients as an attribute of a CES model
   # aCESModel is the ces model to which you want to add natural coefficients
-  # algorithm is one of "PORT" or "L-BRGS-B"
   # grid is TRUE if you used grid search on rho and rho1, FALSE otherwise
-  # start is the starting coefficients that were used.
   ##
   rho_1 <- coef(aCESModel)["rho_1"]
   rho <- coef(aCESModel)["rho"]
@@ -2266,9 +2264,15 @@ addCESNaturalCoeffs <- function(aCESModel, grid){
                               sse = sum(resid(aCESModel)^2),
                               isConv = aCESModel$convergence,
                               algorithm = aCESModel$method,
-                              grid = grid
-                              #start = aCESModel$start
+                              grid = grid,
+                              start.lambda = as.vector(aCESModel$start["lambda"]),
+                              start.delta_1 = as.vector(aCESModel$start["delta_1"]),
+                              start.rho_1 = as.vector(aCESModel$start["rho_1"]),
+                              start.gamma = as.vector(aCESModel$start["gamma"]),
+                              start.delta = as.vector(aCESModel$start["delta"]),
+                              start.rho = as.vector(aCESModel$start["rho"])
   )
+print(naturalCoeffs)
   attr(x=aCESModel, which="naturalCoeffs") <- naturalCoeffs
   return(aCESModel)
 }
@@ -2284,8 +2288,10 @@ evalCESModel <- function(model, prevModels, ...){
   }
   # Add model to prevModels
   prevModels[[length(prevModels) + 1]] <- model
-  # Sort prevModels according to sse, with best (smallest) sse in the first slot.
+  # Sort prevModels according to sse, with best (smallest sse) in the first slot 
+  # and worst (biggest sse) in the last slot.
   # ***************************************
+  
   return(prevModels)  
 }
 
