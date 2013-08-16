@@ -2269,8 +2269,10 @@ addMetaData <- function(model, history=""){
   # work with CES models. Meta data is attached as attributes (naturalCoeffs and meta)
   # to the object and the new object is returned from the function.
   ##
-  if (! as.character(model$call[[1]]) == "cesEst" )
-    stop("Unsupported model type.  Must be result of calling cesEst()")
+  if (is.null(model))  return(model) 
+  if ( ! as.character(model$call[[1]]) == "cesEst" ){
+    stop("Unsupported model type.  Must be NULL or the result of calling cesEst()")
+  }
   
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
   
