@@ -2189,7 +2189,6 @@ cesModel2 <- function(countryAbbrev,
   # Establish key variable names  
   tName <- "iYear"
   yName <- "iGDP"
-  # Keep track of results as we go.
   models <- list()
   if (fittingToOrigData){
     for (algorithm in algorithms) {
@@ -2198,7 +2197,9 @@ cesModel2 <- function(countryAbbrev,
                         "L-BFGS-B" = list(maxit=5000),
                         list()
       )
+      #
       # Try gradient fits with the default start points (no start argument)
+      #
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                control=control, ...),
@@ -2206,8 +2207,9 @@ cesModel2 <- function(countryAbbrev,
       )
       model <- addCESNaturalCoeffs(model, grid=FALSE)
       models <- evalCESModel(model, models)
-      
+      #
       # Try grid search with the given rho and rho_1 lists.
+      #
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=control, ...),
@@ -2217,8 +2219,10 @@ cesModel2 <- function(countryAbbrev,
       models <- evalCESModel(model, models)
     }
   }
+  #
   # Now try gradient search starting from the best place found thus far or
   # starting from the original model (if doing resampling)
+  #
   if (fittingToOrigData){
     start <- coef(models[1])
   } else {
@@ -2267,12 +2271,12 @@ addCESNaturalCoeffs <- function(aCESModel, grid){
   )
   attr(x=aCESModel, which="naturalCoeffs") <- naturalCoeffs
   return(aCESModel)
-  
 }
 
 evalCESModel <- function(model, prevModels, ...){
   ######################
   # This function compares model with otherModels and returns a 
+  # list of models, sorted by sse.
   ##
   if (is.null(model)){
     # Had a failure. Nothing to do. Simply return.
@@ -2281,7 +2285,7 @@ evalCESModel <- function(model, prevModels, ...){
   # Add model to prevModels
   prevModels[[length(prevModels) + 1]] <- model
   # Sort prevModels according to sse, with best (smallest) sse in the first slot.
-  
+  # ***************************************
   return(prevModels)  
 }
 
