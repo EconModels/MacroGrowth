@@ -2191,92 +2191,99 @@ cesModel2 <- function(countryAbbrev,
   yName <- "iGDP"
   # Keep track of results as we go.
   models <- list()
-  bestSSE <- Inf
-  bestModel <- NULL
   if (fittingToOrigData){
     for (algorithm in algorithms) {
       control <- switch(algorithm,
                         "PORT" = list(iter.max=2000, eval.max=2000),
                         "L-BFGS-B" = list(maxit=5000),
                         list()
-                        )
+      )
       # Try gradient fits with the default start points (no start argument)
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                control=control, ...),
         error = function(e) { NULL }
       )
-      sse <- sum(resid(model)^2)
-print(paste("After gradient fit with default start. algorithm =", algorithm))
-print(paste("sse =", sse))
-print("coefs =")
-print(coef(model))
-      models[[1 + length(models)]] <- model
-      if (! is.null (model) && sse < bestSSE) {
-        bestModel <- model
-        bestSSE <- sse
-      }
-print(paste("bestSSE =", bestSSE))
-print("best coeffs =")
-print(coef(bestModel))
+      model <- addCESNaturalCoeffs(model, grid=FALSE)
+      models <- evalCESModel(model, models)
+      
       # Try grid search with the given rho and rho_1 lists.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=control, ...),
         error = function(e) { NULL }
       )
-      sse <- sum(resid(model)^2)
-print(paste("After grid search. algorithm =", algorithm))
-print(paste("sse =", sse))
-print("coefs =")
-print(coef(model))
-      models[[1 + length(models)]] <- model
-      if (! is.null (model) && sse < bestSSE) {
-        bestModel <- model
-        bestSSE <- sse
-      }
-print(paste("bestSSE =", bestSSE))
-print("best coeffs =")
-print(coef(bestModel))
-    }
-    # Now try gradient search starting from the best place found thus far or
-    # starting from the original model (if doing resampling)
-    if (fittingToOrigData){
-      start <- coef(bestModel)
-    } else {
-      start <- coef(origModel)
-    }
-    for (algorithm in algorithms) {
-      control <- switch(algorithm,
-                        "PORT" = list(iter.max=2000, eval.max=2000),
-                        "L-BFGS-B" = list(maxit=5000),
-                        list()
-      )
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=control, start=start, ...),
-        error = function(e) { NULL }
-      )
-      sse <- sum(resid(model)^2)
-print(paste("After gradient search starting from best so far. algorithm =", algorithm))
-print(paste("sse =", sse))
-print("coefs =")
-print(coef(model))
-      models[[1 + length(models)]] <- model
-      if (! is.null (model) && sse < bestSSE) {
-        bestModel <- model
-        bestSSE <- sse
-      }
-print(paste("bestSSE =", bestSSE))
-print("best coeffs =")
-print(coef(bestModel))
+      model <- addCESNaturalCoeffs(model, grid=FALSE)
+      models <- evalCESModel(model, models)
     }
   }
-  return(bestModel)
+  # Now try gradient search starting from the best place found thus far or
+  # starting from the original model (if doing resampling)
+  if (fittingToOrigData){
+    start <- coef(models[1])
+  } else {
+    start <- coef(origModel)
+  }
+  for (algorithm in algorithms) {
+    control <- switch(algorithm,
+                      "PORT" = list(iter.max=2000, eval.max=2000),
+                      "L-BFGS-B" = list(maxit=5000),
+                      list()
+    )
+    model <- tryCatch(
+      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+             control=control, start=start, ...),
+      error = function(e) { NULL }
+    )
+    model <- addCESNaturalCoeffs(model, grid=FALSE)
+    models <- evalCESModel(model, models)
+  }
+  return(models)
 }
 
+addCESNaturalCoeffs <- function(aCESModel, grid){
+  ###############
+  # This function adds natural coefficients as an attribute of a CES model
+  # aCESModel is the ces model to which you want to add natural coefficients
+  # algorithm is one of "PORT" or "L-BRGS-B"
+  # grid is TRUE if you used grid search on rho and rho1, FALSE otherwise
+  # start is the starting coefficients that were used.
+  ##
+  rho_1 <- coef(aCESModel)["rho_1"]
+  rho <- coef(aCESModel)["rho"]
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(aCESModel)["lambda"]),
+                              delta_1 = as.vector(coef(aCESModel)["delta_1"]),
+                              rho_1 = as.vector(rho_1),
+                              sigma_1 = as.vector(1 / (1 + rho_1)),
+                              gamma = as.vector(coef(aCESModel)["gamma"]),
+                              delta = as.vector(coef(aCESModel)["delta"]),
+                              rho = as.vector(rho),
+                              sigma = as.vector(1 / (1 + rho)),
+                              sse = sum(resid(aCESModel)^2),
+                              isConv = aCESModel$convergence,
+                              algorithm = aCESModel$method,
+                              grid = grid
+                              #start = aCESModel$start
+  )
+  attr(x=aCESModel, which="naturalCoeffs") <- naturalCoeffs
+  return(aCESModel)
+  
+}
 
-
+evalCESModel <- function(model, prevModels, ...){
+  ######################
+  # This function compares model with otherModels and returns a 
+  ##
+  if (is.null(model)){
+    # Had a failure. Nothing to do. Simply return.
+    return(prevModels)
+  }
+  # Add model to prevModels
+  prevModels[[length(prevModels) + 1]] <- model
+  # Sort prevModels according to sse, with best (smallest) sse in the first slot.
+  
+  return(prevModels)  
+}
 
 
 
