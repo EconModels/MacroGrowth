@@ -2144,9 +2144,11 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   models[[ o[1] ]]
 }
 
-extractCES <- function(modelList, digits=6, ...) {
-  best <- bestModel(modelList, digits=digits)
-  naturalCoef(best)
+extractAllMetaData <- function(model, digits=6, ...) {
+  if (is.list(model) && all( sapply( model, function(x) inherits(x, "cesEst") ) ) ) { 
+    model <- bestModel(model, digits=digits)
+  }
+  cbind( naturalCoef(model), metaData(model) )
 }
 
 cesModel2 <- function(countryAbbrev, 
