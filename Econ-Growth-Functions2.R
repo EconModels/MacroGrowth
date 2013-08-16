@@ -376,9 +376,20 @@ naturalCoef <- function(object) {
   return( attr(object, "naturalCoeffs") )
 }
 
+metaData <- function(object) {
+  if (! "meta" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
+  return( attr(object, "meta") )
+}
+
 safeDF <- function(object, nrow=1, ncol=0){
-  if (inherits(object,"data.frame")) return (object)
-  if (is.null(object)) return (data.frame(matrix(nrow=nrow, ncol=ncol)))
+  emptyDataFrame <- FALSE
+  if (inherits(object,"data.frame") ) {
+    if (nrow(object) + ncol(object) > 0)  return (object)
+    emptyDataFrame <- TRUE
+  }
+  if (is.null(object) || emptyDataFrame ) {
+    return (data.frame(matrix(nrow=nrow, ncol=ncol)))
+  }
   return(as.data.frame(object))
 }
 
