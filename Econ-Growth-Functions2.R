@@ -2134,16 +2134,15 @@ cesModel2 <- function(countryAbbrev,
                       energyType=NA, 
                       data, 
                       fittingToOrigData,
+                      origModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       nest="(kl)e", 
                       rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-                      origModel=NULL,
                       ...){
   ###################
   # This function fits a CES model to original data.
-  # You can send "control" in ... to affect how the cesEst algorithm works.
-  # If you set isResample=TRUE, you should also supply a value for the origModel argument,
+  # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
   ##
   # Get data if we need it
