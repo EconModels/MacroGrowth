@@ -2138,8 +2138,9 @@ cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, .
 
 
 
-bestModel <- function(models) {
-  o <- order(sapply( models, function(model) { sum(resid(model)^2) } ) )
+bestModel <- function(models, digits=6, orderOnly=FALSE) {
+  o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
+  if (orderOnly) return(o)
   models[[ o[1] ]]
 }
 
