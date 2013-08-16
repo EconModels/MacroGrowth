@@ -248,6 +248,8 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 To be included somewhere.
 
 Big picture
+[insert TEST]
+
 Why do we do this? Want to link energy and economics on national level 
 and in a modeled approach,informing energy policy during energy transitions.
 Usually macro energy economic models rely on PF with energy included. 
