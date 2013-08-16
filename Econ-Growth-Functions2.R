@@ -2144,6 +2144,10 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   models[[ o[1] ]]
 }
 
+extractCES <- function(modelList, digits=6, ...) {
+  best <- bestModel(modelList, digits=digits)
+  naturalCoef(best)
+}
 
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
@@ -2153,6 +2157,7 @@ cesModel2 <- function(countryAbbrev,
                       nest="(kl)e", 
                       rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      digits=6,
                       ...){
 
   ###################
@@ -2215,7 +2220,7 @@ cesModel2 <- function(countryAbbrev,
                control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addMetaData(model)  ## add meta data
+      model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))  ## add meta data
       models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
       #
       # Try grid search with the given rho and rho_1 lists.
@@ -2225,7 +2230,7 @@ cesModel2 <- function(countryAbbrev,
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addMetaData(model)
+      model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))  ## add meta data
       models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
     }
   }
@@ -2236,10 +2241,12 @@ cesModel2 <- function(countryAbbrev,
   if (is.null(prevModel)){
     # We're fitting "from scratch". Try a gradient search from the 
     # best solution found thus far.
-    start <- coef(bestModel(models))   # coef(models[1])
+    start <- coef(bestModel(models, digits=digits))   # coef(models[1])
+    seedModel <- bestModel(models, digits=digits)
   } else {
     # We're starting from a previous fit.
     start <- coef(prevModel)
+    seedModel <- prevModel
   }
   for (algorithm in algorithms) {
     model <- tryCatch(
@@ -2247,13 +2254,13 @@ cesModel2 <- function(countryAbbrev,
              control=chooseCESControl(algorithm), start=start, ...),
       error = function(e) { NULL }
     )
-    model <- addMetaData(model)
+    model <- addMetaData(model, history=paste(algorithm, "[", getHistory(seedModel), "]", sep=""))
     models[[length(models)+1]] <- model              ## evalCESModel(model, models)            
   }
   return(models)
 }
 
-addMetaData <- function(model){
+addMetaData <- function(model, history=""){
   
   ###############
   # This function adds meta data to a model.  Currently this is only designed to
@@ -2285,12 +2292,17 @@ addMetaData <- function(model){
                           start.rho_1 = as.vector(model$start["rho_1"]),
                           start.gamma = as.vector(model$start["gamma"]),
                           start.delta = as.vector(model$start["delta"]),
-                          start.rho = as.vector(model$start["rho"])
+                          start.rho = as.vector(model$start["rho"]),
+                          history=history
   )
 ## print(naturalCoeffs)
   attr(x=model, "naturalCoeffs") <- naturalCoeffs
   attr(x=model, "meta") <- metaData 
   return(model)
+}
+
+getHistory <- function(model) {
+  metaData(model)$history
 }
 
 evalCESModel <- function(model, prevModels, ...){
