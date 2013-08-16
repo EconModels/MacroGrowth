@@ -2240,7 +2240,7 @@ cesModel2 <- function(countryAbbrev,
 addCESNaturalCoeffs <- function(aCESModel, grid){
   # ********************
   # If we can get the "call" object from aCESModel, we could detect if we 
-  # used grid search by the presecne of both rho and rho1 arguments.
+  # used grid search by the presence of both rho and rho1 arguments.
   # If we did that, we could eliminate the "grid" argument above.
   # ********************
   ###############
