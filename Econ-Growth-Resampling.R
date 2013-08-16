@@ -251,19 +251,19 @@ resampleFits <- function(
     )
   }
   ####### we interupt this broadcast ... ########
-  ## this is likely broken at the moment ##
-  safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
-                         algorithm=c("PORT","L-BFGS-B"), 
-                         data=loadData(countryAbbrev), method, origModel, ...) {
-    myData <- doResample(data=data, origModel=origModel, method=method)
-    nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-                                energyType=energyType,
-                                nest="(kl)e",
-                                data=myData, prevModel=origModel, ...)),
-             error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
-    )
-    return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
-  }
+#   ## this is likely broken at the moment ##
+#   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
+#                          algorithm=c("PORT","L-BFGS-B"), 
+#                          data=loadData(countryAbbrev), method, origModel, ...) {
+#     myData <- doResample(data=data, origModel=origModel, method=method)
+#     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+#                                 energyType=energyType,
+#                                 nest="(kl)e",
+#                                 data=myData, prevModel=origModel, ...)),
+#              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
+#     )
+#     return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
+#   }
   ###################################
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
