@@ -237,8 +237,8 @@ resampleFits <- function(
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"   = cesModelNoEnergy(data=data),
                       "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType),
-                      "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
-                      "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType, rho=rho, rho1=rho1, gridPlus=TRUE),
+                      "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType),
+                      "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
                       )
   baseFitCoeffs <- extractAllMetaData(origModel)
@@ -251,6 +251,7 @@ resampleFits <- function(
     )
   }
   ####### we interupt this broadcast ... ########
+  ## this is likely broken at the moment ##
   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
                          algorithm=c("PORT","L-BFGS-B"), 
                          data=loadData(countryAbbrev), method, origModel, ...) {
@@ -258,7 +259,7 @@ resampleFits <- function(
     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                 energyType=energyType,
                                 nest="(kl)e",
-                                data=myData, ...)),
+                                data=myData, prevModel=origModel, ...)),
              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
     )
     return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
@@ -290,20 +291,20 @@ resampleFits <- function(
                                                                                 origModel=bestModel(origModel), 
                                                                                 method=method),
                                                                 prevModel=bestModel(origModel))),
-                              "cese-(le)k" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
-                                                                energyType=energyType,
-                                                                nest="(le)k",
-                                                                data=doResample(data=data, 
-                                                                                origModel=origModel, 
-                                                                                method=method),
-                                                                start=coef(origModel)),
-                              "cese-(ek)l" =  do(n) * safefitCES(countryAbbrev=countryAbbrev,
-                                                                energyType=energyType,
-                                                                nest="(ek)l",
-                                                                data=doResample(data=data, 
-                                                                                origModel=origModel, 
-                                                                                method=method),
-                                                                start=coef(origModel)),
+                              "cese-(le)k" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+                                                                                   energyType=energyType,
+                                                                                   nest="(le)k",
+                                                                                   data=doResample(data=data, 
+                                                                                                   origModel=bestModel(origModel), 
+                                                                                                   method=method),
+                                                                                   prevModel=bestModel(origModel))),
+                              "cese-(ek)l" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+                                                                                   energyType=energyType,
+                                                                                   nest="(ek)l",
+                                                                                   data=doResample(data=data, 
+                                                                                                   origModel=bestModel(origModel), 
+                                                                                                   method=method),
+                                                                                   prevModel=bestModel(origModel))),
                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
                                                                   energyType=energyType,
                                                                   data=doResample(data=data, 
