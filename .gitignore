@@ -21,6 +21,7 @@ CES.pdf
 *.tex
 *.vrb
 *.bbl
+*.blg
 figure/
 data_resample/
 data_failures/
