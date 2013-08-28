@@ -2040,23 +2040,9 @@ printFracUnconvergedXtable()
 [manually added]
 References
 
-Benes, J., Chauvet, M., Kamenik, O., Kumhof, M., Laxton, D., Mursula, S., and Selody, J. (2012). The Future of Oil: Geology versus Technology. IMF Working Papers, I12/109, 1–33.
-
 Chen, P-Y., Chen, S-T., Chen, C-C. 2012. Energy consumption and economic growth – New evidence from meta analysis. Energy Policy, 44: 245-255. http://dx.doi.org/10.1016/j.enpol.2012.01.048
 
-Duffy, J., and Papageorgiou, C. (2000). A Cross-Country Empirical Investigation of the Aggregate Production Function Specification. Journal of Economic Growth, 5(1), 87–120. doi:10.1023/A:1009830421147
-
-Fröling, M. (2011). Energy use, population and growth, 1800–1970. Journal of Population Economics, 24(3), 1133–1163.
-
-Galor, O., and Weil, D. N. (2000). Population,Technology, and Growth: From Malthusian Stagnation to the Demographic Transition and Beyond. American Economic Review, 90(4), 806–828.
-
-Jones, C. (2001). Was an industrial revolution inevitable? Economic growth over the very long run. Advances in Macroeconomics, 1(2), 1–43.
-
-Kemfert, C. (1998). Estimated substitution elasticities of a nested CES production function approach for Germany. Energy Economics, 20(3), 249–264.
-
 Lee, C-C. and Chang, C-P. Energy consumption and economic growth in Asian economies: A more comprehensive analysis using panel data. Resource and Energy Economics, 30(1): 50-65.
-
-Lecca, P., Swales, K., and Turner, K. (2011). An investigation of issues relating to where energy should enter the production function. Economic Modelling, 28(6), 2832–2841.
 
 %% References
 %%
