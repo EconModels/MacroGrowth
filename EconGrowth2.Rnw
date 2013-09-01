@@ -247,6 +247,8 @@ economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
 
 To be included somewhere.
 
+Matt added this text to debug his GitHub account.
+
 Introduction
 
 [1. Listen to what others say
