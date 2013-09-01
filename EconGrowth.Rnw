@@ -1,5 +1,3 @@
-% small change to test GitHub.
-
 % This article has been prepared for publication in Energy Economics in RStudio with knitr.
 % According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
 % elsarticle.cls file.
