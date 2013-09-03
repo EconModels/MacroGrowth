@@ -261,7 +261,7 @@ notably China, India, and the Middle East \citep{IEA:2012ty}.
 A large body of literature points towards the fact that 
 economic growth and energy consumption are closely correlated 
 and for a diverse set of countries such as 
-the United States \citep{Stern2000, Cleveland:1984p5055}, 
+the United States \citep{Stern:2000wq, Cleveland:1984p5055}, 
 India (Paul and Bhattacharya 2004), 
 China (Wang et al 2011), 
 South Africa (Menyah and Wolde-Rufael, 2010; Odhiambo, 2009) and 
@@ -334,7 +334,7 @@ The inclusion of energy as a factor of production
 in CES and Cobb-Douglas production functions 
 is generally accepted by most 
 resource and energy economists and economic growth modelers 
-\citep{Smulders:2003wc, VanderZwaan2002, Kemfert:1998vd}.
+\citep{Smulders:2003wc, vanderZwaan:2002wn, Kemfert:1998vd}.
 Researchers interested in explaining long-term economic growth 
 and possible constraints on growth 
 have started to include energy as an explicit factor of production
@@ -366,7 +366,7 @@ has a significant impact on CGE [computable general equilibrium] model results.'
 finding that capital and labour are more substitutable 
 in richer countries and less substitutable in poorer countries 
 than what a Cobb-Douglas specification would imply.  
-**** Miller (2008) ****, however, points to the 
+However, \citet{Miller:2008vd} points to the 
 ``\dots reasonably accurate long-term economic forecasts,'' 
 achieved with the use of Cobb-Douglas production functions in economic models.  
 \citet{Shen:2013vp} provide a recent example 
@@ -396,7 +396,7 @@ We do except **** do you mean ``accept'' or ``expect'' here? ****, however,
 that macroeconomic policymaking is needed 
 and is increasingly informed by integrated energy-economic models, 
 in a world where energy constraints are possible 
-\citep{Beckmanetal2011, Benes:2012tm, Nel:2010fv}.  
+\citep{Beckman:2011gb, Benes:2012tm, Nel:2010fv}.  
 We support the call from \citet{Shen:2013vp} that both
 the structure of the production function 
 and the parameters used to populate this function
