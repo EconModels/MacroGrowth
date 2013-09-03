@@ -256,19 +256,19 @@ The availability of adequate energy at affordable costs
 has become an important strategic issue in recent years.
 Despite a slowdown in economic growth worldwide, 
 longer-term trends in energy use remain strongly upwards, 
-as the dynamics of energy markets are increasingly determined by emerging markets, 
+as the dynamics of energy markets are increasingly determined by emerging economies, 
 notably China, India, and the Middle East \citep{IEA:2012ty}. 
-A large body of literature points towards the fact that 
+A large body of literature points to the fact that 
 economic growth and energy consumption are closely correlated 
 and for a diverse set of countries such as 
 the United States \citep{Stern:2000wq, Cleveland:1984p5055}, 
-India (Paul and Bhattacharya 2004), 
-China (Wang et al 2011), 
-South Africa (Menyah and Wolde-Rufael, 2010; Odhiambo, 2009) and 
-sixteen Asian countries (Lee and Chang, 2008) 
+India \citep{Paul:2004jl}, 
+China \citep{Wang:2011fe}, 
+South Africa \citep{Menyah:2010hl, Odhiambo:2009hj} and 
+sixteen Asian countries \citep{Lee:2008dm}
 to name a few, 
-although the causal relationship between energy consumption 
-and economic growth is still controversial \citep{Chen2012, Ozturk:2010kb}. 
+although the causal relationship from energy consumption 
+to economic growth remains controversial \citep{Chen:2012fs, Ozturk:2010kb}. 
 \citet[p. 347]{Ozturk:2010kb} in a survey of the literature on the topic, 
 concluded that there is 
 ``\dots no consensus neither on the existence nor on the direction of 
@@ -305,7 +305,7 @@ If the future decades look like the last 5 years, we are in for a rough time.''
 The current trends in energy production and consumption and 
 the possible dire impacts on the world economy 
 as argued by above-mentioned scholars 
-have further raised the question 
+have further raised the question of
 whether and how to include appropriate energy indicators 
 in economic growth modeling.  
 \citet[p. 26]{Stern:2011bq} provides an overview of how energy is included 
@@ -313,7 +313,7 @@ in mainstream economic, resource economic, and ecological economic models of gro
 \citeauthor{Stern:2011bq} points out that energy is usually \emph{not included} 
 as a factor of production in mainstream economic growth models, 
 that energy is seen as the \emph{central driver of growth} 
-in ecological economic (incl. biophysical economic) models, 
+in ecological economic (including biophysical economic) models, 
 and that energy \emph{is included} in resource economic models, 
 but \emph{remains isolated} within this sub-discipline.  
 To break through this theoretical impasse, 
@@ -324,12 +324,13 @@ as a factor of production.
 On the basis of this model, 
 \citet[p. 45]{Stern:2011bq} points out that 
 energy availability plays
-``\dots a key role in enabling growth''
-despite the evidence of decreasing energy used per unit of output.  
+``\dots a key role in enabling growth,''
+despite the evidence of decreasing energy consumed per unit of output.  
 He concludes, based on theory and time-series results, 
 that including energy in the production function is warranted, 
 and that further clarification is needed 
 on the role of energy in economic growth.  
+
 The inclusion of energy as a factor of production 
 in CES and Cobb-Douglas production functions 
 is generally accepted by most 
@@ -339,9 +340,9 @@ Researchers interested in explaining long-term economic growth
 and possible constraints on growth 
 have started to include energy as an explicit factor of production
 \citep{Froling:2009vo, Tahvonen:2001tz}.  
-One alternative approach, attempting to be 
+An alternative approach, attempting to be 
 ``\dots more consistent with physical laws \dots'' \citep{Ayres:2001tx}
-and classified by \citeauthor{Stern:2011bq} as an ecological economic model of growth, 
+and classified by \citet{Stern:2011bq} as an ecological economic model of growth, 
 is the LINEX production function, 
 combining capital (non-ICT and ICT), 
 labour, and useful work. In the LINEX model, 
@@ -365,7 +366,7 @@ has a significant impact on CGE [computable general equilibrium] model results.'
 \citet{Duffy:2000ty} rejected the Cobb-Douglas production function altogether, 
 finding that capital and labour are more substitutable 
 in richer countries and less substitutable in poorer countries 
-than what a Cobb-Douglas specification would imply.  
+than Cobb-Douglas implies.  
 However, \citet{Miller:2008vd} points to the 
 ``\dots reasonably accurate long-term economic forecasts,'' 
 achieved with the use of Cobb-Douglas production functions in economic models.  
@@ -378,7 +379,7 @@ for the Chinese economy. **** More detail here about nesting? ****
 Both the choice of production function structure 
 and the value of the model parameters 
 drive model results, and empirical and statistical testing 
-of such approaches is prudent.
+of such approaches is prudent, but rarely conducted.
 
 [2. Find our own voice
 What is our own argument?]
@@ -414,6 +415,7 @@ at different stages of their development,
 a central point of long-wave economic growth modeling 
 \citep{Froling:2009vo, Jones:2001wn, Galor:2000up}. 
 **** Should we discuss the longwave literature above? ****
+
 To gain insights from different countries across different stages of development, 
 we present a comparative analysis among 
 the World Bank’s main categories of countries, 
@@ -424,6 +426,7 @@ Least Developed Countries (LDCs).
 **** Move the previous sentence to the ``approach'' section below? ****
 
 Approach
+
 Build on articles using R to test econ growth PF, 
 question what is reported when doing these tests (shen/whalley and others who have used micEconCES). 
 
@@ -2037,12 +2040,6 @@ that did not achieve convergence when estimating model parameters.
 printFracUnconvergedXtable()
 @
 
-[manually added]
-References
-
-Chen, P-Y., Chen, S-T., Chen, C-C. 2012. Energy consumption and economic growth – New evidence from meta analysis. Energy Policy, 44: 245-255. http://dx.doi.org/10.1016/j.enpol.2012.01.048
-
-Lee, C-C. and Chang, C-P. Energy consumption and economic growth in Asian economies: A more comprehensive analysis using panel data. Resource and Energy Economics, 30(1): 50-65.
 
 %% References
 %%
