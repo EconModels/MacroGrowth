@@ -373,6 +373,7 @@ What do we say on the limitations of macroeconomic modelling approaches altogeth
 We speculate on implications for choosing PF in energy economic models that inform growth policy.
 
 Points on paper so far
+
 1. Does the relative small differences in fit between different production functions warrant 
 such a large debate on validity of one vs other? Clearly not. 
 CD been used by economists for ease of use and extreme flexibility (Miller).  
