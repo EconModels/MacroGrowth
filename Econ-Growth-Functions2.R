@@ -2210,7 +2210,6 @@ cesModel2 <- function(countryAbbrev,
   models <- list()
   if (is.null(prevModel)){
     for (algorithm in algorithms) {
-print(paste("Inside is.null(prevModel). algorithm =", algorithm))
       #
       # Try gradient fits with the default start points (no start argument)
       #
@@ -2221,7 +2220,6 @@ print(paste("Inside is.null(prevModel). algorithm =", algorithm))
       )
       model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))
       models[[length(models)+1]] <- model
-print(coef(model))
       #
       # Try grid search with the selected xNames list.
       #
@@ -2242,12 +2240,11 @@ print(coef(model))
       }
       model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))
       models[[length(models)+1]] <- model
-print(coef(model))
     }
   }
   #
-  # Now try gradient search starting from the best place found thus far or
-  # starting from the original model (if doing resampling)
+  # Now try gradient search starting from either the best place found thus far or
+  # starting from prevModel (it prevModel was specified as an argument to this function).
   #
   if (is.null(prevModel)){
     # We're fitting "from scratch". Try a gradient search from the 
@@ -2261,7 +2258,6 @@ print(coef(model))
     seedModel <- prevModel
   }
   for (algorithm in algorithms) {
-print(paste("Inside final runs. algorithm =", algorithm))
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, ...),
@@ -2269,7 +2265,6 @@ print(paste("Inside final runs. algorithm =", algorithm))
     )
     model <- addMetaData(model, history=paste(algorithm, "[", getHistory(seedModel), "]", sep=""))
     models[[length(models)+1]] <- model
-print(coef(model))
   }
   return(models)
 }
