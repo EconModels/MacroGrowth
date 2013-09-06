@@ -2149,22 +2149,36 @@ cesModel2 <- function(countryAbbrev,
                       ...){
 
   ###################
-  # This function fits a CES model to original data.
+  # This function fits a CES model to original or resampled data.
+  # Pass in a value in data if you want to use resampled data.
+  # Pass in a countryAbbrev if you want to use original data.
+  # If energyType=NA, a CES fit without energy will be attempted.
   # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
+  # Pass in a prevModel if you want to start from its location using gradient searches only.
+  # Pass in NULL for prevModel if you want to use the default start locations AND do a grid search in sigma
+  #
+  # Returns a list of models that were generated within this function.
   ##
   
-  # If energy was not specified, fit without energy.
-  if (is.na(energyType)){
-    return(cesModelNoEnergy(data=data))
-  }
-  # We need to do the CES fit with the desired energyType.
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function.
-  data <- replaceColName(data, energyType, "iEToFit")
   
-  # Remove rows with missing energy information
-  data <- data[ !is.na(data[,"iEToFit"]), ]
+  
+  
+  # If energy was not specified, fit without energy.
+#   if (is.na(energyType)){
+#     return(cesModelNoEnergy(data=data))
+#   }
+  
+  
+  
+  if (!is.na(energyType)){
+    # We need to do the CES fit with the desired energyType.
+    # To achieve the correct fit, we'll change the name of the desired column
+    # to "iEToFit" and use "iEToFit" in the nls function.
+    data <- replaceColName(data, energyType, "iEToFit")
+    # Remove rows with missing energy information
+    data <- data[ !is.na(data[,"iEToFit"]), ]
+  }
   
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
@@ -2174,15 +2188,21 @@ cesModel2 <- function(countryAbbrev,
   for (m in badAlgorithms) {
     stop(paste("Unrecognized algorithm:", m))
   }
-  # Set up xNames for the desired nest
-  if (nest %in% c("(kl)e", "(lk)e")){
-    xNames <- c("iCapStk", "iLabor", "iEToFit")
-  } else if (nest %in% c("(le)k", "(el)k")){
-    xNames <- c("iLabor", "iEToFit", "iCapStk")
-  } else if (nest %in% c("(ek)l", "(ke)l")){
-    xNames <- c("iEToFit", "iCapStk", "iLabor")
+  # Set up xNames for the desired energy type or nesting
+  if (is.na(energyType)){
+    # We don't want to include energy. So, include only k and l.
+    xNames <- c("iCapStk", "iLabor")
   } else {
-    stop(paste("Unknown nesting option", nest, "in cesModel2"))
+    # We want to include energy. So, include k, l, and e.
+    if (nest %in% c("(kl)e", "(lk)e")){
+      xNames <- c("iCapStk", "iLabor", "iEToFit")
+    } else if (nest %in% c("(le)k", "(el)k")){
+      xNames <- c("iLabor", "iEToFit", "iCapStk")
+    } else if (nest %in% c("(ek)l", "(ke)l")){
+      xNames <- c("iEToFit", "iCapStk", "iLabor")
+    } else {
+      stop(paste("Unknown nesting option", nest, "in cesModel2"))
+    }
   }
   # Establish key variable names  
   tName <- "iYear"
@@ -2190,6 +2210,7 @@ cesModel2 <- function(countryAbbrev,
   models <- list()
   if (is.null(prevModel)){
     for (algorithm in algorithms) {
+print(paste("Inside is.null(prevModel). algorithm =", algorithm))
       #
       # Try gradient fits with the default start points (no start argument)
       #
@@ -2200,16 +2221,28 @@ cesModel2 <- function(countryAbbrev,
       )
       model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))
       models[[length(models)+1]] <- model
+print(coef(model))
       #
-      # Try grid search with the given rho and rho_1 lists.
+      # Try grid search with the selected xNames list.
       #
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
-        error = function(e) { NULL }
-      )
+      if (is.na(energyType)){
+        # We want a model without energy. No need for a rho1 argument.
+        model <- tryCatch(
+          cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                 rho=rho, control=chooseCESControl(algorithm), ...),
+          error = function(e) { NULL }
+        )      
+      } else {
+        # We want a model with energy. Need a rhos1 argument, because we are using a nesting.
+        model <- tryCatch(
+          cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                 rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
+          error = function(e) { NULL }
+        )
+      }
       model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))
       models[[length(models)+1]] <- model
+print(coef(model))
     }
   }
   #
@@ -2219,14 +2252,16 @@ cesModel2 <- function(countryAbbrev,
   if (is.null(prevModel)){
     # We're fitting "from scratch". Try a gradient search from the 
     # best solution found thus far.
-    start <- coef(bestModel(models, digits=digits))   # coef(models[1])
+    start <- coef(bestModel(models, digits=digits))
     seedModel <- bestModel(models, digits=digits)
   } else {
-    # We're starting from a previous fit.
+    # We're starting from a previous fit. Try a gradient search from the
+    # prevModel
     start <- coef(prevModel)
     seedModel <- prevModel
   }
   for (algorithm in algorithms) {
+print(paste("Inside final runs. algorithm =", algorithm))
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, ...),
@@ -2234,6 +2269,7 @@ cesModel2 <- function(countryAbbrev,
     )
     model <- addMetaData(model, history=paste(algorithm, "[", getHistory(seedModel), "]", sep=""))
     models[[length(models)+1]] <- model
+print(coef(model))
   }
   return(models)
 }
