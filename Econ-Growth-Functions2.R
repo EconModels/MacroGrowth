@@ -1943,200 +1943,6 @@ cdResampleTrianglePlot <- function(energyType, ...){
 }
 
 ## <<ces functions, eval=TRUE>>=
-cesModelNoEnergy <- function(countryAbbrev, data=loadData(countryAbbrev=countryAbbrev)){
-  ########################
-  # Returns a cesEst model (without energy) for the country specified.
-  ##
-  # control=nls.lm.control(maxiter=1000, maxfev=2000)
-  xNamesToUse <- c("iCapStk", "iLabor")
-  tName <- "iYear"
-  yName <- "iGDP"
-  modelCES <- cesEst(data=data, yName=yName, xNames=xNamesToUse, tName=tName, method="L-BFGS-B")
-  # Build the additional object to add as an atrribute to the output
-  rho_1 <- coef(modelCES)["rho"]
-  # rho <- -1.0 gives the equation without energy, although it makes sigma blow up.
-  rho <- -1.0 
-  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCES)["lambda"]),
-                     delta_1 = as.vector(coef(modelCES)["delta"]),
-                     rho_1 = as.vector(rho_1),
-                     sigma_1 = as.vector(1 / (1 + rho_1)),
-                     gamma = as.vector(coef(modelCES)["gamma"]),
-                     delta = 1.0,
-                     rho = as.vector(rho),
-                     sigma = as.vector(1 / (1 + rho)),
-                     sse = sum(resid(modelCES)^2),
-                     isConv = modelCES$convergence
-                     )
-  attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
-  return(modelCES)
-}
-
-# fitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", algorithm=c("PORT","L-BFGS-B"), data, gridPlus=FALSE, ...){
-# 
-#   if(missing(data)) {
-#     data <- loadData(countryAbbrev=countryAbbrev)
-#   }
-#   data <- replaceColName(data, energyType, "iEToFit")
-#   
-#   if ( nest %in% c("(kl)e", "(lk)e") ){
-#     xNames <- c("iCapStk", "iLabor", "iEToFit")
-#   } else if ( nest %in% c("(le)k", "(el)k") ){
-#     xNames <- c("iLabor", "iEToFit", "iCapStk")
-#   } else if ( nest %in% c("(ek)l", "(ke)l") ){
-#     xNames <- c("iEToFit", "iCapStk", "iLabor")
-#   } else {
-#     stop(paste("Unknown nesting option", nest, "in fitCES."))
-#   }
-#   
-#   model <- cesModel(data=data, energyType=energyType, 
-#                     xNames=xNames, 
-#                     algorithm=algorithm,
-#                     ...)
-# print("finished with base model.")
-# print(summary(model))
-#   if (gridPlus) {
-# # print("inside gridPlus branch.")
-# # print("start =")
-# # print(coef(model))
-# # print(energyType)
-# # print(xNames)
-# # print(algorithm)
-# #
-# #
-# #
-# #
-# #
-# # If you say 
-# # model <- fitCES(countryAbbrev="ZA", nest="(kl)e", energyType="Q", rho=seq(-0.9, 10, length.out=10), rho1=seq(-0.9, 10, length.out=10), gridPlus=TRUE)
-# # at the console, this next call will fail.  
-# # If you change countryAbbrev="US", it works.
-# # When it fails, you get a null object back. I don't see any error message, so it is difficult to debug.
-# #
-# #
-# #
-# #
-# #
-#     model <- cesModel(data=data, energyType=energyType, 
-#                       xNames=xNames, 
-#                       algorithm=algorithm,
-#                       start=coef(model))
-#   }
-# # print("finished with gridPlus model.")  
-# # print(summary(model))
-# # print(class(model))
-#   
-#   nC <- naturalCoef( model ) 
-#   nC <- transform( nC, nest=nest, country=countryAbbrev, converge=model$convergence ) 
-#   attr(model, "naturalCoeffs") <- nC
-#   return(model)
-# }
-
-# cesModel <- function(countryAbbrev, energyType=NA, data, algorithms=c("PORT","L-BFGS-B"), xNames, ...){
-#   ####################
-#   # Returns a cesEst model for the country and energyType specified.
-#   # energyType should be one of Q", "X", "U", or NA.
-#   # If energyType=NA, this method dispatches to the function cesModelNoEnergy(countryAbbrev)
-#   # If you want this fit with energy and if you are supplying your own data, 
-#   # you need to specify ALL arguments.
-#   # Also, be VERY SURE that countryAbbrev is appropriate for the data you are supplying,
-#   # because decisions about guess values for parameters and optimization methods
-#   # are made based upon countryAbbrev, and there is no way to verify that 
-#   # countryAbbrev is associated with data.
-#   ##
-#   
-#   CESalgorithms <- c("PORT", "L-BFGS-B")
-#   algorithms <- toupper(algorithms)
-#   badAlgorithms <- setdiff(algorithms, CESalgorithms)
-#   algorithms <- intersect(algorithms, CESalgorithms)
-#   for (m in badAlgorithms) {
-#     warning(paste("Unrecognized algorithm:", m))
-#   }
-#   
-#   if (missing(data)){
-#     data <- loadData(countryAbbrev=countryAbbrev)
-#   }
-#   if (is.na(energyType)){
-#     return(cesModelNoEnergy(data=data))
-#   }
-#   # We need to include energy in the production function.
-#   # We have an energyType argument. Do some additional checking.
-#   if (energyType == "U"){
-#     # Trim the dataset to include only those years for which U is available.
-#     data <- subset(data, !is.na(iU))
-#   }
-#   # We need to do the CES fit with the desired energyType.
-#   # To achieve the correct fit, we'll change the name of the desired column
-#   # to "iEToFit" and use "iEToFit" in the nls function.
-#   data <- replaceColName(data, energyType, "iEToFit")
-#   
-#   # Set up the controls for the cesEst function.
-#   # control <- nls.lm.control(maxiter=1000, maxfev=2000)
-#   # Decide which independent variables we want to use
-#   if (missing (xNames) ) {
-#     xNamesToUse <- c("iCapStk", "iLabor", "iEToFit")    
-#   } else {
-#     xNamesToUse <- xNames
-#   }
-#   tName <- "iYear"
-#   yName <- "iGDP"
-# 
-#   models <- list()
-#   bestSSE <- Inf
-#   bestModel <- NULL
-#   for (algorithm in algorithms) {
-#     model <- tryCatch(
-#       cesEstPlus(data=data, yName=yName, xNames=xNamesToUse, tName=tName, algorithm=algorithm, ...),
-#       error = function(e) { NULL }
-#     )
-#     models[[1 + length(models)]] <- model
-#     if (! is.null (model) && sum(resid(model)^2) < bestSSE) {
-#       bestModel <- model
-#       bestSSE <- sum(resid(model)^2)
-#     }
-#   }
-#   nC <- naturalCoef(bestModel)
-#   for (mod in models) {
-#     newNC <- naturalCoef(mod)
-#     names(newNC) <- paste(names(newNC), newNC[1,"algorithm"], sep=".")
-#     nC <- cbind( nC, newNC )
-#   }
-#   if (!is.null(bestModel)) attr(bestModel, "naturalCoeffs") <- nC
-#   return(bestModel)
-# }
-
-  
-# cesEstPlus <- function( data, yName, xNames, tName, algorithm="PORT", control, ...) {
-#   if (missing(control)) {
-#     control <- switch( algorithm,
-#                      "PORT" = list(iter.max=2000, eval.max=2000),
-#                      "L-BFGS-B" = list(maxit=5000),
-#                      list()
-#               )
-#   }
-#   modelCES <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, control=control, ...)
-#   # Build the additional object to add as an atrribute to the output
-#   rho_1 <- coef(modelCES)["rho_1"]
-#   rho <- coef(modelCES)["rho"]
-#   naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCES)["lambda"]),
-#                      delta_1 = as.vector(coef(modelCES)["delta_1"]),
-#                      rho_1 = as.vector(rho_1),
-#                      sigma_1 = as.vector(1 / (1 + rho_1)),
-#                      gamma = as.vector(coef(modelCES)["gamma"]),
-#                      delta = as.vector(coef(modelCES)["delta"]),
-#                      rho = as.vector(rho),
-#                      sigma = as.vector(1 / (1 + rho)),
-#                      sse = sum(resid(modelCES)^2),
-#                      isConv = modelCES$convergence,
-#                      algorithm = algorithm
-#                      )
-#   attr(x=modelCES, which="naturalCoeffs") <- naturalCoeffs
-#   return(modelCES)
-# }
-# 
-# 
-# 
-# 
-
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
                       data = loadData(countryAbbrev=countryAbbrev), 
@@ -2160,17 +1966,6 @@ cesModel2 <- function(countryAbbrev,
   #
   # Returns a list of models that were generated within this function.
   ##
-  
-  
-  
-  
-  # If energy was not specified, fit without energy.
-#   if (is.na(energyType)){
-#     return(cesModelNoEnergy(data=data))
-#   }
-  
-  
-  
   if (!is.na(energyType)){
     # We need to do the CES fit with the desired energyType.
     # To achieve the correct fit, we'll change the name of the desired column
@@ -2270,7 +2065,6 @@ cesModel2 <- function(countryAbbrev,
 }
 
 addMetaData <- function(model, history=""){
-  
   ###############
   # This function adds meta data to a model.  Currently this is only designed to
   # work with CES models. Meta data is attached as attributes (naturalCoeffs and meta)
@@ -2283,14 +2077,42 @@ addMetaData <- function(model, history=""){
   
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
   
-  rho_1 <- coef(model)["rho_1"]
-  rho <- coef(model)["rho"]
+  # We may be arriving here with a model that was estimated wihtout energy.
+  # If that is the case, we will have only rho and sigma parameters, not
+  # rho_1 and delta_1 parameters. 
+  # Test for the without energy model.
+  withoutEnergy <- is.na(coef(model)["rho_1"]) && is.na(coef(model)["delta_1"])
+
+  if (withoutEnergy){
+    # The coefficient representing the split between k and l 
+    # is given by delta in the model. But, in our calculations, 
+    # we're defining the split between k and l and delta_1.
+    # So, reassign here.
+    delta_1 <- coef(model)["delta"]
+    # The without-energy model has delta <- 1
+    delta <- 1
+    # The coefficient representing the substitutability between k and l
+    # is given by rho in the model argument. But, in our calculations,
+    # we're defining that substitutability as rho_1.
+    # So, reassign here.
+    rho_1 <- coef(model)["rho"]
+    # The no-energy situation is tantamount to saying that there is
+    # infinite substitutability between (kl) and e. 
+    # So, assign the value of rho to be -1 (sigma = Inf).
+    rho <- -1
+  } else {
+    # This is the no-energy situation. Things are more straightforward.
+    delta_1 <- coef(model)["delta_1"]
+    delta <- coef(model)["delta"]
+    rho_1 <- coef(model)["rho_1"]
+    rho <- coef(model)["rho"]
+  }
   naturalCoeffs <- data.frame(lambda = as.vector(coef(model)["lambda"]),
-                              delta_1 = as.vector(coef(model)["delta_1"]),
+                              delta_1 = as.vector(delta_1),
                               rho_1 = as.vector(rho_1),
                               sigma_1 = as.vector(1 / (1 + rho_1)),
                               gamma = as.vector(coef(model)["gamma"]),
-                              delta = as.vector(coef(model)["delta"]),
+                              delta = as.vector(delta),
                               rho = as.vector(rho),
                               sigma = as.vector(1 / (1 + rho)),
                               sse = sum(resid(model)^2)
@@ -2306,7 +2128,6 @@ addMetaData <- function(model, history=""){
                           start.rho = as.vector(model$start["rho"]),
                           history=history
   )
-## print(naturalCoeffs)
   attr(x=model, "naturalCoeffs") <- naturalCoeffs
   attr(x=model, "meta") <- metaData 
   return(model)
@@ -2782,18 +2603,13 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   # graphed.
   ##
   if (is.na(energyType)){
-    # When energyType=NA, we have rho=-1, and sigma-->infinity. So, 
-    # we'll plot this a delta vs. rho. This is not particularly intersting,
-    # because when energyType=NA, delta = 1.0.  So, the graph is boring.
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
-    graph <- standardScatterPlot(data, aes(delta, rho)) +
-      labs(x=expression(delta), y=expression(rho))
   } else {
     data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
-    graph <- standardScatterPlot(data, aes(delta, sigmaTrans)) +
-      labs(x=expression(delta), y=expression(sigma))
   }
+  graph <- standardScatterPlot(data, aes(delta, sigmaTrans)) +
+    labs(x=expression(delta), y=expression(sigma))
   return(graph)
 }
 
@@ -3561,7 +3377,7 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   if (modelType == "CD"){
     model <- cdModel(countryAbbrev)  
   } else if (modelType == "CES"){
-    model <- cesModelNoEnergy(countryAbbrev)
+    model <- bestModel(cesModel2(countryAbbrev=countryAbbrev))
   } else {
     stop(paste("Unknown modelType:", modelType, "in partialResidualPlot."))
     return(NULL)
@@ -3601,7 +3417,7 @@ createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, t
                    ylab=list(label=yLabelString, cex=textScaling)
     )
   } else {
-    # Lattice graph will all countries is desired.
+    # Lattice graph with all countries is desired.
     data <- do.call("rbind", lapply(X=countryAbbrevsAlph, FUN=createDataForPartialResidualPlot, modelType=modelType, energyType=energyType))
     # If useful work is desired, need to trim the data set.
     if (energyType == "U"){

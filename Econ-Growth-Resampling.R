@@ -235,14 +235,15 @@ resampleFits <- function(
                       "sf"    = singleFactorModel(data=data, factor=factor, respectRangeConstraints=TRUE),
                       "cd"    = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"   = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
-                      "ces"   = cesModelNoEnergy(data=data),
+#                      "ces"   = cesModelNoEnergy(data=data),
+                      "ces"   = cesModel2(data=data),
                       "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType),
                       "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType),
                       "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType),
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
-                      )
+  )
   baseFitCoeffs <- extractAllMetaData(origModel)
-
+  
   # Now do a fit with resampling n times and get all of the coefficients
   safeCES <- function(data,origModel,method) {
     myData <- doResample(data=data, origModel=origModel, method=method)
@@ -283,7 +284,13 @@ resampleFits <- function(
                                                                 energyType=energyType, 
                                                                 respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
-                              "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
+#                              "ces"   = do(n) * safeCES(data=data, origModel=origModel, method=method),
+                              
+#                              "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+#                                                                 data=doResample(data=data, 
+#                                                                                 origModel=bestModel(origModel), 
+#                                                                                 method=method),
+#                                                                 prevModel=bestModel(origModel))),
 #                               "cese-(kl)e" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
 #                                                                 energyType=energyType,
 #                                                                 nest="(kl)e",
@@ -305,6 +312,10 @@ resampleFits <- function(
 #                                                                                                    origModel=bestModel(origModel), 
 #                                                                                                    method=method),
 #                                                                                    prevModel=bestModel(origModel))),
+                              "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+                                                                 data=doResample(data=data, 
+                                                                                 origModel=bestModel(origModel), 
+                                                                                 method=method))),
                               "cese-(kl)e" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                                                                   energyType=energyType,
                                                                                   nest="(kl)e",
