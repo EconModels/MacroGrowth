@@ -2119,6 +2119,7 @@ addMetaData <- function(model, history=""){
   )
   metaData <- data.frame( isConv = model$convergence,
                           algorithm = model$method,
+                          iter = as.vector(model["iter"]),
                           grid = grid,
                           start.lambda = as.vector(model$start["lambda"]),
                           start.delta_1 = as.vector(model$start["delta_1"]),
