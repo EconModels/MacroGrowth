@@ -1953,7 +1953,7 @@ cesModel2 <- function(countryAbbrev,
                       rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       digits=6,
                       ...){
-
+  
   ###################
   # This function fits a CES model to original or resampled data.
   # Pass in a value in data if you want to use resampled data.
@@ -2003,64 +2003,76 @@ cesModel2 <- function(countryAbbrev,
   tName <- "iYear"
   yName <- "iGDP"
   models <- list()
-  if (is.null(prevModel)){
-    for (algorithm in algorithms) {
-      #
-      # Try gradient fits with the default start points (no start argument)
-      #
+  for (algorithm in algorithms) {
+    
+    #
+    # Try gradient fits with the default start points (no start argument)
+    #
+    model <- tryCatch(
+      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+             control=chooseCESControl(algorithm), ...),
+      error = function(e) { NULL }
+    )
+    hist <- paste(algorithm, "(default)", sep="")
+    model <- addMetaData(model, history=hist)
+    models[[length(models)+1]] <- model
+print(paste("Done with: grad(", hist, ")", algorithm), sep="")
+    
+    #
+    # Try grid search.
+    #
+    if (is.na(energyType)){
+      # We want a model without energy. No need for a rho1 argument.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), ...),
+               rho=rho, control=chooseCESControl(algorithm), ...),
+        error = function(e) { NULL }
+      )      
+    } else {
+      # We want a model with energy. Need a rho1 argument, because we are using a nesting.
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
       )
-      model <- addMetaData(model, history=paste(algorithm, "(default)", sep=""))
-      models[[length(models)+1]] <- model
-      #
-      # Try grid search with the selected xNames list.
-      #
-      if (is.na(energyType)){
-        # We want a model without energy. No need for a rho1 argument.
-        model <- tryCatch(
-          cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-                 rho=rho, control=chooseCESControl(algorithm), ...),
-          error = function(e) { NULL }
-        )      
-      } else {
-        # We want a model with energy. Need a rhos1 argument, because we are using a nesting.
-        model <- tryCatch(
-          cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-                 rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
-          error = function(e) { NULL }
-        )
-      }
-      model <- addMetaData(model, history=paste(algorithm, "(grid)", sep=""))
-      models[[length(models)+1]] <- model
     }
-  }
-  #
-  # Now try gradient search starting from either the best place found thus far or
-  # starting from prevModel (it prevModel was specified as an argument to this function).
-  #
-  if (is.null(prevModel)){
-    # We're fitting "from scratch". Try a gradient search from the 
-    # best solution found thus far.
-    start <- coef(bestModel(models, digits=digits))
-    seedModel <- bestModel(models, digits=digits)
-  } else {
-    # We're starting from a previous fit. Try a gradient search from the
-    # prevModel
-    start <- coef(prevModel)
-    seedModel <- prevModel
-  }
-  for (algorithm in algorithms) {
+    hist <- paste(algorithm, "(grid)", sep="")
+    model <- addMetaData(model, history=hist)
+    models[[length(models)+1]] <- model
+print(paste("Done with: grid,", algorithm))
+    
+    #
+    # Now try gradient search starting from prevModel (if it is present in the argument list).
+    #
+    if (! is.null(prevModel)){
+      start <- coef(prevModel)
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               control=chooseCESControl(algorithm), start=start, ...),
+        error = function(e) { NULL }
+      )
+      hist <- paste(algorithm, "[", getHistory(prevModel), "]", sep="")
+      model <- addMetaData(model, history=hist)
+      models[[length(models)+1]] <- model
+print(paste("Done with: grad(", hist, ")", algorithm), sep="")
+    }
+    
+    #
+    # Now try gradient search starting from the best place found thus far.
+    #
+    bestMod <- bestModel(models, digits=digits)
+    start <- coef(bestMod)
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, ...),
       error = function(e) { NULL }
     )
-    model <- addMetaData(model, history=paste(algorithm, "[", getHistory(seedModel), "]", sep=""))
+    hist <- =paste(algorithm, "[", getHistory(bestMod), "]", sep="")
+    model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-  }
+print(paste("Done with: grad(", hist, ")", algorithm), sep="")
+  } 
+  # Return everything all of the models that we calculated.
   return(models)
 }
 
