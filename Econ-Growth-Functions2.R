@@ -2016,7 +2016,6 @@ cesModel2 <- function(countryAbbrev,
     hist <- paste(algorithm, "(default)", sep="")
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-print(paste("Done with: grad(", hist, ")", algorithm), sep="")
     
     #
     # Try grid search.
@@ -2039,7 +2038,6 @@ print(paste("Done with: grad(", hist, ")", algorithm), sep="")
     hist <- paste(algorithm, "(grid)", sep="")
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-print(paste("Done with: grid,", algorithm))
     
     #
     # Now try gradient search starting from prevModel (if it is present in the argument list).
@@ -2054,7 +2052,6 @@ print(paste("Done with: grid,", algorithm))
       hist <- paste(algorithm, "[", getHistory(prevModel), "]", sep="")
       model <- addMetaData(model, history=hist)
       models[[length(models)+1]] <- model
-print(paste("Done with: grad(", hist, ")", algorithm), sep="")
     }
     
     #
@@ -2067,10 +2064,9 @@ print(paste("Done with: grad(", hist, ")", algorithm), sep="")
              control=chooseCESControl(algorithm), start=start, ...),
       error = function(e) { NULL }
     )
-    hist <- =paste(algorithm, "[", getHistory(bestMod), "]", sep="")
+    hist <- paste(algorithm, "[", getHistory(bestMod), "]", sep="")
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-print(paste("Done with: grad(", hist, ")", algorithm), sep="")
   } 
   # Return everything all of the models that we calculated.
   return(models)
