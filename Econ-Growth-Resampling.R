@@ -201,11 +201,11 @@ resampleFits <- function(
   method=resampleMethods,
   n,
   gridPoints=10,
-#   rho=seq(-0.9, 10, length.out=gridPoints),
-#   rho1=seq(-0.9, 10, length.out=gridPoints)
+  #   rho=seq(-0.9, 10, length.out=gridPoints),
+  #   rho1=seq(-0.9, 10, length.out=gridPoints)
   rho =c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)
-  ){
+){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a data frame.  The first row is the base fit to the 
@@ -244,26 +244,26 @@ resampleFits <- function(
   baseFitCoeffs <- extractAllMetaData(origModel)
   
   # Now do a fit with resampling n times and get all of the coefficients
-#   safeCES <- function(data,origModel,method) {
-#     myData <- doResample(data=data, origModel=origModel, method=method)
-#     tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
-#              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
-#     )
-#   }
+  #   safeCES <- function(data,origModel,method) {
+  #     myData <- doResample(data=data, origModel=origModel, method=method)
+  #     tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
+  #              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
+  #     )
+  #   }
   ####### we interupt this broadcast ... ########
-#   ## this is likely broken at the moment ##
-#   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
-#                          algorithm=c("PORT","L-BFGS-B"), 
-#                          data=loadData(countryAbbrev), method, origModel, ...) {
-#     myData <- doResample(data=data, origModel=origModel, method=method)
-#     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-#                                 energyType=energyType,
-#                                 nest="(kl)e",
-#                                 data=myData, prevModel=origModel, ...)),
-#              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
-#     )
-#     return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
-#   }
+  #   ## this is likely broken at the moment ##
+  #   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
+  #                          algorithm=c("PORT","L-BFGS-B"), 
+  #                          data=loadData(countryAbbrev), method, origModel, ...) {
+  #     myData <- doResample(data=data, origModel=origModel, method=method)
+  #     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
+  #                                 energyType=energyType,
+  #                                 nest="(kl)e",
+  #                                 data=myData, prevModel=origModel, ...)),
+  #              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
+  #     )
+  #     return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
+  #   }
   ###################################
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
@@ -332,12 +332,12 @@ resampleFits <- function(
                               #                                                                                    data=doResample(data=data, 
                               #                                                                                                    origModel=bestModel(origModel), 
                               #                                                                                                    method=method))),
-                              #                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
-                              #                                                                   energyType=energyType,
-                              #                                                                   data=doResample(data=data, 
-                              #                                                                                   origModel=origModel, 
-                              #                                                                                   method=method)),
-                              #                                                      which="naturalCoeffs"),
+                              "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
+                                                                  energyType=energyType,
+                                                                  data=doResample(data=data, 
+                                                                                  origModel=origModel, 
+                                                                                  method=method)),
+                                                     which="naturalCoeffs"),
                               stop("unknown model type")
   )
   # Combine the results and return
