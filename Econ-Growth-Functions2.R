@@ -2078,7 +2078,9 @@ addMetaData <- function(model, history=""){
   # work with CES models. Meta data is attached as attributes (naturalCoeffs and meta)
   # to the object and the new object is returned from the function.
   ##
-  if (is.null(model))  return(model) 
+  if (is.null(model)){
+    return(model) 
+  }
   if ( ! as.character(model$call[[1]]) == "cesEst" ){
     stop("Unsupported model type.  Must be NULL or the result of calling cesEst()")
   }
@@ -2089,7 +2091,7 @@ addMetaData <- function(model, history=""){
   # If that is the case, we will have only rho and sigma parameters, not
   # rho_1 and delta_1 parameters. 
   # Test for the without energy model.
-  withoutEnergy <- is.na(coef(model)["rho_1"]) && is.na(coef(model)["delta_1"])
+  withoutEnergy <- is.na(coef(model)["rho_1"]) || is.na(coef(model)["delta_1"])
 
   if (withoutEnergy){
     # The coefficient representing the split between k and l 
