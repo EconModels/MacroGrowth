@@ -244,12 +244,12 @@ resampleFits <- function(
   baseFitCoeffs <- extractAllMetaData(origModel)
   
   # Now do a fit with resampling n times and get all of the coefficients
-  safeCES <- function(data,origModel,method) {
-    myData <- doResample(data=data, origModel=origModel, method=method)
-    tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
-             error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
-    )
-  }
+#   safeCES <- function(data,origModel,method) {
+#     myData <- doResample(data=data, origModel=origModel, method=method)
+#     tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
+#              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
+#     )
+#   }
   ####### we interupt this broadcast ... ########
 #   ## this is likely broken at the moment ##
 #   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
