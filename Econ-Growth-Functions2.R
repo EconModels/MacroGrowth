@@ -2164,7 +2164,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
 
 extractAllMetaData <- function(model, digits=6, ...) {
   ###########################
-  # This function extracts metadata from model.
+  # This function extracts metadata from a model.
   # It works with both CES models (in which case model is actually a list of 
   # all the models that were tried) and other models.
   ## 
