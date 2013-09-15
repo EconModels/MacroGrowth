@@ -2163,10 +2163,36 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
 }
 
 extractAllMetaData <- function(model, digits=6, ...) {
+  ###########################
+  # This function extracts metadata from model.
+  # It works with both CES models (in which case model is actually a list of 
+  # all the models that were tried) and other models.
+  ## 
   if (is.list(model) && all( sapply( model, function(x) inherits(x, "cesEst") ) ) ) { 
-    model <- bestModel(model, digits=digits)
+    # We have a CES model. Want to extract both the coeffs and the sse values.
+    # Get sse values.
+    sseVals <- safeDF(NULL, nrow=1) # We'll fill this data.frame as we go.
+    for (mod in model){
+      # Loop over all of the models in the incoming list
+      hist <- attr(mod, "meta")["history"]
+      # hist is a data.frame. We need the string that is stored there.
+      hist <- toString(hist[1,"history"])
+      # Create the column name that we'll use. Form is "sse.hist"
+      colName <- paste("sse.", hist, sep="")
+      # Create a data.frame with the sse value
+      sseDF <- safeDF(attr(mod, "naturalCoeffs")["sse"])
+      # Give it a unique column name
+      colnames(sseDF) <- colName
+      # Add to the sseVals data.frame.
+      sseVals <- cbind(sseVals, sseDF)
+    }
+    # Get coefficients from the best model
+    bestMod <- bestModel(model, digits=digits)
+    out <- cbind( safeDF(naturalCoef(bestMod)), safeDF(metaData(bestMod)), sseVals )
+  } else {
+    # We have a generic model
+    out <- cbind( safeDF(naturalCoef(model)), safeDF(metaData(model)) )
   }
-  out <- cbind( safeDF(naturalCoef(model)), safeDF(metaData(model)) )
   return(out)
 }
 
