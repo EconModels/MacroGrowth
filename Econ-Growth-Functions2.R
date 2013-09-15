@@ -3537,19 +3537,19 @@ loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrd
   }
   if (!missing(energyType)){
     if (energyType == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
     } else {
-      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
-      data <- do.call("rbind", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, factor=factor))
     } else {
-      data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
     }
   } else {
     # Neither energyType nor factor were specified
-    data <- do.call("rbind", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType))
+    data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType))
   }
   return(data)
 }
