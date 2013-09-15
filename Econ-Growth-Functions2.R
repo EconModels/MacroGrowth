@@ -382,12 +382,18 @@ metaData <- function(object) {
 }
 
 safeDF <- function(object, nrow=1, ncol=0){
+  if (is.null(object)){
+    return (data.frame(matrix(nrow=nrow, ncol=ncol)))    
+  }
   emptyDataFrame <- FALSE
   if (inherits(object,"data.frame") ) {
-    if (nrow(object) + ncol(object) > 0)  return (object)
+    if (nrow(object) + ncol(object) > 0){
+      # We're already a data.frame.
+      return (object)
+    }
     emptyDataFrame <- TRUE
   }
-  if (is.null(object) || emptyDataFrame ) {
+  if ( emptyDataFrame ) {
     return (data.frame(matrix(nrow=nrow, ncol=ncol)))
   }
   return(as.data.frame(object))
