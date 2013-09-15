@@ -204,8 +204,7 @@ resampleFits <- function(
   #   rho=seq(-0.9, 10, length.out=gridPoints),
   #   rho1=seq(-0.9, 10, length.out=gridPoints)
   rho =c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-  rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)
-){
+  rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)){
   ##################
   # This function creates n resampled curve fits and returns them.
   # The returned object is a data frame.  The first row is the base fit to the 
@@ -310,28 +309,6 @@ resampleFits <- function(
                                                                                                    origModel=bestModel(origModel), 
                                                                                                    method=method),
                                                                                    prevModel=bestModel(origModel))),
-                              #                               "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-                              #                                                                  data=doResample(data=data, 
-                              #                                                                                  origModel=bestModel(origModel), 
-                              #                                                                                  method=method))),
-                              #                               "cese-(kl)e" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-                              #                                                                                   energyType=energyType,
-                              #                                                                                   nest="(kl)e",
-                              #                                                                                   data=doResample(data=data, 
-                              #                                                                                                   origModel=bestModel(origModel), 
-                              #                                                                                                   method=method))),
-                              #                               "cese-(le)k" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-                              #                                                                                    energyType=energyType,
-                              #                                                                                    nest="(le)k",
-                              #                                                                                    data=doResample(data=data, 
-                              #                                                                                                    origModel=bestModel(origModel), 
-                              #                                                                                                    method=method))),
-                              #                               "cese-(ek)l" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-                              #                                                                                    energyType=energyType,
-                              #                                                                                    nest="(ek)l",
-                              #                                                                                    data=doResample(data=data, 
-                              #                                                                                                    origModel=bestModel(origModel), 
-                              #                                                                                                    method=method))),
                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
                                                                   energyType=energyType,
                                                                   data=doResample(data=data, 
@@ -340,17 +317,9 @@ resampleFits <- function(
                                                      which="naturalCoeffs"),
                               stop("unknown model type")
   )
-  # Combine the results and return
-  # baseFitCoeffsDF <- as.data.frame(matrix(baseFitCoeffs, nrow=1))
-  # names(baseFitCoeffsDF) <- names(baseFitCoeffs)
-  
-  #  names(baseFitCoeffs) <- gsub("-",".", names(baseFitCoeffs))
-  #  print(setdiff(names(resampleFitCoeffs), names(baseFitCoeffs)))
-  #  print(setdiff(names(baseFitCoeffs), names(resampleFitCoeffs)))
   baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
-  #  print(str(resampleFitCoeffs))
-  resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild") ## method=method)
-  out <- rbind(baseFitCoeffs, resampleFitCoeffs)
+  resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild")
+  out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
   out <- transform(out, countryAbbrev=countryAbbrev)
   return(out)
 }
