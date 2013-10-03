@@ -2615,7 +2615,8 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
     data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardScatterPlot(data, aes(gamma, lambda)) +
+  data$hist <- gsub("[^LPg]", "", data$history)
+  graph <- standardScatterPlot(data, aes(gamma, lambda, colour=hist)) +
     labs(x=expression(gamma), y=expression(lambda))
   return(graph)
 }
@@ -2632,7 +2633,8 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1)) +
+  data$hist <- gsub("[^LPg]", "", data$history)
+  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1, colour=hist)) +
     labs(x=expression(delta_1), y=expression(sigma_1))
   return(graph)
 }
@@ -2651,7 +2653,8 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
     data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardScatterPlot(data, aes(delta, sigmaTrans)) +
+  data$hist <- gsub("[^LPg]", "", data$history)
+  graph <- standardScatterPlot(data, aes(delta, sigmaTrans, colour=hist)) +
     labs(x=expression(delta), y=expression(sigma))
   return(graph)
 }

@@ -109,6 +109,7 @@ require(xtable)
 require(nlmrt)
 require(micEconCES)
 require(plyr)
+require(knitr)
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 require(reshape2) 
