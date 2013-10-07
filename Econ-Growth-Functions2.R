@@ -1955,20 +1955,24 @@ cesModel2 <- function(countryAbbrev,
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       nest="(kl)e", 
-                      rho=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-                      rho1=c(9, 2, 1, 0.43, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      rho=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       digits=6,
                       ...){
   
   ###################
   # This function fits a CES model to original or resampled data.
-  # Pass in a value in data if you want to use resampled data.
+  # Pass in data if you want to use resampled data.
   # Pass in a countryAbbrev if you want to use original data.
   # If energyType=NA, a CES fit without energy will be attempted.
   # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
   # Pass in a prevModel if you want to start from its location using gradient searches only.
   # Pass in NULL for prevModel if you want to use the default start locations AND do a grid search in sigma
+  # Default values ofr rho and rho1 are a grid upon which searches will be made.
+  # Note that rho = 0.25 and rho1 = 0.25 are included. These are the default starting
+  # values for rho and rho1, so that we don't need to do a fit from the default values.
+  # rho = 0.25 corresponds to sigma = 0.8.
   #
   # Returns a list of models that were generated within this function.
   ##
