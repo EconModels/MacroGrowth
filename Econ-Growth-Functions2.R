@@ -2014,19 +2014,6 @@ cesModel2 <- function(countryAbbrev,
   yName <- "iGDP"
   models <- list()
   for (algorithm in algorithms) {
-    
-    #
-    # Try gradient fits with the default start points (no start argument)
-    #
-    model <- tryCatch(
-      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-             control=chooseCESControl(algorithm), ...),
-      error = function(e) { NULL }
-    )
-    hist <- paste(algorithm, "(default)", sep="")
-    model <- addMetaData(model, history=hist)
-    models[[length(models)+1]] <- model
-    
     #
     # Try grid search.
     #
@@ -2048,27 +2035,14 @@ cesModel2 <- function(countryAbbrev,
     hist <- paste(algorithm, "(grid)", sep="")
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-    
-    #
-    # Now try gradient search starting from prevModel (if it is present in the argument list).
-    #
-    if (! is.null(prevModel)){
-      start <- coef(prevModel)
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), start=start, ...),
-        error = function(e) { NULL }
-      )
-      hist <- paste(algorithm, "[", getHistory(prevModel), "]", sep="")
-      model <- addMetaData(model, history=hist)
-      models[[length(models)+1]] <- model
-    }
-    
-    #
-    # Now try gradient search starting from the best place found thus far.
-    #
-    bestMod <- bestModel(models, digits=digits)
-    start <- coef(bestMod)
+  }
+  
+  #
+  # Now try gradient search starting from the best place found by the grid searches above.
+  #
+  bestMod <- bestModel(models, digits=digits)
+  start <- coef(bestMod)
+  for (algorithm in algorithms) {
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, ...),
@@ -2077,7 +2051,25 @@ cesModel2 <- function(countryAbbrev,
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", sep="")
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
-  } 
+  }
+
+  #
+  # Now try gradient search starting from prevModel (if it is present in the argument list).
+  #
+  if (! is.null(prevModel)){
+    start <- coef(prevModel)
+    for (algorithm in algorithms) {
+      model <- tryCatch(
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               control=chooseCESControl(algorithm), start=start, ...),
+        error = function(e) { NULL }
+      )
+      hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="")
+      model <- addMetaData(model, history=hist)
+      models[[length(models)+1]] <- model
+    }
+  }
+ 
   # Return everything all of the models that we calculated.
   return(models)
 }
@@ -2166,6 +2158,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   ###################
   # Extracts the best model (least sse) from a list of models
   ##
+  # Note that the order function below preserves the original order in the event of ties.
   o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
