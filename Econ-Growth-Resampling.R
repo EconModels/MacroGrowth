@@ -317,7 +317,14 @@ resampleFits <- function(
                                                      which="naturalCoeffs"),
                               stop("unknown model type")
   )
+# At this point, baseFitCoeffs has data.frame column titles such as "sse.PORT(grid)"
+print(baseFitCoeffs)
   baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
+# At this point, baseFitCoeffs column titles have () and [] replaced with .. and ..
+# This event is not the end of the world, but it makes reading and interpreting 
+# the results more difficult.
+# Can this be prevented?
+print(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild")
   out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
   out <- transform(out, countryAbbrev=countryAbbrev)
