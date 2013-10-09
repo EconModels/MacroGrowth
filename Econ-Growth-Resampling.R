@@ -319,11 +319,13 @@ resampleFits <- function(
   )
 # At this point, baseFitCoeffs has data.frame column titles such as "sse.PORT(grid)"
 print(baseFitCoeffs)
-  baseFitCoeffs <- transform(baseFitCoeffs, method="orig")
+  baseFitCoeffs$method ="orig"
 # At this point, baseFitCoeffs column titles have () and [] replaced with .. and ..
 # This event is not the end of the world, but it makes reading and interpreting 
 # the results more difficult.
 # Can this be prevented?
+  ## avoiding use of transform will likely fix this.  ---rjp
+  
 print(baseFitCoeffs)
   resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild")
   out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
