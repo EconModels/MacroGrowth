@@ -1,4 +1,5 @@
-
+# Note: this won't do anything in parallel unless the 
+# redis server is running.
 require(doRedis)
 require(foreach)
 library('doRedis')
