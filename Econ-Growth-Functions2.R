@@ -3519,10 +3519,12 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
   # The name of the object loaded by this call is resampleData.
   load(file=path)
   if ("sigma" %in% names(resampleData) ){
-    resampleData <- transform( resampleData, sigmaTrans = ifelse(sigma < 2, sigma, 1.5 - rho ))
+    sigmaTrans <- ifelse(resampleData$sigma < 2, resampleData$sigma, 1.5 - resampleData$rho )
+    resampleData$sigmaTrans <- sigmaTrans
   }  
   if ("sigma_1" %in% names(resampleData) ){
-    resampleData <- transform( resampleData, sigmaTrans_1 = ifelse(sigma_1 < 2, sigma_1, 1.5 - rho_1 ))
+    sigmaTrans_1 <- ifelse(resampleData$sigma_1 < 2, resampleData$sigma_1, 1.5 - resampleData$rho_1 )
+    resampleData$sigmaTrans_1 <- sigmaTrans_1
   }
   return(resampleData)
 }
