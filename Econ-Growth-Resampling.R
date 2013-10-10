@@ -317,16 +317,10 @@ resampleFits <- function(
                                                      which="naturalCoeffs"),
                               stop("unknown model type")
   )
-  baseFitCoeffs$method ="orig"
-# Things are OK here, i.e., PORT(grid) is in the titles of the data.frame columns.
-print(resampleFitCoeffs)
-  resampleFitCoeffs <- transform(resampleFitCoeffs, method="wild")
-# All of the "-", "()", and "[]" are replaced by "." in the column names of resamplefitCoeffs at this point.
-print(resampleFitCoeffs)
+  baseFitCoeffs$method <- "orig"
+  resampleFitCoeffs$method <- "wild"
   out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
-print(out)
-  out <- transform(out, countryAbbrev=countryAbbrev)
-print(out)
+  out$countryAbbrev <- countryAbbrev
   return(out)
 }
 
