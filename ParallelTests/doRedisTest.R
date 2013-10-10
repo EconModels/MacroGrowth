@@ -2,6 +2,7 @@
 # redis server is running.
 require(doRedis)
 require(foreach)
+require(mosaic)
 library('doRedis')
 registerDoRedis(queue='jobs')
 startLocalWorkers(n=50, queue='jobs')
