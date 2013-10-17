@@ -2632,7 +2632,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   }
   data$hist <- gsub("[^LPg]", "", data$history)
   graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1, colour=hist)) +
-    labs(x=expression(delta_1), y=expression(sigma_1))
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
   return(graph)
 }
 
