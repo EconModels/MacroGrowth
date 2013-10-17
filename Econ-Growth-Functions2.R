@@ -3508,7 +3508,7 @@ getSeed <- function(){
   return(123)
 }
 
-loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
+loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
@@ -3526,6 +3526,8 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor){
     sigmaTrans_1 <- ifelse(resampleData$sigma_1 < 2, resampleData$sigma_1, 1.5 - resampleData$rho_1 )
     resampleData$sigmaTrans_1 <- sigmaTrans_1
   }
+  # Ensure that countryAbbrev comes in as a factor (not a string)
+  resampleData$countryAbbrev <- factor(resampleData$countryAbbrev)
   return(resampleData)
 }
 
