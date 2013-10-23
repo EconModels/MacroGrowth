@@ -2614,7 +2614,7 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
-  graph <- standardScatterPlot(data, aes(gamma, lambda, colour=hist)) +
+  graph <- standardScatterPlot(data, aes(gamma, lambda, colour=isConv)) +
     labs(x=expression(gamma), y=expression(lambda))
   return(graph)
 }
