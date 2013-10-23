@@ -1,6 +1,7 @@
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
+require(plyr)    # for rbind.fill
 require(car)
 require(mosaic)
 require(xtable)
@@ -2631,7 +2632,9 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
-  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1, colour=hist)) +
+  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1, colour=isConv), ...) +
+    coord_trans(y="sigma") + 
+    scale_y_continuous(breaks=c(0,.5,1,2)) +
     labs(x=expression(delta[1]), y=expression(sigma[1]))
   return(graph)
 }
@@ -2644,6 +2647,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   # energyType=NA makes sigma --> Inf. Inf values can't be
   # graphed.
   ##
+
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
@@ -2651,8 +2655,12 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
-  graph <- standardScatterPlot(data, aes(delta, sigmaTrans, colour=hist)) +
+  data$hist <- factor(data$hist)
+  graph <- standardScatterPlot(data, aes(delta, sigma, colour=isConv), ...) +
+    coord_trans(y="sigma") + 
+    scale_y_continuous(breaks=c(0,.5,1,2)) +
     labs(x=expression(delta), y=expression(sigma))
+
   return(graph)
 }
 

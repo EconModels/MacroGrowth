@@ -1,5 +1,6 @@
 require(ggplot2)
 require(mosaic)
+require(scales)
 
 tri2x <- function(x,y,z) {
   return( x * 0.5 + y * 0 + z * 1 )
@@ -73,6 +74,17 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     geom_point(...)
 }
 
+sigma_trans <- function(base = exp(1)) {
+  trans <- function(x) pnorm(log(x, base))
+  inv <- function(x) base ^ qnorm( x )
+  
+  trans_new(paste0("sigma-", format(base)), 
+            transform = function(x) pnorm(log(x, base)),
+            inverse = function(x) base ^ qnorm( x ),
+            breaks=function(x) { return( base^qnorm((seq(0,1, length.out=5) ))) },
+            domain = c(0, Inf))
+}
+
 standardTriPlot <- function(data, 
                             grid_lines=5, 
                             aes_string="color=lambda", 
@@ -89,7 +101,7 @@ standardTriPlot <- function(data,
     scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
-standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.1) {
+standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
     p <- p + geom_point(size=size, alpha=alpha) 
     p <- p + geom_point(data=subset(data, method=="orig"),  color="black", alpha=0.6, 
