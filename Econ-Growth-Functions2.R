@@ -2632,7 +2632,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
-  graph <- standardScatterPlot(data, aes(delta_1, sigmaTrans_1, colour=isConv), ...) +
+  graph <- standardScatterPlot(data, aes(delta_1, sigma_1, colour=isConv), ...) +
     coord_trans(y="sigma") + 
     scale_y_continuous(breaks=c(0,.5,1,2)) +
     labs(x=expression(delta[1]), y=expression(sigma[1]))
