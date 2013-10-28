@@ -3740,5 +3740,8 @@ printFracUnconvergedXtable <- function(){
 }
 
 numResamples <- function(){
+  ####################
+  # Gives the desired number of resamples to be performed.
+  ##
   return(1000)
 }
