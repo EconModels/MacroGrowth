@@ -94,7 +94,10 @@ genResampleData <- function(modelType=modelTypes,
                             n,
                             clobber=TRUE,
                             verbose=FALSE){
-  
+  ####################
+  # This function generates resample data for the given parameters and 
+  # saves the data as a data.frame to disk.
+  ##
   path <- getPathForResampleData(modelType=modelType,
                                  countryAbbrev=countryAbbrev, 
                                  energyType=energyType,
@@ -199,28 +202,6 @@ resampleFits <- function(
   )
   baseFitCoeffs <- extractAllMetaData(origModel)
   
-  # Now do a fit with resampling n times and get all of the coefficients
-  #   safeCES <- function(data,origModel,method) {
-  #     myData <- doResample(data=data, origModel=origModel, method=method)
-  #     tryCatch(attr(cesModelNoEnergy(data=myData), "naturalCoeffs"),
-  #              error=function(e) { saveRDS(myData, file=timeFileName("data_failures/CESfail-",".Rds")); return(NULL) }
-  #     )
-  #   }
-  ####### we interupt this broadcast ... ########
-  #   ## this is likely broken at the moment ##
-  #   safefitCES <- function(countryAbbrev, energyType="Q", nest="(kl)e", 
-  #                          algorithm=c("PORT","L-BFGS-B"), 
-  #                          data=loadData(countryAbbrev), method, origModel, ...) {
-  #     myData <- doResample(data=data, origModel=origModel, method=method)
-  #     nC <- tryCatch( extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-  #                                 energyType=energyType,
-  #                                 nest="(kl)e",
-  #                                 data=myData, prevModel=origModel, ...)),
-  #              error=function(e) { message(e); saveRDS(myData, file=timeFileName("data_failures/CESEfail-",".Rds")); return(safeDF(NULL)) }
-  #     )
-  #     return( rbind.fill(extractAllMetaData(origModel), nC)[-1,] )
-  #   }
-  ###################################
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
