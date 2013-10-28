@@ -1372,7 +1372,7 @@ cesResamplePlotLambdaGamma(energyType=NA)
 @
 
 <<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType=NA) + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType=NA)
 @
 
 The next graph is not particularly interesting, 
@@ -1420,11 +1420,11 @@ cesResamplePlotLambdaGamma(energyType="Q", nest="(kl)e")
 @
 
 <<CESq_sigma_1_delta_1_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(kl)e")
 @
 
 <<CESq_sigma_delta_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="Q", nest="(kl)e")
 @
 
 Coefficients for each resampled CES model (with $x$, ($kl$)$e$ nesting)
@@ -1436,11 +1436,11 @@ cesResamplePlotLambdaGamma(energyType="X", nest="(kl)e")
 @
 
 <<CESx_sigma_1_delta_1_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($kl$)$e$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="X", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="X", nest="(kl)e")
 @
 
 <<CESx_sigma_delta_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($kl$)$e$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="X", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="X", nest="(kl)e")
 @
 
 Coefficients for each resampled CES model (with $u$)
@@ -1452,11 +1452,11 @@ cesResamplePlotLambdaGamma(energyType="U", nest="(kl)e")
 @
 
 <<CESu_sigma_1_delta_1_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($kl$)$e$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="U", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="U", nest="(kl)e")
 @
 
 <<CESu_sigma_delta_Cloud_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($kl$)$e$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="U", nest="(kl)e") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="U", nest="(kl)e")
 @
 
 Coefficients for each resampled CES model (with $q$) for the ($le$)$k$ nesting
@@ -1468,11 +1468,11 @@ cesResamplePlotLambdaGamma(energyType="Q", nest="(le)k")
 @
 
 <<CESq_sigma_1_delta_1_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(le)k")
 @
 
 <<CESq_sigma_delta_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="Q", nest="(le)k")
 @
 
 Coefficients for each resampled CES model (with $x$ and ($le$)$k$ nesting)
@@ -1484,11 +1484,11 @@ cesResamplePlotLambdaGamma(energyType="X", nest="(le)k")
 @
 
 <<CESx_sigma_1_delta_1_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($le$)$k$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="X", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="X", nest="(le)k")
 @
 
 <<CESx_sigma_delta_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($le$)$k$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="X", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="X", nest="(le)k")
 @
 
 Coefficients for each resampled CES model (with $u$ and ($le$)$k$ nesting)
@@ -1500,11 +1500,11 @@ cesResamplePlotLambdaGamma(energyType="U", nest="(le)k")
 @
 
 <<CESu_sigma_1_delta_1_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($le$)$k$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="U", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="U", nest="(le)k")
 @
 
 <<CESu_sigma_delta_Cloud_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($le$)$k$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="U", nest="(le)k") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="U", nest="(le)k")
 @
 
 Coefficients for each resampled CES model (with $q$) for the ($ek$)$l$ nesting
@@ -1516,11 +1516,11 @@ cesResamplePlotLambdaGamma(energyType="Q", nest="(ek)l")
 @
 
 <<CESq_sigma_1_delta_1_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(ek)l")
 @
 
 <<CESq_sigma_delta_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="Q", nest="(ek)l")
 @
 
 Coefficients for each resampled CES model (with $x$ and ($ek$)$l$ nesting)
@@ -1532,11 +1532,11 @@ cesResamplePlotLambdaGamma(energyType="X", nest="(ek)l")
 @
 
 <<CESx_sigma_1_delta_1_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($ek$)$l$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="X", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="X", nest="(ek)l")
 @
 
 <<CESx_sigma_delta_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $x$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="X", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="X", nest="(ek)l")
 @
 
 Coefficients for each resampled CES model (with $u$ and ($ek$)$l$ nesting)
@@ -1548,11 +1548,11 @@ cesResamplePlotLambdaGamma(energyType="U", nest="(ek)l")
 @
 
 <<CESu_sigma_1_delta_1_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($ek$)$l$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="U", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigma_1Delta_1(energyType="U", nest="(ek)l")
 @
 
 <<CESu_sigma_delta_Cloud_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="CES (with $u$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="U", nest="(ek)l") + ylim(0, 2.5)
+cesResamplePlotSigmaDelta(energyType="U", nest="(ek)l")
 @
 
 Figure~\ref{fig:CESq_Params_Graph} shows values and 95\% confidence intervals 
@@ -1698,11 +1698,11 @@ show the coefficients estimated from resampled data.
 
 <<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $q$) resampling results.">>=
 # linexResamplePlot(energyType="Q")
-linexResamplePlot(energyType="Q") + ylim(-20, 10)
+linexResamplePlot(energyType="Q")
 @
 
 <<LINEXx_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with $x$) resampling results.">>=
-linexResamplePlot(energyType="X") + ylim(-20, 10)
+linexResamplePlot(energyType="X")
 @
 
 <<LINEXu_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=threePanelGraphHeight, fig.cap="LINEX model (with $u$) resampling results.">>=
