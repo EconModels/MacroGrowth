@@ -1046,7 +1046,7 @@ population ratio of people fifteen and older by the population
 of people fifteen and older.
 
 %++++++++++++++++++++++++++++++
-\subsection{Thermal Energy} 
+\subsection{Energy} 
 \label{sec:Energy_Data}
 %++++++++++++++++++++++++++++++
 
@@ -1054,16 +1054,12 @@ To account for all energy input to an economy, we summed consumption data
 for many energy sources, including coal, oil and petroleum products, 
 dry natural gas and natural gas plant liquids, nuclear power generation, 
 and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, 
-and hydro). Similar to the economic data discussed in 
+and hydro). We also added human and animal muscle work. 
+Similar to the economic data discussed in 
 Sections~\ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, 
 we obtained energy data for developed countries from 1980--2011. 
 For all other countries, 
-we obtained thermal energy data for 1991--2011. 
-
-%------------------------------
-\subsubsection{Thermal Energy} 
-\label{sec:Q_Data}
-%------------------------------
+we obtained energy data for 1991--2011. 
 
 Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
 
@@ -1099,11 +1095,8 @@ generation (in BTU/year) was available directly from
 the \citet{EIA:2013a} for all economies, so 
 Equation~\ref{eq:thermal_energy} was unnecessary.
 
-******* Maybe remove these paragraphs on animal and human muscle
-work, pending a response from Caleb. ****
-
 Animal and human muscle work was estimated using an approach 
-similar to \citet{Ayres:2010ug}, using some data from Warr's 
+similar to \citet{Ayres:2010ug}, using data from Warr's 
 REXS database \citep{Warr:2012a} and results from 
 \citet{Wirsenius:2000vi}. For animal work, our analysis was 
 restricted to draught animals (horses and mules). Muscle work 
