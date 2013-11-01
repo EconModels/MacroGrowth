@@ -2610,7 +2610,8 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
@@ -2651,7 +2652,8 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
-    data <- loadAllResampleData(modelType="cese-(kl)e", energyType=energyType, 
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
