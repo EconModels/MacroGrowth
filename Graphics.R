@@ -103,12 +103,16 @@ standardTriPlot <- function(data,
 
 standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
+print("standardScatterPlot: after ggplot call.")
     p <- p + geom_point(size=size, alpha=alpha) 
     p <- p + geom_point(data=subset(data, method=="orig"),  color="black", alpha=0.6, 
                         size=4, shape=10 )
     p <- p + facet_wrap( ~ countryAbbrev ) 
+print("After adding countryAbbrev to facet_wrap")
     if ("color" %in% mapping || "colour" %in% mapping) {
       p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
     }
+print("After putting scale_colour_gradient in the plot")
     p + xy_theme()
+print("After adding xy_theme.")
 }

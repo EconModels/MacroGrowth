@@ -2658,6 +2658,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   }
   data$hist <- gsub("[^LPg]", "", data$history)
   data$hist <- factor(data$hist)
+print("In cesResamplePlotSigmaDelta: loaded data and created history successfully.")
   graph <- standardScatterPlot(data, aes(delta, sigma, colour=isConv), ...) +
     coord_trans(y="sigma") + 
     scale_y_continuous(breaks=c(0,.5,1,2)) +
