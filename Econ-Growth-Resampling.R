@@ -139,6 +139,9 @@ genResampleData <- function(modelType=modelTypes,
                                factor=factor,
                                method=method,
                                n=n)
+  # Split the coefficients from the models
+  
+  # Figure out which folder files should be saved in
   folder <- getFolderForResampleData(modelType=modelType,
                                      countryAbbrev=countryAbbrev
                                      )
