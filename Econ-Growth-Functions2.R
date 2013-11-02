@@ -2640,7 +2640,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   return(graph)
 }
 
-cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
+cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRUE){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2658,13 +2658,17 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ...){
   }
   data$hist <- gsub("[^LPg]", "", data$history)
   data$hist <- factor(data$hist)
-print("In cesResamplePlotSigmaDelta: loaded data and created history successfully.")
-  graph <- standardScatterPlot(data, aes(delta, sigma, colour=isConv), ...) +
+  if (all(data$sigma >= Inf)) {
+    warning("All sigma values are Inf, remapping to 10000")
+    data$sigma[ data$sigma == Inf] <- 10000
+  }
+  if (any(data$sigma >= Inf)) message("Some Inf values.")
+  graph <- standardScatterPlot(data, aes(delta, sigma, colour=isConv), ...) 
+  graph <- graph +
     coord_trans(y="sigma") + 
-    scale_y_continuous(breaks=c(0,.5,1,2)) +
+    scale_y_continuous(breaks=c(0,.25, .5,1,2,4)) +
     labs(x=expression(delta), y=expression(sigma))
-
-  return(graph)
+  return( if(plot) graph else data )
 }
 
 ## <<LINEX functions, eval=TRUE>>=

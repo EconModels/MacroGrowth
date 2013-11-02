@@ -74,12 +74,22 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     geom_point(...)
 }
 
+Log <- function(x, ...) {
+  if (is.null(x) ) { 
+    return(rep(1,length(x)))
+  }
+  log(x, ...)
+}
+
 sigma_trans <- function(base = exp(1)) {
   trans <- function(x) pnorm(log(x, base))
   inv <- function(x) base ^ qnorm( x )
   
   trans_new(paste0("sigma-", format(base)), 
-            transform = function(x) pnorm(log(x, base)),
+            transform = function(x) {
+              # print(match.call())  
+              pnorm(Log(x, base))
+            },
             inverse = function(x) base ^ qnorm( x ),
             breaks=function(x) { return( base^qnorm((seq(0,1, length.out=5) ))) },
             domain = c(0, Inf))
@@ -103,16 +113,12 @@ standardTriPlot <- function(data,
 
 standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4) {
     p <- ggplot( data=subset(data, method != "orig"), mapping ) 
-print("standardScatterPlot: after ggplot call.")
     p <- p + geom_point(size=size, alpha=alpha) 
     p <- p + geom_point(data=subset(data, method=="orig"),  color="black", alpha=0.6, 
                         size=4, shape=10 )
     p <- p + facet_wrap( ~ countryAbbrev ) 
-print("After adding countryAbbrev to facet_wrap")
     if ("color" %in% mapping || "colour" %in% mapping) {
       p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
     }
-print("After putting scale_colour_gradient in the plot")
     p + xy_theme()
-print("After adding xy_theme.")
 }
