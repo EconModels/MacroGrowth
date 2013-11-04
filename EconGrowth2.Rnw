@@ -1489,8 +1489,13 @@ for Zambia (ZM) with thermal energy ($q$), where
 of the resample fits did not converge. 
 (See Table~\ref{tab:frac_unconverged_models}.)
 
-**** Include LINEX scatter graphs here. Cover all 
-quantifications of energy? CIs? TBD which to include. ****
+Figure~\ref{fig:LINEXq_Resample_Graph}
+shows the coefficients estimated from resampled data.
+
+<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with energy) resampling results.">>=
+# linexResamplePlot(energyType="Q")
+linexResamplePlot(energyType="Q")
+@
 
 Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
 
