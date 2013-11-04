@@ -1255,16 +1255,6 @@ $\gamma$ is always 0.0, because energy is not included in this model.
 cdResampleTrianglePlot(energyType=NA)
 @
 
-Converting the resample data into 95\% confidence intervals 
-provides data for Figure~\ref{fig:CD_Params_Graph}.
-Appendix~\ref{sec:Model_Parameters} 
-contains tables with numerical values of 
-Cobb-Douglas model parameters and 95\% confidence intervals.
-
-<<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType=NA)
-@
-
 To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
 in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
 was reparameterized as
@@ -1307,11 +1297,11 @@ fraction of unconverged models for each model type.
 The above approach resulted in very few unconverged
 Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
 
-Figure~\ref{fig:CDq_Cloud_Graph} shows ternary plots 
+Figure~\ref{fig:CDq_Scatter_Graph} shows ternary plots 
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (with energy) resample models.
 
-<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
+<<CDq_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
 cdResampleTrianglePlot(energyType="Q")
 @
 
@@ -1380,12 +1370,33 @@ reported? Maybe we should write a function that
 searches all the countries to find which 
 country reports least convergence for a given model. ****
 
-**** Include CES graphs here. Need to cover
-all options: without energy and the three nesting
-options. CIs? TBD which to include. ****
+Coefficients for each resampled CES model (without energy)
+are shown in 
+Figures~\ref{fig:CES_lambda_gamma_Scatter_Graph} and
+\ref{fig:CES_sigma_1_delta_1_Scatter_Graph}. 
+Note that the bottom of the vertical axis represents $\sigma = 0$.
+The top of the vertical axis represents $\sigma = \infty$.
+The crosshair on each graph shows the location 
+of the fit to historical data. 
+Dots are colored by whether or not the fitting routine
+reports model convergence.
+
+<<CES_lambda_gamma_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
+cesResamplePlotLambdaGamma(energyType=NA)
+@
+
+<<CES_sigma_1_delta_1_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
+cesResamplePlotSigma_1Delta_1(energyType=NA)
+@
+
+
+
+
 
 Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
 to historical data for the $(kl)e$ nesting.
+
+**** Matt: Remove $x$ and $u$ lines. Replace with lines for each nesting. ****
 
 <<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.", eval=FALSE>>=
 createCESLatticeGraph()
@@ -1850,6 +1861,109 @@ that did not achieve convergence when estimating model parameters.
 
 <<Unconverged_Frac_Table, results='asis'>>=
 printFracUnconvergedXtable()
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{95\% Confidence Intervals}
+\label{sec:Confidence_Intervals}
+\setcounter{table}{0} % Restarts table number counter at 0 in this section.
+\setcounter{figure}{0} % Restarts figure number counter at 0 in this section.
+\setcounter{equation}{0} % Restarts equation counter to 0 in this section.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Resample coefficients in the scatter plots 
+can be represented as 95\% confidence intervals 
+by finding the parameter values associated with 
+the middle 95\% of the data for each model parameter.
+This appendix provides tables and graphs of the 95\% confidence
+intervals on fitted model parameters. 
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas Models}
+%++++++++++++++++++++++++++++++
+
+The 95\% confidence intervals associated with Figure~\ref{fig:CD_Scatter_Graph} 
+are shown in Table~\ref{tab:CD_Params_Table}.
+
+<<CD_Params_Table, results='asis'>>=
+printCDParamsTable(energyType=NA)    #Without energy
+@
+
+The data in Table~\ref{tab:CD_Params_Table} is plotted in
+Figure~\ref{CD_Params_Graph}.
+
+<<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph(energyType=NA)
+@
+
+The 95\% confidence intervals associated with Figure~\ref{fig:CDq_Scatter_Graph} 
+are shown in Table~\ref{tab:CDq_Params_Table}
+and Figure~\ref{CDq_Params_Graph}.
+
+<<CDq_Params_Table, results='asis'>>=
+printCDParamsTable(energyType="Q")   #With energy
+@
+
+<<CDq_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph(energyType="Q")
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{CES Models}
+%++++++++++++++++++++++++++++++
+
+The 95\% confidence intervals associated with Figure~\ref{fig:}
+are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+**** Ensure that we have tables for all nestings. ****
+
+<<CES_Params_Table, results='asis'>>=
+printCESParamsTableA(energyType=NA)
+printCESParamsTableB(energyType=NA)
+@
+
+The 95\% confidence intervals associated with Figure~\ref{fig:}
+are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+**** Ensure that we have figures for all nestings. ****
+
+<<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType=NA)
+@
+
+The 95\% confidence intervals associated with Figure~\ref{fig:}
+are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+**** Ensure that we have tables for all nestings. ****
+
+<<CESq_Params_Table, results='asis'>>=
+printCESParamsTableA(energyType="Q")
+printCESParamsTableB(energyType="Q")
+@
+
+The 95\% confidence intervals associated with Figure~\ref{fig:}
+are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+**** Ensure that we have figures for all nestings. ****
+
+<<CESq_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($kl$)$e$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType="Q")
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{LINEX Model}
+%++++++++++++++++++++++++++++++
+
+The 95\% confidence intervals associated with Figure~\ref{fig:}
+are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+**** Ensure that we have figures for all nestings. ****
+
+<<LINEX_Params_Table, results='asis'>>=
+printLINEXParamsTable(energyType="Q")
+@
+
+<<LINEXq_Params_Graph, fig.pos="H", fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createLINEXParamsGraph(energyType="Q")
 @
 
 
