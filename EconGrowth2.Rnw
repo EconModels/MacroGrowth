@@ -1325,27 +1325,47 @@ The CES model without and with energy is given by
 Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
 The \texttt{R} \citep{R} package \texttt{micEconCES} 
 \citep{Henningsen:2011td} was used to estimate parameters 
-$\gamma$, $\lambda$, $\delta_1$, $\rho_1$, $\delta$, and $\rho$. 
+$\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
 The \texttt{cesEst} function of \texttt{micEconCES} provides 
 several algorithm options for parameter estimation.
 The default algorithm (Levenberg-Marquardt) does not respect
 parameter constraints (see Section~\ref{sec:CES}) and, 
 in our testing, nearly always violated them, often returning
 negative values for elasticity of substitution ($\sigma$) parameters.
+Thus, we used the two fitting algorithms available in \texttt{cesEst} that
+respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
 
-**** MKH: Rewrite to reflect final algorithm ****
+Our CES parameter estimation algorithm starts with an eleven-value grid search
+in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+which corresponds to $\sigma$ and $\sigma_1$ values of
+0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
+During the grid search, values of $\rho$ and $\rho_1$ are fixed,
+and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
+by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
+In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
+at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
+During the grid search portion of our algorithm, starting values for the free parameters
+are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
+and $\gamma$ is set to a value such that the mean of the residuals is zero.
 
-Two algorithms available in \texttt{cesEst} 
-(\texttt{PORT} and \texttt{L-BFGS-B}) respect coefficient constraints. 
-Our CES parameter estimation algorithm tries both
-with default starting values and selects the
-result with lowest $sse$, regardless
-of convergence status. If one algorithm
-fails during the fitting process 
-(due to division by zero or another numerical error), 
-we use coefficients from the algorithm that didn't.
-In event that both algorithms fail, 
-we skip that resampled data point.
+Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
+is attempted wherein all fitting parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are allowed to float. 
+The start values for fitting parameters are taken from 
+the grid search fit that provided the lowest $sse$.
+
+If resampled data are being fitted, a prior fit to historical data is available.
+In the final step of our algorithm, 
+a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
+uses coefficients from the best 
+fit to historical data as its starting point. 
+In this final gradient search, all model parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are considered free parameters.
+
+The fit with lowest $sse$ of all the above trials is deemed the winner,
+and its fitting parameters are used as the model.
 
 \citet{Henningsen:2011td}, 
 in their detailed analysis of \citet{Kemfert:1998vd}, found that 
@@ -1364,11 +1384,6 @@ $sse$ than \texttt{L-BFGS-B}, despite the fact that
 \texttt{L-BFGS-B} often reports convergence
 and \texttt{PORT} does not for the same data
 (i.e., for the same $y$, $k$, $l$, and $e$ data).
-
-**** Do we want to report on the fraction of non-convergence
-reported? Maybe we should write a function that 
-searches all the countries to find which 
-country reports least convergence for a given model. ****
 
 Coefficients for each resampled CES model (without energy)
 are shown in 
