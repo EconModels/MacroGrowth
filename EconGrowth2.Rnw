@@ -1498,6 +1498,7 @@ linexResamplePlot(energyType="Q")
 @
 
 Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
+**** Remove $x$ and $u$ lines. ****
 
 <<LINEX_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
 createLINEXLatticeGraph()
@@ -1944,22 +1945,22 @@ intervals on fitted model parameters.
 %++++++++++++++++++++++++++++++
 
 The 95\% confidence intervals associated with Figure~\ref{fig:CD_Scatter_Graph} 
-are shown in Table~\ref{tab:CD_Params_Table}.
+are shown in Table~\ref{tab:CD_Parameters_No_Energy}.
 
 <<CD_Params_Table, results='asis'>>=
 printCDParamsTable(energyType=NA)    #Without energy
 @
 
-The data in Table~\ref{tab:CD_Params_Table} is plotted in
-Figure~\ref{CD_Params_Graph}.
+The data in Table~\ref{tab:CD_Parameters_No_Energy} is plotted in
+Figure~\ref{fig:CD_Params_Graph}.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCDParamsGraph(energyType=NA)
 @
 
 The 95\% confidence intervals associated with Figure~\ref{fig:CDq_Scatter_Graph} 
-are shown in Table~\ref{tab:CDq_Params_Table}
-and Figure~\ref{CDq_Params_Graph}.
+are shown in Table~\ref{tab:CD_Parameters_With_Q}
+and Figure~\ref{fig:CDq_Params_Graph}.
 
 <<CDq_Params_Table, results='asis'>>=
 printCDParamsTable(energyType="Q")   #With energy
