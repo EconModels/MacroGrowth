@@ -1186,7 +1186,7 @@ and random scatter in the observed historical data.
 \end{equation}
 
 Under that assumption, it would not be surprising if the residual from 
-any one year had been observed on a different year. 
+any one year had been observed in a different year. 
 By applying randomly selected residuals (with randomly selected signs)
 to model predictions at each year of the GDP time series, we create a resampled
 GDP time series ($y_{resample,t}$) that can be fitted using the techniques
@@ -1231,7 +1231,7 @@ of the coefficients for each model.
 %++++++++++++++++++++++++++++++
 
 The Cobb-Douglas model without energy is given by 
-Equation~\ref{eq:CD}. The Cobb-Douglas (without energy) production function was
+Equation~\ref{eq:CD}. Equation~\ref{eq:CD} was
 reparameterized as
 
 \begin{equation} \label{eq:CD_reparam}
@@ -1245,8 +1245,25 @@ If the estimated value for $\alpha$ was found outside the interval $[0,1]$,
 we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
 The value of $\beta$ was found with $\beta = 1 - \alpha$. 
 
-**** CD without energy results here. Scatter plots? CIs? 
-Partial residual plots? TBD which to include. ****
+Figure~\ref{fig:CD_Scatter_Graph} shows a ternary plot 
+of $\alpha$, $\beta$, and $\gamma$ parameter values 
+for resample models for the Cobb-Douglas model (without energy). 
+In Figure~\ref{fig:CD_Scatter_Graph}, 
+$\gamma$ is always 0.0, because energy is not included in this model.
+
+<<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
+cdResampleTrianglePlot(energyType=NA)
+@
+
+Converting the resample data into 95\% confidence intervals 
+provides data for Figure~\ref{fig:CD_Params_Graph}.
+Appendix~\ref{sec:Model_Parameters} 
+contains tables with numerical values of 
+Cobb-Douglas model parameters and 95\% confidence intervals.
+
+<<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCDParamsGraph(energyType=NA)
+@
 
 To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
 in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
@@ -1290,7 +1307,13 @@ fraction of unconverged models for each model type.
 The above approach resulted in very few unconverged
 Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
 
-**** Include CD$e$ graphs here. Ternary plots? CIs? TBD which to include. ****
+Figure~\ref{fig:CDq_Cloud_Graph} shows ternary plots 
+for $\alpha$, $\beta$, and $\gamma$ parameter values 
+for Cobb-Douglas (with energy) resample models.
+
+<<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
+cdResampleTrianglePlot(energyType="Q")
+@
 
 Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1364,7 +1387,7 @@ options. CIs? TBD which to include. ****
 Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
 to historical data for the $(kl)e$ nesting.
 
-<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.">>=
+<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.", eval=FALSE>>=
 createCESLatticeGraph()
 @
 
