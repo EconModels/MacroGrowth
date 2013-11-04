@@ -1389,9 +1389,49 @@ cesResamplePlotLambdaGamma(energyType=NA)
 cesResamplePlotSigma_1Delta_1(energyType=NA)
 @
 
+**** Include other nestings here ****
 
+Coefficients for each resampled CES model (with energy)
+are shown in 
+Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_kle}--\ref{fig:CESq_sigma_delta_Scatter_Graph_ekl}. 
+Note that each nesting of the factors of production
+is included in the graphs.
 
+<<CESq_lambda_gamma_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
+cesResamplePlotLambdaGamma(energyType="Q", nest="(kl)e")
+@
 
+<<CESq_sigma_1_delta_1_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(kl)e")
+@
+
+<<CESq_sigma_delta_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
+cesResamplePlotSigmaDelta(energyType="Q", nest="(kl)e")
+@
+
+<<CESq_lambda_gamma_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
+cesResamplePlotLambdaGamma(energyType="Q", nest="(le)k")
+@
+
+<<CESq_sigma_1_delta_1_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(le)k")
+@
+
+<<CESq_sigma_delta_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
+cesResamplePlotSigmaDelta(energyType="Q", nest="(le)k")
+@
+
+<<CESq_lambda_gamma_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
+cesResamplePlotLambdaGamma(energyType="Q", nest="(ek)l")
+@
+
+<<CESq_sigma_1_delta_1_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
+cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(ek)l")
+@
+
+<<CESq_sigma_delta_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
+cesResamplePlotSigmaDelta(energyType="Q", nest="(ek)l")
+@
 
 Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
 to historical data for the $(kl)e$ nesting.
@@ -1402,7 +1442,6 @@ to historical data for the $(kl)e$ nesting.
 createCESLatticeGraph()
 @
 
-**** Include other nestings here? ****
 
 
 %++++++++++++++++++++++++++++++
