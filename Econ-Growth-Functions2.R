@@ -1956,7 +1956,7 @@ cesModel2 <- function(countryAbbrev,
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       nest="(kl)e", 
-                      rho=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                      rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       digits=6,
                       ...){
