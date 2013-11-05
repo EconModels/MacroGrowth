@@ -1996,7 +1996,7 @@ are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(kl)e} and
 \ref{tab:CES_Parameters_B_With_Q_(kl)e} and Figure~\ref{fig:CESq_Params_Graph_kle}.
 **** Ensure that we have figures for all nestings. ****
 
-<<CESq_Params_Table, results='asis'>>=
+<<CESq_Params_Table_kle, results='asis'>>=
 printCESParamsTableA(energyType="Q", nest="(kl)e")
 printCESParamsTableB(energyType="Q", nest="(kl)e")
 @
