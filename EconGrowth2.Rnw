@@ -2037,9 +2037,8 @@ createCESParamsGraph(energyType="Q", nest="(ek)l")
 \subsection{LINEX Model}
 %++++++++++++++++++++++++++++++
 
-The 95\% confidence intervals associated with Figure~\ref{fig:}
-are shown in Table~\ref{tab:} and Figure~\ref{fig:}
-**** Ensure that we have figures for all nestings. ****
+The 95\% confidence intervals associated with Figure~\ref{fig:LINEXq_Resample_Graph}
+are shown in Table~\ref{tab:LINEX_Parameters_With_Q} and Figure~\ref{fig:LINEXq_Params_Graph}.
 
 <<LINEX_Params_Table, results='asis'>>=
 printLINEXParamsTable(energyType="Q")
