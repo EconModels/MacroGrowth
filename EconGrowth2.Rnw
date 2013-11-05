@@ -1975,38 +1975,34 @@ createCDParamsGraph(energyType="Q")
 \subsection{CES Models}
 %++++++++++++++++++++++++++++++
 
-The 95\% confidence intervals associated with Figure~\ref{fig:}
-are shown in Table~\ref{tab:} and Figure~\ref{fig:}
-**** Ensure that we have tables for all nestings. ****
+The 95\% confidence intervals associated 
+with Figures~\ref{fig:CES_lambda_gamma_Scatter_Graph} 
+and \ref{fig:CES_sigma_1_delta_1_Scatter_Graph}
+are shown in Tables~\ref{tab:CES_Parameters_A} 
+and \ref{tab:CES_Parameters_B} and Figure~\ref{fig:CES_Params_Graph}.
 
 <<CES_Params_Table, results='asis'>>=
 printCESParamsTableA(energyType=NA)
 printCESParamsTableB(energyType=NA)
 @
 
-The 95\% confidence intervals associated with Figure~\ref{fig:}
-are shown in Table~\ref{tab:} and Figure~\ref{fig:}
-**** Ensure that we have figures for all nestings. ****
-
 <<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType=NA)
 @
 
-The 95\% confidence intervals associated with Figure~\ref{fig:}
-are shown in Table~\ref{tab:} and Figure~\ref{fig:}
-**** Ensure that we have tables for all nestings. ****
-
-<<CESq_Params_Table, results='asis'>>=
-printCESParamsTableA(energyType="Q")
-printCESParamsTableB(energyType="Q")
-@
-
-The 95\% confidence intervals associated with Figure~\ref{fig:}
-are shown in Table~\ref{tab:} and Figure~\ref{fig:}
+The 95\% confidence intervals associated 
+with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_kle}--\ref{fig:CESq_sigma_delta_Scatter_Graph_kle}
+are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(kl)e} and 
+\ref{tab:CES_Parameters_B_With_Q_(kl)e} and Figure~\ref{fig:CESq_Params_Graph_kle}.
 **** Ensure that we have figures for all nestings. ****
 
-<<CESq_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($kl$)$e$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType="Q")
+<<CESq_Params_Table, results='asis'>>=
+printCESParamsTableA(energyType="Q", nest="(kl)e")
+printCESParamsTableB(energyType="Q", nest="(kl)e")
+@
+
+<<CESq_Params_Graph_kle, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($kl$)$e$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType="Q", nest="(kl)e")
 @
 
 
