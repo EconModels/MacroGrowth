@@ -2250,7 +2250,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
                     sigma=baseFitCoeffs["sigma"])
   row.names(mid) <- "CESe"
   upper <- data.frame(gamma=gammaCI["97.5%"],
-                      lambda=lambdaCI["9.75%"],
+                      lambda=lambdaCI["97.5%"],
                       delta_1=delta_1CI["97.5%"],
                       rho_1=rho_1CI["97.5%"],
                       sigma_1=sigma_1CI["97.5%"],
