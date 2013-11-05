@@ -2367,7 +2367,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
   return(graph)
 }
 
-cesData <- function(countryAbbrev, energyType=NA){
+cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the CES production function given a country and an energyType.
@@ -2396,7 +2396,8 @@ cesData <- function(countryAbbrev, energyType=NA){
     resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev)
   } else {
     # We want CES with energy  -- might want all three for this later.
-    resampleData <- loadResampleData(modelType="cese-(kl)e", countryAbbrev=countryAbbrev, energyType=energyType)
+    modelType <- paste("cese-", nest, sep="")
+    resampleData <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
   }
   statisticalProperties <- cesResampleCoeffProps(resampleData)
   # Set the correct label in the row that shows the base values.
@@ -2408,11 +2409,12 @@ cesData <- function(countryAbbrev, energyType=NA){
   return(statisticalProperties)
 }
 
-cesCountryRow <- function(countryAbbrev, energyType){
+cesCountryRow <- function(countryAbbrev, energyType, nest="(kl)e"){
   ############
-  # Creates a row for the CES parameters table for the given country (2-letter code) and energyType (Q, X, U, or NA)
+  # Creates a row for the CES parameters table for the given country (2-letter code),
+  # energyType (Q, X, U, or NA), and nest.
   ##
-  dataCES <- cesData(countryAbbrev, energyType)
+  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest)
   out <- cbind(dataCES["-95% CI", "gamma"], dataCES["CES", "gamma"], dataCES["+95% CI", "gamma"],
                dataCES["-95% CI", "lambda"], dataCES["CES", "lambda"], dataCES["+95% CI", "lambda"],
                dataCES["-95% CI", "delta_1"], dataCES["CES", "delta_1"], dataCES["+95% CI", "delta_1"],
@@ -2423,7 +2425,7 @@ cesCountryRow <- function(countryAbbrev, energyType){
   return(out)
 }
 
-cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType, nest="(kl)e"){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a CES model for countryAbbrev and energyType
@@ -2435,7 +2437,7 @@ cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   # The return type is a data.frame.
   ##
   #Create six rows, one for each parameter. Each row is a data.frame so that it is plottable!
-  dataCES <- cesData(countryAbbrev, energyType)
+  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest)
   gammaRow <- data.frame(country = countryAbbrev, 
                          parameter = "gamma", 
                          lowerCI = dataCES["-95% CI", "gamma"], 
@@ -2485,11 +2487,11 @@ cesParamsTableDF <- function(energyType){
   return(dataCES)
 }
 
-cesParamsTableA <- function(energyType){
+cesParamsTableA <- function(energyType, nest="(kl)e"){
   ############################
   # Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -2501,11 +2503,19 @@ cesParamsTableA <- function(energyType){
     energyStringCaption <- "(without energy)"
     energyStringLabel <- ""
   } else {
-    energyStringCaption <- paste("(with $", tolower(energyType), "$)")
-    energyStringLabel <- paste("_With_", energyType, sep="")
+    if (nest == "(kl)e"){
+      energyStringCaption <- "(with energy, ($kl$)$e$ nesting)"
+    } else if (nest == "(le)k"){
+      energyStringCaption <- "(with energy, ($le$)$k$ nesting)"
+    } else if (nest == "(ek)l"){
+      energyStringCaption <- "(with energy, ($ek$)$l$ nesting)"
+    } else {
+      stop(paste("Unknown nesting", nest, "in cesParamsTableA."))
+    }
+    energyStringLabel <- paste("_With_", energyType, "_", nest, sep="")
   }
   tableCESa <- xtable(dataCES[,c(4,5,6, 10,11,12, 16,17,18)], #Picks up lambda, delta, sigma
-                      caption=paste("CES model ", 
+                      caption=paste("CES model parameters ", 
                                     energyStringCaption, 
                                     ". $\\lambda$, $\\delta$, and $\\sigma$ parameters for 1980-2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", 
                                     sep=""), 
@@ -2516,11 +2526,11 @@ cesParamsTableA <- function(energyType){
   return(tableCESa)
 }
 
-cesParamsTableB <- function(energyType){
+cesParamsTableB <- function(energyType, nest="(kl)e"){
   ############################
   # Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -2532,8 +2542,16 @@ cesParamsTableB <- function(energyType){
     energyStringCaption <- "(without energy)"
     energyStringLabel <- ""
   } else {
-    energyStringCaption <- paste("(with $", tolower(energyType), "$)")
-    energyStringLabel <- paste("_With_", energyType, sep="")
+    if (nest == "(kl)e"){
+      energyStringCaption <- "(with energy, ($kl$)$e$ nesting)"
+    } else if (nest == "(le)k"){
+      energyStringCaption <- "(with energy, ($le$)$k$ nesting)"
+    } else if (nest == "(ek)l"){
+      energyStringCaption <- "(with energy, ($ek$)$l$ nesting)"
+    } else {
+      stop(paste("Unknown nesting", nest, "in cesParamsTableA."))
+    }
+    energyStringLabel <- paste("_With_", energyType, "_", nest, sep="")
   }
   tableCESb <- xtable(dataCES[,c(1,2,3, 7,8,9, 13,14,15)], #Picks up gamma, delta_1, and sigma_1
                       caption=paste("CES model ", energyStringCaption, ". $\\gamma$, $\\delta_1$, and $\\sigma_1$ parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
@@ -2580,22 +2598,22 @@ createCESParamsGraph <- function(energyType){
   return(graph)
 }
 
-printCESParamsTableA <- function(energyType){
+printCESParamsTableA <- function(energyType, nest="(kl)e"){
   ############################
   # Prints a table with lambda, delta, and sigma parameters from a CES model for the given energyType. 
   ##
-  print(cesParamsTableA(energyType=energyType), 
+  print(cesParamsTableA(energyType=energyType, nest=nest), 
         caption.placement="top", 
         sanitize.colnames.function = identity, 
         size="\\tiny",
         table.placement="H")
 }
 
-printCESParamsTableB <- function(energyType){
+printCESParamsTableB <- function(energyType, nest="(kl)e"){
   ############################
   # Prints a table with gamma, delta_1, and sigma_1 parameters from a CES model for the given energyType. 
   ##
-  print(cesParamsTableB(energyType=energyType), 
+  print(cesParamsTableB(energyType=energyType, nest=nest), 
         caption.placement="top", 
         sanitize.colnames.function = identity, 
         size="\\tiny",
