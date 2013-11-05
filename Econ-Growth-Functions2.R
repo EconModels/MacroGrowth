@@ -2562,13 +2562,13 @@ cesParamsTableB <- function(energyType, nest="(kl)e"){
   return(tableCESb)
 }
 
-createCESParamsGraph <- function(energyType){
+createCESParamsGraph <- function(energyType, nest="(kl)e"){
   #############################
-  # Creates a graph with confidence intervals for the CES model for the given energyType
+  # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
   ##
   # Create a data table with the following columns:
   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
-  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                    data = data, 
                    centers = value, #identifies where the dots should be placed
