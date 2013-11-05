@@ -2583,15 +2583,15 @@ createCESParamsGraph <- function(energyType, nest="(kl)e"){
                                                         "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="transparent"),
                    col = "black", #Sets line color to black
                    lwd = 1, #Sets line width to 1.0
-                   ylim = list(c(0.5, 1.5), c(-0.05, 0.05), c(0.0, 1.0),
-                               c(0.0, 1.0), c(0.0, 1.0), c(0.0, 1.0)), #y axis limits
+                   ylim = list(c(0.75, 1.25), c(-0.05, 0.1), c(0.0, 1.0),
+                               c(0.0, 1.0), c(0.0, 2.0), c(0.0, 2.0)), #y axis limits
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
                                  y=list(relation="free", #allow each axis to be different
-                                        at=list(c(0.5, 1.0, 1.5), c(-0.05, 0.0, 0.05),
+                                        at=list(c(0.75, 1.0, 1.25), c(-0.05, 0.0, 0.05, 0.10),
                                                 c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
-                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0))   #y tick marks
+                                                c(0.0, 1.0, 2.0), c(0.0, 1.0, 2.0))   #y tick marks
                                  )
                    )
   )
