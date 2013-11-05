@@ -1990,11 +1990,10 @@ printCESParamsTableB(energyType=NA)
 createCESParamsGraph(energyType=NA)
 @
 
-The 95\% confidence intervals associated 
+The 95\% confidence intervals for the ($kl$)$e$ nesting associated 
 with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_kle}--\ref{fig:CESq_sigma_delta_Scatter_Graph_kle}
 are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(kl)e} and 
 \ref{tab:CES_Parameters_B_With_Q_(kl)e} and Figure~\ref{fig:CESq_Params_Graph_kle}.
-**** Ensure that we have figures for all nestings. ****
 
 <<CESq_Params_Table_kle, results='asis'>>=
 printCESParamsTableA(energyType="Q", nest="(kl)e")
@@ -2003,6 +2002,34 @@ printCESParamsTableB(energyType="Q", nest="(kl)e")
 
 <<CESq_Params_Graph_kle, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($kl$)$e$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="Q", nest="(kl)e")
+@
+
+The 95\% confidence intervals for the ($le$)$k$ nesting associated 
+with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_lek}--\ref{fig:CESq_sigma_delta_Scatter_Graph_lek}
+are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(le)k} and 
+\ref{tab:CES_Parameters_B_With_Q_(le)k} and Figure~\ref{fig:CESq_Params_Graph_lek}.
+
+<<CESq_Params_Table_lek, results='asis'>>=
+printCESParamsTableA(energyType="Q", nest="(le)k")
+printCESParamsTableB(energyType="Q", nest="(le)k")
+@
+
+<<CESq_Params_Graph_lek, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($le$)$k$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType="Q", nest="(le)k")
+@
+
+The 95\% confidence intervals for the ($ek$)$l$ nesting associated 
+with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_ekl}--\ref{fig:CESq_sigma_delta_Scatter_Graph_ekl}
+are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(ek)l} and 
+\ref{tab:CES_Parameters_B_With_Q_(ek)l} and Figure~\ref{fig:CESq_Params_Graph_ekl}.
+
+<<CESq_Params_Table_ekl, results='asis'>>=
+printCESParamsTableA(energyType="Q", nest="(ek)l")
+printCESParamsTableB(energyType="Q", nest="(ek)l")
+@
+
+<<CESq_Params_Graph_ekl, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($ek$)$l$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+createCESParamsGraph(energyType="Q", nest="(ek)l")
 @
 
 
