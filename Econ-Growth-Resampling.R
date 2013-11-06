@@ -201,7 +201,11 @@ resampleFits <- function(
                       "linex" = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
   )
   baseFitCoeffs <- extractAllMetaData(origModel)
-  
+  # Add a method column.
+  baseFitCoeffs$method <- "orig"
+  # Begin accumulating a list of the models. The original model is in the first slot of the list.
+  models <- list(orig=origModel)  
+  # Now do the resample fits.
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
                                                                                          origModel=origModel, 
@@ -214,12 +218,25 @@ resampleFits <- function(
                                                                                method=method),
                                                                respectRangeConstraints=TRUE),
                                                      which="naturalCoeffs"),
-                              "cde"   = do(n) * attr(x=cdeModel(data=doResample(data=data, 
-                                                                                origModel=origModel, 
-                                                                                method=method),
-                                                                energyType=energyType, 
-                                                                respectRangeConstraints=TRUE),
-                                                     which="naturalCoeffs"),
+#
+# Here is the previous code to do the cobb-douglas with energy model.
+#
+#                               "cde"   = do(n) * attr(x=cdeModel(data=doResample(data=data, 
+#                                                                                 origModel=origModel, 
+#                                                                                 method=method),
+#                                                                 energyType=energyType, 
+#                                                                 respectRangeConstraints=TRUE),
+#                                                      which="naturalCoeffs"),
+#
+# This is the first cut at new code to both get the coefficients and save the model for 
+# later use.
+#
+                              "cde"   = do(n) * {
+                                resampleData <- doResample(data=data, origModel=origModel, method=method)
+                                model <- cdeModel(data=resampleData, energyType=energyType, respectRangeConstraints=TRUE)
+                                models[[length(models)+1]] <- model
+                                attr(x=model, which="naturalCoeffs")
+                              },
                               
                               "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
                                                                            data=doResample(data=data, 
@@ -255,9 +272,13 @@ resampleFits <- function(
                                                      which="naturalCoeffs"),
                               stop("unknown model type")
   )
-  baseFitCoeffs$method <- "orig"
-  resampleFitCoeffs$method <- "wild"
+  resampleFitCoeffs$method <- method
   out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
+  # At this point, both out (which contains the coefficients) and models (which contains the models)
+  # should be the same size. If not, we need to stop.
+  if (nrow(out) != length(models)){
+    stop(paste("rows(out) =", length(out), "and length(models) =", length(models), "but they should be equal."))
+  }
   out$countryAbbrev <- countryAbbrev
   return(out)
 }
