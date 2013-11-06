@@ -275,7 +275,7 @@ resampleFits <- function(
   resampleFitCoeffs$method <- method
   out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
   # At this point, both out (which contains the coefficients) and models (which contains the models)
-  # should be the same size. If not, we need to stop.
+  # should be the same size. If not, we need to stop. Something has gone wrong.
   if (nrow(out) != length(models)){
     stop(paste("rows(out) =", length(out), "and length(models) =", length(models), "but they should be equal."))
   }
