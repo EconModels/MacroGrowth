@@ -277,7 +277,7 @@ resampleFits <- function(
   # At this point, both out (which contains the coefficients) and models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
   if (nrow(out) != length(models)){
-    stop(paste("rows(out) =", length(out), "and length(models) =", length(models), "but they should be equal."))
+    stop(paste("nrow(out) =", nrow(out), "and length(models) =", length(models), "but they should be equal."))
   }
   out$countryAbbrev <- countryAbbrev
   return(out)
