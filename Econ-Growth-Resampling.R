@@ -163,9 +163,6 @@ resampleFits <- function(
   factor=factors,
   method=resampleMethods,
   n,
-  gridPoints=10,
-  #   rho=seq(-0.9, 10, length.out=gridPoints),
-  #   rho1=seq(-0.9, 10, length.out=gridPoints)
   rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)){
   ##################
