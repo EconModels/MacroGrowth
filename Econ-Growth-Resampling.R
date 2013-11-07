@@ -203,6 +203,7 @@ resampleFits <- function(
   baseFitCoeffs <- extractAllMetaData(origModel)
   # Add a method column.
   baseFitCoeffs$method <- "orig"
+  coeffs <- baseFitCoeffs
   # Begin accumulating a list of the models. The original model is in the first slot of the list.
   models <- list(orig=origModel)  
   # Now do the resample fits.
@@ -231,11 +232,13 @@ resampleFits <- function(
 # This is the first cut at new code to both get the coefficients and save the model for 
 # later use.
 #
-                              "cde"   = do(n) * {
+                              "cde"   = for (i in 1:n) {
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
                                 model <- cdeModel(data=resampleData, energyType=energyType, respectRangeConstraints=TRUE)
+                                resampleCoeffs <- attr(x=model, which="naturalCoeffs")
+                                resampleCoeffs$method <- method
+                                coeffs <- rbind.fill(coeffs, resampleCoeffs)
                                 models[[length(models)+1]] <- model
-                                attr(x=model, which="naturalCoeffs")
                               },
                               
                               "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
@@ -272,14 +275,14 @@ resampleFits <- function(
                                                      which="naturalCoeffs"),
                               stop("unknown model type")
   )
-  resampleFitCoeffs$method <- method
-  out <- rbind.fill(baseFitCoeffs, resampleFitCoeffs)
   # At this point, both out (which contains the coefficients) and models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
-  if (nrow(out) != length(models)){
-    stop(paste("nrow(out) =", nrow(out), "and length(models) =", length(models), "but they should be equal."))
+  if (nrow(coeffs) != length(models)){
+    stop(paste("nrow(coeffs) =", nrow(coeffs), 
+               "and length(models) =", length(models), "but they should be equal."))
   }
-  out$countryAbbrev <- countryAbbrev
+  coeffs$countryAbbrev <- countryAbbrev
+  out <- list(coeffs=coeffs, models=models)
   return(out)
 }
 
