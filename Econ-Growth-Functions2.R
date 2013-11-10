@@ -2128,10 +2128,33 @@ addMetaData <- function(model, nest, history=""){
                               sigma = as.vector(1 / (1 + rho)),
                               sse = sum(resid(model)^2)
   )
+  # Calculate some metadata
+  if (nest == "(kl)" || nest == "kl"){
+    alpha <- delta
+    beta <- 1.0 - delta
+    gamma <- 0.0
+  } else if (nest == "(kl)e"){
+    alpha <- delta * delta_1
+    beta  <- delta * (1.0 - delta_1)
+    gamma <- 1.0 - delta
+  } else if (nest == "(le)k"){
+    alpha <- 1.0 - delta
+    beta <- delta * delta_1
+    gamma <- delta * (1.0 - delta_1)
+  } else if (nest == "(ek)l"){
+    alpha <- delta * (1.0 - delta_1)
+    beta <- 1.0 - delta
+    gamma <- delta * delta_1
+  } else {
+    stop(paste("Unknown nest:", nest, "in addMetaData."))
+  }
   metaData <- data.frame( isConv = model$convergence,
                           algorithm = model$method,
                           iter = as.vector(model["iter"]),
                           grid = grid,
+                          alpha = as.vector(alpha),
+                          beta = as.vector(beta),
+                          gamma = as.vector(gamma),
                           start.lambda = as.vector(model$start["lambda"]),
                           start.delta_1 = as.vector(model$start["delta_1"]),
                           start.rho_1 = as.vector(model$start["rho_1"]),
@@ -2260,7 +2283,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   return(dataCD)
 }
 
-cesPredictions <- function(countryAbbrev, energyType, nest="(kl)e"){
+cesPredictions <- function(countryAbbrev, energyType, nest){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -2291,13 +2314,13 @@ cesPredictions <- function(countryAbbrev, energyType, nest="(kl)e"){
   return(df)
 }
 
-cesPredictionsColumn <- function(energyType){
+cesPredictionsColumn <- function(energyType, nest){
   #########################
   # Takes the CES fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
   # If energyType=NA is specified, the CES model without energy will be used for the predictions.
   ##
-  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType))  
+  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType, nest=nest))  
   if (is.na(energyType)){
     colnames(out) <- "predGDP"
   } else {
@@ -2306,16 +2329,16 @@ cesPredictionsColumn <- function(energyType){
   return(out)
 }
 
-createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+createCESLatticeGraph <- function(countryAbbrev, nest, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
-  predictions  <- cesPredictionsColumn(energyType=NA)  #Predictions from CES without energy
-  predictionsQ <- cesPredictionsColumn(energyType="Q") #Predictions from CES with Q
-  predictionsX <- cesPredictionsColumn(energyType="X") #Predictions from CES with X
-  predictionsU <- cesPredictionsColumn(energyType="U") #Predictions from CES with U
+  predictions  <- cesPredictionsColumn(energyType=NA, nest=nest)  #Predictions from CES without energy
+  predictionsQ <- cesPredictionsColumn(energyType="Q", nest=nest) #Predictions from CES with Q
+  predictionsX <- cesPredictionsColumn(energyType="X", nest=nest) #Predictions from CES with X
+  predictionsU <- cesPredictionsColumn(energyType="U", nest=nest) #Predictions from CES with U
   #Now add the predictions columns to the data.
   data <- cbind(data, predictions, predictionsQ, predictionsX, predictionsU) 
   graphType <- "b" #b is for both line and symbol
