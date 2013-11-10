@@ -1453,10 +1453,23 @@ to historical data for the $(kl)e$ nesting.
 
 **** Matt: Remove $x$ and $u$ lines. Replace with lines for each nesting. ****
 
-<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.", eval=FALSE>>=
-createCESLatticeGraph()
+<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.">>=
+createCESLatticeGraph(nest="(kl)e")
 @
 
+Figure~\ref{fig:CES_GDP_Lattice_Graph_lek} compares CES model predictions 
+to historical data for the $(le)k$ nesting.
+
+<<CES_GDP_Lattice_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($le$)$k$ nesting.">>=
+createCESLatticeGraph(nest="(le)k")
+@
+
+Figure~\ref{fig:CES_GDP_Lattice_Graph_ekl} compares CES model predictions 
+to historical data for the $(ek)l$ nesting.
+
+<<CES_GDP_Lattice_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($ek$)$l$ nesting.">>=
+createCESLatticeGraph(nest="(ek)l")
+@
 
 
 %++++++++++++++++++++++++++++++
