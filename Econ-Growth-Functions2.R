@@ -2035,7 +2035,7 @@ cesModel2 <- function(countryAbbrev,
       )
     }
     hist <- paste(algorithm, "(grid)", sep="")
-    model <- addMetaData(model, history=hist)
+    model <- addMetaData(model, nest=nest, history=hist)
     models[[length(models)+1]] <- model
   }
   #
@@ -2050,7 +2050,7 @@ cesModel2 <- function(countryAbbrev,
       error = function(e) { NULL }
     )
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", sep="")
-    model <- addMetaData(model, history=hist)
+    model <- addMetaData(model, nest=nest, history=hist)
     models[[length(models)+1]] <- model
   }
   #
@@ -2065,7 +2065,7 @@ cesModel2 <- function(countryAbbrev,
         error = function(e) { NULL }
       )
       hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="")
-      model <- addMetaData(model, history=hist)
+      model <- addMetaData(model, nest=nest, history=hist)
       models[[length(models)+1]] <- model
     }
   }
@@ -2073,7 +2073,7 @@ cesModel2 <- function(countryAbbrev,
   return(models)
 }
 
-addMetaData <- function(model, history=""){
+addMetaData <- function(model, nest, history=""){
   ###############
   # This function adds meta data to a model.  Currently this is only designed to
   # work with CES models. Meta data is attached as attributes (naturalCoeffs and meta)
@@ -2278,7 +2278,12 @@ cesPredictions <- function(countryAbbrev, energyType, nest="(kl)e"){
   # Old code that re-ran the fit each time.
   # model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
   # New code that loads pre-run models from disk.
-  model <- loadResampleModelsBaseModelOnly(modelType=paste("cese-", nest, sep=""), countryAbbrev=countryAbbrev, energyType=energyType)
+  if (is.na(energyType)){
+    modelType <- "ces"
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+  }
+  model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
