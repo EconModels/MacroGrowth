@@ -1949,7 +1949,6 @@ cdResampleTrianglePlot <- function(energyType, ...){
   return(graph)
 }
 
-## <<ces functions, eval=TRUE>>=
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
                       data = loadData(countryAbbrev=countryAbbrev), 
@@ -1977,6 +1976,8 @@ cesModel2 <- function(countryAbbrev,
   #
   # Returns a list of models that were generated within this function.
   ##
+# print("At top of cesModel2. data =")
+# print(data)
   if (!is.na(energyType)){
     # We need to do the CES fit with the desired energyType.
     # To achieve the correct fit, we'll change the name of the desired column
@@ -2024,7 +2025,7 @@ cesModel2 <- function(countryAbbrev,
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, control=chooseCESControl(algorithm), ...),
         error = function(e) { NULL }
-      )      
+      )
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch(
@@ -2037,7 +2038,6 @@ cesModel2 <- function(countryAbbrev,
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
   }
-  
   #
   # Now try gradient search starting from the best place found by the grid searches above.
   #
@@ -2053,7 +2053,6 @@ cesModel2 <- function(countryAbbrev,
     model <- addMetaData(model, history=hist)
     models[[length(models)+1]] <- model
   }
-
   #
   # Now try gradient search starting from prevModel (if it is present in the argument list).
   #
@@ -2070,7 +2069,6 @@ cesModel2 <- function(countryAbbrev,
       models[[length(models)+1]] <- model
     }
   }
- 
   # Return everything all of the models that we calculated.
   return(models)
 }
@@ -2277,7 +2275,10 @@ cesPredictions <- function(countryAbbrev, energyType, nest="(kl)e"){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
+  # Old code that re-ran the fit each time.
+  # model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
+  # New code that loads pre-run models from disk.
+  model <- loadResampleModelsBaseModelOnly(modelType=paste("cese-", nest, sep=""), countryAbbrev=countryAbbrev, energyType=energyType)
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -3626,7 +3627,8 @@ print(len)
 #########################################
 # This next line results in an error.
 #########################################
-  return(models[[2:len]])
+  # Return everything but the first element (which is the fit to historical data).
+  return(models[-1])
 }
 
 loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor){
