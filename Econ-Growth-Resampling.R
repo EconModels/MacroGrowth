@@ -95,36 +95,55 @@ genResampleData <- function(modelType=modelTypes,
                             clobber=TRUE,
                             verbose=FALSE){
   ####################
-  # This function generates resample data for the given parameters and 
-  # saves the data as a data.frame to disk.
+  # This function generates resample data and models for the given parameters and 
+  # saves the resample coeffs as a data.frame and models as a list to disk.
   ##
-  path <- getPathForResampleData(modelType=modelType,
-                                 countryAbbrev=countryAbbrev, 
-                                 energyType=energyType,
-                                 factor=factor)
-  
+  pathCoeffs <- getPathForResampleData(modelType=modelType,
+                                       countryAbbrev=countryAbbrev, 
+                                       energyType=energyType,
+                                       factor=factor)
+  pathModels <- getPathForResampleModels(modelType=modelType,
+                                         countryAbbrev=countryAbbrev, 
+                                         energyType=energyType,
+                                         factor=factor)
   status <- "attempted"
   
-  if (file.exists(path)) {
+#   if (file.exists(path)) {
+#     if (verbose) {
+#       cat(paste(path, "exists\n"))
+#     }
+#     if (! clobber) {
+#       status <- "file existed; not clobbered"
+#       names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
+#       return(status)
+#     } else {
+#       status <- "file existed; going to clobber"
+#     }
+#   }
+#   if (verbose) cat(paste('Data will be saved in', path, "\n"))
+  
+  # If both files exist AND clobber==FALSE, don't do anything.
+  if (file.exists(pathCoeffs) && file.exists(pathModels)) {
     if (verbose) {
-      cat(paste(path, "exists\n"))
+      cat(paste(pathCoeffs, "exists\n"))
     }
     if (! clobber) {
-      status <- "file existed; not clobbered"
+      status <- "both the coeffs file and the models existed; not clobbered"
       names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
       return(status)
     } else {
-      status <- "file existed; going to clobber"
+      status <- "both the coeffs and models files existed; going to clobber"
     }
   }
-  if (verbose) cat(paste('Data will be saved in', path, "\n"))
-  status <- "creating new file"
+  if (verbose) cat(paste('Data will be saved in', pathCoeffs, "and", pathModels, "\n"))
+  status <- "creating new files"
   #########################
-  # This function generates curve fits to resampled data for the Cobb-Douglas with energy 
-  # production function and stores them to disk. The data are stored in an 
-  # object called "resampleData". This object will have the same name
+  # This function generates curve fit coefficients and models
+  # and stores them to disk. The data are stored in an 
+  # object called "resampleData" and an object called "resampleModels". 
+  # These objects will have the same name
   # when it is loaded back from disk. 
-  # We found that 10,000 resamples is sufficient to obtain good results
+  # We found that 1000 resamples is sufficient to obtain good results
   ## 
   # This next call returns a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
@@ -133,24 +152,31 @@ genResampleData <- function(modelType=modelTypes,
   energyType <- match.arg(energyType)
   factor <- match.arg(factor)
   method <- match.arg(method)
-  resampleData <- resampleFits(modelType=modelType,
+#   resampleData <- resampleFits(modelType=modelType,
+#                                countryAbbrev=countryAbbrev, 
+#                                energyType=energyType, 
+#                                factor=factor,
+#                                method=method,
+#                                n=n)
+  resampleInfo <- resampleFits(modelType=modelType,
                                countryAbbrev=countryAbbrev, 
                                energyType=energyType, 
                                factor=factor,
                                method=method,
                                n=n)
   # Split the coefficients from the models
-  
+  resampleData <- resampleInfo$coeffs
+  resampleModels <- resampleInfo$models  
   # Figure out which folder files should be saved in
   folder <- getFolderForResampleData(modelType=modelType,
-                                     countryAbbrev=countryAbbrev
-                                     )
+                                     countryAbbrev=countryAbbrev)
   # Ensure that the folder exists. showWarnings=FALSE, because we don't care 
   # if the directory already exists.
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
-
-  save(resampleData, file=path)
-  status <- "file saved"
+  # Save the coeffs and models to disk
+  save(resampleData, file=pathCoeffs)
+  save(resampleModels, file=pathModels)
+  status <- "files saved"
   names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
   paste(status)
   return(status)

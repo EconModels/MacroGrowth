@@ -3564,6 +3564,20 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA){
   return(resampleData)
 }
 
+loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA){
+  #############################
+  # This function loads previously-saved models
+  # from resampled data. The loaded object is
+  # a list that contains (in the first slot) the model for 
+  # the fit to historical data and all models
+  # for the fits to resampled data.
+  ##
+  path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  # The name of the object loaded by this call is resampleData.
+  load(file=path)
+  return(resampleModels)
+}
+
 loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrder=countryAbbrevs){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
@@ -3601,6 +3615,20 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, fac
   return(data)
 }
 
+loadResampleModelsRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
+  ####################
+  # Loads models for resampled data only from a previously-run set of resample curve fits
+  ##
+  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  # Select only those models that aren't from the curve fit to historical data (which is in position 1)
+  len <- length(models)
+print(len)
+#########################################
+# This next line results in an error.
+#########################################
+  return(models[[2:len]])
+}
+
 loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor){
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
@@ -3609,6 +3637,15 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
   # Select the row containing the original curve fit
   data <- data[data[["method"]]=="orig", ]
   return(data)
+}
+
+loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType, factor){
+  ####################
+  # Loads the model for a fit to historical data
+  ##
+  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor) 
+  # Select the first model, which is the model for the fit to historical data  
+  return(models[[1]])
 }
 
 getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor){
