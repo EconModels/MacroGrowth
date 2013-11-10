@@ -3614,7 +3614,7 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
 getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor){
   ######################
   # Returns a string identifying the entire file path in which we 
-  # hold Cobb-Douglas resampled data
+  # hold resampled data
   ##
   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
   rd <- "ResampleData-"
@@ -3627,6 +3627,26 @@ getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor)
                      #"linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep="")
                      )
+  path <- file.path(folder, filename)
+  return(path)
+}
+
+getPathForResampleModels <- function(modelType, countryAbbrev, energyType, factor){
+  ######################
+  # Returns a string identifying the entire file path in which we 
+  # hold resampled models
+  ##
+  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
+  rm <- "ResampleModels-"
+  rdat <- ".Rdata"
+  filename <- switch(modelType,
+                     "sf"    = paste(rm, modelType, "-", countryAbbrev, "-", factor, rdat, sep=""),
+                     "cd"    = paste(rm, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
+                     #"cde"   = paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "ces"   = paste(rm, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
+                     #"linex" = paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep="")
+  )
   path <- file.path(folder, filename)
   return(path)
 }
