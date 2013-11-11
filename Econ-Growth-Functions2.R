@@ -1932,7 +1932,7 @@ triangleCloudPlot <- function(resampleCoeffs, textScaling = 1.0, ...){
 
 cdResampleTrianglePlot <- function(energyType, ...){
   ##################
-  # A wrapper function for triangleCloudPlot that binds data for all countries
+  # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
@@ -2075,8 +2075,8 @@ cesModel2 <- function(countryAbbrev,
 
 addMetaData <- function(model, nest, history=""){
   ###############
-  # This function adds meta data to a model.  Currently this is only designed to
-  # work with CES models. Meta data is attached as attributes (naturalCoeffs and meta)
+  # This function adds metadata to a model.  Currently this is only designed to
+  # work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
   # to the object and the new object is returned from the function.
   ##
   if (is.null(model)){
@@ -2088,7 +2088,7 @@ addMetaData <- function(model, nest, history=""){
   
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
   
-  # We may be arriving here with a model that was estimated wihtout energy.
+  # We may be arriving here with a model that was estimated wihthout energy.
   # If that is the case, we will have only rho and sigma parameters, not
   # rho_1 and delta_1 parameters. 
   # Test for the without energy model.
@@ -2129,9 +2129,9 @@ addMetaData <- function(model, nest, history=""){
                               sse = sum(resid(model)^2)
   )
   # Calculate some metadata
-  if (nest == "(kl)" || nest == "kl"){
-    alpha <- delta
-    beta <- 1.0 - delta
+  if (missing(nest) || is.na(nest) || nest == "(kl)" || nest == "kl"){
+    alpha <- delta_1
+    beta <- 1.0 - delta_1
     gamma <- 0.0
   } else if (nest == "(kl)e"){
     alpha <- delta * delta_1
