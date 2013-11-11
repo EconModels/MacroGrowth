@@ -1949,6 +1949,27 @@ cdResampleTrianglePlot <- function(energyType, ...){
   return(graph)
 }
 
+cesResampleTrianglePlot <- function(energyType, nest, ...){
+  ##################
+  # A wrapper function for standardTriPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  if (is.na(energyType)){
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+  } else if (energyType == "U"){
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, 
+                                energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraphU)
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
+  }
+  graph <- standardTriPlot(data)
+  return(graph)
+}
+
 cesModel2 <- function(countryAbbrev, 
                       energyType=NA, 
                       data = loadData(countryAbbrev=countryAbbrev), 
