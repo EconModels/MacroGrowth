@@ -2122,13 +2122,24 @@ addMetaData <- function(model, nest, history=""){
                               delta_1 = as.vector(delta_1),
                               rho_1 = as.vector(rho_1),
                               sigma_1 = as.vector(1 / (1 + rho_1)),
-                              gamma = as.vector(coef(model)["gamma"]),
+                              # Variable name collision alert: there is a gamma coefficient
+                              # in the CES model (gamma_coef) and a gamma calculated 
+                              # from the delta values.
+                              # gamma_coef is the coefficient in the CES model. It should be near 1.0.
+                              # gamma is calculated from the delta values in the model.
+                              # gamma is analogous to the gamma exponent on energy in the Cobb-Douglas model.
+                              # And, gamma is the required name of the variable to be plotted with the ternary 
+                              # plot function standardTriPlot.  (standardTriPlot assumes that one variable 
+                              # is named "gamma", and it plots that variable.)  
+                              # gamma_coef is in the naturalCoeffs attribute.
+                              # gamma is in the meta attribute.
+                              gamma_coef = as.vector(coef(model)["gamma"]),
                               delta = as.vector(delta),
                               rho = as.vector(rho),
                               sigma = as.vector(1 / (1 + rho)),
                               sse = sum(resid(model)^2)
   )
-  # Calculate some metadata
+  # Calculate some metadata, including gamma. See comments above.
   if (missing(nest) || is.na(nest) || nest == "(kl)" || nest == "kl"){
     alpha <- delta_1
     beta <- 1.0 - delta_1
@@ -2158,7 +2169,7 @@ addMetaData <- function(model, nest, history=""){
                           start.lambda = as.vector(model$start["lambda"]),
                           start.delta_1 = as.vector(model$start["delta_1"]),
                           start.rho_1 = as.vector(model$start["rho_1"]),
-                          start.gamma = as.vector(model$start["gamma"]),
+                          start.gamma_coef = as.vector(model$start["gamma"]),
                           start.delta = as.vector(model$start["delta"]),
                           start.rho = as.vector(model$start["rho"]),
                           history=history
@@ -2649,9 +2660,9 @@ printCESParamsTableB <- function(energyType, nest="(kl)e"){
         table.placement="H")
 }
 
-cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
+cesResamplePlotLambdaGamma <- function(energyType=NA, nest, ...){
   ##################
-  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
@@ -2662,14 +2673,14 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest="(kl)e", ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   data$hist <- gsub("[^LPg]", "", data$history)
-  graph <- standardScatterPlot(data, aes(gamma, lambda, colour=isConv)) +
+  graph <- standardScatterPlot(data, aes(gamma_coef, lambda, colour=isConv)) +
     labs(x=expression(gamma), y=expression(lambda))
   return(graph)
 }
 
 cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   ##################
-  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
@@ -2689,7 +2700,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
 
 cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRUE){
   ##################
-  # A wrapper function for twoVarCloudPlot that binds data for all countries
+  # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   # energyType does not have a default value here, because
   # energyType=NA makes sigma --> Inf. Inf values can't be
