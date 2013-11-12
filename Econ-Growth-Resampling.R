@@ -320,7 +320,7 @@ resampleFits <- function(
                               stop("unknown model type")
   )
   
-  # At this point, both out (which contains the coefficients) and models (which contains the models)
+  # At this point, both coeffs (which contains the coefficients) and models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
   if (nrow(coeffs) != length(models)){
     stop(paste("nrow(coeffs) =", nrow(coeffs), 
