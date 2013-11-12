@@ -242,16 +242,6 @@ resampleFits <- function(
                              "linex"      = origModel))  
   # Now do the resample fits.
   resampleFitCoeffs <- switch(modelType,
-
-# Previous code to do the single-factor model
-#
-#                               "sf"    = do(n) * attr(x=singleFactorModel(data=doResample(data=data, 
-#                                                                                          origModel=origModel, 
-#                                                                                          method=method),
-#                                                                          factor=factor,
-#                                                                          respectRangeConstraints=TRUE),
-#                                                      which="naturalCoeffs"),
-# This code allows saving both coefficients and models
                               "sf"    = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
                                 model <- singleFactorModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
@@ -261,11 +251,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- model
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#                               "cd"    = do(n) * attr(x=cdModel(data=doResample(data=data, 
-#                                                                                origModel=origModel, 
-#                                                                                method=method),
-#                                                                respectRangeConstraints=TRUE),
-#                                                      which="naturalCoeffs"),
                               "cd"    = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
                                 model <- cdModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
@@ -275,19 +260,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- model
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#
-# Here is the previous code to do the cobb-douglas with energy model.
-#
-#                               "cde"   = do(n) * attr(x=cdeModel(data=doResample(data=data, 
-#                                                                                 origModel=origModel, 
-#                                                                                 method=method),
-#                                                                 energyType=energyType, 
-#                                                                 respectRangeConstraints=TRUE),
-#                                                      which="naturalCoeffs"),
-#
-# This is the first cut at new code to both get the coefficients and save the model for 
-# later use.
-#
                               "cde"   = for (i in 1:n) {
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
                                 model <- cdeModel(data=resampleData, energyType=energyType, respectRangeConstraints=TRUE)
@@ -297,12 +269,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- model
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-                              
-#                               "ces" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-#                                                                            data=doResample(data=data, 
-#                                                                                            origModel=bestModel(origModel), 
-#                                                                                            method=method),
-#                                                                            prevModel=bestModel(origModel))),
                               "ces" = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=bestModel(origModel), method=method)
                                 model <- cesModel2(countryAbbrev=countryAbbrev, data=resampleData, prevModel=bestModel(origModel))
@@ -312,13 +278,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- bestModel(model)
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#                               "cese-(kl)e" = do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-#                                                                                   energyType=energyType,
-#                                                                                   nest="(kl)e",
-#                                                                                   data=doResample(data=data, 
-#                                                                                                   origModel=bestModel(origModel), 
-#                                                                                                   method=method),
-#                                                                                   prevModel=bestModel(origModel))),
                               "cese-(kl)e" = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=bestModel(origModel), method=method)
                                 model <- cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest="(kl)e",
@@ -329,13 +288,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- bestModel(model)
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#                               "cese-(le)k" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-#                                                                                    energyType=energyType,
-#                                                                                    nest="(le)k",
-#                                                                                    data=doResample(data=data, 
-#                                                                                                    origModel=bestModel(origModel), 
-#                                                                                                    method=method),
-#                                                                                    prevModel=bestModel(origModel))),
                               "cese-(le)k" = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=bestModel(origModel), method=method)
                                 model <- cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest="(le)k",
@@ -346,13 +298,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- bestModel(model)
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#                               "cese-(ek)l" =  do(n) * extractAllMetaData(cesModel2(countryAbbrev=countryAbbrev,
-#                                                                                    energyType=energyType,
-#                                                                                    nest="(ek)l",
-#                                                                                    data=doResample(data=data, 
-#                                                                                                    origModel=bestModel(origModel), 
-#                                                                                                    method=method),
-#                                                                                    prevModel=bestModel(origModel))),
                               "cese-(ek)l" = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=bestModel(origModel), method=method)
                                 model <- cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest="(ek)l",
@@ -363,12 +308,6 @@ resampleFits <- function(
                                 models[[length(models)+1]] <- bestModel(model)
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
-#                               "linex" = do(n) * attr(x=linexModel(countryAbbrev=countryAbbrev,
-#                                                                   energyType=energyType,
-#                                                                   data=doResample(data=data, 
-#                                                                                   origModel=origModel, 
-#                                                                                   method=method)),
-#                                                      which="naturalCoeffs"),
                               "linex"   = for (i in 1:n) {
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
                                 model <- linexModel(countryAbbrev=countryAbbrev, energyType=energyType, data=resampleData)
