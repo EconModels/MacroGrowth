@@ -1802,22 +1802,22 @@ createCDParamsGraph <- function(energyType){
   return(graph)
 }
 
-createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+createCDLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
   predictions  <- cobbDouglasPredictionsColumn(energyType=NA)  #Predictions from CD without energy
-  predictionsQ <- cobbDouglasPredictionsColumn(energyType="Q") #Predictions from CD with Q
-  predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
-  predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
+  predictionsQ <- cobbDouglasPredictionsColumn(energyType=energyType) #Predictions from CD with Q
+#   predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
+#   predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
   #Now add the predictions columns to the data.
-  data <- cbind(data, predictions, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictions, predictionsQ) 
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA, NA)  #NA gives no symbol.
+  lineTypes <- c(0, 1, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "red") #line and symbol colors
+  symbols <- c(1, NA, NA)  #NA gives no symbol.
   # Code that deals with items that are specific to whether we want all countries or a specific country.  
   if (missing (countryAbbrev)){
     # We want a graph with panels for all countries
@@ -1837,7 +1837,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
+  graph <- xyplot(iGDP+predGDP+predGDPQ ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout, #indicates a 3x3 arrangement of panels.
@@ -1848,7 +1848,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
+                  key=list(text=list(c("Actual", "W/out energy", "With energy")),
                            type=graphType,
                            cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
@@ -1863,7 +1863,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
                   ylim=yLimits, #y axis limits
                   #axis labels and scaling
                   xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
   )
   return(graph)
 }
@@ -1943,27 +1943,6 @@ cdResampleTrianglePlot <- function(energyType, ...){
                                 countryAbbrevsOrder=countryAbbrevsForGraphU)
   } else {
     data <- loadAllResampleData(modelType="cde", energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraph)
-  }
-  graph <- standardTriPlot(data)
-  return(graph)
-}
-
-cesResampleTrianglePlot <- function(energyType, nest, ...){
-  ##################
-  # A wrapper function for standardTriPlot that binds data for all countries
-  # and sends to the graphing function.
-  ##
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
-  } else if (energyType == "U"){
-    modelType <- paste("cese-", nest, sep="")
-    data <- loadAllResampleData(modelType=modelType, 
-                                energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraphU)
-  } else {
-    modelType <- paste("cese-", nest, sep="")
-    data <- loadAllResampleData(modelType=modelType, energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
   graph <- standardTriPlot(data)
@@ -2266,6 +2245,27 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
+cesResampleTrianglePlot <- function(energyType, nest, ...){
+  ##################
+  # A wrapper function for standardTriPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  if (is.na(energyType)){
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+  } else if (energyType == "U"){
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, 
+                                energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraphU)
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
+  }
+  graph <- standardTriPlot(data)
+  return(graph)
+}
+
 cesResampleCoeffProps <- function(cesResampleFits, ...){
   #######
   # This function creates a table of confidence intervals for the ces and cese models
@@ -2361,18 +2361,22 @@ cesPredictionsColumn <- function(energyType, nest){
   return(out)
 }
 
-createCESLatticeGraph <- function(countryAbbrev, nest, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
-  predictions  <- cesPredictionsColumn(energyType=NA, nest=nest)  #Predictions from CES without energy
-  predictionsQ <- cesPredictionsColumn(energyType="Q", nest=nest) #Predictions from CES with Q
-  predictionsX <- cesPredictionsColumn(energyType="X", nest=nest) #Predictions from CES with X
-  predictionsU <- cesPredictionsColumn(energyType="U", nest=nest) #Predictions from CES with U
+  predictionskl  <- cesPredictionsColumn(energyType=NA)  #Predictions from CES without energy
+  colnames(predictionskl)[1] <- "predGDPkl"
+  predictionskle <- cesPredictionsColumn(energyType=energyType, nest="(kl)e") #Predictions from CES with (kl)e
+  colnames(predictionskle)[1] <- "predGDPkle"
+  predictionslek <- cesPredictionsColumn(energyType=energyType, nest="(le)k") #Predictions from CES with (le)k
+  colnames(predictionslek)[1] <- "predGDPlek"
+  predictionsekl <- cesPredictionsColumn(energyType=energyType, nest="(ek)l") #Predictions from CES with (ek)l
+  colnames(predictionsekl)[1] <- "predGDPekl"
   #Now add the predictions columns to the data.
-  data <- cbind(data, predictions, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictionskl, predictionskle, predictionslek, predictionsekl)
   graphType <- "b" #b is for both line and symbol
   lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
   lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
@@ -2397,7 +2401,7 @@ createCESLatticeGraph <- function(countryAbbrev, nest, textScaling=1.0, keyXLoc=
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
+  graph <- xyplot(iGDP+predGDPkl+predGDPkle+predGDPlek+predGDPekl ~ Year | Country, data=data,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -2408,7 +2412,7 @@ createCESLatticeGraph <- function(countryAbbrev, nest, textScaling=1.0, keyXLoc=
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "No energy", "With $q$", "With $x$", "With $u$")),
+                  key=list(text=list(c("Actual", "W/out energy", "($kl$)$e$", "($le$)$k$", "($ek$)$l$")),
                            type=graphType,
                            cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
@@ -2423,7 +2427,7 @@ createCESLatticeGraph <- function(countryAbbrev, nest, textScaling=1.0, keyXLoc=
                   ylim=yLimits, #y axis limits
                   #axis labels and scaling
                   xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
   )
   return(graph)
 }
@@ -2833,22 +2837,20 @@ linexPredictionsColumn <- function(energyType){
   return(out)
 }
 
-createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+createLINEXLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
-  predictionsQ <- linexPredictionsColumn("Q") #Predictions from LINEX with Q
-  predictionsX <- linexPredictionsColumn("X") #Predictions from LINEX with X
-  predictionsU <- linexPredictionsColumn("U") #Predictions from LINEX with U
+  predictions <- linexPredictionsColumn(energyType=energyType) #Predictions from LINEX with Q
   #Now add the predictions columns to the data.
-  data <- cbind(data, predictionsQ, predictionsX, predictionsU) 
+  data <- cbind(data, predictions) 
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  lineTypes <- c(0, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 1) #line widths. 0 means no line.
+  colors <- c("black", "black") #line and symbol colors
+  symbols <- c(1, NA)  #NA gives no symbol.
   # Code that deals with items that are specific to whether we want all countries or a specific country.  
   if (missing (countryAbbrev)){
     # We want a graph with panels for all countries
@@ -2868,7 +2870,8 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }  
-  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
+  graph <- xyplot(iGDP+predGDPQ ~ Year | Country, 
+                  data=data, 
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -2879,8 +2882,8 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "With $q$", "With $x$", "With $u$")),
-                           type=graphType,
+                  key=list(text=list(c("Actual", "With energy")),
+                                    type=graphType,
                            cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
                            pch=symbols, col=colors, #controls symbol (plot characters) types
@@ -2894,7 +2897,7 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
                   ylim=yLimits, #y axis limits
                   #axis labels and scaling
                   xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
   )
   return(graph)
 }
