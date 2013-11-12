@@ -1492,8 +1492,6 @@ $\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nes
 cesResampleTrianglePlot(energyType="Q", nest="(ek)l")
 @
 
-
-
 Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
 to historical data for the $(kl)e$ nesting.
 
