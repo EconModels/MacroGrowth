@@ -323,8 +323,11 @@ resampleFits <- function(
   # At this point, both coeffs (which contains the coefficients) and models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
   if (nrow(coeffs) != length(models)){
+    # There is a problem here. Let's save the coeffs and the models in a list.
+    save(list(coeffs=coeffs, models=models), file="mismatchedCoeffsModelsError")
     stop(paste("nrow(coeffs) =", nrow(coeffs), 
-               "and length(models) =", length(models), "but they should be equal."))
+               "and length(models) =", length(models), "but they should be equal.",
+               "coeffs and models have been saved in a file named mismatchedCoeffsModelsError."))
   }
   coeffs$countryAbbrev <- countryAbbrev
   out <- list(coeffs=coeffs, models=models)
