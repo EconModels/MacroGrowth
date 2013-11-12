@@ -1309,10 +1309,8 @@ Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions
 from the Cobb-Douglas models 
 (with and without energy) to historical data.
 
-**** Need to strip out $x$ and $u$ predictions ****
-
 <<CD_GDP_Lattice_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas fitted models.">>=
-createCDLatticeGraph()
+createCDLatticeGraph(energyType="Q")
 @
 
 
@@ -1482,7 +1480,7 @@ Figure~\ref{fig:CESq_ternary_graph_lek} shows
 $\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nesting.
 
 <<CESq_ternary_graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values, ($le$)$k$ nesting.">>=
-cesResampleTrianglePlot(energyType="Q", nest="(kl)e")
+cesResampleTrianglePlot(energyType="Q", nest="(le)k")
 @
 
 Figure~\ref{fig:CESq_ternary_graph_ekl} shows 
@@ -1492,27 +1490,11 @@ $\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nes
 cesResampleTrianglePlot(energyType="Q", nest="(ek)l")
 @
 
-Figure~\ref{fig:CES_GDP_Lattice_Graph_kle} compares CES model predictions 
-to historical data for the $(kl)e$ nesting.
+Figure~\ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions 
+to historical data for all nestings.
 
-**** Matt: Remove $x$ and $u$ lines. Replace with lines for each nesting. ****
-
-<<CES_GDP_Lattice_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($kl$)$e$ nesting.">>=
-createCESLatticeGraph(nest="(kl)e")
-@
-
-Figure~\ref{fig:CES_GDP_Lattice_Graph_lek} compares CES model predictions 
-to historical data for the $(le)k$ nesting.
-
-<<CES_GDP_Lattice_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($le$)$k$ nesting.">>=
-createCESLatticeGraph(nest="(le)k")
-@
-
-Figure~\ref{fig:CES_GDP_Lattice_Graph_ekl} compares CES model predictions 
-to historical data for the $(ek)l$ nesting.
-
-<<CES_GDP_Lattice_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models with ($ek$)$l$ nesting.">>=
-createCESLatticeGraph(nest="(ek)l")
+<<CES_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models.">>=
+createCESLatticeGraph(energyType="Q")
 @
 
 
@@ -1555,10 +1537,9 @@ linexResamplePlot(energyType="Q")
 @
 
 Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
-**** Remove $x$ and $u$ lines. ****
 
 <<LINEX_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
-createLINEXLatticeGraph()
+createLINEXLatticeGraph(energyType="Q")
 @
 
 
