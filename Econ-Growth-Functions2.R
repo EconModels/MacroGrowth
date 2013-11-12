@@ -2432,6 +2432,57 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
+cesSpaghettiGraphData <- function(energyType, nest){
+  ################################
+  # Creates a list containing 2 data.frames
+  # * historicalDataAndPred: a data.frame that provides the historical data and a prediction.
+  # * resamplePreds: a data.frame that provides predictions for resamples.
+  ## 
+  # Put the historical data in a data.frame
+  actual <- loadData(countryAbbrev="All")
+  actual <- actual[c("Year", "iGDP", "Country")]
+  # Put the fits to historical data in a data.frame
+  prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
+  colnames(prediction)[1] <- "PredGDP"
+  historicalDataAndPred <- cbind(actual, prediction)
+  
+  # Put all of the resamples in a data.frame
+  if (is.na(energyType)){
+    modelType <- "ces"
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+  }
+  # Create an empty data frame that we'll fill.
+  resamplePreds <- data.frame(matrix(vector(), 0, 4, 
+                                     dimnames=list(c(), 
+                                                   c("Year", "PredGDP", "resampleNumber", "countryAbbrev"))))
+  for (countryAbbrev in countryAbbrevsForGraph){
+    # Get the raw data for this country
+    historical <- loadData(countryAbbrev=countryAbbrev)
+    years <- data.frame(historical$Year)
+    colnames(years)[1] <- "Year"
+    # Get the list of resample models for this country.
+    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType)
+    # Add each model's prediction to the data.frame    
+    nResamples <- length(resampleModels)
+    for (i in 1:nResamples){
+      df <- years
+      prediction <- data.frame(fitted(resampleModels[[i]]))
+      colnames(prediction)[1] <- "PredGDP"
+      df <- cbind(df, prediction)
+      df$resampleNumber <- i
+      df$countryAbbrev <- countryAbbrev
+      resamplePreds <- rbind(resamplePreds, df)
+    }
+  }
+
+  # Combine the data.frames into a list
+  out <- list(historicalDataAndPred=historicalDataAndPred, 
+              resamplePreds=resamplePreds)
+  # return the list
+  return(out)
+}
+
 cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
   #################################################
   # Calculates parameter estimates and confidence intervals
@@ -3679,17 +3730,13 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, fac
   return(data)
 }
 
-loadResampleModelsRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
+loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType, factor){
   ####################
   # Loads models for resampled data only from a previously-run set of resample curve fits
   ##
   models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # Select only those models that aren't from the curve fit to historical data (which is in position 1)
   len <- length(models)
-print(len)
-#########################################
-# This next line results in an error.
-#########################################
   # Return everything but the first element (which is the fit to historical data).
   return(models[-1])
 }
