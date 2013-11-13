@@ -2034,7 +2034,7 @@ cesModel2 <- function(countryAbbrev,
         error = function(e) { NULL }
       )
     }
-    hist <- paste(algorithm, "(grid)", sep="")
+    hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
     model <- addMetaData(model, nest=nest, history=hist)
     models[[length(models)+1]] <- model
   }
@@ -2049,7 +2049,7 @@ cesModel2 <- function(countryAbbrev,
              control=chooseCESControl(algorithm), start=start, ...),
       error = function(e) { NULL }
     )
-    hist <- paste(algorithm, "[", getHistory(bestMod), "]", sep="")
+    hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
     model <- addMetaData(model, nest=nest, history=hist)
     models[[length(models)+1]] <- model
   }
@@ -2064,7 +2064,7 @@ cesModel2 <- function(countryAbbrev,
                control=chooseCESControl(algorithm), start=start, ...),
         error = function(e) { NULL }
       )
-      hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="")
+      hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
       model <- addMetaData(model, nest=nest, history=hist)
       models[[length(models)+1]] <- model
     }
