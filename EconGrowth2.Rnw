@@ -822,8 +822,8 @@ $\delta$ describes the importance of ($kl$) relative to ($e$).
 Constraints on the fitting parameters include 
 $\delta_1 \in [0,1]$,
 $\delta \in [0,1]$,
-$\rho_1 \in [-1,0] \cup [0,\infty)$, and
-$\rho \in [-1,0] \cup [0,\infty)$. 
+$\rho_1 \in [-1,0) \cup (0,\infty)$, and
+$\rho \in [-1,0) \cup (0,\infty)$. 
 
 Two other nestings of the factors of production ($k$, $l$, and $e$)
 are possible with the CES model.
