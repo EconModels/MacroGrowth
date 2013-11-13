@@ -2210,9 +2210,7 @@ extractAllMetaData <- function(model, digits=6, ...) {
     sseVals <- safeDF(NULL, nrow=1) # We'll fill this data.frame as we go.
     for (mod in model){
       # Loop over all of the models in the incoming list
-      hist <- attr(mod, "meta")["history"]
-      # hist is a data.frame. We need the string that is stored there.
-      hist <- toString(hist[1,"history"])
+      hist <- as.character(attr(mod, "meta")$"history")
       # Create the column name that we'll use. Form is "sse.hist"
       colName <- paste("sse.", hist, sep="")
       # Create a data.frame with the sse value
