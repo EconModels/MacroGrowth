@@ -792,7 +792,7 @@ capital stock ($k$) and labor ($l$) factors of production.
 Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CES} with energy 
 using a ($kl$)($e$) nesting structure, as is typical in the literature. 
 Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESkle} 
-where $\delta \rightarrow 1$ and $\rho \rightarrow -1$. 
+where $\delta \rightarrow 1$. 
 
 $\gamma$ is a fitting parameter that represents productivity. 
 The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
