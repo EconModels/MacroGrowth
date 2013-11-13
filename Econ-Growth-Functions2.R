@@ -2034,9 +2034,11 @@ cesModel2 <- function(countryAbbrev,
         error = function(e) { NULL }
       )
     }
+    
     hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
     model <- addMetaData(model, nest=nest, history=hist)
     models[[length(models)+1]] <- model
+    
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
@@ -2161,7 +2163,7 @@ addMetaData <- function(model, nest, history=""){
   }
   metaData <- data.frame( isConv = model$convergence,
                           algorithm = model$method,
-                          iter = as.vector(model["iter"]),
+#                          iter = as.vector(model["iter"]),
                           grid = grid,
                           alpha = as.vector(alpha),
                           beta = as.vector(beta),
@@ -2174,8 +2176,35 @@ addMetaData <- function(model, nest, history=""){
                           start.rho = as.vector(model$start["rho"]),
                           history=history
   )
-  attr(x=model, "naturalCoeffs") <- naturalCoeffs
-  attr(x=model, "meta") <- metaData 
+  
+  metaList <- list(  isConv = model$convergence,
+                     algorithm = model$method,
+                     iter = as.vector(model$iter),
+                     grid = grid,
+                     alpha = as.vector(alpha),
+                     beta = as.vector(beta),
+                     gamma = as.vector(gamma),
+                     start.lambda = as.vector(model$start["lambda"]),
+                     start.delta_1 = as.vector(model$start["delta_1"]),
+                     start.rho_1 = as.vector(model$start["rho_1"]),
+                     start.gamma_coef = as.vector(model$start["gamma"]),
+                     start.delta = as.vector(model$start["delta"]),
+                     start.rho = as.vector(model$start["rho"]),
+                     history=history
+  )
+  
+  if ( nrow(metaData) > 1 ) {
+    warning( paste0("\nmeta data has ", nrow(metaData), " rows: ", paste(nest,history, sep="|")) )
+    for (item in metaList) { 
+      if ( length(item) > 1 ) {
+        warning(paste0("\t", toString(item)))
+      }
+    }
+  }
+  attr(x=model, "naturalCoeffs") <- naturalCoeffs[1,]
+  metaData$metaDataRows <- nrow(metaData)
+  attr(x=model, "meta") <- metaData[1,] 
+  attr(x=model, "metaList") <- metaList 
   return(model)
 }
 
