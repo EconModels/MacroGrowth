@@ -67,14 +67,13 @@ if( ! opts$debug) {
   #genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
   #cat('half way')
   
-  # Do this work in parallel based on the countries desired. 
-  # Usually, we'll want all countries, so this makes sense.
   registerDoParallel()
   for (model in opts$model) {
     for (energy in opts$energy) {
       for (factor in opts$factor){
         if (opts$parallelize){
-          # Do countries in parallel
+          # Do this work in parallel based on the countries desired. 
+          # Usually, we'll want all countries, so this makes sense.
           foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
             cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
             genResampleData(modelType=model, 
@@ -85,7 +84,6 @@ if( ! opts$debug) {
                             method=opts$method, 
                             clobber=opts$clobber)
           }
-          
         } else {
           # Do countries sequentially
           for (country in opts$country) {
@@ -103,16 +101,6 @@ if( ! opts$debug) {
     }
   }
 }
-
-# Do the work in series. I'm leaving this code in here in case we want to 
-# switch back to it later.
-#   for (model in opts$model) {
-#     for (country in country) {
-#       for (energy in opts$energy) {
-#         for (factor in opts$factor){
-#       }
-#     }
-#   }
 
 cat("\n\nDone @ ")
 cat(date())
