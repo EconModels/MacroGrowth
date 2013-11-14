@@ -71,9 +71,9 @@ if( ! opts$debug) {
   # Usually, we'll want all countries, so this makes sense.
   registerDoParallel()
   for (model in opts$model) {
-    for (factor in opts$factor){
-      for (energy in opts$energy) {
-        foreach(country=countryAbbrevs, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+    for (energy in opts$energy) {
+      for (factor in opts$factor){
+        foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
           cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
           genResampleData(modelType=model, 
                           countryAbbrev=country,  
@@ -86,6 +86,25 @@ if( ! opts$debug) {
       }
     }
   }
+  
+  # Do the work in series. I'm leaving this code in here in case we want to 
+  # switch back to it later.
+#   for (model in opts$model) {
+#     for (country in country) {
+#       for (energy in opts$energy) {
+#         for (factor in opts$factor){
+#           cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
+#           genResampleData(modelType=model, 
+#                           countryAbbrev=country,  
+#                           energyType=energy, 
+#                           factor=factor,
+#                           n=opts$resamples, 
+#                           method=opts$method, 
+#                           clobber=opts$clobber)
+#         }        
+#       }
+#     }
+#   }
 
   cat("\n\nDone @ ")
   cat(date())
