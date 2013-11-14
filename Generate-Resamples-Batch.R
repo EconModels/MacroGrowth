@@ -17,4 +17,7 @@
 # which you can periodically check to assess the progress.
 # 
 source("Econ-Growth-Resampling.R")
-genAllResampleData(n=1, method="wild", clobber=TRUE, verbose=TRUE)
+# genAllResampleData(n=1, method="wild", clobber=TRUE, verbose=TRUE)
+genResampleData(modelType="cese-(kl)e", countryAbbrev="US", n=10, method="wild", clobber=TRUE, verbose=TRUE)
+# genResampleData(modelType="cese-(le)k", countryAbbrev="US", n=10, method="wild", clobber=TRUE, verbose=TRUE)
+# genResampleData(modelType="cese-(ek)l", countryAbbrev="US", n=10, method="wild", clobber=TRUE, verbose=TRUE)
