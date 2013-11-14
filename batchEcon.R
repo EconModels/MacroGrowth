@@ -68,16 +68,17 @@ if( ! opts$debug) {
 
   for (country in opts$country) {
     for (model in opts$model) {
-      for (energy in opts$energy) {
-        cat(paste0("\nFitting ", country, ":", model, ":",energy))
-        genResampleData(modelType=model, 
-                        countryAbbrev=country,  
-                        energyType=energy, 
-                        factor=factor,
-                        n=opts$resamples, 
-                        method=opts$method, 
-                        clobber=opts$clobber)
-        
+      for (factor in opts$factor){
+        for (energy in opts$energy) {
+          cat(paste0("\nFitting ", country, ":", model, ":", energy, ":", factor))
+          genResampleData(modelType=model, 
+                          countryAbbrev=country,  
+                          energyType=energy, 
+                          factor=factor,
+                          n=opts$resamples, 
+                          method=opts$method, 
+                          clobber=opts$clobber)
+        }        
       }
     }
   }
