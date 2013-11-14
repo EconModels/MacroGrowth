@@ -66,11 +66,11 @@ if( ! opts$debug) {
   #genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
   #cat('half way')
 
-  for (country in opts$country) {
-    for (model in opts$model) {
+  for (model in opts$model) {
+    for (country in opts$country) {
       for (factor in opts$factor){
         for (energy in opts$energy) {
-          cat(paste0("\nFitting ", country, ":", model, ":", energy, ":", factor))
+          cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
           genResampleData(modelType=model, 
                           countryAbbrev=country,  
                           energyType=energy, 
