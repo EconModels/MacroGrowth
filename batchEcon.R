@@ -3,7 +3,6 @@
 source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
 suppressPackageStartupMessages(library("optparse"))
 
-
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
