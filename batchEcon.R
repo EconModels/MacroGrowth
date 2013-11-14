@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript --vanilla --default-packages=utils,stats,lattice,grid,mosaic,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
+#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 
 suppressPackageStartupMessages(library("optparse"))
 
