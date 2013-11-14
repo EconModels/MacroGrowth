@@ -21,7 +21,7 @@ option_list <- list(
 
 opts <- parse_args(OptionParser(option_list=option_list))
 
-print(opts)
+print(str(opts))
 
 if( ! opts$debug) {
   
