@@ -13,6 +13,8 @@ option_list <- list(
               help="number of resamples [default=%default]"),
   make_option(c("-C", "--clobber"), default=FALSE, action="store_true",
               help="number of resamples [default=%default]"),
+  make_option(c("-d", "--debug"), default=FALSE, action="store_true",
+              help="number of resamples [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
               help="resampling method [default=%default]")
   )
@@ -21,14 +23,15 @@ opts <- parse_args(OptionParser(option_list=option_list))
 
 print(opts)
 
-source('Econ-Growth-Resampling.R')
-
-#genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
-#cat('half way')
-
-genResampleData(modelType=opts$model, countryAbbrev=opts$country, 
-                energyType=opts$energy, n=opts$resamples, method=opts$method, clobber=opts$clobber)
-
-
+if( ! opts$debug) {
+  
+  source('Econ-Growth-Resampling.R')
+  
+  #genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
+  #cat('half way')
+  
+  genResampleData(modelType=opts$model, countryAbbrev=opts$country, 
+                  energyType=opts$energy, n=opts$resamples, method=opts$method, clobber=opts$clobber)
+}
 
   
