@@ -64,8 +64,9 @@ if( ! opts$debug) {
                         method=opts$method, 
                         clobber=opts$clobber)
       }
-  cat("\nDone.\n\n")
+  cat("\nDone @ ")
   cat(date())
+  cat('\n\n')
 }
 
   
