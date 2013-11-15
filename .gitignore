@@ -3,6 +3,7 @@
 .RData
 /cache
 Generate-Resamples-Batch.Rout
+node*.txt
 
 #
 # Files created by LaTeX
