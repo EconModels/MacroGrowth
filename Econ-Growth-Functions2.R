@@ -316,10 +316,10 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
   ##
   # Code for all graphs, regardless of whether we want to focus on a specific country
   graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
+  lineTypes <- c(0, 1, 5, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 2, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "black", "black") #line and symbol colors
+  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
   # Code that deals with items that are specific to whether we want all countries or a specific country.
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
@@ -340,7 +340,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=data,
+  graph <- xyplot(iGDP+iCapStk+iLabor+iQ ~ Year | Country, data=data,
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
@@ -352,7 +352,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
                   pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")),
+                  key=list(text=list(c("$y$", "$k$", "$l$", "$q$")),
                            type=graphType,
                            cex=keyTextSize * textScaling, #controls size of text in the key
                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types

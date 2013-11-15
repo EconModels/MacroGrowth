@@ -3,7 +3,6 @@
 source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
 suppressPackageStartupMessages(library("optparse"))
 
-
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
@@ -16,11 +15,13 @@ option_list <- list(
   make_option(c("-n", "--resamples"), default=10L, type="integer",
               help="number of resamples [default=%default]"),
   make_option(c("-C", "--clobber"), default=FALSE, action="store_true",
-              help="number of resamples [default=%default]"),
+              help="Clobber all previous files [default=%default]"),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
-              help="number of resamples [default=%default]"),
+              help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
-              help="resampling method [default=%default]")
+              help="resampling method [default=%default]"),
+  make_option(c("-p", "--parallelize"), default=FALSE, action="store_true",
+              help="run countries in parallel [default=%default]")
   )
 
 opts <- parse_args(OptionParser(option_list=option_list))
@@ -62,35 +63,47 @@ cat('\n')
 
 if( ! opts$debug) {
   
-  
-  
   #genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
   #cat('half way')
-
-  # Do this work in parallel based on the countries desired. 
-  # Usually, we'll want all countries, so this makes sense.
+  
   registerDoParallel()
   for (model in opts$model) {
-    for (factor in opts$factor){
-      for (energy in opts$energy) {
-        foreach(country=countryAbbrevs, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-          cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
-          genResampleData(modelType=model, 
-                          countryAbbrev=country,  
-                          energyType=energy, 
-                          factor=factor,
-                          n=opts$resamples, 
-                          method=opts$method, 
-                          clobber=opts$clobber)
+    for (energy in opts$energy) {
+      for (factor in opts$factor){
+        if (opts$parallelize){
+          # Do this work in parallel based on the countries desired. 
+          # Usually, we'll want all countries, so this makes sense.
+          foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+            cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
+            genResampleData(modelType=model, 
+                            countryAbbrev=country,  
+                            energyType=energy, 
+                            factor=factor,
+                            n=opts$resamples, 
+                            method=opts$method, 
+                            clobber=opts$clobber)
+          }
+        } else {
+          # Do countries sequentially
+          for (country in opts$country) {
+            cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
+            genResampleData(modelType=model, 
+                            countryAbbrev=country,  
+                            energyType=energy, 
+                            factor=factor,
+                            n=opts$resamples, 
+                            method=opts$method, 
+                            clobber=opts$clobber)
+          }
         }        
-      }
+      }        
     }
   }
-
-  cat("\n\nDone @ ")
-  cat(date())
-  cat('\n\n')
-  cat("duration:\n")
-  print(proc.time() - startTime)
-  cat('\n\n')
 }
+
+cat("\n\nDone @ ")
+cat(date())
+cat('\n\n')
+cat("duration:\n")
+print(proc.time() - startTime)
+cat('\n\n')
