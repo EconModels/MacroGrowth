@@ -19,10 +19,8 @@ option_list <- list(
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
-              help="resampling method [default=%default]"),
-  make_option(c("-p", "--parallelize"), default=FALSE, action="store_true",
-              help="run countries in parallel [default=%default]")
-  )
+              help="resampling method [default=%default]")
+)
 
 opts <- parse_args(OptionParser(option_list=option_list))
 
@@ -68,35 +66,49 @@ if( ! opts$debug) {
   
   registerDoParallel()
   for (model in opts$model) {
-    for (energy in opts$energy) {
+    if (model == "sf"){
       for (factor in opts$factor){
-        if (opts$parallelize){
-          # Do this work in parallel based on the countries desired. 
-          # Usually, we'll want all countries, so this makes sense.
-          foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-            cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
-            genResampleData(modelType=model, 
-                            countryAbbrev=country,  
-                            energyType=energy, 
-                            factor=factor,
-                            n=opts$resamples, 
-                            method=opts$method, 
-                            clobber=opts$clobber)
-          }
+        # Working on the single-factor model. So, we need to pass the factor argument.
+        foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+          cat(paste0("\nFitting ", model, ":", country, ":", factor))
+          genResampleData(modelType=model, 
+                          countryAbbrev=country,  
+                          factor=factor,
+                          n=opts$resamples, 
+                          method=opts$method, 
+                          clobber=opts$clobber)
+        }
+      }
+    } else if ((model == "cd") || (model == "ces")) {
+      # There are no energy types or factors over which to loop.
+      foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+        cat(paste0("\nFitting ", model, ":", country))
+        genResampleData(modelType=model, 
+                        countryAbbrev=country,  
+                        n=opts$resamples, 
+                        method=opts$method, 
+                        clobber=opts$clobber)
+      }
+    } else {
+      # We get here if we have "cde" or "cese-(xy)z" models. 
+      # Need to account for energy types.
+      # But, only do those countries for which the requested energy type is available.
+      for (energy in opts$energy){
+        if (energy == "U"){
+          availableCountries <- intersect(opts$country, countryAbbrevsU)
         } else {
-          # Do countries sequentially
-          for (country in opts$country) {
-            cat(paste0("\nFitting ", model, ":", country, ":", energy, ":", factor))
-            genResampleData(modelType=model, 
-                            countryAbbrev=country,  
-                            energyType=energy, 
-                            factor=factor,
-                            n=opts$resamples, 
-                            method=opts$method, 
-                            clobber=opts$clobber)
-          }
-        }        
-      }        
+          availableCountries <- intersect(opts$country, countryAbbrevs)
+        }
+        foreach(country=availableCountries, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
+          cat(paste0("\nFitting ", model, ":", country, ":", energy))
+          genResampleData(modelType=model, 
+                          countryAbbrev=country,  
+                          energyType=energy, 
+                          n=opts$resamples, 
+                          method=opts$method, 
+                          clobber=opts$clobber)
+        }
+      }
     }
   }
 }
