@@ -88,16 +88,20 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
 
 genResampleData <- function(modelType=modelTypes,
                             countryAbbrev=countryAbbrevs, 
-                            energyType=energyTypes, 
-                            factor=factors,
-                            method=resampleMethods,
+                            energyType="Q", 
+                            factor="K",
+                            method="wild",
                             n,
                             clobber=TRUE,
                             verbose=FALSE){
-  ####################
-  # This function generates resample data and models for the given parameters and 
-  # saves the resample coeffs as a data.frame and models as a list to disk.
-  ##
+  #########################
+  # This function generates curve fit coefficients and models
+  # and stores them to disk. The data are stored in an 
+  # object called "resampleData" and an object called "resampleModels". 
+  # These objects will have the same name
+  # when it is loaded back from disk. 
+  # We found that 1000 resamples is sufficient to obtain good results
+  ## 
   pathCoeffs <- getPathForResampleData(modelType=modelType,
                                        countryAbbrev=countryAbbrev, 
                                        energyType=energyType,
@@ -137,20 +141,12 @@ genResampleData <- function(modelType=modelTypes,
   }
   if (verbose) cat(paste('Data will be saved in', pathCoeffs, "and", pathModels, "\n"))
   status <- "creating new files"
-  #########################
-  # This function generates curve fit coefficients and models
-  # and stores them to disk. The data are stored in an 
-  # object called "resampleData" and an object called "resampleModels". 
-  # These objects will have the same name
-  # when it is loaded back from disk. 
-  # We found that 1000 resamples is sufficient to obtain good results
-  ## 
   # This next call returns a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
+#   energyType <- match.arg(energyType)
+#   factor <- match.arg(factor)
   method <- match.arg(method)
 #   resampleData <- resampleFits(modelType=modelType,
 #                                countryAbbrev=countryAbbrev, 
@@ -203,16 +199,18 @@ resampleFits <- function(
   ##
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
+#   energyType <- match.arg(energyType)
+#   factor <- match.arg(factor)
   method <- match.arg(method)
   set.seed(getSeed()) # Provide reproducible results
   # Load the raw economic and energy data for the country of interest.
   data <- loadData(countryAbbrev=countryAbbrev)
   # If useful work (U) is desired, subset to available data only.
-  if (factor == "U" || energyType == "U"){
-    # Trim the dataset to include only those years for which U is available.
-    data <- subset(data, !is.na(iU))
+  if (! is.na(energyType)){
+    if (factor == "U" || energyType == "U"){
+      # Trim the dataset to include only those years for which U is available.
+      data <- subset(data, !is.na(iU))
+    }
   }
   # First do a fit without resampling and get these coefficients
   origModel <- switch(modelType,
