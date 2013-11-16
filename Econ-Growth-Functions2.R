@@ -3792,36 +3792,35 @@ getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor)
   # Returns a string identifying the entire file path in which we 
   # hold resampled data
   ##
-  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
-  rd <- "ResampleData-"
-  rdat <- ".Rdata"
-  filename <- switch(modelType,
-                     "sf"    = paste(rd, modelType, "-", countryAbbrev, "-", factor, rdat, sep=""),
-                     "cd"    = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     #"cde"   = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "ces"   = paste(rd, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     #"linex" = paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     paste(rd, modelType, "-", countryAbbrev, "-", energyType, rdat, sep="")
-                     )
-  path <- file.path(folder, filename)
-  return(path)
+  return(doGetPath(prefix="resampleData", modelType=modelType, countryAbbrev=countryAbbrev, 
+                   energyType=energyType, factor=factor))
 }
 
-getPathForResampleModels <- function(modelType, countryAbbrev, energyType, factor){
+getPathForResampleModels <- function(modelType, countryAbbrev, energyType="Q", factor="K"){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold resampled models
   ##
+  return(doGetPath(prefix="resampleModels", modelType=modelType, countryAbbrev=countryAbbrev, 
+                   energyType=energyType, factor=factor))
+}
+
+doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K"){
+  if (is.na(energyType)){
+    energyType="NA"
+  }
   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
-  rm <- "ResampleModels-"
   rdat <- ".Rdata"
   filename <- switch(modelType,
-                     "sf"    = paste(rm, modelType, "-", countryAbbrev, "-", factor, rdat, sep=""),
-                     "cd"    = paste(rm, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     #"cde"   = paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "ces"   = paste(rm, modelType, "-", countryAbbrev, "-", "NA", rdat, sep=""),
-                     #"linex" = paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     paste(rm, modelType, "-", countryAbbrev, "-", energyType, rdat, sep="")
+                     "sf"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", factor,     rdat, sep=""),
+                     "cd"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+                     "cde"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "ces"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+                     "cese-(kl)e" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "cese-(le)k" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "cese-(ek)l" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     "linex"      = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+                     stop(paste("Unknown modelType", modelType, "in getPathForResampleModels."))
   )
   path <- file.path(folder, filename)
   return(path)
