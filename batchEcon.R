@@ -26,7 +26,7 @@ opts <- parse_args(OptionParser(option_list=option_list))
 
 if(opts$model == "all") {
   opts$model <- modelTypes
-} else if (otps$model == "fast") {
+} else if (opts$model == "fast") {
   opts$model <- setdiff(modelTypes, c("cese-(kl)e", "cese-(le)k", "cese-(ek)l"))
   } else {
   opts$model <- strsplit(opts$model,",")[[1]]
