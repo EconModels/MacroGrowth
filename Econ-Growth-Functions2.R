@@ -2787,7 +2787,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
+    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2811,7 +2811,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRU
   ##
 
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
+    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2830,6 +2830,28 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRU
     scale_y_continuous(breaks=c(0,.25, .5,1,2,4)) +
     labs(x=expression(delta), y=expression(sigma))
   return( if(plot) graph else data )
+}
+
+cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e"){
+  ##################
+  # A wrapper function for standardScatterPlot that binds data for all countries
+  # and sends to the graphing function.
+  ##
+  if (is.na(energyType)){
+    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
+                                countryAbbrevsOrder=countryAbbrevsForGraph)
+  }
+  data$hist <- gsub("[^LPg]", "", data$history)
+  graph <- standardScatterPlot(data, aes(sigma_1, sigma, colour=isConv), ...) +
+    coord_trans(x="sigma") +
+    coord_trans(y="sigma") + 
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(sigma[1]), y=expression(sigma))
+  return(graph)
 }
 
 ## <<LINEX functions, eval=TRUE>>=
