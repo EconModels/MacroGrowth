@@ -1248,10 +1248,8 @@ The value of $\beta$ was found with $\beta = 1 - \alpha$.
 Figure~\ref{fig:CD_Scatter_Graph} shows a ternary plot 
 of $\alpha$, $\beta$, and $\gamma$ parameter values 
 for resample models for the Cobb-Douglas model (without energy). 
-In Figure~\ref{fig:CD_Scatter_Graph}, 
-$\gamma$ is always 0.0, because energy is not included in this model.
 
-<<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
+<<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters. $\\gamma$ is always 0.0, because energy is not included in this model.">>=
 cdResampleTrianglePlot(energyType=NA)
 @
 

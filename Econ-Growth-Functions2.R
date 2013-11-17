@@ -1568,7 +1568,7 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
     return(df)
   } else if (is.na(energyType)){
     # We want Cobb-Douglas without energy
-    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev)
+    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType=NA)
   } else {
     # We want Cobb-Douglas with energy
     resampledData <- loadResampleData(modelType="cde", countryAbbrev=countryAbbrev, energyType=energyType)
@@ -2278,7 +2278,7 @@ cesResampleTrianglePlot <- function(energyType, nest, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
   } else if (energyType == "U"){
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, 
@@ -2536,7 +2536,7 @@ cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
     return(df)
   } else if (is.na(energyType)){
     # We want CES without energy
-    resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev)
+    resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev, energyType=NA)
   } else {
     # We want CES with energy  -- might want all three for this later.
     modelType <- paste("cese-", nest, sep="")
@@ -2769,7 +2769,7 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2787,7 +2787,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2811,7 +2811,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRU
   ##
 
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
