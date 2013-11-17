@@ -1936,7 +1936,7 @@ cdResampleTrianglePlot <- function(energyType, ...){
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph)
+    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
   } else if (energyType == "U"){
     data <- loadAllResampleData(modelType="cde", 
                                 energyType=energyType,
@@ -3729,10 +3729,12 @@ loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrd
                "in loadAllResampleData. Didn't expect both to be specified. Can't proceed."))
   }
   if (!missing(energyType)){
-    if (energyType == "U"){
-      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
-    } else {
+    if (is.na(energyType) || energyType != "U"){
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
+    }
+    else {
+      # energyType is "U"
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
