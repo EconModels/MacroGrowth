@@ -20,8 +20,13 @@ echo $LOC_PATH
 
 ssh node-01 "cd $LOC_PATH; ./batchEcon.R -c all -e all -f all -m sf,cd,cde,ces,linex $1 > node-01.txt" &
 
-# The various cese models take a long time. Spread them out across many nodes.
-# This first batch uses only thermal energy (Q).
+# The various "cese" models take a long time. Spread them out across many nodes.
+# dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
+# can, apparently, access only one of those processors. So, at most, we can run only
+# 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
+# analyze for each model, so we'll put 3 countries on each compute node.
+#
+# This first batch of cese models uses only thermal energy (Q).
 
 ssh node-02 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e Q -m cese-\(kl\)e $1 > node-02.txt" &
 ssh node-03 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e Q -m cese-\(kl\)e $1 > node-03.txt" &
