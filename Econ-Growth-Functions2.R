@@ -2846,7 +2846,7 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   }
   data$hist <- gsub("[^LPg]", "", data$history)
   graph <- standardScatterPlot(data, aes(sigma_1, sigma, colour=isConv), ...) +
-#     I tried to add the next line to transform the sigma_1 variable, but it didn't work.
+#     I tried to add the next line to transform the sigma_1 variable, but it didn't work. --MKH
 #     coord_trans(x="sigma_1") +
     coord_trans(y="sigma") + 
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
