@@ -2832,7 +2832,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRU
   return( if(plot) graph else data )
 }
 
-cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e"){
+cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   ##################
   # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
