@@ -1868,30 +1868,6 @@ createCDLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, k
   return(graph)
 }
 
-abgTriangleTransform <- function(data){
-  ###########################
-  # data should be a data.frame with columns of alpha, beta, and gamma.
-  # Calculates x and y for the triangle plot. Then, cbinds 
-  # x and y onto data and returns data. 
-  # This transform assumes that alpha + beta + gamma = 1.0
-  # gamma is measured on the vertical axis (y).
-  # Along the bottom side of the triangle, gamma = 0.
-  # Along the left side of the triangle, alpha = 0.
-  # Along the right side of the triangle, beta = 0.
-  # Halfway up the triangle and in the middle (horizontally), we
-  # have alpha = 0.25, beta = 0.25, and gamma = 0.5.
-  # alpha and beta are split proportionally along the horizontal
-  # axis. 
-  # This function returns a data.frame that contains x, y pairs for 
-  # give alpha, beta, and gamma vectors input
-  # to the function.
-  ##
-  x <- data[["alpha"]] + 0.5*data[["gamma"]]
-  y <- data[["gamma"]]
-  data <- cbind(data, x, y)
-  return(data)
-}
-
 cdResampleTrianglePlot <- function(energyType, ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
