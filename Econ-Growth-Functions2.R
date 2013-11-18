@@ -2796,7 +2796,7 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   data$hist <- gsub("[^LPg]", "", data$history)
   graph <- standardScatterPlot(data, aes(delta_1, sigma_1, colour=isConv), ...) +
     coord_trans(y="sigma") + 
-    scale_y_continuous(breaks=c(0,.5,1,2)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     labs(x=expression(delta[1]), y=expression(sigma[1]))
   return(graph)
 }
@@ -2827,7 +2827,7 @@ cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRU
   graph <- standardScatterPlot(data, aes(delta, sigma, colour=isConv), ...) 
   graph <- graph +
     coord_trans(y="sigma") + 
-    scale_y_continuous(breaks=c(0,.25, .5,1,2,4)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     labs(x=expression(delta), y=expression(sigma))
   return( if(plot) graph else data )
 }
@@ -2846,7 +2846,8 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   }
   data$hist <- gsub("[^LPg]", "", data$history)
   graph <- standardScatterPlot(data, aes(sigma_1, sigma, colour=isConv), ...) +
-    coord_trans(x="sigma") +
+#     I tried to add the next line to transform the sigma_1 variable, but it didn't work.
+#     coord_trans(x="sigma_1") +
     coord_trans(y="sigma") + 
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
