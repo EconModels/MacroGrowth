@@ -1892,44 +1892,6 @@ abgTriangleTransform <- function(data){
   return(data)
 }
 
-triangleCloudPlot <- function(resampleCoeffs, textScaling = 1.0, ...){
-  ########################
-  # This function makes a triangle cloud plot from 
-  # resampleCoeffs. The resampleCoeffs object should be a
-  # data.frame containing columns named alpha, beta, gamma, and countryAbbrev.
-  # This function constructs a lattice plot from the information.
-  ##
-  # Calculate x and y for the plot
-  resampleCoeffs <- abgTriangleTransform(resampleCoeffs)
-  # Identify the factor levels.
-  factorLevels <- countryNamesAlph # We want all countries shown
-  # Attach the xy data to the original resample data so that we retain the country information
-  graph <- xyplot(y ~ x | countryAbbrev, data=resampleCoeffs, 
-                  pch=16, 
-                  alpha=0.1, 
-                  cex=1,
-                  col.symbol = "black", #Controls symbol parameters
-                  as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-                  index.cond = list(countryOrderForGraphs), #orders the panels.
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE # eliminates left-right, top-bot alternating of axes
-                  ), 
-                  strip=strip.custom(factor.levels=factorLevels, # Sets text for factor levels
-                                     bg="transparent", # Sets background transparent to match the graph itself.
-                                     par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  xlim=c(0,1), 
-                  ylim=c(0,1),
-                  xlab=list(label="$\\alpha$", cex=textScaling), 
-                  ylab=list(label="$\\gamma$", cex=textScaling)
-  )
-  # This next line causes the plot to fail in the paper. Need 
-  # to find a way to add the sloped lines ot hte plot.
-  # ladd(panel.xyplot(c(0.0, 1.0, 0.5, 0.0) , c(0.0 ,0.0 ,1.0 ,0.0), type="l"))
-  return(graph)
-}
-
 cdResampleTrianglePlot <- function(energyType, ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
