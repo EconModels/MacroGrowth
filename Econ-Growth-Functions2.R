@@ -1280,17 +1280,17 @@ cdeModel <- function(countryAbbrev,
                 ifelse(missing(countryAbbrev), "missing", countryAbbrev), 
                 "energyType =", energyType,
                 "This should happen rarely. Returning the reparameterization with smallest SSE."))
-  print("data")
-  print(data)
-  print("cdeModelAB")
-  print(summary(cdeModelAB))
-  print(attr(x=cdeModelAB, which="naturalCoeffs"))
-  print("cdeModelCD")
-  print(summary(cdeModelCD))
-  print(attr(x=cdeModelCD, which="naturalCoeffs"))
-  print("cdeModelEF")
-  print(summary(cdeModelEF))
-  print(attr(x=cdeModelEF, which="naturalCoeffs"))
+#   print("data")
+#   print(data)
+#   print("cdeModelAB")
+#   print(summary(cdeModelAB))
+#   print(attr(x=cdeModelAB, which="naturalCoeffs"))
+#   print("cdeModelCD")
+#   print(summary(cdeModelCD))
+#   print(attr(x=cdeModelCD, which="naturalCoeffs"))
+#   print("cdeModelEF")
+#   print(summary(cdeModelEF))
+#   print(attr(x=cdeModelEF, which="naturalCoeffs"))
   sseAB <- attr(x=cdeModelAB, which="naturalCoeffs")["sse"]
   sseCD <- attr(x=cdeModelCD, which="naturalCoeffs")["sse"]
   sseEF <- attr(x=cdeModelEF, which="naturalCoeffs")["sse"]
