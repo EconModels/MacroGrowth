@@ -1444,7 +1444,7 @@ cesResamplePlotSigmaDelta(energyType="Q", nest="(ek)l")
 
 We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
 for the CES model, based on values of $\delta$ and $\delta_1$.
-The following table shows the permuted equations for each CES nesting.
+Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
 
 \begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
 \label{tab:CES_abg_equations} 
@@ -1460,10 +1460,13 @@ The following table shows the permuted equations for each CES nesting.
   \end{center}
 \end{table}
 
-Figure~\ref{fig:CESq_ternary_graph_kl} shows 
+**** Replace Figures~\ref{fig:CES_ternary_graph_kl}--\ref{fig:CESq_ternary_graph_ekl}
+with one plot that shows all 4 nestings. ****
+
+Figure~\ref{fig:CES_ternary_graph_kl} shows 
 $\alpha$, $\beta$, and $\gamma$ parameters from the CES model without energy.
 
-<<CESq_ternary_graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (without energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values.">>=
+<<CES_ternary_graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (without energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values.">>=
 cesResampleTrianglePlot(energyType=NA)
 @
 
@@ -1488,8 +1491,35 @@ $\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nes
 cesResampleTrianglePlot(energyType="Q", nest="(ek)l")
 @
 
+**** Fix $x$-axis on Figures~\ref{fig:CESq_Sigma_Sigma_1_kle}--\ref{fig:CESq_Sigma_Sigma_1_ekl}.
+Or, consider a better way to show resampled $\sigma$ and $\sigma_1$ values. ****
+
+Figure~\ref{fig:CESq_Sigma_Sigma_1_kle} shows 
+$\sigma$ and $\sigma_1$ values from the CES model with ($kl$)$e$ nesting.
+
+<<CESq_Sigma_Sigma_1_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($kl$)$e$ nesting.">>=
+cesResamplePlotSigmaSigma_1(energyType="Q", nest="(kl)e")
+@
+
+Figure~\ref{fig:CESq_Sigma_Sigma_1_lek} shows 
+$\sigma$ and $\sigma_1$ values from the CES model with ($le$)$k$ nesting.
+
+<<CESq_Sigma_Sigma_1_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($le$)$k$ nesting.">>=
+cesResamplePlotSigmaSigma_1(energyType="Q", nest="(le)k")
+@
+
+Figure~\ref{fig:CESq_Sigma_Sigma_1_ekl} shows 
+$\sigma$ and $\sigma_1$ values from the CES model with ($ek$)$l$ nesting.
+
+<<CESq_Sigma_Sigma_1_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($ek$)$l$ nesting.">>=
+cesResamplePlotSigmaSigma_1(energyType="Q", nest="(ek)l")
+@
+
 Figure~\ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions 
-to historical data for all nestings.
+to historical data for all nestings. 
+
+**** Replace Figure~\ref{fig:CES_GDP_Lattice_Graph} with four graphs that show
+the range of predictions from resamples with each nesting. ****
 
 <<CES_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models.">>=
 createCESLatticeGraph(energyType="Q")
