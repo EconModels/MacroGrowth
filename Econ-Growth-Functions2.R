@@ -2397,7 +2397,7 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
-cesSpaghettiGraphData <- function(energyType, nest){
+loadCESSpaghettiGraphData <- function(energyType, nest){
   ################################
   # Creates a list containing 2 data.frames
   # * historicalDataAndPred: a data.frame that provides the historical data and a prediction.
@@ -2406,10 +2406,15 @@ cesSpaghettiGraphData <- function(energyType, nest){
   # Put the historical data in a data.frame
   actual <- loadData(countryAbbrev="All")
   actual <- actual[c("Year", "iGDP", "Country")]
+  actual$Type <- "actual"
   # Put the fits to historical data in a data.frame
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
-  colnames(prediction)[1] <- "PredGDP"
-  historicalDataAndPred <- cbind(actual, prediction)
+  pred <- actual
+  pred$iGDP <- prediction[,1]
+  pred$Type <- "fitted"
+  historicalDataAndPred <- rbind.fill(actual,pred)
+  historicalDataAndPred$Resampled <- FALSE
+#  return(historicalDataAndPred)
   
   # Put all of the resamples in a data.frame
   if (is.na(energyType)){
@@ -2420,27 +2425,29 @@ cesSpaghettiGraphData <- function(energyType, nest){
   # Create an empty data frame that we'll fill.
   resamplePreds <- data.frame(matrix(vector(), 0, 4, 
                                      dimnames=list(c(), 
-                                                   c("Year", "PredGDP", "resampleNumber", "countryAbbrev"))))
+                                                   c("Year", "iGDP", "ResampleNumber", "Country"))))
   for (countryAbbrev in countryAbbrevsForGraph){
     # Get the raw data for this country
     historical <- loadData(countryAbbrev=countryAbbrev)
-    years <- data.frame(historical$Year)
-    colnames(years)[1] <- "Year"
+    years <- data.frame(Year = historical$Year)
     # Get the list of resample models for this country.
     resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
     for (i in 1:nResamples){
-      df <- years
-      prediction <- data.frame(fitted(resampleModels[[i]]))
-      colnames(prediction)[1] <- "PredGDP"
-      df <- cbind(df, prediction)
-      df$resampleNumber <- i
-      df$countryAbbrev <- countryAbbrev
-      resamplePreds <- rbind(resamplePreds, df)
+      new <- years
+      new$iGDP <- fitted(resampleModels[[i]])
+      new$ResampleNumber <- i
+      new$Country <- countryAbbrev
+      new$Resampled <- TRUE
+      new$Type <- "fitted"
+      resamplePreds <- rbind.fill(resamplePreds, new)
     }
   }
 
+  return( rbind.fill(historicalDataAndPred, resamplePreds) )
+  
+  # old return type  
   # Combine the data.frames into a list
   out <- list(historicalDataAndPred=historicalDataAndPred, 
               resamplePreds=resamplePreds)
