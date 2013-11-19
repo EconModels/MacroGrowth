@@ -42,18 +42,20 @@ ssh node-12 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e Q -m cese-\(ek\)l $1 &> 
 
 # The next lines run the cese analyses for exergy (X)
 
-ssh node-20 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(kl\)e $1 &> node-20.txt" &
-ssh node-21 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(kl\)e $1 &> node-21.txt" &
-ssh node-22 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(kl\)e $1 &> node-22.txt" &
-ssh node-23 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(le\)k $1 &> node-23.txt" &
-ssh node-24 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(le\)k $1 &> node-24.txt" &
-ssh node-25 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(le\)k $1 &> node-25.txt" &
-ssh node-26 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(ek\)l $1 &> node-26.txt" &
-ssh node-27 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(ek\)l $1 &> node-27.txt" &
-ssh node-28 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(ek\)l $1 &> node-28.txt" &
+ssh node-13 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(kl\)e $1 &> node-13.txt" &
+ssh node-14 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(kl\)e $1 &> node-14.txt" &
+ssh node-15 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(kl\)e $1 &> node-15.txt" &
+ssh node-16 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(le\)k $1 &> node-16.txt" &
+ssh node-17 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(le\)k $1 &> node-17.txt" &
+ssh node-18 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(le\)k $1 &> node-18.txt" &
+ssh node-19 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e X -m cese-\(ek\)l $1 &> node-19.txt" &
+ssh node-20 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e X -m cese-\(ek\)l $1 &> node-20.txt" &
+# Faulty R installations on nodes 21, 22, 23, and 24.
+ssh node-25 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e X -m cese-\(ek\)l $1 &> node-26.txt" &
 
 # We have useful work (U) data for US, UK, and JP only.
 
-ssh node-30 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(kl\)e $1 &> node-30.txt" &
-ssh node-31 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(le\)k $1 &> node-31.txt" &
-ssh node-32 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(ek\)l $1 &> node-32.txt" &
+# Faulty R installation on node 26.
+ssh node-27 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(kl\)e $1 &> node-27.txt" &
+ssh node-28 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(le\)k $1 &> node-28.txt" &
+ssh node-29 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e U -m cese-\(ek\)l $1 &> node-29.txt" &
