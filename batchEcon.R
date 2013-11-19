@@ -1,5 +1,6 @@
 #!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 
+print(sort(.packages()))
 source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
 suppressPackageStartupMessages(library("optparse"))
 
@@ -55,6 +56,7 @@ if(opts$factor== "all") {
 }
 
 print(str(opts))
+print(sort(.packages()))
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
