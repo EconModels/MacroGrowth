@@ -2210,24 +2210,27 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-cesResampleTrianglePlot <- function(energyType, nest, ...){
+cesResampleTrianglePlot <- function(energyType, nest, archive=NULL, ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
   ##
   if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
+                                energyType=NA, archive=NULL)
   } else if (energyType == "U"){
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, 
                                 energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraphU)
+                                countryAbbrevsOrder=countryAbbrevsForGraphU,
+                                archive=archive)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraph)
+                                countryAbbrevsOrder=countryAbbrevsForGraph, 
+                                archive=archive)
   }
-  graph <- standardTriPlot(data)
+  graph <- standardTriPlot(data, ...)
   return(graph)
 }
 
@@ -3689,7 +3692,9 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA, 
   return(resampleModels)
 }
 
-loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrder=countryAbbrevs){
+loadAllResampleData <- function(modelType, energyType, factor, 
+                                countryAbbrevsOrder=countryAbbrevs,
+                                archive=NULL){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
@@ -3699,21 +3704,27 @@ loadAllResampleData <- function(modelType, energyType, factor, countryAbbrevsOrd
   }
   if (!missing(energyType)){
     if (is.na(energyType) || energyType != "U"){
-      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, 
+                                           energyType=energyType, archive=archive))
     }
     else {
       # energyType is "U"
-      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, energyType=energyType))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, 
+                                           energyType=energyType, archive=archive))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
-      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, 
+                                           modelType=modelType, factor=factor, 
+                                           archive=archive))
     } else {
-      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, factor=factor))
+      data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, 
+                                           factor=factor, archive=archive))
     }
   } else {
     # Neither energyType nor factor were specified
-    data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType))
+    data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, 
+                                         modelType=modelType, archive=archive))
   }
   return(data)
 }
