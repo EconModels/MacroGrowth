@@ -2446,13 +2446,6 @@ loadCESSpaghettiGraphData <- function(energyType, nest){
   }
 
   return( rbind.fill(historicalDataAndPred, resamplePreds) )
-  
-  # old return type  
-  # Combine the data.frames into a list
-  out <- list(historicalDataAndPred=historicalDataAndPred, 
-              resamplePreds=resamplePreds)
-  # return the list
-  return(out)
 }
 
 cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
