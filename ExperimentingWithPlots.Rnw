@@ -1,0 +1,32 @@
+\documentclass{article}
+
+\begin{document}
+
+<<message=FALSE>>=
+require(knitr)
+opts_chunk$set(
+  dev="pdf",
+  tidy=FALSE
+)
+require(ggplot2)
+require(plyr)
+source('Econ-Growth-Functions2.R')
+@
+
+<<plot1>>=
+for (nest in c("(kl)e", "(le)k", "(ek)l") ) {
+  nestData <- loadCESSpaghettiGraphData("Q", nest= nest)
+  print( 
+    qplot( Year, iGDP, group=ResampleNumber, 
+           data=nestData, # subset(foo, Country=="US"), 
+           facets = ~Country, geom="line", alpha=I(0.15) ) + 
+      geom_line(data=subset(nestData, Type=="actual"), 
+                colour="red") +
+      labs(title=nest) +
+      theme_minimal()
+  )
+}
+@
+
+
+\end{document}
