@@ -3659,7 +3659,9 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   if (is.null(archive)) {
     load(file=path) 
   } else {
-    load(unz(archive, path))
+    f <- unz(archive, path)
+    load(f)
+    close(f)
   }
   if ("sigma" %in% names(resampleData) ){
     sigmaTrans <- ifelse(resampleData$sigma < 2, resampleData$sigma, 1.5 - resampleData$rho )
@@ -3690,7 +3692,9 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA, 
   if (is.null(archive)) {
     load(file=path) 
   } else {
-    load(unz(archive, path))
+    f <- unz(archive, path)
+    load(f)
+    close(f)
   }
   return(resampleModels)
 }
@@ -3730,6 +3734,44 @@ loadAllResampleData <- function(modelType, energyType, factor,
                                          modelType=modelType, archive=archive))
   }
   return(data)
+}
+
+loadResampleData2 <- function(modelType = c("cese-(kl)e", "cese-(le)k", "cese-(ek)l"), 
+                              energyType="Q", factor=NULL, 
+                              countryAbbrev=countryAbbrevs,
+                              archive=NULL){
+  ##################
+  # Loads resample data for all countries for the given modelType and energyType or factor
+  ##
+  if (!is.null(energyType) && !is.null(factor)){
+    warning(paste("Both 'energyType' and 'factor' given in loadAllResampleData2()", 
+                   "  Ignoring 'factor'."))
+  }
+  
+  if (!is.null(energyType)){
+    grid <- expand.grid(country=countryAbbrev, model=modelType, energy=energyType, 
+                        stringsAsFactors=FALSE)
+    
+    grid$n <- 1:nrow(grid)
+    return( ddply( grid, .(n), function(x){
+      loadResampleData(modelType=x$model[1], countryAbbrev = x$country[1],
+                       energyType=x$energy[1], archive=archive) }
+    ))
+  } 
+  if (! is.null(factor) ) {
+    grid <- expand.grid(country=countryAbbrev, model=modelType, factor=factor, 
+                        stringsAsFactors=FALSE)
+    grid$n <- 1:nrow(grid)
+    return( ddply( grid, .(n), 
+            loadResampleData(modelType=model, countryAbbrev=country, 
+                             factor=factor, archive=archive)))
+  }
+    
+  # Neither energyType nor factor were specified
+  grid <- expand.grid(country=countryAbbrev, model=modelType, stringsAsFactors=FALSE)
+  grid$n <- 1:nrow(grid)
+  return(ddply( grid, .(n), 
+                loadResampleData(country=country, modelType=model, archive=archive)))
 }
 
 loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
