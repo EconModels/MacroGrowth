@@ -3663,8 +3663,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   if (missing(archive)) {
     load(file=path) 
   } else {
-    f <- unz(archive, path)
-    load(f)
+    load(unz(archive, path))
   }
   if ("sigma" %in% names(resampleData) ){
     sigmaTrans <- ifelse(resampleData$sigma < 2, resampleData$sigma, 1.5 - resampleData$rho )
