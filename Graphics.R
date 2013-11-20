@@ -97,18 +97,18 @@ sigma_trans <- function(base = exp(1)) {
 
 standardTriPlot <- function(data, 
                             grid_lines=5, 
-                            aes_string="color=lambda", 
+                            aes_string="", #"color=lambda", 
                             size=1.0, 
                             alpha=0.2){
   triPlot(subset(data, method!="orig"), 
           gamma, alpha, beta,
           labels=c("gamma", "alpha", "beta"),
-          grid_lines=grid_lines,  aes_string="color=lambda", 
+          grid_lines=grid_lines,  aes_string=aes_string, 
           size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
                color="red", alpha=1, size=3) +
-    facet_wrap( ~ countryAbbrev ) +
-    scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+    facet_wrap( ~ countryAbbrev ) # +
+    # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
 standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4) {
