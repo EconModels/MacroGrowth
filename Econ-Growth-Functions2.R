@@ -3651,7 +3651,7 @@ getSeed <- function(){
   return(123)
 }
 
-loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA){
+loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, archive){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
@@ -3660,7 +3660,12 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA){
   ##
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # The name of the object loaded by this call is resampleData.
-  load(file=path)
+  if (missing(archive)) {
+    load(file=path) 
+  } else {
+    f <- unz(archive, path)
+    load(f)
+  }
   if ("sigma" %in% names(resampleData) ){
     sigmaTrans <- ifelse(resampleData$sigma < 2, resampleData$sigma, 1.5 - resampleData$rho )
     resampleData$sigmaTrans <- sigmaTrans
