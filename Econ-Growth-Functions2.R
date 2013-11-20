@@ -3671,6 +3671,9 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   }
   # Ensure that countryAbbrev comes in as a factor (not a string)
   resampleData$countryAbbrev <- factor(resampleData$countryAbbrev)
+  resampleData$model <- modelType
+  resampleData$energy <- energyType
+  resampleData$factor <- factor
   return(resampleData)
 }
 
