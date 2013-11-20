@@ -2280,7 +2280,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   return(dataCD)
 }
 
-cesPredictions <- function(countryAbbrev, energyType, nest){
+cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -2303,7 +2303,7 @@ cesPredictions <- function(countryAbbrev, energyType, nest){
   } else {
     modelType <- paste("cese-", nest, sep="")
   }
-  model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
+  model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, archive=archive)
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -2397,7 +2397,7 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
-loadCESSpaghettiGraphData <- function(energyType, nest){
+loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
   ################################
   # Creates a list containing 2 data.frames
   # * historicalDataAndPred: a data.frame that provides the historical data and a prediction.
@@ -2431,7 +2431,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest){
     historical <- loadData(countryAbbrev=countryAbbrev)
     years <- data.frame(Year = historical$Year)
     # Get the list of resample models for this country.
-    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType)
+    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType, archive=archive)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
     for (i in 1:nResamples){
@@ -3653,7 +3653,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   ##
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # The name of the object loaded by this call is resampleData.
-  if (missing(archive)) {
+  if (is.null(archive)) {
     load(file=path) 
   } else {
     load(unz(archive, path))
@@ -3671,7 +3671,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   return(resampleData)
 }
 
-loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA){
+loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA, archive=NULL){
   #############################
   # This function loads previously-saved models
   # from resampled data. The loaded object is
@@ -3681,7 +3681,11 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA){
   ##
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
   # The name of the object loaded by this call is resampleData.
-  load(file=path)
+  if (is.null(archive)) {
+    load(file=path) 
+  } else {
+    load(unz(archive, path))
+  }
   return(resampleModels)
 }
 
@@ -3724,11 +3728,11 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, fac
   return(data)
 }
 
-loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType, factor){
+loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType, factor, archive=NULL){
   ####################
   # Loads models for resampled data only from a previously-run set of resample curve fits
   ##
-  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor, archive=archive)
   # Select only those models that aren't from the curve fit to historical data (which is in position 1)
   len <- length(models)
   # Return everything but the first element (which is the fit to historical data).
@@ -3745,11 +3749,11 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
   return(data)
 }
 
-loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType, factor){
+loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType, factor, archive=NULL){
   ####################
   # Loads the model for a fit to historical data
   ##
-  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor) 
+  models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor, archive=archive) 
   # Select the first model, which is the model for the fit to historical data  
   return(models[[1]])
 }

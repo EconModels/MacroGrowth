@@ -15,7 +15,8 @@ source('Econ-Growth-Functions2.R')
 
 <<plot1>>=
 for (nest in c("(kl)e", "(le)k", "(ek)l") ) {
-  nestData <- loadCESSpaghettiGraphData("Q", nest= nest)
+  nestData <- loadCESSpaghettiGraphData("Q", nest= nest, 
+                archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
   print( 
     qplot( Year, iGDP, group=ResampleNumber, 
            data=nestData, # subset(foo, Country=="US"), 
