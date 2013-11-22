@@ -2796,6 +2796,19 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
+createCESSpaghettiGraph <- function(energyType, nest){
+  #############
+  # Returns a graph that shows lines for each resample model
+  # for the energyType and nest arguments.
+  ##
+  spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest= nest, 
+                        archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+  graph <- qplot(Year, iGDP, group=ResampleNumber, data=spaghettiGraphData, facets = ~Country, geom="line", alpha=I(0.15))
+  graph <- graph + geom_line(data=subset(spaghettiGraphData, Type=="actual"), colour="red")
+  graph <- graph + theme_minimal()
+  return(graph)
+}
+
 ## <<LINEX functions, eval=TRUE>>=
 linexModel <- function(countryAbbrev, energyType, data){
   ####################
