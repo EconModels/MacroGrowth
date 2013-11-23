@@ -2417,6 +2417,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
   pred$Type <- "fitted"
   historicalDataAndPred <- rbind.fill(actual,pred)
   historicalDataAndPred$Resampled <- FALSE
+  historicalDataAndPred <- historicalDataAndPred[,  c("Year","iGDP","Country", "Type")]
 #  return(historicalDataAndPred)
   
   # Put all of the resamples in a data.frame
@@ -2444,6 +2445,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
       new$Country <- countryAbbrev
       new$Resampled <- TRUE
       new$Type <- "fitted"
+      new <- new[, c("Year","iGDP","ResampleNumber","Country", "Type")]
       resamplePreds <- rbind.fill(resamplePreds, new)
     }
   }
