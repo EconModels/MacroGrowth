@@ -2400,26 +2400,34 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
+
 loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
   ## 
+  # The approach is to build a list of data frames and rbind them together at the end.
+  # I'm using the hint found at http://grokbase.com/t/r/r-help/038ctsj5ym/r-who-to-rbind-of-a-list-of-data-frames
+  # j is the index in the list of data frames.
+  j <- 1
+  dfList <- list()
   columnsToSave <- c("Year", "iGDP", "Country", "ResampleNumber", "Type", "Resampled")
   # Put the historical data in a data.frame
   actual <- loadData(countryAbbrev="All")
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
+  actual$Resampled <- FALSE
+  dfList[[j]] <- actual
   # Put the fits to historical data in a data.frame
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
   pred <- actual
   pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
-  historicalDataAndPred <- rbind(actual,pred)
-  historicalDataAndPred$Resampled <- FALSE
-  historicalDataAndPred <- historicalDataAndPred[,  intersect(names(historicalDataAndPred), columnsToSave)]
+  pred$Resampled <- FALSE
+  j <- j+1
+  dfList[[j]] <- pred
   
   # Put all of the resamples in a data.frame
   if (is.na(energyType)){
@@ -2439,8 +2447,6 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
     resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType, archive=archive)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
-    # Create the list that we'll fill below.
-    newList <- list()
     for (i in 1:nResamples){
       new <- years
       new$iGDP <- fitted(resampleModels[[i]])
@@ -2448,16 +2454,13 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
       new$ResampleNumber <- i
       new$Type <- "fitted"
       new$Resampled <- TRUE
-      new <- new[, intersect(names(new), columnsToSave)]
       # Store the new data.frame as an item in the list
-      newList[[i]] <- new
+      j <- j+1
+      dfList[[j]] <- new
     }
-    # Combine all the new data.frames in one call.
-    # I'm using the hint found at http://grokbase.com/t/r/r-help/038ctsj5ym/r-who-to-rbind-of-a-list-of-data-frames
-    resamplePreds <- rbind(resamplePreds, do.call("rbind", newList))
   }
-  # Now bind everything together.
-  return(rbind(historicalDataAndPred, resamplePreds))
+  # Now rbind everything together and return.
+  return(do.call("rbind", dfList))
 }
 
 cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
