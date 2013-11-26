@@ -2808,14 +2808,18 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
-createCESSpaghettiGraph <- function(energyType, nest, ...){
+createCESSpaghettiGraph <- function(energyType, nest, archive=NULL, alpha=0.15, ...){
   #############
   # Returns a graph that shows lines for each resample model
   # for the energyType and nest arguments.
   # You can pass an "archive" argument in ... if you want to target a specific archive.
   ##
-  spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest=nest, ...)
-  graph <- qplot(Year, iGDP, group=ResampleNumber, data=spaghettiGraphData, facets = ~Country, geom="line", alpha=I(0.15))
+  if (is.null(archive)){
+    spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest=nest, ...)
+  } else {
+    spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest=nest, archive=archive, ...)
+  }
+  graph <- qplot(Year, iGDP, group=ResampleNumber, data=spaghettiGraphData, facets = ~Country, geom="line", alpha=I(alpha))
   graph <- graph + geom_line(data=subset(spaghettiGraphData, Type=="actual"), colour="red")
   graph <- graph + theme_minimal()
   return(graph)
@@ -3672,7 +3676,7 @@ getSeed <- function(){
   return(123)
 }
 
-loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, archive){
+loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, archive=NULL){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
@@ -3913,7 +3917,7 @@ fracUnconvergedResampleFitsAll <- function(){
   }
   
   modelType <- "cd"
-  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=NULL)
   unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
