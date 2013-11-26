@@ -1529,24 +1529,31 @@ in Figures~\ref{fig:CES_Spaghetti_Graph_kl}--\ref{fig:CES_Spaghetti_Graph_ekl}.
 Figure~\ref{fig:CES_Spaghetti_Graph_kl} shows CES model resample predictions
 for the ($kl$) nesting (without energy).
 
-<<CES_Spaghetti_Graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Graph of CES resample model indexed GDP predictions for the ($kl$) nesting (without energy). Only 50 resample models are shown. **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+<<CES_Spaghetti_Graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($kl$) nesting (without energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+# createCESSpaghettiGraph(energyType=NA, archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+# createCESSpaghettiGraph(energyType=NA, archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
 createCESSpaghettiGraph(energyType=NA)
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph_kle} shows CES model 
 resample predictions for the ($kl$)$e$ nesting.
 
-<<CES_Spaghetti_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Graph of CES resample model indexed GDP predictions for the ($kl$)$e$ nesting (with energy). Only 50 resample models are shown. **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+<<CES_Spaghetti_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($kl$)$e$ nesting (with energy). Only 50 resample models are shown. **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+# createCESSpaghettiGraph(energyType="Q", nest="(kl)e", archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+# createCESSpaghettiGraph(energyType="Q", nest="(kl)e", archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
 createCESSpaghettiGraph(energyType="Q", nest="(kl)e")
 @
 
-<<CES_Spaghetti_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Graph of CES resample model indexed GDP predictions for the ($le$)$k$ nesting (with energy). Only 50 resample models are shown. **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+<<CES_Spaghetti_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($le$)$k$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+# createCESSpaghettiGraph(energyType="Q", nest="(le)k", archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+# createCESSpaghettiGraph(energyType="Q", nest="(le)k", archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
 createCESSpaghettiGraph(energyType="Q", nest="(le)k")
 @
 
-<<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Graph of CES resample model indexed GDP predictions for the ($ek$)$l$ nesting (with energy). Only 50 resample models are shown. **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+<<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($ek$)$l$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. ****">>=
+# createCESSpaghettiGraph(energyType="Q", nest="(ek)Le", archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+# createCESSpaghettiGraph(energyType="Q", nest="(ek)l", archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
 createCESSpaghettiGraph(energyType="Q", nest="(ek)l")
-
 @
 
 
