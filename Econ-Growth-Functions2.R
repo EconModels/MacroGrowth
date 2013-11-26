@@ -2808,19 +2808,40 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
-createCESSpaghettiGraph <- function(energyType, nest, archive=NULL, alpha=0.15, ...){
+createCESSpaghettiGraph <- function(energyType, 
+                                    nest, 
+                                    data=loadCESSpaghettiGraphData(energyType=energyType, 
+                                                                   nest=nest, ...), 
+                                    alpha=0.15, ...){
   #############
   # Returns a graph that shows lines for each resample model
   # for the energyType and nest arguments.
-  # You can pass an "archive" argument in ... if you want to target a specific archive.
+  # Alternatively, you can specify the data argument only.
+  # You can obtain data with the loadCESSpaghettiGraphData function. 
+  # For example:
+  # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e", 
+  #         archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
+  # createCESSpaghettiGraph(data=data)
   ##
-  if (is.null(archive)){
-    spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest=nest, ...)
-  } else {
-    spaghettiGraphData <- loadCESSpaghettiGraphData(energyType=energyType, nest=nest, archive=archive, ...)
-  }
-  graph <- qplot(Year, iGDP, group=ResampleNumber, data=spaghettiGraphData, facets = ~Country, geom="line", alpha=I(alpha))
-  graph <- graph + geom_line(data=subset(spaghettiGraphData, Type=="actual"), colour="red")
+  
+  #
+  # Things to change:
+  # * order of the countries to correspond to countryAbbrevsForGraph. 
+  #   Across top row: US, UK, JP
+  #   Across mid row: CN, ZA, TZ
+  #   Across bot row: SA, IR, ZM
+  # * Change country abbreviations to country names (e.g., "CN" --> "China")
+  # * plot historical data as open circles instead of red lines. 
+  # * plot fit to historical data as a red line. 
+  # * Change vertical axis limits: China 1-10, all others 1-4. 
+  # * eliminate grid lines
+  # * tic marks inside axis instead of inside axis.
+  # * y-axis label: "Indexed GDP (1980=1 or 1991=1)".
+  # * avoid year label collisions on the horizontal axis.
+  # 
+  
+  graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
+  graph <- graph + geom_line(data=subset(data, Type=="actual"), colour="red")
   graph <- graph + theme_minimal()
   return(graph)
 }
