@@ -2406,19 +2406,15 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
   ## 
-  # The approach is to build a list of data frames and rbind them together at the end.
-  # I'm using the hint found at http://grokbase.com/t/r/r-help/038ctsj5ym/r-who-to-rbind-of-a-list-of-data-frames
-  # j is the index in the list of data frames.
-  j <- 1
-  dfList <- list()
-  columnsToSave <- c("Year", "iGDP", "Country", "ResampleNumber", "Type", "Resampled")
   # Put the historical data in a data.frame
   actual <- loadData(countryAbbrev="All")
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
-  dfList[[j]] <- actual
+  actual$Energy <- NA
+  actual$Nest <- NA
+  
   # Put the fits to historical data in a data.frame
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
   pred <- actual
@@ -2426,41 +2422,43 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
-  j <- j+1
-  dfList[[j]] <- pred
+  pred$Energy <- energyType
+  pred$Nest <- nest
   
-  # Put all of the resamples in a data.frame
   if (is.na(energyType)){
     modelType <- "ces"
   } else {
     modelType <- paste("cese-", nest, sep="")
   }
-  # Create an empty data frame that we'll fill.
-  resamplePreds <- data.frame(matrix(vector(), 0, 4, 
-                                     dimnames=list(c(), 
-                                                   c("Year", "iGDP", "Country", "ResampleNumber"))))
+
+  # Put all of the resamples in a list that will be converted to a data.frame
+  dfList <- list()
   for (countryAbbrev in countryAbbrevsForGraph){
     # Get the raw data for this country
     historical <- loadData(countryAbbrev=countryAbbrev)
     years <- data.frame(Year = historical$Year)
     # Get the list of resample models for this country.
-    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, modelType=modelType, energyType=energyType, archive=archive)
+    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
+                                                   modelType=modelType, 
+                                                   energyType=energyType, 
+                                                   archive=archive)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
-    for (i in 1:nResamples){
-      new <- years
-      new$iGDP <- fitted(resampleModels[[i]])
-      new$Country <- countryAbbrev
-      new$ResampleNumber <- i
-      new$Type <- "fitted"
-      new$Resampled <- TRUE
-      # Store the new data.frame as an item in the list
-      j <- j+1
-      dfList[[j]] <- new
-    }
+    nYears <- nrow(years)
+    dfList[[countryAbbrev]] <- data.frame(
+      Year = rep(historical$Year, nResamples),
+      iGDP = unlist(lapply( resampleModels, fitted)) ,
+      Country = countryAbbrev,
+      ResampleNumber = rep( 1:nResamples, each=nYears ),
+      Type = "fitted",
+      Resampled = TRUE,
+      Energy = energyType,
+      Nest = nest
+    )
   }
   # Now rbind everything together and return.
-  return(do.call("rbind", dfList))
+  # return(list( rbind(actual,pred), do.call("rbind", dfList) ) )
+  return(do.call("rbind", c(list(actual,pred), dfList) ))
 }
 
 cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
