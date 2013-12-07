@@ -2210,49 +2210,36 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-loadCESResampleTrianglePlotData <- function(energyType, nest, ...){
+loadCESResampleTrianglePlotData <- function(energyType, nest, archive=NULL){
   #################################
   # Loads and binds data for a CES resample ternary plot
   # You may specify an archive argument in the ... argument.
   ##
   if (missing(energyType) || is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
-                                energyType=NA, ...)
+                                energyType=NA, archive=archive)
   } else if (energyType == "U"){
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, 
                                 energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraphU,
-                                ...)
+                                archive=archive)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraph, 
-                                ...)
+                                archive=archive)
   }
 }
 
-cesResampleTrianglePlot <- function(energyType, nest, data=NULL, ...){
+cesResampleTrianglePlot <- function(energyType, nest, data=loadCESResampleTrianglePlotData(energyType=energyType,
+                                                                                           nest=nest,
+                                                                                           archive=NULL),
+                                    ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
-                                energyType=NA, archive=NULL)
-  } else if (energyType == "U"){
-    modelType <- paste("cese-", nest, sep="")
-    data <- loadAllResampleData(modelType=modelType, 
-                                energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraphU,
-                                archive=archive)
-  } else {
-    modelType <- paste("cese-", nest, sep="")
-    data <- loadAllResampleData(modelType=modelType, energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraph, 
-                                archive=archive)
-  }
   graph <- standardTriPlot(data, ...)
   return(graph)
 }
