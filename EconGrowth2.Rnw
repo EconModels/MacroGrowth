@@ -1538,7 +1538,7 @@ data <- loadCESSpaghettiGraphData(energyType=NA,
 # For the data in the n=1000 archive:
 # data <- loadCESSpaghettiGraphData(energyType=NA, 
 #               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-createCESSpaghettiGraph(data=data)
+cesSpaghettiGraph(data=data)
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph_kle} shows CES model 
@@ -1553,7 +1553,7 @@ data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e",
 # For the data in the n=1000 archive:
 # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e",
 #               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-createCESSpaghettiGraph(data=data)
+cesSpaghettiGraph(data=data)
 @
 
 <<CES_Spaghetti_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($le$)$k$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
@@ -1565,7 +1565,7 @@ data <- loadCESSpaghettiGraphData(energyType="Q", nest="(le)k",
 # For the data in the n=1000 archive:
 # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(le)k",
 #               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-createCESSpaghettiGraph(data=data)
+cesSpaghettiGraph(data=data)
 @
 
 <<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($ek$)$l$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
@@ -1577,7 +1577,7 @@ data <- loadCESSpaghettiGraphData(energyType="Q", nest="(ek)l",
 # For the data in the n=1000 archive:
 # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(ek)l",
 #               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-createCESSpaghettiGraph(data=data)
+cesSpaghettiGraph(data=data)
 @
 
 

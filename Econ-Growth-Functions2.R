@@ -2822,7 +2822,7 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
-createCESSpaghettiGraph <- function(energyType, 
+cesSpaghettiGraph <- function(energyType, 
                                     nest, 
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
@@ -2835,7 +2835,7 @@ createCESSpaghettiGraph <- function(energyType,
   # For example:
   # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e", 
   #         archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-  # createCESSpaghettiGraph(data=data)
+  # cesSpaghettiGraph(data=data)
   ##
   
   #
