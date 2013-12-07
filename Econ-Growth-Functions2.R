@@ -2400,8 +2400,7 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
-
-loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
+loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
@@ -2431,11 +2430,26 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
     modelType <- paste("cese-", nest, sep="")
   }
 
+  # Figure out which countries we need to loop over.
+  if (is.na(energyType) || energyType == "Q" || energyType == "X") {
+    countryAbbrevs <- countryAbbrevsForGraph
+  } else if (energyType == "U"){
+    countryAbbrevs <- countryAbbrevsForGraphU
+  } else {
+    warning(paste("Unknown energyType", energyType))
+    return(NULL)
+  }
   # Put all of the resamples in a list that will be converted to a data.frame
   dfList <- list()
-  for (countryAbbrev in countryAbbrevsForGraph){
+  for (countryAbbrev in countryAbbrevs){
     # Get the raw data for this country
     historical <- loadData(countryAbbrev=countryAbbrev)
+    if (! missing(energyType) && ! is.na(energyType)){
+      if (energyType == "U"){
+        # subset historical to include only years for which U is available.
+        historical <- subset(historical, !is.na(iU))
+      }
+    }
     years <- data.frame(Year = historical$Year)
     # Get the list of resample models for this country.
     resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
@@ -2444,10 +2458,12 @@ loadCESSpaghettiGraphData <- function(energyType, nest, archive=NULL){
                                                    archive=archive)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
-    nYears <- nrow(years)
+    # Get the number of years from fitted(resampleModels[[1]]), because not
+    # all models cover all the years.
+    nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted)) ,
+      iGDP = unlist(lapply( resampleModels, fitted )) ,
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
