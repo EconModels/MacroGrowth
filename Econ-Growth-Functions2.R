@@ -2210,11 +2210,34 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-cesResampleTrianglePlot <- function(energyType, nest, archive=NULL, ...){
+loadCESResampleTrianglePlotData <- function(energyType, nest, ...){
+  #################################
+  # Loads and binds data for a CES resample ternary plot
+  # You may specify an archive argument in the ... argument.
+  ##
+  if (missing(energyType) || is.na(energyType)){
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
+                                energyType=NA, ...)
+  } else if (energyType == "U"){
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, 
+                                energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraphU,
+                                ...)
+  } else {
+    modelType <- paste("cese-", nest, sep="")
+    data <- loadAllResampleData(modelType=modelType, energyType=energyType,
+                                countryAbbrevsOrder=countryAbbrevsForGraph, 
+                                ...)
+  }
+}
+
+cesResampleTrianglePlot <- function(energyType, nest, data=NULL, ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
   ##
+  
   if (is.na(energyType)){
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
                                 energyType=NA, archive=NULL)
