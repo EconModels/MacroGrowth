@@ -2227,7 +2227,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
   # We have an energyType
   if (nest == "all"){
     # Data for all nest options is desired.
-    # Recursively call this function and rbind all the results together.
+    # Recursively call this function and rbind.fill the results together.
     allNests <- lapply( cesNests, loadCESResampleTrianglePlotData, energyType=energyType, archive=archive )
     return(do.call(rbind.fill, allNests))
   }
