@@ -28,6 +28,7 @@ countryNamesAlph <- c(CN="China", IR="Iran", JP="Japan", SA="Saudi Arabia", TZ="
 countryNamesAlphU <- c(JP="Japan", UK="United Kingdom", US="USA") #In alphabetical order.
 yLimitsForGDPGraphs <- list(c(1,10), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4), c(1,4)) # Alph order
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
+cesNests <- c(kl="(kl)", kle="(kl)e", lek="(le)k", ekl="(ek)l")
 energyTypes <- c(Q="Q", X="X", U="U") # List of energy types
 factors <- c(K="K", L="L", Q="Q", X="X", U="U") # List of factors of production
 resampleMethods <- c("resample", "residual", "wild", "debug")
@@ -2210,26 +2211,40 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-loadCESResampleTrianglePlotData <- function(energyType, nest, archive=NULL){
+loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
   #################################
-  # Loads and binds data for a CES resample ternary plot
-  # You may specify an archive argument in the ... argument.
+  # Loads and binds data for a CES resample ternary plot.
+  # If the energyType argument is missing or NA, you'll get data for the CES model without energy.
+  # If you specify nest="all", you'll get data for all nests. You'll need to specify energyType if you use nest="all"
   ##
-  if (missing(energyType) || is.na(energyType)){
+  if (missing(energyType) || is.na(energyType) || nest=="(kl)"){
+    # Desire CES without energy.
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
                                 energyType=NA, archive=archive)
-  } else if (energyType == "U"){
-    modelType <- paste("cese-", nest, sep="")
+    data$Nest <- "(kl)"
+    return(data)
+  }
+  # We have an energyType
+  if (nest == "all"){
+    # Data for all nest options is desired.
+    # Recursively call this function and rbind all the results together.
+    allNests <- lapply( cesNests, loadCESResampleTrianglePlotData, energyType=energyType, archive=archive )
+    return(do.call(rbind.fill, allNests))
+  }
+  modelType <- paste("cese-", nest, sep="")
+  if (energyType == "U"){
     data <- loadAllResampleData(modelType=modelType, 
                                 energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraphU,
                                 archive=archive)
   } else {
-    modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraph, 
                                 archive=archive)
   }
+  # Add the nest argument to the data.
+  data$Nest <- nest
+  return(data)
 }
 
 cesResampleTrianglePlot <- function(energyType, nest, data=loadCESResampleTrianglePlotData(energyType=energyType,
@@ -2239,6 +2254,7 @@ cesResampleTrianglePlot <- function(energyType, nest, data=loadCESResampleTriang
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
+  # You can send parameters for the graph in the ... argument.
   ##
   graph <- standardTriPlot(data, ...)
   return(graph)
