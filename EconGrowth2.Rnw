@@ -1463,32 +1463,11 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
 **** Replace Figures~\ref{fig:CES_ternary_graph_kl}--\ref{fig:CESq_ternary_graph_ekl}
 with one plot that shows all 4 nestings. ****
 
-Figure~\ref{fig:CES_ternary_graph_kl} shows 
-$\alpha$, $\beta$, and $\gamma$ parameters from the CES model without energy.
+Figure~\ref{fig:CES_ternary_graph} shows 
+$\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
 
-<<CES_ternary_graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (without energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values.">>=
-cesResampleTrianglePlot(energyType=NA)
-@
-
-Figure~\ref{fig:CESq_ternary_graph_kle} shows 
-$\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nesting.
-
-<<CESq_ternary_graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values, ($kl$)$e$ nesting.">>=
-cesResampleTrianglePlot(energyType="Q", nest="(kl)e")
-@
-
-Figure~\ref{fig:CESq_ternary_graph_lek} shows 
-$\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nesting.
-
-<<CESq_ternary_graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values, ($le$)$k$ nesting.">>=
-cesResampleTrianglePlot(energyType="Q", nest="(le)k")
-@
-
-Figure~\ref{fig:CESq_ternary_graph_ekl} shows 
-$\alpha$, $\beta$, and $\gamma$ parameters from the CES model with ($kl$)$e$ nesting.
-
-<<CESq_ternary_graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\alpha$, $\\beta$, and $\\gamma$ values, ($ek$)$l$ nesting.">>=
-cesResampleTrianglePlot(energyType="Q", nest="(ek)l")
+<<CES_ternary_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
+cesResampleTrianglePlot(energyType="Q", nest="all")
 @
 
 **** Fix $x$-axis on Figures~\ref{fig:CESq_Sigma_Sigma_1_kle}--\ref{fig:CESq_Sigma_Sigma_1_ekl}.
