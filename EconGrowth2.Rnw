@@ -1501,7 +1501,14 @@ The fit to historical data is shown as a dashed line.
 The gray band beneath the historical data shows the spread of predictions for 1000 resamples.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelSpaghettiGraphHeight, fig.cap="CES fitted models.">>=
-cesSpaghettiGraph(nest="all", energyType="Q")
+spagData <- loadCESSpaghettiGraphData(energyType="Q", nest="all")
+cesSpaghettiGraph(data=spagData, level=1)
+@
+
+Figure~\ref{fig:CES_Spaghetti_Graph_ZM} shows details of the resample fits for Zambia with the (kl)e nesting.
+
+<<CES_Spaghetti_Graph_ZM, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models for Zambia with the (kl)e nesting.">>=
+cesSpaghettiGraph(data=subset(spagData, Country=="ZM" & nest=="(kl)e"), level=1)
 @
 
 
