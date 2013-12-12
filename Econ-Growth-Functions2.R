@@ -2883,10 +2883,11 @@ cesSpaghettiGraph <- function(energyType,
   # * avoid year label collisions on the horizontal axis.
   # 
   alph = .5 * (1 - level)
+  data$alph = alph
   seData <- ddply( subset(data, Type=="fitted"), .(Country,Year,nest), summarise, 
          n = length(iGDP),
-         lower= qdata(0, iGDP),
-         upper= qdata(1, iGDP),
+         lower= quantile(iGDP, alph[1]),
+         upper= quantile(iGDP, 1-alph[1]),
          iGDP = iGDP[1]
   ) 
   # return(seData)
