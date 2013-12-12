@@ -2221,7 +2221,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
     # Desire CES without energy.
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
                                 energyType=NA, archive=archive)
-    data$Nest <- "(kl)"
+    data$nest <- "(kl)"
     return(data)
   }
   # We have an energyType
@@ -2243,7 +2243,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
                                 archive=archive)
   }
   # Add the nest argument to the data.
-  data$Nest <- nest
+  data$nest <- nest
   return(data)
 }
 
@@ -2438,7 +2438,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
   actual$Type <- "actual"
   actual$Resampled <- FALSE
   actual$Energy <- NA
-  actual$Nest <- NA
+  actual$nest <- NA
   
   # Put the fits to historical data in a data.frame
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
@@ -2448,7 +2448,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
   pred$Energy <- energyType
-  pred$Nest <- nest
+  pred$nest <- nest
   
   if (is.na(energyType)){
     modelType <- "ces"
@@ -2495,7 +2495,7 @@ loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
       Type = "fitted",
       Resampled = TRUE,
       Energy = energyType,
-      Nest = nest
+      nest = nest
     )
   }
   # Now rbind everything together and return.
