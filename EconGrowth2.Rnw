@@ -1494,69 +1494,14 @@ $\sigma$ and $\sigma_1$ values from the CES model with ($ek$)$l$ nesting.
 cesResamplePlotSigmaSigma_1(energyType="Q", nest="(ek)l")
 @
 
-Figure~\ref{fig:CES_GDP_Lattice_Graph} compares CES model predictions 
+Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
 to historical data for all nestings. 
+Historical data are shown as open circles. 
+The fit to historical data is shown as a dashed line. 
+The gray band beneath the historical data shows the spread of predictions for 1000 resamples.
 
-<<CES_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models.">>=
-createCESLatticeGraph(energyType="Q")
-@
-
-The resample model predictions for each nesting 
-in Figure~\ref{fig:CES_GDP_Lattice_Graph} can be shown as gray lines 
-beneath superimposed on the historical data as shown
-in Figures~\ref{fig:CES_Spaghetti_Graph_kl}--\ref{fig:CES_Spaghetti_Graph_ekl}. 
-Figure~\ref{fig:CES_Spaghetti_Graph_kl} shows CES model resample predictions
-for the ($kl$) nesting (without energy).
-
-<<CES_Spaghetti_Graph_kl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($kl$) nesting (without energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
-# For the data currently in the data_resample directory:
-# data <- loadCESSpaghettiGraphData(energyType=NA)
-# For the data in the n=50 archive:
-data <- loadCESSpaghettiGraphData(energyType=NA, 
-                                  archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-# For the data in the n=1000 archive:
-# data <- loadCESSpaghettiGraphData(energyType=NA, 
-#               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-cesSpaghettiGraph(data=data)
-@
-
-Figure~\ref{fig:CES_Spaghetti_Graph_kle} shows CES model 
-resample predictions for the ($kl$)$e$ nesting.
-
-<<CES_Spaghetti_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($kl$)$e$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
-# For the data currently in the data_resample directory:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e")
-# For the data in the n=50 archive:
-data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e", 
-                                  archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-# For the data in the n=1000 archive:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e",
-#               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-cesSpaghettiGraph(data=data)
-@
-
-<<CES_Spaghetti_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($le$)$k$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
-# For the data currently in the data_resample directory:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(le)k")
-# For the data in the n=50 archive:
-data <- loadCESSpaghettiGraphData(energyType="Q", nest="(le)k", 
-                                  archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-# For the data in the n=1000 archive:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(le)k",
-#               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-cesSpaghettiGraph(data=data)
-@
-
-<<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Indexed GDP predictions for 1000 CES resample models for the ($ek$)$l$ nesting (with energy). **** Need to change the order of the countries to correspond to countryAbbrevsForGraph. Need to plot historical data as open circles instead of red lines. Need to plot fit to historical data as a red line. Change vertical axis limits: China 1-10, all others 1-4. ****">>=
-# For the data currently in the data_resample directory:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(ek)l")
-# For the data in the n=50 archive:
-data <- loadCESSpaghettiGraphData(energyType="Q", nest="(ek)l", 
-                                  archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-# For the data in the n=1000 archive:
-# data <- loadCESSpaghettiGraphData(energyType="Q", nest="(ek)l",
-#               archive="data_archive/data_resample_2013-11-19_Best_Algorithm_Saving_Models_Massively_Parallel_n=1000.zip")
-cesSpaghettiGraph(data=data)
+<<CES_Spaghetti_Graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelSpaghettiGraphHeight, fig.cap="CES fitted models.">>=
+cesSpaghettiGraph(nest="all", energyType="Q")
 @
 
 
