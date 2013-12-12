@@ -2431,19 +2431,36 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
-loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
+loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
   ## 
-  # Put the historical data in a data.frame
+  # We want all nests.
+  if (nest == "all"){
+    # Data for all nest options is desired.
+    # Ensure that we have an energyType
+    if (missing(energyType) || is.na(energyType)){
+      stop('Need to include an energy type if nest = "all"')
+    }
+    # Recursively call this function and rbind.fill the results together.
+    allNests <- lapply( cesNests, loadCESSpaghettiGraphData, energyType=energyType, archive=archive )
+    outgoing <- do.call(rbind.fill, allNests)
+    # Now set the order for the factors of the nests
+    outgoing$nest <- factor(outgoing$nest, levels=cesNests)
+    return(outgoing)
+  }
+  # We don't want all of the nests. Do the nest that is desired.
+  # Put the historical data in a data.frame. 
+  # We apply the nest argument as given to the data frame. 
+  # Doing so assists with graphing later.
   actual <- loadData(countryAbbrev="All")
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
   actual$Energy <- NA
-  actual$nest <- NA
+  actual$nest <- nest
   
   # Put the fits to historical data in a data.frame
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
@@ -2455,9 +2472,13 @@ loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
   pred$Energy <- energyType
   pred$nest <- nest
   
-  if (is.na(energyType)){
+  if (is.na(energyType) || nest=="(kl)"){
     modelType <- "ces"
+    # May need to ensure that the nest is set to "(kl)" when there is no energy involved.
+    nest <- "(kl)"
   } else {
+print(paste("energyType =", energyType))
+print(paste("nest =", nest))
     modelType <- paste("cese-", nest, sep="")
   }
 
@@ -2504,8 +2525,10 @@ loadCESSpaghettiGraphData <- function(energyType, nest=NA, archive=NULL){
     )
   }
   # Now rbind everything together and return.
-  # return(list( rbind(actual,pred), do.call("rbind", dfList) ) )
-  return(do.call("rbind", c(list(actual,pred), dfList) ))
+  outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
+  # Ensure that the country factor is in the right order
+  outgoing$Country <- factor(outgoing$Country, levels=countryAbbrevs)
+  return(outgoing)
 }
 
 cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
@@ -3950,6 +3973,7 @@ doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="
                      "cd"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
                      "cde"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "ces"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+                     "cese-(kl)"  = paste(prefix, "-", "ces",     "-", countryAbbrev, "-", "NA",       rdat, sep=""),
                      "cese-(kl)e" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "cese-(le)k" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "cese-(ek)l" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
@@ -3966,10 +3990,11 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   ##
   dr <- getOption('heun_data_resample')
   if (is.null(dr)) dr <- "data_resample"
-  modelType <- match.arg(modelType)
+#   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
-                   "cde"   = file.path(dr, "cd",      countryAbbrev),
+                   "cde"       = file.path(dr, "cd",      countryAbbrev),
+                   "cese-(kl)" = file.path(dr, "ces",     countryAbbrev),
                    file.path(dr, modelType, countryAbbrev)
                    )
   return(folder)
