@@ -2852,7 +2852,7 @@ cesSpaghettiGraph <- function(energyType,
                                     nest, 
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
-                                    alpha=0.15, ...){
+                                    alpha=0.15, level = 1, ...){
   #############
   # Returns a graph that shows lines for each resample model
   # for the energyType and nest arguments.
@@ -2879,9 +2879,20 @@ cesSpaghettiGraph <- function(energyType,
   # * y-axis label: "Indexed GDP (1980=1 or 1991=1)".
   # * avoid year label collisions on the horizontal axis.
   # 
-  
-  graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
-  graph <- graph + geom_line(data=subset(data, Type=="actual"), colour="red")
+  alph = .5 * (1 - level)
+  seData <- ddply( subset(data, Type=="fitted"), .(Country,Year), summarise, 
+         n = length(iGDP),
+         lower= qdata(0, iGDP),
+         upper= qdata(1, iGDP),
+         iGDP = iGDP[1]
+  ) 
+  # return(seData)
+  # return(names(data))
+  # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
+  graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
+  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", data=seData, stat="identity")
+  graph <- graph + geom_line(colour="red")
+  graph <- graph + facet_wrap( ~ Country )
   graph <- graph + theme_minimal()
   return(graph)
 }
