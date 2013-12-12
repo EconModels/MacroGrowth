@@ -107,7 +107,7 @@ standardTriPlot <- function(data,
           size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
                color="red", alpha=1, size=3) +
-    facet_wrap( ~ countryAbbrev ) # +
+    facet_grid(countryAbbrev ~ nest ) # +
     # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
