@@ -2879,6 +2879,7 @@ cesSpaghettiGraph <- function(energyType,
                                     nest, 
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
+                                    facet_formula = Country ~ nest,
                                     alpha=0.15, level = 1, ...){
   #############
   # Returns a graph that shows lines for each resample model
@@ -2920,7 +2921,7 @@ cesSpaghettiGraph <- function(energyType,
   graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
   graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", lty=2, data=seData, stat="identity")
   graph <- graph + geom_point(colour="red", shape=1)
-  graph <- graph + facet_grid( Country ~ nest)
+  graph <- graph + facet_grid( facet_formula )
   graph <- graph + theme_minimal()
   return(graph)
 }
