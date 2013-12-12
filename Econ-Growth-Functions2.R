@@ -2229,7 +2229,10 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
     # Data for all nest options is desired.
     # Recursively call this function and rbind.fill the results together.
     allNests <- lapply( cesNests, loadCESResampleTrianglePlotData, energyType=energyType, archive=archive )
-    return(do.call(rbind.fill, allNests))
+    outgoing <- do.call(rbind.fill, allNests)
+    # Now set the order for the factors of the nests
+    outgoing$nest <- factor(outgoing$nest, levels=cesNests)
+    return(outgoing)
   }
   modelType <- paste("cese-", nest, sep="")
   if (energyType == "U"){
