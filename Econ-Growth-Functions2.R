@@ -2477,8 +2477,6 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     # May need to ensure that the nest is set to "(kl)" when there is no energy involved.
     nest <- "(kl)"
   } else {
-print(paste("energyType =", energyType))
-print(paste("nest =", nest))
     modelType <- paste("cese-", nest, sep="")
   }
 
