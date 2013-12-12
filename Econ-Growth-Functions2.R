@@ -64,6 +64,8 @@ threePanelTernaryGraphHeight <- 2.0 #Inches
 ninePanelGraphWidth <- maxWidth     
 ninePanelGraphHeight <- 7.5  #Inches
 ninePanelTernaryGraphHeight <- 5.1 #Inches
+thirtySixPanelGraphWidth <- maxWidth
+thirtySixPanelTernaryGraphHeight <- 9.0 #Inches
 presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth <- 2 #Inches
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
