@@ -2233,7 +2233,8 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
     # Recursively call this function and rbind.fill the results together.
     allNests <- lapply( cesNests, loadCESResampleTrianglePlotData, energyType=energyType, archive=archive )
     outgoing <- do.call(rbind.fill, allNests)
-    # Now set the order for the factors of the nests
+    # Now set the order for the factors of the nests.
+    # Doing so sets the order of appearance on graphs.
     outgoing$nest <- factor(outgoing$nest, levels=cesNests)
     return(outgoing)
   }
@@ -2512,6 +2513,10 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     # Get the number of years from fitted(resampleModels[[1]]), because not
     # all models cover all the years.
     nYears <- length(fitted(resampleModels[[1]]))
+    
+print(paste("length(historical$Year) =", length(rep(historical$Year, nResamples))))
+print(paste("length(iGDP) =", length(unlist(lapply( resampleModels, fitted )))))
+
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
       iGDP = unlist(lapply( resampleModels, fitted )) ,
