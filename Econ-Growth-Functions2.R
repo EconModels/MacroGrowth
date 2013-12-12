@@ -2890,7 +2890,7 @@ cesSpaghettiGraph <- function(energyType,
   # return(names(data))
   # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
   graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
-  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", data=seData, stat="identity")
+  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", lty=2, data=seData, stat="identity")
   graph <- graph + geom_line(colour="red")
   graph <- graph + facet_wrap( ~ Country )
   graph <- graph + theme_minimal()
