@@ -2885,10 +2885,11 @@ cesSpaghettiGraph <- function(energyType,
   # * avoid year label collisions on the horizontal axis.
   # 
   alph = .5 * (1 - level)
-  seData <- ddply( subset(data, Type=="fitted"), .(Country,Year), summarise, 
+  data$alph = alph
+  seData <- ddply( subset(data, Type=="fitted"), .(Country,Year,nest), summarise, 
          n = length(iGDP),
-         lower= qdata(0, iGDP),
-         upper= qdata(1, iGDP),
+         lower= quantile(iGDP, alph[1]),
+         upper= quantile(iGDP, 1-alph[1]),
          iGDP = iGDP[1]
   ) 
   # return(seData)
@@ -2897,7 +2898,7 @@ cesSpaghettiGraph <- function(energyType,
   graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
   graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", lty=2, data=seData, stat="identity")
   graph <- graph + geom_line(colour="red")
-  graph <- graph + facet_wrap( ~ Country )
+  graph <- graph + facet_grid( Country ~ nest)
   graph <- graph + theme_minimal()
   return(graph)
 }
