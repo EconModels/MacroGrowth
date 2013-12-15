@@ -1147,7 +1147,7 @@ and high covariances among these variables can be seen in
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 **** Do we want to discuss the covariances? ****
 
-<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), thermal energy ($q$), exergy ($x$), and useful work ($u$).">>=
+<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 createHistoricalLatticeGraph()
 @
 
