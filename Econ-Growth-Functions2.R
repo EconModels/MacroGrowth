@@ -1340,15 +1340,15 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(c
   return(modelCDe)
 }
 
-cobbDouglasModel <- function(countryAbbrev, energyType=NA, gamma, data=loadData(countryAbbrev), ...){
+cobbDouglasModel <- function(countryAbbrev, energyType="none", gamma, data=loadData(countryAbbrev), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
-  # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType=NA 
+  # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType="none"
   # for a model without energy.
   # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
   # This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
   ##
-  if (is.na(energyType)){
+  if (energyType == "none"){
     # Fit the Cobb-Douglas model without energy.
     return(cdModel(data=data, ...))
   }
@@ -1514,7 +1514,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   # Returns a data.frame with the predictions.
   ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
-  if (!is.na(energyType)){
+  if (energyType != "none"){
     # Consider this replacement only if energyType has been specified.
     if (!(haveDataCD(countryAbbrev, energyType))){
       # If we don't have data for this combination of countryAbbrev and energyType, 
@@ -1539,7 +1539,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
   # that corresponds, row for row, with the AllData.txt file.
   ##
   out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType))
-  if (is.na(energyType)){
+  if (energyType == "none"){
     colnames(out) <- c("predGDP")
   } else {
     colnames(out) <- c(paste("predGDP", energyType, sep=""))
@@ -1547,7 +1547,7 @@ cobbDouglasPredictionsColumn <- function(energyType){
   return(out)
 }
 
-cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
+cobbDouglasData <- function(countryAbbrev, energyType="none", ...){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the Cobb-Douglas production function given a country.
@@ -1570,9 +1570,9 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
     colnames(df) <- c("lambda", "alpha", "beta", "gamma")
     rownames(df) <- c("+95% CI", "CDe", "-95% CI")
     return(df)
-  } else if (is.na(energyType)){
+  } else if (energyType == "none"){
     # We want Cobb-Douglas without energy
-    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType=NA)
+    resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType="none")
   } else {
     # We want Cobb-Douglas with energy
     resampledData <- loadResampleData(modelType="cde", countryAbbrev=countryAbbrev, energyType=energyType)
@@ -1585,6 +1585,103 @@ cobbDouglasData <- function(countryAbbrev, energyType=NA, ...){
     rownames(statisticalProperties) <- c("+95% CI", "CDe", "-95% CI")
   }
   return(statisticalProperties)
+}
+
+loadCDSpaghettiGraphData <- function(energyType, archive=NULL){
+  ################################
+  # Creates a data frame containing historical data, the fit to historical data, and 
+  # resample predictions for Cobb-Douglas models.
+  # Call with energyType = "none" for the CD model without energy.
+  # Call with energyType = "all" for all energy types
+  ##
+  if (energyType == "all"){
+    energyTypeList <- c("none", "Q", "X", "U")
+    # Data for all energy types is desired.
+    # Recursively call this function and rbind.fill the results together.
+    allEnergies <- lapply( energyTypeList, loadCDSpaghettiGraphData, archive=archive )
+    outgoing <- do.call(rbind, allEnergies)
+    # Now set the order for the factors of the energy types
+    outgoing$Energy <- factor(outgoing$Energy, levels=energyTypeList)
+    return(outgoing)
+  }
+  # Set modelType based on energyType. At the same time, check that energyType is OK.
+  if (energyType == "none"){
+    modelType <- "cd"
+  } else if (energyType == "Q" || energyType == "X" || energyType == "U") {
+    modelType <- "cde"
+  } else {
+    warning(paste("Unknown energyType", energyType))
+    return(NULL)
+  }
+  
+  # Put the historical data in a data.frame. 
+  actual <- loadData(countryAbbrev="all")
+  actual <- actual[c("Year", "iGDP", "Country")]
+  actual$ResampleNumber <- NA
+  actual$Type <- "actual"
+  actual$Resampled <- FALSE
+  actual$Energy <- energyType
+
+  # Put the fits to historical data in a data.frame
+  prediction <- cobbDouglasPredictionsColumn(energyType=energyType)
+  pred <- actual
+  # Replace the historical GDP data with the predicted GDP data, which is in column 1.
+  pred$iGDP <- prediction[,1]
+  pred$ResampleNumber <- NA
+  pred$Type <- "fitted"
+  pred$Resampled <- FALSE
+  pred$Energy <- energyType
+  
+  # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
+  pred <- subset(pred, !is.na(iGDP))
+  
+  # Figure out which countries we need to loop over.
+  if (energyType == "U"){
+    countryAbbrevs <- countryAbbrevsForGraphU
+  } else {
+    countryAbbrevs <- countryAbbrevsForGraph
+  }
+  # Remove rows where we don't need historical data or predictions, 
+  # specifically those times when we won't have a prediction.
+  actual <- subset(actual, Country %in% countryAbbrevs)
+  pred <- subset(pred, Country %in% countryAbbrevs)
+
+  # Put all of the resamples in a list that will be converted to a data.frame
+  dfList <- list()
+  for (countryAbbrev in countryAbbrevs){
+    # Get the raw data for this country
+    historical <- loadData(countryAbbrev=countryAbbrev)
+    if (energyType == "U"){
+      # subset historical to include only years for which U is available.
+      historical <- subset(historical, !is.na(iU))
+    }
+    years <- data.frame(Year = historical$Year)
+    # Get the list of resample models for this country.
+    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
+                                                   modelType=modelType, 
+                                                   energyType=energyType, 
+                                                   archive=archive)
+    # Add each model's prediction to the data.frame    
+    nResamples <- length(resampleModels)
+    # Get the number of years from fitted(resampleModels[[1]]), because not
+    # all models cover all the years.
+    nYears <- length(fitted(resampleModels[[1]]))
+    dfList[[countryAbbrev]] <- data.frame(
+      Year = rep(historical$Year, nResamples),
+      iGDP = unlist(lapply( resampleModels, fitted )),
+      Country = countryAbbrev,
+      ResampleNumber = rep( 1:nResamples, each=nYears ),
+      Type = "fitted",
+      Resampled = TRUE,
+      Energy = energyType
+    )
+  }
+  
+  # Now rbind everything together and return.  
+  outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
+  # Ensure that the country factor is in the right order
+  outgoing$Country <- factor(outgoing$Country, levels=countryAbbrevs)
+  return(outgoing)
 }
 
 cobbDouglasCountryRow <- function(countryAbbrev, energyType){
@@ -1616,9 +1713,9 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   # The return type is a data.frame.
   ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
-  if (is.na(energyType)){
+  if (energyType == "none"){
     valueRow <- "CD"
-    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType=NA)
+    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType="none")
   } else {
     valueRow <- "CDe"
     dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType=energyType)
@@ -1657,7 +1754,7 @@ cobbDouglasParamsTableNoEnergyDF <- function(){
   # Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=NA))
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType="none"))
   rownames(dataCD) <- countryAbbrevs
   colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
                         "lowerCI_alpha", "alpha", "upperCI_alpha",
@@ -1723,9 +1820,9 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
 printCDParamsTable <- function(energyType){
   ############################
   # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
-  # Set energyType=NA to print a table for Cobb-Douglas without energy.
+  # Set energyType="none" to print a table for Cobb-Douglas without energy.
   ##
-  if (is.na(energyType)){
+  if (energyType == "none"){
     print(cobbDouglasParamsTableNoEnergy(), 
           caption.placement="top", 
           sanitize.colnames.function = identity, 
@@ -1743,12 +1840,12 @@ printCDParamsTable <- function(energyType){
 createCDParamsGraph <- function(energyType){
   #############################
   # Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType. If you 
-  # want the Cobb-Douglas model without energy, supply energyType=NA.
+  # want the Cobb-Douglas model without energy, supply energyType="none".
   ##
-  if (is.na(energyType)){
+  if (energyType == "none"){
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=NA))
+    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType="none"))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                      data = data, 
                      centers = value, #identifies where the dots should be placed
@@ -1811,7 +1908,7 @@ createCDLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, k
   # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
-  predictions  <- cobbDouglasPredictionsColumn(energyType=NA)  #Predictions from CD without energy
+  predictions  <- cobbDouglasPredictionsColumn(energyType="none")  #Predictions from CD without energy
   predictionsQ <- cobbDouglasPredictionsColumn(energyType=energyType) #Predictions from CD with Q
 #   predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
 #   predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
@@ -1877,8 +1974,8 @@ cdResampleTrianglePlot <- function(energyType, ...){
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
+  if (energyType == "none"){
+    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
   } else if (energyType == "U"){
     data <- loadAllResampleData(modelType="cde", 
                                 energyType=energyType,
@@ -2552,16 +2649,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     )
   }
   
-  # Now rbind everything together and return.
-  
-# print("actual")
-# print(actual)
-# print("pred")
-# print(pred)
-# print("dflist")
-# print(dfList)
-# print(rbind(actual, pred))
-  
+  # Now rbind everything together and return.  
   outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
   # Ensure that the country factor is in the right order
   outgoing$Country <- factor(outgoing$Country, levels=countryAbbrevs)
@@ -3319,7 +3407,7 @@ createAICTable <- function(){
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA, respectRangeConstraints=TRUE)
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", respectRangeConstraints=TRUE)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
