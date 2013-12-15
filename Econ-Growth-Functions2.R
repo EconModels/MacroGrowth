@@ -1984,7 +1984,7 @@ cdResampleTrianglePlot <- function(energyType, ...){
     data <- loadAllResampleData(modelType="cde", energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardTriPlot(data)
+  graph <- standardTriPlot(data=data)
   return(graph)
 }
 
