@@ -1250,7 +1250,7 @@ of $\alpha$, $\beta$, and $\gamma$ parameter values
 for resample models for the Cobb-Douglas model (without energy). 
 
 <<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters. $\\gamma$ is always 0.0, because energy is not included in this model.">>=
-cdResampleTrianglePlot(energyType=NA)
+cdResampleTrianglePlot(energyType="none")
 @
 
 To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
@@ -1393,11 +1393,11 @@ Dots are colored by whether or not the fitting routine
 reports model convergence.
 
 <<CES_lambda_gamma_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType=NA)
+cesResamplePlotLambdaGamma(energyType="none")
 @
 
 <<CES_sigma_1_delta_1_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType=NA)
+cesResamplePlotSigma_1Delta_1(energyType="none")
 @
 
 Coefficients for each resampled CES model (with energy)
@@ -2000,14 +2000,14 @@ The 95\% confidence intervals associated with Figure~\ref{fig:CD_Scatter_Graph}
 are shown in Table~\ref{tab:CD_Parameters_No_Energy}.
 
 <<CD_Params_Table, results='asis'>>=
-printCDParamsTable(energyType=NA)    #Without energy
+printCDParamsTable(energyType="none")    #Without energy
 @
 
 The data in Table~\ref{tab:CD_Parameters_No_Energy} is plotted in
 Figure~\ref{fig:CD_Params_Graph}.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType=NA)
+createCDParamsGraph(energyType="none")
 @
 
 The 95\% confidence intervals associated with Figure~\ref{fig:CDq_Scatter_Graph} 
@@ -2034,12 +2034,12 @@ are shown in Tables~\ref{tab:CES_Parameters_A}
 and \ref{tab:CES_Parameters_B} and Figure~\ref{fig:CES_Params_Graph}.
 
 <<CES_Params_Table, results='asis'>>=
-printCESParamsTableA(energyType=NA)
-printCESParamsTableB(energyType=NA)
+printCESParamsTableA(energyType="none")
+printCESParamsTableB(energyType="none")
 @
 
 <<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType=NA)
+createCESParamsGraph(energyType="none")
 @
 
 The 95\% confidence intervals for the ($kl$)$e$ nesting associated 

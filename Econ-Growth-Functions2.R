@@ -157,7 +157,7 @@ haveDataCD <- function(countryAbbrev, energyType){
     # If we don't know the country, we don't have data
     return(FALSE)
   }
-  if (is.na(energyType)){
+  if (energyType == "none"){
     # If we don't want energy included, we have data for all known countries. We need to check this case
     # first, BEFORE doing various checks on the energyType.
     return(TRUE)
@@ -1579,7 +1579,7 @@ cobbDouglasData <- function(countryAbbrev, energyType="none", ...){
   }
   statisticalProperties <- cdResampleCoeffProps(resampledData)
   # Set the correct label in the row that shows the base values.
-  if (is.na(energyType)){
+  if (energyType == "none"){
     rownames(statisticalProperties) <- c("+95% CI", "CD", "-95% CI")
   } else {
     rownames(statisticalProperties) <- c("+95% CI", "CDe", "-95% CI")
@@ -1689,7 +1689,7 @@ cobbDouglasCountryRow <- function(countryAbbrev, energyType){
   # Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
   ##
   dataCD <- cobbDouglasData(countryAbbrev, energyType)
-  if (is.na(energyType)){
+  if (energyType == "none"){
     out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
                  dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
                  dataCD["-95% CI", "beta"],   dataCD["CD", "beta"],   dataCD["+95% CI", "beta"])
@@ -1736,7 +1736,7 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
                         lowerCI = dataCD["-95% CI", "beta"],
                         value = dataCD[valueRow, "beta"], 
                         upperCI = dataCD["+95% CI", "beta"])
-  if (is.na(energyType)){
+  if (energyType == "none"){
     table <- rbind(lambdaRow, alphaRow, betaRow)
   } else {
     gammaRow <- data.frame(country = countryAbbrev, 
@@ -1989,7 +1989,7 @@ cdResampleTrianglePlot <- function(energyType, ...){
 }
 
 cesModel2 <- function(countryAbbrev, 
-                      energyType=NA, 
+                      energyType="none", 
                       data = loadData(countryAbbrev=countryAbbrev), 
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
@@ -2004,7 +2004,7 @@ cesModel2 <- function(countryAbbrev,
   # Pass in data if you want to use resampled data.
   # Pass in a countryAbbrev if you want to use original data.
   # Pass in nest="(kl)" if you want a fit without energy, regardless of which energyType is specified.
-  # If energyType=NA, a CES fit without energy will be attempted, but only if nest != "(kl)".
+  # If energyType="none", a CES fit without energy will be attempted, but only if nest != "(kl)".
   # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
   # Pass in a prevModel if you want to start from its location using gradient searches only.
@@ -2016,7 +2016,7 @@ cesModel2 <- function(countryAbbrev,
   #
   # Returns a list of models that were generated within this function.
   ##
-  if (!is.na(energyType) && (nest != "(kl)")){
+  if (energyType != "none" && (nest != "(kl)")){
     # We need to do the CES fit with the desired energyType.
     # But, only if we asked for a nest that isn't "(kl)"
     # To achieve the correct fit, we'll change the name of the desired column
@@ -2035,7 +2035,7 @@ cesModel2 <- function(countryAbbrev,
     stop(paste("Unrecognized algorithm:", m))
   }
   # Set up xNames for the desired energy type or nesting
-  if (is.na(energyType) || nest == "(kl)"){
+  if (energyType == "none" || nest == "(kl)"){
     # We don't want to include energy. So, include only k and l.
     xNames <- c("iCapStk", "iLabor")
   } else {
@@ -2058,7 +2058,7 @@ cesModel2 <- function(countryAbbrev,
     #
     # Try grid search.
     #
-    if (is.na(energyType) || nest=="(kl)"){
+    if (energyType == "none" || nest=="(kl)"){
       # We want a model without energy. No need for a rho1 argument.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
@@ -2317,10 +2317,10 @@ loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
   # If the energyType argument is missing or NA, you'll get data for the CES model without energy.
   # If you specify nest="all", you'll get data for all nests. You'll need to specify energyType if you use nest="all"
   ##
-  if (missing(energyType) || is.na(energyType) || nest=="(kl)"){
+  if (energyType == "none" || nest=="(kl)"){
     # Desire CES without energy.
     data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
-                                energyType=NA, archive=archive)
+                                energyType="none", archive=archive)
     data$nest <- "(kl)"
     return(data)
   }
@@ -2417,7 +2417,7 @@ cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL, forceR
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
-  # If energyType=NA, the CES model without energy will be used.
+  # If energyType="none", the CES model without energy will be used.
   # If nest="(kl)", the CES model without energy will be used.
   # forceRun = TRUE will cause the full analysis to be run, which might take FOR-E-VER!
   # forceRun = FALSE will load previously-saved data from disk.
@@ -2434,7 +2434,7 @@ cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL, forceR
   if (forceRun){
     model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
   } else {
-    if (is.na(energyType) || nest=="(kl)"){
+    if (energyType == "none" || nest=="(kl)"){
       modelType <- "ces"
     } else {
       modelType <- paste("cese-", nest, sep="")
@@ -2452,12 +2452,12 @@ cesPredictionsColumn <- function(energyType, nest){
   #########################
   # Takes the CES fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
-  # If energyType=NA is specified, the CES model without energy will be used for the predictions.
+  # If energyType="none" is specified, the CES model without energy will be used for the predictions.
   # Or, if nest="(kl)" is supplied, the CES model without energy will be used for the predictions,
   # regardless of the type of energy requested.
   ##
   out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType, nest=nest))  
-  if (is.na(energyType)){
+  if (energyType == "none"){
     colnames(out) <- "predGDP"
   } else {
     colnames(out) <- c(paste("predGDP", energyType, sep=""))
@@ -2471,7 +2471,7 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   # data as open circles.
   ##
   data <- loadData("All") #Grab the raw data
-  predictionskl  <- cesPredictionsColumn(energyType=NA)  #Predictions from CES without energy
+  predictionskl  <- cesPredictionsColumn(energyType="none")  #Predictions from CES without energy
   colnames(predictionskl)[1] <- "predGDPkl"
   predictionskle <- cesPredictionsColumn(energyType=energyType, nest="(kl)e") #Predictions from CES with (kl)e
   colnames(predictionskle)[1] <- "predGDPkle"
@@ -2545,7 +2545,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   if (nest == "all"){
     # Data for all nest options is desired.
     # Ensure that we have an energyType
-    if (missing(energyType) || is.na(energyType)){
+    if (energyType == "none"){
       stop('Need to include an energy type if nest = "all"')
     }
     # Recursively call this function and rbind.fill the results together.
@@ -2593,7 +2593,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     }
   }  
   
-  if (is.na(energyType) || nest=="(kl)"){
+  if (energyType == "none" || nest=="(kl)"){
     modelType <- "ces"
     # May need to ensure that the nest is set to "(kl)" when there is no energy involved.
     # We may have got here with a missing or NA nest.
@@ -2603,7 +2603,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   }
 
   # Figure out which countries we need to loop over.
-  if (is.na(energyType) || energyType == "Q" || energyType == "X" || nest == "(kl)") {
+  if (energyType == "none" || energyType == "Q" || energyType == "X" || nest == "(kl)") {
     countryAbbrevs <- countryAbbrevsForGraph
   } else if (energyType == "U"){
     countryAbbrevs <- countryAbbrevsForGraphU
@@ -2616,7 +2616,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   for (countryAbbrev in countryAbbrevs){
     # Get the raw data for this country
     historical <- loadData(countryAbbrev=countryAbbrev)
-    if (! missing(energyType) && ! is.na(energyType)){
+    if (! missing(energyType) && energyType != "none"){
       # Don't do this test if we are missing energy.
       if (energyType == "U" && nest != "(kl)"){
         # subset historical to include only years for which U is available.
@@ -2656,14 +2656,14 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   return(outgoing)
 }
 
-cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
+cesData <- function(countryAbbrev, energyType="none", nest="(kl)e"){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the CES production function given a country and an energyType.
   #
   # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-  # energyType is a string, one of "Q", "X", "U", or NA. energyType=NA means we're interested
-  # in a CES function without energy.
+  # energyType is a string, one of "Q", "X", "U", or "none".
+  # energyType="none" means we're interested in a CES fit without energy.
   #
   # returns a data.frame of data for the CES model.
   # First row is the +95% CI on all parameters
@@ -2680,9 +2680,9 @@ cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
     colnames(df) <- c("gamma", "lambda", "delta_1", "rho_1", "sigma_1", "delta", "rho", "sigma")
     rownames(df) <- c("+95% CI", "CES", "-95% CI")
     return(df)
-  } else if (is.na(energyType)){
+  } else if (energyType == "none"){
     # We want CES without energy
-    resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev, energyType=NA)
+    resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev, energyType="none")
   } else {
     # We want CES with energy  -- might want all three for this later.
     modelType <- paste("cese-", nest, sep="")
@@ -2690,7 +2690,7 @@ cesData <- function(countryAbbrev, energyType=NA, nest="(kl)e"){
   }
   statisticalProperties <- cesResampleCoeffProps(resampleData)
   # Set the correct label in the row that shows the base values.
-  if (is.na(energyType)){
+  if (energyType == "none"){
     rownames(statisticalProperties) <- c("+95% CI", "CES", "-95% CI")
   } else {
     rownames(statisticalProperties) <- c("+95% CI", "CESe", "-95% CI")
@@ -2721,7 +2721,7 @@ cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType, nest="(kl)e"
   # Each parameter has its own row with confidence intervals.
   # The country name is in a column. Which parameter is involved is
   # also in a column.
-  # Set energyType=NA for the CES model without energy.
+  # Set energyType="none" for the CES model without energy.
   # 
   # The return type is a data.frame.
   ##
@@ -2788,7 +2788,7 @@ cesParamsTableA <- function(energyType, nest="(kl)e"){
                          " ", "$\\sigma_1$",  " ",
                          " ", "$\\sigma$",    " ")
   rownames(dataCES) <- countryAbbrevs
-  if (is.na(energyType)){
+  if (energyType == "none"){
     energyStringCaption <- "(without energy)"
     energyStringLabel <- ""
   } else {
@@ -2827,7 +2827,7 @@ cesParamsTableB <- function(energyType, nest="(kl)e"){
                          " ", "$\\sigma_1$",  " ",
                          " ", "$\\sigma$",    " ")
   rownames(dataCES) <- countryAbbrevs
-  if (is.na(energyType)){
+  if (energyType == "none"){
     energyStringCaption <- "(without energy)"
     energyStringLabel <- ""
   } else {
@@ -2909,13 +2909,13 @@ printCESParamsTableB <- function(energyType, nest="(kl)e"){
         table.placement="H")
 }
 
-cesResamplePlotLambdaGamma <- function(energyType=NA, nest, ...){
+cesResamplePlotLambdaGamma <- function(energyType="none", nest, ...){
   ##################
   # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType=NA)
+  if (energyType == "none"){
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2927,13 +2927,13 @@ cesResamplePlotLambdaGamma <- function(energyType=NA, nest, ...){
   return(graph)
 }
 
-cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
+cesResamplePlotSigma_1Delta_1 <- function(energyType="none", nest="(kl)e", ...){
   ##################
   # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
+  if (energyType == "none"){
+    data <- loadAllResampleData(modelType="ces", energyType="none", countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2947,17 +2947,17 @@ cesResamplePlotSigma_1Delta_1 <- function(energyType=NA, nest="(kl)e", ...){
   return(graph)
 }
 
-cesResamplePlotSigmaDelta <- function(energyType=NA, nest="(kl)e", ..., plot=TRUE){
+cesResamplePlotSigmaDelta <- function(energyType="none", nest="(kl)e", ..., plot=TRUE){
   ##################
   # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   # energyType does not have a default value here, because
-  # energyType=NA makes sigma --> Inf. Inf values can't be
+  # energyType="none" makes sigma --> Inf. Inf values can't be
   # graphed.
   ##
 
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
+  if (energyType == "none"){
+    data <- loadAllResampleData(modelType="ces", energyType=energyType, countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -2983,8 +2983,8 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   # A wrapper function for standardScatterPlot that binds data for all countries
   # and sends to the graphing function.
   ##
-  if (is.na(energyType)){
-    data <- loadAllResampleData(modelType="ces", energyType=NA, countryAbbrevsOrder=countryAbbrevsForGraph)
+  if (energyType == "none"){
+    data <- loadAllResampleData(modelType="ces", energyType=energyType, countryAbbrevsOrder=countryAbbrevsForGraph)
   } else {
     modelType <- paste("cese-", nest, sep="")
     data <- loadAllResampleData(modelType=modelType, energyType=energyType, 
@@ -3363,7 +3363,7 @@ linexResamplePlot <- function(energyType, ...){
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
   # energyType does not have a default value here, because
-  # energyType=NA doesn't make sense for LINEX.
+  # energyType="none" doesn't make sense for LINEX.
   ##
   data <- loadAllResampleData(model="linex", 
                               energyType = energyType, 
@@ -3481,7 +3481,7 @@ createAICTable <- function(){
 }
 
 ## <<CIvsParam_Graph, eval=TRUE>>=
-CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
+CIvsParamDF <- function(model, param, energyType="none", factor=NA){
   ############################
   # Creates a data.frame that contains the following information:
   # row name: 2-letter country abbreviation
@@ -3498,7 +3498,7 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
   else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
   else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType)}
-  else if (model == "CES"){data <- cesParamsTableDF(energyType=NA)}
+  else if (model == "CES"){data <- cesParamsTableDF(energyType="none")}
   else if (model == "CESe"){data <- cesParamsTableDF(energyType=energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
   # Now get the data for the parameter requested
@@ -3545,7 +3545,7 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   # obtain the desired result.
   if (is.na(factor)){
     factorString <- paste(param, model, energyType, sep="")
-  } else if (is.na(energyType)){
+  } else if (energyType == "none"){
     factorString <- paste(param, model, factor, sep="")
   } else {
     print("Neither energyType nor factor were NA in CIvsParamDF. But one should be!")
@@ -3560,7 +3560,7 @@ CIvsParamDF <- function(model, param, energyType=NA, factor=NA){
   return(data)
 }
 
-CIvsParamPlot <- function(model, param, energyType=NA, factor=NA, textScaling=1.0){
+CIvsParamPlot <- function(model, param, energyType="none", factor=NA, textScaling=1.0){
   #######################
   # Creates a plot of confidence interval vs. value of a parameter with symbols being the 2-letter abbreviation
   # for each country.
@@ -3966,7 +3966,7 @@ loadAllResampleData <- function(modelType, energyType, factor,
                "in loadAllResampleData. Didn't expect both to be specified. Can't proceed."))
   }
   if (!missing(energyType)){
-    if (is.na(energyType) || energyType != "U"){
+    if (energyType == "none" || energyType != "U"){
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, 
                                            energyType=energyType, archive=archive))
     }
@@ -4089,7 +4089,7 @@ getPathForResampleModels <- function(modelType, countryAbbrev, energyType="Q", f
 }
 
 doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K"){
-  if (is.na(energyType)){
+  if (energyType == "none"){
     energyType="NA"
   }
   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev)  
@@ -4141,13 +4141,13 @@ fracUnconvergedResampleFitsAll <- function(){
     } else {
       unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
     }
-    unconverged <- c(modelType=modelType, energyType=NA, factor=factor, unconverged)
+    unconverged <- c(modelType=modelType, energyType="none", factor=factor, unconverged)
     out <- rbind(out, as.data.frame(unconverged))
   }
   
   modelType <- "cd"
   unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=NULL)
-  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  unconverged <- c(modelType=modelType, energyType="none", factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
   modelType <- "cde"
@@ -4165,7 +4165,7 @@ fracUnconvergedResampleFitsAll <- function(){
   
   modelType <- "ces"
   unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
-  unconverged <- c(modelType=modelType, energyType=NA, factor=NA, unconverged)
+  unconverged <- c(modelType=modelType, energyType="none", factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
   for (modelType in c("cese-(kl)e", "cese-(le)k", "cese-(ek)l", "linex")){
