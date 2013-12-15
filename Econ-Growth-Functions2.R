@@ -1906,22 +1906,22 @@ cesModel2 <- function(countryAbbrev,
   # This function fits a CES model to original or resampled data.
   # Pass in data if you want to use resampled data.
   # Pass in a countryAbbrev if you want to use original data.
-  # If energyType=NA, a CES fit without energy will be attempted.
+  # Pass in nest="(kl)" if you want a fit without energy, regardless of which energyType is specified.
+  # If energyType=NA, a CES fit without energy will be attempted, but only if nest != "(kl)".
   # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
   # because origModel will be used to obtain the starting point for a gradient search.
   # Pass in a prevModel if you want to start from its location using gradient searches only.
   # Pass in NULL for prevModel if you want to use the default start locations AND do a grid search in sigma
-  # Default values ofr rho and rho1 are a grid upon which searches will be made.
+  # Default values for rho and rho1 are a grid upon which searches will be made.
   # Note that rho = 0.25 and rho1 = 0.25 are included. These are the default starting
   # values for rho and rho1, so that we don't need to do a fit from the default values.
   # rho = 0.25 corresponds to sigma = 0.8.
   #
   # Returns a list of models that were generated within this function.
   ##
-# print("At top of cesModel2. data =")
-# print(data)
-  if (!is.na(energyType)){
+  if (!is.na(energyType) && (nest != "(kl)")){
     # We need to do the CES fit with the desired energyType.
+    # But, only if we asked for a nest that isn't "(kl)"
     # To achieve the correct fit, we'll change the name of the desired column
     # to "iEToFit" and use "iEToFit" in the nls function.
     data <- replaceColName(data, energyType, "iEToFit")
@@ -1938,7 +1938,7 @@ cesModel2 <- function(countryAbbrev,
     stop(paste("Unrecognized algorithm:", m))
   }
   # Set up xNames for the desired energy type or nesting
-  if (is.na(energyType)){
+  if (is.na(energyType) || nest == "(kl)"){
     # We don't want to include energy. So, include only k and l.
     xNames <- c("iCapStk", "iLabor")
   } else {
@@ -1961,7 +1961,7 @@ cesModel2 <- function(countryAbbrev,
     #
     # Try grid search.
     #
-    if (is.na(energyType)){
+    if (is.na(energyType) || nest=="(kl)"){
       # We want a model without energy. No need for a rho1 argument.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
@@ -2316,14 +2316,17 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   return(dataCD)
 }
 
-cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL){
+cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL, forceRun=FALSE){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
   # If energyType=NA, the CES model without energy will be used.
+  # If nest="(kl)", the CES model without energy will be used.
+  # forceRun = TRUE will cause the full analysis to be run, which might take FOR-E-VER!
+  # forceRun = FALSE will load previously-saved data from disk.
   ##
   # Can't make predictions for any of CN, ZA, SA, IR, TZ, or ZM if we're interested in U
-  if (!(haveDataCES(countryAbbrev, energyType))){
+  if (!(haveDataCES(countryAbbrev, energyType)) && (nest != "(kl)")){
     # If we don't have data for this combination of countryAbbrev and energyType, 
     # return a column of NAs if the above conditions have been met.
     nRows <- 21 # All of these countries need 21 rows.
@@ -2331,15 +2334,16 @@ cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL){
     colnames(df) <- "pred"
     return(df)
   }
-  # Old code that re-ran the fit each time.
-  # model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
-  # New code that loads pre-run models from disk.
-  if (is.na(energyType)){
-    modelType <- "ces"
+  if (forceRun){
+    model <- bestModel(cesModel2(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest))
   } else {
-    modelType <- paste("cese-", nest, sep="")
+    if (is.na(energyType) || nest=="(kl)"){
+      modelType <- "ces"
+    } else {
+      modelType <- paste("cese-", nest, sep="")
+    }
+    model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, archive=archive)
   }
-  model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, archive=archive)
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -2352,6 +2356,8 @@ cesPredictionsColumn <- function(energyType, nest){
   # Takes the CES fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
   # If energyType=NA is specified, the CES model without energy will be used for the predictions.
+  # Or, if nest="(kl)" is supplied, the CES model without energy will be used for the predictions,
+  # regardless of the type of energy requested.
   ##
   out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType, nest=nest))  
   if (is.na(energyType)){
@@ -2456,17 +2462,21 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   # Put the historical data in a data.frame. 
   # We apply the nest argument as given to the data frame. 
   # Doing so assists with graphing later.
-  actual <- loadData(countryAbbrev="All")
+  actual <- loadData(countryAbbrev="all")
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
   actual$Energy <- NA
   actual$nest <- nest
-  
+
   # Put the fits to historical data in a data.frame
+  # Note that if we get nest="kl",the cesPredictionsColumn function 
+  # gives the CES model without energy, 
+  # regardless of which energy type is passed in here.
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
   pred <- actual
+  # Replace the historical GDP data with the predicted GDP data, which is in column 1.
   pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
@@ -2474,16 +2484,29 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
   pred$Energy <- energyType
   pred$nest <- nest
   
+  # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
+  pred <- subset(pred, !is.na(iGDP))
+
+  # Remove rows where we don't need historical data or predictions, 
+  # specifically those times when we won't have a prediction.
+  if (!missing(energyType)){
+    if (energyType == "U" && nest != "(kl)"){
+      actual <- subset(actual, Country %in% countryAbbrevsU)
+      pred <- subset(pred, Country %in% countryAbbrevsU)
+    }
+  }  
+  
   if (is.na(energyType) || nest=="(kl)"){
     modelType <- "ces"
     # May need to ensure that the nest is set to "(kl)" when there is no energy involved.
+    # We may have got here with a missing or NA nest.
     nest <- "(kl)"
   } else {
     modelType <- paste("cese-", nest, sep="")
   }
 
   # Figure out which countries we need to loop over.
-  if (is.na(energyType) || energyType == "Q" || energyType == "X") {
+  if (is.na(energyType) || energyType == "Q" || energyType == "X" || nest == "(kl)") {
     countryAbbrevs <- countryAbbrevsForGraph
   } else if (energyType == "U"){
     countryAbbrevs <- countryAbbrevsForGraphU
@@ -2497,8 +2520,12 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     # Get the raw data for this country
     historical <- loadData(countryAbbrev=countryAbbrev)
     if (! missing(energyType) && ! is.na(energyType)){
-      if (energyType == "U"){
+      # Don't do this test if we are missing energy.
+      if (energyType == "U" && nest != "(kl)"){
         # subset historical to include only years for which U is available.
+        # But, only if we are using U and if we are not using the (kl) nest.
+        # If we have the (kl) nest, we are not actually using U, even if we specified it.
+        # We might say both (kl) and U if we are looping over nests with U involved.
         historical <- subset(historical, !is.na(iU))
       }
     }
@@ -2513,13 +2540,9 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
     # Get the number of years from fitted(resampleModels[[1]]), because not
     # all models cover all the years.
     nYears <- length(fitted(resampleModels[[1]]))
-    
-print(paste("length(historical$Year) =", length(rep(historical$Year, nResamples))))
-print(paste("length(iGDP) =", length(unlist(lapply( resampleModels, fitted )))))
-
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted )) ,
+      iGDP = unlist(lapply( resampleModels, fitted )),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -2528,7 +2551,17 @@ print(paste("length(iGDP) =", length(unlist(lapply( resampleModels, fitted )))))
       nest = nest
     )
   }
+  
   # Now rbind everything together and return.
+  
+# print("actual")
+# print(actual)
+# print("pred")
+# print(pred)
+# print("dflist")
+# print(dfList)
+# print(rbind(actual, pred))
+  
   outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
   # Ensure that the country factor is in the right order
   outgoing$Country <- factor(outgoing$Country, levels=countryAbbrevs)
