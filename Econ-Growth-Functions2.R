@@ -3020,16 +3020,10 @@ cesSpaghettiGraph <- function(energyType,
   
   #
   # Things to change:
-  # * order of the countries to correspond to countryAbbrevsForGraph. 
-  #   Across top row: US, UK, JP
-  #   Across mid row: CN, ZA, TZ
-  #   Across bot row: SA, IR, ZM
   # * Change country abbreviations to country names (e.g., "CN" --> "China")
-  # * plot historical data as open circles instead of red lines. 
-  # * plot fit to historical data as a red line. 
   # * Change vertical axis limits: China 1-10, all others 1-4. 
   # * eliminate grid lines
-  # * tic marks inside axis instead of inside axis.
+  # * tic marks inside axis instead of outside axis.
   # * y-axis label: "Indexed GDP (1980=1 or 1991=1)".
   # * avoid year label collisions on the horizontal axis.
   # 
