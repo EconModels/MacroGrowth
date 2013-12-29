@@ -42,8 +42,8 @@ ssh node-07 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e Q -m cese-\(le\)k $1 &> 
 ssh node-09 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e Q -m cese-\(le\)k $1 &> data_resample/node-09.txt" &
 # Gary Draving suggested avoiding node-08, because of I/O issues.
 ssh node-10 "cd $LOC_PATH; ./batchEcon.R -c US,UK,JP -e Q -m cese-\(ek\)l $1 &> data_resample/node-10.txt" &
-ssh node-12 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e Q -m cese-\(ek\)l $1 &> data_resample/node-12.txt" & 
 # node-11 is not functional.
+ssh node-12 "cd $LOC_PATH; ./batchEcon.R -c CN,ZA,SA -e Q -m cese-\(ek\)l $1 &> data_resample/node-12.txt" & 
 ssh node-13 "cd $LOC_PATH; ./batchEcon.R -c IR,TZ,ZM -e Q -m cese-\(ek\)l $1 &> data_resample/node-13.txt" &
 
 # The next lines run the cese analyses for exergy (X)
