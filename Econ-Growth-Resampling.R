@@ -112,20 +112,6 @@ genResampleData <- function(modelType=modelTypes,
                                          factor=factor)
   status <- "attempted"
   
-#   if (file.exists(path)) {
-#     if (verbose) {
-#       cat(paste(path, "exists\n"))
-#     }
-#     if (! clobber) {
-#       status <- "file existed; not clobbered"
-#       names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
-#       return(status)
-#     } else {
-#       status <- "file existed; going to clobber"
-#     }
-#   }
-#   if (verbose) cat(paste('Data will be saved in', path, "\n"))
-  
   # If both files exist AND clobber==FALSE, don't do anything.
   if (file.exists(pathCoeffs) && file.exists(pathModels)) {
     if (verbose) {
@@ -145,15 +131,7 @@ genResampleData <- function(modelType=modelTypes,
   # baseFitCoeffs and resampleFitCoeffs. 
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
-#   energyType <- match.arg(energyType)
-#   factor <- match.arg(factor)
   method <- match.arg(method)
-#   resampleData <- resampleFits(modelType=modelType,
-#                                countryAbbrev=countryAbbrev, 
-#                                energyType=energyType, 
-#                                factor=factor,
-#                                method=method,
-#                                n=n)
   resampleInfo <- resampleFits(modelType=modelType,
                                countryAbbrev=countryAbbrev, 
                                energyType=energyType, 
@@ -333,7 +311,7 @@ resampleFits <- function(
   return(out)
 }
 
-doResample <- function(data, origModel, method=resampleMethods){
+doResample <- function(data, origModel, method=resampleMethods, reindexGDP=TRUE){
   ######################
   # data: original data frame for country of interest. This data should NOT be resampled.
   #       this should contain the raw economic and energy data
@@ -342,18 +320,26 @@ doResample <- function(data, origModel, method=resampleMethods){
   #         resample:  resample rows from data. Can result in repeated years
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
+  # reindexGDP:
+  #         TRUE (default) will rescale iGDP values so that the observation in the first year (row) is 1.0
+  #         FALSE leaves iGDP values untouched.
   ##
   method <- match.arg(method)
   if(method == "resample") {
     out <- resample(data)
-    return(out)
+  } else {
+    out <- data    
+    out[ , "iGDP"] <- NA
+    out[ , "iGDP"] <- 
+      switch(method,
+             "residual" = fitted(origModel) + resample(resid(origModel)),
+             "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
+             "debug"    = fitted(origModel) + (resid(origModel)) 
+      )
   }
-  data[ , "iGDP"] <- NA
-  data[ , "iGDP"] <- 
-    switch(method,
-           "residual" = fitted(origModel) + resample(resid(origModel)),
-           "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
-           "debug"    = fitted(origModel) + (resid(origModel)) 
-    )
-  return(data)
+  if (reindexGDP){
+    # Divide all the values in the iGDP column by the first value in the column
+    out[ , "iGDP"] <- out[ , "iGDP"] / out[1, "iGDP"]
+  }
+  return(out)
 }
