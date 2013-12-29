@@ -11,6 +11,11 @@
 # One bash commandline argument is used for things like "-n <number> -C -d"  These should be provided 
 # as a single quoted string.
 
+# The command to run everything for 1000 resamples while clobbering all previous results without 
+# massive amounts of debug information printed to the screen is
+
+# ./batch.bash "-n 1000 -C"
+
 LOC_PATH=`pwd`
 echo $LOC_PATH
 
