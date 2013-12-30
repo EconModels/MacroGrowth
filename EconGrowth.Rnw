@@ -1155,7 +1155,7 @@ The value of $\beta$ was found with $\beta = 1 - \alpha$.
 Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
 
 <<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
-cdResampleTrianglePlot(energyType=NA, facet_formula = ~ countryAbbrev)
+cdResampleTrianglePlot(energyType="none", facet_formula = ~countryAbbrev)
 @
 
 Converting the resample data into 95\% confidence intervals 
@@ -1165,7 +1165,7 @@ contains tables with numerical values of
 Cobb-Douglas model parameters and 95\% confidence intervals.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType=NA)
+createCDParamsGraph(energyType="none")
 @
 
 To qualitatively assess whether augmenting the Cobb-Douglas model with energy 
@@ -1368,11 +1368,11 @@ $2 < \sigma < \infty$ into $2 < \sigma^{\prime} \le 2.5$
 \end{equation}
 
 <<CES_lambda_gamma_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType=NA)
+cesResamplePlotLambdaGamma(energyType="none")
 @
 
 <<CES_sigma_1_delta_1_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType=NA)
+cesResamplePlotSigma_1Delta_1(energyType="none")
 @
 
 The next graph is not particularly interesting, 
@@ -1382,14 +1382,14 @@ $\sigma \rightarrow \infty$
 for the CES without energy model.
 
 <<CES_sigma_delta_Cloud_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\rho$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType=NA)
+cesResamplePlotSigmaDelta(energyType="none")
 @
 
 Figure~\ref{fig:CES_Params_Graph} shows values and 95\% confidence intervals 
 for the parameters for the CES model (without energy).
 
 <<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType=NA)
+createCESParamsGraph(energyType="none")
 @
 
 Similar to the analysis of the Cobb-Douglas model in 
@@ -1989,7 +1989,7 @@ The following tables provide results for parameters
 in Cobb-Douglas models with and without energy terms.
 
 <<CD_Params_Table, results='asis'>>=
-printCDParamsTable(energyType=NA)    #Without energy
+printCDParamsTable(energyType="none")    #Without energy
 printCDParamsTable(energyType="Q"); printCDParamsTable(energyType="X"); printCDParamsTable(energyType="U") #With energy
 @
 
@@ -2001,7 +2001,7 @@ The following tables provide results for parameters
 in CES models with and without energy terms.
 
 <<CES_Params_Table, results='asis'>>=
-printCESParamsTableA(energyType=NA);  printCESParamsTableB(energyType=NA)
+printCESParamsTableA(energyType="none");  printCESParamsTableB(energyType="none")
 printCESParamsTableA(energyType="Q"); printCESParamsTableB(energyType="Q")
 printCESParamsTableA(energyType="X"); printCESParamsTableB(energyType="X")
 printCESParamsTableA(energyType="U"); printCESParamsTableB(energyType="U")
