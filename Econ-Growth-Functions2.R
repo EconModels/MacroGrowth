@@ -937,7 +937,7 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
 }
 
 cdeModelAB <- function(countryAbbrev, 
-                       energyType, 
+                       energyType="none", 
                        data=loadData(countryAbbrev), 
                        respectRangeConstraints=FALSE, ...){
   #################
@@ -1040,7 +1040,7 @@ cdeModelAB <- function(countryAbbrev,
 }
 
 cdeModelCD <- function(countryAbbrev, 
-                       energyType, 
+                       energyType="none", 
                        data=loadData(countryAbbrev), 
                        respectRangeConstraints=FALSE, ...){
   #################
@@ -1142,7 +1142,7 @@ cdeModelCD <- function(countryAbbrev,
 }
 
 cdeModelEF <- function(countryAbbrev, 
-                       energyType, 
+                       energyType="none", 
                        data=loadData(countryAbbrev), 
                        respectRangeConstraints=FALSE, ...){
   #################
@@ -1244,7 +1244,7 @@ cdeModelEF <- function(countryAbbrev,
 }
 
 cdeModel <- function(countryAbbrev, 
-                     energyType, 
+                     energyType="none", 
                      data=loadData(countryAbbrev), 
                      respectRangeConstraints=FALSE, ...){
   ###################
@@ -1312,7 +1312,7 @@ cdeModel <- function(countryAbbrev,
   return(out)
 }
 
-cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, data=loadData(countryAbbrev), ...){
+cdeFixedGammaModel <- function(countryAbbrev, energyType="none", gamma, data=loadData(countryAbbrev), ...){
   ##############################
   # Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
   ##
@@ -1393,7 +1393,7 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
   return(dataCD)
 }
 
-cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
+cdeGridData <- function(countryAbbrev, energyType="none", gammaGrid){
   ###############################
   # Does a grid search over values of gamma for a CD with energy production function.
   # Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
@@ -1415,7 +1415,7 @@ cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
   return(data)
 }
 
-cdeGridLattice <- function(energyType, countryAbbrev=NA, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc, textScaling = 1.0){
+cdeGridLattice <- function(energyType="none", countryAbbrev=NA, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc, textScaling = 1.0){
   #######################
   # Creates a single graph or a multi-panel lattice plot showing grid search over gamma for Cobb-Douglas models with 
   # the given quantification for energy.
@@ -1903,7 +1903,7 @@ createCDParamsGraph <- function(energyType="none"){
   return(graph)
 }
 
-createCDLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+createCDLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
   ##
@@ -1984,7 +1984,7 @@ cdResampleTrianglePlot <- function(energyType="none", ...){
     data <- loadAllResampleData(modelType="cde", energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraph)
   }
-  graph <- standardTriPlot(data=data)
+  graph <- standardTriPlot(data=data, ...)
   return(graph)
 }
 
@@ -2351,7 +2351,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType="none", archive=NUL
   return(data)
 }
 
-cesResampleTrianglePlot <- function(energyType, nest, data=loadCESResampleTrianglePlotData(energyType=energyType,
+cesResampleTrianglePlot <- function(energyType="none", nest, data=loadCESResampleTrianglePlotData(energyType=energyType,
                                                                                            nest=nest,
                                                                                            archive=NULL),
                                     ...){
@@ -2465,7 +2465,7 @@ cesPredictionsColumn <- function(energyType="none", nest){
   return(out)
 }
 
-createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+createCESLatticeGraph <- function(countryAbbrev, energyType="none", textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
@@ -2698,7 +2698,7 @@ cesData <- function(countryAbbrev, energyType="none", nest="(kl)e"){
   return(statisticalProperties)
 }
 
-cesCountryRow <- function(countryAbbrev, energyType, nest="(kl)e"){
+cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e"){
   ############
   # Creates a row for the CES parameters table for the given country (2-letter code),
   # energyType (Q, X, U, or NA), and nest.
@@ -2714,7 +2714,7 @@ cesCountryRow <- function(countryAbbrev, energyType, nest="(kl)e"){
   return(out)
 }
 
-cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType, nest="(kl)e"){
+cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", nest="(kl)e"){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a CES model for countryAbbrev and energyType
@@ -2851,7 +2851,7 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
   return(tableCESb)
 }
 
-createCESParamsGraph <- function(energyType, nest="(kl)e"){
+createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
   #############################
   # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
   ##
@@ -2887,7 +2887,7 @@ createCESParamsGraph <- function(energyType, nest="(kl)e"){
   return(graph)
 }
 
-printCESParamsTableA <- function(energyType, nest="(kl)e"){
+printCESParamsTableA <- function(energyType="none", nest="(kl)e"){
   ############################
   # Prints a table with lambda, delta, and sigma parameters from a CES model for the given energyType. 
   ##
@@ -2898,7 +2898,7 @@ printCESParamsTableA <- function(energyType, nest="(kl)e"){
         table.placement="H")
 }
 
-printCESParamsTableB <- function(energyType, nest="(kl)e"){
+printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
   ############################
   # Prints a table with gamma, delta_1, and sigma_1 parameters from a CES model for the given energyType. 
   ##
@@ -3001,7 +3001,7 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
-cesSpaghettiGraph <- function(energyType, 
+cesSpaghettiGraph <- function(energyType='none', 
                                     nest, 
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
@@ -3047,7 +3047,7 @@ cesSpaghettiGraph <- function(energyType,
 }
 
 ## <<LINEX functions, eval=TRUE>>=
-linexModel <- function(countryAbbrev, energyType, data){
+linexModel <- function(countryAbbrev, energyType="none", data){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType should be one of Q", "X", or "U".
@@ -3129,7 +3129,7 @@ linexPredictionsColumn <- function(energyType){
   return(out)
 }
 
-createLINEXLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+createLINEXLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
   # data as open circles.
@@ -3352,7 +3352,7 @@ printLINEXParamsTable <- function(energyType){
         table.placement="H")
 }
 
-linexResamplePlot <- function(energyType, ...){
+linexResamplePlot <- function(energyType="none", ...){
   ##################
   # A wrapper function for twoVarCloudPlot that binds data for all countries
   # and sends to the graphing function.
@@ -3827,7 +3827,7 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   return(data)
 }
 
-createPartialResidualPlot <- function(modelType, energyType, countryAbbrev=NA, textScaling=1.0){
+createPartialResidualPlot <- function(modelType, energyType="none", countryAbbrev=NA, textScaling=1.0){
   #################
   # Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
   # modelType: one of "CD" or "CES"
@@ -3897,7 +3897,7 @@ getSeed <- function(){
   return(123)
 }
 
-loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, archive=NULL){
+loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor=NA, archive=NULL){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
@@ -3929,7 +3929,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType, factor=NA, ar
   return(resampleData)
 }
 
-loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA, archive=NULL){
+loadResampleModels <- function(modelType, countryAbbrev, energyType="none", factor=NA, archive=NULL){
   #############################
   # This function loads previously-saved models
   # from resampled data. The loaded object is
@@ -4024,7 +4024,7 @@ loadResampleData2 <- function(modelType = c("cese-(kl)e", "cese-(le)k", "cese-(e
                 loadResampleData(country=country, modelType=model, archive=archive)))
 }
 
-loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, factor){
+loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType="none", factor){
   ####################
   # Loads coefficients for resampled data only from a previously-run set of resample curve fits
   ##
@@ -4034,7 +4034,7 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType, fac
   return(data)
 }
 
-loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType, factor, archive=NULL){
+loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType="none", factor, archive=NULL){
   ####################
   # Loads models for resampled data only from a previously-run set of resample curve fits
   ##
@@ -4045,7 +4045,7 @@ loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType, f
   return(models[-1])
 }
 
-loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, factor){
+loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType="none", factor){
   ####################
   # Loads the base fit coefficients only from a previously-run curve fit
   ##
@@ -4055,7 +4055,7 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType, fa
   return(data)
 }
 
-loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType, factor, archive=NULL){
+loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType="none", factor, archive=NULL){
   ####################
   # Loads the model for a fit to historical data
   ##
@@ -4064,7 +4064,7 @@ loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType
   return(models[[1]])
 }
 
-getPathForResampleData <- function(modelType, countryAbbrev, energyType, factor){
+getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold resampled data
