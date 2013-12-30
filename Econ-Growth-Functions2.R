@@ -3005,6 +3005,8 @@ cesSpaghettiGraph <- function(energyType='none',
                                     nest, 
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
+                                    split = union(all.vars(facet_formula), "Year"), 
+                                    geom_actual = geom_point,
                                     facet_formula = Country ~ nest,
                                     alpha=0.15, level = 1, ...){
   #############
@@ -3029,7 +3031,8 @@ cesSpaghettiGraph <- function(energyType='none',
   # 
   alph = .5 * (1 - level)
   data$alph = alph
-  seData <- ddply( subset(data, Type=="fitted"), .(Country,Year,nest), summarise, 
+  split <- intersect( split, names(data) )
+  seData <- ddply( subset(data, Type=="fitted"), split, summarise, 
          n = length(iGDP),
          lower= quantile(iGDP, alph[1]),
          upper= quantile(iGDP, 1-alph[1]),
@@ -3040,8 +3043,14 @@ cesSpaghettiGraph <- function(energyType='none',
   # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
   graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
   graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", lty=2, data=seData, stat="identity")
-  graph <- graph + geom_point(colour="red", shape=1)
-  graph <- graph + facet_grid( facet_formula )
+  graph <- graph + geom_actual(colour="red", shape=1)
+  if (!is.null( facet_formula ) ) {
+    if (length(facet_formula) == 2) {
+      graph <- graph + facet_wrap( facet_formula )
+    } else {
+      graph <- graph + facet_grid( facet_formula )
+    }
+  }
   graph <- graph + theme_minimal()
   return(graph)
 }
