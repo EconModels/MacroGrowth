@@ -3006,7 +3006,7 @@ cesSpaghettiGraph <- function(energyType='none',
                                     data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                                    nest=nest, ...), 
                                     split = union(all.vars(facet_formula), "Year"), 
-                                    geom_actual = geom_point,
+                                    geom_actual = geom_point, 
                                     facet_formula = Country ~ nest,
                                     alpha=0.15, level = 1, ...){
   #############
