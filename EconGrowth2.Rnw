@@ -1476,9 +1476,6 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
   \end{center}
 \end{table}
 
-**** Replace Figures~\ref{fig:CES_ternary_graph_kl}--\ref{fig:CESq_ternary_graph_ekl}
-with one plot that shows all 4 nestings. ****
-
 Figure~\ref{fig:CES_ternary_graph} shows 
 $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
 
