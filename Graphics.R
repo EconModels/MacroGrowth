@@ -109,7 +109,7 @@ standardTriPlot <- function(data,
     geom_point(data=subset(data, method=="orig"), 
                color="red", alpha=1, size=3, shape=1) 
   if ( !is.null(facet_formula) ) {
-    if ( length(formula)==2 ) {
+    if ( length(facet_formula)==2 ) {
       p <- p + facet_wrap( facet_formula )
     } else { 
       p <- p + facet_grid( facet_formula )
