@@ -99,16 +99,24 @@ standardTriPlot <- function(data,
                             grid_lines=5, 
                             aes_string="", #"color=lambda", 
                             size=1.0, 
-                            alpha=0.2){
-  triPlot(subset(data, method!="orig"), 
-          gamma, alpha, beta,
-          labels=c("gamma", "alpha", "beta"),
-          grid_lines=grid_lines,  aes_string=aes_string, 
-          size=size, alpha=alpha ) + 
+                            alpha=0.2,
+                            facet_formula = countryAbbrev ~ nest ){
+  p <- triPlot(subset(data, method!="orig"), 
+               gamma, alpha, beta,
+               labels=c("gamma", "alpha", "beta"),
+               grid_lines=grid_lines,  aes_string=aes_string, 
+               size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
-               color="red", alpha=1, size=3) +
-    facet_grid(countryAbbrev ~ nest ) # +
-    # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+               color="red", alpha=1, size=3, shape=1) 
+  if ( !is.null(facet_formula) ) {
+    if ( length(formula)==2 ) {
+      p <- p + facet_wrap( facet_formula )
+    } else { 
+      p <- p + facet_grid( facet_formula )
+    }
+  }  
+  return(p)
+  # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
 standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4) {

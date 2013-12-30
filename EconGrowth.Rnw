@@ -1155,7 +1155,7 @@ The value of $\beta$ was found with $\beta = 1 - \alpha$.
 Figure~\ref{fig:CD_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (without energy). $\gamma$ is always 0.0, because energy is not included in this model.
 
 <<CD_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters.">>=
-cdResampleTrianglePlot(energyType=NA)
+cdResampleTrianglePlot(energyType=NA, facet_formula = ~ countryAbbrev)
 @
 
 Converting the resample data into 95\% confidence intervals 
@@ -1252,19 +1252,19 @@ Figure~\ref{fig:CDq_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$
 parameter values for Cobb-Douglas (with $q$) resample models.
 
 <<CDq_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $q$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="Q")
+cdResampleTrianglePlot(energyType="Q", facet_formula = NULL) + facet_wrap( ~ countryAbbrev )
 @
 
 Figure~\ref{fig:CDx_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $x$).
 
 <<CDx_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $x$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="X")
+cdResampleTrianglePlot(energyType="X", facet_formula=NULL) + facet_wrap( ~ countryAbbrev )
 @
 
 Figure~\ref{fig:CDu_Cloud_Graph} shows $\alpha$, $\beta$, and $\gamma$ parameter values for resample models for the Cobb-Douglas model (with $u$).
 
 <<CDu_Cloud_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=threePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with $u$) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="U")
+cdResampleTrianglePlot(energyType="U", facet_formula=NULL) + facet_wrap( ~ countryAbbrev )
 @
 
 Figure~\ref{fig:CDq_Params_Graph} shows values and 95\% confidence intervals 

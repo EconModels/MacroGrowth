@@ -119,6 +119,7 @@ require(reshape2)
 trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=TRUE)
+require(knitr)
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
@@ -1264,7 +1265,7 @@ of $\alpha$, $\beta$, and $\gamma$ parameter values
 for resample models for the Cobb-Douglas model (without energy). 
 
 <<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters. $\\gamma$ is always 0.0, because energy is not included in this model.">>=
-cdResampleTrianglePlot(energyType="none")
+cdResampleTrianglePlot(energyType="none", facet_formula= ~countryAbbrev )
 @
 
 To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
@@ -1314,7 +1315,7 @@ for $\alpha$, $\beta$, and $\gamma$ parameter values
 for Cobb-Douglas (with energy) resample models.
 
 <<CDq_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="Q")
+cdResampleTrianglePlot(energyType="Q", facet_formala=~countryAbbrev)
 @
 
 Figure~\ref{fig:CD_GDP_Lattice_Graph} compares predictions 

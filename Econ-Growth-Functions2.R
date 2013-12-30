@@ -144,7 +144,7 @@ haveDataSF <- function(countryAbbrev, factor){
   return(TRUE)
 }
 
-haveDataCD <- function(countryAbbrev, energyType){
+haveDataCD <- function(countryAbbrev, energyType="none"){
   ###############################
   # Tells whether we have data for this combination of country and energy type for a Cobb-Douglas curve fit.
   # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
@@ -173,7 +173,7 @@ haveDataCD <- function(countryAbbrev, energyType){
   return(TRUE)
 }
 
-haveDataCES <- function(countryAbbrev, energyType){
+haveDataCES <- function(countryAbbrev, energyType="none"){
   ###############################
   # Tells whether we have data for this combination of country and energy type for a CES curve fit.
   # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
@@ -184,7 +184,7 @@ haveDataCES <- function(countryAbbrev, energyType){
   return(haveDataCD(countryAbbrev, energyType))
 }
 
-haveDataLINEX <- function(countryAbbrev, energyType){
+haveDataLINEX <- function(countryAbbrev, energyType="none"){
   ###############################
   # Tells whether we have data for this combination of country and energy type for a LINEX curve fit.
   # a missing energyType or energyType == NA means that we want to develop a model without energy, if possible.
@@ -1533,7 +1533,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
   return(df)
 }
 
-cobbDouglasPredictionsColumn <- function(energyType){
+cobbDouglasPredictionsColumn <- function(energyType="none"){
   #########################
   # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
@@ -1587,7 +1587,7 @@ cobbDouglasData <- function(countryAbbrev, energyType="none", ...){
   return(statisticalProperties)
 }
 
-loadCDSpaghettiGraphData <- function(energyType, archive=NULL){
+loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions for Cobb-Douglas models.
@@ -1684,7 +1684,7 @@ loadCDSpaghettiGraphData <- function(energyType, archive=NULL){
   return(outgoing)
 }
 
-cobbDouglasCountryRow <- function(countryAbbrev, energyType){
+cobbDouglasCountryRow <- function(countryAbbrev, energyType="none"){
   ############
   # Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
   ##
@@ -1702,7 +1702,7 @@ cobbDouglasCountryRow <- function(countryAbbrev, energyType){
   return(out)
 }
 
-cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none"){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a Cobb-Douglas model for countryAbbrev.
@@ -1817,7 +1817,7 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
   return(tableCD)
 }
 
-printCDParamsTable <- function(energyType){
+printCDParamsTable <- function(energyType="none"){
   ############################
   # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
   # Set energyType="none" to print a table for Cobb-Douglas without energy.
@@ -1837,7 +1837,7 @@ printCDParamsTable <- function(energyType){
   }
 }
 
-createCDParamsGraph <- function(energyType){
+createCDParamsGraph <- function(energyType="none"){
   #############################
   # Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType. If you 
   # want the Cobb-Douglas model without energy, supply energyType="none".
@@ -1969,7 +1969,7 @@ createCDLatticeGraph <- function(countryAbbrev, energyType, textScaling = 1.0, k
   return(graph)
 }
 
-cdResampleTrianglePlot <- function(energyType, ...){
+cdResampleTrianglePlot <- function(energyType="none", ...){
   ##################
   # A wrapper function for standardTriPlot that binds data for all countries
   # and sends to the graphing function.
@@ -2311,7 +2311,7 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-loadCESResampleTrianglePlotData <- function(nest, energyType, archive=NULL){
+loadCESResampleTrianglePlotData <- function(nest, energyType="none", archive=NULL){
   #################################
   # Loads and binds data for a CES resample ternary plot.
   # If the energyType argument is missing or NA, you'll get data for the CES model without energy.
@@ -2413,7 +2413,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   return(dataCD)
 }
 
-cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL, forceRun=FALSE){
+cesPredictions <- function(countryAbbrev, energyType="none", nest, archive=NULL, forceRun=FALSE){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -2448,7 +2448,7 @@ cesPredictions <- function(countryAbbrev, energyType, nest, archive=NULL, forceR
   return(df)
 }
 
-cesPredictionsColumn <- function(energyType, nest){
+cesPredictionsColumn <- function(energyType="none", nest){
   #########################
   # Takes the CES fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
@@ -2536,7 +2536,7 @@ createCESLatticeGraph <- function(countryAbbrev, energyType, textScaling=1.0, ke
   return(graph)
 }
 
-loadCESSpaghettiGraphData <- function(nest="(kl)", energyType, archive=NULL){
+loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NULL){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
@@ -2776,7 +2776,7 @@ cesParamsTableDF <- function(energyType){
   return(dataCES)
 }
 
-cesParamsTableA <- function(energyType, nest="(kl)e"){
+cesParamsTableA <- function(energyType="none", nest="(kl)e"){
   ############################
   # Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
   ##
@@ -2815,7 +2815,7 @@ cesParamsTableA <- function(energyType, nest="(kl)e"){
   return(tableCESa)
 }
 
-cesParamsTableB <- function(energyType, nest="(kl)e"){
+cesParamsTableB <- function(energyType="none", nest="(kl)e"){
   ############################
   # Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
   ##
@@ -3949,7 +3949,7 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType, factor=NA, 
   return(resampleModels)
 }
 
-loadAllResampleData <- function(modelType, energyType, factor, 
+loadAllResampleData <- function(modelType, energyType="none", factor, 
                                 countryAbbrevsOrder=countryAbbrevs,
                                 archive=NULL){
   ##################
