@@ -475,74 +475,74 @@ singleFactorPredictionsColumn <- function(factor){
   return(out)
 }
 
-createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
-  ##############################
-  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-  # data as open circles.
-  ##
-  data <- loadData("All") #Grab the raw data
-  predictionsK <- singleFactorPredictionsColumn("K") #Predictions from SF with K
-  predictionsL <- singleFactorPredictionsColumn("L") #Predictions from SF with L
-  predictionsQ <- singleFactorPredictionsColumn("Q") #Predictions from SF with Q
-  predictionsX <- singleFactorPredictionsColumn("X") #Predictions from SF with X
-  predictionsU <- singleFactorPredictionsColumn("U") #Predictions from SF with U
-  #Now add the predictions columns to the data.
-  data <- cbind(data, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU)
-  # Code for all graphs, regardless of whether we want to focus on a specific country
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
-  # Code that deals with items that are specific to whether we want all countries or a specific country.  
-  if (missing (countryAbbrev)){
-    # We want a graph with panels for all countries
-    yLimits <- yLimitsForGDPGraphs
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-  } else {
-    # We want only a specific country
-    data <- subset(data, Country == countryAbbrev)    
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
-  }  
-  graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
-                  type=graphType,
-                  index.cond=indexCond, #orders the panels.
-                  layout=layout, #indicates a 3x3 arrangement of panels.
-                  strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                  pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "With $k$", "With $l$", "With $q$", "With $x$", "With $u$")),
-                           type=graphType,
-                           cex=keyTextSize * textScaling, #controls size of text in the key
-                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                           pch=symbols, col=colors, #controls symbol (plot characters) types
-                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                              x=list(at=timeTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     at=yTicsForIndexedGraphs)), #specifies location for tics
-                  ylim=yLimits, #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
-  )
-  return(graph)
-}
+# createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+#   ##############################
+#   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+#   # data as open circles.
+#   ##
+#   data <- loadData("All") #Grab the raw data
+#   predictionsK <- singleFactorPredictionsColumn("K") #Predictions from SF with K
+#   predictionsL <- singleFactorPredictionsColumn("L") #Predictions from SF with L
+#   predictionsQ <- singleFactorPredictionsColumn("Q") #Predictions from SF with Q
+#   predictionsX <- singleFactorPredictionsColumn("X") #Predictions from SF with X
+#   predictionsU <- singleFactorPredictionsColumn("U") #Predictions from SF with U
+#   #Now add the predictions columns to the data.
+#   data <- cbind(data, predictionsK, predictionsL, predictionsQ, predictionsX, predictionsU)
+#   # Code for all graphs, regardless of whether we want to focus on a specific country
+#   graphType <- "b" #b is for both line and symbol
+#   lineTypes <- c(0, 1, 5, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+#   lineWidths <- c(0, 2, 2, 1, 1, 1) #line widths. 0 means no line.
+#   colors <- c("black", "black", "black", "red", "blue", "darkorange") #line and symbol colors
+#   symbols <- c(1, NA, NA, NA, NA, NA)  #NA gives no symbol.
+#   # Code that deals with items that are specific to whether we want all countries or a specific country.  
+#   if (missing (countryAbbrev)){
+#     # We want a graph with panels for all countries
+#     yLimits <- yLimitsForGDPGraphs
+#     factorLevels <- countryNamesAlph # We want all countries shown
+#     indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+#     layout <- ninePanelLayoutSpec # Show all countries
+#   } else {
+#     # We want only a specific country
+#     data <- subset(data, Country == countryAbbrev)    
+#     # Select the correct y limits
+#     index <- which(countryAbbrevsAlph %in% countryAbbrev)
+#     # The following lines use [index:index] as a convenient way of subsetting.
+#     # This has the added benefit of maintaining the correct classes for things.
+#     yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+#     factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+#     indexCond <- list(c(1))                           # We want only one country.
+#     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+#   }  
+#   graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=data,
+#                   type=graphType,
+#                   index.cond=indexCond, #orders the panels.
+#                   layout=layout, #indicates a 3x3 arrangement of panels.
+#                   strip = strip.custom(factor.levels=factorLevels, 
+#                                        bg="transparent", # Sets background transparent to match the graph itself.
+#                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                   ),
+#                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+#                   pch = symbols, col.symbol = colors, #Controls symbol parameters
+#                   key=list(text=list(c("Actual", "With $k$", "With $l$", "With $q$", "With $x$", "With $u$")),
+#                            type=graphType,
+#                            cex=keyTextSize * textScaling, #controls size of text in the key
+#                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+#                            pch=symbols, col=colors, #controls symbol (plot characters) types
+#                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+#                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                               alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+#                               x=list(at=timeTics),
+#                               y=list(relation="free",  #allows each axis to be different
+#                                      at=yTicsForIndexedGraphs)), #specifies location for tics
+#                   ylim=yLimits, #y axis limits
+#                   #axis labels and scaling
+#                   xlab=list(label="", cex=textScaling), 
+#                   ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
+#   )
+#   return(graph)
+# }
 
 sfResampleCoeffProps <- function(sfResampleFits, ...){
   ####### 
@@ -1903,90 +1903,71 @@ createCDParamsGraph <- function(energyType="none"){
   return(graph)
 }
 
-createCDLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
-  ##############################
-  # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
-  ##
-  data <- loadData("All") #Grab the raw data
-  predictions  <- cobbDouglasPredictionsColumn(energyType="none")  #Predictions from CD without energy
-  predictionsQ <- cobbDouglasPredictionsColumn(energyType=energyType) #Predictions from CD with Q
-#   predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
-#   predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
-  #Now add the predictions columns to the data.
-  data <- cbind(data, predictions, predictionsQ) 
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "red") #line and symbol colors
-  symbols <- c(1, NA, NA)  #NA gives no symbol.
-  # Code that deals with items that are specific to whether we want all countries or a specific country.  
-  if (missing (countryAbbrev)){
-    # We want a graph with panels for all countries
-    yLimits <- yLimitsForGDPGraphs
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-  } else {
-    # We want only a specific country
-    data <- subset(data, Country == countryAbbrev)    
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
-  }
-  graph <- xyplot(iGDP+predGDP+predGDPQ ~ Year | Country, data=data,
-                  type=graphType,
-                  index.cond=indexCond, #orders the panels.
-                  layout=layout, #indicates a 3x3 arrangement of panels.
-                  strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                  pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "W/out energy", "With energy")),
-                           type=graphType,
-                           cex=keyTextSize * textScaling, #controls size of text in the key
-                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                           pch=symbols, col=colors, #controls symbol (plot characters) types
-                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                              x=list(at=timeTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     at=yTicsForIndexedGraphs)), #specifies location for tics
-                  ylim=yLimits, #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
-  )
-  return(graph)
-}
-
-cdResampleTrianglePlot <- function(energyType="none", ...){
-  ##################
-  # A wrapper function for standardTriPlot that binds data for all countries
-  # and sends to the graphing function.
-  ##
-  if (energyType == "none"){
-    data <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
-  } else if (energyType == "U"){
-    data <- loadAllResampleData(modelType="cde", 
-                                energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraphU)
-  } else {
-    data <- loadAllResampleData(modelType="cde", energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraph)
-  }
-  graph <- standardTriPlot(data=data, ...)
-  return(graph)
-}
+# createCDLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+#   ##############################
+#   # Creates a graph that plots predicted GDP as lines and GDP data as open circles.
+#   ##
+#   data <- loadData("All") #Grab the raw data
+#   predictions  <- cobbDouglasPredictionsColumn(energyType="none")  #Predictions from CD without energy
+#   predictionsQ <- cobbDouglasPredictionsColumn(energyType=energyType) #Predictions from CD with Q
+# #   predictionsX <- cobbDouglasPredictionsColumn(energyType="X") #Predictions from CD with X
+# #   predictionsU <- cobbDouglasPredictionsColumn(energyType="U") #Predictions from CD with U
+#   #Now add the predictions columns to the data.
+#   data <- cbind(data, predictions, predictionsQ) 
+#   graphType <- "b" #b is for both line and symbol
+#   lineTypes <- c(0, 1, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+#   lineWidths <- c(0, 2, 1) #line widths. 0 means no line.
+#   colors <- c("black", "black", "red") #line and symbol colors
+#   symbols <- c(1, NA, NA)  #NA gives no symbol.
+#   # Code that deals with items that are specific to whether we want all countries or a specific country.  
+#   if (missing (countryAbbrev)){
+#     # We want a graph with panels for all countries
+#     yLimits <- yLimitsForGDPGraphs
+#     factorLevels <- countryNamesAlph # We want all countries shown
+#     indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+#     layout <- ninePanelLayoutSpec # Show all countries
+#   } else {
+#     # We want only a specific country
+#     data <- subset(data, Country == countryAbbrev)    
+#     # Select the correct y limits
+#     index <- which(countryAbbrevsAlph %in% countryAbbrev)
+#     # The following lines use [index:index] as a convenient way of subsetting.
+#     # This has the added benefit of maintaining the correct classes for things.
+#     yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+#     factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+#     indexCond <- list(c(1))                           # We want only one country.
+#     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+#   }
+#   graph <- xyplot(iGDP+predGDP+predGDPQ ~ Year | Country, data=data,
+#                   type=graphType,
+#                   index.cond=indexCond, #orders the panels.
+#                   layout=layout, #indicates a 3x3 arrangement of panels.
+#                   strip = strip.custom(factor.levels=factorLevels, 
+#                                        bg="transparent", # Sets background transparent to match the graph itself.
+#                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                   ),
+#                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+#                   pch = symbols, col.symbol = colors, #Controls symbol parameters
+#                   key=list(text=list(c("Actual", "W/out energy", "With energy")),
+#                            type=graphType,
+#                            cex=keyTextSize * textScaling, #controls size of text in the key
+#                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+#                            pch=symbols, col=colors, #controls symbol (plot characters) types
+#                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+#                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                               alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+#                               x=list(at=timeTics),
+#                               y=list(relation="free",  #allows each axis to be different
+#                                      at=yTicsForIndexedGraphs)), #specifies location for tics
+#                   ylim=yLimits, #y axis limits
+#                   #axis labels and scaling
+#                   xlab=list(label="", cex=textScaling), 
+#                   ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
+#   )
+#   return(graph)
+# }
 
 cesModel2 <- function(countryAbbrev, 
                       energyType="none", 
@@ -2351,19 +2332,6 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
   return(data)
 }
 
-cesResampleTrianglePlot <- function(energyType="none", nest, data=loadCESResampleData(energyType=energyType,
-                                                                                           nest=nest,
-                                                                                           archive=NULL),
-                                    ...){
-  ##################
-  # A wrapper function for standardTriPlot that binds data for all countries
-  # and sends to the graphing function.
-  # You can send parameters for the graph in the ... argument.
-  ##
-  graph <- standardTriPlot(data, ...)
-  return(graph)
-}
-
 cesResampleCoeffProps <- function(cesResampleFits, ...){
   #######
   # This function creates a table of confidence intervals for the ces and cese models
@@ -2465,76 +2433,76 @@ cesPredictionsColumn <- function(energyType="none", nest){
   return(out)
 }
 
-createCESLatticeGraph <- function(countryAbbrev, energyType="none", textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
-  ##############################
-  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-  # data as open circles.
-  ##
-  data <- loadData("All") #Grab the raw data
-  predictionskl  <- cesPredictionsColumn(energyType="none")  #Predictions from CES without energy
-  colnames(predictionskl)[1] <- "predGDPkl"
-  predictionskle <- cesPredictionsColumn(energyType=energyType, nest="(kl)e") #Predictions from CES with (kl)e
-  colnames(predictionskle)[1] <- "predGDPkle"
-  predictionslek <- cesPredictionsColumn(energyType=energyType, nest="(le)k") #Predictions from CES with (le)k
-  colnames(predictionslek)[1] <- "predGDPlek"
-  predictionsekl <- cesPredictionsColumn(energyType=energyType, nest="(ek)l") #Predictions from CES with (ek)l
-  colnames(predictionsekl)[1] <- "predGDPekl"
-  #Now add the predictions columns to the data.
-  data <- cbind(data, predictionskl, predictionskle, predictionslek, predictionsekl)
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "red", "blue", "darkorange") #line and symbol colors
-  symbols <- c(1, NA, NA, NA, NA)  #NA gives no symbol.
-  # Code that deals with items that are specific to whether we want all countries or a specific country.  
-  if (missing(countryAbbrev)){
-    # We want a graph with panels for all countries
-    yLimits <- yLimitsForGDPGraphs
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-  } else {
-    # We want only a specific country
-    data <- subset(data, Country == countryAbbrev)    
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
-  }
-  graph <- xyplot(iGDP+predGDPkl+predGDPkle+predGDPlek+predGDPekl ~ Year | Country, data=data,
-                  type=graphType,
-                  index.cond=indexCond, #orders the panels.
-                  layout=layout,
-                  strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                  pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "W/out energy", "($kl$)$e$", "($le$)$k$", "($ek$)$l$")),
-                           type=graphType,
-                           cex=keyTextSize * textScaling, #controls size of text in the key
-                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                           pch=symbols, col=colors, #controls symbol (plot characters) types
-                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                              x=list(at=timeTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     at=yTicsForIndexedGraphs)), #specifies location for tics
-                  ylim=yLimits, #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
-  )
-  return(graph)
-}
+# createCESLatticeGraph <- function(countryAbbrev, energyType="none", textScaling=1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+#   ##############################
+#   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+#   # data as open circles.
+#   ##
+#   data <- loadData("All") #Grab the raw data
+#   predictionskl  <- cesPredictionsColumn(energyType="none")  #Predictions from CES without energy
+#   colnames(predictionskl)[1] <- "predGDPkl"
+#   predictionskle <- cesPredictionsColumn(energyType=energyType, nest="(kl)e") #Predictions from CES with (kl)e
+#   colnames(predictionskle)[1] <- "predGDPkle"
+#   predictionslek <- cesPredictionsColumn(energyType=energyType, nest="(le)k") #Predictions from CES with (le)k
+#   colnames(predictionslek)[1] <- "predGDPlek"
+#   predictionsekl <- cesPredictionsColumn(energyType=energyType, nest="(ek)l") #Predictions from CES with (ek)l
+#   colnames(predictionsekl)[1] <- "predGDPekl"
+#   #Now add the predictions columns to the data.
+#   data <- cbind(data, predictionskl, predictionskle, predictionslek, predictionsekl)
+#   graphType <- "b" #b is for both line and symbol
+#   lineTypes <- c(0, 1, 2, 4, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+#   lineWidths <- c(0, 2, 1, 1, 1) #line widths. 0 means no line.
+#   colors <- c("black", "black", "red", "blue", "darkorange") #line and symbol colors
+#   symbols <- c(1, NA, NA, NA, NA)  #NA gives no symbol.
+#   # Code that deals with items that are specific to whether we want all countries or a specific country.  
+#   if (missing(countryAbbrev)){
+#     # We want a graph with panels for all countries
+#     yLimits <- yLimitsForGDPGraphs
+#     factorLevels <- countryNamesAlph # We want all countries shown
+#     indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+#     layout <- ninePanelLayoutSpec # Show all countries
+#   } else {
+#     # We want only a specific country
+#     data <- subset(data, Country == countryAbbrev)    
+#     # Select the correct y limits
+#     index <- which(countryAbbrevsAlph %in% countryAbbrev)
+#     # The following lines use [index:index] as a convenient way of subsetting.
+#     # This has the added benefit of maintaining the correct classes for things.
+#     yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+#     factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+#     indexCond <- list(c(1))                           # We want only one country.
+#     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+#   }
+#   graph <- xyplot(iGDP+predGDPkl+predGDPkle+predGDPlek+predGDPekl ~ Year | Country, data=data,
+#                   type=graphType,
+#                   index.cond=indexCond, #orders the panels.
+#                   layout=layout,
+#                   strip = strip.custom(factor.levels=factorLevels, 
+#                                        bg="transparent", # Sets background transparent to match the graph itself.
+#                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                   ),
+#                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+#                   pch = symbols, col.symbol = colors, #Controls symbol parameters
+#                   key=list(text=list(c("Actual", "W/out energy", "($kl$)$e$", "($le$)$k$", "($ek$)$l$")),
+#                            type=graphType,
+#                            cex=keyTextSize * textScaling, #controls size of text in the key
+#                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+#                            pch=symbols, col=colors, #controls symbol (plot characters) types
+#                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+#                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                               alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+#                               x=list(at=timeTics),
+#                               y=list(relation="free",  #allows each axis to be different
+#                                      at=yTicsForIndexedGraphs)), #specifies location for tics
+#                   ylim=yLimits, #y axis limits
+#                   #axis labels and scaling
+#                   xlab=list(label="", cex=textScaling), 
+#                   ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
+#   )
+#   return(graph)
+# }
 
 loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NULL){
   ################################
@@ -3174,70 +3142,70 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
   return(outgoing)
 }
 
-createLINEXLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
-  ##############################
-  # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
-  # data as open circles.
-  ##
-  data <- loadData("All") #Grab the raw data
-  predictions <- linexPredictionsColumn(energyType=energyType) #Predictions from LINEX with Q
-  #Now add the predictions columns to the data.
-  data <- cbind(data, predictions) 
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 1) #line widths. 0 means no line.
-  colors <- c("black", "black") #line and symbol colors
-  symbols <- c(1, NA)  #NA gives no symbol.
-  # Code that deals with items that are specific to whether we want all countries or a specific country.  
-  if (missing (countryAbbrev)){
-    # We want a graph with panels for all countries
-    yLimits <- yLimitsForGDPGraphs
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-  } else {
-    # We want only a specific country
-    data <- subset(data, Country == countryAbbrev)    
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
-  }  
-  graph <- xyplot(iGDP+predGDPQ ~ Year | Country, 
-                  data=data, 
-                  type=graphType,
-                  index.cond=indexCond, #orders the panels.
-                  layout=layout,
-                  strip = strip.custom(factor.levels=factorLevels, 
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
-                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                  pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("Actual", "With energy")),
-                                    type=graphType,
-                           cex=keyTextSize * textScaling, #controls size of text in the key
-                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                           pch=symbols, col=colors, #controls symbol (plot characters) types
-                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                              x=list(at=timeTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     at=yTicsForIndexedGraphs)), #specifies location for tics
-                  ylim=yLimits, #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
-  )
-  return(graph)
-}
+# createLINEXLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
+#   ##############################
+#   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
+#   # data as open circles.
+#   ##
+#   data <- loadData("All") #Grab the raw data
+#   predictions <- linexPredictionsColumn(energyType=energyType) #Predictions from LINEX with Q
+#   #Now add the predictions columns to the data.
+#   data <- cbind(data, predictions) 
+#   graphType <- "b" #b is for both line and symbol
+#   lineTypes <- c(0, 1) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+#   lineWidths <- c(0, 1) #line widths. 0 means no line.
+#   colors <- c("black", "black") #line and symbol colors
+#   symbols <- c(1, NA)  #NA gives no symbol.
+#   # Code that deals with items that are specific to whether we want all countries or a specific country.  
+#   if (missing (countryAbbrev)){
+#     # We want a graph with panels for all countries
+#     yLimits <- yLimitsForGDPGraphs
+#     factorLevels <- countryNamesAlph # We want all countries shown
+#     indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+#     layout <- ninePanelLayoutSpec # Show all countries
+#   } else {
+#     # We want only a specific country
+#     data <- subset(data, Country == countryAbbrev)    
+#     # Select the correct y limits
+#     index <- which(countryAbbrevsAlph %in% countryAbbrev)
+#     # The following lines use [index:index] as a convenient way of subsetting.
+#     # This has the added benefit of maintaining the correct classes for things.
+#     yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+#     factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+#     indexCond <- list(c(1))                           # We want only one country.
+#     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+#   }  
+#   graph <- xyplot(iGDP+predGDPQ ~ Year | Country, 
+#                   data=data, 
+#                   type=graphType,
+#                   index.cond=indexCond, #orders the panels.
+#                   layout=layout,
+#                   strip = strip.custom(factor.levels=factorLevels, 
+#                                        bg="transparent", # Sets background transparent to match the graph itself.
+#                                        par.strip.text=list(cex=textScaling) # Scales text in the strip.
+#                   ),
+#                   as.table=TRUE, #indexing of panels starts in upper left and goes across rows.
+#                   lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
+#                   pch = symbols, col.symbol = colors, #Controls symbol parameters
+#                   key=list(text=list(c("Actual", "With energy")),
+#                                     type=graphType,
+#                            cex=keyTextSize * textScaling, #controls size of text in the key
+#                            lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
+#                            pch=symbols, col=colors, #controls symbol (plot characters) types
+#                            columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
+#                   scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
+#                               tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                               alternating=FALSE, # eliminates left-right, top-bot alternating of axes
+#                               x=list(at=timeTics),
+#                               y=list(relation="free",  #allows each axis to be different
+#                                      at=yTicsForIndexedGraphs)), #specifies location for tics
+#                   ylim=yLimits, #y axis limits
+#                   #axis labels and scaling
+#                   xlab=list(label="", cex=textScaling), 
+#                   ylab=list(label="Indexed GDP (1980=1 or 1991=1)", cex=textScaling)
+#   )
+#   return(graph)
+# }
 
 linexResampleCoeffProps <- function(linexResampleFits, ...){
   ####### 
