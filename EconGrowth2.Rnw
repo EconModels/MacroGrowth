@@ -1338,7 +1338,6 @@ cdData <- loadCDSpaghettiGraphData(energyType="none")
 cdQData <- loadCDSpaghettiGraphData(energyType="Q")
 cdData <- rbind(cdData, cdQData)
 cesSpaghettiGraph(data=cdData, facet_formula=Country~Energy)
-# createCDLatticeGraph(energyType="Q")
 @
 
 
