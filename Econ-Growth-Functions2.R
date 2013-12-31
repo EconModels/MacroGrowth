@@ -713,7 +713,7 @@ createSFParamsGraph <- function(factor){
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                 y=list(relation="free", #allow each axis to be different
+                                 y=list(rot=0, relation="free", #allow each axis to be different
                                         at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
                                                 c(0.0, 0.5, 1.0)
                                         )
@@ -1862,7 +1862,7 @@ createCDParamsGraph <- function(energyType="none"){
                      scales = list(cex=scaleTextSize, #controls text size on scales.
                                    tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                    x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                   y=list(relation="free", #allow each axis to be different
+                                   y=list(rot=0, relation="free", #allow each axis to be different
                                           at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
                                                   c(0.0, 0.5, 1.0), 
                                                   c(0.0, 0.5, 1.0)
@@ -1890,7 +1890,7 @@ createCDParamsGraph <- function(energyType="none"){
                      scales = list(cex=scaleTextSize, #controls text size on scales.
                                    tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                    x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                   y=list(relation="free", #allow each axis to be different
+                                   y=list(rot=0, relation="free", #allow each axis to be different
                                           at=list(c(0.0, 0.05, 0.1),   #y tick mark for lambda
                                                   c(0.0, 0.5, 1.0), 
                                                   c(0.0, 0.5, 1.0),
@@ -2877,7 +2877,7 @@ createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                 y=list(relation="free", #allow each axis to be different
+                                 y=list(rot=0, relation="free", #allow each axis to be different
                                         at=list(c(0.75, 1.0, 1.25), c(-0.05, 0.0, 0.05, 0.10),
                                                 c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
                                                 c(0.0, 1.0, 2.0), c(0.0, 1.0, 2.0))   #y tick marks
@@ -3404,7 +3404,7 @@ createLINEXParamsGraph <- function(energyType){
                    scales = list(cex=scaleTextSize, #controls text size on scales.
                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                 y=list(relation="free", #allow each axis to be different
+                                 y=list(rot=0, relation="free", #allow each axis to be different
                                         at=list(c(0.0, 0.5, 1.0), c(0, 1, 2, 3, 4, 5))   #y tick marks
                                  )
                    )
