@@ -1531,10 +1531,11 @@ shows the coefficients estimated from resampled data.
        scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
-Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
+Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 
-<<LINEX_GDP_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
-createLINEXLatticeGraph(energyType="Q")
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
+spagDataLinex <- loadLinexSpaghettiGraphData(energyType="Q")
+cesSpaghettiGraph(data=spagDataLinex, facet_formula= ~ Country)
 @
 
 
