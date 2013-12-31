@@ -2311,7 +2311,7 @@ chooseCESControl <- function(algorithm){
   return(control)
 }
 
-loadCESResampleTrianglePlotData <- function(nest, energyType="none", archive=NULL){
+loadCESResampleData <- function(nest, energyType="none", archive=NULL){
   #################################
   # Loads and binds data for a CES resample ternary plot.
   # If the energyType argument is missing or NA, you'll get data for the CES model without energy.
@@ -2328,7 +2328,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType="none", archive=NUL
   if (nest == "all"){
     # Data for all nest options is desired.
     # Recursively call this function and rbind.fill the results together.
-    allNests <- lapply( cesNests, loadCESResampleTrianglePlotData, energyType=energyType, archive=archive )
+    allNests <- lapply( cesNests, loadCESResampleData, energyType=energyType, archive=archive )
     outgoing <- do.call(rbind.fill, allNests)
     # Now set the order for the factors of the nests.
     # Doing so sets the order of appearance on graphs.
@@ -2351,7 +2351,7 @@ loadCESResampleTrianglePlotData <- function(nest, energyType="none", archive=NUL
   return(data)
 }
 
-cesResampleTrianglePlot <- function(energyType="none", nest, data=loadCESResampleTrianglePlotData(energyType=energyType,
+cesResampleTrianglePlot <- function(energyType="none", nest, data=loadCESResampleData(energyType=energyType,
                                                                                            nest=nest,
                                                                                            archive=NULL),
                                     ...){

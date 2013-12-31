@@ -1497,6 +1497,12 @@ $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and c
 cesResampleTrianglePlot(energyType="Q", nest="all")
 @
 
+<<CES_lambda_gamma_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\lambda$ and $\\sigma$ values for CES resample models.">>=
+cesQResampleData <- loadCESResampleData(nest="all", energyType="Q")
+# standardScatterPlot(data=data, mapping=aes(gamma_coef, lambda, colour=isConv), facet_formula=countryAbbrev~nest)
+standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), facet_formula=countryAbbrev~nest, alpha=0.1)
+@
+
 **** Fix $x$-axis on Figures~\ref{fig:CESq_Sigma_Sigma_1_kle}--\ref{fig:CESq_Sigma_Sigma_1_ekl}.
 Or, consider a better way to show resampled $\sigma$ and $\sigma_1$ values. ****
 
