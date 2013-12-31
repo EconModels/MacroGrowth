@@ -1411,65 +1411,40 @@ $sse$ than \texttt{L-BFGS-B}, despite the fact that
 and \texttt{PORT} does not for the same data
 (i.e., for the same $y$, $k$, $l$, and $e$ data).
 
-Coefficients for each resampled CES model (without energy)
+Coefficients for each resampled CES model for all countries and all nests
 are shown in 
-Figures~\ref{fig:CES_lambda_gamma_Scatter_Graph} and
-\ref{fig:CES_sigma_1_delta_1_Scatter_Graph}. 
-Note that the bottom of the vertical axis represents $\sigma = 0$.
-The top of the vertical axis represents $\sigma = \infty$.
+Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}. 
 The crosshair on each graph shows the location 
 of the fit to historical data. 
-Dots are colored by whether or not the fitting routine
-reports model convergence.
+In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph},
+the bottom of the vertical axis represents $\sigma = 0$.
+The top of the vertical axis represents $\sigma = \infty$.
 
-<<CES_lambda_gamma_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType="none")
+<<CES_lambda_gamma_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
+cesQResampleData <- loadCESResampleData(nest="all", energyType="Q")
+standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), facet_formula=countryAbbrev~nest, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<CES_sigma_1_delta_1_Scatter_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (without energy) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="none")
+<<CES_sigma1_delta1_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
+standardScatterPlot(data=cesQResampleData, mapping=aes(delta_1, sigma_1), facet_formula=countryAbbrev~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
 @
 
-Coefficients for each resampled CES model (with energy)
-are shown in 
-Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_kle}--\ref{fig:CESq_sigma_delta_Scatter_Graph_ekl}. 
-Note that each nesting of the factors of production
-is included in the graphs.
-
-<<CESq_lambda_gamma_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType="Q", nest="(kl)e")
-@
-
-<<CESq_sigma_1_delta_1_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(kl)e")
-@
-
-<<CESq_sigma_delta_Scatter_Graph_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($kl$)$e$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(kl)e")
-@
-
-<<CESq_lambda_gamma_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType="Q", nest="(le)k")
-@
-
-<<CESq_sigma_1_delta_1_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(le)k")
-@
-
-<<CESq_sigma_delta_Scatter_Graph_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($le$)$k$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(le)k")
-@
-
-<<CESq_lambda_gamma_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\lambda$ and $\\gamma$.">>=
-cesResamplePlotLambdaGamma(energyType="Q", nest="(ek)l")
-@
-
-<<CESq_sigma_1_delta_1_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma_1$ and $\\delta_1$.">>=
-cesResamplePlotSigma_1Delta_1(energyType="Q", nest="(ek)l")
-@
-
-<<CESq_sigma_delta_Scatter_Graph_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES (with $q$, ($ek$)$l$ nesting) resample model parameters $\\sigma$ and $\\delta$.">>=
-cesResamplePlotSigmaDelta(energyType="Q", nest="(ek)l")
+<<CES_sigma_delta_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
+standardScatterPlot(data=subset(cesQResampleData, nest!="(kl)"), 
+                                mapping=aes(delta, sigma), 
+                                facet_formula=countryAbbrev~nest, 
+                                alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
 @
 
 We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
@@ -1495,36 +1470,6 @@ $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and c
 
 <<CES_ternary_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
 cesResampleTrianglePlot(energyType="Q", nest="all")
-@
-
-<<CES_lambda_gamma_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\lambda$ and $\\sigma$ values for CES resample models.">>=
-cesQResampleData <- loadCESResampleData(nest="all", energyType="Q")
-# standardScatterPlot(data=data, mapping=aes(gamma_coef, lambda, colour=isConv), facet_formula=countryAbbrev~nest)
-standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), facet_formula=countryAbbrev~nest, alpha=0.1)
-@
-
-**** Fix $x$-axis on Figures~\ref{fig:CESq_Sigma_Sigma_1_kle}--\ref{fig:CESq_Sigma_Sigma_1_ekl}.
-Or, consider a better way to show resampled $\sigma$ and $\sigma_1$ values. ****
-
-Figure~\ref{fig:CESq_Sigma_Sigma_1_kle} shows 
-$\sigma$ and $\sigma_1$ values from the CES model with ($kl$)$e$ nesting.
-
-<<CESq_Sigma_Sigma_1_kle, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($kl$)$e$ nesting.">>=
-cesResamplePlotSigmaSigma_1(energyType="Q", nest="(kl)e")
-@
-
-Figure~\ref{fig:CESq_Sigma_Sigma_1_lek} shows 
-$\sigma$ and $\sigma_1$ values from the CES model with ($le$)$k$ nesting.
-
-<<CESq_Sigma_Sigma_1_lek, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($le$)$k$ nesting.">>=
-cesResamplePlotSigmaSigma_1(energyType="Q", nest="(le)k")
-@
-
-Figure~\ref{fig:CESq_Sigma_Sigma_1_ekl} shows 
-$\sigma$ and $\sigma_1$ values from the CES model with ($ek$)$l$ nesting.
-
-<<CESq_Sigma_Sigma_1_ekl, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="CES (with energy) resample model $\\sigma$ and $\\sigma_1$ values, ($ek$)$l$ nesting.">>=
-cesResamplePlotSigmaSigma_1(energyType="Q", nest="(ek)l")
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
