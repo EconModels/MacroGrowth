@@ -3968,7 +3968,7 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
   # for the fits to resampled data.
   ##
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
-  # The name of the object loaded by this call is resampleData.
+  # The name of the object loaded by this call is resampleModels.
   if (is.null(archive)) {
     load(file=path) 
   } else {
