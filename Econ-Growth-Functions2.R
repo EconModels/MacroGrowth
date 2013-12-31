@@ -3138,6 +3138,95 @@ linexPredictionsColumn <- function(energyType){
   return(out)
 }
 
+loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
+  ################################
+  # Creates a data frame containing historical data, the fit to historical data, and 
+  # resample predictions for LINEX models.
+  # Call with energyType = "all" for all energy types
+  ##
+  if (energyType == "all"){
+    energyTypeList <- c("Q", "X", "U")
+    # Data for all energy types is desired.
+    # Recursively call this function and rbind the results together.
+    allEnergies <- lapply( energyTypeList, loadLINEXSpaghettiGraphData, archive=archive )
+    outgoing <- do.call(rbind, allEnergies)
+    # Now set the order for the factors of the energy types
+    outgoing$Energy <- factor(outgoing$Energy, levels=energyTypeList)
+    return(outgoing)
+  }
+  
+  modelType <- "linex"
+  
+  # Put the historical data in a data.frame. 
+  actual <- loadData(countryAbbrev="all")
+  actual <- actual[c("Year", "iGDP", "Country")]
+  actual$ResampleNumber <- NA
+  actual$Type <- "actual"
+  actual$Resampled <- FALSE
+  actual$Energy <- energyType
+  
+  # Put the fits to historical data in a data.frame
+  prediction <- linexPredictionsColumn(energyType=energyType)
+  pred <- actual
+  # Replace the historical GDP data with the predicted GDP data, which is in column 1.
+  pred$iGDP <- prediction[,1]
+  pred$ResampleNumber <- NA
+  pred$Type <- "fitted"
+  pred$Resampled <- FALSE
+  pred$Energy <- energyType
+  
+  # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
+  pred <- subset(pred, !is.na(iGDP))
+  
+  # Figure out which countries we need to loop over.
+  if (energyType == "U"){
+    countryAbbrevs <- countryAbbrevsForGraphU
+  } else {
+    countryAbbrevs <- countryAbbrevsForGraph
+  }
+  # Remove rows where we don't need historical data or predictions, 
+  # specifically those times when we won't have a prediction.
+  actual <- subset(actual, Country %in% countryAbbrevs)
+  pred <- subset(pred, Country %in% countryAbbrevs)
+  
+  # Put all of the resamples in a list that will be converted to a data.frame
+  dfList <- list()
+  for (countryAbbrev in countryAbbrevs){
+    # Get the raw data for this country
+    historical <- loadData(countryAbbrev=countryAbbrev)
+    if (energyType == "U"){
+      # subset historical to include only years for which U is available.
+      historical <- subset(historical, !is.na(iU))
+    }
+    years <- data.frame(Year = historical$Year)
+    # Get the list of resample models for this country.
+    resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
+                                                   modelType=modelType, 
+                                                   energyType=energyType, 
+                                                   archive=archive)
+    # Add each model's prediction to the data.frame    
+    nResamples <- length(resampleModels)
+    # Get the number of years from fitted(resampleModels[[1]]), because not
+    # all models cover all the years.
+    nYears <- length(fitted(resampleModels[[1]]))
+    dfList[[countryAbbrev]] <- data.frame(
+      Year = rep(historical$Year, nResamples),
+      iGDP = unlist(lapply( resampleModels, fitted )),
+      Country = countryAbbrev,
+      ResampleNumber = rep( 1:nResamples, each=nYears ),
+      Type = "fitted",
+      Resampled = TRUE,
+      Energy = energyType
+    )
+  }
+  
+  # Now rbind everything together and return.  
+  outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
+  # Ensure that the country factor is in the right order
+  outgoing$Country <- factor(outgoing$Country, levels=countryAbbrevs)
+  return(outgoing)
+}
+
 createLINEXLatticeGraph <- function(countryAbbrev, energyType="none", textScaling = 1.0, keyXLoc=defaultKeyXLoc, keyYLoc=defaultKeyYLoc){
   ##############################
   # Creates a graph that plots predicted GDP as lines, one for each single factor, and historical GDP 
