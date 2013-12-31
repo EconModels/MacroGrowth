@@ -1468,7 +1468,8 @@ Figure~\ref{fig:CES_ternary_graph} shows
 $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
 
 <<CES_ternary_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
-cesResampleTrianglePlot(energyType="Q", nest="all")
+cesTriPlotData=loadCESResampleData(energyType="Q", nest="all")
+standardTriPlot(data=cesTriPlotData)
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
