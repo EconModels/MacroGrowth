@@ -65,8 +65,10 @@ ninePanelGraphWidth <- maxWidth
 ninePanelGraphHeight <- 7.5  #Inches
 ninePanelTernaryGraphHeight <- 5.1 #Inches
 thirtySixPanelGraphWidth <- maxWidth
-thirtySixPanelTernaryGraphHeight <- 9.0 #Inches
-thirtySixPanelSpaghettiGraphHeight <- 9.0 #Inches
+thirtySixPanelTernaryGraphHeight <- 9.0-0.5 #Inches
+thirtySixPanelSpaghettiGraphHeight <- thirtySixPanelTernaryGraphHeight #Inches
+thirtySixPanelScatterGraphHeight <- thirtySixPanelTernaryGraphHeight #Inches
+
 presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth <- 2 #Inches
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
