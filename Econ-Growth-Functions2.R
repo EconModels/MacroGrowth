@@ -53,21 +53,28 @@ countryOrderForGraphsU <- c(3, 2, 1) # Sets the order as US, UK, JP when we're l
 timeTics <- c(1980, 1990, 2000, 2010)
 yTicsForIndexedGraphs <- c(1,2,3,4,5,6,7,8,9,10) #y tic mark locations.
 
-maxWidth <- 6.5 #Inches
+
 # Full page lattice plot sizes
 ninePanelLayoutSpec <- c(3,3) #indicates a 3x3 arrangement of panels.
 threePanelLayoutSpec <- c(3,1) #indicates a 1 row x 3 column arangement of panels
 onePanelLayoutSpec <- c(1,1) #indicates a 1x1 arrangement of panels.
-threePanelGraphWidth <- maxWidth
-threePanelGraphHeight <- 3.17 #Inches
-threePanelTernaryGraphHeight <- 2.0 #Inches
-ninePanelGraphWidth <- maxWidth     
-ninePanelGraphHeight <- 7.5  #Inches
-ninePanelTernaryGraphHeight <- 5.1 #Inches
-thirtySixPanelGraphWidth <- maxWidth
-thirtySixPanelTernaryGraphHeight <- 9.0-0.5 #Inches
-thirtySixPanelSpaghettiGraphHeight <- thirtySixPanelTernaryGraphHeight #Inches
-thirtySixPanelScatterGraphHeight <- thirtySixPanelTernaryGraphHeight #Inches
+
+# Graph Heights
+maxHeight <- 8.5 #Inches
+ninePanelScatterGraphHeight <- maxHeight #Inches
+ninePanelTernaryGraphHeight <- 7 #Inches
+ninePanelSpaghettiGraphHeight <- 7 #Inches
+
+# Graph Widths
+maxWidth <- 6.5 #Inches
+fourPanelScatterGraphWidth <- maxWidth #Inches
+threePanelScatterGraphWidth <- maxWidth*0.75 #Inches
+onePanelScatterGraphWidth <- maxWidth*0.25
+fourPanelTernaryGraphWidth <- maxWidth
+twoPanelTernaryGraphWidth <- maxWidth*0.45
+fourPanelSpaghettiGraphWidth <- maxWidth
+twoPanelSpaghettiGraphWidth <- maxWidth*0.55
+onePanelSpaghettiGraphWidth <- maxWidth*0.4
 
 presentationGraph1RowHeight <- 2.8 #Inches
 presentationGraph2ColWidth <- 2 #Inches

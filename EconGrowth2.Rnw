@@ -1148,7 +1148,7 @@ and high covariances among these variables can be seen in
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 **** Do we want to discuss the covariances? ****
 
-<<Historical_Lattice_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+<<Historical_Lattice_Graph, fig.pos="H", fig.width=maxWidth, fig.height=maxHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 createHistoricalLatticeGraph()
 @
 
@@ -1305,13 +1305,8 @@ Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
 Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (without and with energy) resample models.
-
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=cdTernaryGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (without and with energy) resample model parameters.">>=
-  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
-  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
-  data <- rbind.fill(dataCD, dataCDQ)
-  standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
-@
+Each reample is shown as a gray dot on the graph. 
+The fit to historical data is shown as a gray circle.
 
 Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1320,13 +1315,22 @@ Historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
-<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=cdSpaghettiGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas fitted models.">>=
+\twocolumn{}
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Cobb-Douglas resample model parameters.">>=
+  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
+  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  data <- rbind.fill(dataCD, dataCDQ)
+  standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
+@
+
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.75, fig.cap="Cobb-Douglas fitted models.">>=
 cdData <- loadCDSpaghettiGraphData(energyType="none")
 cdQData <- loadCDSpaghettiGraphData(energyType="Q")
 cdData <- rbind(cdData, cdQData)
 cesSpaghettiGraph(data=cdData, facet_formula=Country~Energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
+\onecolumn{}
 
 
 %++++++++++++++++++++++++++++++
@@ -1407,7 +1411,7 @@ In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph}
 the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
 
-<<CES_lambda_gamma_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
+<<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
 cesQResampleData <- loadCESResampleData(nest="all", energyType="Q")
 standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), facet_formula=countryAbbrev~nest, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
@@ -1415,7 +1419,7 @@ standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), face
     labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<CES_sigma1_delta1_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
+<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
 standardScatterPlot(data=cesQResampleData, mapping=aes(delta_1, sigma_1), facet_formula=countryAbbrev~nest, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -1423,7 +1427,7 @@ standardScatterPlot(data=cesQResampleData, mapping=aes(delta_1, sigma_1), facet_
     labs(x=expression(delta[1]), y=expression(sigma[1]))
 @
 
-<<CES_sigma_delta_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelScatterGraphHeight, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
+<<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
 standardScatterPlot(data=subset(cesQResampleData, nest!="(kl)"), 
                     mapping=aes(delta, sigma), facet_formula=countryAbbrev~nest, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1453,7 +1457,7 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
 Figure~\ref{fig:CES_ternary_graph} shows 
 $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
 
-<<CES_ternary_graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelTernaryGraphHeight, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
+<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
 cesTriPlotData=loadCESResampleData(energyType="Q", nest="all")
 standardTriPlot(data=cesTriPlotData)
 @
@@ -1464,7 +1468,7 @@ Historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
-<<CES_Spaghetti_Graph, fig.pos="H", fig.width=thirtySixPanelGraphWidth, fig.height=thirtySixPanelSpaghettiGraphHeight, fig.cap="CES fitted models.">>=
+<<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8, fig.cap="CES fitted models.">>=
 spagData <- loadCESSpaghettiGraphData(energyType="Q", nest="all")
 cesSpaghettiGraph(data=spagData, facet_formula=Country~nest, level=spaghettiGraphLevel)+
     labs(y="Indexed GDP (1980=1 or 1991=1)")
@@ -1475,7 +1479,7 @@ Again, historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
-<<CES_Spaghetti_Graph_CN, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
+<<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
 cesSpaghettiGraph(data=subset(spagData, Country=="CN" & nest=="(kl)e"), level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
 @
@@ -1514,25 +1518,26 @@ of the resample fits did not converge.
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
 
-<<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with energy) resampling results.">>=
-  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
-  standardScatterPlot(data=linexResampleData, aes(a_0, c_t), facet_formula= ~ countryAbbrev, alpha=0.05) +
-      labs(x=expression(a[0]), y=expression(c[t])) +
-       scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
-       scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
-@
-
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 Historical data are shown as a black line. 
 The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
-<<LINEX_Spaghetti_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX results.">>=
-spagDataLinex <- loadLinexSpaghettiGraphData(energyType="Q")
-cesSpaghettiGraph(data=spagDataLinex, facet_formula= ~ Country, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1980=1 or 1991=1)")
+\twocolumn{}
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
+  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  standardScatterPlot(data=linexResampleData, aes(a_0, c_t), facet_formula=countryAbbrev~energy, alpha=0.05) +
+      labs(x=expression(a[0]), y=expression(c[t])) +
+       scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+       scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
+spagDataLinex <- loadLinexSpaghettiGraphData(energyType="Q")
+cesSpaghettiGraph(data=spagDataLinex, facet_formula=Country ~ Energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+\onecolumn{}
 
 %++++++++++++++++++++++++++++++
 \subsection{Parameter Estimation Summary}
