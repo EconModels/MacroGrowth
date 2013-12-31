@@ -3001,59 +3001,6 @@ cesResamplePlotSigmaSigma_1 <- function(energyType="Q", nest="(kl)e", ...){
   return(graph)
 }
 
-cesSpaghettiGraph <- function(energyType='none', 
-                                    nest, 
-                                    data=loadCESSpaghettiGraphData(energyType=energyType, 
-                                                                   nest=nest, ...), 
-                                    split = union(all.vars(facet_formula), "Year"), 
-                                    geom_actual = geom_point, 
-                                    facet_formula = Country ~ nest,
-                                    alpha=0.15, level = 1, ...){
-  #############
-  # Returns a graph that shows lines for each resample model
-  # for the energyType and nest arguments.
-  # Alternatively, you can specify the data argument only.
-  # You can obtain data with the loadCESSpaghettiGraphData function. 
-  # For example:
-  # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e", 
-  #         archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-  # cesSpaghettiGraph(data=data)
-  ##
-  
-  #
-  # Things to change:
-  # * Change country abbreviations to country names (e.g., "CN" --> "China")
-  # * Change vertical axis limits: China 1-10, all others 1-4. 
-  # * eliminate grid lines
-  # * tic marks inside axis instead of outside axis.
-  # * y-axis label: "Indexed GDP (1980=1 or 1991=1)".
-  # * avoid year label collisions on the horizontal axis.
-  # 
-  alph = .5 * (1 - level)
-  data$alph = alph
-  split <- intersect( split, names(data) )
-  seData <- ddply( subset(data, Type=="fitted"), split, summarise, 
-         n = length(iGDP),
-         lower= quantile(iGDP, alph[1]),
-         upper= quantile(iGDP, 1-alph[1]),
-         iGDP = iGDP[1]
-  ) 
-  # return(seData)
-  # return(names(data))
-  # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
-  graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
-  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="navy", lty=2, data=seData, stat="identity")
-  graph <- graph + geom_actual(colour="red", shape=1)
-  if (!is.null( facet_formula ) ) {
-    if (length(facet_formula) == 2) {
-      graph <- graph + facet_wrap( facet_formula )
-    } else {
-      graph <- graph + facet_grid( facet_formula )
-    }
-  }
-  graph <- graph + theme_minimal()
-  return(graph)
-}
 
 ## <<LINEX functions, eval=TRUE>>=
 linexModel <- function(countryAbbrev, energyType="none", data){
