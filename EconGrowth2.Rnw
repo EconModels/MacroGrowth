@@ -1524,8 +1524,11 @@ Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
 
 <<LINEXq_Resample_Graph, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="LINEX model (with energy) resampling results.">>=
-# linexResamplePlot(energyType="Q")
-linexResamplePlot(energyType="Q")
+  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  standardScatterPlot(data=linexResampleData, aes(a_0, c_t), facet_formula= ~ countryAbbrev, alpha=0.05) +
+      labs(x=expression(a[0]), y=expression(c[t])) +
+       scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+       scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
 Figure~\ref{fig:LINEX_GDP_Lattice_Graph} compares LINEX model predictions to historical data.
