@@ -122,7 +122,8 @@ standardTriPlot <- function(data,
 standardScatterPlot <- function(data, mapping, size=2.0, alpha=0.4, facet_formula = countryAbbrev ~ nest) {
   p <- ggplot( data=subset(data, method != "orig"), mapping ) 
   p <- p + geom_point(size=size, alpha=alpha) 
-  p <- p + geom_point(data=subset(data, method=="orig"),  color="black", alpha=0.6, 
+  # p <- p + geom_hex( bins=60) 
+  p <- p + geom_point(data=subset(data, method=="orig"),  color="gray70",  
                       size=4, shape=10 )
   if ( !is.null(facet_formula) ) {
     if ( length(facet_formula)==2 ) {
