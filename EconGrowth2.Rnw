@@ -1260,14 +1260,6 @@ If the estimated value for $\alpha$ was found outside the interval $[0,1]$,
 we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
 The value of $\beta$ was found with $\beta = 1 - \alpha$. 
 
-Figure~\ref{fig:CD_Scatter_Graph} shows a ternary plot 
-of $\alpha$, $\beta$, and $\gamma$ parameter values 
-for resample models for the Cobb-Douglas model (without energy). 
-
-<<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters. $\\gamma$ is always 0.0, because energy is not included in this model.">>=
-cdResampleTrianglePlot(energyType="none", facet_formula=~countryAbbrev )
-@
-
 To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
 in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
 was reparameterized as
@@ -1310,17 +1302,36 @@ fraction of unconverged models for each model type.
 The above approach resulted in very few unconverged
 Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
 
-Figure~\ref{fig:CDq_Scatter_Graph} shows ternary plots 
-for $\alpha$, $\beta$, and $\gamma$ parameter values 
-for Cobb-Douglas (with energy) resample models.
+% Figure~\ref{fig:CDq_Scatter_Graph} shows ternary plots 
+% for $\alpha$, $\beta$, and $\gamma$ parameter values 
+% for Cobb-Douglas (with energy) resample models.
+% 
+% Figure~\ref{fig:CD_Scatter_Graph} shows a ternary plot 
+% of $\alpha$, $\beta$, and $\gamma$ parameter values 
+% for resample models for the Cobb-Douglas model (without energy). 
 
-<<CDq_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
-cdResampleTrianglePlot(energyType="Q", facet_formula=~countryAbbrev)
+% <<CD_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (without energy) resample model parameters. $\\gamma$ is always 0.0, because energy is not included in this model.">>=
+% cdResampleTrianglePlot(energyType="none", facet_formula=~countryAbbrev )
+% @
+% 
+% <<CDq_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelTernaryGraphHeight, fig.cap="Cobb-Douglas (with energy) resample model parameters.">>=
+% cdResampleTrianglePlot(energyType="Q", facet_formula=~countryAbbrev)
+% @
+
+Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
+for $\alpha$, $\beta$, and $\gamma$ parameter values 
+for Cobb-Douglas (without and with energy) resample models.
+
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas (without and with energy) resample model parameters.">>=
+  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
+  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  data <- rbind.fill(dataCD, dataCDQ)
+  standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
 @
 
 Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
 from the Cobb-Douglas models 
-(with and without energy) to historical data.
+(without and with energy) to historical data.
 
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="Cobb-Douglas fitted models.">>=
 cdData <- loadCDSpaghettiGraphData(energyType="none")
@@ -1379,7 +1390,7 @@ In this final gradient search, all model parameters
 ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
 are considered free parameters.
 
-The fit with lowest $sse$ of all the above trials is deemed the winner,
+The fit with lowest $sse$ of all above trials is deemed the winner,
 and its fitting parameters are used as the model.
 
 \citet{Henningsen:2011td}, 
