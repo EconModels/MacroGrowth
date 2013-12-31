@@ -1532,10 +1532,10 @@ spagData <- loadCESSpaghettiGraphData(energyType="Q", nest="all")
 cesSpaghettiGraph(data=spagData, level=1)
 @
 
-Figure~\ref{fig:CES_Spaghetti_Graph_ZM} shows details of the resample fits for Zambia with the (kl)e nesting.
+Figure~\ref{fig:CES_Spaghetti_Graph_CN} shows details of the resample fits for China with the (kl)e nesting.
 
-<<CES_Spaghetti_Graph_ZM, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models for Zambia with the (kl)e nesting.">>=
-cesSpaghettiGraph(data=subset(spagData, Country=="ZM" & nest=="(kl)e"), level=1)
+<<CES_Spaghetti_Graph_CN, fig.pos="H", fig.width=ninePanelGraphWidth, fig.height=ninePanelGraphHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
+cesSpaghettiGraph(data=subset(spagData, Country=="CN" & nest=="(kl)e"), level=1)
 @
 
 
