@@ -88,6 +88,8 @@ cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
 linexParameterGraphHeight <- h_param_graph + h_param_axis
 sfParameterGraphWidth <- maxWidth
 cdParameterGraphWidth <- maxWidth
+cdTernaryGraphWidth <- maxWidth/2.2
+cdSpaghettiGraphWidth <- maxWidth/2.2
 cesParameterGraphWidth <- maxWidth
 linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
@@ -100,6 +102,7 @@ nlsControl <- nls.control(maxiter=200,
                           minFactor=1/1024,
                           printEval=FALSE, #Tells whether to print details of curve fit process.
                           warnOnly=TRUE)
+spaghettiGraphLevel <- 0.95 # Controls how much data spread will be shown by the gray band on spaghetti graphs.
 
 loadData <- function(countryAbbrev){
   #################################
