@@ -2464,7 +2464,7 @@ cesParamsTableA <- function(energyType="none", nest="(kl)e"){
                          " ", "$\\sigma$",    " ")
   rownames(dataCES) <- countryAbbrevs
   if (energyType == "none"){
-    energyStringCaption <- "(without energy)"
+    energyStringCaption <- "(without energy, ($kl$) nesting)"
     energyStringLabel <- ""
   } else {
     if (nest == "(kl)e"){
@@ -2503,7 +2503,7 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
                          " ", "$\\sigma$",    " ")
   rownames(dataCES) <- countryAbbrevs
   if (energyType == "none"){
-    energyStringCaption <- "(without energy)"
+    energyStringCaption <- "(without energy, ($kl$) nesting)"
     energyStringLabel <- ""
   } else {
     if (nest == "(kl)e"){
@@ -2518,7 +2518,7 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
     energyStringLabel <- paste("_With_", energyType, "_", nest, sep="")
   }
   tableCESb <- xtable(dataCES[,c(1,2,3, 7,8,9, 13,14,15)], #Picks up gamma, delta_1, and sigma_1
-                      caption=paste("CES model ", energyStringCaption, ". $\\gamma$, $\\delta_1$, and $\\sigma_1$ parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
+                      caption=paste("CES model parameters ", energyStringCaption, ". $\\gamma$, $\\delta_1$, and $\\sigma_1$ parameters for 1980--2011 (US, UK, JP) and 1991--2011 (CN, ZA, SA, IR, TZ, and ZM). (Parameter estimates beneath symbol. 95\\% confidence interval bounds to left and right.)", sep=""), 
                       label=paste("tab:CES_Parameters_B", energyStringLabel, sep=""),
                       digits = c(1, 2,2,2, 2,2,2, 2,2,2),
                       align = "r|ccc|ccc|ccc"  #Sets alignment of the numbers in the columns

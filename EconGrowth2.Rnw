@@ -1978,7 +1978,8 @@ intervals on fitted model parameters.
 \subsection{Cobb-Douglas Models}
 %++++++++++++++++++++++++++++++
 
-The 95\% confidence intervals associated with Figure~\ref{fig:CD_Scatter_Graph} 
+The 95\% confidence intervals associated with 
+the without-energy column of Figure~\ref{fig:CD_Ternary_Scatter_Graph} 
 are shown in Table~\ref{tab:CD_Parameters_No_Energy}.
 
 <<CD_Params_Table, results='asis'>>=
@@ -1992,7 +1993,8 @@ Figure~\ref{fig:CD_Params_Graph}.
 createCDParamsGraph(energyType="none")
 @
 
-The 95\% confidence intervals associated with Figure~\ref{fig:CDq_Scatter_Graph} 
+The 95\% confidence intervals associated with 
+the with-energy column of Figure~\ref{fig:CD_Ternary_Scatter_Graph} 
 are shown in Table~\ref{tab:CD_Parameters_With_Q}
 and Figure~\ref{fig:CDq_Params_Graph}.
 
@@ -2010,8 +2012,8 @@ createCDParamsGraph(energyType="Q")
 %++++++++++++++++++++++++++++++
 
 The 95\% confidence intervals associated 
-with Figures~\ref{fig:CES_lambda_gamma_Scatter_Graph} 
-and \ref{fig:CES_sigma_1_delta_1_Scatter_Graph}
+with ($kl$) nest columns of 
+Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}
 are shown in Tables~\ref{tab:CES_Parameters_A} 
 and \ref{tab:CES_Parameters_B} and Figure~\ref{fig:CES_Params_Graph}.
 
@@ -2020,12 +2022,13 @@ printCESParamsTableA(energyType="none")
 printCESParamsTableB(energyType="none")
 @
 
-<<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
+<<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy, ($kl$) nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
 createCESParamsGraph(energyType="none")
 @
 
-The 95\% confidence intervals for the ($kl$)$e$ nesting associated 
-with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_kle}--\ref{fig:CESq_sigma_delta_Scatter_Graph_kle}
+The 95\% confidence intervals associated 
+with ($kl$)$e$ nest columns of 
+Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}
 are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(kl)e} and 
 \ref{tab:CES_Parameters_B_With_Q_(kl)e} and Figure~\ref{fig:CESq_Params_Graph_kle}.
 
@@ -2038,8 +2041,9 @@ printCESParamsTableB(energyType="Q", nest="(kl)e")
 createCESParamsGraph(energyType="Q", nest="(kl)e")
 @
 
-The 95\% confidence intervals for the ($le$)$k$ nesting associated 
-with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_lek}--\ref{fig:CESq_sigma_delta_Scatter_Graph_lek}
+The 95\% confidence intervals associated 
+with ($le$)$k$ nest columns of 
+Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}
 are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(le)k} and 
 \ref{tab:CES_Parameters_B_With_Q_(le)k} and Figure~\ref{fig:CESq_Params_Graph_lek}.
 
@@ -2052,8 +2056,9 @@ printCESParamsTableB(energyType="Q", nest="(le)k")
 createCESParamsGraph(energyType="Q", nest="(le)k")
 @
 
-The 95\% confidence intervals for the ($ek$)$l$ nesting associated 
-with Figures~\ref{fig:CESq_lambda_gamma_Scatter_Graph_ekl}--\ref{fig:CESq_sigma_delta_Scatter_Graph_ekl}
+The 95\% confidence intervals associated 
+with ($ek$)$l$ nest columns of 
+Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}
 are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(ek)l} and 
 \ref{tab:CES_Parameters_B_With_Q_(ek)l} and Figure~\ref{fig:CESq_Params_Graph_ekl}.
 
