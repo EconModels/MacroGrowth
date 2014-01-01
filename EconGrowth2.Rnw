@@ -1317,8 +1317,8 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Cobb-Douglas resample model parameters.">>=
-  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevsForGraph, energyType="none")
-  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevs, energyType="none")
+  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevs)
   data <- rbind.fill(dataCD, dataCDQ)
   standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
 @
@@ -1528,7 +1528,7 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevsForGraph)
+  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevs)
   standardScatterPlot(data=linexResampleData, aes(a_0, c_t), facet_formula=countryAbbrev~energy, alpha=0.05) +
       labs(x=expression(a[0]), y=expression(c[t])) +
        scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +

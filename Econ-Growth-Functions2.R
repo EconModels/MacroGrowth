@@ -20,7 +20,7 @@ ciVals <- c(lower=1-ciHalfLevel, upper=ciHalfLevel)
 # List of countries
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 countryAbbrevsAlph <- sort(countryAbbrevs)
-countryAbbrevsForGraph <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", TZ="TZ", SA="SA", IR="IR", ZM="ZM")
+countryAbbrevsFor3x3Graph <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", TZ="TZ", SA="SA", IR="IR", ZM="ZM")
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") #Only these countries have useful work data
 countryAbbrevsAlphU <- sort(countryAbbrevsU)
 countryAbbrevsForGraphU <- c(US="US", UK="UK", JP="JP")
@@ -824,7 +824,7 @@ sfResamplePlot <- function(factor, ...){
                    )
   yLabel <- "$\\lambda$"
   graph <- standardScatterPlot(loadAllResampleData(model="sf", factor=factor, 
-                                                   countryAbbrevsOrder=countryAbbrevsForGraph), 
+                                                   countryAbbrevsOrder=countryAbbrevsFor3x3Graph), 
                                aes(m, lambda)) + 
     labs(x=xLabel, y=expression(lambda))
   
@@ -1483,7 +1483,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
   if (energyType == "U"){
     countryAbbrevs <- countryAbbrevsForGraphU
   } else {
-    countryAbbrevs <- countryAbbrevsForGraph
+    countryAbbrevs <- countryAbbrevs
   }
   # Remove rows where we don't need historical data or predictions, 
   # specifically those times when we won't have a prediction.
@@ -2078,7 +2078,7 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
   ##
   if (energyType == "none" || nest=="(kl)"){
     # Desire CES without energy.
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevsForGraph, 
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevs, 
                                 energyType="none", archive=archive)
     data$nest <- "(kl)"
     return(data)
@@ -2102,7 +2102,7 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
                                 archive=archive)
   } else {
     data <- loadAllResampleData(modelType=modelType, energyType=energyType,
-                                countryAbbrevsOrder=countryAbbrevsForGraph, 
+                                countryAbbrevsOrder=countryAbbrevs, 
                                 archive=archive)
   }
   # Add the nest argument to the data.
@@ -2279,7 +2279,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
 
   # Figure out which countries we need to loop over.
   if (energyType == "none" || energyType == "Q" || energyType == "X" || nest == "(kl)") {
-    countryAbbrevs <- countryAbbrevsForGraph
+    countryAbbrevs <- countryAbbrevs
   } else if (energyType == "U"){
     countryAbbrevs <- countryAbbrevsForGraphU
   } else {
@@ -2711,7 +2711,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
   if (energyType == "U"){
     countryAbbrevs <- countryAbbrevsForGraphU
   } else {
-    countryAbbrevs <- countryAbbrevsForGraph
+    countryAbbrevs <- countryAbbrevs
   }
   # Remove rows where we don't need historical data or predictions, 
   # specifically those times when we won't have a prediction.
