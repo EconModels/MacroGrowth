@@ -1456,6 +1456,9 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
 
 Figure~\ref{fig:CES_ternary_graph} shows 
 $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
+Figure~\ref{fig:CES_ternary_graph} is comparable to
+the ternary graph for the Cobb-Douglas models, 
+Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
 <<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
 cesTriPlotData=loadCESResampleData(energyType="Q", nest="all")
