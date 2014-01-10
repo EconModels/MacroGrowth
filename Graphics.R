@@ -2,6 +2,8 @@ require(ggplot2)
 require(mosaic)
 require(scales)
 
+
+
 tri2x <- function(x,y,z) {
   return( x * 0.5 + y * 0 + z * 1 )
 }
@@ -24,13 +26,19 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             )
 }  
 
-xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
+xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
   base_theme(base_size = base_size, base_family = base_family) %+replace% 
     theme(# panel.border = element_blank(), 
           # panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           plot.background = element_blank(),
-          strip.background =  element_rect(fill = NA, colour = "gray50")
+          strip.text = element_text(colour=label_colour, size=.8 * base_size),
+          strip.background =  element_rect(fill = NA, colour = NA),
+          legend.background = element_rect(fill=NA, colour=NA),
+          legend.key= element_rect(fill=NA, colour=NA),
+          axis.text = element_text(colour=label_colour, size=.8 * base_size), 
+          axis.ticks = element_blank(),
+          axis.title = element_text(colour=label_colour, size=base_size)
     )
 }
 
@@ -192,6 +200,57 @@ cesSpaghettiGraph <- function(energyType='none',
       graph <- graph + facet_grid( facet_formula, scales="free_y" )
     }
   }
-  graph <- graph + theme_minimal()
+  graph <- graph + xy_theme()
+  return(graph)
+}
+
+historicalPlot <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+  ####################################
+  # Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
+  # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
+  # Provide a value for textScaling to scale the size of the text on the graph. This is expecially useful
+  # for converting between graphs in a paper and graphs in a beamer presentation.
+  # textScaling = 1.0 is good for a paper. textScaling = 0.6 is good for a beamer presentation.
+  # keyXLoc and keyYLoc are locations for the graph's legend.
+  ##
+  # Code for all graphs, regardless of whether we want to focus on a specific country
+  graphType <- "b" #b is for both line and symbol
+  lineTypes <- c(0, 1, 5, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
+  lineWidths <- c(0, 2, 2, 1) #line widths. 0 means no line.
+  colors <- c("black", "black", "black", "black") #line and symbol colors
+  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
+  # Code that deals with items that are specific to whether we want all countries or a specific country.
+  if (missing(countryAbbrev)){
+    # We want a graph with panels for all countries
+    data <- loadData("All")
+    factorLevels <- countryNamesAlph # We want all countries shown
+    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
+    layout <- ninePanelLayoutSpec # Show all countries
+    yLimits <- yLimitsForGDPGraphs
+  } else {
+    # We want only a specific country
+    data <- loadData(countryAbbrev)
+    # Select the correct y limits
+    index <- which(countryAbbrevsAlph %in% countryAbbrev)
+    # The following lines use [index:index] as a convenient way of subsetting.
+    # This has the added benefit of maintaining the correct classes for things.
+    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
+    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
+    indexCond <- list(c(1))                           # We want only one country.
+    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
+  }
+  graph <- ggplot(aes(x=Year), data=data) +
+    geom_line(aes(y=iGDP, lty="y")) +
+    geom_line(aes(y=iCapStk, lty="k")) +
+    geom_line(aes(y=iLabor, lty="l")) +
+    geom_line(aes(y=iQ, lty="q")) +
+    facet_grid( Country ~ ., scales="free_y" ) +
+    ylab("Indexed (1980=1 or 1991=1)") +
+    xlab("") +
+    scale_linetype_manual(name="",   
+                          limits=c("y", "k", "l", "q"), 
+                          values=c("y"=1, "k"=2, "l"=5, "q"=3) ) +
+    xy_theme()
+    
   return(graph)
 }
