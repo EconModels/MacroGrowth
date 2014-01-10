@@ -321,7 +321,7 @@ printCovarTable <- function(countryAbbrev){
         table.placement="H")
 }
 
-createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+createHistoricalLatticeGraphOld <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
   ####################################
   # Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
   # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
@@ -356,6 +356,17 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
+  graph <- ggplot(aes(x=Year), data=data) +
+    geom_line(aes(y=iGDP, lty="iGPD")) +
+    geom_line(aes(y=iCapStk, lty="iCapStk")) +
+    geom_line(aes(y=iLabor, lty="iLabor")) +
+    geom_line(aes(y=iQ, lty="iQ")) +
+    facet_grid( Country ~ ., scales="free_y" ) +
+    ylab("Indexed (1980=1 or 1991=1)") +
+    xlab("") +
+    theme_minimal()
+  return(graph)
+  
   graph <- xyplot(iGDP+iCapStk+iLabor+iQ ~ Year | Country, data=data,
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
