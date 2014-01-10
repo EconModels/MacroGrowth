@@ -13,7 +13,7 @@ tri2y <- function(x,y,z) {
 }
 
 tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
-    base_theme(base_size = base_size, base_family = base_family) %+replace% 
+    xy_theme(base_size = base_size, base_family = base_family) %+replace% 
       theme(panel.border = element_blank(), 
             axis.line = element_blank(),
             axis.text = element_blank(),
@@ -71,7 +71,7 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
                      data=points, color="gray70") +
-    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="black", 
+    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="black", size=4,
               data=data.frame(label=rep(labels, length.out=3),
                               x=c(.5,-.02,1.02), 
                               y=c(1.02,0,0),
