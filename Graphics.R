@@ -148,7 +148,7 @@ standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, al
   p + xy_theme()
 }
 
-cesSpaghettiGraph <- function(energyType='none', 
+spaghettiPlot <- function(energyType='none', 
                               nest, 
                               data=loadCESSpaghettiGraphData(energyType=energyType, 
                                                              nest=nest, ...), 
