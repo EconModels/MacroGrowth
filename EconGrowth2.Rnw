@@ -1149,7 +1149,7 @@ Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}.
 **** Do we want to discuss the covariances? ****
 
 <<Historical_Lattice_Graph, fig.pos="H", fig.width=maxWidth, fig.height=maxHeight, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-createHistoricalLatticeGraph()
+historicalPlot()
 @
 
 
