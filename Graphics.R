@@ -200,44 +200,26 @@ spaghettiPlot <- function(energyType='none',
       graph <- graph + facet_grid( facet_formula, scales="free_y" )
     }
   }
+  graph <- graph + xlab("")
   graph <- graph + xy_theme()
   return(graph)
 }
 
-historicalPlot <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
+historicalPlot <- function(countryAbbrev){
   ####################################
   # Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
   # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
-  # Provide a value for textScaling to scale the size of the text on the graph. This is expecially useful
   # for converting between graphs in a paper and graphs in a beamer presentation.
-  # textScaling = 1.0 is good for a paper. textScaling = 0.6 is good for a beamer presentation.
-  # keyXLoc and keyYLoc are locations for the graph's legend.
   ##
-  # Code for all graphs, regardless of whether we want to focus on a specific country
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 5, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 2, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "black", "black") #line and symbol colors
-  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
   # Code that deals with items that are specific to whether we want all countries or a specific country.
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
     data <- loadData("All")
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-    yLimits <- yLimitsForGDPGraphs
+    # Now set the order for the countries
+    data$Country <- factor(data$Country, levels=countryAbbrevs)
   } else {
     # We want only a specific country
     data <- loadData(countryAbbrev)
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
   graph <- ggplot(aes(x=Year), data=data) +
     geom_line(aes(y=iGDP, lty="y")) +
@@ -249,7 +231,7 @@ historicalPlot <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKe
     xlab("") +
     scale_linetype_manual(name="",   
                           limits=c("y", "k", "l", "q"), 
-                          values=c("y"=1, "k"=2, "l"=5, "q"=3) ) +
+                          values=c("y"=1, "k"=5, "l"=2, "q"=3) ) +
     xy_theme()
     
   return(graph)
