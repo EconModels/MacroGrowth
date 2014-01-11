@@ -71,7 +71,7 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
                      data=points, color="gray70") +
-    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="black", size=4,
+    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="gray50", size=4,
               data=data.frame(label=rep(labels, length.out=3),
                               x=c(.5,-.02,1.02), 
                               y=c(1.02,0,0),
@@ -166,16 +166,6 @@ spaghettiPlot <- function(energyType='none',
   #         archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
   # cesSpaghettiGraph(data=data)
   ##
-  
-  #
-  # Things to change:
-  # * Change country abbreviations to country names (e.g., "CN" --> "China")
-  # * Change vertical axis limits: China 1-10, all others 1-4. 
-  # * eliminate grid lines
-  # * tic marks inside axis instead of outside axis.
-  # * y-axis label: "Indexed GDP (1980=1 or 1991=1)".
-  # * avoid year label collisions on the horizontal axis.
-  # 
   alph = .5 * (1 - level)
   data$alph = alph
   split <- intersect( split, names(data) )
