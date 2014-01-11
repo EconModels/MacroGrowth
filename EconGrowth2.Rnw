@@ -1316,14 +1316,14 @@ The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Cobb-Douglas resample model parameters.">>=
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
   dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevs, energyType="none")
   dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevs)
   data <- rbind.fill(dataCD, dataCDQ)
   standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
 @
 
-<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.75, fig.cap="Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=8.2, fig.cap="Cobb-Douglas fitted models.">>=
 cdData <- loadCDSpaghettiGraphData(energyType="none")
 cdQData <- loadCDSpaghettiGraphData(energyType="Q")
 cdData <- rbind(cdData, cdQData)
@@ -1460,7 +1460,7 @@ Figure~\ref{fig:CES_ternary_graph} is comparable to
 the ternary graph for the Cobb-Douglas models, 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
-<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
+<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
 cesTriPlotData=loadCESResampleData(energyType="Q", nest="all")
 standardTriPlot(data=cesTriPlotData)
 @
