@@ -58,9 +58,10 @@
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
 
-\usepackage{soul} % Provides strikethrough text
-\usepackage{float} % Allows precise positioning of tables and figures within the text
-\usepackage{amsmath} % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{wrapfig}  % Allows wrapping of text around figures
+\usepackage{soul}     % Provides strikethrough text
+\usepackage{float}    % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}  % Allows \begin{equation*} \end{equation*} for unnumbered equations
 \usepackage{multirow} % To create multirow tables
 \usepackage{hyperref} % To create hyperlinks in the paper
 
@@ -1131,6 +1132,12 @@ The value for $N_{workers}$ was obtained from the labor time series
 for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 
+
+\twocolumn{}
+<<Historical_Lattice_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+historicalPlot()
+@
+
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
 \label{sec:Historical_Data}
@@ -1147,11 +1154,6 @@ Factors of production track each other closely,
 and high covariances among these variables can be seen in 
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 **** Do we want to discuss the covariances? ****
-
-<<Historical_Lattice_Graph, fig.pos="H", fig.width=3, fig.height=7.0, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot()
-@
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
@@ -1174,6 +1176,8 @@ parameter estimation methods and results.
 Resampling is a statistical technique for estimating the 
 precision of coefficient estimates. We implemented
 residual resampling in our parameter estimation processes. 
+
+\onecolumn{}
 
 When employing resampling techniques, 
 the modeler assumes that the residuals ($r_t$) between 
