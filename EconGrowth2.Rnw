@@ -1190,22 +1190,25 @@ and random scatter in the observed historical data.
   r_t = y_{act,t} - y_{pred,t}
 \end{equation}
 
-Under that assumption, it would not be surprising if the residual from 
+Under that assumption, it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
-By applying randomly selected residuals [$\mathrm{abs}(\mathrm{rand}(r_t))$]
-with randomly selected signs [$\mathrm{rand}(-1, 1)$]
-to model predictions, we create a 
-preliminary resampled GDP time series ($y_{prelim,resample,t}$):
+To obtain a 
+preliminary resampled GDP time series ($y_{prelim,resample,t}$),
+we add
+the absolute value of residuals 
+from randomly-selected times $\left( \left| r_{\mathrm{rand}(t)} \right| \right)$
+with randomly-selected signs [$\mathrm{rand}(-1, 1)$]
+to model predictions.
 
 \begin{equation} \label{eq:resample_y_prelim}
-  y_{prelim,resample,t} = y_{pred,t} + \mathrm{rand}(-1, 1) \cdot \mathrm{abs}(\mathrm{rand}(r_t)).
+  y_{prelim,resample,t} = y_{pred,t} + \mathrm{rand}(-1, 1) \cdot \left| r_{\mathrm{rand}(t)} \right|.
 \end{equation}
 
-\noindent{}The preliminary resample time series
+\noindent{}We note that the preliminary resample time series
 can have non-unity first-year GDP ($y_{prelim,resample,0} \ne 1$).
 If we had actually obtained the resampled GDP data series,
 we would have indexed to a different first-year GDP value, 
-such that \emph{every} resampled GDP time series starts with $y_{resample,0} = 1$.
+such that \emph{every} resampled GDP time series has $y_{resample,0} = 1$.
 We use
 
 \begin{equation} \label{eq:resample_y}
