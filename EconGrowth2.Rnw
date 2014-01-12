@@ -1917,6 +1917,10 @@ The authors are grateful to Benjamin S. Warr (INSEAD) for providing
 the REXS database \citep{Warr:2012a}. 
 The authors thank Loren L. Heun (Western Michigan University) 
 for insightful critique of the statistical analyses presented herein.
+The computations in this paper were accomplished using dahl.calvin.edu, 
+a Beowulf cluster built with support from the National Science Foundation's 
+Major Research Instrumentation and Cyber Infrastructure programs, 
+grant no. OCI-0722819.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
