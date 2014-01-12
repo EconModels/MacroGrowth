@@ -21,8 +21,8 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             axis.title = element_blank(),
             panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank(),
-            plot.background = element_blank(),
-            strip.background =  element_rect(fill = NA, colour = "gray50")
+            plot.background = element_blank(),  
+            strip.background =  element_rect(fill = NA, colour = xy_theme()$axis.text$colour)
             )
 }  
 
@@ -36,6 +36,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
           strip.background =  element_rect(fill = NA, colour = NA),
           legend.background = element_rect(fill=NA, colour=NA),
           legend.key= element_rect(fill=NA, colour=NA),
+          legend.text=element_text(colour=label_colour),
           axis.text = element_text(colour=label_colour, size=.8 * base_size), 
           axis.ticks = element_blank(),
           axis.title = element_text(colour=label_colour, size=base_size)
@@ -60,18 +61,20 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
 
     p <- eval(parse(text=command),envir=parent.frame())                   
     p + 
-    expand_limits( x=c(-.2,1.2), y=c(-.05,1.15) ) +
+    expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
     tri_theme() + 
     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
                      y=tri2y(h,0,1-h), yend = tri2y(h, 1-h, 0)),
-                     data=points, color="gray70") +
+                     data=points, color=xy_theme()$panel.grid.major$colour) +
     geom_segment(aes(x=tri2x(0,h,1-h), xend = tri2x(1-h, h, 0), 
                      y=tri2y(0,h,1-h), yend = tri2y(1-h, h, 0)),
-                     data=points, color="gray70") +
+                     data=points, color=xy_theme()$panel.grid.major$colour) +
     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
-                     data=points, color="gray70") +
-    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), color="gray50", size=4,
+                     data=points, color=xy_theme()$panel.grid.major$colour) +
+    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), 
+              color=xy_theme()$axis.title$colour, 
+              size=4,
               data=data.frame(label=rep(labels, length.out=3),
                               x=c(.5,-.02,1.02), 
                               y=c(1.02,0,0),
