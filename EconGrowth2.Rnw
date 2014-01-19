@@ -123,7 +123,7 @@ options(show.signif.stars=TRUE)
 require(knitr)
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -661,7 +661,17 @@ Neoclassical economic growth theory attributes output ($Y$) to factors of produc
 capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the 
 canonical representation of indexed economic output ($y$) as a function of indexed 
 labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent 
-technological progress term ($A$):
+residual\footnote{The $A$ term in production functions is often linked
+to ``technological progress,'' but that is a very narrow reading of Solow's original intent:
+\begin{quote}
+  It will be seen that I am using the phrase ``technical change''
+  as a short-hand expression for any kind of shift 
+  in the production function. 
+  Thus slowdowns, speed-ups, improvements in the education of the labor force, 
+  and all sorts of things will appear as ``technical change.''~\citep{solow1957technical}
+\end{quote}
+Thus, we refer to $A$ as a ``residual.''} 
+term ($A$):
 
 \begin{equation} \label{eq:CD}
   y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
@@ -671,19 +681,20 @@ technological progress term ($A$):
 $l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in 
 currency units, $L$ expressed in workers or work-hours/year, time ($t$) measured in years, 
 with e being the base of the natural logarithm, and subscripts ``0'' indicating values 
-at an initial year. $A$ is a unitless technological progress term, with $\lambda$ 
-indicating the pace of technological progress (in units of 
+at an initial year. $A$ is the residual term, with $\lambda$ 
+indicating the change of the residual over time (in units of 
 year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by 
 lower-case symbols 
 ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
 quantities are represented by upper-case symbols 
-($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the technolgical 
-progress term $A$, which is dimensionless but written upper-case by convention.} 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the 
+residual term $A$, which is dimensionless but written upper-case by convention.} 
 Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
-function makes no attempt to describe the mechanisms by which technological 
-progress ($A$) affects economic growth, nor does it attempt to describe how 
-technological progress ($A$) might vary from one economy to the next. Mathematically, 
-$A$ is a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} 
+function makes no attempt to describe the mechanisms that affect
+economic growth, nor does it attempt to describe how such things as
+slowdowns, speedups, and improvements of the education of the labor force
+($A$) might vary from one economy to the next. Mathematically, 
+$A$ is the residual, a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} 
 with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, 
 indicating constant returns to scale.
 
@@ -921,12 +932,30 @@ of the labor efficiency term compared to the capital stock efficiency term.
 We treat $a_0$ and $c_t$ as fitting parameters; 
 both are assumed constant with respect to time. 
 
+\citet{Abramovitz:1956aa} wrote:
+
+\begin{quote}
+  This result [that ``technological progress, $A$'' explained
+  175\% of the growth of the US economy since 1870] is surprising in the lopsided
+  importance which it appears to give to productivity increase,
+  and it should be, in a sense, sobering, if not discouraging,
+  to students of economic growth.
+  Since we know little about the causes of productivity increase,
+  the indicated importance of this element may be taken to be some sort of measure
+  of our ignorance about the causes of economic growth in the United States
+  and some sort of indication of where
+  we need to concentrate our atention.
+\end{quote}
+
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
-the LINEX model (Equation~\ref{eq:LINEX}) accounts 
-for efficiencies among capital, labor, and energy directly and, 
-therefore, does not employ a time-dependent 
-technological progress term ($A$). \citet{Kummel:2002tx} use the 
+the LINEX model (Equation~\ref{eq:LINEX}) attempts to explain the residual ($A$)
+with physical factors,
+efficiencies among capital, labor, and energy.
+Therefore, LINEX does not employ a time-dependent 
+residual term ($A$). 
+
+\citet{Kummel:2002tx} use the 
 LINEX production function to describe economic output 
 for the economies of the U.S., Japan, and Germany. 
 \citet{Warr:2010ga} compare the LINEX production function with 
