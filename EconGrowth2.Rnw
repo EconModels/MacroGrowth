@@ -950,7 +950,7 @@ both are assumed constant with respect to time.
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
 the LINEX model (Equation~\ref{eq:LINEX}) attempts to explain the residual ($A$)
-with physical factors,
+with physical factors:
 efficiencies among capital, labor, and energy.
 Therefore, LINEX does not employ a time-dependent 
 residual term ($A$). 
