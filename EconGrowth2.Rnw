@@ -123,7 +123,7 @@ options(show.signif.stars=TRUE)
 require(knitr)
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -944,7 +944,7 @@ both are assumed constant with respect to time.
   the indicated importance of this element may be taken to be some sort of measure
   of our ignorance about the causes of economic growth in the United States
   and some sort of indication of where
-  we need to concentrate our atention.
+  we need to concentrate our attention.
 \end{quote}
 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
