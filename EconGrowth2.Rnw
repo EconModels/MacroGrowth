@@ -670,7 +670,10 @@ to ``technological progress,'' but that is a very narrow reading of Solow's orig
   Thus slowdowns, speed-ups, improvements in the education of the labor force, 
   and all sorts of things will appear as ``technical change.''~\citep{solow1957technical}
 \end{quote}
-Thus, we refer to $A$ as a ``residual.''} 
+Mathematically, $A$ is nothing more than a fitting parameter 
+that aligns the predictions of Equation~\ref{eq:CD} 
+with historical data. 
+Thus, we refer to $A$ as the ``residual'' in this paper.} 
 term ($A$):
 
 \begin{equation} \label{eq:CD}
@@ -693,9 +696,8 @@ Neoclassical economic growth theory as expressed in the Cobb-Douglas production
 function makes no attempt to describe the mechanisms that affect
 economic growth, nor does it attempt to describe how such things as
 slowdowns, speedups, and improvements of the education of the labor force
-($A$) might vary from one economy to the next. Mathematically, 
-$A$ is the residual, a fitting parameter that aligns the predictions of Equation~\ref{eq:CD} 
-with historical data. Typically, the constraint $\alpha + \beta = 1$ is assumed, 
+($A$) might vary from one economy to the next. 
+Typically, the constraint $\alpha + \beta = 1$ is assumed, 
 indicating constant returns to scale.
 
 As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
