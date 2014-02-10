@@ -931,9 +931,9 @@ cdeModel <- function(countryAbbrev,
     c("logscale", "lambda", "beta"),
     c("logscale", "lambda", "alpha"),
     
-    c("logscale", "lambda", "alpha"),
-    c("logscale", "lambda", "beta"),
-    c("logscale", "lambda", "gamma")
+    c("logscale", "lambda"),
+    c("logscale", "lambda"),
+    c("logscale", "lambda")
   )
   models <- lapply( formulas, function(form)  m <- lm( form, data=data )  )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
