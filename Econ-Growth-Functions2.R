@@ -852,412 +852,128 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
   ##
   # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
   # Establish guess values for alpha and lambda.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.7 #0.7 gives good results for all countries.  
+  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
+  alphaGuess <- 0.7 # 0.7 gives good results for all countries.  
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
-  modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
+  # model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
+  # modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
+  model <- log(iGDP) - log(iLabor) ~ iYear + I(log(iCapStk) - log(iLabor)) 
+  modelCD <- lm(model, data=data)
   # Build the additional object to add as an atrribute to the output
+  # could try this, but it is a hack.
+  # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
+  names(modelCD$coefficients) <- c( "logscale", "lambda", "alpha")
   alpha <- coef(modelCD)["alpha"]
   if (respectRangeConstraints){
     if (alpha < 0.0 || alpha > 1.0){
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
+        formula <- log(iGDP) - log(iLabor) ~ iYear  
       } else {
         alpha <- 1.0
+        formula <- log(iGDP) - log(iCapStk) ~ iYear  
       }
       # Refit for lambda only
-      start <- list(lambda=lambdaGuess)
-      modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
+      # start <- list(lambda=lambdaGuess)
+      # modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
+      modelCD <-lm( formula, data=data)
+      names(modelCD$coefficients) <- c("logscale", "lambda")
     }
   }
   naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCD)["lambda"]),
+                     logscale = as.vector(coef(modelCD)["logscale"]),
+                     scale = exp(as.vector(coef(modelCD)["logscale"])),
                      alpha = as.vector(alpha),
                      beta = as.vector(1.0 - alpha),
                      gamma = 0.0, # Energy is not a factor for this model.
                      sse = sum(resid(modelCD)^2),
-                     isConv = modelCD$convInfo$isConv
+                     isConv = TRUE  # modelCD$convInfo$isConv
                      )
   attr(x=modelCD, which="naturalCoeffs") <- naturalCoeffs
   return(modelCD)
 }
 
-cdeModelAB <- function(countryAbbrev, 
-                       energyType="none", 
+
+respectsConstraints <- function( model ) {
+  cf <- coef(model)
+  if( length(cf) >=2 ) cf <- cf[-c(1,2)] 
+  all( cf >= 0 ) & ( sum(cf) <=1 )
+}
+
+cdeModel <- function(countryAbbrev, 
+                       energyType="Q", 
                        data=loadData(countryAbbrev), 
                        respectRangeConstraints=FALSE, ...){
-  #################
-  # This function does a Cobb-Douglas fit for the 
-  # given data using the "ab" reparameterization, namely
-  # * alpha + beta + gamma = 1.0.
-  # * alpha, beta, and gamma are all between 0.0 and 1.0.
-  # To do this, we reparameterize as
-  # * 0 < a < 1
-  # * 0 < b < 1
-  # * alpha = min(a, b)
-  # * beta = abs(b - a)
-  # * gamma = 1 - max(a, b)
+
   ##
   # We need to do the Cobb-Douglas fit with the desired energy data.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
-  # Establish guess values for lambda, alpha, and beta.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.899
-  betaGuess <- 1.0 - alphaGuess
-  gammaGuess <- 0.001
-  aGuess <- alphaGuess
-  bGuess <- alphaGuess + betaGuess
-  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0-max(a,b))
-  start <- list(lambda=lambdaGuess, a=aGuess, b=bGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-  lambda <- coef(modelCDe)["lambda"]
-  a <- coef(modelCDe)["a"]
-  b <- coef(modelCDe)["b"]
-  isConv <- modelCDe$convInfo$isConv
-  if (respectRangeConstraints){
-    # Need to do a bit more work to finish the fit.
-    hitABoundary <- FALSE; hitBBoundary <- FALSE
-    if (a<0 || a>1){
-      hitABoundary <- TRUE
-      a <- ifelse (a<0, 0, 1)
-    }
-    if (b<0 || b>1){
-      hitBBoundary <- TRUE
-      b <- ifelse (b<0, 0, 1)
-    }
-    if (hitABoundary && hitBBoundary){
-      start <- list(lambda=lambda)
-      # Now re-fit. a an b have been set. Get a new value for lambda.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      lambda <- coef(modelCDe)["lambda"]
-      isConv <- modelCDe$convInfo$isConv
-    } else if (hitABoundary){
-      start <- list(lambda=lambda, b=b)
-      # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # a has been set. Grab a new value for b
-      lambda <- coef(modelCDe)["lambda"]
-      b <- coef(modelCDe)["b"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if b has been pushed out of range and re-fit if needed.
-      if (b<0 || b>1){
-        b <- ifelse (b<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    } else if (hitBBoundary){
-      start <- list(lambda=lambda, a=a)
-      # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # b has been set. Grab a new value for a.
-      lambda <- coef(modelCDe)["lambda"]
-      a <- coef(modelCDe)["a"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if a has been pushed out of range and re-fit if needed.
-      if (a<0 || a>1){
-        a <- ifelse (a<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    }
-  }
-  # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- data.frame(a = as.vector(a), 
-                     b = as.vector(b),
-                     c = NA,
-                     d = NA,
-                     e = NA,
-                     f = NA,
-                     lambda = as.vector(lambda),
-                     alpha = min(a,b),
-                     beta = as.vector(abs(b-a)),
-                     gamma = 1 - max(a,b),
-                     sse = sum(resid(modelCDe)^2),
-                     isConv = isConv
-                     )
-  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
-  return(modelCDe)
-}
-
-cdeModelCD <- function(countryAbbrev, 
-                       energyType="none", 
-                       data=loadData(countryAbbrev), 
-                       respectRangeConstraints=FALSE, ...){
-  #################
-  # This function does a Cobb-Douglas fit for the 
-  # given data using the "cd" reparameterization, namely
-  # * alpha + beta + gamma = 1.0.
-  # * alpha, beta, and gamma are all between 0.0 and 1.0.
-  # * 0 < c < 1
-  # * 0 < d < 1
-  # * beta = min(c, d)
-  # * gamma = abs(d-c)
-  # * alpha = 1 - max(c, d)
-  ##
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function. 
-  data <- replaceColName(data, energyType, "iEToFit")
+  formulas <- list( 
+    log(iGDP) - log(iEToFit) ~ 
+      iYear + I(log(iCapStk) - log(iEToFit)) + I(log(iLabor) - log(iEToFit)),  
+    
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iCapStk) - log(iEToFit)),
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iLabor)  - log(iEToFit)),
+    log(iGDP) - log(iLabor)  ~ iYear + I(log(iCapStk) - log(iLabor)),
+    
+    log(iGDP)  ~ iYear + iCapStk,
+    log(iGDP)  ~ iYear + iLabor,
+    log(iGDP)  ~ iYear + iEToFit
+  )
+  coefNames <- list( 
+    c("logscale", "lambda", "alpha", "beta"),
+    
+    c("logscale", "lambda", "alpha"),
+    c("logscale", "lambda", "beta"),
+    c("logscale", "lambda", "alpha"),
+    
+    c("logscale", "lambda", "alpha"),
+    c("logscale", "lambda", "beta"),
+    c("logscale", "lambda", "gamma")
+  )
+  models <- lapply( formulas, function(form)  m <- lm( form, data=data )  )
+  sse <- sapply( models, function(m) sum( resid(m)^2 ) )
+  good <- sapply( models, respectsConstraints )
+  good[ !good ] <- NA
+  winner <- which.min( sse * good )
+  res <- models[[winner]]
+  names( res$coefficients ) <- coefNames[[winner]]
   
-  # Establish guess values for lambda, alpha, and beta.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.899
-  betaGuess <- 1.0 - alphaGuess
-  gammaGuess <- 0.001
-  cGuess <- betaGuess
-  dGuess <- betaGuess + gammaGuess
-  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^(1.0-max(c,d)) * iLabor^min(c,d) * iEToFit^abs(d-c)
-  start <- list(lambda=lambdaGuess, c=cGuess, d=dGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-  lambda <- coef(modelCDe)["lambda"]
-  c <- coef(modelCDe)["c"]
-  d <- coef(modelCDe)["d"]
-  isConv <- modelCDe$convInfo$isConv
-  if (respectRangeConstraints){
-    # Need to do a bit more work to finish the fit.
-    hitCBoundary <- FALSE; hitDBoundary <- FALSE
-    if (c<0 || c>1){
-      hitCBoundary <- TRUE
-      c <- ifelse (c<0, 0, 1)
-    }
-    if (d<0 || d>1){
-      hitDBoundary <- TRUE
-      d <- ifelse (d<0, 0, 1)
-    }
-    if (hitCBoundary && hitDBoundary){
-      start <- list(lambda=lambda)
-      # Now re-fit. c and d both hit the boundary and have been reset.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      lambda <- coef(modelCDe)["lambda"]
-      isConv <- modelCDe$convInfo$isConv
-    } else if (hitCBoundary){
-      start <- list(lambda=lambda, d=d)
-      # Now re-fit with c at its boundary.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # c has been reset. Grab the new value for d
-      lambda <- coef(modelCDe)["lambda"]
-      d <- coef(modelCDe)["d"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if d has been pushed out of range and re-fit if needed.
-      if (d<0 || d>1){
-        d <- ifelse (d<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    } else if (hitDBoundary){
-      start <- list(lambda=lambda, c=c)
-      # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # d has been reset. Grab the new value for c
-      lambda <- coef(modelCDe)["lambda"]
-      c <- coef(modelCDe)["c"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if c has been pushed out of range and re-fit if needed.
-      if (c<0 || c>1){
-        c <- ifelse(c<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    }
-  }
   # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- data.frame(a = NA, 
-                     b = NA,
-                     c = as.vector(c),
-                     d = as.vector(d),
-                     e = NA,
-                     f = NA,
-                     lambda = as.vector(lambda),
-                     alpha = 1 - max(c,d),
-                     beta = min(c,d),
-                     gamma = as.vector(abs(d-c)),
-                     sse = sum(resid(modelCDe)^2),
-                     isConv = isConv
+  cf <- coef(res)
+  naturalCoeffs <- data.frame(
+                     logscale= cf["logscale"],
+                     scale = exp( cf["logscale"] ),
+                     sse = sum(resid(res)^2),
+                     isConv = TRUE,
+                     winner = winner,
+                     lambda = cf["lambda"]
                      )
-  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
-  return(modelCDe)
-}
-
-cdeModelEF <- function(countryAbbrev, 
-                       energyType="none", 
-                       data=loadData(countryAbbrev), 
-                       respectRangeConstraints=FALSE, ...){
-  #################
-  # This function does a Cobb-Douglas fit for the 
-  # given data using the "ef" reparameterization, namely
-  # * alpha + beta + gamma = 1.0.
-  # * alpha, beta, and gamma are all between 0.0 and 1.0.
-  # * 0 < e < 1
-  # * 0 < f < 1
-  # * gamma = min(e, f)
-  # * alpha = abs(f-e)
-  # * beta = 1 - max(e, f)
-  ##
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function. 
-  data <- replaceColName(data, energyType, "iEToFit")
+  naturalCoeffs$alpha <- cf["alpha"]
+  naturalCoeffs$alpha[is.na(naturalCoeffs$alpha)] <- 0
   
-  # Establish guess values for lambda, alpha, and beta.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.899
-  betaGuess <- 1.0 - alphaGuess
-  gammaGuess <- 0.001
-  eGuess <- gammaGuess
-  fGuess <- gammaGuess + alphaGuess
-  formula <- iGDP ~ exp(lambda*iYear) * iCapStk^abs(f - e) * iLabor^(1 - max(e, f)) * iEToFit^min(e, f)
-  start <- list(lambda=lambdaGuess, e=eGuess, f=fGuess)
-  modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-  lambda <- coef(modelCDe)["lambda"]
-  e <- coef(modelCDe)["e"]
-  f <- coef(modelCDe)["f"]
-  isConv <- modelCDe$convInfo$isConv
-  if (respectRangeConstraints){
-    # Need to do a bit more work to finish the fit.
-    hitEBoundary <- FALSE; hitFBoundary <- FALSE
-    if (e<0 || e>1){
-      hitEBoundary <- TRUE
-      e <- ifelse (e<0, 0, 1)
-    }
-    if (f<0 || f>1){
-      hitFBoundary <- TRUE
-      f <- ifelse (f<0, 0, 1)
-    }
-    if (hitEBoundary && hitFBoundary){
-      start <- list(lambda=lambda)
-      # Now re-fit. c and d both hit the boundary and have been reset.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      lambda <- coef(modelCDe)["lambda"]
-      isConv <- modelCDe$convInfo$isConv
-    } else if (hitEBoundary){
-      start <- list(lambda=lambda, f=f)
-      # Now re-fit with e at its boundary.
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # e has been reset. Grab the new value for f
-      lambda <- coef(modelCDe)["lambda"]
-      f <- coef(modelCDe)["f"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if f has been pushed out of range and re-fit if needed.
-      if (f<0 || f>1){
-        f <- ifelse (f<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    } else if (hitFBoundary){
-      start <- list(lambda=lambda, e=e)
-      # Now re-fit
-      modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-      # f has been reset. Grab the new value for e
-      lambda <- coef(modelCDe)["lambda"]
-      e <- coef(modelCDe)["e"]
-      isConv <- modelCDe$convInfo$isConv
-      # Test to see if e has been pushed out of range and re-fit if needed.
-      if (e<0 || e>1){
-        e <- ifelse(e<0, 0, 1)
-        start <- list(lambda=lambda)
-        modelCDe <- nls(formula=formula, data=data, start=start, control=nlsControl)
-        lambda <- coef(modelCDe)["lambda"]
-        isConv <- modelCDe$convInfo$isConv
-      }
-    }
-  }
-  # Build the additional object to add as an atrribute to the output
-  naturalCoeffs <- data.frame(a = NA, 
-                     b = NA,
-                     c = NA,
-                     d = NA,
-                     e = as.vector(e),
-                     f = as.vector(f),
-                     lambda = as.vector(lambda),
-                     alpha = as.vector(abs(f-e)),
-                     beta = 1 - max(e,f),
-                     gamma = min(e,f),
-                     sse = sum(resid(modelCDe)^2),
-                     isConv = isConv
-                     )
-  attr(x=modelCDe, which="naturalCoeffs") <- naturalCoeffs
-  return(modelCDe)
-}
-
-cdeModel <- function(countryAbbrev, 
-                     energyType="none", 
-                     data=loadData(countryAbbrev), 
-                     respectRangeConstraints=FALSE, ...){
-  ###################
-  # This function fits the CDe model to historical data.
-  # If the ab reparameterization doesn't converge, we try the 
-  # cd reparameterization.
-  # If neither converge, we stop execution.
-  ##
-  cdeModelAB <- cdeModelAB(countryAbbrev=countryAbbrev,
-                           energyType=energyType,
-                           data=data,
-                           respectRangeConstraints=respectRangeConstraints, ...)
-  if (cdeModelAB$convInfo$isConv){
-    # We obtained a good model that converged.
-    return(cdeModelAB)
-  }
-  # Well, the model didn't converge. Try again with a different reparameterization
-  cdeModelCD <- cdeModelCD(countryAbbrev=countryAbbrev,
-                           energyType=energyType,
-                           data=data,
-                           respectRangeConstraints=respectRangeConstraints, ...)
-  if (cdeModelCD$convInfo$isConv){
-    # OK, that one worked. Return it.
-    return(cdeModelCD)
-  }
-  # Try one more time with the ef reparameterization.
-  cdeModelEF <- cdeModelEF(countryAbbrev=countryAbbrev,
-                           energyType=energyType,
-                           data=data,
-                           respectRangeConstraints=respectRangeConstraints, ...)
-  if (cdeModelEF$convInfo$isConv){
-    return (cdeModelEF)
-  }    
-  # If we get to this point, neither reparameterization converged. Print some
-  # information about both.
-  warning(paste("None of the ab, cd, or ef reparameterizations converged for CDe. countryAbbrev =", 
-                ifelse(missing(countryAbbrev), "missing", countryAbbrev), 
-                "energyType =", energyType,
-                "This should happen rarely. Returning the reparameterization with smallest SSE."))
-#   print("data")
-#   print(data)
-#   print("cdeModelAB")
-#   print(summary(cdeModelAB))
-#   print(attr(x=cdeModelAB, which="naturalCoeffs"))
-#   print("cdeModelCD")
-#   print(summary(cdeModelCD))
-#   print(attr(x=cdeModelCD, which="naturalCoeffs"))
-#   print("cdeModelEF")
-#   print(summary(cdeModelEF))
-#   print(attr(x=cdeModelEF, which="naturalCoeffs"))
-  sseAB <- attr(x=cdeModelAB, which="naturalCoeffs")["sse"]
-  sseCD <- attr(x=cdeModelCD, which="naturalCoeffs")["sse"]
-  sseEF <- attr(x=cdeModelEF, which="naturalCoeffs")["sse"]
-  # Return the reparameterization with least sse
-  if (sseAB < sseCD){
-    bestsse <- sseAB
-    out <- cdeModelAB
-  } else {
-    bestsse <- sseCD
-    out <- cdeModelCD
-  }
-  if (sseEF < bestsse){
-    out <- cdeModelEF
-  }
-  return(out)
+  naturalCoeffs$beta <- switch( as.character(winner),
+                                 "1" = cf['beta'],
+                                 "4" = 1 - cf['alpha'],
+                                 "6" = cf['beta'],
+                                 0 )
+  
+  naturalCoeffs$gamma <- switch( as.character(winner),
+                                 "1" = 1 - cf['alpha'] - cf['beta'],
+                                 "2" = 1 - cf['alpha'],
+                                 "3" = 1 - cf['beta'],
+                                 "7" = cf['gamma'],
+                                 0 )
+                                 
+  attr(res, "naturalCoeffs") <- naturalCoeffs
+  attr(res, "good") <-  sapply( models, respectsConstraints )
+  attr(res, "sse") <-  sse
+  attr(res, "winner") <-  winner
+  return(res)
 }
 
 cdeFixedGammaModel <- function(countryAbbrev, energyType="none", gamma, data=loadData(countryAbbrev), ...){
