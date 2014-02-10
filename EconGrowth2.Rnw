@@ -1028,7 +1028,7 @@ LDCs.\footnote{Lesser Developed Countries}
 To assess energy-augmented models of economic growth along the 
 coordinates of analysis outlined in Section~\ref{sec:Coordinates}, 
 historical data for economic output ($Y$), capital stock ($K$), 
-labor ($L$), thermal energy ($Q$), exergy ($X$), and useful work ($U$) 
+labor ($L$), and thermal energy ($Q$)   %, exergy ($X$), and useful work ($U$) 
 are required. Subsections below describe sources for and calculations 
 to obtain historical data. A final subsection presents the historical 
 data in graphical form.
