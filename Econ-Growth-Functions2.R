@@ -920,9 +920,9 @@ cdeModel <- function(countryAbbrev,
     log(iGDP) - log(iEToFit) ~ iYear + I(log(iLabor)  - log(iEToFit)),
     log(iGDP) - log(iLabor)  ~ iYear + I(log(iCapStk) - log(iLabor)),
     
-    log(iGDP)  ~ iYear + iCapStk,
-    log(iGDP)  ~ iYear + iLabor,
-    log(iGDP)  ~ iYear + iEToFit
+    log(iGDP) - log(iCapStk) ~ iYear,
+    log(iGDP) - log(iLabor)  ~ iYear,
+    log(iGDP) - log(iEToFit) ~ iYear 
   )
   coefNames <- list( 
     c("logscale", "lambda", "alpha", "beta"),
@@ -957,20 +957,27 @@ cdeModel <- function(countryAbbrev,
                      winner = winner,
                      lambda = cf["lambda"]
                      )
-  naturalCoeffs$alpha <- cf["alpha"]
-  naturalCoeffs$alpha[is.na(naturalCoeffs$alpha)] <- 0
+  naturalCoeffs$alpha <- switch( as.character(winner), 
+                                 "1" = cf['alpha'],
+                                 "2" = cf['alpha'],
+                                 "3" = cf['alpha'],
+                                 "5" = 1,
+                                 0
+  ) 
   
   naturalCoeffs$beta <- switch( as.character(winner),
                                  "1" = cf['beta'],
+                                 "3" = cf['beta'],
                                  "4" = 1 - cf['alpha'],
-                                 "6" = cf['beta'],
+                                 "6" = 1,
                                  0 )
+  
   
   naturalCoeffs$gamma <- switch( as.character(winner),
                                  "1" = 1 - cf['alpha'] - cf['beta'],
                                  "2" = 1 - cf['alpha'],
                                  "3" = 1 - cf['beta'],
-                                 "7" = cf['gamma'],
+                                 "7" = 1,
                                  0 )
                                  
   attr(res, "naturalCoeffs") <- naturalCoeffs
