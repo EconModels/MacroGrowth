@@ -986,6 +986,7 @@ cdeModel <- function(countryAbbrev,
   attr(res, "good") <-  sapply( models, respectsConstraints )
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
+  attr(res, "data") <- data
   return(res)
 }
 
