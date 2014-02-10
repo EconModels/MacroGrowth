@@ -937,8 +937,12 @@ cdeModel <- function(countryAbbrev,
   )
   models <- lapply( formulas, function(form)  m <- lm( form, data=data )  )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
-  good <- sapply( models, respectsConstraints )
-  good[ !good ] <- NA
+  if ( respectRangeConstraints ) {
+    good <- sapply( models, respectsConstraints )
+    good[ !good ] <- NA
+  } else { 
+    good <- TRUE
+  }
   winner <- which.min( sse * good )
   res <- models[[winner]]
   names( res$coefficients ) <- coefNames[[winner]]
