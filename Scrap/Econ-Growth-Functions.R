@@ -845,7 +845,7 @@ cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
   return(cdeModel(countryAbbrev=countryAbbrev, energyType=energyType,...))
 }
 
-cdeGridData <- function(countryAbbrev, energyType, gammaGrid){
+cdeGridData <- function(countryAbbrev, energyType="none", gammaGrid){
   ###############################
   # Does a grid search over values of gamma for a CD with energy production function.
   # Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
