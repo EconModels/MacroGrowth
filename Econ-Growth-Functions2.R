@@ -895,8 +895,10 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
   return(modelCD)
 }
 
-
 respectsConstraints <- function( model ) {
+ ###############
+ # Tells whether we're fitting within the constraints for a Cobb-Douglas model.
+ ##
   cf <- coef(model)
   if( length(cf) >=2 ) cf <- cf[-c(1,2)] 
   all( cf >= 0 ) & ( sum(cf) <=1 )
@@ -989,51 +991,18 @@ cdeModel <- function(countryAbbrev,
   return(res)
 }
 
-cdeFixedGammaModel <- function(countryAbbrev, energyType="none", gamma, data=loadData(countryAbbrev), ...){
-  ##############################
-  # Returns a Cobb-Douglas model where gamma (the exponent on the energy term) has been fixed
-  ##
-  # We need to do the Cobb-Douglas fit with the desired energy data.
-  # To achieve the correct fit, we'll change the name of the desired column
-  # to "iEToFit" and use "iEToFit" in the nls function.
-  data <- replaceColName(data, energyType, "iEToFit")
-  # We're fixing the value of gamma.
-  # Calculate a new column iEGamma = iEToFit^gamma
-  iEGamma <- with(data, iEToFit^gamma)
-  data <- cbind(data, iEGamma)
-  # We already know the value of gamma. We don't want to estimate it.
-  # Establish guess values for lambda and alpha.
-  lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
-  start <- list(lambda=lambdaGuess, alpha=alphaGuess)
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
-  modelCDe <- nls(formula=model, data = data, start = start,
-                  control = nlsControl,
-                  #Include the next 3 lines to fit with constraints.
-                  algorithm = "port",
-                  lower = list(lambda=-Inf, alpha=0),
-                  upper = list(lambda=Inf, alpha=1.0-gamma)
-  )
-  return(modelCDe)
-}
-
-cobbDouglasModel <- function(countryAbbrev, energyType="none", gamma, data=loadData(countryAbbrev), ...){
+cobbDouglasModel <- function(countryAbbrev, energyType="none", data=loadData(countryAbbrev), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
+  # This function dispatches to cdModel or cdeModel based on which energy type is specified.
   # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType="none"
   # for a model without energy.
-  # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
-  # This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
   ##
   if (energyType == "none"){
     # Fit the Cobb-Douglas model without energy.
     return(cdModel(data=data, ...))
   }
-  if (!missing(gamma)){
-    # Fit the Cobb-Douglas model with fixed value of gamma
-    return(cdeFixedGammaModel(data=data, energyType=energyType, gamma=gamma, ...))
-  }
-  # Fit the Cobb-Douglas model with gamma as a free parameter
+  # Fit the Cobb-Douglas model with energy
   return(cdeModel(data=data, energyType=energyType, ...))
 }
 
@@ -1068,28 +1037,6 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
   row.names(upper) <- "+95% CI"
   dataCD <- rbind(upper, mid, lower)
   return(dataCD)
-}
-
-cdeGridData <- function(countryAbbrev, energyType="none", gammaGrid){
-  ###############################
-  # Does a grid search over values of gamma for a CD with energy production function.
-  # Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
-  ##
-  gamma <- gammaGrid
-  models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
-  SSE <- unlist(lapply(models, function(model){summary(model)$sigma}))
-  lambda <- unlist(lapply(models, function(model){coef(model)["lambda"]}))
-  alpha <- unlist(lapply(models, function(model){coef(model)["alpha"]}))
-  data <- as.data.frame(cbind(gammaGrid, lambda, alpha, SSE))
-  row.names(data) <- NULL #eliminates row names, leaving only numbered rows
-  colnames(data) <- c("gamma", "lambda", "alpha", "SSE")
-  data <- transform(data, beta = 1.0 - alpha - gamma)
-  # Now make a column that has the country abbreviation
-  nRowsData <- nrow(data) #Gets number of rows in data set
-  dfOfCountryAbbrevs <- as.data.frame(matrix(countryAbbrev, ncol=1, nrow=nRowsData))
-  colnames(dfOfCountryAbbrevs) <- "Country"
-  data <- cbind(data, dfOfCountryAbbrevs) 
-  return(data)
 }
 
 cobbDouglasPredictions <- function(countryAbbrev, energyType){
