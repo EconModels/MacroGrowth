@@ -19,6 +19,51 @@ timeFileName <- function(pre="",post="") {
   return(paste(pre, dt, post, sep=""))
 }
 
+fitted.CDEmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( stats:::fitted.default( object ) + lx0 )
+  # exp(ly)
+}
+
+#  log(iGDP) - log(iEToFit) ~ iYear + I(log(iCapStk) - log(iEToFit)) + e
+#  
+
+residuals.CDEmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
+  y <- exp(ly)
+  lfits <- stats:::fitted.default( object ) + lx0 
+  e <- ly - lfits 
+  E<- exp(e)
+  return(E)
+}
+
+# methods for generating a resampled response.
+
+resampledResponse <- function( object, ...) {
+  UseMethod("resampledResponse")
+}
+
+resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
+  method <- match.arg(method)
+  if (method=="debug") {
+    return( fitted(object) * resid(object) )
+  }
+  n <- length(fitted(object))
+  sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+  fitted(object) * resample( resid(object) )  * sgn
+}
+
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), ... ) {
+  method <- match.arg(method)
+  if (method=="debug") return( fitted(object) + resid(object) )
+  n <- length(fitted(object))
+  sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+  fitted(object) + resample( resid(object) ) * sgn
+}
 genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   #######################
   # Generates all resampling data for all models using the method specified
@@ -330,12 +375,7 @@ doResample <- function(data, origModel, method=resampleMethods, reindexGDP=TRUE)
   } else {
     out <- data    
     out[ , "iGDP"] <- NA
-    out[ , "iGDP"] <- 
-      switch(method,
-             "residual" = fitted(origModel) + resample(resid(origModel)),
-             "wild"     = fitted(origModel) + resample(resid(origModel)) * resample(c(-1,1), length(resid(origModel))),
-             "debug"    = fitted(origModel) + (resid(origModel)) 
-      )
+    out[ , "iGDP"] <- resampledResponse(origModel, method=method)
   }
   if (reindexGDP){
     # Divide all the values in the iGDP column by the first value in the column
