@@ -985,6 +985,7 @@ cdeModel <- function(countryAbbrev,
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
   attr(res, "data") <- data
+  class(res) <- c( "CDEmodel", class(res) )
   return(res)
 }
 
