@@ -962,7 +962,7 @@ cdeModel <- function(countryAbbrev,
   naturalCoeffs$alpha <- switch( as.character(winner), 
                                  "1" = cf['alpha'],
                                  "2" = cf['alpha'],
-                                 "3" = cf['alpha'],
+                                 "4" = cf['alpha'],
                                  "5" = 1,
                                  0
   ) 
