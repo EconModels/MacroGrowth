@@ -54,7 +54,7 @@ resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "de
   }
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  fitted(object) * resample( resid(object) )  * sgn
+  fitted(object) * resample( resid(object) )  ^ sgn
 }
 
 resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), ... ) {
@@ -195,7 +195,7 @@ genResampleData <- function(modelType=modelTypes,
   # Save the coeffs and models to disk
   save(resampleData, file=pathCoeffs)
   save(resampleModels, file=pathModels)
-  status <- "files saved"
+  status <- paste0("  ", c("coefficients", "models"), " saved in ", c(pathCoeffs, pathModels), collapse=" \n" )
   names(status) <- paste(countryAbbrev[1], modelType[1], energyType[1], factor[1], sep=":")
   paste(status)
   return(status)
