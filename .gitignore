@@ -1,9 +1,15 @@
 .Rproj.user
 .Rhistory
 .RData
+*.Rproj
 /cache
 Generate-Resamples-Batch.Rout
 node*.txt
+
+#
+# Files created by vim
+#
+*~
 
 #
 # Files created by LaTeX
@@ -29,6 +35,7 @@ figure/
 data_resample/
 data_failures/
 core
+
 #
 # Files created by beamer
 #
