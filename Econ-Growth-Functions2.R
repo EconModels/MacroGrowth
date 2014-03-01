@@ -13,6 +13,10 @@ require(reshape2) # Provides access to data melting. See http://cran.r-project.o
 # require(tikzDevice) 
 source("Graphics.R")
 
+myqdata <- function( p, vals, data = parent.frame(), ...)  {
+  quantile( p, eval(vals, data, parent.frame() ) )
+}
+
 # Statistical significance levels. We'll work with 95% CIs
 ciLevel <- 0.95
 ciHalfLevel <- ciLevel + (1.0-ciLevel)/2.0
@@ -501,8 +505,8 @@ sfResampleCoeffProps <- function(sfResampleFits, ...){
   baseFitCoeffs <- sfResampleFits[sfResampleFits[["method"]]=="orig", ]
   # Grab the resample curve fits
   resampleFitCoeffs <- sfResampleFits[sfResampleFits[["method"]] != "orig", ]
-  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
-  mCI <- qdata(p=ciVals, vals=m, data=resampleFitCoeffs)
+  lambdaCI <- myqdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  mCI <- myqdata(p=ciVals, vals=m, data=resampleFitCoeffs)
   # Now make a data.frame that contains the information.
   lower <- data.frame(lambda=lambdaCI["2.5%"],
                       m=mCI["2.5%"])
@@ -842,6 +846,59 @@ sfResamplePlot <- function(factor, ...){
   return(graph)
 }
 
+fitted.CDEmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( NextMethod() + lx0 )
+}
+
+
+fitted.LINEXmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( NextMethod() + lx0 )
+}
+
+
+predict.CDEmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( NextMethod() + lx0 )
+}
+
+predict.LINEXmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( NextMethod() + lx0 )
+}
+
+#residuals.CDEmodel <- function( object, ... ) {
+#  e <- NextMethod()
+#  return(exp(e))
+#  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+#  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+#  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
+#  y <- exp(ly)
+#  lfits <- NextMethod() + lx0 
+#  e <- ly - lfits 
+#  E<- exp(e)
+#  return(E)
+#}
+
+#residuals.LINEXmodel <- function( object, ... ) {
+#  e <- NextMethod()
+#  return( exp(e) )
+#  # model has form:
+#  # log(iGDP) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
+#  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+#  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
+#  y <- exp(ly)
+#  lfits <- NextMethod() + lx0 
+#  e <- ly - lfits 
+#  E <- exp(e)
+#  return( switch(type, response=E, log=e))
+#}
+
 cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
@@ -852,9 +909,9 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
   ##
   # Run the non-linear least squares fit to the data. No energy term desired in the Cobb-Douglas equation.
   # Establish guess values for alpha and lambda.
-  lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
-  alphaGuess <- 0.7 # 0.7 gives good results for all countries.  
-  start <- list(lambda=lambdaGuess, alpha=alphaGuess)
+  # lambdaGuess <- 0.0 # guessing lambda = 0 means there is no technological progress.
+  # alphaGuess <- 0.7 # 0.7 gives good results for all countries.  
+  # start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   # model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1.0 - alpha)
   # modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
@@ -891,7 +948,9 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
                      sse = sum(resid(modelCD)^2),
                      isConv = TRUE  # modelCD$convInfo$isConv
                      )
-  attr(x=modelCD, which="naturalCoeffs") <- naturalCoeffs
+  attr(modelCD, "naturalCoeffs") <- naturalCoeffs
+  attr(modelCD, "data") <- data
+  class(modelCD) <- c("CDEmodel", class(modelCD))
   return(modelCD)
 }
 
@@ -1015,10 +1074,10 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
   baseFitCoeffs <- cdResampleFits[cdResampleFits[["method"]]=="orig", ]
   # Grab the resample curve fits
   resampleFitCoeffs <- cdResampleFits[cdResampleFits[["method"]] != "orig", ]
-  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
-  alphaCI <- qdata(p=ciVals, vals=alpha, data=resampleFitCoeffs)
-  betaCI <- qdata(p=ciVals, vals=beta, data=resampleFitCoeffs)
-  gammaCI <- qdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
+  lambdaCI <- myqdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  alphaCI <- myqdata(p=ciVals, vals=alpha, data=resampleFitCoeffs)
+  betaCI <- myqdata(p=ciVals, vals=beta, data=resampleFitCoeffs)
+  gammaCI <- myqdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
   # Now make a data.frame that contains the information.
   lower <- data.frame(lambda=lambdaCI["2.5%"],
                       alpha=alphaCI["2.5%"],
@@ -1057,7 +1116,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
     }
   }
   model <- cobbDouglasModel(countryAbbrev, energyType)
-  pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
+  pred <- predict(model) # dont See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
   df <- padRows(countryAbbrev, df)
@@ -1806,14 +1865,14 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
   baseFitCoeffs <- cesResampleFits[cesResampleFits[["method"]]=="orig", ]
   # Grab the resample curve fits
   resampleFitCoeffs <- cesResampleFits[cesResampleFits[["method"]] != "orig", ]
-  gammaCI <- qdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
-  lambdaCI <- qdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
-  delta_1CI <- qdata(p=ciVals, vals=delta_1, data=resampleFitCoeffs)  
-  rho_1CI <- qdata(p=ciVals, vals=rho_1, data=resampleFitCoeffs)  
-  sigma_1CI <- qdata(p=ciVals, vals=sigma_1, data=resampleFitCoeffs)  
-  deltaCI <- qdata(p=ciVals, vals=delta, data=resampleFitCoeffs)  
-  rhoCI <- qdata(p=ciVals, vals=rho, data=resampleFitCoeffs)  
-  sigmaCI <- qdata(p=ciVals, vals=sigma, data=resampleFitCoeffs)  
+  gammaCI <- myqdata(p=ciVals, vals=gamma, data=resampleFitCoeffs)
+  lambdaCI <- myqdata(p=ciVals, vals=lambda, data=resampleFitCoeffs)
+  delta_1CI <- myqdata(p=ciVals, vals=delta_1, data=resampleFitCoeffs)  
+  rho_1CI <- myqdata(p=ciVals, vals=rho_1, data=resampleFitCoeffs)  
+  sigma_1CI <- myqdata(p=ciVals, vals=sigma_1, data=resampleFitCoeffs)  
+  deltaCI <- myqdata(p=ciVals, vals=delta, data=resampleFitCoeffs)  
+  rhoCI <- myqdata(p=ciVals, vals=rho, data=resampleFitCoeffs)  
+  sigmaCI <- myqdata(p=ciVals, vals=sigma, data=resampleFitCoeffs)  
   # Now make a data.frame that contains the information.
   lower <- data.frame(gamma=gammaCI["2.5%"],
                       lambda=lambdaCI["2.5%"],
@@ -2290,36 +2349,27 @@ linexModel <- function(countryAbbrev, energyType="none", data){
     data <- loadData(countryAbbrev=countryAbbrev)    
   }
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
-  
-  if (countryAbbrev == "SA"){
-    # Need adjusted guess values, becasue k and l are above GDP for SA.
-    start <- list(a_0=-1.0, a_1=6.0)
-  } else if (countryAbbrev == "ZM"){
-    # Set up the initial guess for ZM to be the coefficients for the 
-    # base model
-    # start <- list(a_0=0.35, c_t=2.85)
-    start <- list(a_0=0.35, a_1=1.0)
-  } else {
-    start <- list(a_0=0.5, a_1=0.5)
-  }
-  # Runs a non-linear least squares fit to the data with constraints
-  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_1*(iLabor/iEToFit - 1.0)), 
-                    data=data,
-                    start=start,
-                    control=nlsControl
+  data <- transform(data, 
+              rho_k = iCapStk / (.5) * (iEToFit + iLabor),
+              rho_l = iLabor / iEToFit 
   )
+  model <- lm( log(iGDP) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
+
   # Build the additional object to add as an atrribute to the output
-  a_0 <- coef(modelLINEX)["a_0"]
-  a_1 <- coef(modelLINEX)["a_1"]
+  a_0 <- coef(model)[2]
+  a_1 <- coef(model)[3]
   c_t <- a_1 / a_0
-  naturalCoeffs <- data.frame(a_0 = as.vector(a_0),
+  naturalCoeffs <- data.frame(scale = as.vector(coef(model)[1]),
+                     a_0 = as.vector(a_0),
                      a_1 = as.vector(a_1),
-                     c_t = as.vector(a_1 / a_0),
-                     sse = sum(resid(modelLINEX)^2),
-                     isConv = modelLINEX$convInfo$isConv
+                     c_t = as.vector(c_t),
+                     sse = sum(resid(model)^2),
+                     isConv = TRUE
   )
-  attr(x=modelLINEX, which="naturalCoeffs") <- naturalCoeffs
-  return(modelLINEX)
+  attr(model, "naturalCoeffs") <- naturalCoeffs
+  attr(model, "data") <- data
+  class(model) <- c("LINEXmodel", class(model))
+  return(model)
 }
 
 linexPredictions <- function(countryAbbrev, energyType){
@@ -2452,8 +2502,8 @@ linexResampleCoeffProps <- function(linexResampleFits, ...){
   baseFitCoeffs <- linexResampleFits[linexResampleFits[["method"]]=="orig", ]
   # Grab the resample curve fits
   resampleFitCoeffs <- linexResampleFits[linexResampleFits[["method"]] != "orig", ]
-  a_0CI <- qdata(p=ciVals, vals=a_0, data=resampleFitCoeffs)
-  c_tCI <- qdata(p=ciVals, vals=c_t, data=resampleFitCoeffs)
+  a_0CI <- myqdata(p=ciVals, vals=a_0, data=resampleFitCoeffs)
+  c_tCI <- myqdata(p=ciVals, vals=c_t, data=resampleFitCoeffs)
   # Now make a data.frame that contains the information.
   lower <- data.frame(a_0=a_0CI["2.5%"],
                       c_t=c_tCI["2.5%"])
