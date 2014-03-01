@@ -19,28 +19,6 @@ timeFileName <- function(pre="",post="") {
   return(paste(pre, dt, post, sep=""))
 }
 
-fitted.CDEmodel <- function( object, ... ) {
-  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( stats:::fitted.default( object ) + lx0 )
-  # exp(ly)
-}
-
-#  log(iGDP) - log(iEToFit) ~ iYear + I(log(iCapStk) - log(iEToFit)) + e
-#  
-
-residuals.CDEmodel <- function( object, ... ) {
-  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
-  y <- exp(ly)
-  lfits <- stats:::fitted.default( object ) + lx0 
-  e <- ly - lfits 
-  E<- exp(e)
-  return(E)
-}
-
 # methods for generating a resampled response.
 
 resampledResponse <- function( object, ...) {
@@ -48,13 +26,25 @@ resampledResponse <- function( object, ...) {
 }
 
 resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
+  mresid <- exp(resid(object))
   method <- match.arg(method)
   if (method=="debug") {
-    return( fitted(object) * resid(object) )
+    return( fitted(object) * mresid )
   }
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  fitted(object) * resample( resid(object) )  ^ sgn
+  fitted(object) * resample( mresid )  ^ sgn
+}
+
+resampledResponse.LINEXmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
+  mresid <- exp(resid(object))
+  method <- match.arg(method)
+  if (method=="debug") {
+    return( fitted(object) * mresid )
+  }
+  n <- length(fitted(object))
+  sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+  fitted(object) * resample( mresid )  ^ sgn
 }
 
 resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), ... ) {
@@ -64,6 +54,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
   fitted(object) + resample( resid(object) ) * sgn
 }
+
 genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   #######################
   # Generates all resampling data for all models using the method specified
