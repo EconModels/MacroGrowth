@@ -36,7 +36,7 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
 }
 
 #' @export
-loadData <- function(countryAbbrev){
+loadData <- function(countryAbbrev, base="../"){
   #################################
   # This function loads data given a country abbreviation.
   # The file name from which data will be loaded is assumed to be of the form 
@@ -47,7 +47,7 @@ loadData <- function(countryAbbrev){
   # returns a data.frame with the data that has been loaded
   ##
   # Read the data file as a table with a header.  
-  fileName <- paste("data/", countryAbbrev, "Data.txt", sep="")
+  fileName <- paste0(base,"data/", countryAbbrev, "Data.txt")
   data <- read.table(file=fileName, header=TRUE)
   return(data)
 }
@@ -3192,14 +3192,14 @@ getSeed <- function(){
 }
 
 #' @export
-loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor=NA, archive=NULL){
+loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor=NA, archive=NULL, base="../"){
   #############################
   # This function loads previously-saved Cobb-Douglas with energy
   # curve fits from resampled data. The loaded object is
   # a list that contains two named data.frames: 
   # baseFitCoeffs and resampleFitCoeffs. 
   ##
-  path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor)
+  path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, factor=factor, base=base)
   # The name of the object loaded by this call is resampleData.
   if (is.null(archive)) {
     load(file=path) 
@@ -3248,7 +3248,7 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
 #' @export
 loadAllResampleData <- function(modelType, energyType="none", factor, 
                                 countryAbbrevsOrder=countryAbbrevs,
-                                archive=NULL){
+                                archive=NULL, base="../"){
   ##################
   # Loads resample data for all countries for the given modelType and energyType or factor
   ##
@@ -3367,27 +3367,27 @@ loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType
 }
 
 #' @export
-getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor){
+getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor, base="../"){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold resampled data
   ##
   return(doGetPath(prefix="resampleData", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor))
+                   energyType=energyType, factor=factor, base=base))
 }
 
 #' @export
-getPathForResampleModels <- function(modelType, countryAbbrev, energyType="Q", factor="K"){
+getPathForResampleModels <- function(modelType, countryAbbrev, energyType="Q", factor="K", base="../"){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold resampled models
   ##
   return(doGetPath(prefix="resampleModels", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor))
+                   energyType=energyType, factor=factor, base=base))
 }
 
 #' @export
-doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K"){
+doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K", base="../"){
   if (energyType == "none"){
     energyType="NA"
   }
@@ -3415,7 +3415,7 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   # Returns a string identifying a folder for resampled data.
   ##
   dr <- getOption('heun_data_resample')
-  if (is.null(dr)) dr <- "data_resample"
+  if (is.null(dr)) dr <- "../data_resample"
 #   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
