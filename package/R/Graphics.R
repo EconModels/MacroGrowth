@@ -1,3 +1,7 @@
+#' Some Graphics functions
+#' 
+#' Some graphics functions for working with Economic Models.
+#'
 #' @import ggplot2
 #' @import mosaic
 #' @import scales
