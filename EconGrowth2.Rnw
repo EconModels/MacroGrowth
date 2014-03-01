@@ -101,6 +101,7 @@
 \begin{document}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
+require(EconModels)
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
@@ -109,6 +110,7 @@ require(mosaic)
 require(xtable)
 require(nlmrt)
 require(micEconCES)
+require(plyr)
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 require(reshape2) 
@@ -141,8 +143,8 @@ opts_chunk$set(
   # Set TRUE on an individual chunk to see its code.
   echo=FALSE     
 )
-source("Econ-Growth-Functions2.R")
-source("Graphics.R")
+#source("Econ-Growth-Functions2.R")
+#source("Graphics.R")
 @
 
 
