@@ -182,10 +182,11 @@ spaghettiPlot <- function(energyType='none',
   # return(names(data))
   # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
   graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
-  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col="gray90", fill="gray10", 
+  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col=NA, fill="gray10", 
                                lty=1, size=.5, data=seData, stat="identity")
 #  graph <- graph + geom_area(fill="black", shape=1, alpha=0.05)
   graph <- graph + geom_line(color="black", size=.4, shape=1, alpha=1.0)
+  graph <- graph + geom_line(data=subset(data, !Resampled & Type =="fitted"), color="gray90", size=.4, shape=1, alpha=1.0)
   if (!is.null( facet_formula ) ) {
     if (length(facet_formula) == 2) {
       graph <- graph + facet_wrap( facet_formula, scales="free_y" )
