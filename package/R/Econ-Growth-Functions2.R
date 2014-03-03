@@ -1080,7 +1080,12 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
   return(dataCD)
 }
 
+#' Cobb-Douglas Predictions
+#' 
 #' @export
+#' @return a data frame with one variable named \code{pred} containing fitted values on the 
+#' natural scale.
+ 
 cobbDouglasPredictions <- function(countryAbbrev, energyType){
   #########################
   # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
