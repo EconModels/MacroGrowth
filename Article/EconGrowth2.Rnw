@@ -96,6 +96,8 @@
 
 % \biboptions{}
 
+\usepackage[shownotes]{authNote}
+
 \journal{Energy Economics}
 
 \begin{document}
@@ -910,10 +912,19 @@ was derived from thermodynamic considerations
 \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
 %\noindent where $e$ is indexed energy and e is the base of 
 %the natural logarithm. 
-The LINEX model assumes energy ($e$) 
-is the only factor of production and defines
-the quantities $\rho_k$ and $\rho_l$ by
+In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
+\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
+the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic time-dependent
+term but assumes energy ($e$) is the only factor of production.
 
+This model does, however, 
+instead includes terms that represent % physical factors:
+efficiencies among capital, labor, and energy, which are included
+in the model in the form of 
+the quantities $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
+for the LINEX model breaks from the conventions used in the previous
+models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
+%
 \begin{equation} \label{eq:rho_k}
   \rho_k \equiv \frac{k}{(1/2)(l+e)}
 \end{equation}
@@ -922,22 +933,22 @@ and
   \rho_l \equiv \frac{l}{e}
 \end{equation}
 and represent 
-(a) capital stock increase relative to the average of labor and energy and 
-(b) labor increase relative to energy, respectively. 
-Energy ($e$), as the only factor of production, is enhanced if either
+(\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
+(\ref{eq:rho_l}) labor increase relative to energy.
+The effect of energy ($e$) on production is enhanced if either
 
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
       of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
 \item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
-
-\noindent According to the LINEX model, an economy that increases 
+%
+According to the LINEX model, an economy that increases 
 capital stock ($k$) without a commensurate increase in labor ($l$) 
 and energy ($e$) will experience an increase in output ($y$) in excess 
 of its increase of energy consumption ($e$), because in that case
 \(
-A \equiv \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+\mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
     + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]}
 	> 1 \;.
 \) 
@@ -950,30 +961,9 @@ additional labor available to the economy.
 $a_0$ represents the overall importance of these efficiencies, 
 and $c_t$ represents the relative importance 
 of the labor efficiency term compared to the capital stock efficiency term. 
-We treat $a_0$ and $c_t$ as fitting parameters; 
-both are assumed constant with respect to time. 
+% We treat $a_0$ and $c_t$ as fitting parameters; 
+% both are assumed constant with respect to time. 
 
-\citet{Abramovitz:1956aa} wrote (but it unclear why this is here since the paper
-predates the definition of the model):
-
-\begin{quote}
-  This result [that ``technological progress, $A$'' explained
-  175\% of the growth of the US economy since 1870] is surprising in the lopsided
-  importance which it appears to give to productivity increase,
-  and it should be, in a sense, sobering, if not discouraging,
-  to students of economic growth.
-  Since we know little about the causes of productivity increase,
-  the indicated importance of this element may be taken to be some sort of measure
-  of our ignorance about the causes of economic growth in the United States
-  and some sort of indication of where
-  we need to concentrate our attention.
-\end{quote}
-
-In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
-\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
-the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic time-dependent
-term but instead includes terms that represent % physical factors:
-efficiencies among capital, labor, and energy.
 
 \citet{Kummel:2002tx} use the 
 LINEX production function to describe economic output 
@@ -985,10 +975,27 @@ for Austria, the United Kingdom, the United States, and Japan.
 in traditional production functions does not improve its explanatory power, 
 but including useful work in a LINEX function does. 
 
-**** Martin: add more here about the conclusions of each paper 
+\authNote{Martin: add more here about the conclusions of each paper 
 regarding the role of energy in economic growth? Add additional literature? 
 Or, adjust as you see fit. Especially, are there any confidence intervals 
-or statistical evaluation in each of these studies? ****
+or statistical evaluation in each of these studies?}
+
+\authNote{If we want to keep this quote, it should be clearer what point we are trying to
+make with it. ---rjp}
+\citet{Abramovitz:1956aa} wrote:
+
+\begin{quote}
+  This result [that ``technological progress'' explained
+  175\% of the growth of the US economy since 1870] is surprising in the lopsided
+  importance which it appears to give to productivity increase,
+  and it should be, in a sense, sobering, if not discouraging,
+  to students of economic growth.
+  Since we know little about the causes of productivity increase,
+  the indicated importance of this element may be taken to be some sort of measure
+  of our ignorance about the causes of economic growth in the United States
+  and some sort of indication of where
+  we need to concentrate our attention.
+\end{quote}
 
 
 %++++++++++++++++++++++++++++++
@@ -1202,76 +1209,117 @@ for 1980--2011 (developed economies) and 1991--2011 (other economies).
 Factors of production track each other closely, 
 and high covariances among these variables can be seen in 
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
-**** Do we want to discuss the covariances? ****
+\authNote{Do we want to discuss the covariances?}
 
+\onecolumn{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Point Estimates}
 Each of the economic growth models discussed in 
 Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
-for each economy (see Section~\ref{sec:Economy_Types})
-via least-squares methods. We used \texttt{R} \citep{R} functions
-\texttt{nls} and \texttt{cesEst} \citep{Henningsen:2011td} 
-for that purpose. The following subsections discuss 
-parameter estimation methods and results. 
+from data for each economy (see Section~\ref{sec:Economy_Types}).
+We obtained parameter estimates by applying the method of least-squares to (potentially
+log-transformed) data using the \texttt{R} \citep{R} functions
+\texttt{lm} (for Cobb-Douglas and LINEX models) 
+and \texttt{cesEst} \citep{Henningsen:2011td} (for CES models). 
+\authNote{Need to check how CES is being fit and adjust this accordingly.}%
+
+Although the details vary from model to model, each of our three models has the general form
+\[
+y = f(t,k,l,e; \theta) + \mathrm{error} \;,
+\]
+where $\theta$ is a vector of parameters for the function $f$.
+\authNote{if we use $\theta$ this way, we need a new scaling parameter. --rjp}%
+In least squares models, parameter estimates are chosen to minimize
+\[
+\sum_{i} (y_i - f(t,k,l,e; \theta) )^2 \;.
+\]
+For the optimal parameter values $\hat \theta$, we define the 
+fitted response by
+\[
+\hat y_i = f(t_i, k_i, l_i, e_i; \hat \theta)
+\]
+and the residuals
+as the difference between the observed response and the fitted response
+\begin{equation} \label{eq:residual}
+  r_i 
+  = y_i - \hat y_i
+  = y_i - f(t,k,l,e; \hat\theta)
+\end{equation}
+The details for each of the models (including the effects of using 
+log transformations) are discussed below.
+
+
+%After back transforming to the natural scale of the data, the 
+%residuals have a multiplicative rather than additive affect.
+%The reflects an assumption that variability in GDP is roughly 
+%proportion to GDP rather than constant.
+
+
 
 %++++++++++++++++++++++++++++++
-\subsection{Resampling}
+\subsection{Resampling Methods}
 \label{sec:Resampling}
 %++++++++++++++++++++++++++++++
 
-Resampling is a statistical technique for estimating the 
-precision of coefficient estimates. We implemented
-residual resampling in our parameter estimation processes. 
+Bootstrappng is a statistical resampling technique for assigning
+measures of accuracy and precision to sample estimates by measuring
+properties of an estimator when sampling from a resampling
+distribution.  Resampling distributions can be formed in a number of 
+ways in accordance with the type of data, experimental design,
+and modeling assumptions involved.  In each case, many new resamples 
+are created, each of which is a randomized version of the original sample data to 
+which the desired analysis method can be applied.  By investigating, for example,
+the variability of a parameter estimate from one resample to another,
+one can learn about the precision of the estimation method.
+\authNote{Add some references here. --rjp}
 
-\onecolumn{}
+In the context of linear models (regression), resamples are generally created
+by residual resampling.  In our case, we formed resamples by adding to the fitted 
+response (GDP) the product of a residual from the original model fit and 
+and random sign ($-1$ or $1$, each with probability $0.5$).  For the case of 
+Cobb-Douglas and LINEX models, this residual resampling occurs on the 
+log-transformed data.
 
-When employing resampling techniques, 
-the modeler assumes that the residuals ($r_t$) between 
-observed data (in our case historical GDP values, $y_{act,t}$) and
-model predictions (in our case, $y_{pred,t}$) at
-time $t$ are representative of the uncertainty of 
-and random scatter in the observed historical data. 
 
-\begin{equation} \label{eq:residual}
-  r_t = y_{act,t} - y_{pred,t}
-\end{equation}
-
-Under that assumption, it would be unsurprising if the residual from 
+Intuitively, this method assumes that the residuals are indicative of 
+the variability (from many potential sources) inherent in the data so that
+it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
-To obtain a 
-preliminary resampled GDP time series ($y_{prelim,resample,t}$),
-we add
-the absolute value of residuals 
-from randomly-selected times $\left( \left| r_{\mathrm{rand}(t)} \right| \right)$
-with randomly-selected signs [$\mathrm{rand}(-1, 1)$]
-to model predictions.
-
-\begin{equation} \label{eq:resample_y_prelim}
-  y_{prelim,resample,t} = y_{pred,t} + \mathrm{rand}(-1, 1) \cdot \left| r_{\mathrm{rand}(t)} \right|.
-\end{equation}
-
-\noindent{}We note that the preliminary resample time series
-can have non-unity first-year GDP ($y_{prelim,resample,0} \ne 1$).
-If we had actually obtained the resampled GDP data series,
-we would have indexed to a different first-year GDP value, 
-such that \emph{every} resampled GDP time series has $y_{resample,0} = 1$.
-We use
+Thus, a resampled response $\tilde Y$ can be computed as 
+\[
+\tilde Y_i' = \hat y_i \pm r_j
+\]
+where 
+\[
+r_i = y_i - \hat y_i
+\]
+both the sign ($\pm$) and the index of the residual ($j$, typically different from $i$) 
+are chosen at random (with replacement). 
+Resampling in this way has the consequence 
+that a resampled time series could have non-unity first-year GDP ($\tilde Y_1 \neq 1$),
+so a renormalization takes place using the initial GDP from the
+resampled data as the new baseline, not the observed GDP in year 1.
 
 \begin{equation} \label{eq:resample_y}
-  y_{resample,t} = \frac{y_{prelim,resample,t}}{y_{prelim,resample,0}}
+	\tilde y_i  = \frac{\tilde Y_i'}{\tilde Y_1'}
 \end{equation}
-
-\noindent{}to obtain a resampled indexed GDP time series that can be fitted using the techniques
-described below. 
+to obtain a resampled indexed GDP time series.
 We repeated the resampling process \Sexpr{numResamples()} times for each
 combination of growth model and country, both with and without energy when appropriate.
 
-The coefficients from the fit to the resampled time series
+The coefficients from the fit to a resampled time series
 (the ``resample coefficients'') will be different from the coefficients 
 obtained from the fit to historical data (the ``base coefficients'').
+When these resample coefficients are highly variable, it is an indication
+that the data do not determine the parameter estimates very precisely.
+Lack of imprecision can stem from a number of factors, most obviously
+a poor model fit, low model sensitivity to one or more parameters, 
+or correlations between parameter estimates.
+\authNote{This is not precisely true:
 Large residuals in the fit to historical data (the ``base fit'')
 are expected to produce large variation in resample coefficient values
 (when the resampling is repeated \Sexpr{numResamples()} times),
@@ -1280,21 +1328,21 @@ of those coefficients.
 Similarly, small base fit residuals are expected to produce small
 variation in resample coefficient values, indicating more-precise knowledge
 of the model coefficients.
+--rjp}
+
 
 It is important to note that large residuals can arise from either
-(a) poor quality historical time series data ($y_{act}$) or 
+(a) poor quality historical time series data, or 
 (b) a mathematical model that does not describe the underlying phenomena well.
-In both cases, we would not want to claim precise knowledge of the 
-fitted coefficients for an economic growth model. 
-So, it is appropriate that the resampling technique that we employed
-provides looser coefficient distributions when either (a) or (b) above
-is true. 
-After discussing the fitting technique for each 
-growth model below, we show scatter plots of fitted coefficients,
-thereby providing visual indication of the uncertainty 
-of the coefficients for each model.
+It is also important to note that (c) even when the residuals are small and the 
+model produces fitted values that track the observed data closely, it may
+still be difficult to estimate some or all of the model parameters precisely.
+The resampling method employed reflects all three of these potential 
+sources of uncertainty in parameter estimates.
 
-**** Randy Pruim review the above text and supply some text and references. ****
+\authNote{Should the description of model fitting come before or after 
+the description of resampling?}
+
 
 %++++++++++++++++++++++++++++++
 \subsection{Cobb-Douglas Models}
