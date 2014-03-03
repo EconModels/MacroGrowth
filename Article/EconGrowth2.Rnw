@@ -660,10 +660,12 @@ We are after generating insights even after deeper assumptions of econ growth th
 **** Orignial introduction that MKH wrote ****
 
 Neoclassical economic growth theory attributes output ($Y$) to factors of production:
-capital stock ($K$) and labor ($L$). The Cobb-Douglas production function is the 
+capital stock ($K$) and labor ($L$). The Cobb-Douglas production function 
+is the 
 canonical representation of indexed economic output ($y$) as a function of indexed 
-labor ($l$), indexed capital stock ($k$), and an exogenous, time-dependent 
-residual\footnote{The $A$ term in production functions is often linked
+labor ($l$), indexed capital stock ($k$), and an additional exogenous, time-dependent 
+term.%
+\footnote{The time-dependent term in production functions is often linked
 to ``technological progress,'' but that is a very narrow reading of Solow's original intent:
 \begin{quote}
   It will be seen that I am using the phrase ``technical change''
@@ -672,35 +674,50 @@ to ``technological progress,'' but that is a very narrow reading of Solow's orig
   Thus slowdowns, speed-ups, improvements in the education of the labor force, 
   and all sorts of things will appear as ``technical change.''~\citep{solow1957technical}
 \end{quote}
-Mathematically, $A$ is nothing more than a fitting parameter 
-that aligns the predictions of Equation~\ref{eq:CD} 
-with historical data. 
-Thus, we refer to $A$ as the ``residual'' in this paper.} 
-term ($A$):
-
+}
+This production function can be expressed as
 \begin{equation} \label{eq:CD}
-  y = A k^\alpha l^\beta; A = \mathrm{e}^{\lambda(t-t_0)}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
 \end{equation}
-
-\noindent where $y \equiv Y/Y_\mathrm{0}$, $k \equiv K/K_\mathrm{0}$, and 
-$l \equiv L/L_\mathrm{0}$; with $Y$ represented by GDP, $K$ expressed in 
-currency units, $L$ expressed in workers or work-hours/year, time ($t$) measured in years, 
-with e being the base of the natural logarithm, and subscripts ``0'' indicating values 
-at an initial year. $A$ is the residual term, with $\lambda$ 
-indicating the change of the residual over time (in units of 
-year$^{-1}$).\footnote{Dimensionless, indexed quantities are represented by 
+where 
+\begin{itemize}
+	\item $y \equiv Y/Y_{0}$,  % why was 0 typeset as mathrm??
+	\item $k \equiv K/K_{0}$, 
+	\item $l \equiv L/L_{0}$, 
+	\item $Y$ represented by GDP, 
+	\item $K$ expressed in currency units, 
+	\item $L$ expressed in workers or work-hours/year, 
+	\item $t$ (time) is measured in years, 
+	\item e is the base of the natural logarithm, and 
+	\item 0 subscripts indicate values at an initial year.%
+\footnote{Dimensionless, indexed quantities are represented by 
 lower-case symbols 
 ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
 quantities are represented by upper-case symbols 
-($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). One exception is the 
-residual term $A$, which is dimensionless but written upper-case by convention.} 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+Model parameters are represented by Greek letters
+($\alpha$, $\beta$, $\lambda$, $\theta$).} 
+\end{itemize}
+%Mathematically, $A$ is nothing more than a fitting parameter 
+%that aligns the predictions of Equation~\ref{eq:CD} 
+%with historical data. 
+%Thus, we refer to $A$ as the ``residual'' in this paper.} 
+%term ($A$):
+
+% $A$ is the residual term, 
+% with $\lambda$ 
+% indicating the change of the residual over time (in units of 
+% year$^{-1}$).
 Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
 function makes no attempt to describe the mechanisms that affect
 economic growth, nor does it attempt to describe how such things as
 slowdowns, speedups, and improvements of the education of the labor force
-($A$) might vary from one economy to the next. 
+($\lambda$) might vary from one economy to the next. 
+The parameters $\alpha$ and $\beta$ indicate the relative roles 
+of capital and labor in the economy.
 Typically, the constraint $\alpha + \beta = 1$ is assumed, 
 indicating constant returns to scale.
+
 
 As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
 include an explicit term for the role of energy in economic growth. However, 
@@ -757,14 +774,14 @@ describe each.
 \label{sec:CDe}
 %------------------------------
 
-The capital-labor Cobb-Douglas production function is shown in Equation~\ref{eq:CD}.
-Similarly, the energy-augmented Cobb-Douglasproduction function is
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%Similarly, the energy-augmented Cobb-Douglas production function is
 
 \begin{equation} \label{eq:CDe}
-  y = A k^\alpha l^\beta e^\gamma; A = \mathrm{e}^{\lambda(t-t_0)}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
 \end{equation}
-
-\noindent where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
 typically TJ/year. The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
@@ -884,35 +901,30 @@ intervals or statistical evaluation in each of these studies? ****
 \label{sec:LINEX}
 %------------------------------
 
-A third production function, the LINear EXponential (LINEX) function 
-\citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}, 
-was derived from thermodynamic considerations:
-
+A third production function, the LINear EXponential (LINEX) function
 \begin{equation} \label{eq:LINEX}
-  y = Ae; 
-  A = \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
-    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
+  y = \theta \; \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]} \; e \;,
 \end{equation}
-
-\noindent where $e$ is indexed energy and e is the base of 
-the natural logarithm. The LINEX model assumes energy ($e$) 
-is the only factor of production. 
-The parameters $\rho_k$ and $\rho_l$ are defined as
+was derived from thermodynamic considerations
+\citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
+%\noindent where $e$ is indexed energy and e is the base of 
+%the natural logarithm. 
+The LINEX model assumes energy ($e$) 
+is the only factor of production and defines
+the quantities $\rho_k$ and $\rho_l$ by
 
 \begin{equation} \label{eq:rho_k}
   \rho_k \equiv \frac{k}{(1/2)(l+e)}
 \end{equation}
-
-\noindent and
-
+and
 \begin{equation} \label{eq:rho_l}
   \rho_l \equiv \frac{l}{e}
 \end{equation}
-
-\noindent and represent 
+and represent 
 (a) capital stock increase relative to the average of labor and energy and 
 (b) labor increase relative to energy, respectively. 
-Energy ($e$), as the only factor of production, is enhanced by $A$ if either
+Energy ($e$), as the only factor of production, is enhanced if either
 
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
@@ -923,8 +935,13 @@ Energy ($e$), as the only factor of production, is enhanced by $A$ if either
 \noindent According to the LINEX model, an economy that increases 
 capital stock ($k$) without a commensurate increase in labor ($l$) 
 and energy ($e$) will experience an increase in output ($y$) in excess 
-of its increase of energy consumption ($e$), because $A$ will be 
-greater than 1. Similarly, an economy benefits by increasing labor ($l$) 
+of its increase of energy consumption ($e$), because in that case
+\(
+A \equiv \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]}
+	> 1 \;.
+\) 
+Similarly, an economy benefits by increasing labor ($l$) 
 without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an 
 efficiency of using additional labor and energy to make 
 additional capital stock available to the economy, 
@@ -936,7 +953,8 @@ of the labor efficiency term compared to the capital stock efficiency term.
 We treat $a_0$ and $c_t$ as fitting parameters; 
 both are assumed constant with respect to time. 
 
-\citet{Abramovitz:1956aa} wrote:
+\citet{Abramovitz:1956aa} wrote (but it unclear why this is here since the paper
+predates the definition of the model):
 
 \begin{quote}
   This result [that ``technological progress, $A$'' explained
@@ -953,11 +971,9 @@ both are assumed constant with respect to time.
 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
-the LINEX model (Equation~\ref{eq:LINEX}) attempts to explain the residual ($A$)
-with physical factors:
+the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic time-dependent
+term but instead includes terms that represent % physical factors:
 efficiencies among capital, labor, and energy.
-Therefore, LINEX does not employ a time-dependent 
-residual term ($A$). 
 
 \citet{Kummel:2002tx} use the 
 LINEX production function to describe economic output 
