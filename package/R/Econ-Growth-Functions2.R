@@ -2351,7 +2351,6 @@ printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
         table.placement="H")
 }
 
-## <<LINEX functions, eval=TRUE>>=
 #' @export
 linexModel <- function(countryAbbrev, energyType="none", data){
   ####################
@@ -2381,7 +2380,9 @@ linexModel <- function(countryAbbrev, energyType="none", data){
   a_0 <- coef(model)[2]
   a_1 <- coef(model)[3]
   c_t <- a_1 / a_0
-  naturalCoeffs <- data.frame(scale = as.vector(coef(model)[1]),
+  naturalCoeffs <- data.frame(
+                     logscale = as.vector(coef(modelCD)["logscale"]),
+                     scale = exp(as.vector(coef(modelCD)["logscale"])),
                      a_0 = as.vector(a_0),
                      a_1 = as.vector(a_1),
                      c_t = as.vector(c_t),
