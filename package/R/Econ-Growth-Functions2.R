@@ -1,3 +1,8 @@
+#' Quantiles from Data
+#'
+#' A thin wrapper around \code{\link{quantile}}
+
+
 #' @import lattice
 #' @import latticeExtra
 #' @import ggplot2
@@ -9,13 +14,24 @@
 #' @import micEconCES
 #' @import reshape2
 
+
 # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
 # require(tikzDevice) 
 # source("Graphics.R")
 
+
+
+#' @param p a vector of probabilities
+#' @param vals a numeric vector or a name of a variable in \code{data}
+#' @param data a data frame
+#' @param ... addtional arguments passed to \code{\link{quantile}}
+#' @return a vector of quantiles
 #' @export
+#' @examples
+#' myqdata( .5, eruptions, data=faithful)
+
 myqdata <- function( p, vals, data = parent.frame(), ...)  {
   quantile( eval(substitute(vals), data, parent.frame() ), p, ... )
 }
