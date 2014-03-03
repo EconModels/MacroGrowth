@@ -31,11 +31,11 @@ resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "de
   mresid <- exp(resid(object))
   method <- match.arg(method)
   if (method=="debug") {
-    return( fitted(object) * mresid )
+    return( yhat(object) * mresid )
   }
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  fitted(object) * resample( mresid )  ^ sgn
+  yhat(object) * resample( mresid )  ^ sgn
 }
 
 #' @export
@@ -43,20 +43,20 @@ resampledResponse.LINEXmodel <- function( object, method=c("residual", "wild", "
   mresid <- exp(resid(object))
   method <- match.arg(method)
   if (method=="debug") {
-    return( fitted(object) * mresid )
+    return( yhat(object) * mresid )
   }
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  fitted(object) * resample( mresid )  ^ sgn
+  yhat(object) * resample( mresid )  ^ sgn
 }
 
 #' @export
 resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), ... ) {
   method <- match.arg(method)
-  if (method=="debug") return( fitted(object) + resid(object) )
+  if (method=="debug") return( yhat(object) + resid(object) )
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  fitted(object) + resample( resid(object) ) * sgn
+  yhat(object) + resample( resid(object) ) * sgn
 }
 
 #' @export

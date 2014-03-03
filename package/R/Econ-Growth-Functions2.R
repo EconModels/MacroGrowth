@@ -811,18 +811,27 @@ sfResamplePlot <- function(factor, ...){
 }
 
 #' @export
-fitted.CDEmodel <- function( object, ... ) {
-  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+yhat <- function(object, ...) {
+  UseMethod('yhat')
 }
 
+#' @export
+yhat.default <- function(object,...) {
+  fitted(object,...)
+}
 
 #' @export
-fitted.LINEXmodel <- function( object, ... ) {
+yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+  exp( fetted(object,...) + lx0 )
+}
+
+#' @export
+yhat.LINEXmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( fitted(object, ...) + lx0 )
 }
 
 
@@ -1237,7 +1246,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -2488,7 +2497,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
