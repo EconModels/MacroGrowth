@@ -2339,10 +2339,10 @@ printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
 
 ## <<LINEX functions, eval=TRUE>>=
 #' @export
-linexModel <- function(countryAbbrev, energyType="none", data){
+linexModel <- function(countryAbbrev, energyType, data){
   ####################
   # Returns an nls linex model for the country and energyType specified.
-  # energyType should be one of Q", "X", or "U".
+  # energyType must be one of "Q", "X", or "U".
   # 
   # If you want to supply your own data, you need to specify ALL arguments.
   # Also, be VERY SURE that countryAbbrev is appropriate for the data you are supplying,
