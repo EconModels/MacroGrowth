@@ -149,6 +149,90 @@ opts_chunk$set(
 #source("Graphics.R")
 @
 
+<<constants, include=FALSE>>=
+# Graph Heights
+#' @export
+maxHeight <- 8.5 # Inches
+#' @export
+ninePanelScatterGraphHeight <- maxHeight # Inches
+#' @export
+ninePanelTernaryGraphHeight <- 7 # Inches
+#' @export
+ninePanelSpaghettiGraphHeight <- 7 # Inches
+
+# Graph Widths
+#' @export
+maxWidth <- 6.5 # Inches
+#' @export
+fourPanelScatterGraphWidth <- maxWidth # Inches
+#' @export
+threePanelScatterGraphWidth <- maxWidth*0.75 # Inches
+#' @export
+onePanelScatterGraphWidth <- maxWidth*0.25
+#' @export
+fourPanelTernaryGraphWidth <- maxWidth
+#' @export
+twoPanelTernaryGraphWidth <- maxWidth*0.45
+#' @export
+fourPanelSpaghettiGraphWidth <- maxWidth
+#' @export
+twoPanelSpaghettiGraphWidth <- maxWidth*0.55
+#' @export
+onePanelSpaghettiGraphWidth <- maxWidth*0.4
+
+#' @export
+presentationGraph1RowHeight <- 2.8 # Inches
+#' @export
+presentationGraph2ColWidth <- 2 # Inches
+#' @export
+presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
+#' @export
+keyTextSize <- 0.85 # 85% of normal size
+#' @export
+keyColumns <- 1 # Want only 1 column in the key for lattice graphs
+#' @export
+defaultKeyXLoc <- 0.01 # x position of the key. This default is good for 9-panel graphs.
+#' @export
+defaultKeyYLoc <- 0.95 # y position of the key. This default is good for 9-panel graphs.
+# Parameter graphs are tricky to ensure same size. I've found that with height set to 5 in for the 
+# cd graphs and 2.93 in for the sf graphs, I get a nearly-exact match with graph size. From these settings I 
+# can set up 2 equations:
+#    5 in = 2*hgraph + haxis
+#    2.93 in = hgraph + haxis
+# to estimate that h_axis = 0.86 in and hgraph = 2.05 in.
+#' @export
+h_param_graph <- 2.07 # Inches for a single panel
+#' @export
+h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
+#' @export
+sfParameterGraphHeight <- h_param_graph + h_param_axis
+#' @export
+cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+#' @export
+cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
+#' @export
+linexParameterGraphHeight <- h_param_graph + h_param_axis
+#' @export
+sfParameterGraphWidth <- maxWidth
+#' @export
+cdParameterGraphWidth <- maxWidth
+#' @export
+cdTernaryGraphWidth <- maxWidth/2.2
+#' @export
+cdSpaghettiGraphWidth <- maxWidth/2.2
+#' @export
+cesParameterGraphWidth <- maxWidth
+#' @export
+linexParameterGraphWidth <- maxWidth
+# Other graph parameters that apply to all graphs
+#' @export
+scaleTextSize <- 0.8  # Multiple of normal size
+#' @export
+scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
+
+
+
+@
 
 % Add an argument if you want a label. Example: "\label{eq:CES}"
 \newcommand{\ceskl}[1]{\begin{equation} #1
