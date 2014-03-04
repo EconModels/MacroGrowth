@@ -811,18 +811,27 @@ sfResamplePlot <- function(factor, ...){
 }
 
 #' @export
-fitted.CDEmodel <- function( object, ... ) {
-  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+yhat <- function(object, ...) {
+  UseMethod('yhat')
 }
 
+#' @export
+yhat.default <- function(object,...) {
+  fitted(object,...)
+}
 
 #' @export
-fitted.LINEXmodel <- function( object, ... ) {
+yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+  exp( fetted(object,...) + lx0 )
+}
+
+#' @export
+yhat.LINEXmodel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( fitted(object, ...) + lx0 )
 }
 
 
@@ -1071,7 +1080,12 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
   return(dataCD)
 }
 
+#' Cobb-Douglas Predictions
+#' 
 #' @export
+#' @return a data frame with one variable named \code{pred} containing fitted values on the 
+#' natural scale.
+ 
 cobbDouglasPredictions <- function(countryAbbrev, energyType){
   #########################
   # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
@@ -1237,7 +1251,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -2337,7 +2351,6 @@ printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
         table.placement="H")
 }
 
-## <<LINEX functions, eval=TRUE>>=
 #' @export
 linexModel <- function(countryAbbrev, energyType, data){
   ####################
@@ -2358,7 +2371,7 @@ linexModel <- function(countryAbbrev, energyType, data){
   }
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
   data <- transform(data, 
-              rho_k = iCapStk / (.5) * (iEToFit + iLabor),
+              rho_k = iCapStk / ( (.5) * (iEToFit + iLabor) ),
               rho_l = iLabor / iEToFit 
   )
   model <- lm( log(iGDP) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
@@ -2367,7 +2380,9 @@ linexModel <- function(countryAbbrev, energyType, data){
   a_0 <- coef(model)[2]
   a_1 <- coef(model)[3]
   c_t <- a_1 / a_0
-  naturalCoeffs <- data.frame(scale = as.vector(coef(model)[1]),
+  naturalCoeffs <- data.frame(
+                     logscale = as.vector(coef(model)[1]),
+                     scale = exp(as.vector(coef(model)[1])),
                      a_0 = as.vector(a_0),
                      a_1 = as.vector(a_1),
                      c_t = as.vector(c_t),
@@ -2488,7 +2503,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iGDP = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
