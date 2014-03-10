@@ -1,10 +1,30 @@
+#
+# Files created by RStudio
+#
 .Rproj.user
 .Rhistory
 .RData
 *.Rproj
 /cache
+
+#
+# Files created by resampling
+#
 Generate-Resamples-Batch.Rout
+data_resample/
+data_failures/
+core
+
+# 
+# Files related to running the batch.bash script
+#
 node*.txt
+
+#
+# Files related to creating an R package
+#
+EconModels.Rcheck/
+EconModels_*.tar.gz
 
 #
 # Files created by vim
@@ -32,12 +52,6 @@ ExperimentingWithPlots.pdf
 *.bbl
 *.blg
 figure/
-data_resample/
-data_failures/
-core
-package/man/
-EconModels.Rcheck/
-EconModels_*.tar.gz
 
 #
 # Files created by beamer
