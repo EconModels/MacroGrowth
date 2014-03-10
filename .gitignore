@@ -37,6 +37,7 @@ data_failures/
 core
 package/man/
 package/NAMESPACE
+EconModels.Rcheck/
 
 #
 # Files created by beamer
