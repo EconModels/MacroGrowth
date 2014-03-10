@@ -271,85 +271,6 @@ printCovarTable <- function(countryAbbrev){
 }
 
 #' @export
-createHistoricalLatticeGraphOld <- function(countryAbbrev, textScaling = 1.0, keyXLoc = defaultKeyXLoc, keyYLoc = defaultKeyYLoc){
-  ####################################
-  # Creates a graph that displays all of the factors of production for all countries (if you leave off countryAbbrev)
-  # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
-  # Provide a value for textScaling to scale the size of the text on the graph. This is expecially useful
-  # for converting between graphs in a paper and graphs in a beamer presentation.
-  # textScaling = 1.0 is good for a paper. textScaling = 0.6 is good for a beamer presentation.
-  # keyXLoc and keyYLoc are locations for the graph's legend.
-  ##
-  # Code for all graphs, regardless of whether we want to focus on a specific country
-  graphType <- "b" #b is for both line and symbol
-  lineTypes <- c(0, 1, 5, 2) #line types. See http://en.wikibooks.org/wiki/R_Programming/Graphics
-  lineWidths <- c(0, 2, 2, 1) #line widths. 0 means no line.
-  colors <- c("black", "black", "black", "black") #line and symbol colors
-  symbols <- c(1, NA, NA, NA)  #NA gives no symbol.
-  # Code that deals with items that are specific to whether we want all countries or a specific country.
-  if (missing(countryAbbrev)){
-    # We want a graph with panels for all countries
-    data <- loadData("All")
-    factorLevels <- countryNamesAlph # We want all countries shown
-    indexCond <- list(countryOrderForGraphs) # We want all countries in this order
-    layout <- ninePanelLayoutSpec # Show all countries
-    yLimits <- yLimitsForGDPGraphs
-  } else {
-    # We want only a specific country
-    data <- loadData(countryAbbrev)
-    # Select the correct y limits
-    index <- which(countryAbbrevsAlph %in% countryAbbrev)
-    # The following lines use [index:index] as a convenient way of subsetting.
-    # This has the added benefit of maintaining the correct classes for things.
-    yLimits <- yLimitsForGDPGraphs[index:index]       # Pick limits for the country we want.
-    factorLevels <- countryNamesAlph[index:index]     # Only show the country we have chosen.
-    indexCond <- list(c(1))                           # We want only one country.
-    layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
-  }
-  graph <- ggplot(aes(x=Year), data=data) +
-    geom_line(aes(y=iGDP, lty="iGPD")) +
-    geom_line(aes(y=iCapStk, lty="iCapStk")) +
-    geom_line(aes(y=iLabor, lty="iLabor")) +
-    geom_line(aes(y=iQ, lty="iQ")) +
-    facet_grid( Country ~ ., scales="free_y" ) +
-    ylab("Indexed (1980=1 or 1991=1)") +
-    xlab("") +
-    theme_minimal()
-  return(graph)
-  
-  graph <- xyplot(iGDP+iCapStk+iLabor+iQ ~ Year | Country, data=data,
-                  type = graphType,
-                  index.cond = indexCond, #orders the panels.
-                  layout = layout, 
-                  # Sets strip parameters
-                  strip = strip.custom(factor.levels=factorLevels, # Sets text for factor levels
-                                       bg="transparent", # Sets background transparent to match the graph itself.
-                                       par.strip.text=list(cex=textScaling) # Scales text in the strip.
-                  ),
-                  as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-                  lty = lineTypes, lwd = lineWidths, col = colors, #Controls line parameters
-                  pch = symbols, col.symbol = colors, #Controls symbol parameters
-                  key=list(text=list(c("$y$", "$k$", "$l$", "$q$")),
-                           type=graphType,
-                           cex=keyTextSize * textScaling, #controls size of text in the key
-                           lines=list(lty=lineTypes, lwd=lineWidths), #controls line types
-                           pch=symbols, col=colors, #controls symbol (plot characters) types
-                           columns=keyColumns, x=keyXLoc, y=keyYLoc), #controls columns and position of the key
-                  scales=list(cex=scaleTextSize * textScaling, #controls text size on scales.
-                              tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                              alternating=FALSE, # eliminates left-right, top-bot alternating of axes
-                              x=list(at=timeTics),
-                              y=list(relation="free",  #allows each axis to be different
-                                     at=yTicsForIndexedGraphs)), #specifies location for tics
-                  ylim=yLimits, #y axis limits
-                  #axis labels and scaling
-                  xlab=list(label="", cex=textScaling), 
-                  ylab=list(label="Indexed (1980=1 or 1991=1)", cex=textScaling)
-  ) 
-  return(graph)
-}
-
-#' @export
 naturalCoef <- function(object) {
   if (! "naturalCoeffs" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
   return( attr(object, "naturalCoeffs") )
@@ -2352,7 +2273,7 @@ printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
 }
 
 #' @export
-linexModel <- function(countryAbbrev, energyType, data){
+linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev)){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType must be one of "Q", "X", or "U".
