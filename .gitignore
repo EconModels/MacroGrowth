@@ -38,6 +38,7 @@ core
 package/man/
 package/NAMESPACE
 EconModels.Rcheck/
+EconModels_*.tar.gz
 
 #
 # Files created by beamer
