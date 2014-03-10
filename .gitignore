@@ -35,6 +35,8 @@ figure/
 data_resample/
 data_failures/
 core
+package/man/
+package/NAMESPACE
 
 #
 # Files created by beamer
