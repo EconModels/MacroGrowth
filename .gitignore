@@ -36,7 +36,6 @@ data_resample/
 data_failures/
 core
 package/man/
-package/NAMESPACE
 EconModels.Rcheck/
 EconModels_*.tar.gz
 
