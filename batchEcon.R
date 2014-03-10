@@ -1,5 +1,11 @@
 #!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 
+# Example usage:
+# for US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
+# ./batchEcon.R -c US -e X -m linex -n 10 -C -M wild
+# for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
+# ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild
+
 print(sort(.packages()))
 source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
 suppressPackageStartupMessages(library("optparse"))
