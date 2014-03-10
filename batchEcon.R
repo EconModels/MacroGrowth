@@ -7,7 +7,8 @@
 # ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild
 
 print(sort(.packages()))
-source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
+# source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
+require(EconModels)
 suppressPackageStartupMessages(library("optparse"))
 
 option_list <- list(
