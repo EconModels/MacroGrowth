@@ -745,7 +745,7 @@ yhat.default <- function(object,...) {
 yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( fetted(object,...) + lx0 )
+  exp( fitted(object,...) + lx0 )
 }
 
 #' @export
