@@ -1415,6 +1415,32 @@ createCDParamsGraph <- function(energyType="none"){
   return(graph)
 }
 
+#' Fit CES model
+#' 
+#' This function fits a CES model to original or resampled data.
+#' 
+#' @param data a data frame, if you want to use resampled data.
+#' @param countryAbbrev, a character string naming the country, 
+#' if you want to use original data.
+#' @param nest one of \code{"(kl)"}, \code{"(le)"}, or \code{"(ek)"}.
+#' Use  \code{"(kl)"} if you want a fit without energy, regardless 
+#' of which energyType is specified.
+#' @param energyType Use \code{"none"} to specify a CES fit without energy, but only if 
+#' \code{nest != "(kl)"}.
+#' @param fittingToResampleData a logical.  If \code{FALSE}, you should also supply a 
+#' value for \code{origModel}
+#' because \code{origModel} will be used to obtain the starting point for a gradient search.
+#' @param origModel a model
+#' @param prevModel a model used to start gradient searches.
+#' Use \code{NULL} if you want to use the default start locations AND do a grid search 
+#' in sigma.
+#' @param rho,rho1 Default values for \code{rho} and \code{rho1} are a grid upon which 
+#' searches will be made.
+#' Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default 
+#' starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from 
+#' the default values.
+#' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
+#' @return a list of models 
 #' @export
 cesModel2 <- function(countryAbbrev, 
                       energyType="none", 
@@ -1427,23 +1453,6 @@ cesModel2 <- function(countryAbbrev,
                       digits=6,
                       ...){
   
-  ###################
-  # This function fits a CES model to original or resampled data.
-  # Pass in data if you want to use resampled data.
-  # Pass in a countryAbbrev if you want to use original data.
-  # Pass in nest="(kl)" if you want a fit without energy, regardless of which energyType is specified.
-  # If energyType="none", a CES fit without energy will be attempted, but only if nest != "(kl)".
-  # If you set fittingToResampleData=FALSE, you should also supply a value for the origModel argument,
-  # because origModel will be used to obtain the starting point for a gradient search.
-  # Pass in a prevModel if you want to start from its location using gradient searches only.
-  # Pass in NULL for prevModel if you want to use the default start locations AND do a grid search in sigma
-  # Default values for rho and rho1 are a grid upon which searches will be made.
-  # Note that rho = 0.25 and rho1 = 0.25 are included. These are the default starting
-  # values for rho and rho1, so that we don't need to do a fit from the default values.
-  # rho = 0.25 corresponds to sigma = 0.8.
-  #
-  # Returns a list of models that were generated within this function.
-  ##
   if (energyType != "none" && (nest != "(kl)")){
     # We need to do the CES fit with the desired energyType.
     # But, only if we asked for a nest that isn't "(kl)"
