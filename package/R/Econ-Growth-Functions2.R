@@ -1513,7 +1513,7 @@ cesModel2 <- function(countryAbbrev,
     
     hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
     model <- addMetaData(model, nest=nest, history=hist)
-    models[[length(models)+1]] <- model
+    models[length(models)+1] <- list(model)
     
   }
   #
