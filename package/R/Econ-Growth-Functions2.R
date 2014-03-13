@@ -12,6 +12,7 @@
 #' @import xtable
 #' @import nlmrt
 #' @import micEconCES
+#' @import miscTools
 #' @import reshape2
 
 
@@ -745,14 +746,14 @@ yhat.default <- function(object,...) {
 yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( fitted(object,...) + lx0 )
+  exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
 #' @export
 yhat.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( fitted(object, ...) + lx0 )
+  exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
 
@@ -760,14 +761,14 @@ yhat.LINEXmodel <- function( object, ... ) {
 predict.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+  exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
 #' @export
 predict.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-  exp( NextMethod() + lx0 )
+  exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
 #residuals.CDEmodel <- function( object, ... ) {
@@ -1506,8 +1507,7 @@ cesModel2 <- function(countryAbbrev,
                                    tName=tName, 
                                    method=algorithm, 
                                    rho=rho, 
-                                   control=chooseCESControl(algorithm), ...); NULL
-        }
+                                   control=chooseCESControl(algorithm), ...); NULL}
       )
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
