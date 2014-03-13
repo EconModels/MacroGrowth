@@ -849,7 +849,9 @@ cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeCon
                      isConv = TRUE  # modelCD$convInfo$isConv
                      )
   attr(modelCD, "naturalCoeffs") <- naturalCoeffs
-  attr(modelCD, "data") <- data
+  sdata <- subset(data, select= all.vars(modelCD$terms))
+  attr(modelCD, "data") <- data[complete.cases(sdata),]
+
   class(modelCD) <- c("CDEmodel", class(modelCD))
   return(modelCD)
 }
@@ -947,7 +949,8 @@ cdeModel <- function(countryAbbrev,
   attr(res, "good") <-  sapply( models, respectsConstraints )
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
-  attr(res, "data") <- data
+  sdata <- subset(data, select = all.vars(res$terms))
+  attr(res, "data") <- data[complete.cases(sdata),]
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
 }
@@ -2327,7 +2330,10 @@ linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev)){
                      isConv = TRUE
   )
   attr(model, "naturalCoeffs") <- naturalCoeffs
-  attr(model, "data") <- data
+  sdata <- subset(data, 
+                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
+  attr(model, "data") <- data[complete.cases(sdata),]
+  
   class(model) <- c("LINEXmodel", class(model))
   return(model)
 }
