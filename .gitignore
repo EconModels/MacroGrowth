@@ -25,6 +25,7 @@ node*.txt
 #
 EconModels.Rcheck/
 EconModels_*.tar.gz
+package/man/
 
 #
 # Files created by vim
@@ -41,6 +42,7 @@ Workflow.pdf
 CES.pdf
 ExperimentingWithPlots.pdf
 *.log
+*.notes # files created by the \authNote command.
 *.tikz
 *.aux
 *.spl
@@ -52,7 +54,6 @@ ExperimentingWithPlots.pdf
 *.bbl
 *.blg
 figure/
-*.notes # files created by the \authNote command.
 
 #
 # Files created by beamer
