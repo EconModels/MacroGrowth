@@ -52,6 +52,7 @@ ExperimentingWithPlots.pdf
 *.bbl
 *.blg
 figure/
+*.notes # files created by the \authNote command.
 
 #
 # Files created by beamer
