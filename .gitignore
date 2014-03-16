@@ -25,7 +25,9 @@ node*.txt
 #
 EconModels.Rcheck/
 EconModels_*.tar.gz
-package/man/
+# Don't put this in .gitignore. Need to be here so that one can install from github.
+# Rather, delete local copies of the files in package/man before pulling from github.
+# package/man/ 
 
 #
 # Files created by vim
