@@ -21,6 +21,11 @@ core
 node*.txt
 
 #
+# Directories used by convention for analysis
+#
+sims_*
+
+#
 # Files related to creating an R package
 #
 EconModels.Rcheck/
