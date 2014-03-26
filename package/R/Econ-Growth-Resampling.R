@@ -294,7 +294,7 @@ resampleFits <- function(
                                 resampleCoeffs <- extractAllMetaData(model)
                                 resampleCoeffs$method <- method
                                 coeffs <- rbind.fill(coeffs, resampleCoeffs)
-                                models[[length(models)+1]] <- bestModel(model)
+                                models[length(models)+1] <- list(bestModel(model))
                                 names(models)[length(models)] <- paste(method, ".", i, sep="")
                               },
                               "cese-(kl)e" = for (i in 1:n){
