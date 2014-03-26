@@ -3,6 +3,8 @@ Type: Package
 Title: Economics Models
 Version: 0.1-2
 Date: 2014-03-01
+Depends:
+    micEconCES
 Imports:
     parallel,
     mosaic,
@@ -14,7 +16,6 @@ Imports:
     mosaic,
     xtable,
     nlmrt,
-    micEconCES,
     Hmisc,
     methods,
     utils,
