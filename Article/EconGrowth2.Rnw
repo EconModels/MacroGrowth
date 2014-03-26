@@ -230,11 +230,7 @@ scaleTextSize <- 0.8  # Multiple of normal size
 #' @export
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
-#' @export
 spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
-
-
-
 @
 
 % These equations are used in several locations in the paper.
