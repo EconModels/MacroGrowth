@@ -1509,15 +1509,19 @@ cesModel2 <- function(countryAbbrev,
                                    xNames=xNames, 
                                    tName=tName, 
                                    method=algorithm, 
-                                   rho=rho, 
-                                   control=chooseCESControl(algorithm), ...); NULL}
+                                   control=chooseCESControl(algorithm), ...) }
       )
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
-        error = function(e) { NULL }
+        error = function(e) { list(data=data, 
+                                   yName=yName, 
+                                   xNames=xNames, 
+                                   tName=tName, 
+                                   method=algorithm,
+                                   control=chooseCESControl(algorithm), ...) }
       )
     }
     
