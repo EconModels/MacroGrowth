@@ -222,7 +222,7 @@ resampleFits <- function(
   countryAbbrev <- match.arg(countryAbbrev)
 #   energyType <- match.arg(energyType)
 #   factor <- match.arg(factor)
-  method <- match.arg(method)
+  method <- match.arg(method)   # allow multiples?
   set.seed(getSeed()) # Provide reproducible results
   # Load the raw economic and energy data for the country of interest.
   data <- loadData(countryAbbrev=countryAbbrev)
