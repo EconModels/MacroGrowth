@@ -3422,7 +3422,6 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   ##
   dr <- base
   if (is.null(dr)) dr <- "../data_resample"
-#   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
                    "cde"       = file.path(dr, "cd",      countryAbbrev),
