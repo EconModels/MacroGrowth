@@ -43,8 +43,8 @@ ssh node-04 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e Q -m cese-\(kl\)e $1 &> $OUTDIR/
 ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP -e Q -m cese-\(le\)k $1 &> $OUTDIR/node-05.txt" &
 # node-06 has only 4 working processors.  We can access only 2 of those.  So, best to avoid node-06 for now.
 ssh node-07 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e Q -m cese-\(le\)k $1 &> $OUTDIR/node-07.txt" &
-ssh node-09 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e Q -m cese-\(le\)k $1 &> $OUTDIR/node-09.txt" &
 # Gary Draving suggested avoiding node-08, because of I/O issues.
+ssh node-09 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e Q -m cese-\(le\)k $1 &> $OUTDIR/node-09.txt" &
 ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP -e Q -m cese-\(ek\)l $1 &> $OUTDIR/node-10.txt" &
 # node-11 is not functional.
 ssh node-12 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e Q -m cese-\(ek\)l $1 &> $OUTDIR/node-12.txt" & 
