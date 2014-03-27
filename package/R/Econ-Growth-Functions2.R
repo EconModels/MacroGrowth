@@ -302,7 +302,6 @@ safeDF <- function(object, nrow=1, ncol=0){
   return(as.data.frame(object))
 }
 
-## <<single-factor functions, eval=TRUE>>=
 #' @export
 singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
   ####################
@@ -1507,7 +1506,7 @@ cesModel2 <- function(countryAbbrev,
       # We want a model without energy. No need for a rho1 argument.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), ...),
+               rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -1519,7 +1518,7 @@ cesModel2 <- function(countryAbbrev,
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), ...),
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -1542,7 +1541,7 @@ cesModel2 <- function(countryAbbrev,
   for (algorithm in algorithms) {
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-             control=chooseCESControl(algorithm), start=start, ...),
+             control=chooseCESControl(algorithm), start=start, multErr=TRUE, ...),
       error = function(e) { NULL }
     )
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
@@ -1557,7 +1556,7 @@ cesModel2 <- function(countryAbbrev,
     for (algorithm in algorithms) {
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), start=start, ...),
+               control=chooseCESControl(algorithm), start=start, multErr=TRUE, ...),
         error = function(e) { NULL }
       )
       hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
