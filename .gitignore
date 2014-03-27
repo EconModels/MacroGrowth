@@ -61,6 +61,7 @@ ExperimentingWithPlots.pdf
 *.bbl
 *.blg
 figure/
+*.notes
 
 #
 # Files created by beamer
