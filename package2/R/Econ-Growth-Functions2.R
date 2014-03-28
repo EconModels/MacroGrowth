@@ -292,7 +292,7 @@ safeDF <- function(object, nrow=1, ncol=0){
 #' @param constrained a logical indicating whether the model parameters are constrained
 #' @return an lm object with some additional attributes
 #' @export
-singleFactorModel2 <- function(formula, data, constrained=FALSE) {
+singleFactorModel2 <- function(formula, data, response, factor, time, constrained=FALSE) {
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -300,6 +300,15 @@ singleFactorModel2 <- function(formula, data, constrained=FALSE) {
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
   # model <- iGDP ~ exp(lambda*iYear) * f^m
   # modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
+  
+  if ( missing(formula) ) {
+    formula <- substitute( response ~ factor + time,
+                           list( response = substitute(response),
+                                 factor = substitute(factor),
+                                 time = substitute(time)
+                           )
+    ) 
+  }
   formulas <- list( log(y) ~ x + time,
                      log(y) - x ~ time)
   formulas <- lapply( formulas,
@@ -807,7 +816,17 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param contrained a logical indicating whether the parameters are contrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
-cdModel2 <- function(formula, data, constrained=FALSE, ...) {
+cdModel2 <- function(formula, data, response, capital, labor, time, constrained=FALSE, ...) {
+  if ( missing(formula) ) {
+    formula <- substitute( response ~ capital + labor + time,
+                           list( response = substitute(response),
+                                 capital = substitute(capital),
+                                 labor = substitute(labor),
+                                 time = substitute(time)
+                           )
+    )
+  }
+  
   formulas <- list(
     log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
     log(iGDP) - log(iCapStk) ~ iYear,  
@@ -881,12 +900,18 @@ respectsConstraints <- function( model ) {
 #' @details More about contranints TBA.
 #' @export
 # y ~ capital + labor + energy + time
-cdeModel2 <- function( formula, data, constrained=FALSE, ...){
+cdeModel2 <- function( formula, data, response, capital, labor, energy, time, constrained=FALSE, ...){
     
-    # We need to do the Cobb-Douglas fit with the desired energy data.
-    # To achieve the correct fit, we'll change the name of the desired column
-    # to "iEToFit" and use "iEToFit" in the nls function. 
-    # data <- replaceColName(data, energyType, "iEToFit")
+  if ( missing(formula) ) {
+    formula <- substitute( response ~ capital + labor + energy + time,
+                           list( response = substitute(response),
+                                 capital = substitute(capital),
+                                 labor = substitute(labor),
+                                 energy = substitute(energy),
+                                 time = substitute(time)
+                           )
+    )
+  }
     formulas <- list( 
       log(y) - log(energy) ~ 
         time + I(log(capital) - log(energy)) + I(log(labor) - log(energy)),  
@@ -2330,11 +2355,21 @@ printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
 #' @param data a data frame in which \code{formula} is evaluated
 #' @export
 #' 
-linexModel2 <- function(formula, data) {
+linexModel2 <- function(formula, data, response, capital, labor, energy, time) {
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # 
 
+  if ( missing(formula) ) {
+    formula <- substitute( response ~ capital + labor + energy + time,
+                           list( response = substitute(response),
+                                 capital = substitute(capital),
+                                 labor = substitute(labor),
+                                 energy = substitute(energy),
+                                 time = substitute(time)
+                           )
+    )
+  }
   formulas <- list( log(y) - log(energy) ~  
                       I(2 * (1 - 1/(capital / ( .5 * (energy + labor) ) )) )  + 
                       I( labor/energy - 1 )
