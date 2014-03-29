@@ -24,7 +24,7 @@ echo $LOC_PATH
 EXEC="./batchEcon.R"
 
 # OUTDIR="`pwd`/data_resample"
-OUTDIR ="$LOC_PATH/data_resample"
+OUTDIR="$LOC_PATH/data_resample"
 HISTDIR="$LOC_PATH/data"
 
 # These models take hardly any time, so we'll run them all on their own node. 
