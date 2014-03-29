@@ -3,8 +3,9 @@
 \alias{cesModel2}
 \title{Fit CES model}
 \usage{
-cesModel2(countryAbbrev, energyType = "none", data = loadData(countryAbbrev
-  = countryAbbrev), prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
+cesModel2(countryAbbrev, energyType = "none", baseHistorical,
+  data = loadData(countryAbbrev = countryAbbrev, baseHistorical =
+  baseHistorical), prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
   nest = "(kl)e", rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9,
   -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   digits = 6, ...)
@@ -12,6 +13,9 @@ cesModel2(countryAbbrev, energyType = "none", data = loadData(countryAbbrev
 \arguments{
   \item{data}{a data frame, if you want to use resampled
   data.}
+
+  \item{baseHistorical}{the base directory from which to
+  load historical data.}
 
   \item{countryAbbrev,}{a character string naming the
   country, if you want to use original data.}

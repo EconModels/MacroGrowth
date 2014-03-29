@@ -3,7 +3,7 @@
 \alias{cobbDouglasPredictions}
 \title{Cobb-Douglas Predictions}
 \usage{
-cobbDouglasPredictions(countryAbbrev, energyType)
+cobbDouglasPredictions(countryAbbrev, energyType, baseHistorical)
 }
 \value{
 a data frame with one variable named \code{pred} containing fitted values on the

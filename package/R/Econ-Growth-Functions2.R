@@ -52,20 +52,19 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
   )
 }
 
+#' Loads historical economic data
+#' 
+#' This function returns a data frame containing historical economic data
+#' 
+#' @param countryAbbrev the country for which you want to load data
+#' @param baseHistorical the relative path of the directory containing the historical data.
+#' @return a data frame containing historical economic data
 #' @export
-loadData <- function(countryAbbrev, base="../"){
-  #################################
-  # This function loads data given a country abbreviation.
-  # The file name from which data will be loaded is assumed to be of the form 
-  # "<countryAbbrev>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
-  #
-  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-  #
-  # returns a data.frame with the data that has been loaded
-  ##
+loadData <- function(countryAbbrev, baseHistorical){
   # Read the data file as a table with a header.  
-  fileName <- paste0(base,"data/", countryAbbrev, "Data.txt")
-  data <- read.table(file=fileName, header=TRUE)
+  fileName <- paste0(countryAbbrev,"Data.txt")
+  path <- file.path(baseHistorical, fileName)
+  data <- read.table(file=path, header=TRUE)
   return(data)
 }
 
@@ -170,7 +169,7 @@ doPadRows <- function(dataToBePadded, dataThatSuppliesRowCount) {
 }
 
 #' @export
-padRows <- function(countryAbbrev, df){
+padRows <- function(countryAbbrev, df, baseHistorical){
 #####################
 # This function adds NA rows to the bottom of data.frame df to ensure that it has the 
 # the number of observations (rows) as the country data set for countryAbbrev
@@ -178,7 +177,7 @@ padRows <- function(countryAbbrev, df){
 # the data.frame for countryAbbrev and then calls doPadRows
 # returns a modified version of df that includes the padded rows filled with "NA".
 ##
-  countryData <- loadData(countryAbbrev)
+  countryData <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   return(doPadRows(dataToBePadded=df, dataThatSuppliesRowCount=countryData))
 }
 
@@ -228,11 +227,11 @@ replaceColName <- function(data, factor, newName){
 }
 
 #' @export
-covarianceTable <- function(countryAbbrev){
+covarianceTable <- function(countryAbbrev, baseHistorical){
   ##############################
   # Returns an xtable of covariance information for the specified country.
   ##
-  data <- loadData(countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
     dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX, data$iU)
@@ -303,7 +302,8 @@ safeDF <- function(object, nrow=1, ncol=0){
 }
 
 #' @export
-singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respectRangeConstraints=FALSE){
+singleFactorModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
+                              factor, respectRangeConstraints=FALSE){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -336,7 +336,7 @@ singleFactorModel <- function(countryAbbrev, data=loadData(countryAbbrev), facto
 }
 
 #' @export
-singleFactorPredictions <- function(countryAbbrev, factor){
+singleFactorPredictions <- function(countryAbbrev, factor, baseHistorical){
   #########################
   # Takes the single-factor fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -354,7 +354,7 @@ singleFactorPredictions <- function(countryAbbrev, factor){
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
-  df <- padRows(countryAbbrev, df)
+  df <- padRows(countryAbbrev=countryAbbrev, df=df, baseHistorical=baseHistorical)
   return(df)
 }
 
@@ -396,7 +396,7 @@ sfResampleCoeffProps <- function(sfResampleFits, ...){
 }
 
 #' @export
-singleFactorData <- function(countryAbbrev, factor, archive=NULL, base="../"){
+singleFactorData <- function(countryAbbrev, factor, archive=NULL, baseResample){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the single factor production function for a given a country.
@@ -421,17 +421,17 @@ singleFactorData <- function(countryAbbrev, factor, archive=NULL, base="../"){
     return(df)
   }
   resampledData <- loadResampleData(modelType="sf", countryAbbrev=countryAbbrev, factor=factor,
-                                    archive=archive, base=base)
+                                    archive=archive, baseResample=baseResample)
   statisticalProperties <- sfResampleCoeffProps(resampledData)
   return(statisticalProperties)
 }
 
 #' @export
-singleFactorCountryRow <- function(countryAbbrev, factor){
+singleFactorCountryRow <- function(countryAbbrev, factor, baseResample){
   ############
   # Creates a row for the single factor parameters table for the given country (2-letter code) and factor.
   ##
-  dataSF <- singleFactorData(countryAbbrev, factor)
+  dataSF <- singleFactorData(countryAbbrev=countryAbbrev, factor=factor, baseResample=baseResample)
   out <- cbind(dataSF["-95% CI", "lambda"], dataSF["SF", "lambda"], dataSF["+95% CI", "lambda"],
                dataSF["-95% CI", "m"],  dataSF["SF", "m"],  dataSF["+95% CI", "m"])
   return(out)
@@ -478,7 +478,7 @@ singleFactorParamsTable <- function(factor){
 }
 
 #' @export
-singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor){
+singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor, baseResample){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a single factor model for countryAbbrev.
@@ -489,7 +489,7 @@ singleFactorCountryRowsForParamsGraph <- function(countryAbbrev, factor){
   # The return type is a data.frame.
   ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
-  dataSF <- singleFactorData(countryAbbrev, factor)
+  dataSF <- singleFactorData(countryAbbrev=countryAbbrev, factor=factor, baseResample=baseResample)
   valueRow <- "SF"
   # Create rows for each parameter
   lambdaRow <- data.frame(country = countryAbbrev, 
@@ -578,7 +578,7 @@ wireCloudPanel <- function(x, y, z, points, showPoints=TRUE, ...) {
 }
 
 #' @export
-sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
+sf3DSSEGraph <- function(countryAbbrev, baseHistorical, factor, showOpt=TRUE){
   #########################
   # Creates a 3-D wireframe graph with SSE on the vertical axis and 
   # lambda and m on the horizontal axes.
@@ -593,7 +593,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   newX <- data.frame(expand.grid(lambdaSeq, mSeq))
   colnames(newX) <- c("lambda", "m")
   # Get the actual GDP data
-  data <- loadData(countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorica=baseHistorical)
   y_act <- data[ ,"iGDP"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
@@ -799,7 +799,8 @@ predict.LINEXmodel <- function( object, ... ) {
 #}
 
 #' @export
-cdModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRangeConstraints=FALSE, ...){
+cdModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
+                    respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
   # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
@@ -868,8 +869,9 @@ respectsConstraints <- function( model ) {
 
 #' @export
 cdeModel <- function(countryAbbrev, 
+                       baseHistorical,
                        energyType="Q", 
-                       data=loadData(countryAbbrev), 
+                       data=loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical), 
                        respectRangeConstraints=FALSE, ...){
 
   ##
@@ -956,7 +958,8 @@ cdeModel <- function(countryAbbrev,
 }
 
 #' @export
-cobbDouglasModel <- function(countryAbbrev, energyType="none", data=loadData(countryAbbrev), ...){
+cobbDouglasModel <- function(countryAbbrev, baseHistorical, energyType="none", 
+                             data=loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
   # This function dispatches to cdModel or cdeModel based on which energy type is specified.
@@ -1007,11 +1010,10 @@ cdResampleCoeffProps <- function(cdResampleFits, ...){
 
 #' Cobb-Douglas Predictions
 #' 
-#' @export
 #' @return a data frame with one variable named \code{pred} containing fitted values on the 
 #' natural scale.
- 
-cobbDouglasPredictions <- function(countryAbbrev, energyType){
+#' @export
+cobbDouglasPredictions <- function(countryAbbrev, energyType, baseHistorical){
   #########################
   # Takes the Cobb-Douglas fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -1028,22 +1030,21 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
       return(df)
     }
   }
-  model <- cobbDouglasModel(countryAbbrev, energyType)
+  model <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType, baseHistorical=baseHistorical)
   pred <- predict(model) # dont See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
-  df <- padRows(countryAbbrev, df)
+  df <- padRows(countryAbbrev=countryAbbrev, df=df, baseHistorical=baseHistorical)
   return(df)
 }
 
 #' @export
-#' @export
-cobbDouglasPredictionsColumn <- function(energyType="none"){
+cobbDouglasPredictionsColumn <- function(energyType="none", baseHistorical){
   #########################
   # Takes the Cobb-Douglas fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
   ##
-  out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType))
+  out <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasPredictions, energyType=energyType, baseHistorical=baseHistorical))
   if (energyType == "none"){
     colnames(out) <- c("predGDP")
   } else {
@@ -1053,8 +1054,7 @@ cobbDouglasPredictionsColumn <- function(energyType="none"){
 }
 
 #' @export
-#' @export
-cobbDouglasData <- function(countryAbbrev, energyType="none", archive=NULL, base="../", ...){
+cobbDouglasData <- function(countryAbbrev, energyType="none", archive=NULL, baseResample, ...){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the Cobb-Douglas production function given a country.
@@ -1080,12 +1080,12 @@ cobbDouglasData <- function(countryAbbrev, energyType="none", archive=NULL, base
   } else if (energyType == "none"){
     # We want Cobb-Douglas without energy
     resampledData <- loadResampleData(modelType="cd", countryAbbrev=countryAbbrev, energyType="none",
-                                      archive=archive, base=base)
+                                      archive=archive, baseResample=baseResample)
   } else {
     # We want Cobb-Douglas with energy
     resampledData <- loadResampleData(modelType="cde", countryAbbrev=countryAbbrev, 
                                       energyType=energyType,
-                                      archive=archive, base=base)
+                                      archive=archive, baseResample=baseResample)
   }
   statisticalProperties <- cdResampleCoeffProps(resampledData)
   # Set the correct label in the row that shows the base values.
@@ -1098,7 +1098,7 @@ cobbDouglasData <- function(countryAbbrev, energyType="none", archive=NULL, base
 }
 
 #' @export
-loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"){
+loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, baseHistorical, baseResample){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions for Cobb-Douglas models.
@@ -1126,7 +1126,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"
   }
   
   # Put the historical data in a data.frame. 
-  actual <- loadData(countryAbbrev="all")
+  actual <- loadData(countryAbbrev="all", baseHistorical=baseHistorical)
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
@@ -1134,7 +1134,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"
   actual$Energy <- energyType
 
   # Put the fits to historical data in a data.frame
-  prediction <- cobbDouglasPredictionsColumn(energyType=energyType)
+  prediction <- cobbDouglasPredictionsColumn(energyType=energyType, baseHistorical=baseHistorical)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
   pred$iGDP <- prediction[,1]
@@ -1161,7 +1161,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"
   dfList <- list()
   for (countryAbbrev in countryAbbrevs){
     # Get the raw data for this country
-    historical <- loadData(countryAbbrev=countryAbbrev)
+    historical <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
     if (energyType == "U"){
       # subset historical to include only years for which U is available.
       historical <- subset(historical, !is.na(iU))
@@ -1171,7 +1171,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"
     resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
                                                    modelType=modelType, 
                                                    energyType=energyType, 
-                                                   archive=archive, base=base)
+                                                   archive=archive, baseResample=baseResample)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
     # Get the number of years from fitted(resampleModels[[1]]), because not
@@ -1196,11 +1196,11 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, base="../"
 }
 
 #' @export
-cobbDouglasCountryRow <- function(countryAbbrev, energyType="none"){
+cobbDouglasCountryRow <- function(countryAbbrev, energyType="none", baseResample){
   ############
   # Creates a row for the Cobb Douglas parameters table for the given country (2-letter code) and energyType (Q, X, or U)
   ##
-  dataCD <- cobbDouglasData(countryAbbrev, energyType)
+  dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType=energyType, baseResample=baseResample)
   if (energyType == "none"){
     out <- cbind(dataCD["-95% CI", "lambda"], dataCD["CD", "lambda"], dataCD["+95% CI", "lambda"],
                  dataCD["-95% CI", "alpha"],  dataCD["CD", "alpha"],  dataCD["+95% CI", "alpha"],
@@ -1215,7 +1215,7 @@ cobbDouglasCountryRow <- function(countryAbbrev, energyType="none"){
 }
 
 #' @export
-cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none"){
+cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", baseResample){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a Cobb-Douglas model for countryAbbrev.
@@ -1228,10 +1228,10 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
   if (energyType == "none"){
     valueRow <- "CD"
-    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType="none")
+    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType="none", baseResample=baseResample)
   } else {
     valueRow <- "CDe"
-    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType=energyType)
+    dataCD <- cobbDouglasData(countryAbbrev=countryAbbrev, energyType=energyType, baseResample=baseResample)
   }
   # These rows are common to the "with" and "without" energy cases.
   lambdaRow <- data.frame(country = countryAbbrev, 
@@ -1263,12 +1263,12 @@ cobbDouglasCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none
 }
 
 #' @export
-cobbDouglasParamsTableNoEnergyDF <- function(){
+cobbDouglasParamsTableNoEnergyDF <- function(baseResample){
   ######################
   # Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType="none"))
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType="none", baseResample=baseResample))
   rownames(dataCD) <- countryAbbrevs
   colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
                         "lowerCI_alpha", "alpha", "upperCI_alpha",
@@ -1278,11 +1278,11 @@ cobbDouglasParamsTableNoEnergyDF <- function(){
 }
 
 #' @export
-cobbDouglasParamsTableNoEnergy <- function(){
+cobbDouglasParamsTableNoEnergy <- function(baseResample){
   ############################
   # Aggregates the Cobb-Douglas results into a big data table. No energy.
   ##
-  dataCD <- cobbDouglasParamsTableNoEnergyDF()
+  dataCD <- cobbDouglasParamsTableNoEnergyDF(baseResample=baseResample)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ")
@@ -1296,12 +1296,12 @@ cobbDouglasParamsTableNoEnergy <- function(){
 }
 
 #' @export
-cobbDouglasParamsTableWithEnergyDF <- function(energyType){
+cobbDouglasParamsTableWithEnergyDF <- function(energyType, baseResample){
   ######################
   # Makes a data.frame with the parameters for the Cobb-Douglas model with energy.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType, baseResample=baseResample))
   rownames(dataCD) <- countryAbbrevs
   colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
                         "lowerCI_alpha", "alpha", "upperCI_alpha",
@@ -1312,12 +1312,12 @@ cobbDouglasParamsTableWithEnergyDF <- function(energyType){
 }
 
 #' @export
-cobbDouglasParamsTableWithEnergy <- function(energyType){
+cobbDouglasParamsTableWithEnergy <- function(energyType, baseResample){
   ############################
   # Aggregates the Cobb-Douglas results into a big data table for the given energyType.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType)
+  dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType, baseResample=baseResample)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ",
@@ -1335,19 +1335,19 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
 }
 
 #' @export
-printCDParamsTable <- function(energyType="none"){
+printCDParamsTable <- function(energyType="none", baseResample){
   ############################
   # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
   # Set energyType="none" to print a table for Cobb-Douglas without energy.
   ##
   if (energyType == "none"){
-    print(cobbDouglasParamsTableNoEnergy(), 
+    print(cobbDouglasParamsTableNoEnergy(baseResample=baseResample), 
           caption.placement="top", 
           sanitize.colnames.function = identity, 
           size="\\tiny", 
           table.placement="H")
   } else {
-    print(cobbDouglasParamsTableWithEnergy(energyType), 
+    print(cobbDouglasParamsTableWithEnergy(energyType=energyType, baseResample=baseResample), 
           caption.placement="top", 
           sanitize.colnames.function = identity, 
           size="\\tiny",
@@ -1356,7 +1356,7 @@ printCDParamsTable <- function(energyType="none"){
 }
 
 #' @export
-createCDParamsGraph <- function(energyType="none"){
+createCDParamsGraph <- function(energyType="none", baseResample){
   #############################
   # Creates a graph with confidence intervals for the Cobb-Douglas model for the given energyType. If you 
   # want the Cobb-Douglas model without energy, supply energyType="none".
@@ -1364,7 +1364,8 @@ createCDParamsGraph <- function(energyType="none"){
   if (energyType == "none"){
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType="none"))
+    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType="none", 
+                                    baseResample=baseResample))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                      data = data, 
                      centers = value, #identifies where the dots should be placed
@@ -1392,7 +1393,8 @@ createCDParamsGraph <- function(energyType="none"){
   } else {
     # Create a data table with the following columns:
     # country abbrev, parameter (lambda, alpha, or beta), -95% CI, value, +95% CI
-    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType))
+    data <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRowsForParamsGraph, energyType=energyType,
+                                    baseResample=baseResample))
     graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                      data = data, 
                      centers = value, #identifies where the dots should be placed
@@ -1427,6 +1429,7 @@ createCDParamsGraph <- function(energyType="none"){
 #' This function fits a CES model to original or resampled data.
 #' 
 #' @param data a data frame, if you want to use resampled data.
+#' @param baseHistorical the base directory from which to load historical data.
 #' @param countryAbbrev, a character string naming the country, 
 #' if you want to use original data.
 #' @param nest one of \code{"(kl)"}, \code{"(le)"}, or \code{"(ek)"}.
@@ -1451,7 +1454,8 @@ createCDParamsGraph <- function(energyType="none"){
 #' @export
 cesModel2 <- function(countryAbbrev, 
                       energyType="none", 
-                      data = loadData(countryAbbrev=countryAbbrev), 
+                      baseHistorical, 
+                      data = loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical), 
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       nest="(kl)e", 
@@ -1517,8 +1521,9 @@ cesModel2 <- function(countryAbbrev,
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch(
+        # If multErr=TRUE in the call to cesEst, we sometimes get models that don't work. Not sure why.
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...),
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=FALSE, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -1578,7 +1583,17 @@ addMetaData <- function(model, nest, history=""){
   if (is.null(model)){
     return(model) 
   }
-  if ( ! as.character(model$call[[1]]) == "cesEst" ){
+  if (is.null(model$call)){
+    stop("model$call is null")
+  }
+  if (length(model$call) < 1){
+    stop("length(model) is less than 1")
+  }
+  call <- model$call[[1]]
+  if (is.null(call)){
+    stop("model$call[[1]] is null")
+  }
+  if ( ! as.character(call) == "cesEst" ){
     stop("Unsupported model type.  Must be NULL or the result of calling cesEst()")
   }
   
@@ -1771,7 +1786,7 @@ chooseCESControl <- function(algorithm){
 }
 
 #' @export
-loadCESResampleData <- function(nest, energyType="none", archive=NULL){
+loadCESResampleData <- function(nest, energyType="none", archive=NULL, baseResample){
   #################################
   # Loads and binds data for a CES resample ternary plot.
   # If the energyType argument is missing or NA, you'll get data for the CES model without energy.
@@ -1779,8 +1794,8 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
   ##
   if (energyType == "none" || nest=="(kl)"){
     # Desire CES without energy.
-    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevs, 
-                                energyType="none", archive=archive)
+    data <- loadAllResampleData(modelType="ces", countryAbbrevsOrder=countryAbbrevs, energyType="none", 
+                                archive=archive, baseResample=baseResample)
     data$nest <- "(kl)"
     return(data)
   }
@@ -1788,7 +1803,7 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
   if (nest == "all"){
     # Data for all nest options is desired.
     # Recursively call this function and rbind.fill the results together.
-    allNests <- lapply( cesNests, loadCESResampleData, energyType=energyType, archive=archive )
+    allNests <- lapply( cesNests, loadCESResampleData, energyType=energyType, archive=archive, baseResample=baseResample )
     outgoing <- do.call(rbind.fill, allNests)
     # Now set the order for the factors of the nests.
     # Doing so sets the order of appearance on graphs.
@@ -1800,11 +1815,13 @@ loadCESResampleData <- function(nest, energyType="none", archive=NULL){
     data <- loadAllResampleData(modelType=modelType, 
                                 energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevsForGraphU,
-                                archive=archive)
+                                archive=archive,
+                                baseResample=baseResample)
   } else {
     data <- loadAllResampleData(modelType=modelType, energyType=energyType,
                                 countryAbbrevsOrder=countryAbbrevs, 
-                                archive=archive)
+                                archive=archive, 
+                                baseResample=baseResample)
   }
   # Add the nest argument to the data.
   data$nest <- nest
@@ -1863,7 +1880,7 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
 
 #' @export
 cesPredictions <- function(countryAbbrev, energyType="none", nest, forceRun=FALSE,
-                           archive=NULL, base="../"){
+                           archive=NULL, baseHistorical, baseResample){
   #########################
   # Takes the CES fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -1890,17 +1907,17 @@ cesPredictions <- function(countryAbbrev, energyType="none", nest, forceRun=FALS
       modelType <- paste("cese-", nest, sep="")
     }
     model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, 
-                                             energyType=energyType, archive=archive, base=base)
+                                             energyType=energyType, archive=archive, baseResample=baseResample)
   }
   pred <- fitted(model)
   df <- data.frame(pred)
   # Pad with rows as necessary
-  df <- padRows(countryAbbrev, df)
+  df <- padRows(countryAbbrev=countryAbbrev, df=df, baseHistorical=baseHistorical)
   return(df)
 }
 
 #' @export
-cesPredictionsColumn <- function(energyType="none", nest){
+cesPredictionsColumn <- function(energyType="none", nest, baseHistorical, baseResample){
   #########################
   # Takes the CES fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
@@ -1908,7 +1925,8 @@ cesPredictionsColumn <- function(energyType="none", nest){
   # Or, if nest="(kl)" is supplied, the CES model without energy will be used for the predictions,
   # regardless of the type of energy requested.
   ##
-  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType, nest=nest))  
+  out <- do.call("rbind", lapply(countryAbbrevs, cesPredictions, energyType=energyType, nest=nest, 
+                                 baseHistorical=baseHistorical, baseResample=baseResample))  
   if (energyType == "none"){
     colnames(out) <- "predGDP"
   } else {
@@ -1918,7 +1936,7 @@ cesPredictionsColumn <- function(energyType="none", nest){
 }
 
 #' @export
-loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NULL){
+loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NULL, baseHistorical, baseResample){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions.
@@ -1931,7 +1949,8 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
       stop('Need to include an energy type if nest = "all"')
     }
     # Recursively call this function and rbind.fill the results together.
-    allNests <- lapply( cesNests, loadCESSpaghettiGraphData, energyType=energyType, archive=archive )
+    allNests <- lapply( cesNests, loadCESSpaghettiGraphData, energyType=energyType, 
+                        archive=archive, baseHistorical=baseHistorical, baseResample=baseResample )
     outgoing <- do.call(rbind.fill, allNests)
     # Now set the order for the factors of the nests
     outgoing$nest <- factor(outgoing$nest, levels=cesNests)
@@ -1941,7 +1960,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   # Put the historical data in a data.frame. 
   # We apply the nest argument as given to the data frame. 
   # Doing so assists with graphing later.
-  actual <- loadData(countryAbbrev="all")
+  actual <- loadData(countryAbbrev="all", baseHistorical=baseHistorical)
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
@@ -1953,7 +1972,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   # Note that if we get nest="kl",the cesPredictionsColumn function 
   # gives the CES model without energy, 
   # regardless of which energy type is passed in here.
-  prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
+  prediction <- cesPredictionsColumn(energyType=energyType, nest=nest, baseHistorical=baseHistorical, baseResample=baseResample)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
   pred$iGDP <- prediction[,1]
@@ -1997,7 +2016,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   dfList <- list()
   for (countryAbbrev in countryAbbrevs){
     # Get the raw data for this country
-    historical <- loadData(countryAbbrev=countryAbbrev)
+    historical <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
     if (! missing(energyType) && energyType != "none"){
       # Don't do this test if we are missing energy.
       if (energyType == "U" && nest != "(kl)"){
@@ -2013,7 +2032,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
     resampleModels <- loadResampleModelsRefitsOnly(countryAbbrev=countryAbbrev, 
                                                    modelType=modelType, 
                                                    energyType=energyType, 
-                                                   archive=archive, base=base)
+                                                   archive=archive, baseResample=baseResample)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
     # Get the number of years from fitted(resampleModels[[1]]), because not
@@ -2039,7 +2058,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
 }
 
 #' @export
-cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL, base="../"){
+cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL, baseResample){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the CES production function given a country and an energyType.
@@ -2066,12 +2085,12 @@ cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL
   } else if (energyType == "none"){
     # We want CES without energy
     resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev, energyType="none",
-                                     archive=archive, base=base)
+                                     archive=archive, baseResample=baseResample)
   } else {
     # We want CES with energy  -- might want all three for this later.
     modelType <- paste("cese-", nest, sep="")
     resampleData <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
-                                     energyType=energyType, archive=archive, base=base)
+                                     energyType=energyType, archive=archive, baseResample=baseResample)
   }
   statisticalProperties <- cesResampleCoeffProps(resampleData)
   # Set the correct label in the row that shows the base values.
@@ -2084,12 +2103,12 @@ cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL
 }
 
 #' @export
-cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e"){
+cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e", baseResample){
   ############
   # Creates a row for the CES parameters table for the given country (2-letter code),
   # energyType (Q, X, U, or NA), and nest.
   ##
-  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest)
+  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest, baseResample=baseResample)
   out <- cbind(dataCES["-95% CI", "gamma"], dataCES["CES", "gamma"], dataCES["+95% CI", "gamma"],
                dataCES["-95% CI", "lambda"], dataCES["CES", "lambda"], dataCES["+95% CI", "lambda"],
                dataCES["-95% CI", "delta_1"], dataCES["CES", "delta_1"], dataCES["+95% CI", "delta_1"],
@@ -2101,7 +2120,7 @@ cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e"){
 }
 
 #' @export
-cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", nest="(kl)e"){
+cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", nest="(kl)e", baseResample){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a CES model for countryAbbrev and energyType
@@ -2113,7 +2132,7 @@ cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", nest=
   # The return type is a data.frame.
   ##
   #Create six rows, one for each parameter. Each row is a data.frame so that it is plottable!
-  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest)
+  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest, baseResample=baseResample)
   gammaRow <- data.frame(country = countryAbbrev, 
                          parameter = "gamma", 
                          lowerCI = dataCES["-95% CI", "gamma"], 
@@ -2149,11 +2168,11 @@ cesCountryRowsForParamsGraph <- function(countryAbbrev, energyType="none", nest=
 }
 
 #' @export
-cesParamsTableDF <- function(energyType){
+cesParamsTableDF <- function(energyType, baseResample){
   ######################
   # Creates a data.frame for CES parameters
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, baseResample=baseResample))
   colnames(dataCES) <- c("lowerCI_gamma", "gamma", "upperCI_gamma",
                          "lowerCI_lambda", "lambda", "upperCI_lambda",
                          "lowerCI_delta_1", "delta_1", "upperCI_delta_1",
@@ -2165,11 +2184,11 @@ cesParamsTableDF <- function(energyType){
 }
 
 #' @export
-cesParamsTableA <- function(energyType="none", nest="(kl)e"){
+cesParamsTableA <- function(energyType="none", nest="(kl)e", baseResample){
   ############################
   # Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest, baseResample))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -2205,11 +2224,11 @@ cesParamsTableA <- function(energyType="none", nest="(kl)e"){
 }
 
 #' @export
-cesParamsTableB <- function(energyType="none", nest="(kl)e"){
+cesParamsTableB <- function(energyType="none", nest="(kl)e", baseResample){
   ############################
   # Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest, baseResample=baseResample))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -2242,13 +2261,14 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
 }
 
 #' @export
-createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
+createCESParamsGraph <- function(energyType="none", nest="(kl)e", baseResample){
   #############################
   # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
   ##
   # Create a data table with the following columns:
   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
-  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest))
+  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest,
+                                  baseResample=baseResample))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                    data = data, 
                    centers = value, #identifies where the dots should be placed
@@ -2279,31 +2299,7 @@ createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
 }
 
 #' @export
-printCESParamsTableA <- function(energyType="none", nest="(kl)e"){
-  ############################
-  # Prints a table with lambda, delta, and sigma parameters from a CES model for the given energyType. 
-  ##
-  print(cesParamsTableA(energyType=energyType, nest=nest), 
-        caption.placement="top", 
-        sanitize.colnames.function = identity, 
-        size="\\tiny",
-        table.placement="H")
-}
-
-#' @export
-printCESParamsTableB <- function(energyType="none", nest="(kl)e"){
-  ############################
-  # Prints a table with gamma, delta_1, and sigma_1 parameters from a CES model for the given energyType. 
-  ##
-  print(cesParamsTableB(energyType=energyType, nest=nest), 
-        caption.placement="top", 
-        sanitize.colnames.function = identity, 
-        size="\\tiny",
-        table.placement="H")
-}
-
-#' @export
-linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev)){
+linexModel <- function(countryAbbrev, energyType, baseHistorical, data=loadData(countryAbbrev, baseHistorical)){
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # energyType must be one of "Q", "X", or "U".
@@ -2317,9 +2313,6 @@ linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev)){
   # We need to do the Linex fit with the desired energyType.
   # To achieve the correct fit, we'll change the name of the desired column
   # to "iEToFit" and use "iEToFit" in the nls function.
-  if (missing(data)){
-    data <- loadData(countryAbbrev=countryAbbrev)    
-  }
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
   data <- transform(data, 
               rho_k = iCapStk / ( (.5) * (iEToFit + iLabor) ),
@@ -2350,7 +2343,7 @@ linexModel <- function(countryAbbrev, energyType, data=loadData(countryAbbrev)){
 }
 
 #' @export
-linexPredictions <- function(countryAbbrev, energyType){
+linexPredictions <- function(countryAbbrev, energyType, baseHistorical){
   #########################
   # Takes the LINEX fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -2364,27 +2357,27 @@ linexPredictions <- function(countryAbbrev, energyType){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- linexModel(countryAbbrev, energyType)
+  model <- linexModel(countryAbbrev=countryAbbrev, energyType=energyType, baseHistorical=baseHistorical)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
-  df <- padRows(countryAbbrev, df)
+  df <- padRows(countryAbbrev=countryAbbrev, df=df, baseHistorical=baseHistorical)
   return(df)
 }
 
 #' @export
-linexPredictionsColumn <- function(energyType){
+linexPredictionsColumn <- function(energyType, baseHistorical){
   #########################
   # Takes the LINEX fitted models and creates a single column of predicted GDP values
   # that corresponds, row for row, with the AllData.txt file.
   ##
-  out <- do.call("rbind", lapply(countryAbbrevs, linexPredictions, energyType=energyType))
+  out <- do.call("rbind", lapply(countryAbbrevs, linexPredictions, energyType=energyType, baseHistorical=baseHistorical))
   colnames(out) <- c(paste("predGDP", energyType, sep=""))
   return(out)
 }
 
 #' @export
-loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, base="../"){
+loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, baseHistorical, baseResample){
   ################################
   # Creates a data frame containing historical data, the fit to historical data, and 
   # resample predictions for LINEX models.
@@ -2404,7 +2397,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, base="../"
   modelType <- "linex"
   
   # Put the historical data in a data.frame. 
-  actual <- loadData(countryAbbrev="all")
+  actual <- loadData(countryAbbrev="all", baseHistorical=baseHistorical)
   actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
@@ -2412,7 +2405,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, base="../"
   actual$Energy <- energyType
   
   # Put the fits to historical data in a data.frame
-  prediction <- linexPredictionsColumn(energyType=energyType)
+  prediction <- linexPredictionsColumn(energyType=energyType, baseHistorical=baseHistorical)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
   pred$iGDP <- prediction[,1]
@@ -2439,7 +2432,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, base="../"
   dfList <- list()
   for (countryAbbrev in countryAbbrevs){
     # Get the raw data for this country
-    historical <- loadData(countryAbbrev=countryAbbrev)
+    historical <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
     if (energyType == "U"){
       # subset historical to include only years for which U is available.
       historical <- subset(historical, !is.na(iU))
@@ -2450,7 +2443,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, base="../"
                                                    modelType=modelType, 
                                                    energyType=energyType, 
                                                    archive=archive,
-                                                   base=base)
+                                                   baseResample=baseResample)
     # Add each model's prediction to the data.frame    
     nResamples <- length(resampleModels)
     # Get the number of years from fitted(resampleModels[[1]]), because not
@@ -2501,7 +2494,7 @@ linexResampleCoeffProps <- function(linexResampleFits, ...){
 }
 
 #' @export
-linexData <- function(countryAbbrev, energyType, archive=NULL, base="../"){
+linexData <- function(countryAbbrev, energyType, archive=NULL, baseResample){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the LINEX production function given a country and an energyType.
@@ -2526,24 +2519,24 @@ linexData <- function(countryAbbrev, energyType, archive=NULL, base="../"){
     return(df)
   }
   resampledData <- loadResampleData(modelType="linex", countryAbbrev=countryAbbrev, energyType=energyType,
-                                    archive=archive, base=base)
+                                    archive=archive, baseResample=baseResample)
   statisticalProperties <- linexResampleCoeffProps(resampledData)
   return(statisticalProperties)
 }
 
 #' @export
-linexCountryRow <- function(countryAbbrev, energyType){
+linexCountryRow <- function(countryAbbrev, energyType, baseResample){
   ############
   # Creates a row for the LINEX parameters table for the given country (2-letter code) and energyType (Q, X, or U)
   ##
-  dataLINEX <- linexData(countryAbbrev, energyType)
+  dataLINEX <- linexData(countryAbbrev=countryAbbrev, energyType=energyType, baseResample=baseResample)
   out <- cbind(dataLINEX["-95% CI", "a_0"], dataLINEX["LINEX", "a_0"], dataLINEX["+95% CI", "a_0"],
                dataLINEX["-95% CI", "c_t"], dataLINEX["LINEX", "c_t"], dataLINEX["+95% CI", "c_t"])
   return(out)
 }
 
 #' @export
-linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
+linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType, baseResample){
   ###########################################
   # Creates a number of rows in a data.frame that contain information 
   # about the coefficients of a LINEX model for countryAbbrev and energyType
@@ -2554,7 +2547,7 @@ linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
   # The return type is a data.frame.
   ##
   #Create three rows, one for each parameter. Each row is a data.frame so that it is plottable!
-  dataLINEX <- linexData(countryAbbrev, energyType)
+  dataLINEX <- linexData(countryAbbrev=countryAbbrev, energyType=energyType, baseResample=baseResample)
   a_0Row <- data.frame(country = countryAbbrev, 
                        parameter = "a_0", 
                        lowerCI = dataLINEX["-95% CI", "a_0"], 
@@ -2570,13 +2563,14 @@ linexCountryRowsForParamsGraph <- function(countryAbbrev, energyType){
 }
 
 #' @export
-createLINEXParamsGraph <- function(energyType){
+createLINEXParamsGraph <- function(energyType, baseResample){
   #############################
   # Creates a graph with confidence intervals for the LINEX model for the given energyType
   ##
   # Create a data table with the following columns:
   # country abbrev, parameter (a_0, c_t), -95% CI, value, +95% CI
-  data <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType))
+  data <- do.call("rbind", lapply(countryAbbrevs, linexCountryRowsForParamsGraph, energyType=energyType, 
+                                  baseResample=baseResample))
   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
                    data = data, 
                    centers = value, #identifies where the dots should be placed
@@ -2601,12 +2595,12 @@ createLINEXParamsGraph <- function(energyType){
 }
 
 #' @export
-linexParamsTableDF <- function(energyType){
+linexParamsTableDF <- function(energyType, baseResample){
   #####################
   # Creates a data.frame containing all parameters and their confidence intervals 
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
+  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType, baseResample=baseResample))
   colnames(dataLINEX) <- c("lowerCI_a_0", "a_0", "upperCI_a_0",
                            "lowerCI_c_t", "c_t", "upperCI_c_t")
   rownames(dataLINEX) <- countryAbbrevs
@@ -2614,11 +2608,11 @@ linexParamsTableDF <- function(energyType){
 }
 
 #' @export
-linexParamsTable <- function(energyType){
+linexParamsTable <- function(energyType, baseResample){
   ############################
   # Aggregates the LINEX results into a big data table for the given energyType.
   ##
-  dataLINEX <- linexParamsTableDF(energyType)
+  dataLINEX <- linexParamsTableDF(energyType, baseResample)
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
   tableLINEX <- xtable(dataLINEX, 
@@ -2627,18 +2621,6 @@ linexParamsTable <- function(energyType){
                        digits = c(1, 2,2,2, 2,2,2),
                        align = "r|ccc|ccc") #Sets alignment of the numbers in the columns
   return(tableLINEX)
-}
-
-#' @export
-printLINEXParamsTable <- function(energyType){
-  ############################
-  # Prints a table with parameters from a LINEX model for the given energyType. 
-  ##
-  print(linexParamsTable(energyType), 
-        caption.placement="top", 
-        sanitize.colnames.function = identity, 
-        size="\\tiny",
-        table.placement="H")
 }
 
 ## <<AIC_Table_Functions, eval=TRUE>>=
@@ -2751,7 +2733,7 @@ createAICTable <- function(){
 
 ## <<CIvsParam_Graph, eval=TRUE>>=
 #' @export
-CIvsParamDF <- function(model, param, energyType="none", factor=NA){
+CIvsParamDF <- function(model, param, energyType="none", factor=NA, baseResample){
   ############################
   # Creates a data.frame that contains the following information:
   # row name: 2-letter country abbreviation
@@ -2766,8 +2748,8 @@ CIvsParamDF <- function(model, param, energyType="none", factor=NA){
   ##
   # Get the data from the requested model
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
-  else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
-  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType)}
+  else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF(baseResample=baseResample)}
+  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType, baseResample=baseResample)}
   else if (model == "CES"){data <- cesParamsTableDF(energyType="none")}
   else if (model == "CESe"){data <- cesParamsTableDF(energyType=energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
@@ -3071,7 +3053,7 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 
 ## <<PartialResidualPlots, eval=TRUE>>=
 #' @export
-createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyType){
+createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyType, baseHistorical){
   #############################
   # Creates a data.frame containing raw data and residuals for given arguments.
   # The residuals are for a model that does not use energy.
@@ -3096,9 +3078,9 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   # Get the residuals
   resid <- resid(model)
   resid <- data.frame(resid)
-  resid <- padRows(countryAbbrev=countryAbbrev, df=resid)
+  resid <- padRows(countryAbbrev=countryAbbrev, df=resid, baseHistorical=baseHistorical)
   # Load data
-  data <- loadData(countryAbbrev=countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   data <- cbind(data, resid)
   # Replace name of column we want with the name "iEToFit"
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
@@ -3178,17 +3160,28 @@ getSeed <- function(){
   return(123)
 }
 
+#' Loads all resample data, for the base fit and resample fits
+#' 
+#' This function returns a data frame that contains all of the resample model coefficients
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev a string representing the country for which you want to load resample data.
+#' @param energyType one of \code{"none"}, \code{"Q"} (for thermal energy), \code{"X"} (for exergy), 
+#' or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive the relative path to a .zip archive containing resample model data, 
+#' if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, 
+#' if the data are to be loaded from a directory or an archive.
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor=NA, 
-                             archive=NULL, base="../"){
-  #############################
-  # This function loads previously-saved Cobb-Douglas with energy
-  # curve fits from resampled data. The loaded object is
-  # a list that contains two named data.frames: 
-  # baseFitCoeffs and resampleFitCoeffs. 
-  ##
+                             archive=NULL, baseResample){
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
-                                 energyType=energyType, factor=factor, base=base)
+                                 energyType=energyType, factor=factor, baseResample=baseResample)
   # The name of the object loaded by this call is resampleData.
   if (is.null(archive)) {
     load(file=path) 
@@ -3213,9 +3206,26 @@ loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor
   return(resampleData)
 }
 
+#' Loads all resample models, for the base fit and resample fits
+#' 
+#' This function returns a list that contains all of the resample models and the base model
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev a string representing the country for which you want to load resample data.
+#' @param energyType one of \code{"none"}, \code{"Q"} (for thermal energy), \code{"X"} (for exergy), 
+#' or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive the relative path to a .zip archive containing resample model data, 
+#' if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, 
+#' if the data are to be loaded from a directory or an archive.
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadResampleModels <- function(modelType, countryAbbrev, energyType="none", factor=NA, 
-                               archive=NULL, base="../"){
+                               archive=NULL, baseResample){
   #############################
   # This function loads previously-saved models
   # from resampled data. The loaded object is
@@ -3225,7 +3235,7 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
   ##
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                    energyType=energyType, factor=factor,
-                                   base=base)
+                                   baseResample=baseResample)
   # The name of the object loaded by this call is resampleModels.
   if (is.null(archive)) {
     load(file=path) 
@@ -3237,13 +3247,25 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
   return(resampleModels)
 }
 
+#' Loads all resample data, for the base fit and resample fits
+#' 
+#' This function returns a data frame that contains all of the resample model coefficients
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param countryAbbrevsOrder a vector of country abbreviations in the order you want them to appear in the data frame.
+#' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
+#' @param base the relative path of the top-level directory containing the resample data, if the data are to be loaded from 
+#' a directory or an archive.
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadAllResampleData <- function(modelType, energyType="none", factor, 
                                 countryAbbrevsOrder=countryAbbrevs,
-                                archive=NULL, base="../"){
-  ##################
-  # Loads resample data for all countries for the given modelType and energyType or factor
-  ##
+                                archive=NULL, baseResample=NULL){
   if (!missing(energyType) && !missing(factor)){
     stop(paste("energyType =", energyType, "and factor =", factor, 
                "in loadAllResampleData. Didn't expect both to be specified. Can't proceed."))
@@ -3251,151 +3273,192 @@ loadAllResampleData <- function(modelType, energyType="none", factor,
   if (!missing(energyType)){
     if (energyType == "none" || energyType != "U"){
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, 
-                                           energyType=energyType, archive=archive, base=base))
+                                           energyType=energyType, archive=archive, baseResample=baseResample))
     }
     else {
       # energyType is "U"
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, modelType=modelType, 
-                                           energyType=energyType, archive=archive, base=base))
+                                           energyType=energyType, archive=archive, baseResample=baseResample))
     }
   } else if (!missing(factor)){
     if (factor == "U"){
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder[1:3], loadResampleData, 
                                            modelType=modelType, factor=factor, 
-                                           archive=archive, base=base))
+                                           archive=archive, baseResample=baseResample))
     } else {
       data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, modelType=modelType, 
-                                           factor=factor, archive=archive, base=base))
+                                           factor=factor, archive=archive, baseResample=baseResample))
     }
   } else {
     # Neither energyType nor factor were specified
     data <- do.call("rbind.fill", lapply(countryAbbrevsOrder, loadResampleData, 
-                                         modelType=modelType, archive=archive, base=base))
+                                         modelType=modelType, archive=archive, baseResample=baseResample))
   }
   return(data)
 }
 
-#' @export
-loadResampleData2 <- function(modelType = c("cese-(kl)e", "cese-(le)k", "cese-(ek)l"), 
-                              energyType="Q", factor=NULL, 
-                              countryAbbrev=countryAbbrevs,
-                              archive=NULL, base="../"){
-  ##################
-  # Loads resample data for all countries for the given modelType and energyType or factor
-  ##
-  if (!is.null(energyType) && !is.null(factor)){
-    warning(paste("Both 'energyType' and 'factor' given in loadAllResampleData2()", 
-                   "  Ignoring 'factor'."))
-  }
-  
-  if (!is.null(energyType)){
-    grid <- expand.grid(country=countryAbbrev, model=modelType, energy=energyType, 
-                        stringsAsFactors=FALSE)
-    
-    grid$n <- 1:nrow(grid)
-    return( ddply( grid, .(n), function(x){
-      loadResampleData(modelType=x$model[1], countryAbbrev = x$country[1],
-                       energyType=x$energy[1], archive=archive, base=base) }
-    ))
-  } 
-  if (! is.null(factor) ) {
-    grid <- expand.grid(country=countryAbbrev, model=modelType, factor=factor, 
-                        stringsAsFactors=FALSE)
-    grid$n <- 1:nrow(grid)
-    return( ddply( grid, .(n), 
-            loadResampleData(modelType=model, countryAbbrev=country, 
-                             factor=factor, archive=archive, base=base)))
-  }
-    
-  # Neither energyType nor factor were specified
-  grid <- expand.grid(country=countryAbbrev, model=modelType, stringsAsFactors=FALSE)
-  grid$n <- 1:nrow(grid)
-  return(ddply( grid, .(n), 
-                loadResampleData(country=country, modelType=model, archive=archive, base=base)))
-}
-
+#' Loads resample data, for the resample fits only (ignoring the base fit)
+#' 
+#' This function returns a data frame that contains all of the resample model coefficients
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev the country for which you want to load resample data
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, 
+#' if the data are to be loaded from a directory or an archive.
+#' @return a data frame containing resample data only (not the base fit data) for the specified country 
+#' for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType="none", 
-                                       factor, archive=NULL, base="../"){
-  ####################
-  # Loads coefficients for resampled data only from a previously-run set of resample curve fits
-  ##
+                                       factor="K", archive=NULL, baseResample){
   data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
                            energyType=energyType, factor=factor,
-                           archive = archive, base=base)
+                           archive = archive, baseResample=baseResample)
   # Select only those rows that aren't the original curve fit
   data <- data[data[["method"]]!="orig", ]
   return(data)
 }
 
+#' Loads resample models, for the resample fits only (ignoring the base fit)
+#' 
+#' This function returns a list of resample models (ignoring the model for the base fit)
+#' 
+#' @param countryAbbrev the country for which you want to load resample data
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, 
+#' if the data are to be loaded from the directory.
+#' @return a list containing resample models only (not the base fit data) for the specified country 
+#' for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
-loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType="none", factor, 
-                                         archive=NULL, base="../"){
+loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType="none", factor="K", 
+                                         archive=NULL, baseResample){
   ####################
   # Loads models for resampled data only from a previously-run set of resample curve fits
   ##
   models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                energyType=energyType, factor=factor, 
-                               archive=archive, base=base)
+                               archive=archive, baseResample=baseResample)
   # Select only those models that aren't from the curve fit to historical data (which is in position 1)
   len <- length(models)
   # Return everything but the first element (which is the fit to historical data).
   return(models[-1])
 }
 
+#' Loads resample data, for the base fit only (ignoring the resamples)
+#' 
+#' This function returns a data frame that contains base fit coefficients
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev the country for which you want to load resample data
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, if the data are to be loaded from 
+#' the directory.
+#' @return coefficients for the base fit (not the resample fits) for the specified country 
+#' for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType="none", 
-                                        factor, archive=NULL, base="../"){
-  ####################
-  # Loads the base fit coefficients only from a previously-run curve fit
-  ##
+                                        factor="K", archive=NULL, baseResample){
   data <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
                            energyType=energyType, factor=factor,
-                           archive=archive, base=base) 
+                           archive=archive, baseResample=baseResample) 
   # Select the row containing the original curve fit
   data <- data[data[["method"]]=="orig", ]
   return(data)
 }
 
+#' Loads the base resample model (ignoring the resample models)
+#' 
+#' This function returns the base fit model (ignoring the resample models)
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev the country for which you want to load resample data
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
+#' @param baseResample the relative path of the top-level directory containing the resample data, if the data are to be loaded from 
+#' the directory.
+#' @return a list containing resample models only (not the base fit data) for the specified country 
+#' for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType="none", factor, 
-                                            archive=NULL, base="../"){
+                                            archive=NULL, baseResample){
   ####################
   # Loads the model for a fit to historical data
   ##
   models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                energyType=energyType, factor=factor, 
-                               archive=archive, base=base) 
+                               archive=archive, baseResample=baseResample) 
   # Select the first model, which is the model for the fit to historical data  
   return(models[[1]])
 }
 
+#' Path to resample data file
+#' 
+#' This function returns a string representing the relative file path for the resample data being requested.
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev, a character string naming the country, 
+#' if you want to use original data.
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @return the relative path of the file containing the data for the requested resample data.
 #' @export
-getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor, base="../"){
+getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
   ######################
   # Returns a string identifying the entire file path in which we 
   # hold resampled data
   ##
   return(doGetPath(prefix="resampleData", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor, base=base))
+                   energyType=energyType, factor=factor, baseResample=baseResample))
 }
 
+#' Path to resample models file
+#' 
+#' This function returns a string representing the relative file path for the resample models being requested.
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev, a character string naming the country, 
+#' if you want to use original data.
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @return the relative path of the file containing the data for the requested resample data.
 #' @export
-getPathForResampleModels <- function(modelType, countryAbbrev, energyType="Q", factor="K", base="../"){
-  ######################
-  # Returns a string identifying the entire file path in which we 
-  # hold resampled models
-  ##
+getPathForResampleModels <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
   return(doGetPath(prefix="resampleModels", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor, base=base))
+                   energyType=energyType, factor=factor, baseResample=baseResample))
 }
 
 #' @export
-doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K", base="../"){
+doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K", baseResample){
   if (energyType == "none"){
     energyType="NA"
   }
-  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, base=base)   
+  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, baseResample=baseResample)   
   rdat <- ".Rdata"
   filename <- switch(modelType,
                      "sf"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", factor,     rdat, sep=""),
@@ -3413,15 +3476,19 @@ doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="
   return(path)
 }
 
+#' Directory for resample data
+#' 
+#' This function returns a string representing the relative directory path containing the resample data being requested.
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev, a character string naming the country, 
+#' if you want to use original data.
+#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @return the relative path to the directory containing the data for the requested resample data.
 #' @export
-getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs,
-                                     base = getOption('heun_data_resample')
-                                     ){
-  ##################
-  # Returns a string identifying a folder for resampled data.
-  ##
-  dr <- base
-  if (is.null(dr)) dr <- "../data_resample"
+getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs, baseResample){
+  dr <- baseResample
   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
                    "cde"       = file.path(dr, "cd",      countryAbbrev),
@@ -3432,7 +3499,7 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
 }
 
 #' @export
-fracUnconvergedResampleFitsAll <- function(){
+fracUnconvergedResampleFitsAll <- function(baseResample){
   ###########################
   # Calculates the fraction of unconverged resamples stored on disk 
   # for all countries and all energy types
@@ -3441,47 +3508,55 @@ fracUnconvergedResampleFitsAll <- function(){
   modelType <- "sf"
   for (factor in factors){
     if (factor == "U"){
-      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, 
+                            factor=factor, baseResample=baseResample)
       uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
       unconverged <- c(unconverged, uNA)
     } else {
-      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=factor)
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, 
+                            factor=factor, baseResample=baseResample)
     }
     unconverged <- c(modelType=modelType, energyType="none", factor=factor, unconverged)
     out <- rbind(out, as.data.frame(unconverged))
   }
   
   modelType <- "cd"
-  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=NULL)
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, factor=NULL,
+                        baseResample=baseResample)
   unconverged <- c(modelType=modelType, energyType="none", factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
   modelType <- "cde"
   for (energyType in energyTypes){
     if (energyType == "U"){
-      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType,
+                            baseResample=baseResample)
       uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
       unconverged <- c(unconverged, uNA)
     } else {
-      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+      unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType,
+                            baseResample=baseResample)
     }
     unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
     out <- rbind(out, as.data.frame(unconverged))
   }
   
   modelType <- "ces"
-  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType)
+  unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType,
+                        baseResample=baseResample)
   unconverged <- c(modelType=modelType, energyType="none", factor=NA, unconverged)
   out <- rbind(out, as.data.frame(unconverged))    
   
   for (modelType in c("cese-(kl)e", "cese-(le)k", "cese-(ek)l", "linex")){
     for (energyType in energyTypes){
       if (energyType == "U"){
-        unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+        unconverged <- lapply(countryAbbrevsU, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType,
+                              baseResample=baseResample)
         uNA <- c(CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA)
         unconverged <- c(unconverged, uNA)
       } else {
-        unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType)
+        unconverged <- lapply(countryAbbrevs, fracUnconvergedResampleFits, modelType=modelType, energyType=energyType,
+                              baseResample=baseResample)
       }
       unconverged <- c(modelType=modelType, energyType=energyType, factor=NA, unconverged)
       out <- rbind(out, as.data.frame(unconverged))
@@ -3497,7 +3572,7 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
                                         energyType=energyTypes, 
                                         factor=factors, 
                                         archive=NULL,
-                                        base="../",
+                                        baseResample,
                                         ...){
   ###################
   # Gives the fraction of resample fits that did not converge for the 
@@ -3509,7 +3584,7 @@ fracUnconvergedResampleFits <- function(modelType=modelTypes,
   factor <- match.arg(factor)
   data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, 
                                      energyType=energyType, factor=factor,
-                                     archive=archive, base=base)
+                                     archive=archive, baseResample=baseResample)
   nObs <- nrow(data)
   tallyResults <- tally(~isConv, data=data, format="proportion")
   # Grabs the fraction that is converged. We can't simply gather the fraction that
@@ -3526,7 +3601,8 @@ nResamples <- function(modelType=modelTypes,
                        countryAbbrev=countryAbbrevs, 
                        energyType=energyTypes, 
                        factor=factors, 
-                       archive=NULL, base=base,
+                       archive=NULL, 
+                       baseResample,
                        ...){
   ###################
   # Gives the number of resample fits for the 
@@ -3538,28 +3614,9 @@ nResamples <- function(modelType=modelTypes,
   factor <- match.arg(factor)
   data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, 
                                      energyType=energyType, factor=factor,
-                                     archive=archive, base=base)
+                                     archive=archive, baseResample=baseResample)
   nObs <- nrow(data)
   return(nObs)
-}
-
-#' @export
-printFracUnconvergedXtable <- function(){
-  #####################################
-  # This function prints a table containing the fraction of unconverged
-  # resample models.
-  ##
-  data <- fracUnconvergedResampleFitsAll()
-  dataXtable <- xtable(x=data, 
-                       caption="Fraction of unconverged resample models", 
-                       label="tab:frac_unconverged_models",
-                       digits = 3,
-                       align = "rl|cc|ccccccccc") #Sets alignment of the numbers in the columns)
-  print(dataXtable, 
-        caption.placement="top", 
-        size="\\tiny",
-        table.placement="H",
-        include.rownames=FALSE)
 }
 
 #' @export

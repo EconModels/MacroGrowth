@@ -1,14 +1,14 @@
 #!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 
 # Example usage:
-# Move into a subdirectory (such as "Article")
-# for US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
-# ../batchEcon.R -c US -e X -m linex -n 10 -C -M wild
-# for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
-# ../batchEcon.R -c all -e all -m all -n 1000 -C -M wild
 
-print(sort(.packages()))
-# source('Econ-Growth-Resampling.R',echo=FALSE,verbose=FALSE)
+# Move into the top level directory that contains this file
+# for US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
+# ./batchEcon.R -c US -e X -m linex -n 10 -C -M wild -H data -R data_resample
+# for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
+# ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -H data -R data_resample
+
+# print(sort(.packages()))
 require(EconModels)
 suppressPackageStartupMessages(library("optparse"))
 
@@ -28,10 +28,15 @@ option_list <- list(
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
-              help="resampling method [default=%default]")
+              help="resampling method [default=%default]"),
+  make_option(c("-H", "--baseHistorical"), # default="data", 
+              help="relative path to directory for historical data"),
+  make_option(c("-R", "--baseResample"), # default="data_resample", 
+              help="relative path to directory for resample data")
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
+# print(opts)
 
 if(opts$model == "all") {
   opts$model <- modelTypes
@@ -64,7 +69,6 @@ if(opts$factor== "all") {
 }
 
 print(str(opts))
-print(sort(.packages()))
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
@@ -88,7 +92,9 @@ if( ! opts$debug) {
                           factor=factor,
                           n=opts$resamples, 
                           method=opts$method, 
-                          clobber=opts$clobber)
+                          clobber=opts$clobber,
+                          baseHistorical=opts$baseHistorical,
+                          baseResample=opts$baseResample)
         }
       }
     } else if ((model == "cd") || (model == "ces")) {
@@ -99,7 +105,9 @@ if( ! opts$debug) {
                         countryAbbrev=country,  
                         n=opts$resamples, 
                         method=opts$method, 
-                        clobber=opts$clobber)
+                        clobber=opts$clobber,
+                        baseHistorical=opts$baseHistorical,
+                        baseResample=opts$baseResample)
       }
     } else {
       # We get here if we have "cde" or "cese-(xy)z" models. 
@@ -118,7 +126,9 @@ if( ! opts$debug) {
                           energyType=energy, 
                           n=opts$resamples, 
                           method=opts$method, 
-                          clobber=opts$clobber)
+                          clobber=opts$clobber,
+                          baseHistorical=opts$baseHistorical,
+                          baseResample=opts$baseResample)
         }
       }
     }

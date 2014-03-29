@@ -145,8 +145,6 @@ opts_chunk$set(
   # Set TRUE on an individual chunk to see its code.
   echo=FALSE     
 )
-#source("Econ-Growth-Functions2.R")
-#source("Graphics.R")
 @
 
 <<constants, include=FALSE>>=
@@ -231,6 +229,13 @@ scaleTextSize <- 0.8  # Multiple of normal size
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
 spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+
+# In Rstudio, this paper is generated from it's directory, which is "Article".
+# We need to define paths relative to the location of the paper. 
+# Relative path to historical data from Article
+baseHistorical <- file.path("..", "data")
+# We also need to define a directory path to the resample data results from "Article"
+baseResample <- file.path("..", "data_resample")
 @
 
 % These equations are used in several locations in the paper.
@@ -1278,7 +1283,7 @@ for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 \twocolumn{}
 <<Historical_Lattice_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot()
+historicalPlot(baseHistorical=baseHistorical)
 @
 
 %++++++++++++++++++++++++++++++
@@ -1508,15 +1513,15 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
-  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevs, energyType="none")
-  dataCDQ <- loadAllResampleData(modelType="cde", energyType="Q", countryAbbrevsOrder=countryAbbrevs)
+  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevs, energyType="none", baseResample=baseResample)
+  dataCDQ <- loadAllResampleData(modelType="cde", countryAbbrevsOrder=countryAbbrevs, energyType="Q", baseResample=baseResample)
   data <- rbind.fill(dataCD, dataCDQ)
   standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
 @
 
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=8.2, fig.cap="Cobb-Douglas fitted models.">>=
-cdData <- loadCDSpaghettiGraphData(energyType="none")
-cdQData <- loadCDSpaghettiGraphData(energyType="Q")
+cdData <- loadCDSpaghettiGraphData(energyType="none", baseHistorical=baseHistorical, baseResample=baseResample)
+cdQData <- loadCDSpaghettiGraphData(energyType="Q", baseHistorical=baseHistorical, baseResample=baseResample)
 cdData <- rbind(cdData, cdQData)
 spaghettiPlot(data=cdData, facet_formula=Country~Energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
@@ -1603,7 +1608,7 @@ the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
 
 <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
-cesQResampleData <- loadCESResampleData(nest="all", energyType="Q")
+cesQResampleData <- loadCESResampleData(nest="all", energyType="Q", baseResample=baseResample)
 standardScatterPlot(data=cesQResampleData, mapping=aes(gamma_coef, lambda), facet_formula=countryAbbrev~nest, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -1652,7 +1657,7 @@ the ternary graph for the Cobb-Douglas models,
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
 <<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
-cesTriPlotData=loadCESResampleData(energyType="Q", nest="all")
+cesTriPlotData=loadCESResampleData(energyType="Q", nest="all", baseResample=baseResample)
 standardTriPlot(data=cesTriPlotData)
 @
 
@@ -1663,7 +1668,7 @@ The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
-spagData <- loadCESSpaghettiGraphData(energyType="Q", nest="all")
+spagData <- loadCESSpaghettiGraphData(energyType="Q", nest="all", baseHistorical=baseHistorical, baseResample=baseResample)
 spaghettiPlot(data=spagData, facet_formula=Country~nest, level=spaghettiGraphLevel)+
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
@@ -1705,7 +1710,7 @@ shown in Equation~\ref{eq:LINEX_transformed} reduced the number of
 unconverged resample fits to nearly zero: 
 The largest fraction of unconverged resample fits is found 
 for Zambia (ZM) with thermal energy ($q$), where
-\Sexpr{fracUnconvergedResampleFits(modelType="linex", countryAbbrev="ZM", energyType="Q")*100}\%
+\Sexpr{fracUnconvergedResampleFits(modelType="linex", countryAbbrev="ZM", energyType="Q", baseResample=baseResample)*100}\%
 of the resample fits did not converge. 
 (See Table~\ref{tab:frac_unconverged_models}.)
 
@@ -1719,7 +1724,8 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevs)
+  linexResampleData <- loadAllResampleData(model="linex", energyType="Q", countryAbbrevsOrder=countryAbbrevs, 
+                                           baseResample=baseResample)
   standardScatterPlot(data=linexResampleData, aes(a_0, c_t), facet_formula=countryAbbrev~energy, alpha=0.05) +
       labs(x=expression(a[0]), y=expression(c[t])) +
        scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
@@ -1727,7 +1733,7 @@ The gray band encompasses 95\% of the fits to resampled data.
 @
 
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
-spagDataLinex <- loadLinexSpaghettiGraphData(energyType="Q")
+spagDataLinex <- loadLinexSpaghettiGraphData(energyType="Q", baseHistorical=baseHistorical, baseResample=baseResample)
 spaghettiPlot(data=spagDataLinex, facet_formula=Country ~ Energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
@@ -2152,7 +2158,18 @@ The following table shows the fraction of resample models
 that did not achieve convergence when estimating model parameters.
 
 <<Unconverged_Frac_Table, results='asis'>>=
-printFracUnconvergedXtable()
+# printFracUnconvergedXtable()
+  data <- fracUnconvergedResampleFitsAll(baseResample=baseResample)
+  dataXtable <- xtable(x=data, 
+                       caption="Fraction of unconverged resample models", 
+                       label="tab:frac_unconverged_models",
+                       digits = 3,
+                       align = "rl|cc|ccccccccc") #Sets alignment of the numbers in the columns)
+  print(dataXtable, 
+        caption.placement="top", 
+        size="\\tiny",
+        table.placement="H",
+        include.rownames=FALSE)
 @
 
 
@@ -2181,14 +2198,14 @@ the without-energy column of Figure~\ref{fig:CD_Ternary_Scatter_Graph}
 are shown in Table~\ref{tab:CD_Parameters_No_Energy}.
 
 <<CD_Params_Table, results='asis'>>=
-printCDParamsTable(energyType="none")    #Without energy
+printCDParamsTable(energyType="none", baseResample=baseResample)    #Without energy
 @
 
-The data in Table~\ref{tab:CD_Parameters_No_Energy} is plotted in
+The data in Table~\ref{tab:CD_Parameters_No_Energy} are plotted in
 Figure~\ref{fig:CD_Params_Graph}.
 
 <<CD_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (without energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType="none")
+createCDParamsGraph(energyType="none", baseResample=baseResample)
 @
 
 The 95\% confidence intervals associated with 
@@ -2197,11 +2214,11 @@ are shown in Table~\ref{tab:CD_Parameters_With_Q}
 and Figure~\ref{fig:CDq_Params_Graph}.
 
 <<CDq_Params_Table, results='asis'>>=
-printCDParamsTable(energyType="Q")   #With energy
+printCDParamsTable(energyType="Q", baseResample=baseResample)   #With energy
 @
 
 <<CDq_Params_Graph, fig.pos="H", fig.width=cdParameterGraphWidth, fig.height=cdParameterGraphHeight, fig.cap="Cobb-Douglas (with energy) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCDParamsGraph(energyType="Q")
+createCDParamsGraph(energyType="Q", baseResample=baseResample)
 @
 
 
@@ -2216,12 +2233,20 @@ are shown in Tables~\ref{tab:CES_Parameters_A}
 and \ref{tab:CES_Parameters_B} and Figure~\ref{fig:CES_Params_Graph}.
 
 <<CES_Params_Table, results='asis'>>=
-printCESParamsTableA(energyType="none")
-printCESParamsTableB(energyType="none")
+print(cesParamsTableA(energyType="none", nest="(kl)", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+print(cesParamsTableB(energyType="none", nest="(kl)", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
 @
 
 <<CES_Params_Graph, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (without energy, ($kl$) nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType="none")
+createCESParamsGraph(energyType="none", nest="(kl)", baseResample=baseResample)
 @
 
 The 95\% confidence intervals associated 
@@ -2231,12 +2256,22 @@ are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(kl)e} and
 \ref{tab:CES_Parameters_B_With_Q_(kl)e} and Figure~\ref{fig:CESq_Params_Graph_kle}.
 
 <<CESq_Params_Table_kle, results='asis'>>=
-printCESParamsTableA(energyType="Q", nest="(kl)e")
-printCESParamsTableB(energyType="Q", nest="(kl)e")
+print(cesParamsTableA(energyType="Q", nest="(kl)e", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+print(cesParamsTableB(energyType="Q", nest="(kl)e", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+
+
 @
 
 <<CESq_Params_Graph_kle, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($kl$)$e$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType="Q", nest="(kl)e")
+createCESParamsGraph(energyType="Q", nest="(kl)e", baseResample=baseResample)
 @
 
 The 95\% confidence intervals associated 
@@ -2246,12 +2281,21 @@ are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(le)k} and
 \ref{tab:CES_Parameters_B_With_Q_(le)k} and Figure~\ref{fig:CESq_Params_Graph_lek}.
 
 <<CESq_Params_Table_lek, results='asis'>>=
-printCESParamsTableA(energyType="Q", nest="(le)k")
-printCESParamsTableB(energyType="Q", nest="(le)k")
+print(cesParamsTableA(energyType="Q", nest="(le)k", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+print(cesParamsTableB(energyType="Q", nest="(le)k", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+
 @
 
 <<CESq_Params_Graph_lek, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($le$)$k$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType="Q", nest="(le)k")
+createCESParamsGraph(energyType="Q", nest="(le)k", baseResample=baseResample)
 @
 
 The 95\% confidence intervals associated 
@@ -2261,12 +2305,21 @@ are shown in Tables~\ref{tab:CES_Parameters_A_With_Q_(ek)l} and
 \ref{tab:CES_Parameters_B_With_Q_(ek)l} and Figure~\ref{fig:CESq_Params_Graph_ekl}.
 
 <<CESq_Params_Table_ekl, results='asis'>>=
-printCESParamsTableA(energyType="Q", nest="(ek)l")
-printCESParamsTableB(energyType="Q", nest="(ek)l")
+print(cesParamsTableA(energyType="Q", nest="(ek)l", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+print(cesParamsTableB(energyType="Q", nest="(ek)l", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
+
 @
 
 <<CESq_Params_Graph_ekl, fig.pos="H", fig.width=cesParameterGraphWidth, fig.height=cesParameterGraphHeight, fig.cap="CES (with energy, ($ek$)$l$ nesting) model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createCESParamsGraph(energyType="Q", nest="(ek)l")
+createCESParamsGraph(energyType="Q", nest="(ek)l", baseResample=baseResample)
 @
 
 
@@ -2278,11 +2331,15 @@ The 95\% confidence intervals associated with Figure~\ref{fig:LINEXq_Resample_Gr
 are shown in Table~\ref{tab:LINEX_Parameters_With_Q} and Figure~\ref{fig:LINEXq_Params_Graph}.
 
 <<LINEX_Params_Table, results='asis'>>=
-printLINEXParamsTable(energyType="Q")
+print(linexParamsTable(energyType="Q", baseResample=baseResample), 
+      caption.placement="top", 
+      sanitize.colnames.function = identity, 
+      size="\\tiny",
+      table.placement="H")
 @
 
 <<LINEXq_Params_Graph, fig.pos="H", fig.width=linexParameterGraphWidth, fig.height=linexParameterGraphHeight, fig.cap="LINEX model parameters. Vertical bars indicate 95\\% confidence intervals.">>=
-createLINEXParamsGraph(energyType="Q")
+createLINEXParamsGraph(energyType="Q", baseResample=baseResample)
 @
 
 
