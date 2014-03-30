@@ -212,7 +212,7 @@ spaghettiPlot <- function(energyType='none',
 }
 
 #' @export
-historicalPlot <- function(countryAbbrev){
+historicalPlot <- function(countryAbbrev, baseHistorical){
   ####################################
   # Creates a graph that displays all of the factors of production for all countries 
   #	(if you leave off countryAbbrev)
@@ -222,12 +222,12 @@ historicalPlot <- function(countryAbbrev){
   # Code that deals with items that are specific to whether we want all countries or a specific country.
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
-    data <- loadData("All")
+    data <- loadData(countryAbbrev="All", base=baseHistorical)
     # Now set the order for the countries
     data$Country <- factor(data$Country, levels=countryAbbrevs)
   } else {
     # We want only a specific country
-    data <- loadData(countryAbbrev)
+    data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   }
   graph <- ggplot(aes(x=Year), data=data) +
     geom_line(aes(y=iGDP, lty="y")) +
