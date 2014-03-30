@@ -10,38 +10,34 @@ cesModel2(countryAbbrev, energyType = "none", data = loadData(countryAbbrev
   digits = 6, ...)
 }
 \arguments{
-  \item{data}{a data frame, if you want to use resampled
-  data.}
+\item{data}{a data frame, if you want to use resampled data.}
 
-  \item{countryAbbrev,}{a character string naming the
-  country, if you want to use original data.}
+\item{countryAbbrev,}{a character string naming the country,
+if you want to use original data.}
 
-  \item{nest}{one of \code{"(kl)"}, \code{"(le)"}, or
-  \code{"(ek)"}. Use \code{"(kl)"} if you want a fit
-  without energy, regardless of which energyType is
-  specified.}
+\item{nest}{one of \code{"(kl)"}, \code{"(le)"}, or \code{"(ek)"}.
+Use  \code{"(kl)"} if you want a fit without energy, regardless
+of which energyType is specified.}
 
-  \item{energyType}{Use \code{"none"} to specify a CES fit
-  without energy, but only if \code{nest != "(kl)"}.}
+\item{energyType}{Use \code{"none"} to specify a CES fit without energy, but only if
+\code{nest != "(kl)"}.}
 
-  \item{fittingToResampleData}{a logical.  If \code{FALSE},
-  you should also supply a value for \code{origModel}
-  because \code{origModel} will be used to obtain the
-  starting point for a gradient search.}
+\item{fittingToResampleData}{a logical.  If \code{FALSE}, you should also supply a
+value for \code{origModel}
+because \code{origModel} will be used to obtain the starting point for a gradient search.}
 
-  \item{origModel}{a model}
+\item{origModel}{a model}
 
-  \item{prevModel}{a model used to start gradient searches.
-  Use \code{NULL} if you want to use the default start
-  locations AND do a grid search in sigma.}
+\item{prevModel}{a model used to start gradient searches.
+Use \code{NULL} if you want to use the default start locations AND do a grid search
+in sigma.}
 
-  \item{rho,rho1}{Default values for \code{rho} and
-  \code{rho1} are a grid upon which searches will be made.
-  Note that \code{rho = 0.25} and \code{rho1 = 0.25} are
-  included. These are the default starting values for
-  \code{rho} and \code{rho1}, so that we don't need to do a
-  fit from the default values. \code{rho = 0.25}
-  corresponds to \code{sigma = 0.8}.}
+\item{rho,rho1}{Default values for \code{rho} and \code{rho1} are a grid upon which
+searches will be made.
+Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default
+starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from
+the default values.
+\code{rho = 0.25} corresponds to \code{sigma = 0.8}.}
 }
 \value{
 a list of models

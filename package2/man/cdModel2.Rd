@@ -3,17 +3,27 @@
 \alias{cdModel2}
 \title{Fit a Cobb-Douglas Model}
 \usage{
-cdModel2(formula, data, constrained = FALSE, ...)
+cdModel2(formula, data, response, capital, labor, time, constrained = FALSE,
+  ...)
 }
 \arguments{
-  \item{formala}{a formual of the form \code{y ~ capital +
-  labor + time}}
+\item{formala}{a formual of the form \code{response ~ capital + labor + time}}
 
-  \item{data}{a data fram in which \code{formula} is
-  evaluated}
+\item{data}{a data fram in which \code{formula} is evaluated}
 
-  \item{contrained}{a logical indicating whether the
-  parameters are contrained}
+\item{response}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{capital}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{labor}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{time}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{contrained}{a logical indicating whether the parameters are contrained}
 }
 \value{
 a CDEmodel object, which is an lm object with some additioanl attributes.

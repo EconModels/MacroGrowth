@@ -3,19 +3,32 @@
 \alias{cdeModel2}
 \title{Fit Cobb-Douglas model with Energy}
 \usage{
-cdeModel2(formula, data, constrained = FALSE, ...)
+cdeModel2(formula, data, response, capital, labor, energy, time,
+  constrained = FALSE, ...)
 }
 \arguments{
-  \item{formula}{a formula of the form \code{y ~ capital +
-  labor + energy + time}}
+\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
 
-  \item{data}{a data frame in which \code{formala} is
-  evaluated}
+\item{data}{a data frame in which \code{formala} is evaluated}
 
-  \item{constrained}{a logical indicated whether the
-  coefficents are constrained. See details}
+\item{response}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{\dots}{additional arguments; currently unused.}
+\item{capital}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{labor}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{energy}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{time}{instead of specifying a formula, expressions for
+the components can be specified individually.}
+
+\item{constrained}{a logical indicated whether the coefficents are constrained. See details}
+
+\item{\dots}{additional arguments; currently unused.}
 }
 \description{
 Fit Cobb-Douglas model with Energy
