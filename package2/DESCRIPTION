@@ -7,9 +7,9 @@ Depends:
     micEconCES
 Imports:
     parallel,
-    mosaic,
     lattice,
     latticeExtra,
+    mosaic,
     ggplot2,
     plyr,
     car,
