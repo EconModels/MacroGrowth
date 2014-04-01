@@ -3212,7 +3212,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor
 #' 
 #' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
 #' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
-#' @param countryAbbrev a string representing the country for which you want to load resample data.
+#' @param countryAbbrev a string representing the country for which you want to load resample models.
 #' @param energyType one of \code{"none"}, \code{"Q"} (for thermal energy), \code{"X"} (for exergy), 
 #' or \code{"U"} (for useful work).
 #' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
@@ -3226,13 +3226,6 @@ loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor
 #' @export
 loadResampleModels <- function(modelType, countryAbbrev, energyType="none", factor=NA, 
                                archive=NULL, baseResample){
-  #############################
-  # This function loads previously-saved models
-  # from resampled data. The loaded object is
-  # a list that contains (in the first slot) the model for 
-  # the fit to historical data and all models
-  # for the fits to resampled data.
-  ##
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                    energyType=energyType, factor=factor,
                                    baseResample=baseResample)
