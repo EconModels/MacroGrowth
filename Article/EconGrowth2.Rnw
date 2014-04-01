@@ -58,12 +58,14 @@
 %% The amsthm package provides extended theorem environments
 %% \usepackage{amsthm}
 
-\usepackage{wrapfig}  % Allows wrapping of text around figures
-\usepackage{soul}     % Provides strikethrough text
-\usepackage{float}    % Allows precise positioning of tables and figures within the text
-\usepackage{amsmath}  % Allows \begin{equation*} \end{equation*} for unnumbered equations
-\usepackage{multirow} % To create multirow tables
-\usepackage{hyperref} % To create hyperlinks in the paper
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
 \newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
