@@ -6,8 +6,8 @@
 loadData(countryAbbrev, baseHistorical)
 }
 \arguments{
-  \item{countryAbbrev}{the country for which you want to
-  load data}
+  \item{countryAbbrev}{the country/countries for which you
+  want to load data}
 
   \item{baseHistorical}{the relative path of the directory
   containing the historical data.}

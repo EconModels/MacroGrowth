@@ -56,17 +56,17 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
 #' 
 #' This function returns a data frame containing historical economic data
 #' 
-#' @param countryAbbrev the country for which you want to load data
+#' @param countryAbbrev the country/countries for which you want to load data
 #' @param baseHistorical the relative path of the directory containing the historical data.
 #' @return a data frame containing historical economic data
 #' @export
-loadData <- function(countryAbbrev, baseHistorical){
-  # Read the data file as a table with a header.  
-  fileName <- paste0(countryAbbrev,"Data.txt")
-  path <- file.path(baseHistorical, fileName)
-  data <- read.table(file=path, header=TRUE)
-  return(data)
-}
+loadData <-
+  function(countryAbbrev, baseHistorical){
+    # Read the data file as a table with a header.  
+    path <- file.path(baseHistorical, "AllData.txt")
+    data <- read.table(file=path, header=TRUE)
+    return(subset(data, Country %in% countryAbbrev))
+  }
 
 #' @export
 haveDataSF <- function(countryAbbrev, factor){
