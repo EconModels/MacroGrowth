@@ -369,41 +369,41 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
 
 
 #' @export
-createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
-  #############################
-  # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
-  ##
-  # Create a data table with the following columns:
-  # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
-  data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest))
-  graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-                   data = data, 
-                   centers = value, #identifies where the dots should be placed
-                   as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-                   draw.bands = FALSE, #provides nicer error bars
-                   horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
-                   layout = c(2,3), #2 column, 3 row
-                   # Orders the panels as gamma, lambda, delta_1, delta, sigma_1, sigma
-                   index.cond = list(c(1,2,3,4,5,6)), 
-                   #set labels and bg color in strip
-                   strip = strip.custom(factor.levels=c("$\\gamma$", "$\\lambda$ [1/year]", "$\\delta_1$",
-                                                        "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="transparent"),
-                   col = "black", #Sets line color to black
-                   lwd = 1, #Sets line width to 1.0
-                   ylim = list(c(0.75, 1.25), c(-0.05, 0.1), c(0.0, 1.0),
-                               c(0.0, 1.0), c(0.0, 2.0), c(0.0, 2.0)), #y axis limits
-                   scales = list(cex=scaleTextSize, #controls text size on scales.
-                                 tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-                                 x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-                                 y=list(rot=0, relation="free", #allow each axis to be different
-                                        at=list(c(0.75, 1.0, 1.25), c(-0.05, 0.0, 0.05, 0.10),
-                                                c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
-                                                c(0.0, 1.0, 2.0), c(0.0, 1.0, 2.0))   #y tick marks
-                                 )
-                   )
-  )
-  return(graph)
-}
+# createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
+#   #############################
+#   # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
+#   ##
+#   # Create a data table with the following columns:
+#   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
+#   data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest))
+#   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
+#                    data = data, 
+#                    centers = value, #identifies where the dots should be placed
+#                    as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
+#                    draw.bands = FALSE, #provides nicer error bars
+#                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
+#                    layout = c(2,3), #2 column, 3 row
+#                    # Orders the panels as gamma, lambda, delta_1, delta, sigma_1, sigma
+#                    index.cond = list(c(1,2,3,4,5,6)), 
+#                    #set labels and bg color in strip
+#                    strip = strip.custom(factor.levels=c("$\\gamma$", "$\\lambda$ [1/year]", "$\\delta_1$",
+#                                                         "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="transparent"),
+#                    col = "black", #Sets line color to black
+#                    lwd = 1, #Sets line width to 1.0
+#                    ylim = list(c(0.75, 1.25), c(-0.05, 0.1), c(0.0, 1.0),
+#                                c(0.0, 1.0), c(0.0, 2.0), c(0.0, 2.0)), #y axis limits
+#                    scales = list(cex=scaleTextSize, #controls text size on scales.
+#                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
+#                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
+#                                  y=list(rot=0, relation="free", #allow each axis to be different
+#                                         at=list(c(0.75, 1.0, 1.25), c(-0.05, 0.0, 0.05, 0.10),
+#                                                 c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
+#                                                 c(0.0, 1.0, 2.0), c(0.0, 1.0, 2.0))   #y tick marks
+#                                  )
+#                    )
+#   )
+#   return(graph)
+# }
 
 
 
