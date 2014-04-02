@@ -1525,7 +1525,7 @@ cesModel2 <- function(countryAbbrev,
       model <- tryCatch(
         # If multErr=TRUE in the call to cesEst, we sometimes get models that don't work. Not sure why.
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=FALSE, ...),
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -1734,6 +1734,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   # Extracts the best model (least sse) from a list of models
   ##
   # Note that the order function below preserves the original order in the event of ties.
+  if ( inherits( models, "cesEst") )  {  models <- list(models) }
   o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
