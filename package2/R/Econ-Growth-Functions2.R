@@ -40,22 +40,23 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
   )
 }
 
+#' Load historical economic data
+#' 
+#' This function returns a data frame containing historical economic data
+#' 
+#' @param countryAbbrev the country/countries for which you want to load data
+#' @param baseHistorical the relative path of the directory containing the historical data.
+#' @return a data frame containing historical economic data
 #' @export
-loadData <- function(countryAbbrev, base="../"){
-  #################################
-  # This function loads data given a country abbreviation.
-  # The file name from which data will be loaded is assumed to be of the form 
-  # "<countryAbbrev>Data.txt". The file is assumed to exist in a subfolder of this project called "data".
-  #
-  # countryAbbrev is a string containing the 2-letter abbreviation for the country, e.g. "US" or "CN"
-  #
-  # returns a data.frame with the data that has been loaded
-  ##
-  # Read the data file as a table with a header.  
-  fileName <- paste0(base,"data/", countryAbbrev, "Data.txt")
-  data <- read.table(file=fileName, header=TRUE)
-  return(data)
-}
+loadData <-
+  function(countryAbbrev, baseHistorical){
+    # Read the data file as a table with a header.  
+    path <- file.path(baseHistorical, "AllData.txt")
+    data <- read.table(file=path, header=TRUE)
+    
+    if (missing(countryAbbrev))  return(data)
+    return(subset(data, Country %in% countryAbbrev))
+  }
 
 #' @export
 haveDataSF <- function(countryAbbrev, factor){

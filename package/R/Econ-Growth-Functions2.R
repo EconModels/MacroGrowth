@@ -52,7 +52,7 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
   )
 }
 
-#' Loads historical economic data
+#' Load historical economic data
 #' 
 #' This function returns a data frame containing historical economic data
 #' 
