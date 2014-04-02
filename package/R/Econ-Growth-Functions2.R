@@ -65,6 +65,8 @@ loadData <-
     # Read the data file as a table with a header.  
     path <- file.path(baseHistorical, "AllData.txt")
     data <- read.table(file=path, header=TRUE)
+    
+    if (missing(countryAbbrev))  return(data)
     return(subset(data, Country %in% countryAbbrev))
   }
 
