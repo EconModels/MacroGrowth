@@ -1510,35 +1510,28 @@ cesModel2 <- function(countryAbbrev,
     #
     if (energyType == "none" || nest=="(kl)"){
       # We want a model without energy. No need for a rho1 argument.
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...),
-        error = function(e) { list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm, 
-                                   control=chooseCESControl(algorithm), ...) }
+      tryCatch( {
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...)
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, history=hist)
+        models[length(models)+1] <- list(model)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
-      model <- tryCatch(
+      tryCatch( {
         # If multErr=TRUE in the call to cesEst, we sometimes get models that don't work. Not sure why.
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...),
-        error = function(e) { list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm,
-                                   control=chooseCESControl(algorithm), ...) }
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...)
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, history=hist)
+        models[length(models)+1] <- list(model)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     }
-    
-    hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-    model <- addMetaData(model, nest=nest, history=hist)
-    models[length(models)+1] <- list(model)
-    
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
