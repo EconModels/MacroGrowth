@@ -13,7 +13,7 @@ loadResampleModels(modelType, countryAbbrev, energyType = "none",
   \code{"linex"}.}
 
   \item{countryAbbrev}{a string representing the country
-  for which you want to load resample data.}
+  for which you want to load resample models.}
 
   \item{energyType}{one of \code{"none"}, \code{"Q"} (for
   thermal energy), \code{"X"} (for exergy), or \code{"U"}
