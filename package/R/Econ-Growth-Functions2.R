@@ -52,21 +52,23 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
   )
 }
 
-#' Loads historical economic data
+#' Load historical economic data
 #' 
 #' This function returns a data frame containing historical economic data
 #' 
-#' @param countryAbbrev the country for which you want to load data
+#' @param countryAbbrev the country/countries for which you want to load data
 #' @param baseHistorical the relative path of the directory containing the historical data.
 #' @return a data frame containing historical economic data
 #' @export
-loadData <- function(countryAbbrev, baseHistorical){
-  # Read the data file as a table with a header.  
-  fileName <- paste0(countryAbbrev,"Data.txt")
-  path <- file.path(baseHistorical, fileName)
-  data <- read.table(file=path, header=TRUE)
-  return(data)
-}
+loadData <-
+  function(countryAbbrev, baseHistorical){
+    # Read the data file as a table with a header.  
+    path <- file.path(baseHistorical, "AllData.txt")
+    data <- read.table(file=path, header=TRUE)
+    
+    if (missing(countryAbbrev))  return(data)
+    return(subset(data, Country %in% countryAbbrev))
+  }
 
 #' @export
 haveDataSF <- function(countryAbbrev, factor){
@@ -1508,35 +1510,28 @@ cesModel2 <- function(countryAbbrev,
     #
     if (energyType == "none" || nest=="(kl)"){
       # We want a model without energy. No need for a rho1 argument.
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...),
-        error = function(e) { list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm, 
-                                   control=chooseCESControl(algorithm), ...) }
+      tryCatch( {
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...)
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, history=hist)
+        models[length(models)+1] <- list(model)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     } else {
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
-      model <- tryCatch(
+      tryCatch( {
         # If multErr=TRUE in the call to cesEst, we sometimes get models that don't work. Not sure why.
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=FALSE, ...),
-        error = function(e) { list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm,
-                                   control=chooseCESControl(algorithm), ...) }
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...)
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, history=hist)
+        models[length(models)+1] <- list(model)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     }
-    
-    hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-    model <- addMetaData(model, nest=nest, history=hist)
-    models[length(models)+1] <- list(model)
-    
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
@@ -1732,6 +1727,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   # Extracts the best model (least sse) from a list of models
   ##
   # Note that the order function below preserves the original order in the event of ties.
+  if ( inherits( models, "cesEst") )  {  models <- list(models) }
   o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
