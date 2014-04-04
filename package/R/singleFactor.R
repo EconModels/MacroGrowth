@@ -1,5 +1,5 @@
 #' @export
-singleFactorPredictions <- function(countryAbbrev, factor, baseHistorical){
+singleFactorPredictions <- function(countryAbbrev, factor, baseHistorical, baseResample, archive=NULL){
   #########################
   # Takes the single-factor fitted models and creates per-country predictions for them.
   # Returns a data.frame with the predictions.
@@ -13,7 +13,9 @@ singleFactorPredictions <- function(countryAbbrev, factor, baseHistorical){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
+#   model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
+  model <- loadResampleModelsBaseModelOnly(modelType="sf", countryAbbrev=countryAbbrev, factor=factor, 
+                                           baseResample=baseResample, archive=archive)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
