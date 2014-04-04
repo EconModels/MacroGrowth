@@ -1,10 +1,9 @@
-
 #' @export
-covarianceTable <- function(countryAbbrev){
+covarianceTable <- function(countryAbbrev, baseHistorical){
   ##############################
   # Returns an xtable of covariance information for the specified country.
   ##
-  data <- loadData(countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
     dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX, data$iU)
@@ -24,8 +23,6 @@ covarianceTable <- function(countryAbbrev){
   rownames(covarResults) <- names
   return(covarResults)
 }
-
-
 
 #' @export
 singleFactorParamsTable <- function(factor){
@@ -53,7 +50,6 @@ singleFactorParamsTable <- function(factor){
   return(tableSF)
 }
 
-
 #' @export
 printSFParamsTable <- function(factor){
   ###############################
@@ -66,14 +62,13 @@ printSFParamsTable <- function(factor){
         table.placement="H")
 }
 
-
 #' @export
-cobbDouglasParamsTableNoEnergyDF <- function(){
+cobbDouglasParamsTableNoEnergyDF <- function(baseResample){
   ######################
   # Makes a data.frame with the parameters for the Cobb-Douglas model without energy.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType="none"))
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType="none", baseResample=baseResample))
   rownames(dataCD) <- countryAbbrevs
   colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
                         "lowerCI_alpha", "alpha", "upperCI_alpha",
@@ -83,11 +78,11 @@ cobbDouglasParamsTableNoEnergyDF <- function(){
 }
 
 #' @export
-cobbDouglasParamsTableNoEnergy <- function(){
+cobbDouglasParamsTableNoEnergy <- function(baseResample){
   ############################
   # Aggregates the Cobb-Douglas results into a big data table. No energy.
   ##
-  dataCD <- cobbDouglasParamsTableNoEnergyDF()
+  dataCD <- cobbDouglasParamsTableNoEnergyDF(baseResample=baseResample)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ")
@@ -101,12 +96,12 @@ cobbDouglasParamsTableNoEnergy <- function(){
 }
 
 #' @export
-cobbDouglasParamsTableWithEnergyDF <- function(energyType){
+cobbDouglasParamsTableWithEnergyDF <- function(energyType, baseResample){
   ######################
   # Makes a data.frame with the parameters for the Cobb-Douglas model with energy.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType))
+  dataCD <- do.call("rbind", lapply(countryAbbrevs, cobbDouglasCountryRow, energyType=energyType, baseResample=baseResample))
   rownames(dataCD) <- countryAbbrevs
   colnames(dataCD) <- c("lowerCI_lambda", "lambda", "upperCI_lambda", 
                         "lowerCI_alpha", "alpha", "upperCI_alpha",
@@ -117,12 +112,12 @@ cobbDouglasParamsTableWithEnergyDF <- function(energyType){
 }
 
 #' @export
-cobbDouglasParamsTableWithEnergy <- function(energyType){
+cobbDouglasParamsTableWithEnergy <- function(energyType, baseResample){
   ############################
   # Aggregates the Cobb-Douglas results into a big data table for the given energyType.
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType)
+  dataCD <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType, baseResample=baseResample)
   colnames(dataCD) <- c(" ", "$\\lambda$", " ", 
                         " ", "$\\alpha$",  " ",
                         " ", "$\\beta$",   " ",
@@ -140,26 +135,25 @@ cobbDouglasParamsTableWithEnergy <- function(energyType){
 }
 
 #' @export
-printCDParamsTable <- function(energyType="none"){
+printCDParamsTable <- function(energyType="none", baseResample){
   ############################
   # Prints a table with parameters from a Cobb-Douglas model for the given energyType. 
   # Set energyType="none" to print a table for Cobb-Douglas without energy.
   ##
   if (energyType == "none"){
-    print(cobbDouglasParamsTableNoEnergy(), 
+    print(cobbDouglasParamsTableNoEnergy(baseResample=baseResample), 
           caption.placement="top", 
           sanitize.colnames.function = identity, 
           size="\\tiny", 
           table.placement="H")
   } else {
-    print(cobbDouglasParamsTableWithEnergy(energyType), 
+    print(cobbDouglasParamsTableWithEnergy(energyType=energyType, baseResample=baseResample), 
           caption.placement="top", 
           sanitize.colnames.function = identity, 
           size="\\tiny",
           table.placement="H")
   }
 }
-
 
 #' @export
 cesResampleCoeffProps <- function(cesResampleFits, ...){
@@ -212,8 +206,9 @@ cesResampleCoeffProps <- function(cesResampleFits, ...){
 }
 
 
+
 #' @export
-cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL, base="../"){
+cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL, baseResample){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the CES production function given a country and an energyType.
@@ -240,12 +235,12 @@ cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL
   } else if (energyType == "none"){
     # We want CES without energy
     resampleData <- loadResampleData(modelType="ces", countryAbbrev=countryAbbrev, energyType="none",
-                                     archive=archive, base=base)
+                                     archive=archive, baseResample=baseResample)
   } else {
     # We want CES with energy  -- might want all three for this later.
     modelType <- paste("cese-", nest, sep="")
     resampleData <- loadResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
-                                     energyType=energyType, archive=archive, base=base)
+                                     energyType=energyType, archive=archive, baseResample=baseResample)
   }
   statisticalProperties <- cesResampleCoeffProps(resampleData)
   # Set the correct label in the row that shows the base values.
@@ -258,12 +253,12 @@ cesData <- function(countryAbbrev, energyType="none", nest="(kl)e", archive=NULL
 }
 
 #' @export
-cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e"){
+cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e", baseResample){
   ############
   # Creates a row for the CES parameters table for the given country (2-letter code),
   # energyType (Q, X, U, or NA), and nest.
   ##
-  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest)
+  dataCES <- cesData(countryAbbrev=countryAbbrev, energyType=energyType, nest=nest, baseResample=baseResample)
   out <- cbind(dataCES["-95% CI", "gamma"], dataCES["CES", "gamma"], dataCES["+95% CI", "gamma"],
                dataCES["-95% CI", "lambda"], dataCES["CES", "lambda"], dataCES["+95% CI", "lambda"],
                dataCES["-95% CI", "delta_1"], dataCES["CES", "delta_1"], dataCES["+95% CI", "delta_1"],
@@ -274,12 +269,14 @@ cesCountryRow <- function(countryAbbrev, energyType="none", nest="(kl)e"){
   return(out)
 }
 
+
+
 #' @export
-cesParamsTableDF <- function(energyType){
+cesParamsTableDF <- function(energyType, baseResample){
   ######################
   # Creates a data.frame for CES parameters
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, baseResample=baseResample))
   colnames(dataCES) <- c("lowerCI_gamma", "gamma", "upperCI_gamma",
                          "lowerCI_lambda", "lambda", "upperCI_lambda",
                          "lowerCI_delta_1", "delta_1", "upperCI_delta_1",
@@ -291,11 +288,11 @@ cesParamsTableDF <- function(energyType){
 }
 
 #' @export
-cesParamsTableA <- function(energyType="none", nest="(kl)e"){
+cesParamsTableA <- function(energyType="none", nest="(kl)e", baseResample){
   ############################
   # Aggregates the CES results for lambda, delta, and sigma into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest, baseResample))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -331,11 +328,11 @@ cesParamsTableA <- function(energyType="none", nest="(kl)e"){
 }
 
 #' @export
-cesParamsTableB <- function(energyType="none", nest="(kl)e"){
+cesParamsTableB <- function(energyType="none", nest="(kl)e", baseResample){
   ############################
   # Aggregates the CES results for gamma, delta_1, and sigma_1 into a table for the given energyType.
   ##
-  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest))
+  dataCES <- do.call("rbind", lapply(countryAbbrevs, cesCountryRow, energyType=energyType, nest=nest, baseResample=baseResample))
   colnames(dataCES) <- c(" ", "$\\gamma$",    " ", 
                          " ", "$\\lambda$",   " ",
                          " ", "$\\delta_1$",  " ",
@@ -369,45 +366,6 @@ cesParamsTableB <- function(energyType="none", nest="(kl)e"){
 
 
 #' @export
-# createCESParamsGraph <- function(energyType="none", nest="(kl)e"){
-#   #############################
-#   # Creates a graph with confidence intervals for the CES model for the given energyType and nesting.
-#   ##
-#   # Create a data table with the following columns:
-#   # country abbrev, parameter (gamma, lambda, delta_1, delta, sigma_1, sigma), -95% CI, value, +95% CI
-#   data <- do.call("rbind", lapply(countryAbbrevs, cesCountryRowsForParamsGraph, energyType=energyType, nest=nest))
-#   graph <- segplot(country ~ upperCI + lowerCI | parameter, 
-#                    data = data, 
-#                    centers = value, #identifies where the dots should be placed
-#                    as.table = TRUE, #indexing of panels starts in upper left and goes across rows.
-#                    draw.bands = FALSE, #provides nicer error bars
-#                    horizontal = FALSE, #makes error bars vertical and puts the countries in the x axis
-#                    layout = c(2,3), #2 column, 3 row
-#                    # Orders the panels as gamma, lambda, delta_1, delta, sigma_1, sigma
-#                    index.cond = list(c(1,2,3,4,5,6)), 
-#                    #set labels and bg color in strip
-#                    strip = strip.custom(factor.levels=c("$\\gamma$", "$\\lambda$ [1/year]", "$\\delta_1$",
-#                                                         "$\\delta$", "$\\sigma_1$", "$\\sigma$"), bg="transparent"),
-#                    col = "black", #Sets line color to black
-#                    lwd = 1, #Sets line width to 1.0
-#                    ylim = list(c(0.75, 1.25), c(-0.05, 0.1), c(0.0, 1.0),
-#                                c(0.0, 1.0), c(0.0, 2.0), c(0.0, 2.0)), #y axis limits
-#                    scales = list(cex=scaleTextSize, #controls text size on scales.
-#                                  tck=scaleTickSize, #controls tick mark length. < 0 for inside the graph.
-#                                  x=list(cex=0.75), #reduces text size so that country abbrevs are legible
-#                                  y=list(rot=0, relation="free", #allow each axis to be different
-#                                         at=list(c(0.75, 1.0, 1.25), c(-0.05, 0.0, 0.05, 0.10),
-#                                                 c(0.0, 0.5, 1.0), c(0.0, 0.5, 1.0), 
-#                                                 c(0.0, 1.0, 2.0), c(0.0, 1.0, 2.0))   #y tick marks
-#                                  )
-#                    )
-#   )
-#   return(graph)
-# }
-
-
-
-#' @export
 linexResampleCoeffProps <- function(linexResampleFits, ...){
   ####### 
   # This function creates a table of confidence intervals for the LINEX models
@@ -434,7 +392,7 @@ linexResampleCoeffProps <- function(linexResampleFits, ...){
 }
 
 #' @export
-linexData <- function(countryAbbrev, energyType, archive=NULL, base="../"){
+linexData <- function(countryAbbrev, energyType, archive=NULL, baseResample){
   #################################################
   # Calculates parameter estimates and confidence intervals
   # for the LINEX production function given a country and an energyType.
@@ -459,17 +417,17 @@ linexData <- function(countryAbbrev, energyType, archive=NULL, base="../"){
     return(df)
   }
   resampledData <- loadResampleData(modelType="linex", countryAbbrev=countryAbbrev, energyType=energyType,
-                                    archive=archive, base=base)
+                                    archive=archive, baseResample=baseResample)
   statisticalProperties <- linexResampleCoeffProps(resampledData)
   return(statisticalProperties)
 }
 
 #' @export
-linexCountryRow <- function(countryAbbrev, energyType){
+linexCountryRow <- function(countryAbbrev, energyType, baseResample){
   ############
   # Creates a row for the LINEX parameters table for the given country (2-letter code) and energyType (Q, X, or U)
   ##
-  dataLINEX <- linexData(countryAbbrev, energyType)
+  dataLINEX <- linexData(countryAbbrev=countryAbbrev, energyType=energyType, baseResample=baseResample)
   out <- cbind(dataLINEX["-95% CI", "a_0"], dataLINEX["LINEX", "a_0"], dataLINEX["+95% CI", "a_0"],
                dataLINEX["-95% CI", "c_t"], dataLINEX["LINEX", "c_t"], dataLINEX["+95% CI", "c_t"])
   return(out)
@@ -478,12 +436,12 @@ linexCountryRow <- function(countryAbbrev, energyType){
 
 
 #' @export
-linexParamsTableDF <- function(energyType){
+linexParamsTableDF <- function(energyType, baseResample){
   #####################
   # Creates a data.frame containing all parameters and their confidence intervals 
   ##
   #Do rbind on the results of creating a row in the table for every country abbreviation that we know.
-  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType))
+  dataLINEX <- do.call("rbind", lapply(countryAbbrevs, linexCountryRow, energyType=energyType, baseResample=baseResample))
   colnames(dataLINEX) <- c("lowerCI_a_0", "a_0", "upperCI_a_0",
                            "lowerCI_c_t", "c_t", "upperCI_c_t")
   rownames(dataLINEX) <- countryAbbrevs
@@ -491,11 +449,11 @@ linexParamsTableDF <- function(energyType){
 }
 
 #' @export
-linexParamsTable <- function(energyType){
+linexParamsTable <- function(energyType, baseResample){
   ############################
   # Aggregates the LINEX results into a big data table for the given energyType.
   ##
-  dataLINEX <- linexParamsTableDF(energyType)
+  dataLINEX <- linexParamsTableDF(energyType, baseResample)
   colnames(dataLINEX) <- c(" ", "$a_0$", " ", " ", "$c_t$",  " ")
   rownames(dataLINEX) <- countryAbbrevs
   tableLINEX <- xtable(dataLINEX, 
@@ -507,20 +465,7 @@ linexParamsTable <- function(energyType){
 }
 
 #' @export
-printLINEXParamsTable <- function(energyType){
-  ############################
-  # Prints a table with parameters from a LINEX model for the given energyType. 
-  ##
-  print(linexParamsTable(energyType), 
-        caption.placement="top", 
-        sanitize.colnames.function = identity, 
-        size="\\tiny",
-        table.placement="H")
-}
-
-## <<AIC_Table_Functions, eval=TRUE>>=
-#' @export
-createAICTable <- function(){
+createAICTable <- function(baseHistorical){
   ###############################
   # Creates an xtable object that holds the AIC values for each parameter estimation that we include.
   ##
@@ -528,46 +473,53 @@ createAICTable <- function(){
   # Single-factor models
   ######################
   # Single-factor with K
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", constrained=TRUE)
+  # At present, this function re-fits all models with lines like the following.
+  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  # The above approach will be painfully slow for the CES models, because they take soooo long to run.
+  # If we want to load from disk instead of re-running the model, we should use code that looks like the line below
+  # But, at present, the next line of code is slooooow, because loadResampleModelsBaseModelOnly 
+  # reads all models and only returns the first one (the base model), throwing away all resample models.
+  # And, there could be LOTS of resample models to load (typically, 1000).
+  # sfKModels <- lapply(countryAbbrevs, loadResampleModelsBaseModelOnly, modelType="sf", factor="K", baseResample="data_resample")
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", constrained=TRUE)
+  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", constrained=TRUE)
+  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", constrained=TRUE)
+  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", constrained=TRUE)), 
-                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", constrained=TRUE)), 
-                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", constrained=TRUE)),
+  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", constrained=TRUE)
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", constrained=TRUE)
+  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", constrained=TRUE)
+  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", constrained=TRUE)), 
-                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", constrained=TRUE)), 
-                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", constrained=TRUE)),
+  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################
@@ -576,6 +528,10 @@ createAICTable <- function(){
   # At present, this AIC for CES code is not working. Perhaps because the CES model from the cesEst function
   # in the micEcon package does not provide its data in the correct format for the AIC function?
   # --Matthew Kuperus Heun, 10 April 2013.
+  # 
+  # If we ever resurrect this code, we'll want to make sure that we're not running the cesModel
+  # repeatedly. We'll want to load data from an archive using loadResampleModelsBaseModelOnly
+  # 
   #   # CES with Q
   #   cesQModels <- lapply(countryAbbrevs, cesModel2, energyType="Q")
   #   aicCESq <- data.frame(lapply(cesQModels, AIC))
@@ -602,17 +558,17 @@ createAICTable <- function(){
   # LINEX models
   ######################
   # LINEX with Q
-  linexQModels <- lapply(countryAbbrevs, linexModel, energyType="Q")
+  linexQModels <- lapply(countryAbbrevs, linexModel, energyType="Q", baseHistorical=baseHistorical)
   aicLINEXq <- data.frame(lapply(linexQModels, AIC))
   rownames(aicLINEXq) <- "LINEX$q$"
   # LINEX with X
-  linexXModels <- lapply(countryAbbrevs, linexModel, energyType="X")
+  linexXModels <- lapply(countryAbbrevs, linexModel, energyType="X", baseHistorical=baseHistorical)
   aicLINEXx <- data.frame(lapply(linexXModels, AIC))
   rownames(aicLINEXx) <- "LINEX$x$"  
   # LINEX with U
-  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U")), 
-                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U")), 
-                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U")),
+  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U", baseHistorical=baseHistorical)), 
+                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U", baseHistorical=baseHistorical)), 
+                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U", baseHistorical=baseHistorical)),
                      CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicLINEXu) <- "LINEX$u$"
   
@@ -626,8 +582,9 @@ createAICTable <- function(){
   return(out)
 }
 
+## <<CIvsParam_Graph, eval=TRUE>>=
 #' @export
-CIvsParamDF <- function(model, param, energyType="none", factor=NA){
+CIvsParamDF <- function(model, param, energyType="none", factor=NA, baseResample){
   ############################
   # Creates a data.frame that contains the following information:
   # row name: 2-letter country abbreviation
@@ -642,8 +599,8 @@ CIvsParamDF <- function(model, param, energyType="none", factor=NA){
   ##
   # Get the data from the requested model
   if (model == "SF"){data <- singleFactorParamsDF(factor)} 
-  else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF()}
-  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType)}
+  else if (model == "CD"){data <- cobbDouglasParamsTableNoEnergyDF(baseResample=baseResample)}
+  else if (model == "CDe"){data <- cobbDouglasParamsTableWithEnergyDF(energyType=energyType, baseResample=baseResample)}
   else if (model == "CES"){data <- cesParamsTableDF(energyType="none")}
   else if (model == "CESe"){data <- cesParamsTableDF(energyType=energyType)}
   else if (model == "LINEX"){data <- linexParamsTableDF(energyType)}
@@ -704,26 +661,5 @@ CIvsParamDF <- function(model, param, energyType="none", factor=NA){
   Country <- data.frame(countryAbbrevs)
   data <- cbind(x, y, factor, Country)
   return(data)
-}
-
-
-
-#' @export
-printFracUnconvergedXtable <- function(){
-  #####################################
-  # This function prints a table containing the fraction of unconverged
-  # resample models.
-  ##
-  data <- fracUnconvergedResampleFitsAll()
-  dataXtable <- xtable(x=data, 
-                       caption="Fraction of unconverged resample models", 
-                       label="tab:frac_unconverged_models",
-                       digits = 3,
-                       align = "rl|cc|ccccccccc") #Sets alignment of the numbers in the columns)
-  print(dataXtable, 
-        caption.placement="top", 
-        size="\\tiny",
-        table.placement="H",
-        include.rownames=FALSE)
 }
 

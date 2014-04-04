@@ -222,7 +222,7 @@ historicalPlot <- function(countryAbbrev, baseHistorical){
   # Code that deals with items that are specific to whether we want all countries or a specific country.
   if (missing(countryAbbrev)){
     # We want a graph with panels for all countries
-    data <- loadData(countryAbbrev="All", base=baseHistorical)
+    data <- loadData(base=baseHistorical)
     # Now set the order for the countries
     data$Country <- factor(data$Country, levels=countryAbbrevs)
   } else {
