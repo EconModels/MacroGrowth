@@ -522,6 +522,10 @@ createAICTable <- function(){
   # At present, this AIC for CES code is not working. Perhaps because the CES model from the cesEst function
   # in the micEcon package does not provide its data in the correct format for the AIC function?
   # --Matthew Kuperus Heun, 10 April 2013.
+  # 
+  # If we ever resurrect this code, we'll want to make sure that we're not running the cesModel
+  # repeatedly. We'll want to load data from an archive using loadResampleModelsBaseModelOnly
+  # 
   #   # CES with Q
   #   cesQModels <- lapply(countryAbbrevs, cesModel2, energyType="Q")
   #   aicCESq <- data.frame(lapply(cesQModels, AIC))
