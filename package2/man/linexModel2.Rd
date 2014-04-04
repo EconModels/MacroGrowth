@@ -6,24 +6,29 @@
 linexModel2(formula, data, response, capital, labor, energy, time)
 }
 \arguments{
-\item{formula}{a formula of the form \code{response ~ captial + labor + energy + time}}
+  \item{formula}{a formula of the form \code{response ~
+  captial + labor + energy + time}}
 
-\item{response}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{response}{instead of specifying a formula,
+  expressions for the components can be specified
+  individually.}
 
-\item{capital}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{capital}{instead of specifying a formula,
+  expressions for the components can be specified
+  individually.}
 
-\item{labor}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{labor}{instead of specifying a formula, expressions
+  for the components can be specified individually.}
 
-\item{energy}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{energy}{instead of specifying a formula,
+  expressions for the components can be specified
+  individually.}
 
-\item{time}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{time}{instead of specifying a formula, expressions
+  for the components can be specified individually.}
 
-\item{data}{a data frame in which \code{formula} is evaluated}
+  \item{data}{a data frame in which \code{formula} is
+  evaluated}
 }
 \description{
 Fit LINEX models

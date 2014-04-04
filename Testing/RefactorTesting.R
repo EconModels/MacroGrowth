@@ -37,3 +37,6 @@ naturalCoef(
 naturalCoef(
   singleFactorModel2( iGDP ~ iCapStk + iYear, data=subset(all, Country=="US"), constrained=TRUE )
 )
+
+model <- cesModel3( iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(all, Country=="US"))
+naturalCoef(model)

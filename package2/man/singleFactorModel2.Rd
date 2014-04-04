@@ -6,11 +6,14 @@
 singleFactorModel2(formula, data, response, factor, time, constrained = FALSE)
 }
 \arguments{
-\item{formula}{a formula of the form \code{ y ~ factor + time }}
+  \item{formula}{a formula of the form \code{ y ~ factor +
+  time }}
 
-\item{data}{a data frame in which \code{formula} is evaluated}
+  \item{data}{a data frame in which \code{formula} is
+  evaluated}
 
-\item{constrained}{a logical indicating whether the model parameters are constrained}
+  \item{constrained}{a logical indicating whether the model
+  parameters are constrained}
 }
 \value{
 an lm object with some additional attributes

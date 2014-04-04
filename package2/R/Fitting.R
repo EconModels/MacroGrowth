@@ -1,4 +1,8 @@
 
+nestMatch <- function( n1, n2 ) {
+  (length(n1) == length(n2)) && all(n1==n2)
+}
+
 #' @export
 naturalCoef <- function(object) {
   if (! "naturalCoeffs" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
@@ -366,16 +370,14 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time, co
 
 #' Fit CES model
 #' 
-#' This function fits a CES model to original or resampled data.
+#' This function fits a CES model
 #' 
 #' @param data a data frame, if you want to use resampled data.
 #' @param countryAbbrev, a character string naming the country, 
 #' if you want to use original data.
-#' @param nest one of \code{"(kl)"}, \code{"(le)"}, or \code{"(ek)"}.
-#' Use  \code{"(kl)"} if you want a fit without energy, regardless 
-#' of which energyType is specified.
-#' @param energyType Use \code{"none"} to specify a CES fit without energy, but only if 
-#' \code{nest != "(kl)"}.
+#' @param nest a permutation (a,b,c,d) of the integers 1 through 4.
+#' For models with 3 factors, the nesting
+#' is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
 #' @param fittingToResampleData a logical.  If \code{FALSE}, you should also supply a 
 #' value for \code{origModel}
 #' because \code{origModel} will be used to obtain the starting point for a gradient search.
@@ -391,27 +393,50 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time, co
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
 #' @return a list of models 
 #' @export
-cesModel2 <- function(countryAbbrev, 
-                      energyType="none", 
-                      data = loadData(countryAbbrev=countryAbbrev), 
+cesModel3 <- function(formula, data,
+                      response,
+                      a,
+                      b,
+                      c=NULL,
+                      d=NULL,
+                      time,
+                      nest=1:4,
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
-                      nest="(kl)e", 
+                      multErr=TRUE,
                       rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       digits=6,
                       ...){
-  
-  if (energyType != "none" && (nest != "(kl)")){
-    # We need to do the CES fit with the desired energyType.
-    # But, only if we asked for a nest that isn't "(kl)"
-    # To achieve the correct fit, we'll change the name of the desired column
-    # to "iEToFit" and use "iEToFit" in the nls function.
-    data <- replaceColName(data, energyType, "iEToFit")
-    # Remove rows with missing energy information
-    data <- data[ !is.na(data[,"iEToFit"]), ]
+
+  if ( missing(formula) ) { 
+    substitutionList <-  list( response = substitute(response),
+                               capital = substitute(a),
+                               labor = substitute(b),
+                               energy = substitute(c),
+                               other = substitute(d),
+                               time = substitute(time)
+    )
+    if (is.null(c) & is.null(d)) {
+      formula <- substitute( response ~ capital + labor + time, substitutionList )
+    } else if (is.null(d)) {
+      formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
+    } else {
+      formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
+    }
+  } else {
+    numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
   }
-  
+#   if (energyType != "none" && (nest != "(kl)")){
+#     # We need to do the CES fit with the desired energyType.
+#     # But, only if we asked for a nest that isn't "(kl)"
+#     # To achieve the correct fit, we'll change the name of the desired column
+#     # to "iEToFit" and use "iEToFit" in the nls function.
+#     data <- replaceColName(data, energyType, "iEToFit")
+#     # Remove rows with missing energy information
+#     data <- data[ !is.na(data[,"iEToFit"]), ]
+#   }
+#   
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
@@ -420,35 +445,38 @@ cesModel2 <- function(countryAbbrev,
   for (m in badAlgorithms) {
     stop(paste("Unrecognized algorithm:", m))
   }
-  # Set up xNames for the desired energy type or nesting
-  if (energyType == "none" || nest == "(kl)"){
-    # We don't want to include energy. So, include only k and l.
-    xNames <- c("iCapStk", "iLabor")
-  } else {
-    # We want to include energy. So, include k, l, and e.
-    if (nest %in% c("(kl)e", "(lk)e")){
-      xNames <- c("iCapStk", "iLabor", "iEToFit")
-    } else if (nest %in% c("(le)k", "(el)k")){
-      xNames <- c("iLabor", "iEToFit", "iCapStk")
-    } else if (nest %in% c("(ek)l", "(ke)l")){
-      xNames <- c("iEToFit", "iCapStk", "iLabor")
-    } else {
-      stop(paste("Unknown nesting option", nest, "in cesModel2"))
-    }
-  }
-  # Establish key variable names  
-  tName <- "iYear"
-  yName <- "iGDP"
+
+  
+  # Set up *Names 
+  fNames <- rownames( attr(terms(formula), "factors") )
+  numFactors <- length(fNames) - 2  # not response, not time
+  xNames <- switch( as.character(numFactors),
+                   "2" = fNames[1 + (1:2)],      # add 1 here to avoid response
+                   "3" = fNames[1 + nest[1:3]],
+                   "4" = fNames[1 + nest[1:4]]
+  )
+  tName <- tail(fNames, 1)
+  yName <- head(fNames, 1)
+
+  nest <- nest[1:numComponents]
+  nestString <- paste0(
+    "(", 
+    paste(head(xNames,2), collapse=" + "),  
+    ") + (", 
+    paste(tail(xNames, -2), collapse=" + "),
+    ")"
+    )
+
   models <- list()
   for (algorithm in algorithms) {
     #
     # Try grid search.
     #
-    if (energyType == "none" || nest=="(kl)"){
+    if (numFactors == 2) {
       # We want a model without energy. No need for a rho1 argument.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), multErr=TRUE, ...),
+               rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -460,7 +488,7 @@ cesModel2 <- function(countryAbbrev,
       # We want a model with energy. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=TRUE, ...),
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...),
         error = function(e) { list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
@@ -471,7 +499,7 @@ cesModel2 <- function(countryAbbrev,
     }
     
     hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-    model <- addMetaData(model, nest=nest, history=hist)
+    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
     models[length(models)+1] <- list(model)
     
   }
@@ -483,11 +511,11 @@ cesModel2 <- function(countryAbbrev,
   for (algorithm in algorithms) {
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-             control=chooseCESControl(algorithm), start=start, multErr=TRUE, ...),
+             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
       error = function(e) { NULL }
     )
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-    model <- addMetaData(model, nest=nest, history=hist)
+    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
     models[[length(models)+1]] <- model
   }
   #
@@ -498,20 +526,22 @@ cesModel2 <- function(countryAbbrev,
     for (algorithm in algorithms) {
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), start=start, multErr=TRUE, ...),
+               control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
         error = function(e) { NULL }
       )
       hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-      model <- addMetaData(model, nest=nest, history=hist)
+      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
       models[[length(models)+1]] <- model
     }
   }
   # Return everything all of the models that we calculated.
+  attr(models, "naturalCoeffs") <- naturalCoef(bestModel(models))
+  attr(models, "meta") <- metaData(bestModel(models))
   return(models)
 }
 
 #' @export
-addMetaData <- function(model, nest, history=""){
+addMetaData <- function(model, nest, nestString, history=""){
   ###############
   # This function adds metadata to a model.  Currently this is only designed to
   # work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
@@ -578,24 +608,25 @@ addMetaData <- function(model, nest, history=""){
                               sse = sum(resid(model)^2)
   )
   # Calculate some metadata, including gamma. See comments above.
-  if (missing(nest) || is.na(nest) || nest == "(kl)" || nest == "kl"){
+  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2) ) {
     alpha <- delta_1
     beta <- 1.0 - delta_1
     gamma <- 0.0
-  } else if (nest == "(kl)e"){
+  } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
     alpha <- delta * delta_1
     beta  <- delta * (1.0 - delta_1)
     gamma <- 1.0 - delta
-  } else if (nest == "(le)k"){
+  } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
     alpha <- 1.0 - delta
     beta <- delta * delta_1
     gamma <- delta * (1.0 - delta_1)
-  } else if (nest == "(ek)l"){
+  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ek)l"){
     alpha <- delta * (1.0 - delta_1)
     beta <- 1.0 - delta
     gamma <- delta * delta_1
   } else {
-    stop(paste("Unknown nest:", nest, "in addMetaData."))
+    print(nest)
+    stop(paste("Unknown nest:", nestString, "in addMetaData."))
   }
   metaData <- data.frame( isConv = model$convergence,
                           algorithm = model$method,
@@ -610,7 +641,8 @@ addMetaData <- function(model, nest, history=""){
                           start.gamma_coef = as.vector(model$start["gamma"]),
                           start.delta = as.vector(model$start["delta"]),
                           start.rho = as.vector(model$start["rho"]),
-                          history=history
+                          history=history,
+                          nest = nestString
   )
   
   metaList <- list(  isConv = model$convergence,
@@ -626,7 +658,8 @@ addMetaData <- function(model, nest, history=""){
                      start.gamma_coef = as.vector(model$start["gamma"]),
                      start.delta = as.vector(model$start["delta"]),
                      start.rho = as.vector(model$start["rho"]),
-                     history=history
+                     history=history,
+                     nest=nestString
   )
   
   if ( nrow(metaData) > 1 ) {
@@ -637,10 +670,10 @@ addMetaData <- function(model, nest, history=""){
       }
     }
   }
-  attr(x=model, "naturalCoeffs") <- naturalCoeffs[1,]
+  attr(model, "naturalCoeffs") <- naturalCoeffs[1,]
   metaData$metaDataRows <- nrow(metaData)
-  attr(x=model, "meta") <- metaData[1,] 
-  attr(x=model, "metaList") <- metaList 
+  attr(model, "meta") <- metaData[1,] 
+  attr(model, "metaList") <- metaList 
   return(model)
 }
 
