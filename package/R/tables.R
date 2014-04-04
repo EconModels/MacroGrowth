@@ -464,9 +464,8 @@ linexParamsTable <- function(energyType, baseResample){
   return(tableLINEX)
 }
 
-## <<AIC_Table_Functions, eval=TRUE>>=
 #' @export
-createAICTable <- function(){
+createAICTable <- function(baseHistorical){
   ###############################
   # Creates an xtable object that holds the AIC values for each parameter estimation that we include.
   ##
@@ -474,46 +473,47 @@ createAICTable <- function(){
   # Single-factor models
   ######################
   # Single-factor with K
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE)
+#   sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  sfKModels <- lapply(countryAbbrevs, loadResampleModelsBaseModelOnly, modelType="sf", factor="K", baseResample="data_resample")
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE)
+  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE)
+  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE)
+  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE)), 
-                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE)), 
-                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE)),
+  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", respectRangeConstraints=TRUE)
+  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCD <- data.frame(lapply(cdModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE)
+  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE)
+  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE)), 
-                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE)), 
-                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE)),
+  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################
@@ -552,17 +552,17 @@ createAICTable <- function(){
   # LINEX models
   ######################
   # LINEX with Q
-  linexQModels <- lapply(countryAbbrevs, linexModel, energyType="Q")
+  linexQModels <- lapply(countryAbbrevs, linexModel, energyType="Q", baseHistorical=baseHistorical)
   aicLINEXq <- data.frame(lapply(linexQModels, AIC))
   rownames(aicLINEXq) <- "LINEX$q$"
   # LINEX with X
-  linexXModels <- lapply(countryAbbrevs, linexModel, energyType="X")
+  linexXModels <- lapply(countryAbbrevs, linexModel, energyType="X", baseHistorical=baseHistorical)
   aicLINEXx <- data.frame(lapply(linexXModels, AIC))
   rownames(aicLINEXx) <- "LINEX$x$"  
   # LINEX with U
-  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U")), 
-                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U")), 
-                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U")),
+  aicLINEXu <- cbind(US=AIC(linexModel(countryAbbrev="US", energyType="U", baseHistorical=baseHistorical)), 
+                     UK=AIC(linexModel(countryAbbrev="UK", energyType="U", baseHistorical=baseHistorical)), 
+                     JP=AIC(linexModel(countryAbbrev="JP", energyType="U", baseHistorical=baseHistorical)),
                      CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicLINEXu) <- "LINEX$u$"
   
