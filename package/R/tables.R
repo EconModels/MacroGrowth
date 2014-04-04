@@ -475,7 +475,7 @@ createAICTable <- function(baseHistorical){
   # Single-factor with K
   # At present, this function re-fits all models with lines like the following.
   sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
-  # This approach will be painfully slow for the CES models, because they take so long to run.
+  # The above approach will be painfully slow for the CES models, because they take soooo long to run.
   # If we want to load from disk instead of re-running the model, we should use code that looks like the line below
   # But, at present, the next line of code is slooooow, because loadResampleModelsBaseModelOnly 
   # reads all models and only returns the first one (the base model), throwing away all resample models.
