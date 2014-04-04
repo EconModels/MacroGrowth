@@ -59,8 +59,22 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   yhat(object) + resample( resid(object) ) * sgn
 }
 
+#' Generates all resample data for all countries, all model types, and all energy types
+#' 
+#' This function generates curve fit coefficients and models
+#' and stores them to disk. The data are stored in an 
+#' object called "resampleData" and an object called "resampleModels". 
+#' These objects will have the same name
+#' when they are loaded back from disk. 
+#' 
+#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
+#' @param n the number of resamples you want to perform
+#' @param baseResample the relative path to the directory where you want to store results
+#' @param baseHistorical the relative path to the directory in which the historical data resides
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
-genAllResampleData <- function(method="wild", n=numResamples(), ...) {
+genAllResampleData <- function(method="wild", n=numResamples(), baseResample, baseHistorical, ...) {
   #######################
   # Generates all resampling data for all models using the method specified
   ##
@@ -73,53 +87,75 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   status <- foreach(ca=countryAbbrevs, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
     status <- c()
     status <- c(status,
-                genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method,...))
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="K",     n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="sf",    countryAbbrev=ca, factor="L",     n=n, method=method,...))
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="L",     n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="sf",    countryAbbrev=ca, factor="Q",     n=n, method=method,...))
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="Q",     n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="sf",    countryAbbrev=ca, factor="X",     n=n, method=method,...))
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="X",     n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cd",    countryAbbrev=ca,                 n=n, method=method,...))
+                genResampleData(modelType="cd",    countryAbbrev=ca,                 n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="Q", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="X", n=n, method=method,...))
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="X", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="ces",   countryAbbrev=ca,                 n=n, method=method,...))
+                genResampleData(modelType="ces",   countryAbbrev=ca,                 n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="Q", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="Q", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="Q", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="X", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="X", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="X", n=n, method=method,...))
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="X", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method,...))
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="Q", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method,...))
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="X", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status
   }  
   status2 <- foreach(ca=countryAbbrevsU, .errorhandling="pass", .combine=c, .init=c()) %dopar% {
     status <- c()
     status <- c(status,
-                genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method,...))
+                genResampleData(modelType="sf",    countryAbbrev=ca, factor="U",     n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method,...))
+                genResampleData(modelType="cde",   countryAbbrev=ca, energyType="U", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+                genResampleData(modelType="cese-(kl)e",  countryAbbrev=ca, energyType="U", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+                genResampleData(modelType="cese-(le)k",  countryAbbrev=ca, energyType="U", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="U", n=n, method=method,...))
+                genResampleData(modelType="cese-(ek)l",  countryAbbrev=ca, energyType="U", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status <- c(status,
-                genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method,...))
+                genResampleData(modelType="linex", countryAbbrev=ca, energyType="U", n=n, method=method,
+                                baseHistorical=baseHistorical, baseResample=baseResample, ...))
     status
   }  
   # Report timer results
@@ -127,6 +163,29 @@ genAllResampleData <- function(method="wild", n=numResamples(), ...) {
   return(list(s1=status, s2=status2, timing=timing) )
 }
 
+#' Generates resample data, for the base fit and resample fits
+#' 
+#' This function generates curve fit coefficients and models
+#' and stores them to disk. The data are stored in an 
+#' object called "resampleData" and an object called "resampleModels". 
+#' These objects will have the same name
+#' when they are loaded back from disk. 
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev a string representing the country for which you want to load resample data.
+#' @param energyType one of \code{"none"}, \code{"Q"} (for thermal energy), \code{"X"} (for exergy), 
+#' or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
+#' @param n the number of resamples you want to perform
+#' @param clobber whether you want to overwrite any previous results
+#' @param verbose whether you want lots of output
+#' @param baseResample the relative path to the directory where you want to store results
+#' @param baseHistorical the relative path to the directory in which the historical data resides
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 genResampleData <- function(modelType=modelTypes,
                             countryAbbrev=countryAbbrevs, 
@@ -135,23 +194,19 @@ genResampleData <- function(modelType=modelTypes,
                             method="wild",
                             n,
                             clobber=TRUE,
-                            verbose=FALSE){
-  #########################
-  # This function generates curve fit coefficients and models
-  # and stores them to disk. The data are stored in an 
-  # object called "resampleData" and an object called "resampleModels". 
-  # These objects will have the same name
-  # when it is loaded back from disk. 
-  # We found that 1000 resamples is sufficient to obtain good results
-  ## 
+                            verbose=FALSE,
+                            baseResample,
+                            baseHistorical){
   pathCoeffs <- getPathForResampleData(modelType=modelType,
                                        countryAbbrev=countryAbbrev, 
                                        energyType=energyType,
-                                       factor=factor)
+                                       factor=factor,
+                                       baseResample=baseResample)
   pathModels <- getPathForResampleModels(modelType=modelType,
                                          countryAbbrev=countryAbbrev, 
                                          energyType=energyType,
-                                         factor=factor)
+                                         factor=factor,
+                                         baseResample=baseResample)
   status <- "attempted"
   
   # If both files exist AND clobber==FALSE, don't do anything.
@@ -179,13 +234,15 @@ genResampleData <- function(modelType=modelTypes,
                                energyType=energyType, 
                                factor=factor,
                                method=method,
-                               n=n)
+                               n=n,
+                               baseHistorical=baseHistorical)
   # Split the coefficients from the models
   resampleData <- resampleInfo$coeffs
   resampleModels <- resampleInfo$models  
   # Figure out which folder files should be saved in
   folder <- getFolderForResampleData(modelType=modelType,
-                                     countryAbbrev=countryAbbrev)
+                                     countryAbbrev=countryAbbrev,
+                                     baseResample=baseResample)
   # Ensure that the folder exists. showWarnings=FALSE, because we don't care 
   # if the directory already exists.
   dir.create(path=folder, recursive=TRUE, showWarnings=FALSE)
@@ -198,26 +255,35 @@ genResampleData <- function(modelType=modelTypes,
   return(status)
 }
 
+#' Performs resample fits for a model
+#' 
+#' This function returns a list containing models and coefficients from the resample fits.
+#' 
+#' @param modelType one of \code{"sf"}, \code{"cd"}, \code{"cde"}, \code{"cese-(kl)"}, 
+#' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
+#' @param countryAbbrev the country abbreviation that you want to analyze.
+#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
+#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
+#' @param n the number of resamples you want to perform
+#' @param baseHistorical the relative path to the directory containing the historical data
+#' @param rho a vector of \code{rho} value over which you'll search if doing a CES analysis
+#' @param rho1 a vector of \code{rho1} value over which you'll search if doing a CES analysis
+#' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
+#' or \code{factor}.
 #' @export
 resampleFits <- function(
   modelType=modelTypes,
   countryAbbrev=countryAbbrevs, 
-  energyType=energyTypes, 
-  factor=factors,
+  energyType="Q", 
+  factor="K",
   method=resampleMethods,
   n,
+  baseHistorical,
   rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99)){
-  ##################
-  # This function creates n resampled curve fits and returns them.
-  # The returned object is a data frame.  The first row is the base fit to the 
-  # actual historical data
-  # The remaining rows are for the n resampled fits.
-  # The method column identifies these and simplifies plotting of results.
-  # n = number of resamples
-  # countryAbbrev = the country you want to study
-  # energyType = the type of energy of interest to you
-  ##
+
   modelType <- match.arg(modelType)
   countryAbbrev <- match.arg(countryAbbrev)
 #   energyType <- match.arg(energyType)
@@ -225,9 +291,9 @@ resampleFits <- function(
   method <- match.arg(method)   # allow multiples?
   set.seed(getSeed()) # Provide reproducible results
   # Load the raw economic and energy data for the country of interest.
-  data <- loadData(countryAbbrev=countryAbbrev)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   # If useful work (U) is desired, subset to available data only.
-  if (! is.na(energyType)){
+  if (!is.na(energyType)){
     if (factor == "U" || energyType == "U"){
       # Trim the dataset to include only those years for which U is available.
       data <- subset(data, !is.na(iU))
@@ -239,10 +305,10 @@ resampleFits <- function(
                       "cd"          = cdModel(data=data, respectRangeConstraints=TRUE),
                       "cde"         = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"         = cesModel2(data=data),
-                      "cese-(kl)e"  = cesModel2(countryAbbrev=countryAbbrev, nest="(kl)e", energyType=energyType),
-                      "cese-(le)k"  = cesModel2(countryAbbrev=countryAbbrev, nest="(le)k", energyType=energyType),
-                      "cese-(ek)l"  = cesModel2(countryAbbrev=countryAbbrev, nest="(ek)l", energyType=energyType),
-                      "linex"       = linexModel(countryAbbrev=countryAbbrev, energyType=energyType)
+                      "cese-(kl)e"  = cesModel2(data=data, nest="(kl)e", energyType=energyType),
+                      "cese-(le)k"  = cesModel2(data=data, nest="(le)k", energyType=energyType),
+                      "cese-(ek)l"  = cesModel2(data=data, nest="(ek)l", energyType=energyType),
+                      "linex"       = linexModel(data=data, energyType=energyType)
   )
   baseFitCoeffs <- extractAllMetaData(origModel)
   # Add a method column.
