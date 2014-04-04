@@ -88,7 +88,7 @@ wireCloudPanel <- function(x, y, z, points, showPoints=TRUE, ...) {
 }
 
 #' @export
-sf3DSSEGraph <- function(countryAbbrev, baseHistorical, factor, showOpt=TRUE){
+sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE, baseHistorical, baseResample, archive=NULL){
   #########################
   # Creates a 3-D wireframe graph with SSE on the vertical axis and 
   # lambda and m on the horizontal axes.
@@ -103,11 +103,13 @@ sf3DSSEGraph <- function(countryAbbrev, baseHistorical, factor, showOpt=TRUE){
   newX <- data.frame(expand.grid(lambdaSeq, mSeq))
   colnames(newX) <- c("lambda", "m")
   # Get the actual GDP data
-  data <- loadData(countryAbbrev=countryAbbrev, baseHistorica=baseHistorical)
+  data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   y_act <- data[ ,"iGDP"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
-  model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
+#   model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor, baseHistorical=baseHistorical)
+  model <- loadResampleModelsBaseModelOnly(modelType="sf", countryAbbrev=countryAbbrev, factor=factor, 
+                                           baseResample=baseResample, archive=archive)
   # Get information about the optimum point, the point where SSE is minimized
   coefs <- coef(model)
   lambda_opt <- coefs["lambda"]
