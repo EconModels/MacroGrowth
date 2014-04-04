@@ -937,27 +937,30 @@ CIvsParamLattice <- function(textScaling=1.0, countryAbbrevScaling=1.0){
 
 ## <<PartialResidualPlots, eval=TRUE>>=
 #' @export
-createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyType, baseHistorical){
+createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyType, nest,
+                                             baseHistorical, baseResample, archive=NULL){
   #############################
   # Creates a data.frame containing raw data and residuals for given arguments.
   # The residuals are for a model that does not use energy.
+  # countryAbbrev: the country of interest to you
+  # modelType: one of "CD" or "CES"
+  # energyType: the energy type you want to use. Is required.
   # The name of the column of energyType for countryAbbrev is changed to 
   # "iEToFit"
-  # modelType: one of "CD" or "CES"
-  # countryAbbrev: the country of interest to you
-  # energyType: one of "Q", "X", or "U"
+  # nest: the nest you want to use. Required for modelType="ces". Not used for modelType="cd".
   # returns: a data.frame containing data for countryAbbrev with an additional
   #          column containing the residual for each year. The name of the 
   #          column for energyType is changed to "iEToFit"
   ##
   # Get the model
-  if (modelType == "CD"){
-    model <- cdModel(countryAbbrev)  
-  } else if (modelType == "CES"){
-    model <- bestModel(cesModel2(countryAbbrev=countryAbbrev))
+  if (modelType == "cd" || modelType == "ces"){
+    if (modelType == "ces"){
+      modelType <- paste("cese-", nest, sep="")
+    }
+    model <- loadResampleModelsBaseModelOnly(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType, 
+                                             baseResample=baseResample, archive=archive)
   } else {
-    stop(paste("Unknown modelType:", modelType, "in partialResidualPlot."))
-    return(NULL)
+    stop(paste("Unknown modelType:", modelType, "in partialResidualPlot. Only 'cd' and 'ces' are supported."))
   }
   # Get the residuals
   resid <- resid(model)
@@ -966,14 +969,13 @@ createDataForPartialResidualPlot <- function(countryAbbrev, modelType, energyTyp
   # Load data
   data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   data <- cbind(data, resid)
-  # Replace name of column we want with the name "iEToFit"
   data <- replaceColName(data=data, factor=energyType, newName="iEToFit")
-  
   return(data)
 }
 
 #' @export
-createPartialResidualPlot <- function(modelType, energyType="none", countryAbbrev=NA, textScaling=1.0){
+createPartialResidualPlot <- function(modelType, countryAbbrev=NA, textScaling=1.0, energyType, nest, 
+                                      baseHistorical, baseResample, archive=NULL){
   #################
   # Creates a plot with y residuals vs. energy (e). The y residuals are from the specified modelType without energy.
   # modelType: one of "CD" or "CES"
@@ -985,7 +987,8 @@ createPartialResidualPlot <- function(modelType, energyType="none", countryAbbre
   yLabelString <- paste("$y$ residuals (", modelType, " without energy)", sep="")
   if (! is.na(countryAbbrev)){
     # An individual graph for a single country is desired.
-    data <- createDataForPartialResidualPlot(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType)
+    data <- createDataForPartialResidualPlot(modelType=modelType, countryAbbrev=countryAbbrev, energyType=energyType,
+                                             nest=nest, baseHistorical=baseHistorical, baseResample=baseResample, archive=archive)
     plot <- xyplot(resid ~ iEToFit, data=data,
                    type=c("p"),
                    col="black",

@@ -96,4 +96,8 @@ keyColumns <- 1 # Want only 1 column in the key for lattice graphs
 defaultKeyXLoc <- 0.01 # x position of the key. This default is good for 9-panel graphs.
 #' @export
 defaultKeyYLoc <- 0.95 # y position of the key. This default is good for 9-panel graphs.
+#' @export
+scaleTextSize <- 0.8  # Multiple of normal size
+#' @export
+scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 

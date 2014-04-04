@@ -397,9 +397,6 @@ loadResampleDataBaseFitOnly <- function(modelType, countryAbbrev, energyType="no
 #' @export
 loadResampleModelsBaseModelOnly <- function(modelType, countryAbbrev, energyType="none", factor, 
                                             archive=NULL, baseResample){
-  ####################
-  # Loads the model for a fit to historical data
-  ##
   models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                energyType=energyType, factor=factor, 
                                archive=archive, baseResample=baseResample) 
