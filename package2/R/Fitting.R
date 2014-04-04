@@ -93,7 +93,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #  return( switch(type, response=E, log=e))
 #}
 
-#' Fit a single factor model
+#' Fitting single factor models
 #' 
 #' @param formula a formula of the form \code{ y ~ factor + time }
 #' @param data a data frame in which \code{formula} is evaluated
@@ -157,7 +157,7 @@ singleFactorModel2 <- function(formula, data, response, factor, time, constraine
 }
 
 
-#' Fit a Cobb-Douglas Model
+#' Fitting Cobb-Douglas Models
 #' 
 #' @param formala a formual of the form \code{response ~ capital + labor + time}
 #' @param data a data fram in which \code{formula} is evaluated
@@ -247,7 +247,7 @@ respectsConstraints <- function( model ) {
 
 
 
-#' Fit Cobb-Douglas model with Energy
+#' Fitting Cobb-Douglas models with Energy
 #' 
 #' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
 #' @param data a data frame in which \code{formala} is evaluated
@@ -368,7 +368,7 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time, co
 }
 
 
-#' Fit CES model
+#' Fitting CES models
 #' 
 #' This function fits a CES model
 #' 
@@ -678,7 +678,7 @@ addMetaData <- function(model, nest, nestString, history=""){
 }
 
 
-#' Fit LINEX models
+#' Fitting LINEX models
 #' 
 #' @param formula a formula of the form \code{response ~ captial + labor + energy + time}
 #' @param response instead of specifying a formula, expressions for
