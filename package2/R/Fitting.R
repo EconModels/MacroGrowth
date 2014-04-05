@@ -467,6 +467,10 @@ cesModel3 <- function(formula, data,
     ")"
     )
 
+  # only keep data actually used to fit the model
+  data <- data[ , c(yName, xNames, tName)]
+  data <- data[ complete.cases(data), ]
+
   models <- list()
   for (algorithm in algorithms) {
     #
@@ -477,7 +481,7 @@ cesModel3 <- function(formula, data,
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...),
-        error = function(e) { list(data=data, 
+        error = function(e) { print(e); list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
                                    tName=tName, 
@@ -489,7 +493,7 @@ cesModel3 <- function(formula, data,
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...),
-        error = function(e) { list(data=data, 
+        error = function(e) { print(e); list(data=data, 
                                    yName=yName, 
                                    xNames=xNames, 
                                    tName=tName, 
@@ -512,7 +516,7 @@ cesModel3 <- function(formula, data,
     model <- tryCatch(
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
-      error = function(e) { NULL }
+      error = function(e) { print(e); NULL }
     )
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
     model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
@@ -527,7 +531,7 @@ cesModel3 <- function(formula, data,
       model <- tryCatch(
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
-        error = function(e) { NULL }
+        error = function(e) { print(e); NULL }
       )
       hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
       model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
@@ -540,16 +544,18 @@ cesModel3 <- function(formula, data,
   return(models)
 }
 
-#' @export
+#' Add meta data to CES model object
+#'
+#'  
+#' This function adds metadata to a model.  Currently this is only designed to
+#' work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
+#' to the object and the new object is returned from the function.
+#' 
 addMetaData <- function(model, nest, nestString, history=""){
-  ###############
-  # This function adds metadata to a model.  Currently this is only designed to
-  # work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
-  # to the object and the new object is returned from the function.
-  ##
   if (is.null(model)){
     return(model) 
   }
+  
   if ( ! as.character(model$call[[1]]) == "cesEst" ){
     stop("Unsupported model type.  Must be NULL or the result of calling cesEst()")
   }

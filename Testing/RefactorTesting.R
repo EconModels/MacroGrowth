@@ -1,42 +1,37 @@
 require(EconModels2)
 
-all <- read.table("data/AllData.txt", header=TRUE)
+All <- read.table("data/AllData.txt", header=TRUE)
 
-naturalCoef(
-  cdModel2( response = iGDP, capital=iCapStk, labor=iLabor, time=iYear, data=subset(all, Country=="US") )
-)
+model.cd1 <-  cdModel2( response = iGDP, capital=iCapStk, labor=iLabor, time=iYear, data=subset(All, Country=="US") )
+naturalCoef( model.cd1 )
 
-naturalCoef(
-  cdModel2( iGDP ~ iCapStk + iLabor + iYear, data=subset(all, Country=="US") )
-)
+model.cd2 <- cdModel2( iGDP ~ iCapStk + iLabor + iYear, data=subset(All, Country=="US") )
+naturalCoef( model.cd2 )
 
-naturalCoef(
-  cdeModel2( response = iGDP, capital=iCapStk, labor=iLabor, energy=iQ, time=iYear, data=subset(all, Country=="US") )
-)
+model.cde1 <- cdeModel2( response = iGDP, capital=iCapStk, labor=iLabor, energy=iU, time=iYear, data=subset(All, Country=="US") )
+naturalCoef( model.cde1)
 
-naturalCoef(
-  cdeModel2( iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(all, Country=="US") )
-)
+model.cde2 <- cdeModel2( iGDP ~ iCapStk + iLabor + iU + iYear, data=subset(All, Country=="US") )
+naturalCoef( model.cde2 )
 
-naturalCoef(
-  linexModel2( iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(all, Country=="US") )
-)
+model.linex1 <- linexModel2( iGDP ~ iCapStk + iLabor + iU + iYear, data=subset(All, Country=="US") )
+naturalCoef( model.linex1 )
 
-naturalCoef(
-  linexModel2( response=iGDP, capital= iCapStk, labor=iLabor, energy=iQ, time= iYear, 
-               data=subset(all, Country=="US") )
-)
-naturalCoef(
-  singleFactorModel2( iGDP ~ iCapStk + iYear, data=subset(all, Country=="US") )
-)
+model.linex2 <-  linexModel2( response=iGDP, capital= iCapStk, labor=iLabor, energy=iU, time= iYear, 
+               data=subset(All, Country=="US") )
+naturalCoef( model.linex2 )
 
-naturalCoef(
-  singleFactorModel2( response=iGDP, factor=iCapStk, time=iYear, data=subset(all, Country=="US") )
-)
+model.sf1 <-  singleFactorModel2( iGDP ~ iCapStk + iYear, data=subset(All, Country=="US") )
+naturalCoef( model.sf1 )
 
-naturalCoef(
-  singleFactorModel2( iGDP ~ iCapStk + iYear, data=subset(all, Country=="US"), constrained=TRUE )
-)
+model.sf2 <- singleFactorModel2( response=iGDP, factor=iCapStk, time=iYear, data=subset(All, Country=="US") )
+naturalCoef( model.sf2 )
 
-model <- cesModel3( iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(all, Country=="US"))
-naturalCoef(model)
+model.sf3 <- singleFactorModel2( iGDP ~ iCapStk + iYear, data=subset(All, Country=="US"), constrained=TRUE )
+naturalCoef( model.sf3 ) 
+
+model.ces1 <- cesModel3( iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(All, Country=="US"))
+naturalCoef(model.ces1)
+
+model.ces2 <- cesModel3( iGDP ~ iCapStk + iLabor + iU + iYear, data=subset(All, Country=="US"))
+naturalCoef(model.ces2)
