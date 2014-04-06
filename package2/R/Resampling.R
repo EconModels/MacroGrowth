@@ -19,44 +19,52 @@ timeFileName <- function(pre="",post="") {
   return(paste(pre, dt, post, sep=""))
 }
 
-# methods for generating a resampled response.
+# Compute resampled responses for a model.
 
 #' @export
 resampledResponse <- function( object, ...) {
   UseMethod("resampledResponse")
 }
 
-#' @export
-resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
-  mresid <- exp(resid(object))
-  method <- match.arg(method)
-  if (method=="debug") {
-    return( yhat(object) * mresid )
-  }
-  n <- length(fitted(object))
-  sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  yhat(object) * resample( mresid )  ^ sgn
-}
+# resampledResponse.CDEmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
+#   mresid <- exp(resid(object))
+#   method <- match.arg(method)
+#   if (method=="debug") {
+#     return( yhat(object) * mresid )
+#   }
+#   n <- length(fitted(object))
+#   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+#   yhat(object) * resample( mresid )  ^ sgn
+# }
+ 
+# resampledResponse.LINEXmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
+#   mresid <- exp(resid(object))
+#   method <- match.arg(method)
+#   if (method=="debug") {
+#     return( yhat(object) * mresid )
+#   }
+#   n <- length(fitted(object))
+#   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+#   yhat(object) * resample( mresid )  ^ sgn
+# }
 
 #' @export
-resampledResponse.LINEXmodel <- function( object, method=c("residual", "wild", "debug"), ... ) {
-  mresid <- exp(resid(object))
-  method <- match.arg(method)
-  if (method=="debug") {
-    return( yhat(object) * mresid )
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), 
+                                       normalize=TRUE, 
+                                       multErr, tol=1e-6, ... ) {
+  if (missing(multErr)) {
+    multErr <- all( response(object) / yhat(object) / exp(resid(object)) - 1 < tol )
   }
-  n <- length(fitted(object))
-  sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  yhat(object) * resample( mresid )  ^ sgn
-}
-
-#' @export
-resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), ... ) {
   method <- match.arg(method)
-  if (method=="debug") return( yhat(object) + resid(object) )
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-  yhat(object) + resample( resid(object) ) * sgn
+  if (multErr) {
+    res <- yhat(object) * resample( resid(object) ) ^ sgn
+  } else {
+    res <- yhat(object) + resample( resid(object) ) * sgn
+  }
+  if (normalize) res <- res / res[1]  # normalize so first entry is 1.
+  return(res)
 }
 
 #' Generates all resample data for all countries, all model types, and all energy types
