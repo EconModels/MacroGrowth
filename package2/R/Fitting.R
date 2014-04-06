@@ -27,6 +27,13 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   return(out) 
 }
 
+#' Compute fitted values on natural scale
+#' 
+#' This is similar to \code{fitted}, but will invert logarithmic 
+#' transformations of the response variable for certain models (e.g., LINEX, and Cobb-Douglas 
+#' models fit in this package).
+#' 
+#' @param object An object returned by a fitting function.
 #' @export
 yhat <- function(object, ...) {
   UseMethod('yhat')
@@ -51,6 +58,36 @@ yhat.LINEXmodel <- function( object, ... ) {
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
+#' Return response values from original data used to fit a model
+#' 
+#' This function returns the values of the original response variable
+#' The values are calculated from fits and residuals.
+#' For models of class \code{"LINEXmodel"}
+#' \code{"CDEmodel"} or \code{"cesEst"}, the logarthmic transformation, if it 
+#' was used, will be undone, returning the values to their natural scale.
+#' @param object a model object from one of the model fitting functions.
+#' @param ... additional arguments
+#' @return a numeric vector
+#' @export
+
+response <- function(object, ...) {
+  UseMethod('response') 
+}
+
+#' @export
+response.default <- function(object, ...) {
+  return( fitted(object) + resid(object) )
+}
+
+#' @export
+response.LINEXmodel <- function(object, ...) {
+    return( attr(object, "response") )
+}
+
+#' @export
+response.CDEmodel <- function(object, ...) {
+    return( attr(object, "response") )
+}
 
 #' @export
 predict.CDEmodel <- function( object, ... ) {
@@ -362,7 +399,9 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time, co
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
   sdata <- subset(data, select = all.vars(res$terms))
-  attr(res, "data") <- data[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata),]
+  attr(res, "data") <- sdata
+  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
 }
@@ -539,9 +578,9 @@ cesModel3 <- function(formula, data,
     }
   }
   # Return everything all of the models that we calculated.
-  attr(models, "naturalCoeffs") <- naturalCoef(bestModel(models))
-  attr(models, "meta") <- metaData(bestModel(models))
-  return(models)
+  res <- bestModel(models)
+  attr(res, "model.attempts") <- models
+  return(res)
 }
 
 #' Add meta data to CES model object
@@ -720,6 +759,7 @@ linexModel2 <- function(formula, data, response, capital, labor, energy, time) {
                       I( labor/energy - 1 )
   )
   
+  
   formulas <- lapply(formulas, function(x) do.call( substitute, list( x,  list(
     time = formula[[3]][[3]],
     energy = formula[[3]][[2]][[3]],
@@ -748,8 +788,9 @@ linexModel2 <- function(formula, data, response, capital, labor, energy, time) {
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(res$terms))
-  attr(res, "data") <- data[complete.cases(sdata),]
-  
+  sdata <- data[complete.cases(sdata),]
+  attr(res, "data") <- sdata
+  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   class(res) <- c("LINEXmodel", class(res))
   return(res)
 }
