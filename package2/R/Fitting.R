@@ -137,7 +137,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param constrained a logical indicating whether the model parameters are constrained
 #' @return an lm object with some additional attributes
 #' @export
-singleFactorModel2 <- function(formula, data, response, factor, time, constrained=FALSE,
+singleFactorModel <- function(formula, data, response, factor, time, constrained=FALSE,
                                save.data=TRUE) {
   ####################
   # Returns an nls single-factor model for the country and factor specified.
@@ -215,7 +215,7 @@ singleFactorModel2 <- function(formula, data, response, factor, time, constraine
 #' @param contrained a logical indicating whether the parameters are contrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
-cdModel2 <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
+cdModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
                      save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + time,
@@ -314,7 +314,7 @@ respectsConstraints <- function( model ) {
 #' @details More about contranints TBA.
 #' @export
 # y ~ capital + labor + energy + time
-cdeModel2 <- function( formula, data, response, capital, labor, energy, time, 
+cdeModel <- function( formula, data, response, capital, labor, energy, time, 
                        constrained=FALSE, save.data=TRUE, ...){
   
   if ( missing(formula) ) {
@@ -444,7 +444,7 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time,
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
 #' @return a list of models 
 #' @export
-cesModel3 <- function(formula, data,
+cesModel <- function(formula, data,
                       response,
                       a,
                       b,
@@ -757,7 +757,7 @@ addMetaData <- function(model, nest, nestString, history=""){
 #' @param data a data frame in which \code{formula} is evaluated
 #' @export
 #' 
-linexModel2 <- function(formula, data, response, capital, labor, energy, time, save.data=TRUE) {
+linexModel <- function(formula, data, response, capital, labor, energy, time, save.data=TRUE) {
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # 
