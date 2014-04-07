@@ -190,7 +190,7 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
   attr(x=res, which="naturalCoeffs") <- naturalCoeffs
 
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata),]
+  sdata <- sdata[complete.cases(sdata),]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   
@@ -275,7 +275,7 @@ cdModel <- function(formula, data, response, capital, labor, time, constrained=F
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
   sdata <- subset(data, select= all.vars(res$terms))
-  sdata <- data[complete.cases(sdata),]
+  sdata <- sdata[complete.cases(sdata),]
   if (save.data) {
     attr(res, "data") <- sdata
   }
@@ -411,7 +411,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata),]
+  sdata <- sdata[complete.cases(sdata),]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   class(res) <- c( "CDEmodel", class(res) )
@@ -594,7 +594,7 @@ cesModel <- function(formula, data,
   res <- bestModel(models)
   attr(res, "model.attempts") <- models
   sdata <- subset(data, select = all.vars(formula))
-  sdata <- data[complete.cases(sdata),]
+  sdata <- sdata[complete.cases(sdata),]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
 
@@ -806,7 +806,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata),]
+  sdata <- sdata[complete.cases(sdata),]
   if (save.data) {
     attr(res, "data") <- sdata
   }
