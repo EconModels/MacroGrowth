@@ -10,6 +10,7 @@ Imports:
     lattice,
     latticeExtra,
     mosaic,
+    plyr,
     ggplot2,
     plyr,
     car,

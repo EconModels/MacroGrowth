@@ -190,9 +190,11 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
   attr(x=res, which="naturalCoeffs") <- naturalCoeffs
 
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- sdata[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  attr(res, "formula") <- formula
   
   class(res) <- c("sfModel", class(res))
   return(res)
@@ -275,11 +277,12 @@ cdModel <- function(formula, data, response, capital, labor, time, constrained=F
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
   sdata <- subset(data, select= all.vars(res$terms))
-  sdata <- sdata[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) {
     attr(res, "data") <- sdata
   }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  attr(res, "formula") <- formula
   
   class(res) <- c("CDEmodel", class(res))
   return(res)
@@ -410,10 +413,13 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   attr(res, "good") <-  sapply( models, respectsConstraints )
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
+  attr(res, "formula") <-  formula
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- sdata[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  attr(res, "formula") <- formula
+  
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
 }
@@ -593,10 +599,12 @@ cesModel <- function(formula, data,
   # Return everything all of the models that we calculated.
   res <- bestModel(models)
   attr(res, "model.attempts") <- models
+  attr(res, "formula") <- formula
   sdata <- subset(data, select = all.vars(formula))
-  sdata <- sdata[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  attr(res, "formula") <- formula
 
   return(res)
 }
@@ -737,6 +745,7 @@ addMetaData <- function(model, nest, nestString, history=""){
   metaData$metaDataRows <- nrow(metaData)
   attr(model, "meta") <- metaData[1,] 
   attr(model, "metaList") <- metaList 
+  
   return(model)
 }
 
@@ -806,11 +815,13 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- sdata[complete.cases(sdata),]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) {
     attr(res, "data") <- sdata
   }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  attr(res, "formula") <- formula
+  
   class(res) <- c("LINEXmodel", class(res))
   return(res)
 }
