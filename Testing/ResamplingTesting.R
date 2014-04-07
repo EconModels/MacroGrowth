@@ -7,38 +7,41 @@ Countries <- unique(All$Country)
 Energies <- c(quote(iQ), quote(iX), quote(iU))
 Energies <- c("iQ", "iX", "iU")
 
+lots <- 4
+few <- 2
+
 ModelInfos <- list(
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cdeModel",
-        n=100,
+        n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iCapStk + iYear",
         fun = "singleFactorModel",
-        n=100,
+        n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iLabor + iYear",
         fun = "singleFactorModel",
-        n=100,
+        n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iLabor + energy",
         fun = "singleFactorModel",
-        n=100,
+        n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "linexModel",
-        n=100,
+        n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
-        n=2,
+        n=few,
         dots = list(nest=1:3)),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
-        n=2,
+        n=few,
         dots = list(nest=c(1,3,2))),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
-        n=2,
+        n=few,
         dots = list(nest=c(2,3,1)))
 )
 
@@ -51,7 +54,7 @@ coefs <- list()
 for (country in Countries) {
   cdata <- subset(All, Country==country)
   for (m in ModelInfos) {
-    for (energy in if (grepl("energy", m$formulaStr))  Energies else 'xxx') {
+    for (energy in if (grepl("energy", m$formulaStr))  Energies else 'noEnergy') {
       formulaStr <- sub( "energy", energy, m$formulaStr ) 
       formula <- eval( parse( text= formulaStr ) )
       # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
@@ -62,7 +65,7 @@ for (country in Countries) {
       tryCatch({
         oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
         oModels[[length(oModels) + 1]] <- oModel
-        rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy, sep=":") )
+        rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
         rModels[[length(rModels) + 1]] <- rFits[["models"]]
         coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
       }, 
