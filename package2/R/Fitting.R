@@ -137,7 +137,8 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param constrained a logical indicating whether the model parameters are constrained
 #' @return an lm object with some additional attributes
 #' @export
-singleFactorModel2 <- function(formula, data, response, factor, time, constrained=FALSE) {
+singleFactorModel2 <- function(formula, data, response, factor, time, constrained=FALSE,
+                               save.data=TRUE) {
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -167,29 +168,34 @@ singleFactorModel2 <- function(formula, data, response, factor, time, constraine
   )
   # Build the additional object to add as an atrribute to the output
   if (constrained){
-    modelSF <- lm( formulas[[2]], data=data )
+    res <- lm( formulas[[2]], data=data )
     m <- 1.0
-    logscale <- coef(modelSF)[1]
-    lambda <- coef(modelSF)[2]
+    logscale <- coef(res)[1]
+    lambda <- coef(res)[2]
   } else {
-    modelSF <- lm( formulas[[1]], data=data )
-    logscale <- coef(modelSF)[1]
-    m <- coef(modelSF)[2]
-    lambda <- as.vector(coef(modelSF)[3])
+    res <- lm( formulas[[1]], data=data )
+    logscale <- coef(res)[1]
+    m <- coef(res)[2]
+    lambda <- as.vector(coef(res)[3])
   }
   naturalCoeffs <- data.frame(
     logscale=as.vector(logscale),
     scale=exp(as.vector(logscale)),
     lambda = as.vector(lambda),
     m = as.vector(m),
-    sse = sum(resid(modelSF)^2),
+    sse = sum(resid(res)^2),
     isConv = TRUE
   )
   
-  attr(x=modelSF, which="naturalCoeffs") <- naturalCoeffs
+  attr(x=res, which="naturalCoeffs") <- naturalCoeffs
+
+  sdata <- subset(data, select = all.vars(res$terms))
+  sdata <- data[complete.cases(sdata),]
+  if (save.data) { attr(res, "data") <- sdata }
+  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   
-  class(modelSF) <- c("sfModel", class(modelSF))
-  return(modelSF)
+  class(res) <- c("sfModel", class(res))
+  return(res)
   
 }
 
@@ -209,7 +215,8 @@ singleFactorModel2 <- function(formula, data, response, factor, time, constraine
 #' @param contrained a logical indicating whether the parameters are contrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
-cdModel2 <- function(formula, data, response, capital, labor, time, constrained=FALSE, ...) {
+cdModel2 <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
+                     save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + time,
                            list( response = substitute(response),
@@ -237,41 +244,45 @@ cdModel2 <- function(formula, data, response, capital, labor, time, constrained=
                                           )
                       )
   )
-  modelCD <- lm(formulas[[1]], data=data)
+  res <- lm(formulas[[1]], data=data)
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
   # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
-  names(modelCD$coefficients) <- c( "logscale", "lambda", "alpha")
-  alpha <- coef(modelCD)["alpha"]
+  names(res$coefficients) <- c( "logscale", "lambda", "alpha")
+  alpha <- coef(res)["alpha"]
   if (constrained){
     if (alpha < 0.0 || alpha > 1.0){
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        modelCD <- lm( formulas[[2]], data=data )
+        res <- lm( formulas[[2]], data=data )
       } else {
         alpha <- 1.0
-        modelCD <- lm( formulas[[3]], data=data )
+        res <- lm( formulas[[3]], data=data )
       }
       # Refit for lambda only
-      names(modelCD$coefficients) <- c("logscale", "lambda")
+      names(res$coefficients) <- c("logscale", "lambda")
     }
   }
-  naturalCoeffs <- data.frame(lambda = as.vector(coef(modelCD)["lambda"]),
-                              logscale = as.vector(coef(modelCD)["logscale"]),
-                              scale = exp(as.vector(coef(modelCD)["logscale"])),
+  naturalCoeffs <- data.frame(lambda = as.vector(coef(res)["lambda"]),
+                              logscale = as.vector(coef(res)["logscale"]),
+                              scale = exp(as.vector(coef(res)["logscale"])),
                               alpha = as.vector(alpha),
                               beta = as.vector(1.0 - alpha),
                               gamma = 0.0, # Energy is not a factor for this model.
-                              sse = sum(resid(modelCD)^2),
-                              isConv = TRUE  # modelCD$convInfo$isConv
+                              sse = sum(resid(res)^2),
+                              isConv = TRUE  # res$convInfo$isConv
   )
-  attr(modelCD, "naturalCoeffs") <- naturalCoeffs
-  sdata <- subset(data, select= all.vars(modelCD$terms))
-  attr(modelCD, "data") <- data[complete.cases(sdata),]
+  attr(res, "naturalCoeffs") <- naturalCoeffs
+  sdata <- subset(data, select= all.vars(res$terms))
+  sdata <- data[complete.cases(sdata),]
+  if (save.data) {
+    attr(res, "data") <- sdata
+  }
+  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   
-  class(modelCD) <- c("CDEmodel", class(modelCD))
-  return(modelCD)
+  class(res) <- c("CDEmodel", class(res))
+  return(res)
 }
 
 respectsConstraints <- function( model ) {
@@ -303,7 +314,8 @@ respectsConstraints <- function( model ) {
 #' @details More about contranints TBA.
 #' @export
 # y ~ capital + labor + energy + time
-cdeModel2 <- function( formula, data, response, capital, labor, energy, time, constrained=FALSE, ...){
+cdeModel2 <- function( formula, data, response, capital, labor, energy, time, 
+                       constrained=FALSE, save.data=TRUE, ...){
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + energy + time,
@@ -400,7 +412,7 @@ cdeModel2 <- function( formula, data, response, capital, labor, energy, time, co
   attr(res, "winner") <-  winner
   sdata <- subset(data, select = all.vars(res$terms))
   sdata <- data[complete.cases(sdata),]
-  attr(res, "data") <- sdata
+  if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
@@ -446,6 +458,7 @@ cesModel3 <- function(formula, data,
                       rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       digits=6,
+                      save.data=TRUE,
                       ...){
 
   if ( missing(formula) ) { 
@@ -580,6 +593,11 @@ cesModel3 <- function(formula, data,
   # Return everything all of the models that we calculated.
   res <- bestModel(models)
   attr(res, "model.attempts") <- models
+  sdata <- subset(data, select = all.vars(formula))
+  sdata <- data[complete.cases(sdata),]
+  if (save.data) { attr(res, "data") <- sdata }
+  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+
   return(res)
 }
 
@@ -739,7 +757,7 @@ addMetaData <- function(model, nest, nestString, history=""){
 #' @param data a data frame in which \code{formula} is evaluated
 #' @export
 #' 
-linexModel2 <- function(formula, data, response, capital, labor, energy, time) {
+linexModel2 <- function(formula, data, response, capital, labor, energy, time, save.data=TRUE) {
   ####################
   # Returns an nls linex model for the country and energyType specified.
   # 
@@ -789,7 +807,9 @@ linexModel2 <- function(formula, data, response, capital, labor, energy, time) {
   #                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(res$terms))
   sdata <- data[complete.cases(sdata),]
-  attr(res, "data") <- sdata
+  if (save.data) {
+    attr(res, "data") <- sdata
+  }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   class(res) <- c("LINEXmodel", class(res))
   return(res)

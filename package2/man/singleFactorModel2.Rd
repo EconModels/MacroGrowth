@@ -3,7 +3,8 @@
 \alias{singleFactorModel2}
 \title{Fitting single factor models}
 \usage{
-singleFactorModel2(formula, data, response, factor, time, constrained = FALSE)
+singleFactorModel2(formula, data, response, factor, time, constrained = FALSE,
+  save.data = TRUE)
 }
 \arguments{
   \item{formula}{a formula of the form \code{ y ~ factor +

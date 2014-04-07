@@ -4,7 +4,7 @@
 \title{Fitting Cobb-Douglas Models}
 \usage{
 cdModel2(formula, data, response, capital, labor, time, constrained = FALSE,
-  ...)
+  save.data = TRUE, ...)
 }
 \arguments{
   \item{formala}{a formual of the form \code{response ~

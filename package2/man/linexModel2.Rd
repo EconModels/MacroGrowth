@@ -3,7 +3,8 @@
 \alias{linexModel2}
 \title{Fitting LINEX models}
 \usage{
-linexModel2(formula, data, response, capital, labor, energy, time)
+linexModel2(formula, data, response, capital, labor, energy, time,
+  save.data = TRUE)
 }
 \arguments{
   \item{formula}{a formula of the form \code{response ~

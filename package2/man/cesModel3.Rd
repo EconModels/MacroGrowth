@@ -7,7 +7,7 @@ cesModel3(formula, data, response, a, b, c = NULL, d = NULL, time,
   nest = 1:4, prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
   multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9,
   -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-  digits = 6, ...)
+  digits = 6, save.data = TRUE, ...)
 }
 \arguments{
   \item{data}{a data frame, if you want to use resampled

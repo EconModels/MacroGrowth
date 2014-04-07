@@ -4,7 +4,7 @@
 \title{Fitting Cobb-Douglas models with Energy}
 \usage{
 cdeModel2(formula, data, response, capital, labor, energy, time,
-  constrained = FALSE, ...)
+  constrained = FALSE, save.data = TRUE, ...)
 }
 \arguments{
   \item{formula}{a formula of the form \code{response ~
