@@ -66,7 +66,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @return a list of length two containting a data frame of coefficients and a list of models
 #' @export
 resampledFits <- function(model,
-  method=resampleMethods,
+  method=c("residual", "resample", "wild", "debug"),
   n,
   save.data=FALSE,
   seed,
@@ -141,7 +141,7 @@ resampledFits <- function(model,
 #' the model with the response variable in the first column.
 
 #' @export
-resampledData <- function(model, method=resampleMethods, reindex=TRUE){
+resampledData <- function(model, method=c("residual", "resample", "wild", "debug"), reindex=TRUE){
   data <- attr(model, "data")
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")

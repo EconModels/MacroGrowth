@@ -3,8 +3,8 @@
 \alias{resampledFits}
 \title{Perform resample fits for a model}
 \usage{
-resampledFits(model, method = resampleMethods, n, save.data = FALSE, seed,
-  id, ...)
+resampledFits(model, method = c("residual", "resample", "wild", "debug"), n,
+  save.data = FALSE, seed, id, ...)
 }
 \arguments{
   \item{model}{a model returned from \code{linexModel},

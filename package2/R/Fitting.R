@@ -139,12 +139,6 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @export
 singleFactorModel <- function(formula, data, response, factor, time, constrained=FALSE,
                                save.data=TRUE) {
-  ####################
-  # Returns an nls single-factor model for the country and factor specified.
-  # factor should be one of "K", "L", "Q", "X", or "U".
-  # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  # model <- iGDP ~ exp(lambda*iYear) * f^m
-  # modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ factor + time,
