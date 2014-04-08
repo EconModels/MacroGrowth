@@ -205,10 +205,10 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
 
 #' Fitting Cobb-Douglas models
 #' 
-#' @param formala a formual of the form 
+#' @param formala a formula of the form 
 #' \code{response ~ capital + labor + time} or 
 #' \code{response ~ capital + labor + energy + time}
-#' @param data a data fram in which \code{formula} is evaluated
+#' @param data a data frame in which \code{formula} is evaluated
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param capital instead of specifying a formula, expressions for
@@ -219,7 +219,7 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param contrained a logical indicating whether the parameters are contrained
+#' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
 cobbDouglasModel <- function(formula, data, response, capital, labor, energy, time, 
@@ -236,8 +236,10 @@ cobbDouglasModel <- function(formula, data, response, capital, labor, energy, ti
   }
   
   if (ncol( attr(terms(formula),"factors") ) == 3 ) {
+    # formula contains response, capital, and labor
     cdModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
   } else {
+    # formula contains response, capital, labor, and energy
     cdeModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
   }
 }
