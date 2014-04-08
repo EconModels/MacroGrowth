@@ -41,7 +41,7 @@ ModelInfos <- list(
 )
 
 ModelInfos <- head(ModelInfos, -3)  # skip ces models
-ModelInfos <- head( ModelInfos,1)
+# ModelInfos <- head( ModelInfos,1)
 
 oModels <- list()
 rModels <- list()
