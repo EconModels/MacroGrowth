@@ -58,6 +58,13 @@ yhat.LINEXmodel <- function( object, ... ) {
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
+#' @export
+yhat.sfModel <- function( object, ... ) {
+  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  exp( fitted(object, ...) + lx0[!is.na(lx0)] )
+}
+
 #' Return response values from original data used to fit a model
 #' 
 #' This function returns the values of the original response variable
