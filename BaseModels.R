@@ -4,32 +4,13 @@ require(EconModels2)
 require(foreach)
 require(doParallel)
 
-#' Load historical economic data
-#' 
-#' This function returns a data frame containing historical economic data
-#' 
-#' @param countryAbbrev the country/countries for which you want to load data
-#' @param baseHistorical the relative path of the directory containing the historical data.
-#' @return a data frame containing historical economic data
-#' @export
-loadData <- function(countryAbbrev, baseHistorical){
-  # Read the data file as a table with a header.  
-  path <- file.path(baseHistorical, "AllData.txt")
-  data <- read.table(file=path, header=TRUE)
-  
-  if (missing(countryAbbrev)){
-    return(data)
-  }
-  return(subset(data, Country %in% countryAbbrev))
-}
-
 # CES models take a long time. Set FALSE to skip over CES models
 doCES <- FALSE
 
 # 
 # Load our data
 #
-data <- loadData(baseHistorical="data") # grabs the historical data
+data <- read.table(file="data/AllData.txt", header=TRUE)
 countryAbbrevs <- as.character(unique(data$Country)) # tells which countries we have
 names(countryAbbrevs) <- countryAbbrevs # set the names to the abbreviations
 dataU <- subset(data, subset=!is.na(data$iU)) # data where we have U available
