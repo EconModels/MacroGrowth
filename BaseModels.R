@@ -24,7 +24,7 @@ loadData <- function(countryAbbrev, baseHistorical){
 }
 
 # CES models take a long time. Set FALSE to skip over CES models
-doCES <- TRUE
+doCES <- FALSE
 
 # 
 # Load our data
@@ -75,6 +75,11 @@ modelsCDU <- lapply(countryAbbrevsU, function(countryAbbrev){
 # CES models
 #
 if (doCES == TRUE){
+  # Without energy
+  modelsCESKL <- lapply(countryAbbrevs, function(countryAbbrev){
+    cesModel(formula=iGDP ~ iCapStk + iLabor + iYear, data=subset(data, Country==countryAbbrev))
+  })
+  
   # With Q
   formQ <- iGDP ~ iCapStk + iLabor + iQ + iYear
   modelsCESKLQ <- lapply(countryAbbrevs, function(countryAbbrev){
