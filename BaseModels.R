@@ -88,7 +88,7 @@ if (doCES == TRUE){
   modelsCESLQK <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formQ, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
   })
-  modelsCESQKL <- lapply(countryAbbrevs, function(countryAbbrev){
+  modelsCESKQL <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formQ, nest=c(1,3,2), data=subset(data, Country==countryAbbrev))
   })
   
@@ -100,7 +100,7 @@ if (doCES == TRUE){
   modelsCESLXK <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formX, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
   })
-  modelsCESXKL <- lapply(countryAbbrevs, function(countryAbbrev){
+  modelsCESKXL <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formX, nest=c(3,1,2), data=subset(data, Country==countryAbbrev))
   })
   
@@ -112,7 +112,7 @@ if (doCES == TRUE){
   modelsCESLUK <- lapply(countryAbbrevsU, function(countryAbbrev){
     cesModel(formula=formU, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
   })
-  modelsCESUKL <- lapply(countryAbbrevsU, function(countryAbbrev){
+  modelsCESKUL <- lapply(countryAbbrevsU, function(countryAbbrev){
     cesModel(formula=formU, nest=c(3,1,2), data=subset(data, Country==countryAbbrev))
   })
 }
