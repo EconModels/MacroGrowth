@@ -11,15 +11,15 @@ lots <- 4
 few <- 2
 
 ModelInfos <- list(
-  list( formulaStr = c("iGDP ~ iCapStk + iLabor + iYear",
-                       "iGDP ~ iCapStk + iLabor + energy + iYear"),
-        fun = "cobbDouglasModel",
-        n=lots,
-        dots = list()),
   list( formulaStr = c("iGDP ~ iCapStk + iYear", 
                        "iGDP ~ iLabor + iYear",
                        "iGDP ~ energy + iYear"),
         fun = "singleFactorModel",
+        n=lots,
+        dots = list()),
+  list( formulaStr = c("iGDP ~ iCapStk + iLabor + iYear",
+                       "iGDP ~ iCapStk + iLabor + energy + iYear"),
+        fun = "cobbDouglasModel",
         n=lots,
         dots = list()),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
