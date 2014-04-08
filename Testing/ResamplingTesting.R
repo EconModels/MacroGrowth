@@ -11,19 +11,14 @@ lots <- 4
 few <- 2
 
 ModelInfos <- list(
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
-        fun = "cdeModel",
+  list( formulaStr = c("iGDP ~ iCapStk + iLabor + energy + iYear",
+                       "iGDP ~ iCapStk + iLabor + iYear"),
+        fun = "cobbDouglasModel",
         n=lots,
         dots = list()),
-  list( formulaStr = "iGDP ~ iCapStk + iYear",
-        fun = "singleFactorModel",
-        n=lots,
-        dots = list()),
-  list( formulaStr = "iGDP ~ iLabor + iYear",
-        fun = "singleFactorModel",
-        n=lots,
-        dots = list()),
-  list( formulaStr = "iGDP ~ iLabor + energy",
+  list( formulaStr = c("iGDP ~ iCapStk + iYear", 
+                       "iGDP ~ iLabor + iYear",
+                       "iGDP ~ energy + iYear"),
         fun = "singleFactorModel",
         n=lots,
         dots = list()),
@@ -46,6 +41,7 @@ ModelInfos <- list(
 )
 
 ModelInfos <- head(ModelInfos, -3)  # skip ces models
+ModelInfos <- head( ModelInfos,1)
 
 oModels <- list()
 rModels <- list()
@@ -54,25 +50,28 @@ coefs <- list()
 for (country in Countries) {
   cdata <- subset(All, Country==country)
   for (m in ModelInfos) {
-    for (energy in if (grepl("energy", m$formulaStr))  Energies else 'noEnergy') {
-      formulaStr <- sub( "energy", energy, m$formulaStr ) 
-      formula <- eval( parse( text= formulaStr ) )
-      # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
-      # tryCatch to skip over country/energy combos that don't exist.
-      cat ( paste(country, formulaStr, m$fun, m$n, sep=" : ") )
-      cat ("\n")
-      
-      tryCatch({
-        oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-        oModels[[length(oModels) + 1]] <- oModel
-        rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
-        rModels[[length(rModels) + 1]] <- rFits[["models"]]
-        coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
-      }, 
-      error=function(e) {
-        cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+    for (f in m$formulaStr) {
+      for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
+        formulaStr <- sub( "energy", energy, f ) 
+        formula <- eval( parse( text= formulaStr ) )
+        # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
+        # tryCatch to skip over country/energy combos that don't exist.
+        cat ( paste(country, formulaStr, m$fun, m$n, sep=" : ") )
+        cat ("\n")
+        
+        tryCatch({
+          oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
+          oModels[[length(oModels) + 1]] <- oModel
+          rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
+          rModels[[length(rModels) + 1]] <- rFits[["models"]]
+          coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
+        }, 
+        error=function(e) {
+          cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+          print(e)
+        }
+        )
       }
-      )
     }
   }
 }
