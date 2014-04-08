@@ -26,6 +26,10 @@ ModelInfos <- list(
         fun = "linexModel",
         n=lots,
         dots = list()),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+        fun = "cesModel",
+        n=few,
+        dots = list(nest=1:2)),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
         n=few,
@@ -40,7 +44,8 @@ ModelInfos <- list(
         dots = list(nest=c(2,3,1)))
 )
 
-ModelInfos <- head(ModelInfos, -3)  # skip ces models
+ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
+# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- head( ModelInfos,1)
 
 oModels <- list()
