@@ -527,16 +527,7 @@ cesModel <- function(formula, data,
   } else {
     numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
   }
-#   if (energyType != "none" && (nest != "(kl)")){
-#     # We need to do the CES fit with the desired energyType.
-#     # But, only if we asked for a nest that isn't "(kl)"
-#     # To achieve the correct fit, we'll change the name of the desired column
-#     # to "iEToFit" and use "iEToFit" in the nls function.
-#     data <- replaceColName(data, energyType, "iEToFit")
-#     # Remove rows with missing energy information
-#     data <- data[ !is.na(data[,"iEToFit"]), ]
-#   }
-#   
+
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
