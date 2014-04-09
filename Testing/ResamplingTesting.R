@@ -44,7 +44,7 @@ ModelInfos <- list(
         dots = list(nest=c(2,3,1)))
 )
 
-ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
+# ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
 # ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- head( ModelInfos,1)
 
