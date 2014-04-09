@@ -89,12 +89,12 @@ response.default <- function(object, ...) {
 
 #' @export
 response.LINEXmodel <- function(object, ...) {
-    return( attr(object, "response") )
+  return( attr(object, "response") )
 }
 
 #' @export
 response.CDEmodel <- function(object, ...) {
-    return( attr(object, "response") )
+  return( attr(object, "response") )
 }
 
 #' @export
@@ -146,7 +146,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @return an lm object with some additional attributes
 #' @export
 singleFactorModel <- function(formula, data, response, factor, time, constrained=FALSE,
-                               save.data=TRUE) {
+                              save.data=TRUE) {
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ factor + time,
@@ -190,7 +190,7 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
   )
   
   attr(x=res, which="naturalCoeffs") <- naturalCoeffs
-
+  
   sdata <- subset(data, select = all.vars(res$terms))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   
@@ -260,7 +260,7 @@ cobbDouglasModel <- function(formula, data, response, capital, labor, energy, ti
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
 cdModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
-                     save.data=TRUE, ...) {
+                    save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + time,
                            list( response = substitute(response),
@@ -360,7 +360,7 @@ respectsConstraints <- function( model ) {
 #' @export
 # y ~ capital + labor + energy + time
 cdeModel <- function( formula, data, response, capital, labor, energy, time, 
-                       constrained=FALSE, save.data=TRUE, ...){
+                      constrained=FALSE, save.data=TRUE, ...){
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + energy + time,
@@ -493,22 +493,22 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' @return a list of models 
 #' @export
 cesModel <- function(formula, data,
-                      response,
-                      a,
-                      b,
-                      c=NULL,
-                      d=NULL,
-                      time,
-                      nest=1:4,
-                      prevModel=NULL,
-                      algorithms=c("PORT","L-BFGS-B"), 
-                      multErr=TRUE,
-                      rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-                      rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-                      digits=6,
-                      save.data=TRUE,
-                      ...){
-
+                     response,
+                     a,
+                     b,
+                     c=NULL,
+                     d=NULL,
+                     time,
+                     nest=1:4,
+                     prevModel=NULL,
+                     algorithms=c("PORT","L-BFGS-B"), 
+                     multErr=TRUE,
+                     rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                     rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+                     digits=6,
+                     save.data=TRUE,
+                     ...){
+  
   if ( missing(formula) ) { 
     substitutionList <-  list( response = substitute(response),
                                capital = substitute(a),
@@ -527,7 +527,7 @@ cesModel <- function(formula, data,
   } else {
     numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
   }
-
+  
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
@@ -536,19 +536,19 @@ cesModel <- function(formula, data,
   for (m in badAlgorithms) {
     stop(paste("Unrecognized algorithm:", m))
   }
-
+  
   
   # Set up *Names 
   fNames <- rownames( attr(terms(formula), "factors") )
   numFactors <- length(fNames) - 2  # not response, not time
   xNames <- switch( as.character(numFactors),
-                   "2" = fNames[1 + (1:2)],      # add 1 here to avoid response
-                   "3" = fNames[1 + nest[1:3]],
-                   "4" = fNames[1 + nest[1:4]]
+                    "2" = fNames[1 + (1:2)],      # add 1 here to avoid response
+                    "3" = fNames[1 + nest[1:3]],
+                    "4" = fNames[1 + nest[1:4]]
   )
   tName <- tail(fNames, 1)
   yName <- head(fNames, 1)
-
+  
   nest <- nest[1:numComponents]
   nestString <- paste0(
     "(", 
@@ -556,47 +556,37 @@ cesModel <- function(formula, data,
     ") + (", 
     paste(tail(xNames, -2), collapse=" + "),
     ")"
-    )
-
+  )
+  
   # only keep data actually used to fit the model
   data <- data[ , c(yName, xNames, tName)]
   data <- data[ complete.cases(data), ]
-
+  
   models <- list()
   for (algorithm in algorithms) {
     #
     # Try grid search.
     #
     if (numFactors == 2) {
-      # We want a model without energy. No need for a rho1 argument.
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...),
-        error = function(e) { print(e); list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm, 
-                                   control=chooseCESControl(algorithm), ...) }
+      # We want a model with only 2 factors. No need for a rho1 argument.
+      tryCatch( {
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     } else {
-      # We want a model with energy. Need a rho1 argument, because we are using a nesting.
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...),
-        error = function(e) { print(e); list(data=data, 
-                                   yName=yName, 
-                                   xNames=xNames, 
-                                   tName=tName, 
-                                   method=algorithm,
-                                   control=chooseCESControl(algorithm), ...) }
+      # We want a model 3 factors. Need a rho1 argument, because we are using a nesting.
+      tryCatch( {
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+                        rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
+      },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     }
-    
     hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
     model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
     models[length(models)+1] <- list(model)
-    
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
@@ -638,7 +628,7 @@ cesModel <- function(formula, data,
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   attr(res, "formula") <- formula
-
+  
   return(res)
 }
 
