@@ -61,7 +61,7 @@ for (country in Countries) {
         formula <- eval( parse( text= formulaStr ) )
         # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
         # tryCatch to skip over country/energy combos that don't exist.
-        cat ( paste(country, formulaStr, m$fun, m$n, sep=" : ") )
+        cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
         cat ("\n")
         
         tryCatch({
