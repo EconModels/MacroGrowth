@@ -37,11 +37,11 @@ ModelInfos <- list(
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
         n=few,
-        dots = list(nest=c(1,3,2))),
+        dots = list(nest=c(2,3,1))),
   list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
         fun = "cesModel",
         n=few,
-        dots = list(nest=c(2,3,1)))
+        dots = list(nest=c(1,3,2)))
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
