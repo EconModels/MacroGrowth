@@ -572,6 +572,13 @@ cesModel <- function(formula, data,
       tryCatch( {
         model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                         rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
+        # It would be nice to put these next lines after this if block. 
+        # But, if there is an error, we don't want to add the model to models.
+        # So, we put these lines here.
+        # Unfortunately, this means that the same code goes several places in this function.
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+        models[length(models)+1] <- list(model)
       },
       error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
@@ -580,13 +587,13 @@ cesModel <- function(formula, data,
       tryCatch( {
         model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                         rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
+        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+        models[length(models)+1] <- list(model)
       },
       error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     }
-    hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-    models[length(models)+1] <- list(model)
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
@@ -594,14 +601,17 @@ cesModel <- function(formula, data,
   bestMod <- bestModel(models, digits=digits)
   start <- coef(bestMod)
   for (algorithm in algorithms) {
-    model <- tryCatch(
-      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
-      error = function(e) { print(e); NULL }
+    tryCatch( {
+      model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
+      # If there's a problem, we don't want to add this model to models.
+      # So, this code goes inside the "try" part.
+      hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
+      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+      models[[length(models)+1]] <- model
+    },
+      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
     )
-    hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-    models[[length(models)+1]] <- model
   }
   #
   # Now try gradient search starting from prevModel (if it is present in the argument list).
@@ -609,17 +619,19 @@ cesModel <- function(formula, data,
   if (! is.null(prevModel)){
     start <- coef(prevModel)
     for (algorithm in algorithms) {
-      model <- tryCatch(
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), start=start, multErr=multErr, ...),
-        error = function(e) { print(e); NULL }
+      tryCatch( {
+        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
+        # If there's a problem during fitting, we avoid adding model to models.
+        hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
+        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+        models[[length(models)+1]] <- model
+      },
+        error = function(e) {  warning(paste("Error in cesEst() "), print(e)) }
       )
-      hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-      models[[length(models)+1]] <- model
     }
   }
-  # Return everything all of the models that we calculated.
+  # Return everything, all of the models that we calculated.
   res <- bestModel(models)
   attr(res, "model.attempts") <- models
   attr(res, "formula") <- formula
