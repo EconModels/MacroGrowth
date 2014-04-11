@@ -558,7 +558,7 @@ cesModel <- function(formula, data,
     ")"
   )
   
-  # only keep data actually used to fit the model
+  # only keep data actually used to fit the model. cesEst fails with incomplete cases.
   data <- data[ , c(yName, xNames, tName)]
   data <- data[ complete.cases(data), ]
   
@@ -575,7 +575,7 @@ cesModel <- function(formula, data,
         # It would be nice to put these next lines after this if block. 
         # But, if there is an error, we don't want to add the model to models.
         # So, we put these lines here.
-        # Unfortunately, this means that the same code goes several places in this function.
+        # Unfortunately, this means that similar code exists several places in this function.
         hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
         model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
         models[length(models)+1] <- list(model)
@@ -583,7 +583,7 @@ cesModel <- function(formula, data,
       error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
       )
     } else {
-      # We want a model 3 factors. Need a rho1 argument, because we are using a nesting.
+      # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
       tryCatch( {
         model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                         rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
