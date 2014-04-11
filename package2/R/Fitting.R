@@ -84,17 +84,11 @@ response <- function(object, ...) {
 
 #' @export
 response.default <- function(object, ...) {
+  if (inherits( object,  "LINEXmodel" ) ||
+        inherits( object, "CDEmodel" ) ) {
+    return( attr(object, "response") )
+  }
   return( fitted(object) + resid(object) )
-}
-
-#' @export
-response.LINEXmodel <- function(object, ...) {
-  return( attr(object, "response") )
-}
-
-#' @export
-response.CDEmodel <- function(object, ...) {
-  return( attr(object, "response") )
 }
 
 #' @export
@@ -111,32 +105,6 @@ predict.LINEXmodel <- function( object, ... ) {
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
-#residuals.CDEmodel <- function( object, ... ) {
-#  e <- NextMethod()
-#  return(exp(e))
-#  # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-#  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-#  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
-#  y <- exp(ly)
-#  lfits <- NextMethod() + lx0 
-#  e <- ly - lfits 
-#  E<- exp(e)
-#  return(E)
-#}
-
-#residuals.LINEXmodel <- function( object, ... ) {
-#  e <- NextMethod()
-#  return( exp(e) )
-#  # model has form:
-#  # log(iGDP) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
-#  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
-#  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
-#  y <- exp(ly)
-#  lfits <- NextMethod() + lx0 
-#  e <- ly - lfits 
-#  E <- exp(e)
-#  return( switch(type, response=E, log=e))
-#}
 
 #' Fitting single factor models
 #' 
@@ -258,7 +226,7 @@ cobbDouglasModel <- function(formula, data, response, capital, labor, energy, ti
 #' the components can be specified individually.
 #' @param contrained a logical indicating whether the parameters are contrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
-#' @export
+
 cdModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
                     save.data=TRUE, ...) {
   if ( missing(formula) ) {
@@ -357,7 +325,7 @@ respectsConstraints <- function( model ) {
 #' @param constrained a logical indicated whether the coefficents are constrained. See details
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
-#' @export
+
 # y ~ capital + labor + energy + time
 cdeModel <- function( formula, data, response, capital, labor, energy, time, 
                       constrained=FALSE, save.data=TRUE, ...){
