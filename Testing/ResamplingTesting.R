@@ -8,7 +8,7 @@ Energies <- c(quote(iQ), quote(iX), quote(iU))
 Energies <- c("iQ", "iX", "iU")
 
 lots <- 4
-few <- 2
+few <- 1
 
 ModelInfos <- list(
   list( formulaStr = c("iGDP ~ iCapStk + iYear", 
