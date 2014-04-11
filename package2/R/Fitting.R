@@ -157,7 +157,7 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
     isConv = TRUE
   )
   
-  attr(x=res, which="naturalCoeffs") <- naturalCoeffs
+  attr(res, "naturalCoeffs") <- naturalCoeffs
   
   sdata <- subset(data, select = all.vars(res$terms))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
@@ -428,7 +428,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-  attr(res, "formula") <- formula
   
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
@@ -607,7 +606,6 @@ cesModel <- function(formula, data,
   sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-  attr(res, "formula") <- formula
   
   return(res)
 }
