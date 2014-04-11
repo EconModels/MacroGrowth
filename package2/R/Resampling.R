@@ -51,7 +51,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' 
 #' This function returns a list containing models and coefficients from the resample fits.
 #' 
-#' @param model a model returned from \code{linexModel}, \code{cdModel}, \code{cdeModel},
+#' @param model a model returned from \code{linexModel}, \code{cobbDouglasModel}, 
 #' \code{cesModel}, or \code{singleFactorModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
@@ -127,7 +127,7 @@ resampledFits <- function(model,
 
 #' Create resampled data
 #' 
-#' @param model a model returned from \code{linexModel}, \code{cdeModel},
+#' @param model a model returned from \code{linexModel}, \code{cobbDouglasModel},
 #' \code{cesModel}, or \code{singleFactorModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method One of 

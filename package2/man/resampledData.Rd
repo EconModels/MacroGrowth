@@ -8,7 +8,7 @@ resampledData(model, method = c("residual", "resample", "wild", "debug"),
 }
 \arguments{
   \item{model}{a model returned from \code{linexModel},
-  \code{cdeModel}, \code{cesModel}, or
+  \code{cobbDouglasModel}, \code{cesModel}, or
   \code{singleFactorModel}.  \code{model} must have been
   fit with \code{save.data = TRUE}.}
 
