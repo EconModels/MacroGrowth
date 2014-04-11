@@ -99,6 +99,7 @@ resampledFits <- function(model,
 
   for (i in 1:n) {
     newData <- resampledData(model, method=method)
+    # Should this next line include the argument prevModel=model?
     newModel <- do.call(fitfun, c(list(formula=formula, data=newData), ...))
     resampleCoeffs <- naturalCoef(newModel)
     resampleCoeffs$method <- method
