@@ -572,7 +572,7 @@ cesModel <- function(formula, data,
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
     },
-      error = function(e) { warning(paste("cesEst() failed with", algorithm, " (4):\n ", as.character(e))); 
+      error = function(e) { warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e))); 
                             NULL }
     )
   }
