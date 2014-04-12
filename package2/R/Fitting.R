@@ -612,6 +612,7 @@ cesModel <- function(formula, data,
     attr(res, "formula") <- formula
     if (save.data) { attr(res, "data") <- data }
     attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+#    res <- addMetaData(res, nest=nest, nestString=nestString, history=hist)
   }
   
   return(res)
@@ -704,7 +705,6 @@ addMetaData <- function(model, nest, nestString, history=""){
     beta <- 1.0 - delta
     gamma <- delta * delta_1
   } else {
-    print(nest)
     stop(paste("Unknown nest:", nestString, "in addMetaData."))
   }
   metaData <- data.frame( isConv = model$convergence,

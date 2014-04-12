@@ -101,7 +101,7 @@ resampledFits <- function(model,
     newData <- resampledData(model, method=method)
     # Should this next line include the argument prevModel=model?
     newModel <- do.call(fitfun, c(list(formula=formula, data=newData), ...))
-    resampleCoeffs <- naturalCoef(newModel)
+    resampleCoeffs <- extractAllMetaData(newModel)
     resampleCoeffs$method <- method
     coeffs <- rbind.fill(coeffs, resampleCoeffs)
     models[[length(models)+1]] <- newModel
