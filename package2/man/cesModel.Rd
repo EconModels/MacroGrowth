@@ -40,7 +40,7 @@ cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
   corresponds to \code{sigma = 0.8}.}
 }
 \value{
-a list of models
+a cesEst model with additional information attached as attributes.
 }
 \description{
 This function fits a CES model

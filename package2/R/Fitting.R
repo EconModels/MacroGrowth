@@ -456,7 +456,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from 
 #' the default values.
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
-#' @return a list of models 
+#' @return a cesEst model with additional information attached as attributes.
 #' @export
 cesModel <- function(formula, data,
                      response,
@@ -493,8 +493,8 @@ cesModel <- function(formula, data,
   } else {
     numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
   }
-
-
+  
+  
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
@@ -526,10 +526,13 @@ cesModel <- function(formula, data,
   
   # remove incomplete cases since cesEst() fails with incomplete cases.
   sdata <- data[ , c(yName, xNames, tName)]
+  if ( ! any( complete.cases(sdata) ) ) {
+    stop("No valid rows of data for your model.")
+  }
   data <- data[ complete.cases(sdata), ]
   
-#  sdata <- subset(data, select = all.vars(formula))
-#  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  #  sdata <- subset(data, select = all.vars(formula))
+  #  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   
   models <- list()
   for (algorithm in algorithms) {
@@ -542,8 +545,8 @@ cesModel <- function(formula, data,
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e))); 
-                               NULL }
+      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e))); 
+                             NULL }
       )
     } else {
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
@@ -551,8 +554,8 @@ cesModel <- function(formula, data,
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e))); 
-                               NULL }
+      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e))); 
+                             NULL }
       
       )
     }
@@ -572,14 +575,14 @@ cesModel <- function(formula, data,
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
     },
-      error = function(e) { warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e))); 
-                            NULL }
+    error = function(e) { warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e))); 
+                          NULL }
     )
   }
   if (! is.null( model ) ) {
-      hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-      models[[length(models)+1]] <- model
+    hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
+    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+    models[[length(models)+1]] <- model
   }
   #
   # Now try gradient search starting from prevModel (if it is present in the argument list).
@@ -589,23 +592,27 @@ cesModel <- function(formula, data,
     for (algorithm in algorithms) {
       tryCatch( {
         model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
+                        control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
         models[[length(models)+1]] <- model
       },
-        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e))); 
-                               NULL }
+      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e))); 
+                             NULL }
       )
     }
   }
   
   res <- bestModel(models)
-  attr(res, "model.attempts") <- models
-  attr(res, "formula") <- formula
-  if (save.data) { attr(res, "data") <- data }
-  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  if ( is.null( res ) ) {
+    warning("cesModel() produced a NULL model.")
+  } else {
+    attr(res, "model.attempts") <- models
+    attr(res, "formula") <- formula
+    if (save.data) { attr(res, "data") <- data }
+    attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  }
   
   return(res)
 }
