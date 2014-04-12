@@ -55,10 +55,10 @@ for (country in Countries) {
         
         tryCatch({
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          if (is.null(m$nest)) {
+          if (is.null(m$dots$nest)) {
             oModels[[country]][[m$fun]][[formulaStr]] <- oModel
           } else {
-            oModels[[country]][[m$fun]][[formulaStr]][[nestStr(m$nest)]] <- oModel
+            oModels[[country]][[m$fun]][[formulaStr]][[nestStr(m$dots$nest)]] <- oModel
           }
         }, 
         error=function(e) {
