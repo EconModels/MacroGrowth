@@ -4,7 +4,7 @@ require(plyr)  # for rbind.fill()
 
 All <- read.table("data/AllData.txt", header=TRUE)
 Countries <- unique(All$Country)
-Countries <- "ZA"
+# Countries <- "ZA"
 Energies <- c(quote(iQ), quote(iX), quote(iU))
 Energies <- c("iQ", "iX", "iU")
 
@@ -47,7 +47,7 @@ ModelInfos <- list(
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
 # ModelInfos <- head(ModelInfos, -4)  # skip all ces models
-ModelInfos <- tail( ModelInfos,2)
+# ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
 rModels <- list()
