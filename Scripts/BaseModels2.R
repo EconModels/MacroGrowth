@@ -1,6 +1,7 @@
 
 require(EconModels2)
 require(plyr)  # for rbind.fill()
+nestStr <- function(nest) paste(nest, collapse="")
 
 All <- read.table("data/AllData.txt", header=TRUE)
 Countries <- unique(All$Country)
@@ -57,7 +58,7 @@ for (country in Countries) {
           if (is.null(m$nest)) {
             oModels[[country]][[m$fun]][[formulaStr]] <- oModel
           } else {
-            oModels[[country]][[m$fun]][[formulaStr]][[m$nest]] <- oModel
+            oModels[[country]][[m$fun]][[formulaStr]][[nestStr(m$nest)]] <- oModel
           }
         }, 
         error=function(e) {
