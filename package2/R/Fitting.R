@@ -433,7 +433,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   return(res)
 }
 
-
 #' Fitting CES models
 #' 
 #' This function fits a CES model
@@ -494,7 +493,8 @@ cesModel <- function(formula, data,
   } else {
     numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
   }
-  
+
+
   # Verify algorithm
   cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
   algorithms <- toupper(algorithms)
@@ -502,8 +502,7 @@ cesModel <- function(formula, data,
   algorithms <- intersect(algorithms, cesAlgorithms)
   for (m in badAlgorithms) {
     stop(paste("Unrecognized algorithm:", m))
-  }
-  
+  }  
   
   # Set up *Names 
   fNames <- rownames( attr(terms(formula), "factors") )
@@ -525,9 +524,12 @@ cesModel <- function(formula, data,
     ")"
   )
   
-  # only keep data actually used to fit the model. cesEst fails with incomplete cases.
-  data <- data[ , c(yName, xNames, tName)]
-  data <- data[ complete.cases(data), ]
+  # remove incomplete cases since cesEst() fails with incomplete cases.
+  sdata <- data[ , c(yName, xNames, tName)]
+  data <- data[ complete.cases(sdata), ]
+  
+#  sdata <- subset(data, select = all.vars(formula))
+#  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   
   models <- list()
   for (algorithm in algorithms) {
@@ -536,30 +538,28 @@ cesModel <- function(formula, data,
     #
     if (numFactors == 2) {
       # We want a model with only 2 factors. No need for a rho1 argument.
-      tryCatch( {
-        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-                        rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
-        # It would be nice to put these next lines after this if block. 
-        # But, if there is an error, we don't want to add the model to models.
-        # So, we put these lines here.
-        # Unfortunately, this means that similar code exists several places in this function.
-        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-        models[length(models)+1] <- list(model)
+      model <- tryCatch( {
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
+        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e))); 
+                               NULL }
       )
     } else {
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
-      tryCatch( {
-        model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-                        rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
-        hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-        models[length(models)+1] <- list(model)
+      model <- tryCatch( {
+        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+               rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
+        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e))); 
+                               NULL }
+      
       )
+    }
+    if (! is.null(model) ) {
+      hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
+      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+      models[length(models)+1] <- list(model)
     }
   }
   #
@@ -568,17 +568,18 @@ cesModel <- function(formula, data,
   bestMod <- bestModel(models, digits=digits)
   start <- coef(bestMod)
   for (algorithm in algorithms) {
-    tryCatch( {
-      model <- cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+    model <- tryCatch( {
+      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
-      # If there's a problem, we don't want to add this model to models.
-      # So, this code goes inside the "try" part.
+    },
+      error = function(e) { warning(paste("cesEst() failed with", algorithm, " (4):\n ", as.character(e))); 
+                            NULL }
+    )
+  }
+  if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
       model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
       models[[length(models)+1]] <- model
-    },
-      error = function(e) { warning(paste("Error in cesEst() "), print(e)) }
-    )
   }
   #
   # Now try gradient search starting from prevModel (if it is present in the argument list).
@@ -594,17 +595,16 @@ cesModel <- function(formula, data,
         model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
         models[[length(models)+1]] <- model
       },
-        error = function(e) {  warning(paste("Error in cesEst() "), print(e)) }
+        error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e))); 
+                               NULL }
       )
     }
   }
-  # Return everything, all of the models that we calculated.
+  
   res <- bestModel(models)
   attr(res, "model.attempts") <- models
   attr(res, "formula") <- formula
-  sdata <- subset(data, select = all.vars(formula))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
-  if (save.data) { attr(res, "data") <- sdata }
+  if (save.data) { attr(res, "data") <- data }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   
   return(res)
