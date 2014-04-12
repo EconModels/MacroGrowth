@@ -545,8 +545,10 @@ cesModel <- function(formula, data,
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e))); 
-                             NULL }
+      error = function(e) {  
+        warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e)))
+        return(NULL)
+      }
       )
     } else {
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
@@ -554,9 +556,10 @@ cesModel <- function(formula, data,
         cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
                rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
-      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e))); 
-                             NULL }
-      
+      error = function(e) {  
+        warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e)))
+        return(NULL)
+      }
       )
     }
     if (! is.null(model) ) {
@@ -575,8 +578,10 @@ cesModel <- function(formula, data,
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
              control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
     },
-    error = function(e) { warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e))); 
-                          NULL }
+    error = function(e) { 
+      warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e)))
+      return(NULL)
+    }
     )
   }
   if (! is.null( model ) ) {
@@ -598,8 +603,10 @@ cesModel <- function(formula, data,
         model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
         models[[length(models)+1]] <- model
       },
-      error = function(e) {  warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e))); 
-                             NULL }
+      error = function(e) {  
+        warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e)))
+        return(NULL)
+      }
       )
     }
   }
