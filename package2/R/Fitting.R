@@ -436,7 +436,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' Fitting CES models
 #' 
 #' This function fits a CES model
-#' 
 #' @param data a data frame, if you want to use resampled data.
 #' @param countryAbbrev, a character string naming the country, 
 #' if you want to use original data.

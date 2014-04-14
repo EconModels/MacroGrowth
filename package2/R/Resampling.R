@@ -145,6 +145,7 @@ resampledData <- function(model, method=c("residual", "resample", "wild", "debug
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")
   }
+  
   method <- match.arg(method)
   if(method == "resample") {
     res <- resample(data)
