@@ -98,8 +98,7 @@ resampledFits <- function(model,
   if (n > 0L) {
     for (i in 1L:n) {
       newData <- resampledData(model, method=method)
-      # Should this next line include the argument prevModel=model?
-      newModel <- do.call(fitfun, c(list(formula=formula, data=newData), ...))
+      newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
       resampleCoeffs <- extractAllMetaData(newModel)
       resampleCoeffs$method <- method
       coeffs <- rbind.fill(coeffs, resampleCoeffs)
