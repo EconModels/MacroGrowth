@@ -525,11 +525,13 @@ cesModel <- function(formula, data,
   )
   
   # remove incomplete cases since cesEst() fails with incomplete cases.
-  sdata <- data[ , c(yName, xNames, tName)]
+  cesNames <- c(yName, xNames, tName)
+  sdata <- data[ , cesNames ]
   if ( ! any( complete.cases(sdata) ) ) {
     stop("No valid rows of data for your model.")
   }
-  data <- data[ complete.cases(sdata), ]
+  # This ensures that response is the first column.  This is assumed in downstream code.
+  data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
   #  sdata <- subset(data, select = all.vars(formula))
   #  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
@@ -573,6 +575,7 @@ cesModel <- function(formula, data,
   #
   bestMod <- bestModel(models, digits=digits)
   start <- coef(bestMod)
+
   for (algorithm in algorithms) {
     model <- tryCatch( {
       cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
