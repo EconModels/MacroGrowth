@@ -66,12 +66,12 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @return a list of length two containting a data frame of coefficients and a list of models
 #' @export
 resampledFits <- function(model,
-  method=c("residual", "resample", "wild", "debug"),
-  n,
-  save.data=FALSE,
-  seed,
-  id,
-  ...) {
+                          method=c("residual", "resample", "wild", "debug"),
+                          n,
+                          save.data=FALSE,
+                          seed,
+                          id,
+                          ...) {
   
   fitfun <- switch(class(model)[1],
                    "sfModel" = "singleFactorModel",
@@ -91,23 +91,22 @@ resampledFits <- function(model,
   baseFitCoeffs$method <- "orig"
   coeffs <- baseFitCoeffs
   
-  
   # Begin accumulating a list of the models. The original model is in the first slot of the list.
   models <- list(model)
   
   # Now do the resample fits.
-
-  for (i in 1:n) {
-    newData <- resampledData(model, method=method)
-    # Should this next line include the argument prevModel=model?
-    newModel <- do.call(fitfun, c(list(formula=formula, data=newData), ...))
-    resampleCoeffs <- extractAllMetaData(newModel)
-    resampleCoeffs$method <- method
-    coeffs <- rbind.fill(coeffs, resampleCoeffs)
-    models[[length(models)+1]] <- newModel
-    names(models)[length(models)] <- paste(method, ".", i, sep="")
+  if (n > 0L) {
+    for (i in 1L:n) {
+      newData <- resampledData(model, method=method)
+      # Should this next line include the argument prevModel=model?
+      newModel <- do.call(fitfun, c(list(formula=formula, data=newData), ...))
+      resampleCoeffs <- extractAllMetaData(newModel)
+      resampleCoeffs$method <- method
+      coeffs <- rbind.fill(coeffs, resampleCoeffs)
+      models[length(models)+1] <- list(newModel)
+      names(models)[length(models)] <- paste(method, ".", i, sep="")
+    }
   }
-                                
   # At this point, both coeffs (which contains the coefficients) and 
   # models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
@@ -119,7 +118,7 @@ resampledFits <- function(model,
                "and length(models) =", length(models), "but they should be equal.",
                "coeffs and models have been saved in a file named mismatchedCoeffsModelsError."))
   }
-# coeffs$countryAbbrev <- countryAbbrev
+  # coeffs$countryAbbrev <- countryAbbrev
   if (!missing(id)) coeffs$`.id` <- id
   out <- list(coeffs=coeffs, models=models)
   return(out)
