@@ -587,7 +587,7 @@ cesModel <- function(formula, data,
   if (! is.null( model ) ) {
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
     model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-    models[[length(models)+1]] <- model
+    models[length(models)+1] <- list(model)
   }
   #
   # Now try gradient search starting from prevModel (if it is present in the argument list).
@@ -601,7 +601,7 @@ cesModel <- function(formula, data,
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
-        models[[length(models)+1]] <- model
+        models[length(models)+1] <- list(model)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e)))
