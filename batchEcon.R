@@ -110,7 +110,7 @@ if( ! opts$debug) {
                         baseResample=opts$baseResample)
       }
     } else {
-      # We get here if we have "cde" or "cese-(xy)z" models. 
+      # We get here if we have "cde", "cese-(xy)z", or linex models. 
       # Need to account for energy types.
       # But, only do those countries for which the requested energy type is available.
       for (energy in opts$energy){
