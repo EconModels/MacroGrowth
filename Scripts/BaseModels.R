@@ -1,112 +1,77 @@
-# Script to generate all base models (i.e., fits to historical data)
 
 require(EconModels2)
-require(foreach)
-require(doParallel)
+require(plyr)  # for rbind.fill()
+nestStr <- function(nest) paste(nest, collapse="")
 
-# CES models take a long time. Set FALSE to skip over CES models
-doCES <- FALSE
+All <- read.table("data/AllData.txt", header=TRUE)
+Countries <- unique(All$Country)
+Energies <- c("iQ", "iX", "iU")
 
-# 
-# Load our data
-#
-data <- read.table(file="data/AllData.txt", header=TRUE)
-countryAbbrevs <- as.character(unique(data$Country)) # tells which countries we have
-names(countryAbbrevs) <- countryAbbrevs # set the names to the abbreviations
-dataU <- subset(data, subset=!is.na(data$iU)) # data where we have U available
-countryAbbrevsU <- as.character(unique(dataU$Country))
-names(countryAbbrevsU) <- countryAbbrevsU
+ModelInfos <- list(
+  list( formulaStr = c("iGDP ~ iCapStk + iYear", 
+                       "iGDP ~ iLabor + iYear",
+                       "iGDP ~ energy + iYear"),
+        fun = "singleFactorModel",
+        dots = list()),
+  list( formulaStr = c("iGDP ~ iCapStk + iLabor + iYear",
+                       "iGDP ~ iCapStk + iLabor + energy + iYear"),
+        fun = "cobbDouglasModel",
+        dots = list()),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+        fun = "linexModel",
+        dots = list()),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+        fun = "cesModel",
+        dots = list(nest=1:2)),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=1:3)),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=c(2,3,1))),
+  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=c(1,3,2)))
+)
 
-#
-# Single Factor models
-#
-modelsSFK <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iGDP ~ iCapStk + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsSFL <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iGDP ~ iLabor + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsSFQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iGDP ~ iQ + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsSFX <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iGDP ~ iX + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsSFU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  singleFactorModel(formula=iGDP ~ iU + iYear, data=subset(data, Country==countryAbbrev))
-})
+# ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
+ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+# ModelInfos <- tail( ModelInfos,2)
 
-#
-# Cobb-Douglas models
-#
-modelsCD <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iGDP ~ iCapStk + iLabor + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsCDQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsCDX <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iGDP ~ iCapStk + iLabor + iX + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsCDU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  cdModel(formula=iGDP ~ iCapStk + iLabor + iU + iYear, data=subset(data, Country==countryAbbrev))
-})
+oModels <- list()
+coefs <- list()
 
-#
-# CES models
-#
-if (doCES == TRUE){
-  # Without energy
-  modelsCESKL <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=iGDP ~ iCapStk + iLabor + iYear, data=subset(data, Country==countryAbbrev))
-  })
-  
-  # With Q
-  formQ <- iGDP ~ iCapStk + iLabor + iQ + iYear
-  modelsCESKLQ <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formQ, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESLQK <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formQ, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESKQL <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formQ, nest=c(1,3,2), data=subset(data, Country==countryAbbrev))
-  })
-  
-  # With X
-  formX <- iGDP ~ iCapStk + iLabor + iX + iYear
-  modelsCESKLX <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formX, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESLXK <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formX, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESKXL <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=formX, nest=c(3,1,2), data=subset(data, Country==countryAbbrev))
-  })
-  
-  # With U
-  formU <- iGDP ~ iCapStk + iLabor + iU + iYear
-  modelsCESKLU <- lapply(countryAbbrevsU, function(countryAbbrev){
-    cesModel(formula=formU, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESLUK <- lapply(countryAbbrevsU, function(countryAbbrev){
-    cesModel(formula=formU, nest=c(2,3,1), data=subset(data, Country==countryAbbrev))
-  })
-  modelsCESKUL <- lapply(countryAbbrevsU, function(countryAbbrev){
-    cesModel(formula=formU, nest=c(3,1,2), data=subset(data, Country==countryAbbrev))
-  })
+for (country in Countries) {
+  cdata <- subset(All, Country==country)
+  for (m in ModelInfos) {
+    for (f in m$formulaStr) {
+      for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
+        formulaStr <- sub( "energy", energy, f ) 
+        formula <- eval( parse( text= formulaStr ) )
+        # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
+        # tryCatch to skip over country/energy combos that don't exist.
+        cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
+        cat ("\n")
+        
+        tryCatch({
+          oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
+          if (is.null(m$dots$nest)) {
+            oModels[[country]][[m$fun]][[formulaStr]] <- oModel
+          } else {
+            oModels[[country]][[m$fun]][[formulaStr]][[nestStr(m$dots$nest)]] <- oModel
+          }
+        }, 
+        error=function(e) {
+          cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+          print(e)
+        }
+        )
+      }
+    }
+  }
 }
 
-#
-# Linex models
-#
-modelsLinexQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  linexModel(formula=iGDP ~ iCapStk + iLabor + iQ + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsLinexX <- lapply(countryAbbrevs, function(countryAbbrev){
-  linexModel(formula=iGDP ~ iCapStk + iLabor + iX + iYear, data=subset(data, Country==countryAbbrev))
-})
-modelsLinexU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  linexModel(formula=iGDP ~ iCapStk + iLabor + iU + iYear, data=subset(data, Country==countryAbbrev))
-})
+coefs2 <- do.call(rbind.fill, coefs)
+
+saveRDS(oModels, file="data_orig/oModels.Rdata")
+
