@@ -1,4 +1,5 @@
 
+
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
 }
@@ -436,16 +437,26 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' Fitting CES models
 #' 
 #' This function fits a CES model
-#' @param data a data frame, if you want to use resampled data.
-#' @param countryAbbrev, a character string naming the country, 
-#' if you want to use original data.
+#' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
+#' \code{c} and \code{d} are optional.
+#' @param data a data frame, in which to evaluate the formula.
+#' #' @param formula a formula of the form \code{response ~ captial + labor + energy + time}
+#' @param response instead of specifying a formula, expressions for
+#' the components can be specified individually.
+#' @param a instead of specifying a formula, expressions for
+#' the components can be specified individually.
+#' @param b instead of specifying a formula, expressions for
+#' the components can be specified individually.
+#' @param c instead of specifying a formula, expressions for
+#' the components can be specified individually.
+#' @param d instead of specifying a formula, expressions for
+#' the components can be specified individually.
+#' @param time instead of specifying a formula, expressions for
+#' the components can be specified individually
 #' @param nest a permutation (a,b,c,d) of the integers 1 through 4.
 #' For models with 3 factors, the nesting
 #' is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
-#' @param fittingToResampleData a logical.  If \code{FALSE}, you should also supply a 
-#' value for \code{origModel}
 #' because \code{origModel} will be used to obtain the starting point for a gradient search.
-#' @param origModel a model
 #' @param prevModel a model used to start gradient searches.
 #' Use \code{NULL} if you want to use the default start locations AND do a grid search 
 #' in sigma.
@@ -455,6 +466,9 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from 
 #' the default values.
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
+#' @note For now the components in \code{formula} (or the arguments \code{response}, 
+#' \code{a}, \code{b}, etc. ) must correspond to variables in \code{data} and may
+#' not be other kinds of expressions.
 #' @return a cesEst model with additional information attached as attributes.
 #' @export
 cesModel <- function(formula, data,
@@ -484,18 +498,21 @@ cesModel <- function(formula, data,
     )
     if (is.null(c) & is.null(d)) {
       formula <- substitute( response ~ capital + labor + time, substitutionList )
+      numComponents <- 2
     } else if (is.null(d)) {
       formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
+      numComponents <- 3
     } else {
       formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
+      numComponents <- 4
     }
   } else {
-    numComponents <- length(all.vars(formula)) - 2 # subtract off response and time
+    numComponents <- ncol(attr(terms(formula),"factors")) - 1 # subtract off time
   }
   
-  
   # Verify algorithm
-  cesAlgorithms <- c("PORT", "L-BFGS-B") # These are the only valid algs that respect constraints
+  # These are the only valid algs that respect constraints
+  cesAlgorithms <- c("PORT", "L-BFGS-B") 
   algorithms <- toupper(algorithms)
   badAlgorithms <- setdiff(algorithms, cesAlgorithms)
   algorithms <- intersect(algorithms, cesAlgorithms)
