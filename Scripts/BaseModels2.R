@@ -73,5 +73,5 @@ for (country in Countries) {
 
 coefs2 <- do.call(rbind.fill, coefs)
 
-saveRDS(oModels, file="oModels.Rdata")
+saveRDS(oModels, file="data_resample/oModels.Rdata")
 

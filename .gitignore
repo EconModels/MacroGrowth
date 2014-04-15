@@ -11,6 +11,7 @@
 # Files created by resampling
 #
 Generate-Resamples-Batch.Rout
+data_orig/
 data_resample/
 data_failures/
 core
