@@ -69,13 +69,13 @@ for (country in Countries) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           oModels[[length(oModels) + 1]] <- oModel
 #           Here is some sample code to pass prevModel=oModel for cesModel only. But, it doesn't work.
-#           if (m$fun == "cesModel") {
-#             # Want to set preModel to oModel in the call to cesModel. It will be passed in the ... argument.
-#             rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":"), prevModel=oModel )
-#           } else {
-#             # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-#             rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
-#           }
+          if (m$fun == "cesModel") {
+            # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
+            rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":"), prevModel=oModel )
+          } else {
+            # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
+            rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
+          }
           rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
           rModels[[length(rModels) + 1]] <- rFits[["models"]]
           coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
