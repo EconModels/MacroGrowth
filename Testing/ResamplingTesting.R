@@ -68,7 +68,6 @@ for (country in Countries) {
         tryCatch({
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           oModels[[length(oModels) + 1]] <- oModel
-#           Here is some sample code to pass prevModel=oModel for cesModel only. But, it doesn't work.
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
             rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":"), prevModel=oModel )
