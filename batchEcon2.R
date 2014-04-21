@@ -224,7 +224,7 @@ for(model in opts$model){
     } else if (grepl(pattern="(le)k", x=model, fixed=TRUE)){
       dots <- list(nest=c(2,3,1))
     } else if (grepl(pattern="(ek)l", x=model, fixed=TRUE)){
-      dots <- list(nest=c(1,3,2))
+      dots <- list(nest=c(3,1,2))
     } else {
       stop(paste("Unknown nest in formula", formula, "in batchEcon.R"))
     }
