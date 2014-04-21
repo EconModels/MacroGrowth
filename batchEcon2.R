@@ -271,7 +271,6 @@ if( ! opts$debug) {
         
         tryCatch({
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          oModels[[length(oModels) + 1]] <- oModel
           id <- paste(country,energy,m$fun, sep=":")
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
