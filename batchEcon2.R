@@ -10,6 +10,20 @@
 # for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
 # ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -H data -R data_resample
 
+
+nestString <- function( formula, nest ) {
+  return(nest)
+  xNames <- all.vars( terms(formula) )
+  xNames <- tail(xNames, -1)
+  xNames <- tail(xNames, -1)
+  paste0(
+    "(", 
+    paste(head(xNames,2), collapse=" + "),  
+    ") + (", 
+    paste(tail(xNames, -2), collapse=" + "),
+    ")"
+  )
+}
 # print(sort(.packages()))
 require(EconModels2)
 suppressPackageStartupMessages(library("optparse"))
@@ -250,28 +264,29 @@ cat("\n\nStart @ ")
 cat(date())
 cat('\n')
 
-if( ! opts$debug) {
-  
-  #genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
-  #cat('half way')
-  
-  # load historical data
-  All <- read.table(file="data/AllData.txt", header=TRUE)
-  
-  registerDoParallel()
-  
-  for (m in ModelInfos) {
-    for (f in m$formulaStr) {
-      # Add parallelization on countrires here!
-      for (country in Countries) {
-        cdata <- subset(All, Country==country)
-        formula <- eval( parse( text= formulaStr ) )
-        cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
-        cat ("\n")
-        
-        tryCatch({
+
+#genResampleData(modelType = "cese-(kl)e", countryAbbrev="CN", energyType="Q", n=2, method="wild", clobber=TRUE)
+#cat('half way')
+
+# load historical data
+All <- read.table(file="data/AllData.txt", header=TRUE)
+
+registerDoParallel()
+
+for (m in ModelInfos) {
+  for (f in m$formulaStr) {
+    # Add parallelization on countrires here!
+    for (country in opts$country) {
+      cdata <- subset(All, Country==country)
+      formula <- eval( parse( text=f ) )
+      cat ( paste(country, f, m$fun, m$dots, nestString(eval(parse(text=m$f)), m$n), 
+                  sep=" : ") )
+      cat ("\n")
+      
+      tryCatch({
+        id <- paste(country, f, m$fun, sep=":")
+        if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          id <- paste(country,energy,m$fun, sep=":")
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
             rFits <- resampledFits( oModel, "wild", n=opts$n, id=id, prevModel=oModel )
@@ -282,15 +297,15 @@ if( ! opts$debug) {
           rFits <- resampledFits( oModel, "wild", n=opts$n, id=id )
           rModels[[length(rModels) + 1]] <- rFits[["models"]]
           coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
-        }, 
-        error=function(e) {
-          cat(paste0("  *** Skipping ", id, "\n"))
-          print(e)
         }
-        )
-        # Now save the data to disk in the appropriate places with the appropriate file names.
-        
+      }, 
+      error=function(e) {
+        cat(paste0("  *** Skipping ", id, "\n"))
+        print(e)
       }
+      )
+      # Now save the data to disk in the appropriate places with the appropriate file names.
+      
     }
   }
 }
