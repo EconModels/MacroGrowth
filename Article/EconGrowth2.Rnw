@@ -238,6 +238,10 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 baseHistorical <- file.path("..", "data")
 # We also need to define a directory path to the resample data results from "Article"
 baseResample <- file.path("..", "data_resample")
+
+# Load the fits to the original historical data
+# This object should be passed in to functions that need specific fits.
+oModels <- readRDS(file=file.path(baseResample, "oModels.Rdata"))
 @
 
 % These equations are used in several locations in the paper.
