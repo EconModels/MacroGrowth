@@ -262,104 +262,36 @@ if( ! opts$debug) {
   
   for (m in ModelInfos) {
     for (f in m$formulaStr) {
-      for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
-        for (country in Countries) {
-          cdata <- subset(All, Country==country)
-          
-          formulaStr <- sub( "energy", energy, f ) 
-          formula <- eval( parse( text= formulaStr ) )
-          # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
-          # tryCatch to skip over country/energy combos that don't exist.
-          cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
-          cat ("\n")
-          
-          tryCatch({
-            oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-            oModels[[length(oModels) + 1]] <- oModel
-            #           Here is some sample code to pass prevModel=oModel for cesModel only. But, it doesn't work.
-            if (m$fun == "cesModel") {
-              # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
-              rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":"), prevModel=oModel )
-            } else {
-              # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-              rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
-            }
-            rFits <- resampledFits( oModel, "wild", n=m$n, id=paste(country,energy,m$fun, sep=":") )
-            rModels[[length(rModels) + 1]] <- rFits[["models"]]
-            coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
-          }, 
-          error=function(e) {
-            cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-            print(e)
+      # Add parallelization on countrires here!
+      for (country in Countries) {
+        cdata <- subset(All, Country==country)
+        formula <- eval( parse( text= formulaStr ) )
+        cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
+        cat ("\n")
+        
+        tryCatch({
+          oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
+          oModels[[length(oModels) + 1]] <- oModel
+          id <- paste(country,energy,m$fun, sep=":")
+          if (m$fun == "cesModel") {
+            # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
+            rFits <- resampledFits( oModel, "wild", n=opts$n, id=id, prevModel=oModel )
+          } else {
+            # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
+            rFits <- resampledFits( oModel, "wild", n=opts$n, id=id )
           }
-          )
+          rFits <- resampledFits( oModel, "wild", n=opts$n, id=id )
+          rModels[[length(rModels) + 1]] <- rFits[["models"]]
+          coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
+        }, 
+        error=function(e) {
+          cat(paste0("  *** Skipping ", id, "\n"))
+          print(e)
         }
+        )
       }
     }
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-#   for (model in opts$model) {
-#     if (model == "sf"){
-#       for (factor in opts$factor){
-#         # Working on the single-factor model. So, we need to pass the factor argument.
-#         foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-#           cat(paste0("\nFitting ", model, ":", country, ":", factor))
-#           genResampleData(modelType=model, 
-#                           countryAbbrev=country,  
-#                           factor=factor,
-#                           n=opts$resamples, 
-#                           method=opts$method, 
-#                           clobber=opts$clobber,
-#                           baseHistorical=opts$baseHistorical,
-#                           baseResample=opts$baseResample)
-#         }
-#       }
-#     } else if ((model == "cd") || (model == "ces")) {
-#       # There are no energy types or factors over which to loop.
-#       foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-#         cat(paste0("\nFitting ", model, ":", country))
-#         genResampleData(modelType=model, 
-#                         countryAbbrev=country,  
-#                         n=opts$resamples, 
-#                         method=opts$method, 
-#                         clobber=opts$clobber,
-#                         baseHistorical=opts$baseHistorical,
-#                         baseResample=opts$baseResample)
-#       }
-#     } else {
-#       # We get here if we have "cde", "cese-(xy)z", or linex models. 
-#       # Need to account for energy types.
-#       # But, only do those countries for which the requested energy type is available.
-#       for (energy in opts$energy){
-#         if (energy == "U"){
-#           availableCountries <- intersect(opts$country, countryAbbrevsU)
-#         } else {
-#           availableCountries <- intersect(opts$country, countryAbbrevs)
-#         }
-#         foreach(country=availableCountries, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-#           cat(paste0("\nFitting ", model, ":", country, ":", energy))
-#           genResampleData(modelType=model, 
-#                           countryAbbrev=country,  
-#                           energyType=energy, 
-#                           n=opts$resamples, 
-#                           method=opts$method, 
-#                           clobber=opts$clobber,
-#                           baseHistorical=opts$baseHistorical,
-#                           baseResample=opts$baseResample)
-#         }
-#       }
-#     }
-#   }
 }
 
 cat("\n\nDone @ ")
