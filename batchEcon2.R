@@ -211,7 +211,7 @@ for(model in opts$model){
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
                                                fun = "cesModel",
                                                dots = list(nest=1:2))
-  } else if (grepl(pattern="cese", x=model)){
+  } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
     formulas <- list()
