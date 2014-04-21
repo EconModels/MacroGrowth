@@ -121,9 +121,9 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
-  make_option(c("-e", "--energy"), default="Q",
+  make_option(c("-e", "--energy"), default="iQ",
               help="energy [default=%default]"),
-  make_option(c("-f", "--factor"), default="K",
+  make_option(c("-f", "--factor"), default="iCapStk",
               help="factor [default=%default]"),
   make_option(c("-m", "--model"), default="all",
               help="model [default=%default]"),
@@ -163,14 +163,14 @@ if(opts$country== "all") {
 if(opts$energy== "all") {
   opts$energy <- energyTypes
 } else {
-  opts$energy <- toupper(strsplit(opts$energy,",")[[1]])
+  opts$energy <- strsplit(opts$energy,",")[[1]]
 #   opts$energy <- match.arg(opts$energy,choices=energyTypes,several.ok=TRUE)
 }
 
 if(opts$factor== "all") {
   opts$factor <- factors
 } else {
-  opts$factor <- toupper(strsplit(opts$factor,",")[[1]])
+  opts$factor <- strsplit(opts$factor,",")[[1]]
 #   opts$factor <- match.arg(opts$factor,choices=factors,several.ok=TRUE)
 }
 
@@ -186,9 +186,9 @@ ModelInfos <- list()
 for(model in opts$model){
   if (model == "sf"){
     # Build a formula for each factor
-    formulas <- list()
-    for(factor in opts$factors){
-      formulas[[length(formulas)+1]] <- paste("iGDP ~", factor, "+ iYear")
+    formulas <- c()
+    for(factor in opts$factor){
+      formulas[length(formulas)+1] <- paste("iGDP ~", factor, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "singleFactorModel",
@@ -199,9 +199,9 @@ for(model in opts$model){
                                                dots = list())
   } else if (model == "cde"){
     # Build a formula for each energy type
-    formulas <- list()
+    formulas <- c()
     for(energy in opts$energy){
-      formulas[[length(formulas)+1]] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "cobbDouglasModel",
@@ -214,9 +214,9 @@ for(model in opts$model){
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
-    formulas <- list()
+    formulas <- c()
     for(energy in opts$energy){
-      formulas[[length(formulas)+1]] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
     }
     # Figure out the desired nesting for the factors of production
     if (grepl(pattern="(kl)e", x=model, fixed=TRUE)){
@@ -233,9 +233,9 @@ for(model in opts$model){
                                                dots = dots)
   } else if (model == "linex"){
     # Build a formula for each energy type
-    formulas <- list()
+    formulas <- c()
     for(energy in opts$energy){
-      formulas[[length(formulas)+1]] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "linexModel",
@@ -271,7 +271,6 @@ if( ! opts$debug) {
         
         tryCatch({
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          oModels[[length(oModels) + 1]] <- oModel
           id <- paste(country,energy,m$fun, sep=":")
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
