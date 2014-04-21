@@ -279,22 +279,19 @@ for (m in ModelInfos) {
     for (country in opts$country) {
       cdata <- subset(All, Country==country)
       formula <- eval( parse( text=f ) )
-      cat ( paste(country, m$fun, f, m$dots, nestString(eval(parse(text=f)), opts$resamples), 
-                  sep=" : ") )
-      cat ("\n")
-      
+      id <- paste(m$fun, country, f, m$dots, nestString(eval(parse(text=f)), opts$resamples), sep=" : ")
       tryCatch({
-        id <- paste(country, f, m$fun, sep=":")
+        print(id)
         if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
-            rFits <- resampledFits( oModel, "wild", n=opts$n, id=id, prevModel=oModel )
+            rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel )
           } else {
             # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-            rFits <- resampledFits( oModel, "wild", n=opts$n, id=id )
+            rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id )
           }
-          rFits <- resampledFits( oModel, "wild", n=opts$n, id=id )
+          rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id )
           rModels[[length(rModels) + 1]] <- rFits[["models"]]
           coefs[[length(coefs) + 1]] <- rFits[["coeffs"]]
         }
