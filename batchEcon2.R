@@ -87,7 +87,7 @@ doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="
                      "cese-(le)k" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "cese-(ek)l" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
                      "linex"      = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     stop(paste("Unknown modelType", modelType, "in getPathForResampleModels."))
+                     stop(paste("Unknown modelType", modelType, "in doGetPath."))
   )
   path <- file.path(folder, filename)
   return(path)
