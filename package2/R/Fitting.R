@@ -726,9 +726,21 @@ addMetaData <- function(model, nest, nestString, history=""){
     beta <- delta * delta_1
     gamma <- delta * (1.0 - delta_1)
     alpha <- 1.0 - delta
-  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ek)l"){
+  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
     alpha <- delta * delta_1
     gamma <- delta * (1.0 - delta_1)
+    beta <- 1.0 - delta
+  } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
+    beta <- delta * delta_1
+    alpha <- delta * (1.0 - delta_1)
+    gamma <- 1.0 - delta
+  } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
+    gamma <- delta * delta_1
+    beta <- delta * (1.0 - delta_1)
+    alpha <- 1.0 - delta
+  } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
+    gamma <- delta * delta_1
+    alpha <- delta * (1.0 - delta_1)
     beta <- 1.0 - delta
   } else {
     stop(paste("Unknown nest:", nestString, "in addMetaData."))
