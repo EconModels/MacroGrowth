@@ -244,8 +244,6 @@ for(model in opts$model){
     stop(paste("Unknown model type", model, "in batchEcon.R."))
   }
 }
-print(str(ModelInfos, max.level=10))
-ModelInfos[[1]]$formulas
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
