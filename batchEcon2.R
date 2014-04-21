@@ -279,7 +279,7 @@ for (m in ModelInfos) {
     for (country in opts$country) {
       cdata <- subset(All, Country==country)
       formula <- eval( parse( text=f ) )
-      cat ( paste(country, f, m$fun, m$dots, nestString(eval(parse(text=m$f)), m$n), 
+      cat ( paste(country, m$fun, f, m$dots, nestString(eval(parse(text=f)), opts$resamples), 
                   sep=" : ") )
       cat ("\n")
       
