@@ -1,3 +1,14 @@
+#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
+#
+# This script fits all of the base models for each combination of 
+# model, country, factor, energy type, and nesting.
+# 
+
+# Results are stored in the file "data_resample/oModels.Rdata"
+# To load this data back in, do 
+# 
+# readRDS(file="data_resample/oModels.Rdata")
+#
 
 require(EconModels2)
 require(plyr)  # for rbind.fill()
@@ -71,7 +82,7 @@ for (country in Countries) {
   }
 }
 
-coefs2 <- do.call(rbind.fill, coefs)
+# coefs2 <- do.call(rbind.fill, coefs)
 
-saveRDS(oModels, file="data_orig/oModels.Rdata")
+saveRDS(oModels, file="data_resample/oModels.Rdata")
 
