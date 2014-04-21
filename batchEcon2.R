@@ -177,7 +177,7 @@ if(opts$factor== "all") {
 print(str(opts))
 
 #
-# Convert the options to a ModelInfos object. This object contains the 
+# Convert the options to a ModelInfos object. ModelInfos contains the 
 # recipe for which fits to execute.
 #
 
@@ -192,12 +192,10 @@ for(model in opts$model){
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "singleFactorModel",
-                                               n = opts$n,
                                                dots = list())
   } else if (model == "cd") {
-    modelInfos[[length(ModelInfos)+1]] <- list(formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+    ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
                                                fun = "cobbDouglasModel",
-                                               n = opts$n,
                                                dots = list())
   } else if (model == "cde"){
     # Build a formula for each energy type
@@ -207,15 +205,12 @@ for(model in opts$model){
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "cobbDouglasModel",
-                                               n = opts$n,
                                                dots = list())
   } else if (model == "ces"){
     # Want a CES model without energy
-    modelInfos[[length(ModelInfos)+1]] <- list(formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+    ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
                                                fun = "cesModel",
-                                               n = opts$n,
                                                dots = list(nest=1:2))
-    
   } else if (grepl(pattern="cese", x=model)){
     # Want a CES model with energy
     # Build a formula for each energy type
@@ -224,18 +219,17 @@ for(model in opts$model){
       formulas[[length(formulas)+1]] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
     }
     # Figure out the desired nesting for the factors of production
-    if (grepl(pattern="(kl)e", x=model)){
+    if (grepl(pattern="(kl)e", x=model, fixed=TRUE)){
       dots <- list(nest=1:3)
-    } else if (grepl(pattern="(le)k")){
+    } else if (grepl(pattern="(le)k", x=model, fixed=TRUE)){
       dots <- list(nest=c(2,3,1))
-    } else if (grepl(pattern="(ek)l")){
+    } else if (grepl(pattern="(ek)l", x=model, fixed=TRUE)){
       dots <- list(nest=c(1,3,2))
     } else {
-      stop("Unknown nest in formula", formula, "in batchEcon.R")
+      stop(paste("Unknown nest in formula", formula, "in batchEcon.R"))
     }
-    modelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
+    ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "cesModel",
-                                               n = opts$n,
                                                dots = dots)
   } else if (model == "linex"){
     # Build a formula for each energy type
@@ -245,14 +239,13 @@ for(model in opts$model){
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(formulaStr = formulas,
                                                fun = "linexModel",
-                                               n = opts$n,
                                                dots = list())
   } else {
     stop(paste("Unknown model type", model, "in batchEcon.R."))
   }
 }
-print(ModelInfos)
-stop()
+print(str(ModelInfos, max.level=10))
+ModelInfos[[1]]$formulas
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
