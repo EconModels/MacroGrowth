@@ -61,23 +61,23 @@ ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iX -m cese-\(kl\)e -H $HISTDIR -
 ssh node-15 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iX -m cese-\(kl\)e -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-15.txt" &
 ssh node-16 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(kl\)e -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-16.txt" &
 # node-17 is missing
-ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-17.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-18.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-19.txt" &
+ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-19.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-20.txt" &
 # Faulty R installations on nodes 21, 22, 23, and 24.
 # node-25 is missing.
 # Faulty R installation on node 26.
-ssh node-27 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-20.txt" &
-ssh node-28 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-25.txt" &
-ssh node-29 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-27.txt" &
+ssh node-27 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-27.txt" &
+ssh node-28 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-28.txt" &
+ssh node-29 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-29.txt" &
 
 # We have useful work (U) data for US, UK, and JP only.
 
-ssh node-30 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-28.txt" &
+ssh node-30 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-30.txt" &
 # node-31 appears to be down.
-ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-29.txt" &
-ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-30.txt" &
+ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-32.txt" &
+ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -H $HISTDIR -R $OUTDIR $1 &> $OUTDIR/node-33.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-34 "cd $LOC_PATH; $EXEC Scripts/BaseModels.R &> $OUTDIR/node-31.txt" &
+ssh node-34 "cd $LOC_PATH; $EXEC Scripts/BaseModels.R &> $OUTDIR/node-34.txt" &
