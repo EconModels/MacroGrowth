@@ -24,7 +24,7 @@ nestString <- function( formula, nest ) {
     ")"
   )
 }
-# print(sort(.packages()))
+
 require(EconModels2)
 suppressPackageStartupMessages(library("optparse"))
 
@@ -32,7 +32,7 @@ suppressPackageStartupMessages(library("optparse"))
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 energyTypes <- c(Q="iQ", X="iX", U="iU") 
-factors <- c(K="iCapStk", L="iLabor", energyTypes)
+factors <- c(K="iK", L="iL", energyTypes)
 
 baseResample <- file.path("data_resample")
 
@@ -82,14 +82,18 @@ getPathForResampleModels <- function(modelType, countryAbbrev, energyType="none"
 #' \code{"cese-(kl)e"}, \code{"cese-(le)k"}, \code{"cese-(kl)e"}, or \code{"linex"}.
 #' @param countryAbbrev, a character string naming the country, 
 #' if you want to use original data.
-#' @param energyType one of \code{"Q"} (for thermal energy), \code{"X"} (for exergy), or \code{"U"} (for useful work).
-#' @param factor one of \code{"K"} (for capital stock), \code{"L"} (for labor), \code{"Q"} (for thermal energy), 
-#' \code{"X"} (for exergy), or \code{"U"} (for useful work).
+#' @param energyType the name of the energy type as it appeared in the original data file.
+#' For example, "iQ".
+#' @param factor the name of the factor as it appeared in the original data file.
+#' For example, "iK".
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return the relative path of the file containing the data for the requested resample data.
-doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="K", baseResample){
-  if (energyType == "none"){
-    energyType="NA"
+doGetPath <- function(prefix, modelType, countryAbbrev, energyType="iQ", factor="iK", baseResample){
+  if (missing(energyType) || is.na(energyType) || (energyType == "none")){
+    energyType <- "NA"
+  }
+  if (missing(factor) || is.na(factor) || (factor == "none")){
+    factor <- "NA"
   }
   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, baseResample=baseResample)   
   rdat <- ".Rdata"
@@ -121,7 +125,7 @@ doGetPath <- function(prefix, modelType, countryAbbrev, energyType="Q", factor="
 #' @return the relative path to the directory containing the data for the requested resample data.
 getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs, baseResample){
   dr <- baseResample
-#   countryAbbrev <- match.arg(countryAbbrev)
+  #   countryAbbrev <- match.arg(countryAbbrev)
   folder <- switch(modelType,
                    "cde"       = file.path(dr, "cd",      countryAbbrev),
                    "cese-(kl)" = file.path(dr, "ces",     countryAbbrev),
@@ -129,7 +133,7 @@ getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=country
   )
   return(folder)
 }
-  
+
 # 
 # Start the script
 # 
@@ -139,7 +143,7 @@ option_list <- list(
               help="country [default=%default]"),
   make_option(c("-e", "--energy"), default="iQ",
               help="energy [default=%default]"),
-  make_option(c("-f", "--factor"), default="iCapStk",
+  make_option(c("-f", "--factor"), default="iK",
               help="factor [default=%default]"),
   make_option(c("-m", "--model"), default="all",
               help="model [default=%default]"),
@@ -164,30 +168,30 @@ if(opts$model == "all") {
   opts$model <- modelTypes
 } else if (opts$model == "fast") {
   opts$model <- setdiff(modelTypes, c("cese-(kl)e", "cese-(le)k", "cese-(ek)l"))
-  } else {
+} else {
   opts$model <- strsplit(opts$model,",")[[1]]
-#   opts$model <- match.arg(opts$model,choices=modelTypes,several.ok=TRUE)
+  #   opts$model <- match.arg(opts$model,choices=modelTypes,several.ok=TRUE)
 }
 
 if(opts$country== "all") {
   opts$country <- countryAbbrevs
 } else {
   opts$country <- strsplit(opts$country,",")[[1]]
-#   opts$country <- match.arg(opts$country,choices=countryAbbrevs,several.ok=TRUE)
+  #   opts$country <- match.arg(opts$country,choices=countryAbbrevs,several.ok=TRUE)
 }
 
 if(opts$energy== "all") {
   opts$energy <- energyTypes
 } else {
   opts$energy <- strsplit(opts$energy,",")[[1]]
-#   opts$energy <- match.arg(opts$energy,choices=energyTypes,several.ok=TRUE)
+  #   opts$energy <- match.arg(opts$energy,choices=energyTypes,several.ok=TRUE)
 }
 
 if(opts$factor== "all") {
   opts$factor <- factors
 } else {
   opts$factor <- strsplit(opts$factor,",")[[1]]
-#   opts$factor <- match.arg(opts$factor,choices=factors,several.ok=TRUE)
+  #   opts$factor <- match.arg(opts$factor,choices=factors,several.ok=TRUE)
 }
 
 print(str(opts))
@@ -204,7 +208,7 @@ for(model in opts$model){
     # Build a formula for each factor
     formulas <- c()
     for(factor in opts$factor){
-      formulas[length(formulas)+1] <- paste("iGDP ~", factor, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iY ~", factor, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "singleFactorModel",
@@ -213,13 +217,13 @@ for(model in opts$model){
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cobbDouglasModel",
-                                               formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+                                               formulaStr = "iY ~ iK + iL + iYear",
                                                dots = list())
   } else if (model == "cde"){
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cobbDouglasModel",
@@ -229,14 +233,14 @@ for(model in opts$model){
     # Want a CES model without energy
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
-                                               formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+                                               formulaStr = "iY ~ iK + iL + iYear",
                                                dots = list(nest=1:2))
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
     }
     # Figure out the desired nesting for the factors of production
     if (grepl(pattern="(kl)e", x=model, fixed=TRUE)){
@@ -256,7 +260,7 @@ for(model in opts$model){
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iGDP ~ iCapStk + iLabor +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "linexModel",
@@ -289,7 +293,7 @@ for (m in ModelInfos) {
       formula <- eval( parse( text=f ) )
       id <- paste(m$fun, country, f, m$dots, nestString(eval(parse(text=f)), opts$resamples), sep=" : ")
       tryCatch({
-        cat(id)
+        cat(id); cat("\n")
         if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           if (m$fun == "cesModel") {
@@ -300,36 +304,46 @@ for (m in ModelInfos) {
             rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id )
           }
           rModels <- rFits[["models"]]
-          coefs <- rFits[["coeffs"]]
+          rCoeffs <- rFits[["coeffs"]]
           # Save the data to disk in the appropriate places with the appropriate file names.
-          # Get the factor or energy type. It will be in the formula, and it is guaranteed to
-          # be one of the factors.
-print('Before terms')
-print(f)
-print(all.vars(f))
-          terms <- all.vars( terms(f) )
-print(terms)
-          if (f$fun == "singleFactorModel"){
+          # First step, get the factor and energy type.
+          terms <- all.vars( terms(formula) )
+          if (m$fun == "singleFactorModel"){
+            energyType <- NA
             # We're dealing with factors. Find the factor we're using.
-            factor <- factors[[match(x=terms, table=factors)]]
-            energyType <- NULL
+            matches <- na.omit(match(x=terms, table=factors))
+            if (length(matches) <= 0){
+              factor <- NA
+            } else {
+              factor <- factor[[matches]]
+            }
           } else {
+            factor <- NA
             # We're dealing with energy types. Find the energy type we're using.
-            energyType <- energyTypes[[match(x=terms, table=energyTypes)]]
-            factor <- NULL
+            matches <- na.omit(match(x=terms, table=energyTypes))
+            if (length(matches) <= 0){
+              energyType <- NA
+            } else {
+              energyType <- energyTypes[[matches]]
+            }
           }
-          coeffsFile <- getPathForResampleData(modelType=m$modelType, 
+          # Get the paths for the coefficients and models files.
+          coeffsPath <- getPathForResampleData(modelType=m$modelType, 
                                                countryAbbrev=country, 
                                                factor=factor, 
                                                energyType=energyType, 
                                                baseResample=baseResample)
-          modelsFile <- getPathForResampleModels(modelType=m$modelType, 
+          modelsPath <- getPathForResampleModels(modelType=m$modelType, 
                                                  countryAbbrev=country, 
                                                  factor=factor, 
                                                  energyType=energyType, 
                                                  baseResample=baseResample)
-print(paste("coeffsFile:", coeffsFile))
-print(paste("modelsFils:", modelsFile))
+          # Ensure that the directories exist.
+          dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
+          dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
+          # Now save the files.
+          saveRDS(rCoeffs, file=coeffsPath)
+          saveRDS(rModels, file=modelsPath)
         }
       }, 
       error=function(e) {
@@ -337,7 +351,6 @@ print(paste("modelsFils:", modelsFile))
         print(e)
       }
       )
-      
     }
   }
 }

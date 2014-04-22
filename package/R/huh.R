@@ -39,11 +39,11 @@ columnIndex <- function(data, factor){
   if (factor == "Year"){
     colName <- "iYear"
   } else if (factor == "Y"){
-    colName <- "iGDP"
+    colName <- "iY"
   } else if (factor == "K"){
-    colName <- "iCapStk"
+    colName <- "iK"
   } else if (factor == "L"){
-    colName <- "iLabor"
+    colName <- "iL"
   } else if (factor == "Q"){
     colName <- "iQ"
   } else if (factor == "X"){

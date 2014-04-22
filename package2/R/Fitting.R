@@ -242,8 +242,8 @@ cdModel <- function(formula, data, response, capital, labor, time, constrained=F
   
   formulas <- list(
     log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
-    log(iGDP) - log(iCapStk) ~ iYear,  
-    log(iGDP) - log(iLabor) ~ iYear 
+    log(iY) - log(iK) ~ iYear,  
+    log(iY) - log(iL) ~ iYear 
   )
   
   formulas <- lapply( formulas,
@@ -859,7 +859,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
   #  sdata <- subset(data, 
-  #                  select= c( "iGDP","iEToFit","iCapStk","iLabor","rho_k","rho_l"))
+  #                  select= c( "iY","iEToFit","iK","iL","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(res$terms))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) {

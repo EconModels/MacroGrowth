@@ -6,7 +6,7 @@ covarianceTable <- function(countryAbbrev, baseHistorical){
   data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
-    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX, data$iU)
+    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX, data$iU)
     # Calculates the covariances among y, k. l, q, x, and u using all available data, namely,
     # 1980-2011 for covariances among y, k, l, q, and x for developed economies
     # 1980-2000 for covariances involving u for developed economies
@@ -15,7 +15,7 @@ covarianceTable <- function(countryAbbrev, baseHistorical){
     covarResults <- data.frame(cor(x=dataForCovar, use="pairwise.complete.obs"))
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
   } else {
-    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX)
+    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX)
     covarResults <- cor(dataForCovar)
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
   }

@@ -19,28 +19,28 @@ Countries <- unique(All$Country)
 Energies <- c("iQ", "iX", "iU")
 
 ModelInfos <- list(
-  list( formulaStr = c("iGDP ~ iCapStk + iYear", 
-                       "iGDP ~ iLabor + iYear",
-                       "iGDP ~ energy + iYear"),
+  list( formulaStr = c("iY ~ iK + iYear", 
+                       "iY ~ iL + iYear",
+                       "iY ~ energy + iYear"),
         fun = "singleFactorModel",
         dots = list()),
-  list( formulaStr = c("iGDP ~ iCapStk + iLabor + iYear",
-                       "iGDP ~ iCapStk + iLabor + energy + iYear"),
+  list( formulaStr = c("iY ~ iK + iL + iYear",
+                       "iY ~ iK + iL + energy + iYear"),
         fun = "cobbDouglasModel",
         dots = list()),
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+  list( formulaStr = "iY ~ iK + iL + energy + iYear",
         fun = "linexModel",
         dots = list()),
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + iYear",
+  list( formulaStr = "iY ~ iK + iL + iYear",
         fun = "cesModel",
         dots = list(nest=1:2)),
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+  list( formulaStr = "iY ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=1:3)),
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+  list( formulaStr = "iY ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=c(2,3,1))),
-  list( formulaStr = "iGDP ~ iCapStk + iLabor + energy + iYear",
+  list( formulaStr = "iY ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=c(1,3,2)))
 )
@@ -59,7 +59,7 @@ for (country in Countries) {
       for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
         formulaStr <- sub( "energy", energy, f ) 
         formula <- eval( parse( text= formulaStr ) )
-        # formula <- substitute( iGDP ~ iCapStk + iLabor + e + iYear, list(e = energy))
+        # formula <- substitute( iY ~ iK + iL + e + iYear, list(e = energy))
         # tryCatch to skip over country/energy combos that don't exist.
         cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
         cat ("\n")

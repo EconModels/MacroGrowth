@@ -187,11 +187,11 @@ columnIndex <- function(dataTable, factor){
   if (factor == "Year"){
     colName <- "iYear"
   } else if (factor == "Y"){
-    colName <- "iGDP"
+    colName <- "iY"
   } else if (factor == "K"){
-    colName <- "iCapStk"
+    colName <- "iK"
   } else if (factor == "L"){
-    colName <- "iLabor"
+    colName <- "iL"
   } else if (factor == "Q"){
     colName <- "iQ"
   } else if (factor == "X"){
@@ -227,7 +227,7 @@ covarianceTable <- function(countryAbbrev){
   data <- loadData(countryAbbrev)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
-    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX, data$iU)
+    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX, data$iU)
     # Calculates the covariances among y, k. l, q, x, and u using all available data, namely,
     # 1980-2011 for covariances among y, k, l, q, and x for developed economies
     # 1980-2000 for covariances involving u for developed economies
@@ -236,7 +236,7 @@ covarianceTable <- function(countryAbbrev){
     covarResults <- data.frame(cor(x=dataForCovar, use="pairwise.complete.obs"))
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
   } else {
-    dataForCovar <- cbind(data$iGDP, data$iCapStk, data$iLabor, data$iQ, data$iX)
+    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX)
     covarResults <- cor(dataForCovar)
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
   }
@@ -296,7 +296,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+iCapStk+iLabor+iQ+iX+iU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iY+iK+iL+iQ+iX+iU ~ Year | Country, data=dataTable,
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
@@ -348,9 +348,9 @@ singleFactorModel <- function(countryAbbrev, factor){
   }
   start <- list(lambda=lambdaGuess, m=mGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iGDP ~ exp(lambda*iYear) * f^m
+  model <- iY ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=dataTable, start = start)
-  #   model <- iGDP ~ exp(lambda*iYear) * f^m
+  #   model <- iY ~ exp(lambda*iYear) * f^m
   #   modelSF <- wrapnls(formula=model, data=dataTable, start=list(lambda=lambdaGuess, m=mGuess))
   return(modelSF)
 }
@@ -425,7 +425,7 @@ createSFLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }  
-  graph <- xyplot(iGDP+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iY+predGDPK+predGDPL+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout, #indicates a 3x3 arrangement of panels.
@@ -663,7 +663,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   colnames(newX) <- c("lambda", "m")
   # Get the actual GDP data
   data <- loadData(countryAbbrev)
-  y_act <- data[ ,"iGDP"] # Pick off the GDP column
+  y_act <- data[ ,"iY"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
   model <- singleFactorModel(countryAbbrev, factor)
@@ -739,7 +739,7 @@ cdModel <- function(countryAbbrev,...){
   alphaGuess <- 0.7 #0.7 gives good results for all countries.  
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^(1 - alpha)
+  model <- iY ~ exp(lambda*iYear) * iK^alpha * iL^(1 - alpha)
   modelCD <- nls(formula=model, data=dataTable, start=start,
                  #Include the next 3 lines to fit with constraints.
                  #algorithm = "port",
@@ -777,7 +777,7 @@ cdeModel <- function(countryAbbrev, energyType,...){
   # * alpha = min(a, b)
   # * beta = b - a
   # * gamma = 1 - max(a, b)
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^min(a,b) * iLabor^abs(b-a) * iEToFit^(1.0 - max(a,b))
+  model <- iY ~ exp(lambda*iYear) * iK^min(a,b) * iL^abs(b-a) * iEToFit^(1.0 - max(a,b))
   modelCDe <- nls(formula=model, data = dataTable, start = start,
                   control = nls.control(maxiter = 200, 
                                         tol = 1e-05, 
@@ -810,7 +810,7 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
   lambdaGuess <- 0.0 #guessing lambda = 0 means there is no technological progress.
   alphaGuess <- 0.7*(1-gamma) #ensure a consistent starting point.
   start <- list(lambda=lambdaGuess, alpha=alphaGuess)
-  model <- iGDP ~ exp(lambda*iYear) * iCapStk^alpha * iLabor^((1-gamma) - alpha) * iEGamma
+  model <- iY ~ exp(lambda*iYear) * iK^alpha * iL^((1-gamma) - alpha) * iEGamma
   modelCDe <- nls(formula=model, data = dataTable, start = start,
                   control = nls.control(maxiter = 200, 
                                         tol = 1e-05, 
@@ -1344,7 +1344,7 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iY+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout, #indicates a 3x3 arrangement of panels.
@@ -1377,10 +1377,10 @@ createCDLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = def
 
 ## <<ces functions, eval=TRUE>>=
 # Set some common names for CES variables.
-xNamesWithoutEnergy = c("iCapStk", "iLabor")
-xNamesWithEnergy = c("iCapStk", "iLabor", "iEToFit")
+xNamesWithoutEnergy = c("iK", "iL")
+xNamesWithEnergy = c("iK", "iL", "iEToFit")
 tName = "iYear"
-yName = "iGDP"
+yName = "iY"
 
 loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   ######################################
@@ -1392,7 +1392,7 @@ loadAndPrepDataForCES <- function(countryAbbrev, energyType){
   ##
   dataTable <- loadData(countryAbbrev)
   # Trim data from China and South Africa that is missing labor information for 2011.
-  dataTable <- subset(dataTable, !is.na(iLabor))
+  dataTable <- subset(dataTable, !is.na(iL))
   if (is.na(energyType)){
     # We're done. Don't have to deal with special issues with energyType.
     return(dataTable)
@@ -1604,7 +1604,7 @@ createCESLatticeGraph <- function(countryAbbrev, textScaling=1.0, keyXLoc=defaul
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
-  graph <- xyplot(iGDP+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iY+predGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
@@ -1965,7 +1965,7 @@ linexModel <- function(countryAbbrev, energyType){
     
   }
   # Runs a non-linear least squares fit to the data with constraints
-  modelLINEX <- nls(iGDP ~ iEToFit * exp(a_0*(2.0 - (iLabor+iEToFit)/iCapStk) + a_0 * c_t *(iLabor/iEToFit - 1.0)), 
+  modelLINEX <- nls(iY ~ iEToFit * exp(a_0*(2.0 - (iL+iEToFit)/iK) + a_0 * c_t *(iL/iEToFit - 1.0)), 
                     data=dataTable,
                     start=list(a_0=a_0Guess, c_t=c_tGuess),
                     control=nls.control(maxiter=50, tol=1e-06, minFactor=1/1024, printEval=FALSE, warnOnly=TRUE),
@@ -2043,7 +2043,7 @@ createLINEXLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXLoc = 
     indexCond <- list(c(1))                           # We want only one country.
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }  
-  graph <- xyplot(iGDP+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
+  graph <- xyplot(iY+predGDPQ+predGDPX+predGDPU ~ Year | Country, data=dataTable,
                   type=graphType,
                   index.cond=indexCond, #orders the panels.
                   layout=layout,
