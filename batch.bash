@@ -80,4 +80,4 @@ ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -H $HISTDIR -
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-34 "cd $LOC_PATH; $EXEC Scripts/BaseModels.R &> $OUTDIR/node-34.txt" &
+ssh node-34 "cd $LOC_PATH; Scripts/BaseModels.R &> $OUTDIR/node-34.txt" &
