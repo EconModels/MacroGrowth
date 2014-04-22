@@ -4,9 +4,9 @@
 
 # Move into the top level directory that contains this file
 # for US, thermal energy, single factor model, 10 resamples, clobbering previous results, and wild resampling:
-# ./batchEcon.R -c US -f Q -m sf -n 10 -C -M wild -H data -R data_resample
+# ./batchEcon.R -c US -f iQ -m sf -n 10 -C -M wild -H data -R data_resample
 # for US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
-# ./batchEcon.R -c US -e X -m linex -n 10 -C -M wild -H data -R data_resample
+# ./batchEcon.R -c US -e iX -m linex -n 10 -C -M wild -H data -R data_resample
 # for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
 # ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -H data -R data_resample
 
@@ -218,7 +218,7 @@ for (m in ModelInfos) {
             if (length(matches) <= 0){
               factor <- NA
             } else {
-              factor <- factor[[matches]]
+              factor <- factors[[matches]]
             }
           } else {
             factor <- NA
