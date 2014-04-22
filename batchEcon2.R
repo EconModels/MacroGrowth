@@ -18,7 +18,7 @@ nestString <- function( formula, nest ) {
   xNames <- head(xNames, -1)
   paste0(
     "(", 
-    paste(head(xNames,2), collapse=" + "),  
+    paste(head(xNames, 2), collapse=" + "),  
     ") + (", 
     paste(tail(xNames, -2), collapse=" + "),
     ")"
@@ -291,7 +291,7 @@ for (m in ModelInfos) {
     for (country in opts$country) {
       cdata <- subset(All, Country==country)
       formula <- eval( parse( text=f ) )
-      id <- paste(m$fun, country, f, m$dots, nestString(eval(parse(text=f)), opts$resamples), sep=" : ")
+      id <- paste(m$fun, country, f, nestString(eval(parse(text=f)), m$dots), opts$resamples, sep=" : ")
       tryCatch({
         cat(id); cat("\n")
         if (! opts$debug) {
