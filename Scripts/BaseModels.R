@@ -46,7 +46,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
@@ -61,7 +61,7 @@ for (country in Countries) {
         formula <- eval( parse( text= formulaStr ) )
         # formula <- substitute( iY ~ iK + iL + e + iYear, list(e = energy))
         # tryCatch to skip over country/energy combos that don't exist.
-        cat ( paste(country, formulaStr, m$fun, m$dots, m$n, sep=" : ") )
+        cat ( paste(country, m$fun, formulaStr, m$dots, sep=" : ") )
         cat ("\n")
         
         tryCatch({
