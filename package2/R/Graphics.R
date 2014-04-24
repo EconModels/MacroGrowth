@@ -211,24 +211,24 @@ spaghettiPlot <- function(energyType='none',
   return(graph)
 }
 
+#' Create a plot containing historical data
+#' 
+#' @param data a data frame containing the following columns: 
+#' \code{iY} (indexed GDP), 
+#' \code{Year} (the year for each row in the table), 
+#' \code{iK} (indexed capital stock), 
+#' \code{iL} (indexed labor), 
+#' \code{iQ} (indexed thermal energy), 
+#' \code{iX} (indexed exergy),
+#' \code{iU} (indexed useful work), and
+#' \code{Country} (2-letter international country code).
+#' 
+#' @details The function returns a figure with separate graphs for each \code{Country}
+#' in \code{data}. The graphs are arrangd vertically with year on the horizontal axis.
+#' You can change the vertical order of the graphs with \code{levels(data$Country)}.
+#' 
 #' @export
-historicalPlot <- function(countryAbbrev){
-  ####################################
-  # Creates a graph that displays all of the factors of production for all countries 
-  #	(if you leave off countryAbbrev)
-  # or a specific country (if you supply a 2-letter abbreviation for a country that we know).
-  # for converting between graphs in a paper and graphs in a beamer presentation.
-  ##
-  # Code that deals with items that are specific to whether we want all countries or a specific country.
-  if (missing(countryAbbrev)){
-    # We want a graph with panels for all countries
-    data <- loadData("All")
-    # Now set the order for the countries
-    data$Country <- factor(data$Country, levels=countryAbbrevs)
-  } else {
-    # We want only a specific country
-    data <- loadData(countryAbbrev)
-  }
+historicalPlot <- function(data){
   graph <- ggplot(aes(x=Year), data=data) +
     geom_line(aes(y=iY, lty="y")) +
     geom_line(aes(y=iK, lty="k")) +
