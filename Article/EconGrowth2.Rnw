@@ -130,23 +130,28 @@ require(knitr)
 
 # Pull in some constants and other important functions
 source("Scripts/files.R")
+source(file.path("..", "Scripts", "Constants.R"))
 
-
-# ********************************************************
-# We need to define a directory path to the resample data results from "Article"
-archive <- file.path("..", "data_resample_2014-04-24_Refactored-Code_n=1000.zip")
-baseResample <- "data_resample" # Define the directory within the archive wherein we can find the data.
-# ********************************************************
-# Load the fits to the original historical data out of the archive we're using.
-# This object should be passed in to functions that need specific fits.
-f <- gzcon(unz(archive, file.path(baseResample, "oModels.Rdata")))
-oModels <- readRDS(f)
-close(f)
+# Load historical data
 # In Rstudio, this paper is generated from it's directory, which is "Article".
 # We need to define paths relative to the location of the paper. 
 # Relative path to historical data from Article
 baseHistorical <- file.path("..", "data")
+historicalData <- read.table(file=file.path(baseHistorical, "AllData.txt"), header=TRUE)
+# Adjust the levels of historicalData so that the levels are in the same order as countryAbbrevs.
+for (lev in rev(countryAbbrevs)){
+  historicalData$Country <- relevel(historicalData$Country, ref=lev)
+}
 
+# Set up for loading resample results
+# We need to define a directory path from "Article" to the resample data results
+archive <- file.path("..", "data_resample_2014-04-24_Refactored-Code_n=1000.zip")
+baseResample <- "data_resample" # Define the directory within the archive wherein we can find the data.
+# Load the fits to the original historical data out of the archive we're using.
+# This object (oModels) should be passed in to functions that need information from orig fits.
+f <- gzcon(unz(archive, file.path(baseResample, "oModels.Rdata")))
+oModels <- readRDS(f)
+close(f)
 
 opts_chunk$set(
   # ********************************************************
@@ -171,8 +176,6 @@ opts_chunk$set(
 @
 
 <<constants, include=FALSE>>=
-source(file.path("..", "Scripts", "Constants.R"))
-
 # Graph Heights
 maxHeight <- 8.5 # Inches
 ninePanelScatterGraphHeight <- maxHeight # Inches
@@ -1265,8 +1268,6 @@ for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 \twocolumn{}
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalData <- read.table(file=file.path(baseHistorical, "AllData.txt"), header=TRUE)
-levels(historicalData$Country) <- countryAbbrevs
 historicalPlot(historicalData)
 @
 
