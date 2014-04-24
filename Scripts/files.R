@@ -531,12 +531,11 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                    energyType=energyType, factor=factor,
                                    baseResample=baseResample)
-  # The name of the object loaded by this call is resampleModels.
   if (is.null(archive)) {
-    load(file=path) 
+    resampleModels <- readRDS(file=path)   
   } else {
-    f <- unz(archive, path)
-    load(f)
+    f <- gzcon(unz(archive, path))
+    resampleModels <- readRDS(f)
     close(f)
   }
   return(resampleModels)
@@ -637,9 +636,6 @@ loadResampleDataRefitsOnly <- function(modelType, countryAbbrev, energyType="non
 #' or \code{factor}.
 loadResampleModelsRefitsOnly <- function(countryAbbrev, modelType, energyType="none", factor="K", 
                                          archive=NULL, baseResample){
-  ####################
-  # Loads models for resampled data only from a previously-run set of resample curve fits
-  ##
   models <- loadResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
                                energyType=energyType, factor=factor, 
                                archive=archive, baseResample=baseResample)
