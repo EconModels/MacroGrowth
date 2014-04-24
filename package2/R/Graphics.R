@@ -211,7 +211,7 @@ spaghettiPlot <- function(energyType='none',
   return(graph)
 }
 
-#' Creates a plot containing historical data.
+#' Create graph of historical data.
 #' 
 #' @param data a data frame containing the the historical data to be plotted.
 #' 
@@ -242,6 +242,5 @@ historicalPlot <- function(data){
                           limits=c("y", "k", "l", "q"), 
                           values=c("y"=1, "k"=5, "l"=2, "q"=3) ) +
     xy_theme()
-    
   return(graph)
 }
