@@ -105,7 +105,7 @@
 \begin{document}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
-require(EconModels)
+require(EconModels2)
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
@@ -127,6 +127,27 @@ trellis.par.set(theme=theme.mosaic())
 options(width=75)
 options(show.signif.stars=TRUE)
 require(knitr)
+
+# Pull in some constants and other important functions
+source("Scripts/files.R")
+
+
+# ********************************************************
+# We need to define a directory path to the resample data results from "Article"
+archive <- file.path("..", "data_resample_2014-04-24_Refactored-Code_n=1000.zip")
+baseResample <- "data_resample" # Define the directory within the archive wherein we can find the data.
+# ********************************************************
+# Load the fits to the original historical data out of the archive we're using.
+# This object should be passed in to functions that need specific fits.
+f <- gzcon(unz(archive, file.path(baseResample, "oModels.Rdata")))
+oModels <- readRDS(f)
+close(f)
+# In Rstudio, this paper is generated from it's directory, which is "Article".
+# We need to define paths relative to the location of the paper. 
+# Relative path to historical data from Article
+baseHistorical <- file.path("..", "data")
+
+
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
@@ -150,49 +171,31 @@ opts_chunk$set(
 @
 
 <<constants, include=FALSE>>=
+source(file.path("..", "Scripts", "Constants.R"))
+
 # Graph Heights
-# #' @export
 maxHeight <- 8.5 # Inches
-# #' @export
 ninePanelScatterGraphHeight <- maxHeight # Inches
-# #' @export
 # ninePanelTernaryGraphHeight <- 7 # Inches
-# #' @export
 # ninePanelSpaghettiGraphHeight <- 7 # Inches
 
 # Graph Widths
-# #' @export
 maxWidth <- 6.5 # Inches
-# #' @export
 fourPanelScatterGraphWidth <- maxWidth # Inches
-# #' @export
 # threePanelScatterGraphWidth <- maxWidth*0.75 # Inches
-# #' @export
 # onePanelScatterGraphWidth <- maxWidth*0.25
-# #' @export
 # fourPanelTernaryGraphWidth <- maxWidth
-# #' @export
 # twoPanelTernaryGraphWidth <- maxWidth*0.45
-# #' @export
 # fourPanelSpaghettiGraphWidth <- maxWidth
-# #' @export
 # twoPanelSpaghettiGraphWidth <- maxWidth*0.55
-# #' @export
 # onePanelSpaghettiGraphWidth <- maxWidth*0.4
 
-#' @export
 presentationGraph1RowHeight <- 2.8 # Inches
-#' @export
 presentationGraph2ColWidth <- 2 # Inches
-#' @export
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
-# #' @export
 # keyTextSize <- 0.85 # 85% of normal size
-# #' @export
 # keyColumns <- 1 # Want only 1 column in the key for lattice graphs
-# #' @export
 # defaultKeyXLoc <- 0.01 # x position of the key. This default is good for 9-panel graphs.
-# #' @export
 # defaultKeyYLoc <- 0.95 # y position of the key. This default is good for 9-panel graphs.
 # Parameter graphs are tricky to ensure same size. I've found that with height set to 5 in for the 
 # cd graphs and 2.93 in for the sf graphs, I get a nearly-exact match with graph size. From these settings I 
@@ -200,48 +203,21 @@ presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
 #    5 in = 2*hgraph + haxis
 #    2.93 in = hgraph + haxis
 # to estimate that h_axis = 0.86 in and hgraph = 2.05 in.
-# #' @export
 h_param_graph <- 2.07 # Inches for a single panel
-# #' @export
 h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
-# #' @export
 # sfParameterGraphHeight <- h_param_graph + h_param_axis
-# #' @export
 cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
-# #' @export
 cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
-# #' @export
 linexParameterGraphHeight <- h_param_graph + h_param_axis
-# #' @export
 sfParameterGraphWidth <- maxWidth
-# #' @export
 cdParameterGraphWidth <- maxWidth
-# #' @export
-# cdTernaryGraphWidth <- maxWidth/2.2
-# #' @export
-# cdSpaghettiGraphWidth <- maxWidth/2.2
-# #' @export
 cesParameterGraphWidth <- maxWidth
-# #' @export
 linexParameterGraphWidth <- maxWidth
 # Other graph parameters that apply to all graphs
-# #' @export
 scaleTextSize <- 0.8  # Multiple of normal size
-# #' @export
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
 spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
-
-# In Rstudio, this paper is generated from it's directory, which is "Article".
-# We need to define paths relative to the location of the paper. 
-# Relative path to historical data from Article
-baseHistorical <- file.path("..", "data")
-# We also need to define a directory path to the resample data results from "Article"
-baseResample <- file.path("..", "data_resample")
-
-# Load the fits to the original historical data
-# This object should be passed in to functions that need specific fits.
-oModels <- readRDS(file=file.path(baseResample, "oModels.Rdata"))
 @
 
 % These equations are used in several locations in the paper.
@@ -310,12 +286,12 @@ oModels <- readRDS(file=file.path(baseResample, "oModels.Rdata"))
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[CalvinEngr]{Caleb Reese}
-\author[CalvinEngr]{Lucas Timmer}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu}
 \author[Stellenbosch]{Martin de Wit}
 \author[CalvinMath]{Randall J. Pruim}
+\author[CalvinEngr]{Caleb Reese}
+\author[CalvinEngr]{Lucas Timmer}
 
 \cortext[cor1]{Corresponding author}
 \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
@@ -1288,8 +1264,10 @@ for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 
 \twocolumn{}
-<<Historical_Lattice_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot(baseHistorical=baseHistorical)
+<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+historicalData <- read.table(file=file.path(baseHistorical, "AllData.txt"), header=TRUE)
+levels(historicalData$Country) <- countryAbbrevs
+historicalPlot(historicalData)
 @
 
 %++++++++++++++++++++++++++++++
@@ -1297,7 +1275,7 @@ historicalPlot(baseHistorical=baseHistorical)
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure~\ref{fig:Historical_Lattice_Graph} presents historical data, 
+Figure~\ref{fig:Historical_Graph} presents historical data, 
 including indexed values for 
 output ($y$), 
 capital stock ($k$), 
