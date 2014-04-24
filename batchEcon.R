@@ -11,35 +11,22 @@
 # ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -H data -R data_resample
 
 
-nestString <- function( formula, nest ) {
-  return(nest)
-  xNames <- all.vars( terms(formula) )
-  xNames <- tail(xNames, -1)
-  xNames <- head(xNames, -1)
-  paste0(
-    "(", 
-    paste(head(xNames, 2), collapse=" + "),  
-    ") + (", 
-    paste(tail(xNames, -2), collapse=" + "),
-    ")"
-  )
-}
 
 require(EconModels2)
 suppressPackageStartupMessages(library("optparse"))
 
-# Some specifics for our data sets and analyses
-countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
-modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
-energyTypes <- c(Q="iQ", X="iX", U="iU") 
-factors <- c(K="iK", L="iL", energyTypes)
 
 baseResample <- file.path("data_resample")
 
 #
+# Loads several constants that will be helpful.
+#
+source("Scripts/Constants.R")
+
+#
 # Load several functions associated with paths and loading files.
 #
-source("Scripts/load.R")
+source("Scripts/files.R")
 
 # 
 # Start the script
@@ -192,10 +179,10 @@ for (m in ModelInfos) {
   for (f in m$formulaStr) {
     # Add parallelization on countrires here!
     foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
-      cdata <- subset(All, Country==country)
-      formula <- eval( parse( text=f ) )
-      id <- paste(m$fun, country, f, nestString(eval(parse(text=f)), m$dots), opts$resamples, sep=" : ")
       tryCatch({
+        cdata <- subset(All, Country==country)
+        formula <- eval( parse( text=f ) )
+        id <- fittingID(fun=m$fun, countryAbbrev=country, formula=f, nest=m$dots$nest, n=opts$resamples)
         cat(id); cat("\n")
         if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )

@@ -45,8 +45,6 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   return(res)
 }
 
-
-
 #' Perform resample fits for a model
 #' 
 #' This function returns a list containing models and coefficients from the resample fits.
