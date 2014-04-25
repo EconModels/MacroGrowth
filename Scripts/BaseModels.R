@@ -16,7 +16,7 @@ require(plyr)  # for rbind.fill()
 nestStr <- function(nest) paste(nest, collapse="")
 
 All <- Econ2011
-Countries <- unique(All$Country)
+Countries <- levels(All$Country)
 Energies <- c("iQ", "iX", "iU")
 
 ModelInfos <- list(
