@@ -1,7 +1,3 @@
-#
-# Pull in several constants that will be helpful
-#
-source("Scripts/Constants.R")
 
 #' Creates an string representation of the nesting
 #' 
