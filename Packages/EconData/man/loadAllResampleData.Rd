@@ -21,7 +21,7 @@ loadAllResampleData(modelType, energyType = "none", factor,
   the original data file. For example, "iK".}
 
   \item{countryAbbrevs}{a vector of country abbreviations
-  in the order you want them to appear in the data frame.}
+  that you want in the resulting data frame}
 
   \item{archive}{path to a .zip archive containing resample
   model data, if resample data are to be loaded from the
