@@ -138,7 +138,7 @@ require(knitr)
 # We need to define paths relative to the location of the paper. 
 # Relative path to historical data from Article
 baseHistorical <- file.path("..", "data")
-historicalData <- Econ2011
+historicalData <- Econ2011 # From the EconData package
 
 # Set up for loading resample results
 # We need to define a directory path from "Article" to the resample data results
@@ -1495,10 +1495,18 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
-  dataCD <- loadAllResampleData(modelType="cd", countryAbbrevsOrder=countryAbbrevs, energyType="none", baseResample=baseResample)
-  dataCDQ <- loadAllResampleData(modelType="cde", countryAbbrevsOrder=countryAbbrevs, energyType="Q", baseResample=baseResample)
+  dataCD <- loadAllResampleData(modelType="cd", 
+                                countryAbbrevs=countryAbbrevs, 
+                                energyType="none", 
+                                archive=archive,
+                                baseResample=baseResample)
+  dataCDQ <- loadAllResampleData(modelType="cde", 
+                                 countryAbbrevs=countryAbbrevs, 
+                                 energyType="iQ", 
+                                 archive=archive,
+                                 baseResample=baseResample)
   data <- rbind.fill(dataCD, dataCDQ)
-  standardTriPlot(data=data, facet_formula=countryAbbrev~energy)
+  standardTriPlot(data=data, facet_formula=countryAbbrev~energyType)
 @
 
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=8.2, fig.cap="Cobb-Douglas fitted models.">>=
