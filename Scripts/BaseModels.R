@@ -10,12 +10,13 @@
 # readRDS(file="data_resample/oModels.Rdata")
 #
 
-require(EconModels2)
+require(EconModels)
 require(plyr)  # for rbind.fill()
+
 nestStr <- function(nest) paste(nest, collapse="")
 
-All <- read.table("data/AllData.txt", header=TRUE)
-Countries <- unique(All$Country)
+All <- Econ2011
+Countries <- levels(All$Country)
 Energies <- c("iQ", "iX", "iU")
 
 ModelInfos <- list(
@@ -46,7 +47,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+ ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
