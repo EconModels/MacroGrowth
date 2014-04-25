@@ -551,7 +551,7 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
 #' For example, "iQ". If the energyType argument is missing or NA, you'll get data for the CES model without energy.
 #' @param factor the name of the factor as it appeared in the original data file.
 #' For example, "iK".
-#' @param countryAbbrevs a vector of country abbreviations in the order you want them to appear in the data frame.
+#' @param countryAbbrevs a vector of country abbreviations that you want in the resulting data frame
 #' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
