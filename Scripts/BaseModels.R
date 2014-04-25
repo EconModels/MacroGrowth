@@ -11,6 +11,7 @@
 #
 
 require(EconModels)
+require(EconData)
 require(plyr)  # for rbind.fill()
 
 nestStr <- function(nest) paste(nest, collapse="")

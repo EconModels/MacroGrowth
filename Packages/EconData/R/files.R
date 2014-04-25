@@ -469,6 +469,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
 #' if the data are to be loaded from a directory or an archive.
 #' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
 #' or \code{factor}.
+#' @export
 loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor=NA, 
                              archive=NULL, baseResample){
   path <- getPathForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, 
@@ -522,6 +523,7 @@ loadResampleData <- function(modelType, countryAbbrev, energyType="none", factor
 #' if the data are to be loaded from a directory or an archive.
 #' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
 #' or \code{factor}.
+#' @export
 loadResampleModels <- function(modelType, countryAbbrev, energyType="none", factor=NA, 
                                archive=NULL, baseResample){
   path <- getPathForResampleModels(modelType=modelType, countryAbbrev=countryAbbrev, 
@@ -547,11 +549,12 @@ loadResampleModels <- function(modelType, countryAbbrev, energyType="none", fact
 #' For example, "iQ". If the energyType argument is missing or NA, you'll get data for the CES model without energy.
 #' @param factor the name of the factor as it appeared in the original data file.
 #' For example, "iK".
-#' @param countryAbbrevs a vector of country abbreviations in the order you want them to appear in the data frame.
+#' @param countryAbbrevs a vector of country abbreviations that you want in the resulting data frame
 #' @param archive path to a .zip archive containing resample model data, if resample data are to be loaded from the archive
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return a data frame containing resample data for specified countries for the given \code{modelType}, \code{energyType},
 #' or \code{factor}.
+#' @export
 loadAllResampleData <- function(modelType, energyType="none", factor, 
                                 countryAbbrevs=countryAbbrevs,
                                 archive=NULL, baseResample=NULL){
