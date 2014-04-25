@@ -1,4 +1,5 @@
 # List of countries in our data set.
+#' @export
 countryAbbrevs <- c(US="US", UK="UK", JP="JP", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 countryAbbrevsAlph <- sort(countryAbbrevs)
 countryAbbrevsU <- c(US="US", UK="UK", JP="JP") # Only these countries have useful work data
