@@ -105,7 +105,8 @@
 \begin{document}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
-require(EconModels2)
+require(EconModels)
+require(EconData)
 require(lattice)
 require(latticeExtra)
 require(ggplot2)
@@ -129,19 +130,15 @@ options(show.signif.stars=TRUE)
 require(knitr)
 
 # Pull in some constants and other important functions
-source("Scripts/files.R")
-source(file.path("..", "Scripts", "Constants.R"))
+#source("Scripts/files.R")
+#source(file.path("..", "Scripts", "Constants.R"))
 
 # Load historical data
 # In Rstudio, this paper is generated from it's directory, which is "Article".
 # We need to define paths relative to the location of the paper. 
 # Relative path to historical data from Article
 baseHistorical <- file.path("..", "data")
-historicalData <- read.table(file=file.path(baseHistorical, "AllData.txt"), header=TRUE)
-# Adjust the levels of historicalData so that the levels are in the same order as countryAbbrevs.
-for (lev in rev(countryAbbrevs)){
-  historicalData$Country <- relevel(historicalData$Country, ref=lev)
-}
+historicalData <- Econ2011
 
 # Set up for loading resample results
 # We need to define a directory path from "Article" to the resample data results
