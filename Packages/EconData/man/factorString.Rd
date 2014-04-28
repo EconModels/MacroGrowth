@@ -21,9 +21,10 @@ An empty string if a nest is not involved.
 Creates an string representation of the factors of production
 }
 \details{
-The integer 1 indicates the capital stock variable ("iK").
-The integer 2 indicates the labor variable ("iL").
-The integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
+Factors of production are ordered according to the nest, if present.
+In the nest argument, the integer 1 indicates the capital stock variable ("iK"),
+the integer 2 indicates the labor variable ("iL"), and
+the integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
 Nesting positions are given by location in the \code{nest} vector, if present.
 c(3,1,2) is interpreted as energy and capital stock nested together.
 For example, (iX + iK) + (iL).

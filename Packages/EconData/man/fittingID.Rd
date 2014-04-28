@@ -3,8 +3,7 @@
 \alias{fittingID}
 \title{Creates an id for this run of resampling}
 \usage{
-fittingID(fun, countryAbbrev, formula, nest = NULL,
-  nestStr = nestString(nest), n, sep = " : ")
+fittingID(fun, countryAbbrev, formula, nest = NULL, n, sep = " : ")
 }
 \arguments{
   \item{fun}{the function used for fitting}

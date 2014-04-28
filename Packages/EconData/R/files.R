@@ -6,9 +6,10 @@
 #' @param nest an integer vector containing 2 or 3 values. 
 #' For 2-value vectors, integers must be 1 or 2.
 #' For 3-value vectors, integers must be 1, 2, or 3.
-#' @details The integer 1 indicates the capital stock variable ("iK").
-#' The integer 2 indicates the labor variable ("iL").
-#' The integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
+#' @details Factors of production are ordered according to the nest, if present.
+#' In the nest argument, the integer 1 indicates the capital stock variable ("iK"),
+#' the integer 2 indicates the labor variable ("iL"), and
+#' the integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
 #' Nesting positions are given by location in the \code{nest} vector, if present.
 #' c(3,1,2) is interpreted as energy and capital stock nested together. 
 #' For example, (iX + iK) + (iL).
@@ -22,11 +23,20 @@ factorString <- function( formula, nest, Kvar=factors$K, Lvar=factors$L, sep="+"
   }
   matches <- na.omit(match(x=all.vars(formula), table=factors))
   factorsPresent <- factors[matches]
-  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="")){
+  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="") || ((class(nest) == "list") && (length(nest)==0))){
     # Simply return the factors of production in the order they appear in the formula.
     return(paste(factorsPresent, collapse=sep))
   }
   # We have a nest.
+  if (class(nest) == "list"){
+    # nest is a list. Grab the "nest" item and see if it has class integer
+    if (class(nest[["nest"]]) == "integer"){
+      nest <- nest[["nest"]]
+    } else {
+      # give up
+      stop(paste("Unknown nest =", nest, "in factorString"))
+    }
+  }
   if (length(nest) != length(factorsPresent)){
     # This is a problem. Need to have as many nest items as factors of production.
     stop(paste("length(nest) =", length(nest), 
@@ -52,23 +62,60 @@ factorString <- function( formula, nest, Kvar=factors$K, Lvar=factors$L, sep="+"
 #' @param n the number of resamples being attempted
 #' @param sep the separator used to create the id string. Default is " : ".
 #' @return a string to be used as the id for this resample
-fittingID <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nestString(nest), n, sep=" : "){
-  id <- paste(fun, countryAbbrev, formula, nestStr, n, sep=sep)
+#' @export
+fittingID <- function(fun, countryAbbrev, formula, nest=NULL, n, sep=" : "){
+  id <- paste(countryAbbrev, fun, formula, factorString(formula=formula, nest=nest), n, sep=sep)
   return(id)
 }
 
-#' Calculate a file name for given parameters
+#' File name for resample coefficients for the given parameters
 #' 
 #' @param fun the function used for fitting
 #' @param countryAbbrev the country being fitted
 #' @param formula the formula used for the fitting
-#' @param nest if used, the nest employed for this fit. A 2- or 3-vector of integers.
-#' @param n the number of resamples being attempted
-#' @param sep the separator used to create the id string. Default is " : ".
-#' @return a string to be used as the id for this resample
-resampleFileName <- function(fun, countryAbbrev, formula, nest=NULL, sep="_"){
-  f <- paste(countryAbbrev, fun, nestString(nest))
+#' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
+#' @param sep the separator used to create the id string. Default is "_".
+#' @return a string representing the file name for these resample coefficients.
+resampleCoeffsFileName <- function(fun, countryAbbrev, formula, nest=NULL, sep="_"){
+  # Strip "Model" off the end of fun, if present
+  modelType <- sub(pattern="Model", replacement="", x=fun)
+  f <- paste(countryAbbrev, modelType, factorString(formula=formula, nest=nest), sep=sep)
+  f <- paste0(f, ".Rdata")
   return(f)
+}
+
+#' Path to resample coefficients for the given parameters
+#' 
+#' @param fun the function used for fitting
+#' @param countryAbbrev the country being fitted
+#' @param formula the formula used for the fitting
+#' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
+#' @param sep the separator used to create the id string. Default is "_".
+#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @return a string representing the file name for these resample coefficients.
+#' @export
+resampleCoeffsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResample, sep="_"){
+  f <- resampleCoeffsFileName(fun=fun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
+  path <- file.path(baseResample, f)
+  return(path)
+}
+
+#' Calculate a resample models file name for the given parameters
+#' 
+#' @param fun the function used for fitting
+#' @param countryAbbrev the country being fitted
+#' @param formula the formula used for the fitting
+#' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
+#' @param sep the separator used to create the id string. Default is "_".
+#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @return a string representing the file name for these resample coefficients.
+#' @export
+resampleModelsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResample, sep="_"){
+  f <- paste("models", resampleCoeffsFileName(fun=fun, countryAbbrev=countryAbbrev, 
+                                              formula=formula, nest=nest, sep=sep),
+             sep=sep)
+  path <- file.path(baseResample, f)
+  return(path)
 }
 
 #' Extracts an energyType from a formula
@@ -102,44 +149,44 @@ energyTypeFromFormula <- function(formula){
 #' @param id an \code{id} as a string
 #' @param sep the separator used to create the id string. Default is " : ".
 #' @return a named list containing information about the resampling that was carried out
-parseID <- function(id, sep=" : "){
-  info <- strsplit(x=id, split=sep)[[1]]
-  func <- info[1]
-  countryAbbrev <- info[2]
-  formula <- eval(parse(text=info[3]))
-  vars <- all.vars(formula)
-  nestStr <- info[4]
-  n <- info[5]
-  # Now add some additional useful information
-  factor <- factorFromFormula(formula=formula)
-  energyType <- energyTypeFromFormula(formula=formula)
-  if (func == "sfModel"){
-    modelType <- "sf"
-    nest <- NA
-  } else if (func == "cdModel"){
-    if (is.na(energyType)){
-      modelType <- "cd"
-    } else {
-      modelType <- "cde"
-    }
-    nest <- NA
-  } else if (func == "cesModel"){
-    if (is.na(energyType)){
-      modelType <- "ces"
-    } else {
-      modelType <- "cese"
-    }
-    nest <- nestFromFormula(formula=formula)
-  } else if (func == "linexModel"){
-    modelType <- "linex"
-    nest <- NA
-  } else {
-    stop(paste("Unknown func", func, "in parseID."))
-  }
-  out <- list(func=func, countryAbbrev=countryAbbrev, formula=formula, nest=nest, n=n, 
-              modelType=modelType, factor=factor, energyType=energyType)
-  return(out)
-}
+# parseID <- function(id, sep=" : "){
+#   info <- strsplit(x=id, split=sep)[[1]]
+#   func <- info[1]
+#   countryAbbrev <- info[2]
+#   formula <- eval(parse(text=info[3]))
+#   vars <- all.vars(formula)
+#   nestStr <- info[4]
+#   n <- info[5]
+#   # Now add some additional useful information
+#   factor <- factorFromFormula(formula=formula)
+#   energyType <- energyTypeFromFormula(formula=formula)
+#   if (func == "sfModel"){
+#     modelType <- "sf"
+#     nest <- NA
+#   } else if (func == "cdModel"){
+#     if (is.na(energyType)){
+#       modelType <- "cd"
+#     } else {
+#       modelType <- "cde"
+#     }
+#     nest <- NA
+#   } else if (func == "cesModel"){
+#     if (is.na(energyType)){
+#       modelType <- "ces"
+#     } else {
+#       modelType <- "cese"
+#     }
+#     nest <- nestFromFormula(formula=formula)
+#   } else if (func == "linexModel"){
+#     modelType <- "linex"
+#     nest <- NA
+#   } else {
+#     stop(paste("Unknown func", func, "in parseID."))
+#   }
+#   out <- list(func=func, countryAbbrev=countryAbbrev, formula=formula, nest=nest, n=n, 
+#               modelType=modelType, factor=factor, energyType=energyType)
+#   return(out)
+# }
 
 #' Path to resample data file
 #' 
@@ -155,10 +202,10 @@ parseID <- function(id, sep=" : "){
 #' For example, "iK".
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return the relative path of the file containing the data for the requested resample data.
-getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
-  return(doGetPath(prefix="resampleData", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor, baseResample=baseResample))
-}
+# getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
+#   return(doGetPath(prefix="resampleData", modelType=modelType, countryAbbrev=countryAbbrev, 
+#                    energyType=energyType, factor=factor, baseResample=baseResample))
+# }
 
 #' Path to resample models file
 #' 
@@ -174,10 +221,10 @@ getPathForResampleData <- function(modelType, countryAbbrev, energyType="none", 
 #' For example, "iK".
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return the relative path of the file containing the data for the requested resample data.
-getPathForResampleModels <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
-  return(doGetPath(prefix="resampleModels", modelType=modelType, countryAbbrev=countryAbbrev, 
-                   energyType=energyType, factor=factor, baseResample=baseResample))
-}
+# getPathForResampleModels <- function(modelType, countryAbbrev, energyType="none", factor="K", baseResample){
+#   return(doGetPath(prefix="resampleModels", modelType=modelType, countryAbbrev=countryAbbrev, 
+#                    energyType=energyType, factor=factor, baseResample=baseResample))
+# }
 
 #' Generates paths to resample coefficients or models in String format
 #' 
@@ -194,30 +241,30 @@ getPathForResampleModels <- function(modelType, countryAbbrev, energyType="none"
 #' For example, "iK".
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return the relative path of the file containing the data for the requested resample data.
-doGetPath <- function(prefix, modelType, countryAbbrev, energyType="iQ", factor="iK", baseResample){
-  if (missing(energyType) || is.na(energyType) || (energyType == "none")){
-    energyType <- "NA"
-  }
-  if (missing(factor) || is.na(factor) || (factor == "none")){
-    factor <- "NA"
-  }
-  folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, baseResample=baseResample)   
-  rdat <- ".Rdata"
-  filename <- switch(modelType,
-                     "sf"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", factor,     rdat, sep=""),
-                     "cd"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
-                     "cde"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "ces"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
-                     "cese-(kl)"  = paste(prefix, "-", "ces",     "-", countryAbbrev, "-", "NA",       rdat, sep=""),
-                     "cese-(kl)e" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "cese-(le)k" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "cese-(ek)l" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     "linex"      = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
-                     stop(paste("Unknown modelType", modelType, "in doGetPath."))
-  )
-  path <- file.path(folder, filename)
-  return(path)
-}
+# doGetPath <- function(prefix, modelType, countryAbbrev, energyType="iQ", factor="iK", baseResample){
+#   if (missing(energyType) || is.na(energyType) || (energyType == "none")){
+#     energyType <- "NA"
+#   }
+#   if (missing(factor) || is.na(factor) || (factor == "none")){
+#     factor <- "NA"
+#   }
+#   folder <- getFolderForResampleData(modelType=modelType, countryAbbrev=countryAbbrev, baseResample=baseResample)   
+#   rdat <- ".Rdata"
+#   filename <- switch(modelType,
+#                      "sf"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", factor,     rdat, sep=""),
+#                      "cd"         = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+#                      "cde"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+#                      "ces"        = paste(prefix, "-", modelType, "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+#                      "cese-(kl)"  = paste(prefix, "-", "ces",     "-", countryAbbrev, "-", "NA",       rdat, sep=""),
+#                      "cese-(kl)e" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+#                      "cese-(le)k" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+#                      "cese-(ek)l" = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+#                      "linex"      = paste(prefix, "-", modelType, "-", countryAbbrev, "-", energyType, rdat, sep=""),
+#                      stop(paste("Unknown modelType", modelType, "in doGetPath."))
+#   )
+#   path <- file.path(folder, filename)
+#   return(path)
+# }
 
 #' Directory for resample data
 #' 
@@ -229,16 +276,16 @@ doGetPath <- function(prefix, modelType, countryAbbrev, energyType="iQ", factor=
 #' if you want to use original data.
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return the relative path to the directory containing the data for the requested resample data.
-getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs, baseResample){
-  dr <- baseResample
-  #   countryAbbrev <- match.arg(countryAbbrev)
-  folder <- switch(modelType,
-                   "cde"       = file.path(dr, "cd",      countryAbbrev),
-                   "cese-(kl)" = file.path(dr, "ces",     countryAbbrev),
-                   file.path(dr, modelType, countryAbbrev)
-  )
-  return(folder)
-}
+# getFolderForResampleData <- function(modelType=modelTypes, countryAbbrev=countryAbbrevs, baseResample){
+#   dr <- baseResample
+#   #   countryAbbrev <- match.arg(countryAbbrev)
+#   folder <- switch(modelType,
+#                    "cde"       = file.path(dr, "cd",      countryAbbrev),
+#                    "cese-(kl)" = file.path(dr, "ces",     countryAbbrev),
+#                    file.path(dr, modelType, countryAbbrev)
+#   )
+#   return(folder)
+# }
 
 #' Loads and binds data for a CES resample ternary plot.
 #'
