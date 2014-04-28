@@ -30,7 +30,7 @@ factorString <- function( formula, nest, Kvar=factors$K, Lvar=factors$L, sep="+"
   # We have a nest.
   if (class(nest) == "list"){
     # nest is a list. Grab the "nest" item and see if it has class integer
-    if (class(nest[["nest"]]) == "integer"){
+    if ((class(nest[["nest"]]) == "integer") || (class(nest[["nest"]]) == "numeric")){
       nest <- nest[["nest"]]
     } else {
       # give up
