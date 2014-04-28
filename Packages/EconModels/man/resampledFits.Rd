@@ -8,9 +8,9 @@ resampledFits(model, method = c("residual", "resample", "wild", "debug"), n,
 }
 \arguments{
   \item{model}{a model returned from \code{linexModel},
-  \code{cobbDouglasModel}, \code{cesModel}, or
-  \code{singleFactorModel}.  \code{model} must have been
-  fit with \code{save.data = TRUE}.}
+  \code{cdModel}, \code{cesModel}, or \code{sfModel}.
+  \code{model} must have been fit with \code{save.data =
+  TRUE}.}
 
   \item{method}{one of \code{"resample"},
   \code{"residual"}, \code{"wild"}, or \code{"debug"}}

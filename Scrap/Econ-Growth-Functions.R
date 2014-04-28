@@ -329,7 +329,7 @@ createHistoricalLatticeGraph <- function(countryAbbrev, textScaling = 1.0, keyXL
 }
 
 ## <<single-factor functions, eval=TRUE>>=
-singleFactorModel <- function(countryAbbrev, factor){
+sfModel <- function(countryAbbrev, factor){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
   # factor should be one of "K", "L", "Q", "X", or "U".
@@ -369,7 +369,7 @@ singleFactorPredictions <- function(countryAbbrev, factor){
     colnames(df) <- "pred"
     return(df)
   }
-  model <- singleFactorModel(countryAbbrev, factor)
+  model <- sfModel(countryAbbrev, factor)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -481,7 +481,7 @@ singleFactorData <- function(countryAbbrev, factor){
     return(df)
   }
   # We have a combination of country and factor for which we have data.
-  modelSF <- singleFactorModel(countryAbbrev, factor)
+  modelSF <- sfModel(countryAbbrev, factor)
   summarySF <- summary(modelSF) # Gives the nls summary table.
   ciSF <- confint(modelSF, level = ciLevel)  # Calculates confidence intervals for the SF model.
   dofSF <- summarySF$df[2] # Gives the degrees of freedom for the model.
@@ -666,7 +666,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   y_act <- data[ ,"iY"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
-  model <- singleFactorModel(countryAbbrev, factor)
+  model <- sfModel(countryAbbrev, factor)
   # Get information about the optimum point, the point where SSE is minimized
   coefs <- coef(model)
   lambda_opt <- coefs["lambda"]
@@ -726,7 +726,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   return(fig)    
 }
 
-cdModel <- function(countryAbbrev,...){
+cdwoeModel <- function(countryAbbrev,...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################
   # Returns an nls Cobb-Douglas model (without energy) for the country specified. 
@@ -825,17 +825,17 @@ cdeFixedGammaModel <- function(countryAbbrev, energyType, gamma, ...){
   return(modelCDe)
 }
 
-cobbDouglasModel <- function(countryAbbrev, energyType, gamma, ...){
+cdModel <- function(countryAbbrev, energyType, gamma, ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
   # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType=NA 
   # for a model without energy.
   # If you supply a value for the gamma argument, a fit with fixed gamma will be provided.
-  # This function dispatches to cdModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
+  # This function dispatches to cdwoeModel, cdeModel, or cdFixedGammaModel based on which arguments are specified.
   ##
   if (is.na(energyType)){
     # Fit the Cobb-Douglas model without energy.
-    return(cdModel(countryAbbrev=countryAbbrev,...))
+    return(cdwoeModel(countryAbbrev=countryAbbrev,...))
   }
   if (!missing(gamma)){
     # Fit the Cobb-Douglas model with fixed value of gamma
@@ -851,7 +851,7 @@ cdeGridData <- function(countryAbbrev, energyType="none", gammaGrid){
   # Results are returned as a data.frame with columns of gamma, SSE, lambda, alpha, and beta
   ##
   gamma <- gammaGrid
-  models <- lapply(gamma, cobbDouglasModel, energyType=energyType, countryAbbrev=countryAbbrev)
+  models <- lapply(gamma, cdModel, energyType=energyType, countryAbbrev=countryAbbrev)
   SSE <- unlist(lapply(models, function(model){summary(model)$sigma}))
   lambda <- unlist(lapply(models, function(model){coef(model)["lambda"]}))
   alpha <- unlist(lapply(models, function(model){coef(model)["alpha"]}))
@@ -977,7 +977,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType){
       return(df)
     }
   }
-  model <- cobbDouglasModel(countryAbbrev, energyType)
+  model <- cdModel(countryAbbrev, energyType)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary
@@ -1024,7 +1024,7 @@ cobbDouglasData <- function(countryAbbrev, energyType, ...){
     return(df)
   }
   # We have a combination of country and energy type for which we have data.
-  modelCD <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType)
+  modelCD <- cdModel(countryAbbrev=countryAbbrev, energyType=energyType)
 #print(str(modelCD))
   summaryCD <- summary(modelCD) # Gives the nls summary table.
 #print(summaryCD)
@@ -2234,46 +2234,46 @@ createAICTable <- function(){
   # Single-factor models
   ######################
   # Single-factor with K
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K")
+  sfKModels <- lapply(countryAbbrevs, sfModel, factor="K")
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L")
+  sfLModels <- lapply(countryAbbrevs, sfModel, factor="L")
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q")
+  sfQModels <- lapply(countryAbbrevs, sfModel, factor="Q")
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X")
+  sfXModels <- lapply(countryAbbrevs, sfModel, factor="X")
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel("US", "U")), 
-                  UK=AIC(singleFactorModel("UK", "U")), 
-                  JP=AIC(singleFactorModel("JP", "U")),
+  aicSFu <- cbind(US=AIC(sfModel("US", "U")), 
+                  UK=AIC(sfModel("UK", "U")), 
+                  JP=AIC(sfModel("JP", "U")),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType=NA)
-  aicCD <- data.frame(lapply(cdModels, AIC))
+  cdwoeModels <- lapply(countryAbbrevs, cdModel, energyType=NA)
+  aicCD <- data.frame(lapply(cdwoeModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q")
+  cdQModels <- lapply(countryAbbrevs, cdModel, energyType="Q")
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X")
+  cdXModels <- lapply(countryAbbrevs, cdModel, energyType="X")
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel("US", "U")), 
-                  UK=AIC(cobbDouglasModel("UK", "U")), 
-                  JP=AIC(cobbDouglasModel("JP", "U")),
+  aicCDu <- cbind(US=AIC(cdModel("US", "U")), 
+                  UK=AIC(cdModel("UK", "U")), 
+                  JP=AIC(cdModel("JP", "U")),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################
@@ -2659,7 +2659,7 @@ calcResiduals <- function(countryAbbrev, modelType, energyType){
   ##
   # Get the model
   if (modelType == "CD"){
-    model <- cdModel(countryAbbrev)  
+    model <- cdwoeModel(countryAbbrev)  
   } else if (modelType == "CES"){
     model <- cesModelNoEnergy(countryAbbrev)
   } else {

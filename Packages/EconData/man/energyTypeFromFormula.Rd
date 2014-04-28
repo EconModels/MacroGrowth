@@ -13,7 +13,7 @@ energyTypeFromFormula(formulaStr, formula = eval(parse(text = formulaStr)))
 }
 \value{
 a string representing the energyType that was used for the fitting.
-NA if the singleFactorModel was used.
+NA if the sfModel was used.
 }
 \description{
 Extracts an energyType from a formula

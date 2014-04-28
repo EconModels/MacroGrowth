@@ -1,15 +1,15 @@
 #' @export
-cobbDouglasModel <- function(countryAbbrev, baseHistorical, energyType="none", 
+cdModel <- function(countryAbbrev, baseHistorical, energyType="none", 
                              data=loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical), ...){
   ####################
   # Returns an nls Cobb-Douglas model for the country specified
-  # This function dispatches to cdModel or cdeModel based on which energy type is specified.
+  # This function dispatches to cdwoeModel or cdeModel based on which energy type is specified.
   # Give an energyType ("Q", "X", or "U") if you want to include an energy term. Supply energyType="none"
   # for a model without energy.
   ##
   if (energyType == "none"){
     # Fit the Cobb-Douglas model without energy.
-    return(cdModel(data=data, ...))
+    return(cdwoeModel(data=data, ...))
   }
   # Fit the Cobb-Douglas model with energy
   return(cdeModel(data=data, energyType=energyType, ...))
@@ -71,7 +71,7 @@ cobbDouglasPredictions <- function(countryAbbrev, energyType, baseHistorical){
       return(df)
     }
   }
-  model <- cobbDouglasModel(countryAbbrev=countryAbbrev, energyType=energyType, baseHistorical=baseHistorical)
+  model <- cdModel(countryAbbrev=countryAbbrev, energyType=energyType, baseHistorical=baseHistorical)
   pred <- predict(model) # dont See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r
   df <- data.frame(pred)
   # Pad with rows as necessary

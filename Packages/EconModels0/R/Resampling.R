@@ -301,8 +301,8 @@ resampleFits <- function(
   }
   # First do a fit without resampling and get these coefficients
   origModel <- switch(modelType,
-                      "sf"          = singleFactorModel(data=data, factor=factor, respectRangeConstraints=TRUE),
-                      "cd"          = cdModel(data=data, respectRangeConstraints=TRUE),
+                      "sf"          = sfModel(data=data, factor=factor, respectRangeConstraints=TRUE),
+                      "cd"          = cdwoeModel(data=data, respectRangeConstraints=TRUE),
                       "cde"         = cdeModel(data=data, energyType=energyType, respectRangeConstraints=TRUE),
                       "ces"         = cesModel2(data=data),
                       "cese-(kl)e"  = cesModel2(data=data, nest="(kl)e", energyType=energyType),
@@ -329,7 +329,7 @@ resampleFits <- function(
   resampleFitCoeffs <- switch(modelType,
                               "sf"    = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
-                                model <- singleFactorModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
+                                model <- sfModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
                                 resampleCoeffs <- attr(x=model, which="naturalCoeffs")
                                 resampleCoeffs$method <- method
                                 coeffs <- rbind.fill(coeffs, resampleCoeffs)
@@ -338,7 +338,7 @@ resampleFits <- function(
                               },
                               "cd"    = for (i in 1:n){
                                 resampleData <- doResample(data=data, origModel=origModel, method=method)
-                                model <- cdModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
+                                model <- cdwoeModel(data=resampleData, factor=factor, respectRangeConstraints=TRUE)
                                 resampleCoeffs <- attr(x=model, which="naturalCoeffs")
                                 resampleCoeffs$method <- method
                                 coeffs <- rbind.fill(coeffs, resampleCoeffs)

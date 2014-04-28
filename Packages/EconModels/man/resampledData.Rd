@@ -8,9 +8,9 @@ resampledData(model, method = c("residual", "resample", "wild", "debug"),
 }
 \arguments{
   \item{model}{a model returned from \code{linexModel},
-  \code{cobbDouglasModel}, \code{cesModel}, or
-  \code{singleFactorModel}.  \code{model} must have been
-  fit with \code{save.data = TRUE}.}
+  \code{cdModel}, \code{cesModel}, or \code{sfModel}.
+  \code{model} must have been fit with \code{save.data =
+  TRUE}.}
 
   \item{method}{One of resample: resample rows from data.
   Can result in repeated years.  residual: resamples the

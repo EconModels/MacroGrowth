@@ -21,35 +21,35 @@ names(countryAbbrevsU) <- countryAbbrevsU
 # Single Factor models
 #
 modelsSFK <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iY ~ iK + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iY ~ iK + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFL <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iY ~ iL + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iY ~ iL + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iY ~ iQ + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iY ~ iQ + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFX <- lapply(countryAbbrevs, function(countryAbbrev){
-  singleFactorModel(formula=iY ~ iX + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iY ~ iX + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  singleFactorModel(formula=iY ~ iU + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iY ~ iU + iYear, data=subset(data, Country==countryAbbrev))
 })
 
 #
 # Cobb-Douglas models
 #
 modelsCD <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iY ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iY ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iY ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iY ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDX <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdModel(formula=iY ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iY ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  cdModel(formula=iY ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iY ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
 })
 
 #

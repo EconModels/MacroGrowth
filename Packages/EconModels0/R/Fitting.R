@@ -385,7 +385,7 @@ addMetaData <- function(model, nest, history=""){
 }
 
 #' @export
-singleFactorModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
+sfModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
                               factor, respectRangeConstraints=FALSE){
   ####################
   # Returns an nls single-factor model for the country and factor specified.
@@ -420,7 +420,7 @@ singleFactorModel <- function(countryAbbrev, baseHistorical, data=loadData(count
 
 
 #' @export
-cdModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
+cdwoeModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, baseHistorical), 
                     respectRangeConstraints=FALSE, ...){
   ## <<cobb-douglas functions, eval=TRUE>>=
   ####################

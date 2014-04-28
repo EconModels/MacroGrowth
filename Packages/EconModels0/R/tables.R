@@ -474,7 +474,7 @@ createAICTable <- function(baseHistorical){
   ######################
   # Single-factor with K
   # At present, this function re-fits all models with lines like the following.
-  sfKModels <- lapply(countryAbbrevs, singleFactorModel, factor="K", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  sfKModels <- lapply(countryAbbrevs, sfModel, factor="K", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   # The above approach will be painfully slow for the CES models, because they take soooo long to run.
   # If we want to load from disk instead of re-running the model, we should use code that looks like the line below
   # But, at present, the next line of code is slooooow, because loadResampleModelsBaseModelOnly 
@@ -484,42 +484,42 @@ createAICTable <- function(baseHistorical){
   aicSFk <- data.frame(lapply(sfKModels, AIC))
   rownames(aicSFk) <- "SF$k$"
   # Single-factor with L
-  sfLModels <- lapply(countryAbbrevs, singleFactorModel, factor="L", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  sfLModels <- lapply(countryAbbrevs, sfModel, factor="L", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFl <- data.frame(lapply(sfLModels, AIC))
   rownames(aicSFl) <- "SF$l$"
   # Single-factor with Q
-  sfQModels <- lapply(countryAbbrevs, singleFactorModel, factor="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  sfQModels <- lapply(countryAbbrevs, sfModel, factor="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFq <- data.frame(lapply(sfQModels, AIC))
   rownames(aicSFq) <- "SF$q$"
   # Single-factor with X
-  sfXModels <- lapply(countryAbbrevs, singleFactorModel, factor="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  sfXModels <- lapply(countryAbbrevs, sfModel, factor="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicSFx <- data.frame(lapply(sfXModels, AIC))
   rownames(aicSFx) <- "SF$x$"
   # Single-factor with U
-  aicSFu <- cbind(US=AIC(singleFactorModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
-                  UK=AIC(singleFactorModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
-                  JP=AIC(singleFactorModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
+  aicSFu <- cbind(US=AIC(sfModel(countryAbbrev="US", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(sfModel(countryAbbrev="UK", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(sfModel(countryAbbrev="JP", factor="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicSFu) <- "SF$u$"
   ######################
   # Cobb-Douglas models
   ######################
   # Cobb-Douglas without energy
-  cdModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="none", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
-  aicCD <- data.frame(lapply(cdModels, AIC))
+  cdwoeModels <- lapply(countryAbbrevs, cdModel, energyType="none", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  aicCD <- data.frame(lapply(cdwoeModels, AIC))
   rownames(aicCD) <- "CD"
   # Cobb-Douglas with Q
-  cdQModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  cdQModels <- lapply(countryAbbrevs, cdModel, energyType="Q", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDq <- data.frame(lapply(cdQModels, AIC))
   rownames(aicCDq) <- "CD$q$"
   # Cobb-Douglas with X
-  cdXModels <- lapply(countryAbbrevs, cobbDouglasModel, energyType="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
+  cdXModels <- lapply(countryAbbrevs, cdModel, energyType="X", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)
   aicCDx <- data.frame(lapply(cdXModels, AIC))
   rownames(aicCDx) <- "CD$x$"
   # Cobb-Douglas with U
-  aicCDu <- cbind(US=AIC(cobbDouglasModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
-                  UK=AIC(cobbDouglasModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
-                  JP=AIC(cobbDouglasModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
+  aicCDu <- cbind(US=AIC(cdModel(countryAbbrev="US", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  UK=AIC(cdModel(countryAbbrev="UK", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)), 
+                  JP=AIC(cdModel(countryAbbrev="JP", energyType="U", respectRangeConstraints=TRUE, baseHistorical=baseHistorical)),
                   CN=NA, ZA=NA, SA=NA, IR=NA, TZ=NA, ZM=NA) #No U data for these countries.
   rownames(aicCDu) <- "CD$u$"
   ######################

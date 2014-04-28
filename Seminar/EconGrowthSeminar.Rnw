@@ -708,11 +708,11 @@ sf3DSSEGraph("US", "Q", showOpt=TRUE)
 \end{frame}
 
 <<Coefs_US_SF>>=
-sfUSK <- coef(singleFactorModel("US", "K"))
-sfUSL <- coef(singleFactorModel("US", "L"))
-sfUSQ <- coef(singleFactorModel("US", "Q"))
-sfUSX <- coef(singleFactorModel("US", "X"))
-sfUSU <- coef(singleFactorModel("US", "U"))
+sfUSK <- coef(sfModel("US", "K"))
+sfUSL <- coef(sfModel("US", "L"))
+sfUSQ <- coef(sfModel("US", "Q"))
+sfUSX <- coef(sfModel("US", "X"))
+sfUSU <- coef(sfModel("US", "U"))
 @
 \begin{frame}{Single-factor Predictions for $y$} %----------------------------
   \begin{columns}[c]

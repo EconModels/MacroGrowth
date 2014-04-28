@@ -13,7 +13,7 @@ factorFromFormula(formulaStr, formula = eval(parse(text = formulaStr)))
 }
 \value{
 a string representing the factor that was used for the fitting.
-NA if the singleFactorModel was not used.
+NA if the sfModel was not used.
 }
 \description{
 Extracts a factor from a formula

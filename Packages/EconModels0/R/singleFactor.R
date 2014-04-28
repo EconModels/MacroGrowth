@@ -13,7 +13,7 @@ singleFactorPredictions <- function(countryAbbrev, factor, baseHistorical, baseR
     colnames(df) <- "pred"
     return(df)
   }
-#   model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor)
+#   model <- sfModel(countryAbbrev=countryAbbrev, factor=factor)
   model <- loadResampleModelsBaseModelOnly(modelType="sf", countryAbbrev=countryAbbrev, factor=factor, 
                                            baseResample=baseResample, archive=archive)
   pred <- predict(model) #See http://stackoverflow.com/questions/9918807/how-get-plot-from-nls-in-r

@@ -105,12 +105,12 @@ for(model in opts$model){
       formulas[length(formulas)+1] <- paste("iY ~", factor, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "singleFactorModel",
+                                               fun = "sfModel",
                                                formulaStr = formulas,
                                                dots = list())
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cobbDouglasModel",
+                                               fun = "cdModel",
                                                formulaStr = "iY ~ iK + iL + iYear",
                                                dots = list())
   } else if (model == "cde"){
@@ -120,7 +120,7 @@ for(model in opts$model){
       formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cobbDouglasModel",
+                                               fun = "cdModel",
                                                formulaStr = formulas,
                                                dots = list())
   } else if (model == "ces"){
@@ -198,7 +198,7 @@ for (m in ModelInfos) {
           # Save the data to disk in the appropriate places with the appropriate file names.
           # First step, get the factor and energy type.
           terms <- all.vars( terms(formula) )
-          if (m$fun == "singleFactorModel"){
+          if (m$fun == "sfModel"){
             energyType <- NA
             # We're dealing with factors. Find the factor we're using.
             matches <- na.omit(match(x=terms, table=factors))

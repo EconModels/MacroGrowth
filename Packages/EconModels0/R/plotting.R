@@ -107,7 +107,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE, baseHistorical, ba
   y_act <- data[ ,"iY"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
-#   model <- singleFactorModel(countryAbbrev=countryAbbrev, factor=factor, baseHistorical=baseHistorical)
+#   model <- sfModel(countryAbbrev=countryAbbrev, factor=factor, baseHistorical=baseHistorical)
   model <- loadResampleModelsBaseModelOnly(modelType="sf", countryAbbrev=countryAbbrev, factor=factor, 
                                            baseResample=baseResample, archive=archive)
   # Get information about the optimum point, the point where SSE is minimized

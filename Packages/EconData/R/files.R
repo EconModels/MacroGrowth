@@ -50,12 +50,26 @@ fittingID <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nestString
   return(id)
 }
 
+#' Calculate a file name for given parameters
+#' 
+#' @param fun the function used for fitting
+#' @param countryAbbrev the country being fitted
+#' @param formula the formula used for the fitting
+#' @param nest if used, the nest employed for this fit. A 2- or 3-vector of integers.
+#' @param nestStr if used, the string for the nesting
+#' @param n the number of resamples being attempted
+#' @param sep the separator used to create the id string. Default is " : ".
+#' @return a string to be used as the id for this resample
+resampleFileName <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nestString(nest), sep="_"){
+  
+}
+
 #' Extracts a factor from a formula
 #' 
 #' @param formulaStr a string representing the formula that was fitted
 #' @param formula the formula that was fitted
 #' @return a string representing the factor that was used for the fitting. 
-#' NA if the singleFactorModel was not used.
+#' NA if the sfModel was not used.
 factorFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
   vars <- all.vars(formula)
   if (length(vars) == 3){
@@ -79,7 +93,7 @@ factorFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
 #' @param formulaStr a string representing the formula that was fitted
 #' @param formula the formula that was fitted
 #' @return a string representing the energyType that was used for the fitting. 
-#' NA if the singleFactorModel was used.
+#' NA if the sfModel was used.
 energyTypeFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
   vars <- all.vars(formula)
   if (length(vars) == 3){
@@ -151,10 +165,10 @@ parseID <- function(id, sep=" : "){
   # Now add some additional useful information
   factor <- factorFromFormula(formula=formula)
   energyType <- energyTypeFromFormula(formula=formula)
-  if (func == "singleFactorModel"){
+  if (func == "sfModel"){
     modelType <- "sf"
     nest <- NA
-  } else if (func == "cobbDouglasModel"){
+  } else if (func == "cdModel"){
     if (is.na(energyType)){
       modelType <- "cd"
     } else {

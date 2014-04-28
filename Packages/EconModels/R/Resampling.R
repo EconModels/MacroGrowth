@@ -49,8 +49,8 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' 
 #' This function returns a list containing models and coefficients from the resample fits.
 #' 
-#' @param model a model returned from \code{linexModel}, \code{cobbDouglasModel}, 
-#' \code{cesModel}, or \code{singleFactorModel}.  \code{model} must
+#' @param model a model returned from \code{linexModel}, \code{cdModel}, 
+#' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
 #' @param n the number of resamples you want to perform
@@ -72,9 +72,9 @@ resampledFits <- function(model,
                           ...) {
   
   fitfun <- switch(class(model)[1],
-                   "sfModel" = "singleFactorModel",
+                   "sfModel" = "sfModel",
                    "LINEXmodel" = "linexModel",
-                   "CDEmodel" = "cobbDouglasModel",
+                   "CDEmodel" = "cdModel",
                    "cesEst" = "cesModel"
   )
   
@@ -123,8 +123,8 @@ resampledFits <- function(model,
 
 #' Create resampled data
 #' 
-#' @param model a model returned from \code{linexModel}, \code{cobbDouglasModel},
-#' \code{cesModel}, or \code{singleFactorModel}.  \code{model} must
+#' @param model a model returned from \code{linexModel}, \code{cdModel},
+#' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method One of 
 #'      resample:  resample rows from data. Can result in repeated years.

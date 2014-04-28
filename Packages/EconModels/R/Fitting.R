@@ -114,7 +114,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param constrained a logical indicating whether the model parameters are constrained
 #' @return an lm object with some additional attributes
 #' @export
-singleFactorModel <- function(formula, data, response, factor, time, constrained=FALSE,
+sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
                               save.data=TRUE) {
   
   if ( missing(formula) ) {
@@ -191,7 +191,7 @@ singleFactorModel <- function(formula, data, response, factor, time, constrained
 #' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
-cobbDouglasModel <- function(formula, data, response, capital, labor, energy, time, 
+cdModel <- function(formula, data, response, capital, labor, energy, time, 
                              constrained=FALSE, save.data=TRUE, ...) {
   if (missing(formula)) {
     if (missing(energy)) {
@@ -206,7 +206,7 @@ cobbDouglasModel <- function(formula, data, response, capital, labor, energy, ti
   
   if (ncol( attr(terms(formula),"factors") ) == 3 ) {
     # formula contains response, capital, and labor
-    cdModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
+    cdwoeModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
   } else {
     # formula contains response, capital, labor, and energy
     cdeModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
@@ -226,9 +226,8 @@ cobbDouglasModel <- function(formula, data, response, capital, labor, energy, ti
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param contrained a logical indicating whether the parameters are contrained
-#' @return a CDEmodel object, which is an lm object with some additioanl attributes.
-
-cdModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
+#' @return a CDEmodel object, which is an lm object with some additional attributes.
+cdwoeModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
                     save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + time,
