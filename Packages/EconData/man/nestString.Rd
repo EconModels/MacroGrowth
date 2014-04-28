@@ -3,18 +3,32 @@
 \alias{nestString}
 \title{Creates an string representation of the nesting}
 \usage{
-nestString(nest)
+nestString(formula, nest, Kvar = "iK", Lvar = "iL", sep = "+")
 }
 \arguments{
+  \item{formulaStr}{a string representation of the
+  formula.}
+
+  \item{formula}{the formula used for fitting. The energy
+  variable is extracted from the formula.}
+
   \item{nest}{an integer vector containing 2 or 3 values.
   For 2-value vectors, integers must be 1 or 2. For 3-value
   vectors, integers must be 1, 2, or 3.}
 }
 \value{
-a string representing the nesting of the form "(kl)e", etc.
+a string representing the nesting of the form "iQ+iK+iL", etc.
 An empty string if a nest is not involved.
 }
 \description{
 Creates an string representation of the nesting
+}
+\details{
+The integer 1 indicates the capital stock variable ("iK").
+The integer 2 indicates the labor variable ("iL").
+The integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
+Nesting positions are given by location in the \code{nest} vector.
+c(3,1,2) is interpreted as energy and capital stock nested together.
+For example, (iX + iK) + (iL).
 }
 

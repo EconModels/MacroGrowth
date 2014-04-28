@@ -17,7 +17,7 @@ The function returns a figure with separate graphs for each \code{Country}
 in \code{data}. The graphs are arranged vertically by country with year on the horizontal axis.
 You can change the vertical order of the graphs with \code{levels(data$Country)}.
 \code{data} is assumed to contain the following columns:
-\code{iY} (indexed GDP),
+\code{iGDP} (indexed GDP),
 \code{Year} (the year for each row in the table),
 \code{iK} (indexed capital stock),
 \code{iL} (indexed labor),

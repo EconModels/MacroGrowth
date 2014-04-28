@@ -1,25 +1,50 @@
 
 #' Creates an string representation of the nesting
 #' 
+#' @param formulaStr a string representation of the formula.
+#' @param formula the formula used for fitting. 
+#' The energy variable is extracted from the formula.
 #' @param nest an integer vector containing 2 or 3 values. 
 #' For 2-value vectors, integers must be 1 or 2.
 #' For 3-value vectors, integers must be 1, 2, or 3.
-#' @return a string representing the nesting of the form "(kl)e", etc.
+#' @details The integer 1 indicates the capital stock variable ("iK").
+#' The integer 2 indicates the labor variable ("iL").
+#' The integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
+#' Nesting positions are given by location in the \code{nest} vector.
+#' c(3,1,2) is interpreted as energy and capital stock nested together. 
+#' For example, (iX + iK) + (iL).
+#' @return a string representing the nesting of the form "iQ+iK+iL", etc.
 #' An empty string if a nest is not involved.
-nestString <- function( nest ) {
-  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="")){return("")}
-  if (length(nest) < 2){return("")}
-  if (length(nest) == 2){
-    if (all(nest == c(1:2)))  {return("(kl)")}
-    if (all(nest == c(2,1)))  {return("(lk)")}
-  } else if (length(nest) == 3){
-    if (all(nest == c(1:3)))  {return("(kl)e")}
-    if (all(nest == c(2,3,1))){return("(le)k")}
-    if (all(nest == c(3,1,2))){return("(ek)l")}
-    if (all(nest == c(2,1,3))){return("(lk)e")}
-    if (all(nest == c(3,2,1))){return("(el)k")}
-    if (all(nest == c(1,3,2))){return("(ke)l")}
+nestString <- function( formula, nest, Kvar="iK", Lvar="iL", sep="+") {
+  if (class(formula) == "character"){
+    formula <- eval(parse(text=formula))
   }
+  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="")){return("")}
+  if (length(nest) < 2){return("")} # Need at least 2 factors of production for a nesting.
+  if (length(nest) == 2){
+    if (all(nest == c(1:2)))  {return(paste(Kvar, Lvar, sep=sep))}
+    if (all(nest == c(2,1)))  {return(paste(Lvar, Kvar, sep=sep))}
+  } else if (length(nest) == 3){
+    # Determine the energy variable
+    Evar <- energyTypeFromFormula(formula=formula)
+    if (all(nest == c(1:3)))  {return(paste(Kvar, Lvar, Evar, sep=sep))}
+    if (all(nest == c(2,3,1))){return(paste(Lvar, Evar, Kvar, sep=sep))}
+    if (all(nest == c(3,1,2))){return(paste(Evar, Kvar, Lvar, sep=sep))}
+    if (all(nest == c(2,1,3))){return(paste(Lvar, Kvar, Evar, sep=sep))}
+    if (all(nest == c(3,2,1))){return(paste(Evar, Lvar, Kvar, sep=sep))}
+    if (all(nest == c(1,3,2))){return(paste(Kvar, Evar, Lvar, sep=sep))}
+  }
+#   if (length(nest) == 2){
+#     if (all(nest == c(1:2)))  {return("(kl)")}
+#     if (all(nest == c(2,1)))  {return("(lk)")}
+#   } else if (length(nest) == 3){
+#     if (all(nest == c(1:3)))  {return("(kl)e")}
+#     if (all(nest == c(2,3,1))){return("(le)k")}
+#     if (all(nest == c(3,1,2))){return("(ek)l")}
+#     if (all(nest == c(2,1,3))){return("(lk)e")}
+#     if (all(nest == c(3,2,1))){return("(el)k")}
+#     if (all(nest == c(1,3,2))){return("(ke)l")}
+#   }
   stop(paste("Unknown nest", nest, "in nestString"))  
   #   
   #   return(nest)
@@ -66,11 +91,13 @@ resampleFileName <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nes
 
 #' Extracts a factor from a formula
 #' 
-#' @param formulaStr a string representing the formula that was fitted
 #' @param formula the formula that was fitted
 #' @return a string representing the factor that was used for the fitting. 
 #' NA if the sfModel was not used.
-factorFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
+factorFromFormula <- function(formula){
+  if (class(formula) == "character"){
+    formula <- eval(parse(text=formula))
+  }
   vars <- all.vars(formula)
   if (length(vars) == 3){
     # for the single-factor model, we have only 3 variables in the formula, response, factor, and time.
@@ -90,11 +117,13 @@ factorFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
 
 #' Extracts an energyType from a formula
 #' 
-#' @param formulaStr a string representing the formula that was fitted
 #' @param formula the formula that was fitted
 #' @return a string representing the energyType that was used for the fitting. 
 #' NA if the sfModel was used.
-energyTypeFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr))){
+energyTypeFromFormula <- function(formula){
+  if (class(formula) == "character"){
+    formula <- eval(parse(text=formula))
+  }
   vars <- all.vars(formula)
   if (length(vars) == 3){
     # for the single-factor model, we have only 3 variables in the formula, response, factor, and time.
@@ -110,43 +139,6 @@ energyTypeFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr
     }
   }
   return(energyType)
-}
-
-#' Extracts a nest string from a formula
-#' 
-#' @param formulaStr a string representing the formula that was fitted
-#' @param formula the formula that was fitted
-#' @return a string representing the nesting that was used.  NULL if we can't figure out the nest.
-#' The form is \code{"(kl)e"} or similar.  
-#' This function assumes that we are using a CES production function.
-#' 
-#' It also assumes that the functional form is \code{response ~ fp + fp + fp + iYear},
-#' where \code{fp} are factors of production.
-nestFromFormula <- function(formulaStr, formula=eval(parse(text=formulaStr)), Kvar="iK", Lvar="iL"){
-  vars <- all.vars(formula)
-  vars <- tail(vars, -1) # Strips off response variable (iYear)
-  vars <- head(vars, -1) # Strips off final variable (iYear)
-  if (length(vars) <= 1){
-    # We don't know what to make of this.
-    return(NULL)
-  }
-  Evar <- energyTypeFromFormula(formula=formula) # Finds the energy variable
-  nestStr <- "("
-  numAdded <- 0
-  for (var in vars){
-    if (var == Kvar){
-      nestStr <- paste0(nestStr, "k")
-    } else if (var == Lvar){
-      nestStr <- paste0(nestStr, "l")
-    } else if (var == Evar){
-      nestStr <- paste0(nestStr, "e")
-    }
-    numAdded <- numAdded + 1
-    if (numAdded == 2){
-      nestStr <- paste0(nestStr, ")")
-    }
-  }
-  return(nestStr)
 }
 
 #' Parses the id created by resampling

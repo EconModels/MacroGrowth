@@ -3,12 +3,9 @@
 \alias{factorFromFormula}
 \title{Extracts a factor from a formula}
 \usage{
-factorFromFormula(formulaStr, formula = eval(parse(text = formulaStr)))
+factorFromFormula(formula)
 }
 \arguments{
-  \item{formulaStr}{a string representing the formula that
-  was fitted}
-
   \item{formula}{the formula that was fitted}
 }
 \value{

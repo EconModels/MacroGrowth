@@ -3,8 +3,7 @@
 \alias{nestFromFormula}
 \title{Extracts a nest string from a formula}
 \usage{
-nestFromFormula(formulaStr, formula = eval(parse(text = formulaStr)),
-  Kvar = "iK", Lvar = "iL")
+nestFromFormula(formula, Kvar = "iK", Lvar = "iL")
 }
 \arguments{
   \item{formulaStr}{a string representing the formula that

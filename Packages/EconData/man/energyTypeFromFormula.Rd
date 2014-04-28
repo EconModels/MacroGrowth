@@ -3,12 +3,9 @@
 \alias{energyTypeFromFormula}
 \title{Extracts an energyType from a formula}
 \usage{
-energyTypeFromFormula(formulaStr, formula = eval(parse(text = formulaStr)))
+energyTypeFromFormula(formula)
 }
 \arguments{
-  \item{formulaStr}{a string representing the formula that
-  was fitted}
-
   \item{formula}{the formula that was fitted}
 }
 \value{
