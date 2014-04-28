@@ -1,7 +1,6 @@
 
 #' Creates an string representation of the nesting
 #' 
-#' @param formulaStr a string representation of the formula.
 #' @param formula the formula used for fitting. 
 #' The energy variable is extracted from the formula.
 #' @param nest an integer vector containing 2 or 3 values. 
@@ -34,30 +33,7 @@ nestString <- function( formula, nest, Kvar="iK", Lvar="iL", sep="+") {
     if (all(nest == c(3,2,1))){return(paste(Evar, Lvar, Kvar, sep=sep))}
     if (all(nest == c(1,3,2))){return(paste(Kvar, Evar, Lvar, sep=sep))}
   }
-#   if (length(nest) == 2){
-#     if (all(nest == c(1:2)))  {return("(kl)")}
-#     if (all(nest == c(2,1)))  {return("(lk)")}
-#   } else if (length(nest) == 3){
-#     if (all(nest == c(1:3)))  {return("(kl)e")}
-#     if (all(nest == c(2,3,1))){return("(le)k")}
-#     if (all(nest == c(3,1,2))){return("(ek)l")}
-#     if (all(nest == c(2,1,3))){return("(lk)e")}
-#     if (all(nest == c(3,2,1))){return("(el)k")}
-#     if (all(nest == c(1,3,2))){return("(ke)l")}
-#   }
   stop(paste("Unknown nest", nest, "in nestString"))  
-  #   
-  #   return(nest)
-  #   xNames <- all.vars( terms(formula) )
-  #   xNames <- tail(xNames, -1)
-  #   xNames <- head(xNames, -1)
-  #   paste0(
-  #     "(", 
-  #     paste(head(xNames, 2), collapse=" + "),  
-  #     ") + (", 
-  #     paste(tail(xNames, -2), collapse=" + "),
-  #     ")"
-  #   )
 }
 
 #' Creates an id for this run of resampling
