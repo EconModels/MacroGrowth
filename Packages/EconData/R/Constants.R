@@ -13,14 +13,7 @@ modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)
 cesNests <- c(kl="(kl)", kle="(kl)e", lek="(le)k", ekl="(ek)l")
 # Resampling information
 resampleMethods <- c("resample", "residual", "wild", "debug")
-# names for variables. These are the names of the columns in our data set
-Timevar <- "iYear"
-GDPvar <- "iY"
-Kvar <- "iK"
-Lvar <- "iL"
-Qvar <- "iQ"
-Xvar <- "iX"
-Uvar <- "iU"
 # Energy types and factors
-energyTypes <- c(Q=Qvar, X=Xvar, U=Uvar) 
-factors <- c(K=Kvar, L=Lvar, energyTypes)
+#' @export
+energyTypes <- c(Q="iQ", X="iX", U="iU") 
+factors <- c(K="iK", L="iL", energyTypes)
