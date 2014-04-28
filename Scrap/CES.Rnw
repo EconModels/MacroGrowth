@@ -183,7 +183,7 @@ We can perform unconstrained parameter estimation with the following code.
 <<>>=
 dataUK <- loadData(countryAbbrev="UK")
 modelUKQ_LM <- cesEstPlus(data=dataUK, 
-                      yName="iY", 
+                      yName="iGDP", 
                       xNames=c("iK", "iL", "iQ"), 
                       tName="iYear")
 summary(modelUKQ_LM)
@@ -232,7 +232,7 @@ is unnecessary.
 
 <<>>=
 modelUKQ_LM2 <- cesEstPlus(data=dataUK, 
-                      yName="iY", 
+                      yName="iGDP", 
                       xNames=c("iL", "iQ", "iK"), 
                       tName="iYear")
 summary(modelUKQ_LM2)
@@ -260,7 +260,7 @@ method.
 
 <<>>=
 modelUKQ_LBFGSB <- cesEstPlus(data=dataUK, 
-                          yName="iY", 
+                          yName="iGDP", 
                           xNames=c("iK", "iL", "iQ"), 
                           tName="iYear",
                           algorithm="L-BFGS-B")
@@ -279,7 +279,7 @@ The model with lowest $SSE$ will be returned from the grid search.
 
 <<>>=
 modelUKQ_grid <- cesEstPlus(data=dataUK, 
-                        yName="iY", 
+                        yName="iGDP", 
                         xNames=c("iK", "iL", "iQ"), 
                         tName="iYear",
                         algorithm="L-BFGS-B",
@@ -310,7 +310,7 @@ a finer grid.
 
 <<>>=
 modelUKQ_grid_detail <- cesEstPlus(data=dataUK, 
-                        yName="iY", 
+                        yName="iGDP", 
                         xNames=c("iK", "iL", "iQ"), 
                         tName="iYear",
                         algorithm="L-BFGS-B",
@@ -353,7 +353,7 @@ corresponds to the parameter $\rho_1$ in Equation~\ref{eq:CES}.)
 
 <<>>=
 modelUK <- cesEstPlus(data=dataUK, 
-                        yName="iY", 
+                        yName="iGDP", 
                         xNames=c("iK", "iL"), 
                         tName="iYear",
                         algorithm="L-BFGS-B")

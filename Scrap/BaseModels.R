@@ -21,35 +21,35 @@ names(countryAbbrevsU) <- countryAbbrevsU
 # Single Factor models
 #
 modelsSFK <- lapply(countryAbbrevs, function(countryAbbrev){
-  sfModel(formula=iY ~ iK + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iGDP ~ iK + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFL <- lapply(countryAbbrevs, function(countryAbbrev){
-  sfModel(formula=iY ~ iL + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iGDP ~ iL + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  sfModel(formula=iY ~ iQ + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iGDP ~ iQ + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFX <- lapply(countryAbbrevs, function(countryAbbrev){
-  sfModel(formula=iY ~ iX + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iGDP ~ iX + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsSFU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  sfModel(formula=iY ~ iU + iYear, data=subset(data, Country==countryAbbrev))
+  sfModel(formula=iGDP ~ iU + iYear, data=subset(data, Country==countryAbbrev))
 })
 
 #
 # Cobb-Douglas models
 #
 modelsCD <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdwoeModel(formula=iY ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iGDP ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdwoeModel(formula=iY ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iGDP ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDX <- lapply(countryAbbrevs, function(countryAbbrev){
-  cdwoeModel(formula=iY ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iGDP ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsCDU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  cdwoeModel(formula=iY ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
+  cdwoeModel(formula=iGDP ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
 })
 
 #
@@ -58,11 +58,11 @@ modelsCDU <- lapply(countryAbbrevsU, function(countryAbbrev){
 if (doCES == TRUE){
   # Without energy
   modelsCESKL <- lapply(countryAbbrevs, function(countryAbbrev){
-    cesModel(formula=iY ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
+    cesModel(formula=iGDP ~ iK + iL + iYear, data=subset(data, Country==countryAbbrev))
   })
   
   # With Q
-  formQ <- iY ~ iK + iL + iQ + iYear
+  formQ <- iGDP ~ iK + iL + iQ + iYear
   modelsCESKLQ <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formQ, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
   })
@@ -74,7 +74,7 @@ if (doCES == TRUE){
   })
   
   # With X
-  formX <- iY ~ iK + iL + iX + iYear
+  formX <- iGDP ~ iK + iL + iX + iYear
   modelsCESKLX <- lapply(countryAbbrevs, function(countryAbbrev){
     cesModel(formula=formX, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
   })
@@ -86,7 +86,7 @@ if (doCES == TRUE){
   })
   
   # With U
-  formU <- iY ~ iK + iL + iU + iYear
+  formU <- iGDP ~ iK + iL + iU + iYear
   modelsCESKLU <- lapply(countryAbbrevsU, function(countryAbbrev){
     cesModel(formula=formU, nest=c(1,2,3), data=subset(data, Country==countryAbbrev))
   })
@@ -102,11 +102,11 @@ if (doCES == TRUE){
 # Linex models
 #
 modelsLinexQ <- lapply(countryAbbrevs, function(countryAbbrev){
-  linexModel(formula=iY ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
+  linexModel(formula=iGDP ~ iK + iL + iQ + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsLinexX <- lapply(countryAbbrevs, function(countryAbbrev){
-  linexModel(formula=iY ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
+  linexModel(formula=iGDP ~ iK + iL + iX + iYear, data=subset(data, Country==countryAbbrev))
 })
 modelsLinexU <- lapply(countryAbbrevsU, function(countryAbbrev){
-  linexModel(formula=iY ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
+  linexModel(formula=iGDP ~ iK + iL + iU + iYear, data=subset(data, Country==countryAbbrev))
 })

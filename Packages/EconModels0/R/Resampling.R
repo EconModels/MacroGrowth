@@ -431,20 +431,20 @@ doResample <- function(data, origModel, method=resampleMethods, reindexGDP=TRUE)
   #         residual:  resamples the residuals and applies them to the data. All years are present.
   #         wild:      same as residuals but randomly select sign of resampled residuals
   # reindexGDP:
-  #         TRUE (default) will rescale iY values so that the observation in the first year (row) is 1.0
-  #         FALSE leaves iY values untouched.
+  #         TRUE (default) will rescale iGDP values so that the observation in the first year (row) is 1.0
+  #         FALSE leaves GDP values untouched.
   ##
   method <- match.arg(method)
   if(method == "resample") {
     out <- resample(data)
   } else {
     out <- data    
-    out[ , "iY"] <- NA
-    out[ , "iY"] <- resampledResponse(origModel, method=method)
+    out[ , "iGDP"] <- NA
+    out[ , "iGDP"] <- resampledResponse(origModel, method=method)
   }
   if (reindexGDP){
-    # Divide all the values in the iY column by the first value in the column
-    out[ , "iY"] <- out[ , "iY"] / out[1, "iY"]
+    # Divide all the values in the iGDP column by the first value in the column
+    out[ , "iGDP"] <- out[ , "iGDP"] / out[1, "iGDP"]
   }
   return(out)
 }

@@ -67,7 +67,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   # We apply the nest argument as given to the data frame. 
   # Doing so assists with graphing later.
   actual <- loadData(baseHistorical=baseHistorical)
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -81,7 +81,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest, baseHistorical=baseHistorical, baseResample=baseResample)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
@@ -89,7 +89,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   pred$nest <- nest
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
   
   # Remove rows where we don't need historical data or predictions, 
   # specifically those times when we won't have a prediction.
@@ -146,7 +146,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, fitted )),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",

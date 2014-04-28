@@ -102,7 +102,7 @@ for(model in opts$model){
     # Build a formula for each factor
     formulas <- c()
     for(factor in opts$factor){
-      formulas[length(formulas)+1] <- paste("iY ~", factor, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~", factor, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "sfModel",
@@ -111,13 +111,13 @@ for(model in opts$model){
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
-                                               formulaStr = "iY ~ iK + iL + iYear",
+                                               formulaStr = "iGDP ~ iK + iL + iYear",
                                                dots = list())
   } else if (model == "cde"){
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
@@ -127,14 +127,14 @@ for(model in opts$model){
     # Want a CES model without energy
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
-                                               formulaStr = "iY ~ iK + iL + iYear",
+                                               formulaStr = "iGDP ~ iK + iL + iYear",
                                                dots = list(nest=1:2))
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iK + iL +", energy, "+ iYear")
     }
     # Figure out the desired nesting for the factors of production
     if (grepl(pattern="(kl)e", x=model, fixed=TRUE)){
@@ -154,7 +154,7 @@ for(model in opts$model){
     # Build a formula for each energy type
     formulas <- c()
     for(energy in opts$energy){
-      formulas[length(formulas)+1] <- paste("iY ~ iK + iL +", energy, "+ iYear")
+      formulas[length(formulas)+1] <- paste("iGDP ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "linexModel",

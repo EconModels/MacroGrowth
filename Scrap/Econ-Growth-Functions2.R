@@ -249,7 +249,7 @@ columnIndex <- function(data, factor){
   if (factor == "Year"){
     colName <- "iYear"
   } else if (factor == "Y"){
-    colName <- "iY"
+    colName <- "iGDP"
   } else if (factor == "K"){
     colName <- "iK"
   } else if (factor == "L"){
@@ -290,7 +290,7 @@ covarianceTable <- function(countryAbbrev){
   data <- loadData(countryAbbrev)
   if (countryAbbrev %in% countryAbbrevsU){
     # Calculate covariances among the typical variables.
-    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX, data$iU)
+    dataForCovar <- cbind(data$iGDP, data$iK, data$iL, data$iQ, data$iX, data$iU)
     # Calculates the covariances among y, k. l, q, x, and u using all available data, namely,
     # 1980-2011 for covariances among y, k, l, q, and x for developed economies
     # 1980-2000 for covariances involving u for developed economies
@@ -299,7 +299,7 @@ covarianceTable <- function(countryAbbrev){
     covarResults <- data.frame(cor(x=dataForCovar, use="pairwise.complete.obs"))
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$", "$u$")
   } else {
-    dataForCovar <- cbind(data$iY, data$iK, data$iL, data$iQ, data$iX)
+    dataForCovar <- cbind(data$iGDP, data$iK, data$iL, data$iQ, data$iX)
     covarResults <- cor(dataForCovar)
     names <- c("$y$", "$k$", "$l$", "$q$", "$x$")
   }
@@ -361,7 +361,7 @@ createHistoricalLatticeGraphOld <- function(countryAbbrev, textScaling = 1.0, ke
     layout <- onePanelLayoutSpec                      # We want only one panel in the graph.
   }
   graph <- ggplot(aes(x=Year), data=data) +
-    geom_line(aes(y=iY, lty="iGPD")) +
+    geom_line(aes(y=iGDP, lty="iGPD")) +
     geom_line(aes(y=iK, lty="iK")) +
     geom_line(aes(y=iL, lty="iL")) +
     geom_line(aes(y=iQ, lty="iQ")) +
@@ -371,7 +371,7 @@ createHistoricalLatticeGraphOld <- function(countryAbbrev, textScaling = 1.0, ke
     theme_minimal()
   return(graph)
   
-  graph <- xyplot(iY+iK+iL+iQ ~ Year | Country, data=data,
+  graph <- xyplot(iGDP+iK+iL+iQ ~ Year | Country, data=data,
                   type = graphType,
                   index.cond = indexCond, #orders the panels.
                   layout = layout, 
@@ -449,7 +449,7 @@ sfModel <- function(countryAbbrev, data=loadData(countryAbbrev), factor, respect
     start <- list(lambda=lambdaGuess, m=mGuess)
   }
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iY ~ exp(lambda*iYear) * f^m
+  model <- iGDP ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
   # Build the additional object to add as an atrribute to the output
   if (!respectRangeConstraints){
@@ -710,7 +710,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE){
   colnames(newX) <- c("lambda", "m")
   # Get the actual GDP data
   data <- loadData(countryAbbrev)
-  y_act <- data[ ,"iY"] # Pick off the GDP column
+  y_act <- data[ ,"iGDP"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
   model <- sfModel(countryAbbrev=countryAbbrev, factor=factor)
@@ -889,7 +889,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #  e <- NextMethod()
 #  return( exp(e) )
 #  # model has form:
-#  # log(iY) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
+#  # log(iGDP) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
 #  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
 #  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
 #  y <- exp(ly)
@@ -913,9 +913,9 @@ cdwoeModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRange
   # alphaGuess <- 0.7 # 0.7 gives good results for all countries.  
   # start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  # model <- iY ~ exp(lambda*iYear) * iK^alpha * iL^(1.0 - alpha)
+  # model <- iGDP ~ exp(lambda*iYear) * iK^alpha * iL^(1.0 - alpha)
   # modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
-  model <- log(iY) - log(iL) ~ iYear + I(log(iK) - log(iL)) 
+  model <- log(iGDP) - log(iL) ~ iYear + I(log(iK) - log(iL)) 
   modelCD <- lm(model, data=data)
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
@@ -927,10 +927,10 @@ cdwoeModel <- function(countryAbbrev, data=loadData(countryAbbrev), respectRange
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        formula <- log(iY) - log(iL) ~ iYear  
+        formula <- log(iGDP) - log(iL) ~ iYear  
       } else {
         alpha <- 1.0
-        formula <- log(iY) - log(iK) ~ iYear  
+        formula <- log(iGDP) - log(iK) ~ iYear  
       }
       # Refit for lambda only
       # start <- list(lambda=lambdaGuess)
@@ -974,16 +974,16 @@ cdeModel <- function(countryAbbrev,
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
   formulas <- list( 
-    log(iY) - log(iEToFit) ~ 
+    log(iGDP) - log(iEToFit) ~ 
       iYear + I(log(iK) - log(iEToFit)) + I(log(iL) - log(iEToFit)),  
     
-    log(iY) - log(iEToFit) ~ iYear + I(log(iK) - log(iEToFit)),
-    log(iY) - log(iEToFit) ~ iYear + I(log(iL)  - log(iEToFit)),
-    log(iY) - log(iL)  ~ iYear + I(log(iK) - log(iL)),
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iK) - log(iEToFit)),
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iL)  - log(iEToFit)),
+    log(iGDP) - log(iL)  ~ iYear + I(log(iK) - log(iL)),
     
-    log(iY) - log(iK) ~ iYear,
-    log(iY) - log(iL)  ~ iYear,
-    log(iY) - log(iEToFit) ~ iYear 
+    log(iGDP) - log(iK) ~ iYear,
+    log(iGDP) - log(iL)  ~ iYear,
+    log(iGDP) - log(iEToFit) ~ iYear 
   )
   coefNames <- list( 
     c("logscale", "lambda", "alpha", "beta"),
@@ -1206,7 +1206,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
   
   # Put the historical data in a data.frame. 
   actual <- loadData(countryAbbrev="all")
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -1216,14 +1216,14 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
   prediction <- cobbDouglasPredictionsColumn(energyType=energyType)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
   pred$Energy <- energyType
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
   
   # Figure out which countries we need to loop over.
   if (energyType == "U"){
@@ -1258,7 +1258,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, fitted )),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -1557,7 +1557,7 @@ cesModel2 <- function(countryAbbrev,
   }
   # Establish key variable names  
   tName <- "iYear"
-  yName <- "iY"
+  yName <- "iGDP"
   models <- list()
   for (algorithm in algorithms) {
     #
@@ -1981,7 +1981,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   # We apply the nest argument as given to the data frame. 
   # Doing so assists with graphing later.
   actual <- loadData(countryAbbrev="all")
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -1995,7 +1995,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   prediction <- cesPredictionsColumn(energyType=energyType, nest=nest)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
@@ -2003,7 +2003,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
   pred$nest <- nest
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
 
   # Remove rows where we don't need historical data or predictions, 
   # specifically those times when we won't have a prediction.
@@ -2060,7 +2060,7 @@ loadCESSpaghettiGraphData <- function(nest="(kl)", energyType="none", archive=NU
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, fitted )),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -2353,7 +2353,7 @@ linexModel <- function(countryAbbrev, energyType="none", data){
               rho_k = iK / (.5) * (iEToFit + iL),
               rho_l = iL / iEToFit 
   )
-  model <- lm( log(iY) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
+  model <- lm( log(iGDP) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
 
   # Build the additional object to add as an atrribute to the output
   a_0 <- coef(model)[2]
@@ -2425,7 +2425,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
   
   # Put the historical data in a data.frame. 
   actual <- loadData(countryAbbrev="all")
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -2435,14 +2435,14 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
   prediction <- linexPredictionsColumn(energyType=energyType)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
   pred$Energy <- energyType
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
   
   # Figure out which countries we need to loop over.
   if (energyType == "U"){
@@ -2477,7 +2477,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL){
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, fitted )),
+      iGDP = unlist(lapply( resampleModels, fitted )),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",

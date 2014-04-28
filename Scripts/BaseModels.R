@@ -21,28 +21,28 @@ Countries <- levels(All$Country)
 Energies <- c("iQ", "iX", "iU")
 
 ModelInfos <- list(
-  list( formulaStr = c("iY ~ iK + iYear", 
-                       "iY ~ iL + iYear",
-                       "iY ~ energy + iYear"),
+  list( formulaStr = c("iGDP ~ iK + iYear", 
+                       "iGDP ~ iL + iYear",
+                       "iGDP ~ energy + iYear"),
         fun = "sfModel",
         dots = list()),
-  list( formulaStr = c("iY ~ iK + iL + iYear",
-                       "iY ~ iK + iL + energy + iYear"),
+  list( formulaStr = c("iGDP ~ iK + iL + iYear",
+                       "iGDP ~ iK + iL + energy + iYear"),
         fun = "cdModel",
         dots = list()),
-  list( formulaStr = "iY ~ iK + iL + energy + iYear",
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
         fun = "linexModel",
         dots = list()),
-  list( formulaStr = "iY ~ iK + iL + iYear",
+  list( formulaStr = "iGDP ~ iK + iL + iYear",
         fun = "cesModel",
         dots = list(nest=1:2)),
-  list( formulaStr = "iY ~ iK + iL + energy + iYear",
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=1:3)),
-  list( formulaStr = "iY ~ iK + iL + energy + iYear",
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=c(2,3,1))),
-  list( formulaStr = "iY ~ iK + iL + energy + iYear",
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
         fun = "cesModel",
         dots = list(nest=c(1,3,2)))
 )
@@ -61,7 +61,7 @@ for (country in Countries) {
       for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
         formulaStr <- sub( "energy", energy, f ) 
         formula <- eval( parse( text= formulaStr ) )
-        # formula <- substitute( iY ~ iK + iL + e + iYear, list(e = energy))
+        # formula <- substitute( iGDP ~ iK + iL + e + iYear, list(e = energy))
         # tryCatch to skip over country/energy combos that don't exist.
         cat ( paste(country, m$fun, formulaStr, m$dots, sep=" : ") )
         cat ("\n")

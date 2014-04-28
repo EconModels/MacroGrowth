@@ -185,15 +185,15 @@ spaghettiPlot <- function(energyType='none',
   data$alph = alph
   split <- intersect( split, names(data) )
   seData <- ddply( subset(data, Type=="fitted"), split, summarise, 
-                   n = length(iY),
-                   lower= quantile(iY, alph[1]),
-                   upper= quantile(iY, 1-alph[1]),
-                   iY = iY[1]
+                   n = length(iGDP),
+                   lower= quantile(iGDP, alph[1]),
+                   upper= quantile(iGDP, 1-alph[1]),
+                   iGDP = iGDP[1]
   ) 
   # return(seData)
   # return(names(data))
-  # graph <- qplot(Year, iY, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
-  graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iY)) 
+  # graph <- qplot(Year, iGDP, group=ResampleNumber, data=data, facets = ~Country, geom="line", alpha=I(alpha))
+  graph <- ggplot( data=subset(data, Type=="actual"), aes(Year, iGDP)) 
   graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col=NA, fill="gray10", 
                                lty=1, size=.5, data=seData, stat="identity")
 #  graph <- graph + geom_area(fill="black", shape=1, alpha=0.05)
@@ -219,7 +219,7 @@ spaghettiPlot <- function(energyType='none',
 #' in \code{data}. The graphs are arranged vertically by country with year on the horizontal axis.
 #' You can change the vertical order of the graphs with \code{levels(data$Country)}. 
 #' \code{data} is assumed to contain the following columns: 
-#' \code{iY} (indexed GDP), 
+#' \code{iGDP} (indexed GDP), 
 #' \code{Year} (the year for each row in the table), 
 #' \code{iK} (indexed capital stock), 
 #' \code{iL} (indexed labor), 
@@ -231,7 +231,7 @@ spaghettiPlot <- function(energyType='none',
 #' @export
 historicalPlot <- function(data){
   graph <- ggplot(aes(x=Year), data=data) +
-    geom_line(aes(y=iY, lty="y")) +
+    geom_line(aes(y=iGDP, lty="y")) +
     geom_line(aes(y=iK, lty="k")) +
     geom_line(aes(y=iL, lty="l")) +
     geom_line(aes(y=iQ, lty="q")) +

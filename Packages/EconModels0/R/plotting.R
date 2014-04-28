@@ -104,7 +104,7 @@ sf3DSSEGraph <- function(countryAbbrev, factor, showOpt=TRUE, baseHistorical, ba
   colnames(newX) <- c("lambda", "m")
   # Get the actual GDP data
   data <- loadData(countryAbbrev=countryAbbrev, baseHistorical=baseHistorical)
-  y_act <- data[ ,"iY"] # Pick off the GDP column
+  y_act <- data[ ,"iGDP"] # Pick off the GDP column
   y_act <- data.frame(y_act)
   # Need the model to make predictions
 #   model <- sfModel(countryAbbrev=countryAbbrev, factor=factor, baseHistorical=baseHistorical)
@@ -274,7 +274,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, baseHistor
   
   # Put the historical data in a data.frame. 
   actual <- loadData(baseHistorical=baseHistorical)
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -284,14 +284,14 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, baseHistor
   prediction <- cobbDouglasPredictionsColumn(energyType=energyType, baseHistorical=baseHistorical)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
   pred$Energy <- energyType
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
   
   # Figure out which countries we need to loop over.
   if (energyType == "U"){
@@ -326,7 +326,7 @@ loadCDSpaghettiGraphData <- function(energyType="none", archive=NULL, baseHistor
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, yhat)),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",
@@ -569,7 +569,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, baseHistor
   
   # Put the historical data in a data.frame. 
   actual <- loadData(baseHistorical=baseHistorical)
-  actual <- actual[c("Year", "iY", "Country")]
+  actual <- actual[c("Year", "iGDP", "Country")]
   actual$ResampleNumber <- NA
   actual$Type <- "actual"
   actual$Resampled <- FALSE
@@ -579,14 +579,14 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, baseHistor
   prediction <- linexPredictionsColumn(energyType=energyType, baseHistorical=baseHistorical)
   pred <- actual
   # Replace the historical GDP data with the predicted GDP data, which is in column 1.
-  pred$iY <- prediction[,1]
+  pred$iGDP <- prediction[,1]
   pred$ResampleNumber <- NA
   pred$Type <- "fitted"
   pred$Resampled <- FALSE
   pred$Energy <- energyType
   
   # Remove rows where predicted GDP is NA, i.e., those rows where we don't have a prediction.
-  pred <- subset(pred, !is.na(iY))
+  pred <- subset(pred, !is.na(iGDP))
   
   # Figure out which countries we need to loop over.
   if (energyType == "U"){
@@ -622,7 +622,7 @@ loadLinexSpaghettiGraphData <- function(energyType="Q", archive=NULL, baseHistor
     nYears <- length(fitted(resampleModels[[1]]))
     dfList[[countryAbbrev]] <- data.frame(
       Year = rep(historical$Year, nResamples),
-      iY = unlist(lapply( resampleModels, yhat)),
+      iGDP = unlist(lapply( resampleModels, yhat)),
       Country = countryAbbrev,
       ResampleNumber = rep( 1:nResamples, each=nYears ),
       Type = "fitted",

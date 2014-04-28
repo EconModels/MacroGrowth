@@ -18,7 +18,7 @@ for (nest in c("(kl)e", "(le)k", "(ek)l") ) {
   nestData <- loadCESSpaghettiGraphData("Q", nest= nest, 
                 archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
   print( 
-    qplot( Year, iY, group=ResampleNumber, 
+    qplot( Year, iGDP, group=ResampleNumber, 
            data=nestData, # subset(foo, Country=="US"), 
            facets = ~Country, geom="line", alpha=I(0.15) ) + 
       geom_line(data=subset(nestData, Type=="actual"), 

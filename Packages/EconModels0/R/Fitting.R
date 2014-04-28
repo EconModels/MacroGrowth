@@ -78,7 +78,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #  e <- NextMethod()
 #  return( exp(e) )
 #  # model has form:
-#  # log(iY) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
+#  # log(iGDP) - log(iEToFit) ~ I(2 * (1 - 1/rho_k)) +  I(rho_l - 1)
 #  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
 #  ly <- eval( parse( text = gsub( " - .*", "", names(object$model)[1]) ), attr(object,'data'))
 #  y <- exp(ly)
@@ -174,7 +174,7 @@ cesModel2 <- function(countryAbbrev,
   }
   # Establish key variable names  
   tName <- "iYear"
-  yName <- "iY"
+  yName <- "iGDP"
   models <- list()
   for (algorithm in algorithms) {
     #
@@ -403,7 +403,7 @@ sfModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbrev, 
     start <- list(lambda=lambdaGuess, m=mGuess)
   }
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  model <- iY ~ exp(lambda*iYear) * f^m
+  model <- iGDP ~ exp(lambda*iYear) * f^m
   modelSF <- nls(formula=model, data=data, start = start, control=nlsControl)
   # Build the additional object to add as an atrribute to the output
   if (!respectRangeConstraints){
@@ -435,9 +435,9 @@ cdwoeModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbre
   # alphaGuess <- 0.7 # 0.7 gives good results for all countries.  
   # start <- list(lambda=lambdaGuess, alpha=alphaGuess)
   # Runs a non-linear least squares fit to the data. We've replaced beta with 1-alpha for simplicity.
-  # model <- iY ~ exp(lambda*iYear) * iK^alpha * iL^(1.0 - alpha)
+  # model <- iGDP ~ exp(lambda*iYear) * iK^alpha * iL^(1.0 - alpha)
   # modelCD <- nls(formula=model, data=data, start=start, control=nlsControl)
-  model <- log(iY) - log(iL) ~ iYear + I(log(iK) - log(iL)) 
+  model <- log(iGDP) - log(iL) ~ iYear + I(log(iK) - log(iL)) 
   modelCD <- lm(model, data=data)
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
@@ -449,10 +449,10 @@ cdwoeModel <- function(countryAbbrev, baseHistorical, data=loadData(countryAbbre
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        formula <- log(iY) - log(iL) ~ iYear  
+        formula <- log(iGDP) - log(iL) ~ iYear  
       } else {
         alpha <- 1.0
-        formula <- log(iY) - log(iK) ~ iYear  
+        formula <- log(iGDP) - log(iK) ~ iYear  
       }
       # Refit for lambda only
       # start <- list(lambda=lambdaGuess)
@@ -491,16 +491,16 @@ cdeModel <- function(countryAbbrev,
   # to "iEToFit" and use "iEToFit" in the nls function. 
   data <- replaceColName(data, energyType, "iEToFit")
   formulas <- list( 
-    log(iY) - log(iEToFit) ~ 
+    log(iGDP) - log(iEToFit) ~ 
       iYear + I(log(iK) - log(iEToFit)) + I(log(iL) - log(iEToFit)),  
     
-    log(iY) - log(iEToFit) ~ iYear + I(log(iK) - log(iEToFit)),
-    log(iY) - log(iEToFit) ~ iYear + I(log(iL)  - log(iEToFit)),
-    log(iY) - log(iL)  ~ iYear + I(log(iK) - log(iL)),
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iK) - log(iEToFit)),
+    log(iGDP) - log(iEToFit) ~ iYear + I(log(iL)  - log(iEToFit)),
+    log(iGDP) - log(iL)  ~ iYear + I(log(iK) - log(iL)),
     
-    log(iY) - log(iK) ~ iYear,
-    log(iY) - log(iL)  ~ iYear,
-    log(iY) - log(iEToFit) ~ iYear 
+    log(iGDP) - log(iK) ~ iYear,
+    log(iGDP) - log(iL)  ~ iYear,
+    log(iGDP) - log(iEToFit) ~ iYear 
   )
   coefNames <- list( 
     c("logscale", "lambda", "alpha", "beta"),
@@ -588,7 +588,7 @@ linexModel <- function(countryAbbrev, energyType, baseHistorical, data=loadData(
                     rho_k = iK / ( (.5) * (iEToFit + iL) ),
                     rho_l = iL / iEToFit 
   )
-  model <- lm( log(iY) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
+  model <- lm( log(iGDP) - log(iEToFit) ~  I(2 * (1 - 1/rho_k))  + I(rho_l - 1), data=data)
   
   # Build the additional object to add as an atrribute to the output
   a_0 <- coef(model)[2]
@@ -605,7 +605,7 @@ linexModel <- function(countryAbbrev, energyType, baseHistorical, data=loadData(
   )
   attr(model, "naturalCoeffs") <- naturalCoeffs
   sdata <- subset(data, 
-                  select= c( "iY","iEToFit","iK","iL","rho_k","rho_l"))
+                  select= c( "iGDP","iEToFit","iK","iL","rho_k","rho_l"))
   attr(model, "data") <- data[complete.cases(sdata),]
   
   class(model) <- c("LINEXmodel", class(model))
