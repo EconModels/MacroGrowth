@@ -1,5 +1,5 @@
 
-#' Creates an string representation of the nesting
+#' Creates an string representation of the factors of production
 #' 
 #' @param formula the formula used for fitting. 
 #' The energy variable is extracted from the formula.
@@ -9,31 +9,37 @@
 #' @details The integer 1 indicates the capital stock variable ("iK").
 #' The integer 2 indicates the labor variable ("iL").
 #' The integer 3 indicates the energy variable (one of "iQ", "iX", or "iU")
-#' Nesting positions are given by location in the \code{nest} vector.
+#' Nesting positions are given by location in the \code{nest} vector, if present.
 #' c(3,1,2) is interpreted as energy and capital stock nested together. 
 #' For example, (iX + iK) + (iL).
+#' If the \code{nest} vector is not present, factors of production 
+#' are returned in the order they appear in the \code{formula}.
 #' @return a string representing the nesting of the form "iQ+iK+iL", etc.
 #' An empty string if a nest is not involved.
-nestString <- function( formula, nest, Kvar="iK", Lvar="iL", sep="+") {
+factorString <- function( formula, nest, Kvar=factors$K, Lvar=factors$L, sep="+" ) {
   if (class(formula) == "character"){
     formula <- eval(parse(text=formula))
   }
-  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="")){return("")}
-  if (length(nest) < 2){return("")} # Need at least 2 factors of production for a nesting.
-  if (length(nest) == 2){
-    if (all(nest == c(1:2)))  {return(paste(Kvar, Lvar, sep=sep))}
-    if (all(nest == c(2,1)))  {return(paste(Lvar, Kvar, sep=sep))}
-  } else if (length(nest) == 3){
-    # Determine the energy variable
-    Evar <- energyTypeFromFormula(formula=formula)
-    if (all(nest == c(1:3)))  {return(paste(Kvar, Lvar, Evar, sep=sep))}
-    if (all(nest == c(2,3,1))){return(paste(Lvar, Evar, Kvar, sep=sep))}
-    if (all(nest == c(3,1,2))){return(paste(Evar, Kvar, Lvar, sep=sep))}
-    if (all(nest == c(2,1,3))){return(paste(Lvar, Kvar, Evar, sep=sep))}
-    if (all(nest == c(3,2,1))){return(paste(Evar, Lvar, Kvar, sep=sep))}
-    if (all(nest == c(1,3,2))){return(paste(Kvar, Evar, Lvar, sep=sep))}
+  matches <- na.omit(match(x=all.vars(formula), table=factors))
+  factorsPresent <- factors[matches]
+  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="")){
+    # Simply return the factors of production in the order they appear in the formula.
+    return(paste(factorsPresent, collapse=sep))
   }
-  stop(paste("Unknown nest", nest, "in nestString"))  
+  # We have a nest.
+  if (length(nest) != length(factorsPresent)){
+    # This is a problem. Need to have as many nest items as factors of production.
+    stop(paste("length(nest) =", length(nest), 
+               "and length(factorsPresent) =", length(factorsPresent), 
+               ": They should be equal."))
+  }
+  if (length(nest) < 2){
+    # Only one factor of production. Return it.
+    return(factorsPresent[[1]])
+  }
+  # Rearrange the factors in the nested order.
+  orderedFactors <- factorsPresent[nest]
+  return(paste(orderedFactors, collapse=sep))
 }
 
 #' Creates an id for this run of resampling
@@ -57,38 +63,12 @@ fittingID <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nestString
 #' @param countryAbbrev the country being fitted
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A 2- or 3-vector of integers.
-#' @param nestStr if used, the string for the nesting
 #' @param n the number of resamples being attempted
 #' @param sep the separator used to create the id string. Default is " : ".
 #' @return a string to be used as the id for this resample
-resampleFileName <- function(fun, countryAbbrev, formula, nest=NULL, nestStr=nestString(nest), sep="_"){
-  
-}
-
-#' Extracts a factor from a formula
-#' 
-#' @param formula the formula that was fitted
-#' @return a string representing the factor that was used for the fitting. 
-#' NA if the sfModel was not used.
-factorFromFormula <- function(formula){
-  if (class(formula) == "character"){
-    formula <- eval(parse(text=formula))
-  }
-  vars <- all.vars(formula)
-  if (length(vars) == 3){
-    # for the single-factor model, we have only 3 variables in the formula, response, factor, and time.
-    # All other models have longer formulas!
-    matches <- na.omit(match(x=vars, table=factors))
-    if (length(matches) <= 0){
-      factor <- NA
-    } else {
-      factor <- factors[[matches]]
-    }
-  } else {
-    # We have some other type of model, so there is no "factor" per-se.
-    factor <- NA
-  }
-  return(factor)
+resampleFileName <- function(fun, countryAbbrev, formula, nest=NULL, sep="_"){
+  f <- paste(countryAbbrev, fun, nestString(nest))
+  return(f)
 }
 
 #' Extracts an energyType from a formula

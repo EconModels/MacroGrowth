@@ -2,6 +2,7 @@
 
 export(countryAbbrevs)
 export(energyTypes)
+export(factors)
 export(loadAllResampleData)
 export(loadResampleData)
 export(loadResampleModels)

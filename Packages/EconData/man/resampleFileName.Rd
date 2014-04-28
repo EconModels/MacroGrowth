@@ -3,8 +3,7 @@
 \alias{resampleFileName}
 \title{Calculate a file name for given parameters}
 \usage{
-resampleFileName(fun, countryAbbrev, formula, nest = NULL,
-  nestStr = nestString(nest), sep = "_")
+resampleFileName(fun, countryAbbrev, formula, nest = NULL, sep = "_")
 }
 \arguments{
   \item{fun}{the function used for fitting}
@@ -15,8 +14,6 @@ resampleFileName(fun, countryAbbrev, formula, nest = NULL,
 
   \item{nest}{if used, the nest employed for this fit. A 2-
   or 3-vector of integers.}
-
-  \item{nestStr}{if used, the string for the nesting}
 
   \item{n}{the number of resamples being attempted}
 

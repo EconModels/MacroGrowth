@@ -16,4 +16,5 @@ resampleMethods <- c("resample", "residual", "wild", "debug")
 # Energy types and factors
 #' @export
 energyTypes <- c(Q="iQ", X="iX", U="iU") 
+#' @export
 factors <- c(K="iK", L="iL", energyTypes)
