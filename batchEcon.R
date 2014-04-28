@@ -20,7 +20,6 @@ suppressPackageStartupMessages(library("optparse"))
 baseResample <- file.path("data_resample")
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 
-
 #
 # Loads several constants that will be helpful.
 #
@@ -105,12 +104,11 @@ for(model in opts$model){
     # Build a formula for each factor
     formulas <- c()
     for(factor in opts$factor){
-      formulas[length(formulas)+1] <- paste("iGDP ~", factor, "+ iYear")
+      ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
+                                                 fun = "sfModel",
+                                                 formulaStr = paste("iGDP ~", factor, "+ iYear"),
+                                                 dots = list())
     }
-    ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "sfModel",
-                                               formulaStr = formulas,
-                                               dots = list())
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
