@@ -12,21 +12,24 @@
 
 
 
-require(EconModels2)
+require(EconModels)
+require(EconData)
 suppressPackageStartupMessages(library("optparse"))
 
 
 baseResample <- file.path("data_resample")
+modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
+
 
 #
 # Loads several constants that will be helpful.
 #
-source("Scripts/Constants.R")
+# source("Scripts/Constants.R")
 
 #
 # Load several functions associated with paths and loading files.
 #
-source("Scripts/files.R")
+# source("Scripts/files.R")
 
 # 
 # Start the script
@@ -171,7 +174,8 @@ cat(date())
 cat('\n')
 
 # load historical data
-All <- read.table(file="data/AllData.txt", header=TRUE)
+# All <- read.table(file="data/AllData.txt", header=TRUE)
+All <- Econ2011
 
 registerDoParallel()
 
@@ -218,16 +222,10 @@ for (m in ModelInfos) {
             }
           }
           # Get the paths for the coefficients and models files.
-          coeffsPath <- getPathForResampleData(modelType=m$modelType, 
-                                               countryAbbrev=country, 
-                                               factor=factor, 
-                                               energyType=energyType, 
-                                               baseResample=baseResample)
-          modelsPath <- getPathForResampleModels(modelType=m$modelType, 
-                                                 countryAbbrev=country, 
-                                                 factor=factor, 
-                                                 energyType=energyType, 
-                                                 baseResample=baseResample)
+          coeffsPath <- resampleCoeffsPath(fun=m$fun, countryAbbrev=country, formula=m$formulaStr, 
+                                           nest=m$dots, baseResample=baseResample)
+          modelsPath <- resampleModelsPath(fun=m$fun, countryAbbrev=country, formula=m$formulaStr, 
+                                           nest=m$dots, baseResample=baseResample)
           # Ensure that the directories exist.
           dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
           dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
