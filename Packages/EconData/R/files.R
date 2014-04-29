@@ -17,7 +17,7 @@
 #' are returned in the order they appear in the \code{formula}.
 #' @return a string representing the nesting of the form "iQ+iK+iL", etc.
 #' An empty string if a nest is not involved.
-factorString <- function( formula, nest, Kvar=factors$K, Lvar=factors$L, sep="+" ) {
+factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]], sep="+" ) {
   if (class(formula) == "character"){
     formula <- eval(parse(text=formula))
   }
