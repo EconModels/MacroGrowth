@@ -30,8 +30,8 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   # Remove the .Rdata suffix from the file names.
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
   # Remove the path prefix from the file names, if present
-  names <- sub(pattern=path, replacement="", x=names, fixed=TRUE)
-  names <- sub(pattern=prefix, replacement="", x=names, fixed=TRUE)
+  names <- sub(pattern=path, replacement="", x=names)
+  names <- sub(pattern=prefix, replacement="", x=names)
   # Remove any file separators, if present.
   names <- gsub(pattern=.Platform$file.sep, replacement="", x=names, fixed=TRUE)
   pieces <- strsplit( x=names, split=sep )
