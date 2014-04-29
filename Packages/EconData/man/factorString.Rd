@@ -3,7 +3,8 @@
 \alias{factorString}
 \title{Creates an string representation of the factors of production}
 \usage{
-factorString(formula, nest, Kvar = factors$K, Lvar = factors$L, sep = "+")
+factorString(formula, nest, Kvar = factors[["K"]], Lvar = factors[["L"]],
+  sep = "+")
 }
 \arguments{
   \item{formula}{the formula used for fitting. The energy
