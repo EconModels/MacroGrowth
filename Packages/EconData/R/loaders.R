@@ -31,11 +31,12 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
   # Remove the path prefix from the file names, if present
   names <- gsub(pattern=path, replacement="", x=names, fixed=TRUE)
+  names <- gsub(pattern=prefix, replacement="", x=names, fixed=TRUE)
   # Remove any file separators, if present.
   names <- gsub(pattern=.Platform$file.sep, replacement="", x=names, fixed=TRUE)
   pieces <- strsplit( x=names, split=sep )
   keep <- sapply( pieces, 
-                  function(x) { is.in(x[2],country) && is.in(x[3],model) &&  is.in(x[4],factors) } )
+                  function(x) { is.in(x[1],country) && is.in(x[2],model) &&  is.in(x[3],factors) } )
   files <- files[ keep ]
   pieces <- pieces[keep]
   dflist <- list()
@@ -64,9 +65,9 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
         df$sigmaTrans_1 <- sigmaTrans_1
       }
       # Add several relevant columns to the data frame.
-      countryAbbrev <- pieces[[i]][2]
-      modelType <- pieces[[i]][3]
-      nestStr <- pieces[[i]][4]
+      countryAbbrev <- pieces[[i]][1]
+      modelType <- pieces[[i]][2]
+      nestStr <- pieces[[i]][3]
       parsedNestStr <- parseFactorString(factorString=nestStr)
       # Add the relevant information to the data frame.
       df$country <- countryAbbrev
