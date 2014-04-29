@@ -11,9 +11,12 @@ is.in <- function( el, set ) {
 #' @param model a model or vector of models.
 #' @param factors strings of factors used in fitting the models.
 #' @param sep the separator in the file names between country, model, and factors
+#' @param prefix a character string naming prefix for file name.
 #' @return a string representing the energyType that was used for the fitting. NA if the sfModel was used.
+#' 
 #' @export
-loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, factors=NULL, sep="_" ) {
+loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, 
+                               factors=NULL, sep="_", prefix="" ) {
   if (is.null(archive)){
     files <- dir(path)
   } else {
@@ -23,7 +26,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, fac
   # Keep only those files with the ".Rdata" extension
   files <- files[grepl(pattern=".Rdata", x=files, fixed=TRUE)]
   # Remove any files that contain the string "models_". These are model files, not coefficient files.
-  files <- files[! grepl(pattern="models_", x=files, fixed=TRUE)]
+  files <- files[grepl(pattern=prefix, x=files, fixed=TRUE)]
   # Remove the .Rdata suffix from the file names.
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
   # Remove the path prefix from the file names, if present
@@ -32,39 +35,57 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, fac
   names <- gsub(pattern=.Platform$file.sep, replacement="", x=names, fixed=TRUE)
   pieces <- strsplit( x=names, split=sep )
   keep <- sapply( pieces, 
-                  function(x) { is.in(x[1],country) && is.in(x[2],model) &&  is.in(x[3],factors) } )
+                  function(x) { is.in(x[2],country) && is.in(x[3],model) &&  is.in(x[4],factors) } )
   files <- files[ keep ]
   pieces <- pieces[keep]
   dflist <- list()
   nFiles <- length(files)
-  if (length(pieces) != nFiles){stop("Unequal length for files and names in loadResampledData.")}
-  for (i in 1:nFiles){
-    if (is.null(archive)){
-      df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
-    } else {
-      df <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
-    }
-    # Add relevant information to the data frame
-    if ("sigma" %in% names(df) ){
-      sigmaTrans <- ifelse(df$sigma < 2, df$sigma, 1.5 - df$rho )
-      df$sigmaTrans <- sigmaTrans
-    }  
-    if ("sigma_1" %in% names(df) ){
-      sigmaTrans_1 <- ifelse(df$sigma_1 < 2, df$sigma_1, 1.5 - df$rho_1 )
-      df$sigmaTrans_1 <- sigmaTrans_1
-    }
-    # Add several relevant columns to the data frame.
-    countryAbbrev <- pieces[[i]][1]
-    modelType <- pieces[[i]][2]
-    nestStr <- pieces[[i]][3]
-    parsedNestStr <- parseFactorString(factorString=nestStr)
-    # Add the relevant information to the data frame.
-    df$countryAbbrev <- factor(countryAbbrev)
-    df$modelType <- factor(modelType)
-    df$nestStr <- factor(nestStr)
-    df$energyType <- factor(parsedNestStr[["energyType"]])
-    df$factor <- factor(parsedNestStr[["factor"]])
-    dflist[[i]] <- df
+  
+  if (length(pieces) != nFiles){
+    stop("Unequal length for files and names in loadResampledData.")
   }
-  do.call( rbind.fill, dflist )
+  
+  if (prefix  %in% c("", "coef_")) {
+    for (i in 1:nFiles){
+      if (is.null(archive)){
+        dat <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
+      } else {
+        dat <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+      }
+      
+      # Add relevant information to the data frame
+      if ("sigma" %in% names(dat) ){
+        sigmaTrans <- ifelse(dat$sigma < 2, dat$sigma, 1.5 - dat$rho )
+        dat$sigmaTrans <- sigmaTrans
+      }  
+      if ("sigma_1" %in% names(dat) ){
+        sigmaTrans_1 <- ifelse(dat$sigma_1 < 2, dat$sigma_1, 1.5 - dat$rho_1 )
+        dat$sigmaTrans_1 <- sigmaTrans_1
+      }
+      # Add several relevant columns to the data frame.
+      countryAbbrev <- pieces[[i]][2]
+      modelType <- pieces[[i]][3]
+      nestStr <- pieces[[i]][4]
+      parsedNestStr <- parseFactorString(factorString=nestStr)
+      # Add the relevant information to the data frame.
+      dat$countryAbbrev <- factor(countryAbbrev)
+      dat$modelType <- factor(modelType)
+      dat$nestStr <- factor(nestStr)
+      dat$energyType <- factor(parsedNestStr[["energyType"]])
+      dat$factor <- factor(parsedNestStr[["factor"]])
+      dflist[[i]] <- dat
+    }
+    return( do.call( rbind.fill, dflist ) )
+  } else {
+    modelsList <- list()
+    for (i in 1:nFiles){
+      if (is.null(archive)){
+        dat <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
+      } else {
+        dat <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+      }
+      modelsList <- c(modelsList, dat)
+    }
+    return(modelsList)
+  }
 }

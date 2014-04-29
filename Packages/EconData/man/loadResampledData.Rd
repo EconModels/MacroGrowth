@@ -4,7 +4,7 @@
 \title{Loads resampled coefficients from files}
 \usage{
 loadResampledData(path, archive = NULL, country = NULL, model = NULL,
-  factors = NULL, sep = "_")
+  factors = NULL, sep = "_", prefix = "")
 }
 \arguments{
   \item{path}{the directory containing the resampled
@@ -22,6 +22,9 @@ loadResampledData(path, archive = NULL, country = NULL, model = NULL,
 
   \item{sep}{the separator in the file names between
   country, model, and factors}
+
+  \item{prefix}{a character string naming prefix for file
+  name.}
 }
 \value{
 a string representing the energyType that was used for the fitting. NA if the sfModel was used.
