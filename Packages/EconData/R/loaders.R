@@ -19,12 +19,11 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, fac
   } else {
     filesDF <- unzip(zipfile=archive, list=TRUE)
     files <- filesDF[["Name"]]
-    # Keep only those files with the ".Rdata" extension
-    files <- files[grepl(pattern=".Rdata", x=files, fixed=TRUE)]
   }
-  # Remove any files that contains the string "models_". These are model files, not coefficient files.
-  toRemove <- grepl(pattern="models_", x=files, fixed=TRUE)
-  files <- files[!toRemove]
+  # Keep only those files with the ".Rdata" extension
+  files <- files[grepl(pattern=".Rdata", x=files, fixed=TRUE)]
+  # Remove any files that contain the string "models_". These are model files, not coefficient files.
+  files <- files[! grepl(pattern="models_", x=files, fixed=TRUE)]
   # Remove the .Rdata suffix from the file names.
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
   # Remove the path prefix from the file names, if present
