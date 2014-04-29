@@ -68,13 +68,19 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
 #' factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production 
 #' in the formula are nested together and the 2nd factor of production 
 #' is independent. 
+#' \code{factor} is NA if there are more than one factors of production. 
+#' If only one factor of production, factor is set to the single factor.
+#' \code{energyType} is the energy type in this factorString, if present.
+#' NA otherwise.
 parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
   factorString <- gsub(pattern=" ", replacement="", x=factorString, fixed=TRUE) # Remove spaces
+  energyType <- extractEnergyType(factorString)
   if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
     # The factorString doesn't contain sep. Assume there is only one variable.
     # We have a single-factor model
-    formula <- paste(rVar, "~", factorString, "+", rVar)
+    formula <- paste(rVar, "~", factorString, "+", tVar)
     nest <- c(1)
+    factor <- factorString
   } else {
     vars <- unlist(strsplit(x=factorString, split=sep, fixed=TRUE))
     nVars <- length(vars)
@@ -88,6 +94,7 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
       } else {
         stop(paste("Unknown factors of production for 2-factor situation:", vars, "in parseFactorString."))
       }
+      factor <- NA
     } else if (nVars == 3){
       # We have an energy variable and three factors
       eVar <- na.omit(match(x=vars, table=energyTypes))
@@ -106,12 +113,13 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
       } else if ((vars[1]==kVar) && (vars[2]==eVar) && (vars[3]==lVar)){
         nest <- c(1,3,2)
       }
+      factor <- NA
     } else {
       stop("Don't know what to do with 4 or more factors of production in parseFactorString")
     }
   }
   formula <- eval(parse(text=formula))
-  return(list(formula=formula, nest=nest))
+  return(list(formula=formula, nest=nest, factor=factor, energyType=energyType))
 }
 
 #' Creates an id for this run of resampling
@@ -180,29 +188,34 @@ resampleModelsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResam
   return(path)
 }
 
-#' Extracts an energyType from a formula
+#' Extracts an energyType from a formula or a factorString.
 #' 
-#' @param formula the formula that was fitted
-#' @return a string representing the energyType that was used for the fitting. NA if the sfModel was used.
-energyTypeFromFormula <- function(formula){
-  if (class(formula) == "character"){
-    formula <- eval(parse(text=formula))
-  }
-  vars <- all.vars(formula)
-  if (length(vars) == 3){
-    # for the single-factor model, we have only 3 variables in the formula, response, factor, and time.
-    # All other models have longer formulas!
-    energyType <- NA
-  } else {
-    # We have some other type of model, so we can find an energyType
-    matches <- na.omit(match(x=vars, table=energyTypes))
-    if (length(matches) <= 0){
-      energyType <- NA
-    } else {
-      energyType <- energyTypes[[matches]]
+#' @param x a formula or factorString from which you want to extract an energyType
+#' @param energyTypes the types of energy available
+#' @param sep the separator for the formula or factorString
+#' @return a string representing the energyType that was used for the fitting. NA if no energy type was found.
+extractEnergyType <- function(x, eTypes=energyTypes, sep="+"){
+  if (class(x) == "character"){
+    # Try to coerce to a formula
+    if (grepl(pattern="~", x=x, fixed=TRUE)){
+      x <- eval(parse(text=x))
     }
   }
-  return(energyType)
+  if (class(x) == "formula"){
+    # Split into a bunch of strings
+    vars <- all.vars(x)
+  } else if (class(x) == "character"){
+    # Split at the separator
+    vars <- unlist(strsplit(x=x, split=sep, fixed=TRUE))
+  }
+  # Find the energyType
+  matches <- na.omit(match(x=vars, table=eTypes))
+  if (length(matches) <= 0){
+    eType <- NA
+  } else {
+    eType <- energyTypes[[matches]]
+  }
+  return(eType)
 }
 
 #' Parses the id created by resampling

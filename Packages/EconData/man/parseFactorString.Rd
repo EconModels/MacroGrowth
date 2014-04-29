@@ -34,5 +34,9 @@ in the correct order.
 factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production
 in the formula are nested together and the 2nd factor of production
 is independent.
+\code{factor} is NA if there are more than one factors of production.
+If only one factor of production, factor is set to the single factor.
+\code{energyType} is the energy type in this factorString, if present.
+NA otherwise.
 }
 

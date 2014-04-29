@@ -1,5 +1,5 @@
 is.in <- function( el, set ) {
-  if (is.null(set)) return( rep(TRUE, length(el) ) )
+  if (is.null(set)) { return( rep(TRUE, length(el) ) ) }
   is.element(el, set)
 }
 
@@ -34,14 +34,37 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, fac
   keep <- sapply( pieces, 
                   function(x) { is.in(x[1],country) && is.in(x[2],model) &&  is.in(x[3],factors) } )
   files <- files[ keep ]
-  # the next line could be augmented to add additional information to the 
-  # data frame.
-  if (is.null(archive)){
-    # Read files from the directory on disk
-    dflist <- lapply(files, function(x) { readRDS ( file.path(path, x) ) } )
-  } else {
-    # Read files from the archive
-    dflist <- lapply(files, function(x) { readRDS(gzcon(unz(archive, x))) } )
+  pieces <- pieces[keep]
+  dflist <- list()
+  nFiles <- length(files)
+  if (length(pieces) != nFiles){stop("Unequal length for files and names in loadResampledData.")}
+  for (i in 1:nFiles){
+    if (is.null(archive)){
+      df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
+    } else {
+      df <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+    }
+    # Add relevant information to the data frame
+    if ("sigma" %in% names(df) ){
+      sigmaTrans <- ifelse(df$sigma < 2, df$sigma, 1.5 - df$rho )
+      df$sigmaTrans <- sigmaTrans
+    }  
+    if ("sigma_1" %in% names(df) ){
+      sigmaTrans_1 <- ifelse(df$sigma_1 < 2, df$sigma_1, 1.5 - df$rho_1 )
+      df$sigmaTrans_1 <- sigmaTrans_1
+    }
+    # Add several relevant columns to the data frame.
+    countryAbbrev <- pieces[[i]][1]
+    modelType <- pieces[[i]][2]
+    nestStr <- pieces[[i]][3]
+    parsedNestStr <- parseFactorString(factorString=nestStr)
+    # Add the relevant information to the data frame.
+    df$countryAbbrev <- factor(countryAbbrev)
+    df$modelType <- factor(modelType)
+    df$nestStr <- factor(nestStr)
+    df$energyType <- factor(parsedNestStr[["energyType"]])
+    df$factor <- factor(parsedNestStr[["factor"]])
+    dflist[[i]] <- df
   }
   do.call( rbind.fill, dflist )
 }
