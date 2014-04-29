@@ -9,8 +9,7 @@ energyTypeFromFormula(formula)
   \item{formula}{the formula that was fitted}
 }
 \value{
-a string representing the energyType that was used for the fitting.
-NA if the sfModel was used.
+a string representing the energyType that was used for the fitting. NA if the sfModel was used.
 }
 \description{
 Extracts an energyType from a formula

@@ -121,8 +121,7 @@ resampleModelsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResam
 #' Extracts an energyType from a formula
 #' 
 #' @param formula the formula that was fitted
-#' @return a string representing the energyType that was used for the fitting. 
-#' NA if the sfModel was used.
+#' @return a string representing the energyType that was used for the fitting. NA if the sfModel was used.
 energyTypeFromFormula <- function(formula){
   if (class(formula) == "character"){
     formula <- eval(parse(text=formula))
@@ -152,7 +151,7 @@ energyTypeFromFormula <- function(formula){
 #' @param kVar the name of the capital stock variable
 #' @param lVar the name of the labor variable
 #' @param tVar the name of the time variable
-#' @return @return a list with two elements, \code{formula} and \code{nest}.
+#' @return a list with two elements, \code{formula} and \code{nest}.
 #' @details White space is removed from \code{factorString}.
 #' In the return value, \code{formula} is a formula object with factors of production
 #' in the correct order. 
