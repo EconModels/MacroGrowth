@@ -52,6 +52,68 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
   return(paste(orderedFactors, collapse=sep))
 }
 
+#' Parse a factor string
+#' 
+#' @param factorString a string of the form \code{"iK+iL+iU"}. 
+#' @param sep the separator in \code{factorString}
+#' @param rVar the name of the response variable
+#' @param kVar the name of the capital stock variable
+#' @param lVar the name of the labor variable
+#' @param tVar the name of the time variable
+#' @return a list with two elements, \code{formula} and \code{nest}.
+#' @details White space is removed from \code{factorString}.
+#' In the return value, \code{formula} is a formula object with factors of production
+#' in the correct order. 
+#' \code{nest} is an integer vector whose elements indicate nesting of the 
+#' factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production 
+#' in the formula are nested together and the 2nd factor of production 
+#' is independent. 
+parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
+  factorString <- gsub(pattern=" ", replacement="", x=factorString, fixed=TRUE) # Remove spaces
+  if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
+    # The factorString doesn't contain sep. Assume there is only one variable.
+    # We have a single-factor model
+    formula <- paste(rVar, "~", factorString, "+", rVar)
+    nest <- c(1)
+  } else {
+    vars <- unlist(strsplit(x=factorString, split=sep, fixed=TRUE))
+    nVars <- length(vars)
+    if (nVars == 2) {
+      # We have a 2-factor model with K and L
+      formula <- paste(rVar, "~", kVar, "+", lVar, "+", tVar)
+      if (vars[1] == kVar){
+        nest <- c(1,2)
+      } else if (vars[1] == lVar){
+        nest <- c(2,1)
+      } else {
+        stop(paste("Unknown factors of production for 2-factor situation:", vars, "in parseFactorString."))
+      }
+    } else if (nVars == 3){
+      # We have an energy variable and three factors
+      eVar <- na.omit(match(x=vars, table=energyTypes))
+      eVar <- energyTypes[[eVar]]
+      formula <- paste(rVar, "~", kVar, "+", lVar, "+", eVar, "+", tVar)
+      if ((vars[1]==kVar) && (vars[2]==lVar) && (vars[3]==eVar)){
+        nest <- c(1:3)
+      } else if ((vars[1]==lVar) && (vars[2]==eVar) && (vars[3]==kVar)){
+        nest <- c(2,3,1)
+      } else if ((vars[1]==eVar) && (vars[2]==kVar) && (vars[3]==lVar)){
+        nest <- c(3,1,2)
+      } else if ((vars[1]==lVar) && (vars[2]==kVar) && (vars[3]==eVar)){
+        nest <- c(2,1,3)
+      } else if ((vars[1]==eVar) && (vars[2]==lVar) && (vars[3]==kVar)){
+        nest <- c(3,2,1)
+      } else if ((vars[1]==kVar) && (vars[2]==eVar) && (vars[3]==lVar)){
+        nest <- c(1,3,2)
+      }
+    } else {
+      stop("Don't know what to do with 4 or more factors of production in parseFactorString")
+    }
+  }
+  formula <- eval(parse(text=formula))
+  return(list(formula=formula, nest=nest))
+}
+
 #' Creates an id for this run of resampling
 #' 
 #' @param fun the function used for fitting
@@ -141,68 +203,6 @@ energyTypeFromFormula <- function(formula){
     }
   }
   return(energyType)
-}
-
-#' Parse a factor string
-#' 
-#' @param factorString a string of the form \code{"iK+iL+iU"}. 
-#' @param sep the separator in \code{factorString}
-#' @param rVar the name of the response variable
-#' @param kVar the name of the capital stock variable
-#' @param lVar the name of the labor variable
-#' @param tVar the name of the time variable
-#' @return a list with two elements, \code{formula} and \code{nest}.
-#' @details White space is removed from \code{factorString}.
-#' In the return value, \code{formula} is a formula object with factors of production
-#' in the correct order. 
-#' \code{nest} is an integer vector whose elements indicate nesting of the 
-#' factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production 
-#' in the formula are nested together and the 2nd factor of production 
-#' is independent. 
-parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
-  factorString <- gsub(pattern=" ", replacement="", x=factorString, fixed=TRUE) # Remove spaces
-  if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
-    # The factorString doesn't contain sep. Assume there is only one variable.
-    # We have a single-factor model
-    formula <- paste(rVar, "~", factorString, "+", rVar)
-    nest <- c(1)
-  } else {
-    vars <- unlist(strsplit(x=factorString, split=sep, fixed=TRUE))
-    nVars <- length(vars)
-    if (nVars == 2) {
-      # We have a 2-factor model with K and L
-      formula <- paste(rVar, "~", kVar, "+", lVar, "+", tVar)
-      if (vars[1] == kVar){
-        nest <- c(1,2)
-      } else if (vars[1] == lVar){
-        nest <- c(2,1)
-      } else {
-        stop(paste("Unknown factors of production for 2-factor situation:", vars, "in parseFactorString."))
-      }
-    } else if (nVars == 3){
-      # We have an energy variable and three factors
-      eVar <- na.omit(match(x=vars, table=energyTypes))
-      eVar <- energyTypes[[eVar]]
-      formula <- paste(rVar, "~", kVar, "+", lVar, "+", eVar, "+", tVar)
-      if ((vars[1]==kVar) && (vars[2]==lVar) && (vars[3]==eVar)){
-        nest <- c(1:3)
-      } else if ((vars[1]==lVar) && (vars[2]==eVar) && (vars[3]==kVar)){
-        nest <- c(2,3,1)
-      } else if ((vars[1]==eVar) && (vars[2]==kVar) && (vars[3]==lVar)){
-        nest <- c(3,1,2)
-      } else if ((vars[1]==lVar) && (vars[2]==kVar) && (vars[3]==eVar)){
-        nest <- c(2,1,3)
-      } else if ((vars[1]==eVar) && (vars[2]==lVar) && (vars[3]==kVar)){
-        nest <- c(3,2,1)
-      } else if ((vars[1]==kVar) && (vars[2]==eVar) && (vars[3]==lVar)){
-        nest <- c(1,3,2)
-      }
-    } else {
-      stop("Don't know what to do with 4 or more factors of production in parseFactorString")
-    }
-  }
-  formula <- eval(parse(text=formula))
-  return(list(formula=formula, nest=nest))
 }
 
 #' Parses the id created by resampling
