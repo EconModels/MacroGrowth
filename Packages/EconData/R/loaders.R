@@ -48,6 +48,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   
   if (prefix  %in% c("", "coef_")) {
     for (i in 1:nFiles){
+      print(files[i])
       if (is.null(archive)){
         df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
       } else {
