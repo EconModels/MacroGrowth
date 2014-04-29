@@ -13,6 +13,7 @@
 Generate-Resamples-Batch.Rout
 data_orig/
 data_resample/
+data_resample*.zip
 data_failures/
 core
 
@@ -31,8 +32,8 @@ sims_*
 #
 EconModels.Rcheck/
 EconModels_*.tar.gz
-# Don't put this in .gitignore. Need to be here so that one can install from github.
-# Rather, delete local copies of the files in package/man before pulling from github.
+# Don't put package/man in .gitignore. It needs to be included so that one could install from github.
+# Rather, delete local copies of the files in package/man before pulling from github if there is a problem.
 # package/man/ 
 
 #
