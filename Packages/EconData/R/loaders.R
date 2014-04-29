@@ -25,7 +25,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   }
   # Keep only those files with the ".Rdata" extension
   files <- files[grepl(pattern=".Rdata", x=files, fixed=TRUE)]
-  # Remove any files that contain the string "models_". These are model files, not coefficient files.
+  # Keep only files with desired prefix
   files <- files[grepl(pattern=prefix, x=files, fixed=TRUE)]
   # Remove the .Rdata suffix from the file names.
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
@@ -48,19 +48,19 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   if (prefix  %in% c("", "coef_")) {
     for (i in 1:nFiles){
       if (is.null(archive)){
-        dat <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
+        df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
       } else {
-        dat <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+        df <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
       }
       
       # Add relevant information to the data frame
-      if ("sigma" %in% names(dat) ){
-        sigmaTrans <- ifelse(dat$sigma < 2, dat$sigma, 1.5 - dat$rho )
-        dat$sigmaTrans <- sigmaTrans
+      if ("sigma" %in% names(df) ){
+        sigmaTrans <- ifelse(df$sigma < 2, df$sigma, 1.5 - df$rho )
+        df$sigmaTrans <- sigmaTrans
       }  
-      if ("sigma_1" %in% names(dat) ){
-        sigmaTrans_1 <- ifelse(dat$sigma_1 < 2, dat$sigma_1, 1.5 - dat$rho_1 )
-        dat$sigmaTrans_1 <- sigmaTrans_1
+      if ("sigma_1" %in% names(df) ){
+        sigmaTrans_1 <- ifelse(df$sigma_1 < 2, df$sigma_1, 1.5 - df$rho_1 )
+        df$sigmaTrans_1 <- sigmaTrans_1
       }
       # Add several relevant columns to the data frame.
       countryAbbrev <- pieces[[i]][2]
@@ -68,12 +68,12 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
       nestStr <- pieces[[i]][4]
       parsedNestStr <- parseFactorString(factorString=nestStr)
       # Add the relevant information to the data frame.
-      dat$countryAbbrev <- factor(countryAbbrev)
-      dat$modelType <- factor(modelType)
-      dat$nestStr <- factor(nestStr)
-      dat$energyType <- factor(parsedNestStr[["energyType"]])
-      dat$factor <- factor(parsedNestStr[["factor"]])
-      dflist[[i]] <- dat
+      df$countryAbbrev <- factor(countryAbbrev)
+      df$modelType <- factor(modelType)
+      df$nestStr <- factor(nestStr)
+      df$energyType <- factor(parsedNestStr[["energyType"]])
+      df$factor <- factor(parsedNestStr[["factor"]])
+      dflist[[i]] <- df
     }
     return( do.call( rbind.fill, dflist ) )
   } else {
