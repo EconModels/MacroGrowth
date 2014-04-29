@@ -52,6 +52,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
       } else {
         df <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
       }
+      if (! inherits(df, "data.frame") ) next
       
       # Add relevant information to the data frame
       if ("sigma" %in% names(df) ){
@@ -68,11 +69,11 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
       nestStr <- pieces[[i]][4]
       parsedNestStr <- parseFactorString(factorString=nestStr)
       # Add the relevant information to the data frame.
-      df$countryAbbrev <- factor(countryAbbrev)
-      df$modelType <- factor(modelType)
-      df$nestStr <- factor(nestStr)
-      df$energyType <- factor(parsedNestStr[["energyType"]])
-      df$factor <- factor(parsedNestStr[["factor"]])
+      df$country <- countryAbbrev
+      df$modelType <- modelType
+      df$nestStr <- nestStr
+      df$energyType <- parsedNestStr[["energyType"]]
+      df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
     }
     return( do.call( rbind.fill, dflist ) )
