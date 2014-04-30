@@ -189,7 +189,7 @@ extractEnergyType <- function(x, eTypes=energyTypes, sep="+"){
       x <- eval(parse(text=x))
     }
   }
-  if (inherits(x ,"formua")) {
+  if (inherits(x ,"formula")) {
     # Split into a bunch of strings
     vars <- all.vars(x)
   } else if (is.character(x)) {
