@@ -74,7 +74,7 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
 #' NA otherwise.
 #' @export
 parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
-  factorString <- gsub(pattern=" ", replacement="", x=factorString, fixed=TRUE) # Remove spaces
+  factorString <- gsub(pattern=" ", replacement="", x=factorString) # Remove spaces
   energyType <- extractEnergyType(factorString)
   if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
     # The factorString doesn't contain sep. Assume there is only one variable.

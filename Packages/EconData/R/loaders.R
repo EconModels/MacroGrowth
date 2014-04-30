@@ -31,16 +31,17 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     files <- filesDF[["Name"]]
   }
   # Keep only those files with the ".Rdata" extension
-  files <- files[grepl(pattern=".Rdata", x=files, fixed=TRUE)]
+  files <- files[grepl(pattern="\\>.Rdata", x=files)]
   # Keep only files with desired prefix
-  files <- files[grepl(pattern=prefix, x=files, fixed=TRUE)]
+  files <- files[grepl(pattern=prefix, x=files)]
+  # Remove the path from the file names, if present
+  names <- sub(pattern=paste0("\\<", path), replacement="", x=files)
+  # Remove any file separators at the beginning of the names, if present.
+  names <- sub(pattern=paste0("\\<", .Platform$file.sep), replacement="", x=names)
+  # Remove the prefix from the file names, if present
+  names <- sub(pattern=paste0("\\<", prefix, sep), replacement="", x=names)
   # Remove the .Rdata suffix from the file names.
-  names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
-  # Remove the path prefix from the file names, if present
-  names <- sub(pattern=path, replacement="", x=names)
-  names <- sub(pattern=paste0(prefix, sep), replacement="", x=names)
-  # Remove any file separators, if present.
-  names <- gsub(pattern=.Platform$file.sep, replacement="", x=names, fixed=TRUE)
+  names <- sub(pattern="\\>.Rdata", replacement="", x=names)
   pieces <- strsplit( x=names, split=sep )
   keep <- sapply( pieces, 
                   function(x) { is.in(x[1],country) && is.in(x[2],model) &&  is.in(x[3],factors) } )
