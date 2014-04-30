@@ -76,9 +76,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       parsedNestStr <- parseFactorString(factorString=nestStr)
       # Add the relevant information to the data frame.
       df$country <- countryAbbrev
-      df$modelType <- modelType
+      df$model <- modelType
       df$nestStr <- nestStr
-      df$energyType <- parsedNestStr[["energyType"]]
+      df$energy <- parsedNestStr[["energyType"]]
       df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
     }
