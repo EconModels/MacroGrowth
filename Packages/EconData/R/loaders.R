@@ -18,7 +18,9 @@ is.in <- function( el, set ) {
 #' all resample files at the root level of the zip archive.
 #' @export
 loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL, 
-                               factors=NULL, sep="_", prefix="" ) {
+                               factors=NULL, sep="_", prefix=c("coeffs","models")
+                               ){
+  prefix <- match.arg(prefix)
   if (is.null(archive)){
     files <- dir(path)
   } else {
@@ -74,9 +76,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       parsedNestStr <- parseFactorString(factorString=nestStr)
       # Add the relevant information to the data frame.
       df$country <- countryAbbrev
-      df$modelType <- modelType
+      df$model <- modelType
       df$nestStr <- nestStr
-      df$energyType <- parsedNestStr[["energyType"]]
+      df$energy <- parsedNestStr[["energyType"]]
       df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
     }

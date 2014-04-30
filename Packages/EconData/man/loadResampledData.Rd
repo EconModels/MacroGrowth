@@ -4,7 +4,8 @@
 \title{Loads resampled coefficients from files}
 \usage{
 loadResampledData(path = "", archive = NULL, country = NULL,
-  model = NULL, factors = NULL, sep = "_", prefix = "")
+  model = NULL, factors = NULL, sep = "_", prefix = c("coeffs",
+  "models"))
 }
 \arguments{
   \item{path}{the directory containing the resampled
@@ -20,7 +21,7 @@ loadResampledData(path = "", archive = NULL, country = NULL,
   \item{factors}{strings of factors used in fitting the
   models.}
 
-  \item{sep}{the separator in the file names between
+  \item{sep}{the separator within the file names between
   country, model, and factors}
 
   \item{prefix}{a character string naming prefix for file
@@ -31,5 +32,10 @@ a string representing the energyType that was used for the fitting. NA if the sf
 }
 \description{
 Loads resampled coefficients from files
+}
+\details{
+Supply either \code{path} or \code{archive} arguments.
+Defaults are correct when only one is supplied, so long as archives are constructed with
+all resample files at the root level of the zip archive.
 }
 
