@@ -35,8 +35,8 @@ option_list <- list(
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
               help="resampling method [default=%default]"),
-  make_option(c("-H", "--baseHistorical"), # default="data", 
-              help="relative path to directory for historical data"),
+#  make_option(c("-H", "--baseHistorical"), # default="data", 
+#              help="relative path to directory for historical data"),
   make_option(c("-R", "--baseResample"), # default="data_resample", 
               help="relative path to directory for resample data")
 )
@@ -91,13 +91,13 @@ for(model in opts$model){
       ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                  fun = "sfModel",
                                                  formulaStr = paste("iGDP ~", factor, "+ iYear"),
-                                                 dots = list())
+                                                 dots = list(constrained=TRUE))
     }
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
-                                               dots = list())
+                                               dots = list(constrained=TRUE))
   } else if (model == "cde"){
     # Build a formula for each energy type
     formulas <- c()
@@ -107,13 +107,13 @@ for(model in opts$model){
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
                                                formulaStr = formulas,
-                                               dots = list())
+                                               dots = list(constrained=TRUE))
   } else if (model == "ces"){
     # Want a CES model without energy
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
-                                               dots = list(nest=1:2))
+                                               dots = list(nest=1:2, constrained=TRUE))
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
@@ -131,6 +131,7 @@ for(model in opts$model){
     } else {
       stop(paste("Unknown nest in formula", formula, "in batchEcon.R"))
     }
+    dots[['constrained']]=TRUE
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
                                                formulaStr = formulas,
@@ -174,10 +175,10 @@ for (m in ModelInfos) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           if (m$fun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
-            rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel )
+            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
           } else {
             # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-            rFits <- resampledFits( oModel, "wild", n=opts$resamples, id=id )
+            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), dots) ) 
           }
           rModels <- rFits[["models"]]
           rCoeffs <- rFits[["coeffs"]]
@@ -205,9 +206,9 @@ for (m in ModelInfos) {
           }
           # Get the paths for the coefficients and models files.
           coeffsPath <- resampleFilePath(prefix="coeffs", fun=m$fun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots, baseResample=baseResample)
+                                         nest=m$dots$nest, baseResample=baseResample)
           modelsPath <- resampleFilePath(prefix="models", fun=m$fun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots, baseResample=baseResample)
+                                         nest=m$dots$nest, baseResample=baseResample)
           # Ensure that the directories exist.
           dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
           dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
