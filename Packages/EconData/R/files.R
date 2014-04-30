@@ -88,42 +88,20 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
     if (nVars == 2) {
       # We have a 2-factor model with K and L
       formula <- paste(rVar, "~", kVar, "+", lVar, "+", tVar)
-      if (vars[1] == kVar){
-        nest <- c(1,2)
-      } else if (vars[1] == lVar){
-        nest <- c(2,1)
-      } else {
-        stop(paste("Unknown factors of production for 2-factor situation:", vars, "in parseFactorString."))
-      }
+      nest <- match(vars, c(kVar, lVar))
       factor <- NA
     } else if (nVars == 3){
       # We have an energy variable and three factors
-      eVar <- na.omit(match(x=vars, table=energyTypes))
-      eVar <- energyTypes[[eVar]]
+      eVar <- energyTypes[[na.omit(match(x=vars, table=energyTypes))]]
       formula <- paste(rVar, "~", kVar, "+", lVar, "+", eVar, "+", tVar)
-      ## this next bit can be deleted once we are convinced that nest2 does the trick.
-      if ((vars[1]==kVar) && (vars[2]==lVar) && (vars[3]==eVar)){
-        nest <- c(1:3)
-      } else if ((vars[1]==lVar) && (vars[2]==eVar) && (vars[3]==kVar)){
-        nest <- c(2,3,1)
-      } else if ((vars[1]==eVar) && (vars[2]==kVar) && (vars[3]==lVar)){
-        nest <- c(3,1,2)
-      } else if ((vars[1]==lVar) && (vars[2]==kVar) && (vars[3]==eVar)){
-        nest <- c(2,1,3)
-      } else if ((vars[1]==eVar) && (vars[2]==lVar) && (vars[3]==kVar)){
-        nest <- c(3,2,1)
-      } else if ((vars[1]==kVar) && (vars[2]==eVar) && (vars[3]==lVar)){
-        nest <- c(1,3,2)
-      }
-      nest2 <- match(vars, c(kVar, lVar, eVar) )
-      if (any (nest != nest2) ) {stop("Time to fix a bug?")}
+      nest <- match(vars, c(kVar, lVar, eVar) )
       factor <- NA
     } else {
       stop("Don't know what to do with 4 or more factors of production in parseFactorString")
     }
   }
   formula <- eval(parse(text=formula))
-  return(list(formula=formula, nest=nest2, factor=factor, energyType=energyType))
+  return(list(formula=formula, nest=nest, factor=factor, energyType=energyType))
 }
 
 #' Creates an id for this run of resampling
