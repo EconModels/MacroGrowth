@@ -3,8 +3,8 @@
 \alias{loadResampledData}
 \title{Loads resampled coefficients from files}
 \usage{
-loadResampledData(path, archive = NULL, country = NULL, model = NULL,
-  factors = NULL, sep = "_", prefix = "")
+loadResampledData(path = "", archive = NULL, country = NULL,
+  model = NULL, factors = NULL, sep = "_", prefix = "")
 }
 \arguments{
   \item{path}{the directory containing the resampled

@@ -9,13 +9,15 @@ is.in <- function( el, set ) {
 #' @param archive a zip archive containing resampled coefficient files
 #' @param country a country or vector of countries.
 #' @param model a model or vector of models.
-#' @param factors strings of factors used in fitting the models.
-#' @param sep the separator in the file names between country, model, and factors
+#' @param factors strings of factors used in fitting the models. 
+#' @param sep the separator within the file names between country, model, and factors
 #' @param prefix a character string naming prefix for file name.
 #' @return a string representing the energyType that was used for the fitting. NA if the sfModel was used.
-#' 
+#' @details Supply either \code{path} or \code{archive} arguments. 
+#' Defaults are correct when only one is supplied, so long as archives are constructed with 
+#' all resample files at the root level of the zip archive.
 #' @export
-loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL, 
+loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL, 
                                factors=NULL, sep="_", prefix="" ) {
   if (is.null(archive)){
     files <- dir(path)
@@ -31,7 +33,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
   names <- gsub(pattern=".Rdata", replacement="", x=files, fixed=TRUE)
   # Remove the path prefix from the file names, if present
   names <- sub(pattern=path, replacement="", x=names)
-  names <- sub(pattern=prefix, replacement="", x=names)
+  names <- sub(pattern=paste0(prefix, sep), replacement="", x=names)
   # Remove any file separators, if present.
   names <- gsub(pattern=.Platform$file.sep, replacement="", x=names, fixed=TRUE)
   pieces <- strsplit( x=names, split=sep )
@@ -46,7 +48,8 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
     stop("Unequal length for files and names in loadResampledData.")
   }
   
-  if (prefix  %in% c("", "coef_")) {
+  if (prefix %in% c("", "coeffs")) {
+    # Load the resample coefficient files
     for (i in 1:nFiles){
       if (is.null(archive)){
         df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
@@ -79,6 +82,7 @@ loadResampledData <- function( path, archive=NULL, country=NULL, model=NULL,
     }
     return( do.call( rbind.fill, dflist ) )
   } else {
+    # Load the resample model files
     modelsList <- list()
     for (i in 1:nFiles){
       if (is.null(archive)){

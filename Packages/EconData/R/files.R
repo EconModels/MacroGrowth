@@ -72,6 +72,7 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
 #' If only one factor of production, factor is set to the single factor.
 #' \code{energyType} is the energy type in this factorString, if present.
 #' NA otherwise.
+#' @export
 parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
   factorString <- gsub(pattern=" ", replacement="", x=factorString, fixed=TRUE) # Remove spaces
   energyType <- extractEnergyType(factorString)
@@ -140,16 +141,17 @@ fittingID <- function(fun, countryAbbrev, formula, nest=NULL, n, sep=" : "){
 
 #' File name for resample coefficients for the given parameters
 #' 
+#' @param prefix a prefix for the file name
 #' @param fun the function used for fitting
 #' @param countryAbbrev the country being fitted
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
 #' @return a string representing the file name for these resample coefficients.
-resampleCoeffsFileName <- function(fun, countryAbbrev, formula, nest=NULL, sep="_"){
-  # Strip "Model" off the end of fun, if present
+resampleFileName <- function(prefix, fun, countryAbbrev, formula, nest=NULL, sep="_"){
+  # Strip "Model" out of fun, if present
   modelType <- sub(pattern="Model", replacement="", x=fun)
-  f <- paste(countryAbbrev, modelType, factorString(formula=formula, nest=nest), sep=sep)
+  f <- paste(prefix, countryAbbrev, modelType, factorString(formula=formula, nest=nest), sep=sep)
   f <- paste0(f, ".Rdata")
   return(f)
 }
@@ -161,29 +163,12 @@ resampleCoeffsFileName <- function(fun, countryAbbrev, formula, nest=NULL, sep="
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
+#' @param prefix a prefix for the file name. Should not include the separator.
 #' @param baseResample the relative path of the top-level directory containing the resample data.
 #' @return a string representing the file name for these resample coefficients.
 #' @export
-resampleCoeffsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResample, sep="_"){
-  f <- resampleCoeffsFileName(fun=fun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
-  path <- file.path(baseResample, f)
-  return(path)
-}
-
-#' Calculate a resample models file name for the given parameters
-#' 
-#' @param fun the function used for fitting
-#' @param countryAbbrev the country being fitted
-#' @param formula the formula used for the fitting
-#' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
-#' @param sep the separator used to create the id string. Default is "_".
-#' @param baseResample the relative path of the top-level directory containing the resample data.
-#' @return a string representing the file name for these resample coefficients.
-#' @export
-resampleModelsPath <- function(fun, countryAbbrev, formula, nest=NULL, baseResample, sep="_"){
-  f <- paste("models", resampleCoeffsFileName(fun=fun, countryAbbrev=countryAbbrev, 
-                                              formula=formula, nest=nest, sep=sep),
-             sep=sep)
+resampleFilePath <- function(fun, countryAbbrev, formula, nest=NULL, prefix, sep="_", baseResample){
+  f <- resampleFileName(prefix=prefix, fun=fun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
   path <- file.path(baseResample, f)
   return(path)
 }

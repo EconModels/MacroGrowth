@@ -10,8 +10,6 @@
 # for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
 # ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -H data -R data_resample
 
-
-
 require(EconModels)
 require(EconData)
 suppressPackageStartupMessages(library("optparse"))
@@ -19,20 +17,6 @@ suppressPackageStartupMessages(library("optparse"))
 
 baseResample <- file.path("data_resample")
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
-
-#
-# Loads several constants that will be helpful.
-#
-# source("Scripts/Constants.R")
-
-#
-# Load several functions associated with paths and loading files.
-#
-# source("Scripts/files.R")
-
-# 
-# Start the script
-# 
 
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
@@ -220,10 +204,10 @@ for (m in ModelInfos) {
             }
           }
           # Get the paths for the coefficients and models files.
-          coeffsPath <- resampleCoeffsPath(fun=m$fun, countryAbbrev=country, formula=m$formulaStr, 
-                                           nest=m$dots, baseResample=baseResample)
-          modelsPath <- resampleModelsPath(fun=m$fun, countryAbbrev=country, formula=m$formulaStr, 
-                                           nest=m$dots, baseResample=baseResample)
+          coeffsPath <- resampleFilePath(prefix="coeffs", fun=m$fun, countryAbbrev=country, formula=f, 
+                                         nest=m$dots, baseResample=baseResample)
+          modelsPath <- resampleFilePath(prefix="models", fun=m$fun, countryAbbrev=country, formula=f, 
+                                         nest=m$dots, baseResample=baseResample)
           # Ensure that the directories exist.
           dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
           dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
