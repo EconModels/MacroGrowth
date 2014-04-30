@@ -18,19 +18,19 @@
 #' @return a string representing the nesting of the form "iQ+iK+iL", etc.
 #' An empty string if a nest is not involved.
 factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]], sep="+" ) {
-  if (class(formula) == "character"){
+  if (is.character(formula)){
     formula <- eval(parse(text=formula))
   }
   matches <- na.omit(match(x=all.vars(formula), table=factors))
   factorsPresent <- factors[matches]
-  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="") || ((class(nest) == "list") && (length(nest)==0))){
+  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="") || ( is.list(nest) && (length(nest)==0))){
     # Simply return the factors of production in the order they appear in the formula.
     return(paste(factorsPresent, collapse=sep))
   }
   # We have a nest.
-  if (class(nest) == "list"){
-    # nest is a list. Grab the "nest" item and see if it has class integer
-    if ((class(nest[["nest"]]) == "integer") || (class(nest[["nest"]]) == "numeric")){
+  if (is.list(nest)){
+    # nest is a list. Grab the "nest" item and see if it is of integer type
+    if ( is.integer(nest[["nest"]]) ){
       nest <- nest[["nest"]]
     } else {
       # give up
@@ -41,7 +41,7 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
     # This is a problem. Need to have as many nest items as factors of production.
     stop(paste("length(nest) =", length(nest), 
                "and length(factorsPresent) =", length(factorsPresent), 
-               ": They should be equal."))
+               ". They should be equal."))
   }
   if (length(nest) < 2){
     # Only one factor of production. Return it.
@@ -101,6 +101,7 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
       eVar <- na.omit(match(x=vars, table=energyTypes))
       eVar <- energyTypes[[eVar]]
       formula <- paste(rVar, "~", kVar, "+", lVar, "+", eVar, "+", tVar)
+      ## this next bit can be deleted once we are convinced that nest2 does the trick.
       if ((vars[1]==kVar) && (vars[2]==lVar) && (vars[3]==eVar)){
         nest <- c(1:3)
       } else if ((vars[1]==lVar) && (vars[2]==eVar) && (vars[3]==kVar)){
@@ -114,13 +115,15 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
       } else if ((vars[1]==kVar) && (vars[2]==eVar) && (vars[3]==lVar)){
         nest <- c(1,3,2)
       }
+      nest2 <- match(vars, c(kVar, lVar, eVar) )
+      if (any (nest != nest2) ) {stop("Time to fix a bug?")}
       factor <- NA
     } else {
       stop("Don't know what to do with 4 or more factors of production in parseFactorString")
     }
   }
   formula <- eval(parse(text=formula))
-  return(list(formula=formula, nest=nest, factor=factor, energyType=energyType))
+  return(list(formula=formula, nest=nest2, factor=factor, energyType=energyType))
 }
 
 #' Creates an id for this run of resampling
@@ -180,16 +183,16 @@ resampleFilePath <- function(fun, countryAbbrev, formula, nest=NULL, prefix, sep
 #' @param sep the separator for the formula or factorString
 #' @return a string representing the energyType that was used for the fitting. NA if no energy type was found.
 extractEnergyType <- function(x, eTypes=energyTypes, sep="+"){
-  if (class(x) == "character"){
+  if (is.character(x)){
     # Try to coerce to a formula
     if (grepl(pattern="~", x=x, fixed=TRUE)){
       x <- eval(parse(text=x))
     }
   }
-  if (class(x) == "formula"){
+  if (inherits(x ,"formua")) {
     # Split into a bunch of strings
     vars <- all.vars(x)
-  } else if (class(x) == "character"){
+  } else if (is.character(x)) {
     # Split at the separator
     vars <- unlist(strsplit(x=x, split=sep, fixed=TRUE))
   }
