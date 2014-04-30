@@ -82,7 +82,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
     }
-    return( do.call( rbind.fill, dflist ) )
+    res <- do.call( rbind.fill, dflist ) 
+    return(res)
   } else {
     # Load the resample model files
     modelsList <- list()
