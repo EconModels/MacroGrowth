@@ -18,7 +18,9 @@ is.in <- function( el, set ) {
 #' all resample files at the root level of the zip archive.
 #' @export
 loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL, 
-                               factors=NULL, sep="_", prefix="" ) {
+                               factors=NULL, sep="_", prefix=c("coeffs","models")
+                               ){
+  prefix <- match.arg(prefix)
   if (is.null(archive)){
     files <- dir(path)
   } else {
