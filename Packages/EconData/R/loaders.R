@@ -56,7 +56,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       if (is.null(archive)){
         df <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
       } else {
-        df <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+        connection <- gzcon(unz(archive, files[i])) 
+        df <- readRDS ( connection )  # Read files from the archive
+        close(connection)
       }
       if (! inherits(df, "data.frame") ) next
       
@@ -91,7 +93,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       if (is.null(archive)){
         dat <- readRDS ( file.path(path, files[i]) ) # Read files from the directory on disk
       } else {
-        dat <- readRDS ( gzcon(unz(archive, files[i])) ) # Read files from the archive
+        connection <- gzcon(unz(archive, files[i])) 
+        dat <- readRDS ( connection ) # Read files from the archive
+        close(connection)
       }
       modelsList <- c(modelsList, dat)
     }
