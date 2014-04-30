@@ -1,3 +1,6 @@
+
+#' @importFrom plyr rbind.fill
+
 is.in <- function( el, set ) {
   if (is.null(set)) { return( rep(TRUE, length(el) ) ) }
   is.element(el, set)
