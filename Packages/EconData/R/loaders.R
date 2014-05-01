@@ -15,9 +15,9 @@ is.in <- function( el, set ) {
 #' @param factors strings of factors used in fitting the models. 
 #' @param sep the separator within the file names between country, model, and factors
 #' @param kind a character string that identifies which kind of resampled data to load.
-#' @param historicalData data frame containing historical data, for \code{kind="fitted"}
-#' @param oModels the original fits to historical data, for \code{kind="fitted"}
-#' @return a string representing the energyType that was used for the fitting. NA if the sfModel was used.
+#' @return a data frame containing resampled coefficients (if \code{kind="coeffs"}),
+#' a list of models which contain the resample fits (if \code{kind="models"}), or
+#' a data frame containing resampled fits to the response variable (if \code{kind="fitted"}).
 #' @details Supply either \code{path} or \code{archive} arguments. 
 #' Defaults are correct when only one is supplied, so long as archives are constructed with 
 #' all resample files at the root level of the zip archive.
@@ -27,9 +27,7 @@ is.in <- function( el, set ) {
 #' \code{"fitted"}, to load fits to resampled data.
 #' @export
 loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL, 
-                               factors=NULL, sep="_", kind=c("coeffs","models","fitted"), 
-                               historicalData=NULL,
-                               oModels=NULL){
+                               factors=NULL, sep="_", kind=c("coeffs","models","fitted") ){
   kind <- match.arg(kind)
   if (kind == "fitted"){
     prefix <- "models"
@@ -147,8 +145,12 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     nestStr <- pieces[[i]][3]
     parsedNestStr <- parseFactorString(factorString=nestStr)
     
+    
+    # Add the fit to historical data
+    # The first model is the fit to historical data. It also contains the original data.
+    origModel <- modelsList[[1]]
     # Add actual (historical) data
-    actual <- subset(x=historicalData, subset=Country==countryAbbrev)      
+    actual <- attr(x=origModel, which="data")
     actual <- actual[c("Year", "iGDP", "Country")]
     actual$ResampleNumber <- NA
     actual$Type <- "actual"
@@ -159,9 +161,21 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # actual data to show up in the correct panel on a spaghetti graph.
     actual$nest <- nestStr
     
-    # Add the fit to historical data
-    origModel <- oModels[[factor(countryAbbrev)]][[factor(modelType)]][[factor(nestStr)]]
+    
+    
+    
     fit <- fitted(origModel)
+    pred <- actual
+    pred$iGDP <- fit
+    pred$ResampleNumber <- NA
+    pred$Type <- "fitted"
+    pred$Resampled <- FALSE
+    pred$Energy <- parsedNestStr[["energyType"]]
+    pred$nest <- nestStr
+    
+    # Add the resample fits
+#     for (rModel in modelsList)
+    
     
   }
   

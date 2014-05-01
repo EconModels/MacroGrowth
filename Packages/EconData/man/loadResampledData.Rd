@@ -5,7 +5,7 @@
 \usage{
 loadResampledData(path = "", archive = NULL, country = NULL,
   model = NULL, factors = NULL, sep = "_", kind = c("coeffs", "models",
-  "fitted"), historicalData = NULL, oModels = NULL)
+  "fitted"), historicalData = NULL)
 }
 \arguments{
   \item{path}{the directory containing the resampled
@@ -28,13 +28,12 @@ loadResampledData(path = "", archive = NULL, country = NULL,
   of resampled data to load.}
 
   \item{historicalData}{data frame containing historical
-  data, for \code{kind="fitted"}}
-
-  \item{oModels}{the original fits to historical data, for
-  \code{kind="fitted"}}
+  data, used by \code{kind="fitted"}}
 }
 \value{
-a string representing the energyType that was used for the fitting. NA if the sfModel was used.
+a data frame containing resampled coefficients (if \code{kind="coeffs"}),
+a list of models which contain the resample fits (if \code{kind="models"}), or
+a data frame containing resampled fits to the response variable (if \code{kind="fitted"}).
 }
 \description{
 Loads resampled coefficients, models, or fits from files
