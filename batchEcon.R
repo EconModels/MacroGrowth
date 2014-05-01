@@ -29,6 +29,8 @@ option_list <- list(
               help="model [default=%default]"),
   make_option(c("-n", "--resamples"), default=10L, type="integer",
               help="number of resamples [default=%default]"),
+  make_option(c("-F", "--constraintFree"), default=FALSE, action="store_true",
+              help="disregard constraints on model parameters [default=%default]"),
   make_option(c("-C", "--clobber"), default=FALSE, action="store_true",
               help="Clobber all previous files [default=%default]"),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
@@ -91,13 +93,13 @@ for(model in opts$model){
       ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                  fun = "sfModel",
                                                  formulaStr = paste("iGDP ~", factor, "+ iYear"),
-                                                 dots = list(constrained=TRUE))
+                                                 dots = list(constrained= ! opts$constraintFree))
     }
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
-                                               dots = list(constrained=TRUE))
+                                               dots = list(constrained= ! opts$constraintFree))
   } else if (model == "cde"){
     # Build a formula for each energy type
     formulas <- c()
@@ -107,13 +109,13 @@ for(model in opts$model){
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cdModel",
                                                formulaStr = formulas,
-                                               dots = list(constrained=TRUE))
+                                               dots = list(constrained= ! opts$constraintFree))
   } else if (model == "ces"){
     # Want a CES model without energy
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
-                                               dots = list(nest=1:2, constrained=TRUE))
+                                               dots = list(nest=1:2))
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
     # Want a CES model with energy
     # Build a formula for each energy type
@@ -131,7 +133,6 @@ for(model in opts$model){
     } else {
       stop(paste("Unknown nest in formula", formula, "in batchEcon.R"))
     }
-    dots[['constrained']]=TRUE
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
                                                fun = "cesModel",
                                                formulaStr = formulas,
@@ -161,6 +162,7 @@ cat('\n')
 All <- Econ2011
 
 registerDoParallel()
+# print(ModelInfos)
 
 for (m in ModelInfos) {
   for (f in m$formulaStr) {
@@ -170,15 +172,15 @@ for (m in ModelInfos) {
         cdata <- subset(All, Country==country)
         formula <- eval( parse( text=f ) )
         id <- fittingID(fun=m$fun, countryAbbrev=country, formula=f, nest=m$dots$nest, n=opts$resamples)
-        cat(id); cat("\n")
+        cat(id); cat("\n\n")
         if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           if (m$fun == "cesModel") {
-            # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.
+            # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.  
             rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
           } else {
             # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), dots) ) 
+            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), m$dots) ) 
           }
           rModels <- rFits[["models"]]
           rCoeffs <- rFits[["coeffs"]]
@@ -220,6 +222,7 @@ for (m in ModelInfos) {
       error=function(e) {
         cat(paste0("  *** Skipping ", id, "\n"))
         print(e)
+        # print(list( m$fun, c( list( formula, data=cdata ), m$dots) ) )
       }
       )
     }
