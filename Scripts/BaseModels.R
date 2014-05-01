@@ -68,11 +68,9 @@ for (country in Countries) {
         
         tryCatch({
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          if (is.null(m$dots$nest)) {
-            oModels[[country]][[m$fun]][[formulaStr]] <- oModel
-          } else {
-            oModels[[country]][[m$fun]][[formulaStr]][[nestStr(m$dots$nest)]] <- oModel
-          }
+          mod <- sub(pattern="Model", replacement="", x=m$fun)
+          fs <- factorString(formula=formula, nest=m$dots$nest)
+          oModels[[country]][[mod]][[fs]] <- oModel
         }, 
         error=function(e) {
           cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
