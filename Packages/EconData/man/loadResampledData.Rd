@@ -5,7 +5,7 @@
 \usage{
 loadResampledData(path = "", archive = NULL, country = NULL,
   model = NULL, factors = NULL, sep = "_", kind = c("coeffs", "models",
-  "fitted"), historicalData = NULL)
+  "fitted"))
 }
 \arguments{
   \item{path}{the directory containing the resampled
@@ -26,9 +26,6 @@ loadResampledData(path = "", archive = NULL, country = NULL,
 
   \item{kind}{a character string that identifies which kind
   of resampled data to load.}
-
-  \item{historicalData}{data frame containing historical
-  data, used by \code{kind="fitted"}}
 }
 \value{
 a data frame containing resampled coefficients (if \code{kind="coeffs"}),

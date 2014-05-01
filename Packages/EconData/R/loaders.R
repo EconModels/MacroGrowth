@@ -138,6 +138,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     stop(paste("oModels needs to be a list in loadResampledData. Is a", class(oModels)))
   }
   
+  outgoing <- data.frame()
   for (i in 1:nFiles){
     # Gather several pieces of interesting information
     countryAbbrev <- pieces[[i]][1]
@@ -145,11 +146,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     nestStr <- pieces[[i]][3]
     parsedNestStr <- parseFactorString(factorString=nestStr)
     
-    
-    # Add the fit to historical data
     # The first model is the fit to historical data. It also contains the original data.
     origModel <- modelsList[[1]]
-    # Add actual (historical) data
+    # Extract the data frame containing the actual (historical) data
     actual <- attr(x=origModel, which="data")
     actual <- actual[c("Year", "iGDP", "Country")]
     actual$ResampleNumber <- NA
@@ -161,11 +160,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # actual data to show up in the correct panel on a spaghetti graph.
     actual$nest <- nestStr
     
-    
-    
-    
-    fit <- fitted(origModel)
+    # Get the fit to the original data
     pred <- actual
+    fit <- yhat(origModel)
     pred$iGDP <- fit
     pred$ResampleNumber <- NA
     pred$Type <- "fitted"
@@ -173,12 +170,18 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     pred$Energy <- parsedNestStr[["energyType"]]
     pred$nest <- nestStr
     
-    # Add the resample fits
-#     for (rModel in modelsList)
-    
-    
+    # Add the resampled fits. 
+    # The resample models are the 2nd through nFiles models in the modelsList
+    dfList <- list()
+    for (rModel in modelsList[2:nFiles]){
+      i <- length(dfList) + 1
+      dfList[[i]] <- pred
+      fit <- yhat(rModel)
+      dfList[[i]]$iGDP <- fit
+      dfList[[i]]$ResampleNumber <- i
+      dfList[[i]]$Resampled <- TRUE
+    }
+    outgoing <- do.call("rbind", c(list(actual,pred), dfList) )
   }
-  
-  
-  
+  return(outgoing)
 }
