@@ -2,6 +2,7 @@
 
 export(countryAbbrevs)
 export(energyTypes)
+export(factorString)
 export(factors)
 export(fittingID)
 export(loadAllResampleData)
