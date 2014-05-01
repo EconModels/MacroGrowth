@@ -48,11 +48,10 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
-coefs <- list()
 
 for (country in Countries) {
   cdata <- subset(All, Country==country)
@@ -81,8 +80,6 @@ for (country in Countries) {
     }
   }
 }
-
-# coefs2 <- do.call(rbind.fill, coefs)
 
 saveRDS(oModels, file="data_resample/oModels.Rdata")
 
