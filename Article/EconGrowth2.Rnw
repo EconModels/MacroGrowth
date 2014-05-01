@@ -146,7 +146,7 @@ archive <- file.path("..", "data_resample_2014-04-29_Refactored-EconData_n=2.zip
 # baseResample <- "data_resample" # Define the directory within the archive wherein we can find the data.
 # Load the fits to the original historical data out of the archive we're using.
 # This object (oModels) should be passed in to functions that need information from orig fits.
-f <- gzcon(unz(archive, file.path("oModels.Rdata")))
+f <- gzcon(unz(description=archive, filename=file.path("oModels.Rdata")))
 oModels <- readRDS(f)
 close(f)
 
