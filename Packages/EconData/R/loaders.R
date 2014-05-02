@@ -173,15 +173,29 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
     dfList <- list()
-    resampleModels <- modelsList[-1] # Cycle through all the models, except the original model
-    nModels <- length(resampleModels)
-    for (j in 1:nModels){
-      resampleDF <- pred
-      resampleDF$iGDP <- yhat(resampleModels[[j]])
-      resampleDF$resampleNumber <- j
-      resampleDF$resampled <- TRUE
-      dfList[[length(dfList) + 1]] <- resampleDF
-    }
+#    resampleModels <- modelsList[-1] # Cycle through all the models, except the original model
+#    nModels <- length(resampleModels)
+#    for (j in 1:nModels){
+#      resampleDF <- pred
+#      resampleDF$iGDP <- yhat(resampleModels[[j]])
+#      resampleDF$resampleNumber <- j
+#      resampleDF$resampled <- TRUE
+#      dfList[[length(dfList) + 1]] <- resampleDF
+#    }
+
+# can we do something less drastic (using environments or frames) here?
+    j <<- 0
+    dfList <- lapply( modelsList[-1], function(m) {
+      j <<- j+1
+      return( transform(pred,
+        iGDP = yhat(m),
+        resampleNumber = j,
+        resampled=TRUE
+      ))
+    } 
+    
+    
+    # can this become one line?
     temp <- do.call("rbind", c(list(actual, pred), dfList))
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
   }
