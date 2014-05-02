@@ -123,9 +123,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     return(modelsList)
   }
   
-  # We want a data frame containing the historical data (Type column is "actual" and Resampled column is FALSE), 
-  # the "orig" fit to historical data (Type column is "fitted" and Resampled column is FALSE), and
-  # and all of the fits to resampled data (Type column is "fitted" and Resampled column is TRUE).  
+  # We want a data frame containing the historical data (type column is "actual" and Resampled column is FALSE), 
+  # the "orig" fit to historical data (type column is "fitted" and Resampled column is FALSE), and
+  # and all of the fits to resampled data (type column is "fitted" and Resampled column is TRUE).  
   outgoing <- data.frame()
   for (i in 1:nFiles){
     # Get the models associated with this file.
