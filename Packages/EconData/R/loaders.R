@@ -187,15 +187,14 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     j <<- 0
     dfList <- lapply( modelsList[-1], function(m) {
       j <<- j+1
-      return( transform(pred,
-        iGDP = yhat(m),
-        resampleNumber = j,
-        resampled=TRUE
-      ))
+      return( 
+        transform(pred,
+                  iGDP = yhat(m),
+                  resampleNumber = j,
+                  resampled=TRUE
+        ))
     } 
     
-    
-    # can this become one line?
     temp <- do.call("rbind", c(list(actual, pred), dfList))
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
   }
