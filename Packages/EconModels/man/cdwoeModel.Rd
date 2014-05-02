@@ -27,8 +27,8 @@ cdwoeModel(formula, data, response, capital, labor, time, constrained = FALSE,
   \item{time}{instead of specifying a formula, expressions
   for the components can be specified individually.}
 
-  \item{contrained}{a logical indicating whether the
-  parameters are contrained}
+  \item{constrained}{a logical indicating whether the
+  parameters are constrained}
 }
 \value{
 a CDEmodel object, which is an lm object with some additional attributes.
