@@ -195,7 +195,7 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
                              constrained=FALSE, save.data=TRUE, ...) {
   if (missing(formula)) {
     if (missing(energy)) {
-      return( cdeModel( data=data, responses=response, capital=capital, labor=labor,
+      return( cdwoeModel( data=data, responses=response, capital=capital, labor=labor,
                         time=time, constrained = constrained, save.data=save.data, ...) )
     } else {
       return( cdeModel( data=data, responses=response, capital=capital, labor=labor,
@@ -225,7 +225,7 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param contrained a logical indicating whether the parameters are contrained
+#' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 cdwoeModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
                     save.data=TRUE, ...) {
