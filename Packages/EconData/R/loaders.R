@@ -56,17 +56,20 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   names <- sub(pattern="\\>.Rdata", replacement="", x=names)
   pieces <- strsplit( x=names, split=sep )
   keep <- sapply( pieces, 
-                  function(x) { is.in(x[1],country) && is.in(x[2],model) &&  is.in(x[3],factors) } )
+                  function(x) { is.in(x[1],country) && is.in(x[2],model) &&  
+                                  is.in(x[3],factors) } )
   files <- files[ keep ]
   pieces <- pieces[keep]  
   dflist <- list()
   nFiles <- length(files)
   
+
+  
   if (length(pieces) != nFiles){
     stop("Unequal length for files and names in loadResampledData.")
   }
   
-  if (kind %in% c("", "coeffs")) {
+  if (kind == "coeffs") {
     # Load data from the resample coefficient files
     for (i in 1:nFiles){
       if (is.null(archive)){
@@ -87,8 +90,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
         sigmaTrans_1 <- ifelse(df$sigma_1 < 2, df$sigma_1, 1.5 - df$rho_1 )
         df$sigmaTrans_1 <- sigmaTrans_1
       }
-      # Add relevant information to the data frame.
-      # Gather several pieces of interesting information
+      
       countryAbbrev <- pieces[[i]][1]
       modelType <- pieces[[i]][2]
       nestStr <- pieces[[i]][3]
@@ -135,29 +137,29 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       close(connection)
     }
 
-    # Gather several pieces of interesting information
-    countryAbbrev <- pieces[[i]][1]
-    modelType <- pieces[[i]][2]
-    nestStr <- pieces[[i]][3]
-    parsedNestStr <- parseFactorString(factorString=nestStr)
-    
     # The first model is the fit to historical data. 
     # The model object also contains the original data as an attribute
     # if the model was created with save.data=TRUE.
     origModel <- modelsList[[1]]
     # Extract the data frame containing the actual (historical) data
-    actual <- attr(x=origModel, which="data")
+    actual <- attr(origModel, "data")
     actual <- actual[c("Year", "iGDP", "Country")]
     row.names(actual) <- NULL # Eliminates row names if they are present.
-    actual$ResampleNumber <- NA
-    actual$Type <- "actual"
-    actual$Resampled <- FALSE
+    
+    countryAbbrev <- pieces[[i]][1]
+    modelType <- pieces[[i]][2]
+    nestStr <- pieces[[i]][3]
+    parsedNestStr <- parseFactorString(factorString=nestStr)
+    
+    actual$resampleNumber <- NA
+    actual$type <- "actual"
+    actual$resampled <- FALSE
     actual$factor <- parsedNestStr[["factor"]]
     # The historical data doesn't really have an "energy" associated with it.
     # But, setting the Energy column to the requested energyType will allow this
     # actual data to show up in the correct facet on any graphs that facet on energyType.
-    actual$Energy <- parsedNestStr[["energyType"]]
-    actual$modelType <- modelType
+    actual$energy <- parsedNestStr[["energyType"]]
+    actual$model <- modelType
     # The historical data doesn't really have a "nest" associated with it.
     # But, setting the nest column to the requested nest will allow this
     # actual data to show up in the correct facet on any graphs that factet on nest.
@@ -166,7 +168,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # Get the fit to the original data
     pred <- actual
     pred$iGDP <- yhat(origModel)
-    pred$Type <- "fitted"
+    pred$type <- "fitted"
     
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
@@ -176,8 +178,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     for (j in 1:nModels){
       resampleDF <- pred
       resampleDF$iGDP <- yhat(resampleModels[[j]])
-      resampleDF$ResampleNumber <- j
-      resampleDF$Resampled <- TRUE
+      resampleDF$resampleNumber <- j
+      resampleDF$resampled <- TRUE
       dfList[[length(dfList) + 1]] <- resampleDF
     }
     temp <- do.call("rbind", c(list(actual, pred), dfList))
