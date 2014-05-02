@@ -31,7 +31,6 @@ HISTDIR="$LOC_PATH/data"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-# ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m sf,cd,cde,ces,linex $1 &> $OUTDIR/node-01.txt" &
 ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m sf,cd,cde,ces,linex -R $OUTDIR $1 &> $OUTDIR/node-01.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
