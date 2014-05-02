@@ -194,6 +194,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
                   resampled=TRUE
         ))
     } 
+    )
     
     temp <- do.call("rbind", c(list(actual, pred), dfList))
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
