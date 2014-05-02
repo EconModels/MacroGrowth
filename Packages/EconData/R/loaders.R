@@ -121,23 +121,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     return(modelsList)
   }
   
-  # We want a data frame containing the historical data, the "orig" fit to historical data,
-  # and all of the fits to resampled data.
-  # We may need to access original models many times. Load them all once before the big loop.
-  if (is.character(oModels)){
-    # Try to load it from disk
-    if (is.null(archive)) {
-      oModels <- readRDS(file=oModels)   
-    } else {
-      f <- gzcon(unz(archive, oModels))
-      oModels <- readRDS(f)
-      close(f)
-    }
-  }
-  if (! is.list(oModels)){
-    stop(paste("oModels needs to be a list in loadResampledData. Is a", class(oModels)))
-  }
-  
+  # We want a data frame containing the historical data (Type column is "actual" and Resampled column is FALSE), 
+  # the "orig" fit to historical data (Type column is "fitted" and Resampled column is FALSE), and
+  # and all of the fits to resampled data (Type column is "fitted" and Resampled column is TRUE).  
   outgoing <- data.frame()
   for (i in 1:nFiles){
     # Gather several pieces of interesting information
@@ -154,21 +140,19 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     actual$ResampleNumber <- NA
     actual$Type <- "actual"
     actual$Resampled <- FALSE
-    actual$Energy <- NA
+    # The historical data doesn't really have an "energy" associated with it.
+    # But, setting the Energy column to the requested energyType will allow this
+    # actual data to show up in the correct facet on any graphs that facet on energyType.
+    actual$Energy <- parsedNestStr[["energyType"]]
     # The historical data doesn't really have a "nest" associated with it.
-    # But, setting the nest column to the desired nest will allow this
-    # actual data to show up in the correct panel on a spaghetti graph.
+    # But, setting the nest column to the requested nest will allow this
+    # actual data to show up in the correct facet on any graphs that factet on nest.
     actual$nest <- nestStr
     
     # Get the fit to the original data
     pred <- actual
-    fit <- yhat(origModel)
-    pred$iGDP <- fit
-    pred$ResampleNumber <- NA
+    pred$iGDP <- yhat(origModel)
     pred$Type <- "fitted"
-    pred$Resampled <- FALSE
-    pred$Energy <- parsedNestStr[["energyType"]]
-    pred$nest <- nestStr
     
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
@@ -176,8 +160,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     for (rModel in modelsList[2:nFiles]){
       i <- length(dfList) + 1
       dfList[[i]] <- pred
-      fit <- yhat(rModel)
-      dfList[[i]]$iGDP <- fit
+      dfList[[i]]$iGDP <- yhat(rModel)
       dfList[[i]]$ResampleNumber <- i
       dfList[[i]]$Resampled <- TRUE
     }
