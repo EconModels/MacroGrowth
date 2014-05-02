@@ -152,10 +152,12 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     actual$ResampleNumber <- NA
     actual$Type <- "actual"
     actual$Resampled <- FALSE
+    actual$factor <- parsedNestStr[["factor"]]
     # The historical data doesn't really have an "energy" associated with it.
     # But, setting the Energy column to the requested energyType will allow this
     # actual data to show up in the correct facet on any graphs that facet on energyType.
     actual$Energy <- parsedNestStr[["energyType"]]
+    actual$modelType <- modelType
     # The historical data doesn't really have a "nest" associated with it.
     # But, setting the nest column to the requested nest will allow this
     # actual data to show up in the correct facet on any graphs that factet on nest.
