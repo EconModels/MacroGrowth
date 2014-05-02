@@ -160,8 +160,8 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   
   attr(res, "naturalCoeffs") <- naturalCoeffs
   
-  sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  sdata <- subset(data, select = all.vars(formula))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
@@ -240,7 +240,8 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   }
   
   sdata <- subset(data, select= all.vars(formula))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
+  
   
   formulas <- list(
     log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
@@ -343,7 +344,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
     )
   }
   sdata <- subset(data, select = all.vars(formula))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
   formulas <- list( 
     log(y) - log(energy) ~ 
@@ -551,7 +552,7 @@ cesModel <- function(formula, data,
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
   #  sdata <- subset(data, select = all.vars(formula))
-  #  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  #  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
   models <- list()
   for (algorithm in algorithms) {
@@ -861,8 +862,8 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   attr(res, "naturalCoeffs") <- naturalCoeffs
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iK","iL","rho_k","rho_l"))
-  sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  sdata <- subset(data, select = all.vars(formula))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   if (save.data) {
     attr(res, "data") <- sdata
   }
