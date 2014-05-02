@@ -239,6 +239,9 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
     )
   }
   
+  sdata <- subset(data, select= all.vars(formula))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  
   formulas <- list(
     log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
     log(iGDP) - log(iK) ~ iYear,  
@@ -256,7 +259,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                                           )
                       )
   )
-  res <- lm(formulas[[1]], data=data)
+  res <- lm(formulas[[1]], data=sdata)
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
   # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
@@ -267,10 +270,10 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        res <- lm( formulas[[2]], data=data )
+        res <- lm( formulas[[2]], data=sdata )
       } else {
         alpha <- 1.0
-        res <- lm( formulas[[3]], data=data )
+        res <- lm( formulas[[3]], data=sdata )
       }
       # Refit for lambda only
       names(res$coefficients) <- c("logscale", "lambda")
@@ -286,8 +289,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                               isConv = TRUE  # res$convInfo$isConv
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
-  sdata <- subset(data, select= all.vars(res$terms))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+
   if (save.data) {
     attr(res, "data") <- sdata
   }
@@ -340,6 +342,9 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
                            )
     )
   }
+  sdata <- subset(data, select = all.vars(formula))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
+  
   formulas <- list( 
     log(y) - log(energy) ~ 
       time + I(log(capital) - log(energy)) + I(log(labor) - log(energy)),  
@@ -373,8 +378,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
     c("logscale", "lambda"),
     c("logscale", "lambda")
   )
-  #  models <- lapply( formulas, function(form)  m <- lm( form, data=data )  )
-  models <- lapply( formulas, function(form)  lm( form, data=data )  )
+  models <- lapply( formulas, function(form)  lm( form, data=sdata )  )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
   if ( constrained ) {
     good <- sapply( models, respectsConstraints)
@@ -424,8 +428,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
   attr(res, "formula") <-  formula
-  sdata <- subset(data, select = all.vars(res$terms))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(res$terms), names(data)))]
   if (save.data) { attr(res, "data") <- sdata }
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   
