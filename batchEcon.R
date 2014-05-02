@@ -172,7 +172,7 @@ for (m in ModelInfos) {
         cdata <- subset(All, Country==country)
         formula <- eval( parse( text=f ) )
         id <- fittingID(fun=m$fun, countryAbbrev=country, formula=f, nest=m$dots$nest, n=opts$resamples)
-        cat(id); cat("\n\n")
+        cat(id); cat("\n")
         if (! opts$debug) {
           oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
           if (m$fun == "cesModel") {
