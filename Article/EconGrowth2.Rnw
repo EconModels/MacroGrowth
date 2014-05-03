@@ -1610,6 +1610,9 @@ cesCoeffsData <- loadResampledData(archive=archive,
                                    model="ces", 
                                    factors=c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"), 
                                    kind="coeffs")
+# Rearrange the country factors to obtain our preferred ordering.
+cesCoeffsData$country <- as.factor(cesCoeffsData$country)
+for (lev in rev(countryAbbrevs)) { cesCoeffsData$country <- relevel(cesCoeffsData$country, ref=lev) }
 standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStr, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -1735,6 +1738,9 @@ linexCoeffsData <- loadResampledData(archive=archive,
                                      model="linex", 
                                      factors=c("iK+iL+iQ"), 
                                      kind="coeffs")
+# Rearrange the country factors to obtain our preferred ordering.
+linexCoeffsData$country <- as.factor(linexCoeffsData$country)
+for (lev in rev(countryAbbrevs)) { linexCoeffsData$country <- relevel(linexCoeffsData$country, ref=lev) }
 
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
