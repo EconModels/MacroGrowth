@@ -6,7 +6,6 @@
 .RData
 *.Rproj
 /cache
-
 #
 # Files created by resampling
 #
@@ -16,17 +15,19 @@ data_resample/
 data_resample*.zip
 data_failures/
 core
-
+#
+# Data files
 # 
+AllCoef.rda
+AllFitted.rda
+#
 # Files related to running the batch.bash script
 #
 node*.txt
-
 #
 # Directories used by convention for analysis
 #
 sims_*
-
 #
 # Files related to creating an R package
 #
@@ -34,13 +35,11 @@ EconModels.Rcheck/
 EconModels_*.tar.gz
 # Don't put package/man in .gitignore. It needs to be included so that one could install from github.
 # Rather, delete local copies of the files in package/man before pulling from github if there is a problem.
-# package/man/ 
-
+# package/man/
 #
 # Files created by vim
 #
 *~
-
 #
 # Files created by LaTeX
 #
@@ -64,7 +63,6 @@ ExperimentingWithPlots.pdf
 *.blg
 figure/
 *.notes
-
 #
 # Files created by beamer
 #
