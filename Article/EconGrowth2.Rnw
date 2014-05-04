@@ -142,7 +142,7 @@ historicalData <- Econ2011 # From the EconData package
 
 # Set up for loading resample results
 # We need to define a directory path from "Article" to the resample data results
-archive <- file.path("..", "data_resample_2014-05-01_Refactored-EconData_n=1000.zip")
+archive <- file.path("..", "data_resample_2014-05-02_Refactored-EconData_n=1000.zip")
 # baseResample <- "data_resample" # Define the directory within the archive wherein we can find the data.
 # Load the fits to the original historical data out of the archive we're using.
 # This object (oModels) should be passed in to functions that need information from orig fits.
@@ -152,7 +152,7 @@ close(f)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -172,7 +172,7 @@ opts_chunk$set(
 )
 @
 
-<<constants, include=FALSE>>=
+<<constants, include=FALSE, eval=TRUE>>=
 # Graph Heights
 maxHeight <- 8.5 # Inches
 ninePanelScatterGraphHeight <- maxHeight # Inches
@@ -992,10 +992,10 @@ the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic time-depend
 term but assumes energy ($e$) is the only factor of production.
 
 This model does, however, 
-instead includes terms that represent % physical factors:
+instead includes terms that represent
 efficiencies among capital, labor, and energy, which are included
 in the model in the form of 
-the quantities $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
+the ratios $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
 for the LINEX model breaks from the conventions used in the previous
 models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
 %
@@ -1020,11 +1020,11 @@ The effect of energy ($e$) on production is enhanced if either
 According to the LINEX model, an economy that increases 
 capital stock ($k$) without a commensurate increase in labor ($l$) 
 and energy ($e$) will experience an increase in output ($y$) in excess 
-of its increase of energy consumption ($e$), because in that case
+of its increase of energy consumption ($e$), because
 \(
 \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
     + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]}
-	> 1 \;.
+	> 1.
 \) 
 Similarly, an economy benefits by increasing labor ($l$) 
 without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an 
@@ -1032,9 +1032,9 @@ efficiency of using additional labor and energy to make
 additional capital stock available to the economy, 
 and $\rho_l$ is an efficiency of using additional energy to make 
 additional labor available to the economy. 
-$a_0$ represents the overall importance of these efficiencies, 
-and $c_t$ represents the relative importance 
-of the labor efficiency term compared to the capital stock efficiency term. 
+The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
+and the parameter $c_t$ represents the relative importance 
+of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
 % We treat $a_0$ and $c_t$ as fitting parameters; 
 % both are assumed constant with respect to time. 
 
