@@ -988,15 +988,14 @@ was derived from thermodynamic considerations
 %the natural logarithm. 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
-the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic time-dependent
-term but assumes energy ($e$) is the only factor of production.
+the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
+time-dependent augmentation term ($A$).
+The LINEX models assumes energy ($e$) is the only factor of production.
 
-This model does, however, 
-instead includes terms that represent
-efficiencies among capital, labor, and energy, which are included
-in the model in the form of 
+The LINEX model does, however, include terms that represent
+efficiencies among capital, labor, and energy, in the form of 
 the ratios $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
-for the LINEX model breaks from the conventions used in the previous
+for the LINEX model breaks from the conventions used in the Cobb-Douglas and CES
 models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
 %
 \begin{equation} \label{eq:rho_k}
@@ -1017,6 +1016,10 @@ The effect of energy ($e$) on production is enhanced if either
 \item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
 %
+An economy that increases 
+capital stock ($k$) and labor ($l$) at the same rate as energy will have
+capital and labor efficiency ratios ($\rho_k$ and $\rho_l$, respectively) of unity.
+In that case, economic output ($y$) increases at the same rate as energy consumption ($e$).
 According to the LINEX model, an economy that increases 
 capital stock ($k$) without a commensurate increase in labor ($l$) 
 and energy ($e$) will experience an increase in output ($y$) in excess 
@@ -1027,17 +1030,19 @@ of its increase of energy consumption ($e$), because
 	> 1.
 \) 
 Similarly, an economy benefits by increasing labor ($l$) 
-without a commensurate increase in energy ($e$). Thus, $\rho_k$ is an 
+without a commensurate increase in energy ($e$). 
+Thus, $\rho_k$ is an 
 efficiency of using additional labor and energy to make 
 additional capital stock available to the economy, 
 and $\rho_l$ is an efficiency of using additional energy to make 
 additional labor available to the economy. 
+Increases in $\rho_k$ and $\rho_l$ provide upward pressure on economic output ($y$),
+as the only factor of production ($e$) is used more efficiently.
+
 The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
 and the parameter $c_t$ represents the relative importance 
 of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
-% We treat $a_0$ and $c_t$ as fitting parameters; 
-% both are assumed constant with respect to time. 
-
+Both $a_0$ and $c_t$ are assumed constant with respect to time. 
 
 \citet{Kummel:2002tx} use the 
 LINEX production function to describe economic output 
