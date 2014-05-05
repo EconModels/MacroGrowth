@@ -163,7 +163,6 @@ for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, r
 
 # Load the original models.
 oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
-close(f)
 
 opts_chunk$set(
   # ********************************************************
