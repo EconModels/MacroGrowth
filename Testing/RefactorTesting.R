@@ -1,6 +1,8 @@
 require(EconModels2)
+require(EconData)
 
-All <- read.table("data/AllData.txt", header=TRUE)
+data(Econ2011)
+All <- Econ2011
 
 model.cd1 <-  cdwoeModel( response = iY, capital=iK, labor=iL, time=iYear, data=subset(All, Country=="US") )
 naturalCoef( model.cd1 )
