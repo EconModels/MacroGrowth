@@ -303,13 +303,17 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
 
 respectsConstraints <- function( model ) {
   # Tells whether we're fitting within the constraints for a Cobb-Douglas model.
-  ##
+  # This assumes that the model has coefficients named alpha/beta/gamma or that 
+  # the paramters of interest are all but the first (intercept) and last (time).
   cf <- coef(model)
-  if( length(cf) >=2 ) cf <- cf[-c(1,2)] 
+  if (any(c("alpha","beta","gamma") %in% names(cf) ) ) {
+    cf <- cf[ names(cf) %in% c("alpha", "beta", "gamma") ]
+  } else {
+    # get rid of first and last (intercept and time)
+    cf <- tail(head(cf,-1), -1) 
+  }
   all( cf >= 0 ) & ( sum(cf) <=1 )
 }
-
-
 
 #' Fitting Cobb-Douglas models with Energy
 #' 
