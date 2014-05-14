@@ -244,7 +244,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   
   
   formulas <- list(
-    log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
+    log(y) - log(labor) ~ I(log(capital) - log(labor)) + time,
     log(y) - log(capital) ~ time,  
     log(y) - log(labor) ~ time
     )
@@ -348,11 +348,11 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   
   formulas <- list( 
     log(y) - log(energy) ~ 
-      time + I(log(capital) - log(energy)) + I(log(labor) - log(energy)),  
+      I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  
     
-    log(y) - log(energy) ~ time + I(log(capital) - log(energy)),
-    log(y) - log(energy) ~ time + I(log(labor)  - log(energy)),
-    log(y) - log(labor)  ~ time + I(log(capital) - log(labor)),
+    log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,
+    log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,
+    log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,
     
     log(y) - log(capital) ~ time,
     log(y) - log(labor)  ~ time,
