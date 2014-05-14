@@ -114,7 +114,7 @@ require(car)
 require(mosaic)
 require(xtable)
 require(nlmrt)
-require(micEconCES)
+# require(micEconCES)
 require(plyr)
 require(dplyr)
 # Provides access to data melting. 
@@ -137,22 +137,24 @@ require(knitr)
 historicalData <- Econ2011 # From the EconData package
 
 # Load coefficients from all models in one large data frame
-coef_df <- tbl_df( readRDS("../AllCoef.rda") )
+# coeffs_df <- tbl_df( readRDS("../AllCoef.rda") )
+coeffs_df <- tbl_df(AllCoef)
 # Rearrange the country factors to obtain our preferred ordering.
-coef_df$country <- as.factor(coef_df$country)
-for (lev in rev(countryAbbrevs)) { coef_df$country <- relevel(coef_df$country, ref=lev) }
+coeffs_df$country <- as.factor(coeffs_df$country)
+for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
 # Change the names of the energy factors to the names for the graph
-coef_df$energy <- replace(coef_df$energy, which(is.na(coef_df$energy)), "none")
-coef_df$energy <- replace(coef_df$energy, which(coef_df$energy=="iQ"), "q")
-coef_df$energy <- replace(coef_df$energy, which(coef_df$energy=="iX"), "x")
-coef_df$energy <- replace(coef_df$energy, which(coef_df$energy=="iU"), "u")
+coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
 # Rearrange the energy factors to obtain our preferred ordering.
-coef_df$energy <- as.factor(coef_df$energy)
+coeffs_df$energy <- as.factor(coeffs_df$energy)
 energyLevels <- c(none="none", q="q", x="x", u="u")
-for (lev in rev(energyLevels)) { coef_df$energy <- relevel(coef_df$energy, ref=lev) }
+for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
 
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df( readRDS("../AllFitted.rda") )
+# fitted_df <- tbl_df( readRDS("../AllFitted.rda") )
+fitted_df <- tbl_df(AllFitted)
 # Rearrange the energy factors to obtain our preferred ordering.
 fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
 fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
@@ -162,7 +164,8 @@ fitted_df$energy <- as.factor(fitted_df$energy)
 for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
 
 # Load the original models.
-oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
+# oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
+oModels <- OrigModels
 
 opts_chunk$set(
   # ********************************************************
@@ -1514,7 +1517,7 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
-cdCoeffsData <- filter(coef_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
 standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
 @
 
@@ -1605,7 +1608,7 @@ the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
 
 <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
-cesCoeffsData <- filter(coef_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+cesCoeffsData <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
 standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -1720,7 +1723,7 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-linexCoeffsData <- filter(coef_df, model=="linex", energy=="q")
+linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="q")
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
@@ -2105,10 +2108,10 @@ The authors are grateful to Benjamin S. Warr (INSEAD) for providing
 the REXS database \citep{Warr:2012a}. 
 The authors thank Loren L. Heun (Western Michigan University) 
 for insightful critique of the statistical analyses presented herein.
-The computations in this paper were accomplished using dahl.calvin.edu, 
+The computations in this paper were accomplished using \url{http://dahl.calvin.edu}, 
 a Beowulf cluster built with support from the National Science Foundation's 
 Major Research Instrumentation and Cyber Infrastructure programs, 
-grant no. OCI-0722819.
+grant number OCI-0722819.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
