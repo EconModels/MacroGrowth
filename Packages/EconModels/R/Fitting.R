@@ -264,7 +264,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
   # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
-  names(res$coefficients) <- c( "logscale", "lambda", "alpha")
+  names(res$coefficients) <- c( "logscale",  "alpha", "lambda")
   alpha <- coef(res)["alpha"]
   if (constrained){
     if (alpha < 0.0 || alpha > 1.0){
@@ -369,11 +369,11 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   ) ) )
   
   coefNames <- list( 
-    c("logscale", "lambda", "alpha", "beta"),
+    c("logscale",  "alpha", "beta", "lambda"),
     
-    c("logscale", "lambda", "alpha"),
-    c("logscale", "lambda", "beta"),
-    c("logscale", "lambda", "alpha"),
+    c("logscale", "alpha", "lambda"),
+    c("logscale", "beta", "lambda"),
+    c("logscale", "alpha", "lambda"),
     
     c("logscale", "lambda"),
     c("logscale", "lambda"),
