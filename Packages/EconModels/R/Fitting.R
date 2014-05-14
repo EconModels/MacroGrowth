@@ -245,9 +245,9 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   
   formulas <- list(
     log(y) - log(labor) ~ time + I(log(capital) - log(labor)),
-    log(iGDP) - log(iK) ~ iYear,  
-    log(iGDP) - log(iL) ~ iYear 
-  )
+    log(y) - log(capital) ~ time,  
+    log(y) - log(labor) ~ time
+    )
   
   formulas <- lapply( formulas,
                       function(x) do.call(substitute, 
@@ -255,7 +255,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                                                list( y = formula[[2]],
                                                      capital = formula[[3]][[2]][[2]],
                                                      labor = formula[[3]][[2]][[3]],
-                                                     time = formula[[3]][[2]]
+                                                     time = formula[[3]][[3]]
                                                )
                                           )
                       )
