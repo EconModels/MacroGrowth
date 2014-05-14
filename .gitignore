@@ -18,8 +18,8 @@ core
 #
 # Data files
 # 
-AllCoef.rda
-AllFitted.rda
+# AllCoef.rda
+# AllFitted.rda
 #
 # Files related to running the batch.bash script
 #
