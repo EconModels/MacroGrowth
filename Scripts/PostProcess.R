@@ -20,8 +20,13 @@ cat('\n')
 # Directory into which objects should be saved
 datadir <- file.path("Packages", "EconData", "data")
 
+# Load historical data and save the data frame.
+cat("Loading and saving historical data...")
+Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
+saveRDS(Econ2011, file.path(datadir, "Econ2011.rda"))
+
 # Copy oModels.Rdata into the correct position
-print("Copying original models file...")
+cat("Copying original models file...")
 file.copy(from=file.path("data_resample", "oModels.Rdata"), 
           to=file.path(datadir, "OrigModels.rda"),
           overwrite=TRUE)
