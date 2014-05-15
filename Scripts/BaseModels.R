@@ -3,6 +3,9 @@
 # This script fits all of the base models for each combination of 
 # model, country, factor, energy type, and nesting.
 # 
+# This script should be run from the top directory with the command
+# "Scripts/BaseModels.R"
+#
 
 # Results are stored in the file "data_resample/oModels.Rdata"
 # To load this data back in, do 
