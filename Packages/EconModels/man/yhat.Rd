@@ -6,7 +6,7 @@
 yhat(object, ...)
 }
 \arguments{
-  \item{object}{An object returned by a fitting function.}
+\item{object}{An object returned by a fitting function.}
 }
 \description{
 This is similar to \code{fitted}, but will invert logarithmic

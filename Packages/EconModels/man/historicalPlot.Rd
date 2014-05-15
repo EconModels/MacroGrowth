@@ -6,8 +6,7 @@
 historicalPlot(data)
 }
 \arguments{
-  \item{data}{a data frame containing the the historical
-  data to be plotted.}
+\item{data}{a data frame containing the the historical data to be plotted.}
 }
 \description{
 Create graph of historical data.

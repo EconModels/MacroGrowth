@@ -6,15 +6,13 @@
 myqdata(p, vals, data = parent.frame(), ...)
 }
 \arguments{
-  \item{p}{a vector of probabilities}
+\item{p}{a vector of probabilities}
 
-  \item{vals}{a numeric vector or a name of a variable in
-  \code{data}}
+\item{vals}{a numeric vector or a name of a variable in \code{data}}
 
-  \item{data}{a data frame}
+\item{data}{a data frame}
 
-  \item{...}{addtional arguments passed to
-  \code{\link{quantile}}}
+\item{...}{addtional arguments passed to \code{\link{quantile}}}
 }
 \value{
 a vector of quantiles

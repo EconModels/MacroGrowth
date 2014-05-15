@@ -6,12 +6,11 @@
 extractEnergyType(x, eTypes = energyTypes, sep = "+")
 }
 \arguments{
-  \item{x}{a formula or factorString from which you want to
-  extract an energyType}
+\item{x}{a formula or factorString from which you want to extract an energyType}
 
-  \item{energyTypes}{the types of energy available}
+\item{energyTypes}{the types of energy available}
 
-  \item{sep}{the separator for the formula or factorString}
+\item{sep}{the separator for the formula or factorString}
 }
 \value{
 a string representing the energyType that was used for the fitting. NA if no energy type was found.
