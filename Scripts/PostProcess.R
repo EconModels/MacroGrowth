@@ -18,6 +18,7 @@ file.copy(from=file.path("data_resample", "oModels.Rdata"),
           overwrite=TRUE)
 
 # Load all coefficients
+# coeffs <- loadResampledData("data_resample")
 
 # Save all coefficients in one data frame
 
@@ -29,4 +30,4 @@ file.copy(from=file.path("data_resample", "oModels.Rdata"),
 
 
 # Create an archive of the results
-zip("data_resample.zip", "data_resample")
+zip(zipfile="data_resample.zip", files="data_resample", flags="-r9Xj")
