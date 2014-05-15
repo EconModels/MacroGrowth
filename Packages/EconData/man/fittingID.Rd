@@ -6,21 +6,19 @@
 fittingID(fun, countryAbbrev, formula, nest = NULL, n, sep = " : ")
 }
 \arguments{
-  \item{fun}{the function used for fitting}
+\item{fun}{the function used for fitting}
 
-  \item{countryAbbrev}{the country being fitted}
+\item{countryAbbrev}{the country being fitted}
 
-  \item{formula}{the formula used for the fitting}
+\item{formula}{the formula used for the fitting}
 
-  \item{nest}{if used, the nest employed for this fit. A 2-
-  or 3-vector of integers.}
+\item{nest}{if used, the nest employed for this fit. A 2- or 3-vector of integers.}
 
-  \item{nestStr}{if used, the string for the nesting}
+\item{nestStr}{if used, the string for the nesting}
 
-  \item{n}{the number of resamples being attempted}
+\item{n}{the number of resamples being attempted}
 
-  \item{sep}{the separator used to create the id string.
-  Default is " : ".}
+\item{sep}{the separator used to create the id string. Default is " : ".}
 }
 \value{
 a string to be used as the id for this resample

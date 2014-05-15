@@ -7,33 +7,28 @@ cdModel(formula, data, response, capital, labor, energy, time,
   constrained = FALSE, save.data = TRUE, ...)
 }
 \arguments{
-  \item{formala}{a formula of the form \code{response ~
-  capital + labor + time} or \code{response ~ capital +
-  labor + energy + time}}
+\item{formala}{a formula of the form
+\code{response ~ capital + labor + time} or
+\code{response ~ capital + labor + energy + time}}
 
-  \item{data}{a data frame in which \code{formula} is
-  evaluated}
+\item{data}{a data frame in which \code{formula} is evaluated}
 
-  \item{response}{instead of specifying a formula,
-  expressions for the components can be specified
-  individually.}
+\item{response}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{capital}{instead of specifying a formula,
-  expressions for the components can be specified
-  individually.}
+\item{capital}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{labor}{instead of specifying a formula, expressions
-  for the components can be specified individually.}
+\item{labor}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{energy}{instead of specifying a formula,
-  expressions for the components can be specified
-  individually.}
+\item{energy}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{time}{instead of specifying a formula, expressions
-  for the components can be specified individually.}
+\item{time}{instead of specifying a formula, expressions for
+the components can be specified individually.}
 
-  \item{constrained}{a logical indicating whether the
-  parameters are constrained}
+\item{constrained}{a logical indicating whether the parameters are constrained}
 }
 \value{
 a CDEmodel object, which is an lm object with some additioanl attributes.
