@@ -7,17 +7,18 @@ parseFactorString(factorString, sep = "+", rVar = "iGDP",
   kVar = factors[["K"]], lVar = factors[["L"]], tVar = "iYear")
 }
 \arguments{
-\item{factorString}{a string of the form \code{"iK+iL+iU"}.}
+  \item{factorString}{a string of the form
+  \code{"iK+iL+iU"}.}
 
-\item{sep}{the separator in \code{factorString}}
+  \item{sep}{the separator in \code{factorString}}
 
-\item{rVar}{the name of the response variable}
+  \item{rVar}{the name of the response variable}
 
-\item{kVar}{the name of the capital stock variable}
+  \item{kVar}{the name of the capital stock variable}
 
-\item{lVar}{the name of the labor variable}
+  \item{lVar}{the name of the labor variable}
 
-\item{tVar}{the name of the time variable}
+  \item{tVar}{the name of the time variable}
 }
 \value{
 a list with two elements, \code{formula} and \code{nest}.

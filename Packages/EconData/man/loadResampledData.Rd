@@ -8,19 +8,25 @@ loadResampledData(path = "", archive = NULL, country = NULL,
   "fitted"))
 }
 \arguments{
-\item{path}{the directory containing the resampled coefficient files. Do not add a trailing file separator.}
+  \item{path}{the directory containing the resampled
+  coefficient files. Do not add a trailing file separator.}
 
-\item{archive}{a zip archive containing resampled coefficient files}
+  \item{archive}{a zip archive containing resampled
+  coefficient files}
 
-\item{country}{a country or vector of countries.}
+  \item{country}{a country or vector of countries.}
 
-\item{model}{a model or vector of models of the form \code{c("sf", "cd", "ces", "linex")}, for example.}
+  \item{model}{a model or vector of models of the form
+  \code{c("sf", "cd", "ces", "linex")}, for example.}
 
-\item{factors}{strings of factors used in fitting the models.}
+  \item{factors}{strings of factors used in fitting the
+  models.}
 
-\item{sep}{the separator within the file names between country, model, and factors}
+  \item{sep}{the separator within the file names between
+  country, model, and factors}
 
-\item{kind}{a character string that identifies which kind of resampled data to load.}
+  \item{kind}{a character string that identifies which kind
+  of resampled data to load.}
 }
 \value{
 a data frame containing resampled coefficients (if \code{kind="coeffs"}),

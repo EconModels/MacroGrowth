@@ -7,17 +7,19 @@ resampleFileName(prefix, fun, countryAbbrev, formula, nest = NULL,
   sep = "_")
 }
 \arguments{
-\item{prefix}{a prefix for the file name}
+  \item{prefix}{a prefix for the file name}
 
-\item{fun}{the function used for fitting}
+  \item{fun}{the function used for fitting}
 
-\item{countryAbbrev}{the country being fitted}
+  \item{countryAbbrev}{the country being fitted}
 
-\item{formula}{the formula used for the fitting}
+  \item{formula}{the formula used for the fitting}
 
-\item{nest}{if used, the nest employed for this fit. A vector of 2 or 3 integers.}
+  \item{nest}{if used, the nest employed for this fit. A
+  vector of 2 or 3 integers.}
 
-\item{sep}{the separator used to create the id string. Default is "_".}
+  \item{sep}{the separator used to create the id string.
+  Default is "_".}
 }
 \value{
 a string representing the file name for these resample coefficients.

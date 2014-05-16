@@ -7,19 +7,23 @@ resampleFilePath(fun, countryAbbrev, formula, nest = NULL, prefix,
   sep = "_", baseResample)
 }
 \arguments{
-\item{fun}{the function used for fitting}
+  \item{fun}{the function used for fitting}
 
-\item{countryAbbrev}{the country being fitted}
+  \item{countryAbbrev}{the country being fitted}
 
-\item{formula}{the formula used for the fitting}
+  \item{formula}{the formula used for the fitting}
 
-\item{nest}{if used, the nest employed for this fit. A vector of 2 or 3 integers.}
+  \item{nest}{if used, the nest employed for this fit. A
+  vector of 2 or 3 integers.}
 
-\item{sep}{the separator used to create the id string. Default is "_".}
+  \item{sep}{the separator used to create the id string.
+  Default is "_".}
 
-\item{prefix}{a prefix for the file name. Should not include the separator.}
+  \item{prefix}{a prefix for the file name. Should not
+  include the separator.}
 
-\item{baseResample}{the relative path of the top-level directory containing the resample data.}
+  \item{baseResample}{the relative path of the top-level
+  directory containing the resample data.}
 }
 \value{
 a string representing the file name for these resample coefficients.

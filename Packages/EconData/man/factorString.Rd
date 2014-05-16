@@ -7,12 +7,12 @@ factorString(formula, nest, Kvar = factors[["K"]], Lvar = factors[["L"]],
   sep = "+")
 }
 \arguments{
-\item{formula}{the formula used for fitting.
-The energy variable is extracted from the formula.}
+  \item{formula}{the formula used for fitting. The energy
+  variable is extracted from the formula.}
 
-\item{nest}{an integer vector containing 2 or 3 values.
-For 2-value vectors, integers must be 1 or 2.
-For 3-value vectors, integers must be 1, 2, or 3.}
+  \item{nest}{an integer vector containing 2 or 3 values.
+  For 2-value vectors, integers must be 1 or 2. For 3-value
+  vectors, integers must be 1, 2, or 3.}
 }
 \value{
 a string representing the nesting of the form "iQ+iK+iL", etc.
