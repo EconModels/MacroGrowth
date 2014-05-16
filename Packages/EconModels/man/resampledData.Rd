@@ -7,17 +7,19 @@ resampledData(model, method = c("residual", "resample", "wild", "debug"),
   reindex = TRUE)
 }
 \arguments{
-\item{model}{a model returned from \code{linexModel}, \code{cdModel},
-\code{cesModel}, or \code{sfModel}.  \code{model} must
-have been fit with \code{save.data = TRUE}.}
+  \item{model}{a model returned from \code{linexModel},
+  \code{cdModel}, \code{cesModel}, or \code{sfModel}.
+  \code{model} must have been fit with \code{save.data =
+  TRUE}.}
 
-\item{method}{One of
-resample:  resample rows from data. Can result in repeated years.
-residual:  resamples the residuals and applies them to the data. All years are present.
-wild:      same as residuals but randomly select sign of resampled residuals.}
+  \item{method}{One of resample: resample rows from data.
+  Can result in repeated years.  residual: resamples the
+  residuals and applies them to the data. All years are
+  present.  wild: same as residuals but randomly select
+  sign of resampled residuals.}
 
-\item{reindex}{a logical indicating whether response values should be
-reindexed before fitting.}
+  \item{reindex}{a logical indicating whether response
+  values should be reindexed before fitting.}
 }
 \description{
 Create resampled data

@@ -6,9 +6,10 @@
 response(object, ...)
 }
 \arguments{
-\item{object}{a model object from one of the model fitting functions.}
+  \item{object}{a model object from one of the model
+  fitting functions.}
 
-\item{...}{additional arguments}
+  \item{...}{additional arguments}
 }
 \value{
 a numeric vector

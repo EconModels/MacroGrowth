@@ -10,47 +10,51 @@ cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
   digits = 6, save.data = TRUE, ...)
 }
 \arguments{
-\item{formula}{a formula of the form \code{response ~ a + b + c + d + time}.
-\code{c} and \code{d} are optional.}
+  \item{formula}{a formula of the form \code{response ~ a +
+  b + c + d + time}. \code{c} and \code{d} are optional.}
 
-\item{data}{a data frame, in which to evaluate the formula.
-#'}
+  \item{data}{a data frame, in which to evaluate the
+  formula. #'}
 
-\item{formula}{a formula of the form \code{response ~ captial + labor + energy + time}}
+  \item{formula}{a formula of the form \code{response ~
+  captial + labor + energy + time}}
 
-\item{response}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{response}{instead of specifying a formula,
+  expressions for the components can be specified
+  individually.}
 
-\item{a}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{a}{instead of specifying a formula, expressions for
+  the components can be specified individually.}
 
-\item{b}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{b}{instead of specifying a formula, expressions for
+  the components can be specified individually.}
 
-\item{c}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{c}{instead of specifying a formula, expressions for
+  the components can be specified individually.}
 
-\item{d}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+  \item{d}{instead of specifying a formula, expressions for
+  the components can be specified individually.}
 
-\item{time}{instead of specifying a formula, expressions for
-the components can be specified individually}
+  \item{time}{instead of specifying a formula, expressions
+  for the components can be specified individually}
 
-\item{nest}{a permutation (a,b,c,d) of the integers 1 through 4.
-For models with 3 factors, the nesting
-is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
-because \code{origModel} will be used to obtain the starting point for a gradient search.}
+  \item{nest}{a permutation (a,b,c,d) of the integers 1
+  through 4. For models with 3 factors, the nesting is (a +
+  b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
+  because \code{origModel} will be used to obtain the
+  starting point for a gradient search.}
 
-\item{prevModel}{a model used to start gradient searches.
-Use \code{NULL} if you want to use the default start locations AND do a grid search
-in sigma.}
+  \item{prevModel}{a model used to start gradient searches.
+  Use \code{NULL} if you want to use the default start
+  locations AND do a grid search in sigma.}
 
-\item{rho,rho1}{Default values for \code{rho} and \code{rho1} are a grid upon which
-searches will be made.
-Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default
-starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from
-the default values.
-\code{rho = 0.25} corresponds to \code{sigma = 0.8}.}
+  \item{rho,rho1}{Default values for \code{rho} and
+  \code{rho1} are a grid upon which searches will be made.
+  Note that \code{rho = 0.25} and \code{rho1 = 0.25} are
+  included. These are the default starting values for
+  \code{rho} and \code{rho1}, so that we don't need to do a
+  fit from the default values. \code{rho = 0.25}
+  corresponds to \code{sigma = 0.8}.}
 }
 \value{
 a cesEst model with additional information attached as attributes.
