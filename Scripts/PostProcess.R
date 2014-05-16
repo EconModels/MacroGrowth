@@ -23,25 +23,24 @@ datadir <- file.path("Packages", "EconData", "data")
 # Load historical data and save the data frame.
 cat("Loading and saving historical data..."); cat("\n")
 Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
-save(Econ2011, file=file.path(datadir, "Econ2011.rda"))
+save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
 
 # Copy oModels.Rdata into the correct position
 cat("Copying original models file..."); cat("\n")
 OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
-save(OrigModels, file=file.path(datadir, "OrigModels.rda"))
+save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
 
 # Load all coefficients
 cat("Loading and saving all coefficients..."); cat("\n")
 AllCoef <- loadResampledData(path="data_resample", kind="coeffs")
-
 # Save all coefficients in one data frame
-save(AllCoef, file=file.path(datadir, "AllCoef.rda"))
+save(AllCoef, file=file.path(datadir, "AllCoef.rda"), compress="gzip")
 
 # Load all fitted models
 cat("Loading and saving all fitted models..."); cat("\n")
 AllFitted <- loadResampledData(path="data_resample", kind="fitted")
 # Save all fitted models in one data frame
-save(AllFitted, file=file.path(datadir, "AllFitted.rda"))
+save(AllFitted, file=file.path(datadir, "AllFitted.rda"), compress="gzip")
 
 # Create an archive of the results
 cat("Creating archive..."); cat("\n")
