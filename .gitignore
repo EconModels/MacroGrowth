@@ -19,7 +19,7 @@ core
 # Data files
 # 
 # AllCoef.rda
-AllFitted.rda # Is too big for GitHub.
+# AllFitted.rda
 #
 # Files related to running the batch.bash script
 #
