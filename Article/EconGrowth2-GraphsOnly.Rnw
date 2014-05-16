@@ -462,6 +462,8 @@ LDCs.\footnote{Lesser Developed Countries}
   \end{center}
 \end{table}
 
+\clearpage
+
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 historicalPlot(historicalData)
 @
@@ -478,24 +480,99 @@ spaghettiPlot(data=cdFittedData, facet_formula=Country~energy, level=spaghettiGr
 @
 
 
-<<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
-cesCoeffsData <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
-standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+% <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
+% cesCoeffsData <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+% standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+%     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+%     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+%     labs(x=expression(gamma), y=expression(lambda))
+% @
+
+<<CES_lambda_gamma_graph_kle, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (kl)e nesting.">>=
+cesCoeffsData_kle <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
+standardScatterPlot(data=cesCoeffsData_kle, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
     labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
-standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+<<CES_lambda_gamma_graph_lek, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (le)k nesting.">>=
+cesCoeffsData_lek <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iL+iQ+iK", "iL+iX+iK", "iL+iU+iK"))
+standardScatterPlot(data=cesCoeffsData_lek, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(gamma), y=expression(lambda))
+@
+
+<<CES_lambda_gamma_graph_ekl, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (ek)l nesting.">>=
+cesCoeffsData_ekl <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iQ+iK+iL", "iX+iK+iL", "iU+iK+iL"))
+standardScatterPlot(data=cesCoeffsData_ekl, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(gamma), y=expression(lambda))
+@
+
+% <<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
+% standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+%     coord_trans(y="sigma") +
+%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     labs(x=expression(delta[1]), y=expression(sigma[1]))
+% @
+
+<<CES_sigma1_delta1_graph_kle, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with (kl)e nesting.">>=
+standardScatterPlot(data=cesCoeffsData_kle, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     labs(x=expression(delta[1]), y=expression(sigma[1]))
 @
 
-<<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
-standardScatterPlot(data=subset(cesCoeffsData, nestStr != "iK+iL"),
+<<CES_sigma1_delta1_graph_lek, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with (le)k nesting.">>=
+standardScatterPlot(data=cesCoeffsData_lek, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+
+<<CES_sigma1_delta1_graph_ekl, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with (ek)l nesting.">>=
+standardScatterPlot(data=cesCoeffsData_ekl, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+ 
+% # <<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
+% #  standardScatterPlot(data=subset(cesCoeffsData, nestStr != "iK+iL"),
+% #                      mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+% #      coord_trans(y="sigma") +
+% #      scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+% #      scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+% #      labs(x=expression(delta), y=expression(sigma))
+% #  @
+
+<<CES_sigma_delta_graph_kle, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with (kl)e nesting.">>=
+standardScatterPlot(data=subset(cesCoeffsData_kle, nestStr != "iK+iL"),
+                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+<<CES_sigma_delta_graph_lek, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with (le)k nesting.">>=
+standardScatterPlot(data=subset(cesCoeffsData_lek, nestStr != "iK+iL"),
+                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+<<CES_sigma_delta_graph_ekl, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with (ek)l nesting.">>=
+standardScatterPlot(data=subset(cesCoeffsData_ekl, nestStr != "iK+iL"),
                     mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -526,39 +603,81 @@ $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and c
 Figure~\ref{fig:CES_ternary_graph} is comparable to
 the ternary graph for the Cobb-Douglas models, 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
+ 
+% <<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
+% standardTriPlot(data=cesCoeffsData, facet_formula=country~nest)
+% @
 
-<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
-standardTriPlot(data=cesCoeffsData, facet_formula=country~nest)
+<<CES_ternary_graph_kle, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with (kl)e nesting.">>=
+standardTriPlot(data=cesCoeffsData_kle, facet_formula=country~nest)
 @
 
-<<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+<<CES_ternary_graph_lek, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with (le)k nesting.">>=
+standardTriPlot(data=cesCoeffsData_lek, facet_formula=country~nest)
+@
+
+<<CES_ternary_graph_ekl, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with (ek)l nesting.">>=
+standardTriPlot(data=cesCoeffsData_ekl, facet_formula=country~nest)
+@
+ 
+% <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
+% cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+% spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+%     labs(y="Indexed GDP (1980=1 or 1991=1)")
+% @
+
+<<CES_Spaghetti_Graph_kle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (kl)e nesting.">>=
+cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
 spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
+
+<<CES_Spaghetti_Graph_lek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (le)k nesting.">>=
+cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iL+iQ+iK", "iL+iX+iK", "iL+iU+iK"))
+spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+
+<<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (ek)l nesting.">>=
+cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iQ+iK+iL", "iX+iK+iL", "iU+iK+iL"))
+spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+
+
 
 % <<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
 % spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nest=="iK+iL+iQ"), level=spaghettiGraphLevel) +
 %     labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
 % @
 
+% <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
+% linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="q")
+% standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
+%     labs(x=expression(a[0]), y=expression(c[t])) +
+%      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+%      scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
+% @
 
-\twocolumn{}
-<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="q")
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
+linexCoeffsData <- filter(coeffs_df, model=="linex")
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
      scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
-<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
-linexFittedData <- filter(fitted_df, model=="linex", energy=="q")
+% <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
+% linexFittedData <- filter(fitted_df, model=="linex", energy=="q")
+% spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
+%     labs(y="Indexed GDP (1980=1 or 1991=1)")
+% @
+
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7.1, fig.cap="LINEX fitted models.">>=
+linexFittedData <- filter(fitted_df, model=="linex")
 spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
-\onecolumn{}
-
 
 
 
