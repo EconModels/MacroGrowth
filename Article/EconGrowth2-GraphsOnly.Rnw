@@ -1,0 +1,668 @@
+% This article has been prepared for publication in Energy Economics in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2013-01-18
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\usepackage[shownotes]{authNote}
+
+\journal{Energy Economics}
+
+\begin{document}
+
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
+require(EconModels)
+require(EconData)
+require(lattice)
+require(latticeExtra)
+require(ggplot2)
+require(car)
+require(mosaic)
+require(xtable)
+require(nlmrt)
+# require(micEconCES)
+require(plyr)
+require(dplyr)
+# Provides access to data melting. 
+# See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
+require(reshape2) 
+# tikz allows use of LaTeX formatting and font in graphs. 
+# Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions 
+# on installing tikzDevice.
+# require(tikzDevice) 
+trellis.par.set(theme=theme.mosaic())
+options(width=75)
+options(show.signif.stars=TRUE)
+require(knitr)
+
+# Load historical data
+# In Rstudio, this paper is generated from it's directory, which is "Article".
+# We need to define paths relative to the location of the paper. 
+# Relative path to historical data from Article
+historicalData <- Econ2011 # From the EconData package
+
+# Load coefficients from all models in one large data frame
+# coeffs_df <- tbl_df( readRDS("../AllCoef.rda") )
+coeffs_df <- tbl_df(AllCoef)
+# Rearrange the country factors to obtain our preferred ordering.
+coeffs_df$country <- as.factor(coeffs_df$country)
+for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
+# Change the names of the energy factors to the names for the graph
+coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
+coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
+# Rearrange the energy factors to obtain our preferred ordering.
+coeffs_df$energy <- as.factor(coeffs_df$energy)
+energyLevels <- c(none="none", q="q", x="x", u="u")
+for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
+
+# Load fitted data from all models in one large data frame
+# fitted_df <- tbl_df( readRDS("../AllFitted.rda") )
+fitted_df <- tbl_df(AllFitted)
+# Rearrange the energy factors to obtain our preferred ordering.
+fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
+fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
+fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iX"), "x")
+fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iU"), "u")
+fitted_df$energy <- as.factor(fitted_df$energy)
+for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
+
+# Load the original models.
+# oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
+oModels <- OrigModels
+
+opts_chunk$set(
+  # ********************************************************
+  eval=TRUE,
+  # ********************************************************
+  # tikz allows LaTeX code in graphical output. 
+  # E.g., "$y$" for a variable name in the legend for a graph.  
+  # dev='tikz',
+  tidy=FALSE,
+  comment=NA,
+  # Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  # However, references to LaTeX tables DO NOT WORK if cacheing is turned on.
+  cache=FALSE,
+  warning=FALSE,  #Tells whether to show warnings in the output.
+  # Turns off messages for all chunks. 
+  # Set TRUE on an individual chunk to see it.
+  message=FALSE, 
+  # Tells whether to echo code for all chunks. 
+  # Set TRUE on an individual chunk to see its code.
+  echo=FALSE     
+)
+@
+
+<<constants, include=FALSE, eval=TRUE>>=
+# Graph Heights
+maxHeight <- 8.5 # Inches
+ninePanelScatterGraphHeight <- maxHeight # Inches
+# ninePanelTernaryGraphHeight <- 7 # Inches
+# ninePanelSpaghettiGraphHeight <- 7 # Inches
+
+# Graph Widths
+maxWidth <- 6.5 # Inches
+fourPanelScatterGraphWidth <- maxWidth # Inches
+# threePanelScatterGraphWidth <- maxWidth*0.75 # Inches
+# onePanelScatterGraphWidth <- maxWidth*0.25
+# fourPanelTernaryGraphWidth <- maxWidth
+# twoPanelTernaryGraphWidth <- maxWidth*0.45
+# fourPanelSpaghettiGraphWidth <- maxWidth
+# twoPanelSpaghettiGraphWidth <- maxWidth*0.55
+# onePanelSpaghettiGraphWidth <- maxWidth*0.4
+
+presentationGraph1RowHeight <- 2.8 # Inches
+presentationGraph2ColWidth <- 2 # Inches
+presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
+# keyTextSize <- 0.85 # 85% of normal size
+# keyColumns <- 1 # Want only 1 column in the key for lattice graphs
+# defaultKeyXLoc <- 0.01 # x position of the key. This default is good for 9-panel graphs.
+# defaultKeyYLoc <- 0.95 # y position of the key. This default is good for 9-panel graphs.
+# Parameter graphs are tricky to ensure same size. I've found that with height set to 5 in for the 
+# cd graphs and 2.93 in for the sf graphs, I get a nearly-exact match with graph size. From these settings I 
+# can set up 2 equations:
+#    5 in = 2*hgraph + haxis
+#    2.93 in = hgraph + haxis
+# to estimate that h_axis = 0.86 in and hgraph = 2.05 in.
+h_param_graph <- 2.07 # Inches for a single panel
+h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
+# sfParameterGraphHeight <- h_param_graph + h_param_axis
+cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
+linexParameterGraphHeight <- h_param_graph + h_param_axis
+sfParameterGraphWidth <- maxWidth
+cdParameterGraphWidth <- maxWidth
+cesParameterGraphWidth <- maxWidth
+linexParameterGraphWidth <- maxWidth
+# Other graph parameters that apply to all graphs
+scaleTextSize <- 0.8  # Multiple of normal size
+scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
+
+spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+@
+
+% These equations are used in several locations in the paper.
+% By defining commands for them, we ensure consistent appearance
+% of the equations when they are used.
+
+% Add an argument if you want a label. Example: "\label{eq:CES}"
+\newcommand{\ceskl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}}
+
+\newcommand{\ceskle}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\ceslek}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\cesekl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{An Empirical Analysis of the Role of Energy in Economic Growth}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+\author[Stellenbosch]{Martin de Wit}
+\author[CalvinMath]{Randall J. Pruim}
+\author[CalvinEngr]{Caleb Reese}
+\author[CalvinEngr]{Lucas Timmer}
+
+\cortext[cor1]{Corresponding author}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[Stellenbosch]{Faculty of Economics and Management Sciences, School of Public Leadership, Stellenbosch University, P.O. Box 610, Bellville 7535, South Africa}
+\address[CalvinMath]{Mathematics \& Statistics Department, Calvin College, Grand Rapids, MI 49546, USA}
+
+\begin{abstract}
+%% Text of abstract
+**** Add abstract ****
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{equation} \label{eq:CD}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
+\end{equation}
+where 
+\begin{itemize}
+	\item $y \equiv Y/Y_{0}$,  % why was 0 typeset as mathrm??
+	\item $k \equiv K/K_{0}$, 
+	\item $l \equiv L/L_{0}$, 
+	\item $Y$ represented by GDP, 
+	\item $K$ expressed in currency units, 
+	\item $L$ expressed in workers or work-hours/year, 
+	\item $t$ (time) is measured in years, 
+	\item e is the base of the natural logarithm, and 
+	\item 0 subscripts indicate values at an initial year.%
+\footnote{Dimensionless, indexed quantities are represented by 
+lower-case symbols 
+($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+quantities are represented by upper-case symbols 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+Model parameters are represented by Greek letters
+($\alpha$, $\beta$, $\lambda$, $\theta$).} 
+\end{itemize}
+
+\begin{equation} \label{eq:CDe}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
+\end{equation}
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
+typically TJ/year. The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha + \beta + \gamma = 1$.
+
+\ceskl{\label{eq:CES}}
+
+\ceskle{\label{eq:CESkle}}
+
+Constraints on the fitting parameters include 
+$\delta_1 \in [0,1]$,
+$\delta \in [0,1]$,
+$\rho_1 \in [-1,0) \cup (0,\infty)$, and
+$\rho \in [-1,0) \cup (0,\infty)$. 
+
+\ceslek{\label{eq:CESlek}}
+
+\cesekl{\label{eq:CESekl}}
+
+A third production function, the LINear EXponential (LINEX) function
+\begin{equation} \label{eq:LINEX}
+  y = \theta \; \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]} \; e \;,
+\end{equation}
+
+\begin{equation} \label{eq:rho_k}
+  \rho_k \equiv \frac{k}{(1/2)(l+e)}
+\end{equation}
+and
+\begin{equation} \label{eq:rho_l}
+  \rho_l \equiv \frac{l}{e}
+\end{equation}
+and represent 
+(\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
+(\ref{eq:rho_l}) labor increase relative to energy.
+The effect of energy ($e$) on production is enhanced if either
+
+\begin{itemize}
+\item{capital stock ($k$) has increased more than the average 
+      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
+\item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
+\end{itemize}
+%
+An economy that increases 
+capital stock ($k$) and labor ($l$) at the same rate as energy will have
+capital and labor efficiency ratios ($\rho_k$ and $\rho_l$, respectively) of unity.
+In that case, economic output ($y$) increases at the same rate as energy consumption ($e$).
+According to the LINEX model, an economy that increases 
+capital stock ($k$) without a commensurate increase in labor ($l$) 
+and energy ($e$) will experience an increase in output ($y$) in excess 
+of its increase of energy consumption ($e$), because
+\(
+\mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]}
+	> 1.
+\) 
+Similarly, an economy benefits by increasing labor ($l$) 
+without a commensurate increase in energy ($e$). 
+Thus, $\rho_k$ is an 
+efficiency of using additional labor and energy to make 
+additional capital stock available to the economy, 
+and $\rho_l$ is an efficiency of using additional energy to make 
+additional labor available to the economy. 
+Increases in $\rho_k$ and $\rho_l$ provide upward pressure on economic output ($y$),
+as the only factor of production ($e$) is used more efficiently.
+
+The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
+and the parameter $c_t$ represents the relative importance 
+of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
+Both $a_0$ and $c_t$ are assumed constant with respect to time. 
+
+In this paper we analyze at least 
+two economies in each of the following four categories: 
+Developed, 
+NICs,\footnote{Newly Industrialized Countries}
+OPEC, and 
+LDCs.\footnote{Lesser Developed Countries} 
+(See Table~\ref{tab:Economy_Examples}.)
+
+\begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
+  \begin{center}
+    \begin{tabular}{r c c l l} 
+      \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
+                                 & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
+                                 & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
+      \hline
+      \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
+      \hline
+      \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
+                                 & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
+      \hline
+      \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
+                                 & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+historicalPlot(historicalData)
+@
+
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=5.8, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
+standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
+@
+
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=8.2, fig.cap="Cobb-Douglas fitted models.">>=
+cdFittedData <- filter(fitted_df, model=="cd", nest %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
+spaghettiPlot(data=cdFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+
+
+<<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
+cesCoeffsData <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(gamma), y=expression(lambda))
+@
+
+<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
+standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+
+<<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
+standardScatterPlot(data=subset(cesCoeffsData, nestStr != "iK+iL"),
+                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
+for the CES model, based on values of $\delta$ and $\delta_1$.
+Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
+      \hline
+      ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
+      ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+      ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Figure~\ref{fig:CES_ternary_graph} shows 
+$\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
+Figure~\ref{fig:CES_ternary_graph} is comparable to
+the ternary graph for the Cobb-Douglas models, 
+Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
+
+<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
+standardTriPlot(data=cesCoeffsData, facet_formula=country~nest)
+@
+
+<<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
+cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+
+% <<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
+% spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nest=="iK+iL+iQ"), level=spaghettiGraphLevel) +
+%     labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
+% @
+
+
+\twocolumn{}
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
+linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="q")
+standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
+    labs(x=expression(a[0]), y=expression(c[t])) +
+     scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+     scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
+@
+
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
+linexFittedData <- filter(fitted_df, model=="linex", energy=="q")
+spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1980=1 or 1991=1)")
+@
+\onecolumn{}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Funding for Caleb Reese and Lucas Timmer was provided 
+by the Jack and Lois Kuipers Applied Mathematics Endowment and 
+the Calvin College Alumni Association. 
+Partial support for Matthew Kuperus Heun was 
+provided by a Calvin College Research Followship. 
+Partial funding for Martin de Wit was provided 
+by the South African National Research Foundation (NRF).\footnote{Any opinion, 
+findings, and conclusions or recommendations expressed herein are those 
+of the authors, and, therefore, NRF does not accept any liability in regard thereto.} 
+The authors are grateful to Benjamin S. Warr (INSEAD) for providing 
+the REXS database \citep{Warr:2012a}. 
+The authors thank Loren L. Heun (Western Michigan University) 
+for insightful critique of the statistical analyses presented herein.
+The computations in this paper were accomplished using \url{http://dahl.calvin.edu}, 
+a Beowulf cluster built with support from the National Science Foundation's 
+Major Research Instrumentation and Cyber Infrastructure programs, 
+grant number OCI-0722819.
+
+
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+\bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+\bibliography{EconGrowth.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
