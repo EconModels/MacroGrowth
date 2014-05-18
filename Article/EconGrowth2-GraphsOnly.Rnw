@@ -137,8 +137,10 @@ require(knitr)
 historicalData <- Econ2011 # From the EconData package
 
 # Load coefficients from all models in one large data frame
-# coeffs_df <- tbl_df( readRDS("../AllCoef.rda") )
 coeffs_df <- tbl_df(AllCoef)
+# Load fitted data from all models in one large data frame
+fitted_df <- tbl_df(AllFitted)
+
 # Rearrange the country factors to obtain our preferred ordering.
 coeffs_df$country <- as.factor(coeffs_df$country)
 for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
@@ -152,9 +154,6 @@ coeffs_df$energy <- as.factor(coeffs_df$energy)
 energyLevels <- c(none="none", q="q", x="x", u="u")
 for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
 
-# Load fitted data from all models in one large data frame
-# fitted_df <- tbl_df( readRDS("../AllFitted.rda") )
-fitted_df <- tbl_df(AllFitted)
 # Rearrange the energy factors to obtain our preferred ordering.
 fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
 fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
