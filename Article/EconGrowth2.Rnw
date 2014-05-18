@@ -137,31 +137,30 @@ require(knitr)
 historicalData <- Econ2011 # From the EconData package
 
 # Load coefficients from all models in one large data frame
-# coeffs_df <- tbl_df( readRDS("../AllCoef.rda") )
 coeffs_df <- tbl_df(AllCoef)
-# Rearrange the country factors to obtain our preferred ordering.
-coeffs_df$country <- as.factor(coeffs_df$country)
-for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
-# Change the names of the energy factors to the names for the graph
-coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
-# Rearrange the energy factors to obtain our preferred ordering.
-coeffs_df$energy <- as.factor(coeffs_df$energy)
-energyLevels <- c(none="none", q="q", x="x", u="u")
-for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
-
 # Load fitted data from all models in one large data frame
-# fitted_df <- tbl_df( readRDS("../AllFitted.rda") )
 fitted_df <- tbl_df(AllFitted)
+
+# Rearrange the country factors to obtain our preferred ordering.
+# coeffs_df$country <- as.factor(coeffs_df$country)
+# for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
+# Change the names of the energy factors to the names for the graph
+# coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
 # Rearrange the energy factors to obtain our preferred ordering.
-fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iX"), "x")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iU"), "u")
-fitted_df$energy <- as.factor(fitted_df$energy)
-for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
+# coeffs_df$energy <- as.factor(coeffs_df$energy)
+# energyLevels <- c(none="none", q="q", x="x", u="u")
+# for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
+
+# Rearrange the energy factors to obtain our preferred ordering.
+# fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iX"), "x")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iU"), "u")
+# fitted_df$energy <- as.factor(fitted_df$energy)
+# for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
 
 # Load the original models.
 # oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
@@ -1723,7 +1722,7 @@ The gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="q")
+linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="iQ")
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
@@ -1731,7 +1730,7 @@ standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~e
 @
 
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
-linexFittedData <- filter(fitted_df, model=="linex", energy=="q")
+linexFittedData <- filter(fitted_df, model=="linex", energy=="iQ")
 spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @

@@ -142,25 +142,25 @@ coeffs_df <- tbl_df(AllCoef)
 fitted_df <- tbl_df(AllFitted)
 
 # Rearrange the country factors to obtain our preferred ordering.
-coeffs_df$country <- as.factor(coeffs_df$country)
-for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
-# Change the names of the energy factors to the names for the graph
-coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
-coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
+# coeffs_df$country <- as.factor(coeffs_df$country)
+# for (lev in rev(countryAbbrevs)) { coeffs_df$country <- relevel(coeffs_df$country, ref=lev) }
+# Change the names of the energy factors to the desired names for the graph
+# coeffs_df$energy <- replace(coeffs_df$energy, which(is.na(coeffs_df$energy)), "none")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iQ"), "q")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iX"), "x")
+# coeffs_df$energy <- replace(coeffs_df$energy, which(coeffs_df$energy=="iU"), "u")
 # Rearrange the energy factors to obtain our preferred ordering.
-coeffs_df$energy <- as.factor(coeffs_df$energy)
-energyLevels <- c(none="none", q="q", x="x", u="u")
-for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
+# coeffs_df$energy <- as.factor(coeffs_df$energy)
+# energyLevels <- c(none="none", q="q", x="x", u="u")
+# for (lev in rev(energyLevels)) { coeffs_df$energy <- relevel(coeffs_df$energy, ref=lev) }
 
 # Rearrange the energy factors to obtain our preferred ordering.
-fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iX"), "x")
-fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iU"), "u")
-fitted_df$energy <- as.factor(fitted_df$energy)
-for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
+# fitted_df$energy <- replace(fitted_df$energy, which(is.na(fitted_df$energy)), "none")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iQ"), "q")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iX"), "x")
+# fitted_df$energy <- replace(fitted_df$energy, which(fitted_df$energy=="iU"), "u")
+# fitted_df$energy <- as.factor(fitted_df$energy)
+# for (lev in rev(energyLevels)) { fitted_df$energy <- relevel(fitted_df$energy, ref=lev) }
 
 # Load the original models.
 # oModels <- readRDS(file=file.path("..", "oModels.Rdata"))
