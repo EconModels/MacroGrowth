@@ -11,6 +11,9 @@
 # live in the directory called "data_resample." ("batch.bash" does this by default.)
 
 require(EconData)
+require(EconModels)
+require(doParallel)
+registerDoParallel()
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
@@ -30,21 +33,34 @@ cat("Copying original models file..."); cat("\n")
 OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
 save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
 
-# Load all coefficients
+# Load all coefficients. Do this task in parallel for a speed gain.
 cat("Loading and saving all coefficients..."); cat("\n")
-AllCoef <- loadResampledData(path="data_resample", kind="coeffs")
+AllCoef <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
+  loadResampledData(path="data_resample", country=country, kind="coeffs")
+}
+# This next code can be used to ensure that the results are identical. 
+# But, you should change countryAbbrevs to sort(countryAbbrevs) above
+# AllCoef2 <- loadResampledData(path="data_resample", kind="coeffs")
+# print(identical(AllCoef, AllCoef2))
+
 # Save all coefficients in one data frame
 save(AllCoef, file=file.path(datadir, "AllCoef.rda"), compress="gzip")
 
 # Load all fitted models
 cat("Loading and saving all fitted models..."); cat("\n")
-AllFitted <- loadResampledData(path="data_resample", kind="fitted")
+AllFitted <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
+  loadResampledData(path="data_resample", country=country, kind="fitted")
+}
+# system.time(AllFitted2 <- loadResampledData(path="data_resample", kind="fitted"))
+
 # Save all fitted models in one data frame
 save(AllFitted, file=file.path(datadir, "AllFitted.rda"), compress="gzip")
 
 # Create an archive of the results
 cat("Creating archive..."); cat("\n")
 zip(zipfile="data_resample.zip", files="data_resample", flags="-r9Xj")
+
+# Build EconData package here?
 
 cat("\n\nDone @ ")
 cat(date())
