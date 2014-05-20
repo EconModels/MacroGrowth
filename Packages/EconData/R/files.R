@@ -6,6 +6,8 @@
 #' @param nest an integer vector containing 2 or 3 values. 
 #' For 2-value vectors, integers must be 1 or 2.
 #' For 3-value vectors, integers must be 1, 2, or 3.
+#' @param sep the separator for the factorString
+#' @param showNestParens tells whether to show parentheses in the factor string if a nest is present
 #' @details Factors of production are ordered according to the nest, if present.
 #' In the nest argument, the integer 1 indicates the capital stock variable ("iK"),
 #' the integer 2 indicates the labor variable ("iL"), and
@@ -15,42 +17,64 @@
 #' For example, (iX + iK) + (iL).
 #' If the \code{nest} vector is not present, factors of production 
 #' are returned in the order they appear in the \code{formula}.
-#' @return a string representing the nesting of the form "iQ+iK+iL", etc.
+#' If showNestParens=FALSE, parentheses are not included in the factor string, e.g., \code{iX+iK+iL}.
+#' If showNestParens=TRUE and a nest argument is provided, 
+#' parentheses are include in the factor string, e.g., \code{(iX + iK) + (iL)} or \code{(iL) + ()}.
+#' @return a string representing the nesting of the form \code{iQ+iK+iL} or \code{(iQ + iK) + (iL)}, etc.
 #' An empty string if a nest is not involved.
 #' @export
-factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]], sep="+" ) {
+factorString <- function( formula, nest, sep="+", showNestParens=FALSE ) {
   if (is.character(formula)){
     formula <- eval(parse(text=formula))
   }
   matches <- na.omit(match(x=all.vars(formula), table=factors))
   factorsPresent <- factors[matches]
-  if (missing(nest) || is.null(nest) || is.na(nest) || (nest=="") || ( is.list(nest) && (length(nest)==0))){
+  noNest <- missing(nest) || is.null(nest) || is.na(nest) || (nest=="") || ( is.list(nest) && (length(nest)==0)) 
+  if (noNest){
     # Simply return the factors of production in the order they appear in the formula.
-    return(paste(factorsPresent, collapse=sep))
-  }
-  # We have a nest.
-  if (is.list(nest)){
-    # nest is a list. Grab the "nest" item and see if it is of integer type
-    if ( is.integer(nest[["nest"]]) ){
-      nest <- nest[["nest"]]
+    out <- paste(factorsPresent, collapse=sep)
+  } else {
+    # We have a nest.
+    if (is.list(nest)){
+      # nest is a list. Grab the "nest" item and see if it is of integer type
+      if ( is.integer(nest[["nest"]]) ){
+        nest <- nest[["nest"]]
+      } else {
+        # give up
+        stop(paste("Unknown nest =", nest, "in factorString"))
+      }
+    }
+    if (length(nest) != length(factorsPresent)){
+      # This is a problem. Need to have as many nest items as factors of production.
+      stop(paste("length(nest) =", length(nest), 
+                 "and length(factorsPresent) =", length(factorsPresent), 
+                 ". They should be equal."))
+    }
+    if (length(nest) == 1){
+      # Only one factor of production. Return it.
+      out <- factorsPresent[[1]]
     } else {
-      # give up
-      stop(paste("Unknown nest =", nest, "in factorString"))
+      # Rearrange the factors in the nested order.
+      orderedFactors <- factorsPresent[nest]
+      out <- paste(orderedFactors, collapse=sep)
     }
   }
-  if (length(nest) != length(factorsPresent)){
-    # This is a problem. Need to have as many nest items as factors of production.
-    stop(paste("length(nest) =", length(nest), 
-               "and length(factorsPresent) =", length(factorsPresent), 
-               ". They should be equal."))
+  if (showNestParens){
+    if (noNest==TRUE){
+      # Set the nest to be the order of variables supplied
+      nest <- c(1:length(factorsPresent))
+    }
+    # We have a nest and we want to show parentheses.
+    pieces <- strsplit(out, split=sep, fixed=TRUE)[[1]] # fixed=TRUE is needed as the default sep is "+"
+    out <- paste0(
+      "(", 
+      paste(head(pieces, 2), collapse=" + "),  
+      ") + (", 
+      paste(tail(pieces, -2), collapse=" + "),
+      ")"
+    )
   }
-  if (length(nest) < 2){
-    # Only one factor of production. Return it.
-    return(factorsPresent[[1]])
-  }
-  # Rearrange the factors in the nested order.
-  orderedFactors <- factorsPresent[nest]
-  return(paste(orderedFactors, collapse=sep))
+  return(out)
 }
 
 #' Parse a factor string
@@ -76,6 +100,9 @@ factorString <- function( formula, nest, Kvar=factors[["K"]], Lvar=factors[["L"]
 #' @export
 parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
   factorString <- gsub(pattern=" ", replacement="", x=factorString) # Remove spaces
+  factorString <- gsub(pattern="\\(", replacement="", x=factorString) # Remove parens
+  factorString <- gsub(pattern="\\)", replacement="", x=factorString) # Remove parens
+  factorString <- gsub(pattern="\\>\\+", replacement="", x=factorString) # Remove trailing "+"  
   energyType <- extractEnergyType(factorString)
   if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
     # The factorString doesn't contain sep. Assume there is only one variable.
