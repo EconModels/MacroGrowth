@@ -3,8 +3,7 @@
 \alias{factorString}
 \title{Creates an string representation of the factors of production}
 \usage{
-factorString(formula, nest, Kvar = factors[["K"]], Lvar = factors[["L"]],
-  sep = "+")
+factorString(formula, nest, sep = "+", showNestParens = FALSE)
 }
 \arguments{
   \item{formula}{the formula used for fitting. The energy
@@ -13,9 +12,14 @@ factorString(formula, nest, Kvar = factors[["K"]], Lvar = factors[["L"]],
   \item{nest}{an integer vector containing 2 or 3 values.
   For 2-value vectors, integers must be 1 or 2. For 3-value
   vectors, integers must be 1, 2, or 3.}
+
+  \item{sep}{the separator for the factorString}
+
+  \item{showNestParens}{tells whether to show parentheses
+  in the factor string if a nest is present}
 }
 \value{
-a string representing the nesting of the form "iQ+iK+iL", etc.
+a string representing the nesting of the form \code{iQ+iK+iL} or \code{(iQ + iK) + (iL)}, etc.
 An empty string if a nest is not involved.
 }
 \description{
@@ -31,5 +35,8 @@ c(3,1,2) is interpreted as energy and capital stock nested together.
 For example, (iX + iK) + (iL).
 If the \code{nest} vector is not present, factors of production
 are returned in the order they appear in the \code{formula}.
+If showNestParens=FALSE, parentheses are not included in the factor string, e.g., \code{iX+iK+iL}.
+If showNestParens=TRUE and a nest argument is provided,
+parentheses are include in the factor string, e.g., \code{(iX + iK) + (iL)} or \code{(iL) + ()}.
 }
 
