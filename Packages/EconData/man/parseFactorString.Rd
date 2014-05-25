@@ -21,22 +21,24 @@ parseFactorString(factorString, sep = "+", rVar = "iGDP",
   \item{tVar}{the name of the time variable}
 }
 \value{
-a list with two elements, \code{formula} and \code{nest}.
+a list with several elements. See details.
 }
 \description{
 Parse a factor string
 }
 \details{
-White space is removed from \code{factorString}.
+White space is removed from \code{factorString} before parsing.
 In the return value, \code{formula} is a formula object with factors of production
 in the correct order.
 \code{nest} is an integer vector whose elements indicate nesting of the
 factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production
 in the formula are nested together and the 2nd factor of production
 is independent.
-\code{factor} is NA if there are more than one factors of production.
+\code{factor} is NA if there is more than one factor of production.
 If only one factor of production, factor is set to the single factor.
 \code{energyType} is the energy type in this factorString, if present.
 NA otherwise.
+\code{nestStr} a nest string without nesting parentheses.
+\code{nestStrParen} a nest string with nesting parentheses, useful for pretty-printing.
 }
 

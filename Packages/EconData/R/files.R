@@ -85,24 +85,26 @@ factorString <- function( formula, nest, sep="+", showNestParens=FALSE ) {
 #' @param kVar the name of the capital stock variable
 #' @param lVar the name of the labor variable
 #' @param tVar the name of the time variable
-#' @return a list with two elements, \code{formula} and \code{nest}.
-#' @details White space is removed from \code{factorString}.
+#' @return a list with several elements. See details.
+#' @details White space is removed from \code{factorString} before parsing.
 #' In the return value, \code{formula} is a formula object with factors of production
 #' in the correct order. 
 #' \code{nest} is an integer vector whose elements indicate nesting of the 
 #' factors of production. For example, \code{c(3,1,2)} means that the 3rd and 1st factors of production 
 #' in the formula are nested together and the 2nd factor of production 
 #' is independent. 
-#' \code{factor} is NA if there are more than one factors of production. 
+#' \code{factor} is NA if there is more than one factor of production. 
 #' If only one factor of production, factor is set to the single factor.
 #' \code{energyType} is the energy type in this factorString, if present.
 #' NA otherwise.
+#' \code{nestStr} a nest string without nesting parentheses.
+#' \code{nestStrParen} a nest string with nesting parentheses, useful for pretty-printing.
 #' @export
 parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[["K"]], lVar=factors[["L"]], tVar="iYear"){
   factorString <- gsub(pattern=" ", replacement="", x=factorString) # Remove spaces
   factorString <- gsub(pattern="\\(", replacement="", x=factorString) # Remove parens
   factorString <- gsub(pattern="\\)", replacement="", x=factorString) # Remove parens
-  factorString <- gsub(pattern="\\>\\+", replacement="", x=factorString) # Remove trailing "+"  
+  factorString <- gsub(pattern="\\+$", replacement="", x=factorString) # Remove trailing "+" if present
   energyType <- extractEnergyType(factorString)
   if (! grepl(pattern=sep, x=factorString, fixed=TRUE)){
     # The factorString doesn't contain sep. Assume there is only one variable.
@@ -129,7 +131,11 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
     }
   }
   formula <- eval(parse(text=formula))
-  return(list(formula=formula, nest=nest, factor=factor, energyType=energyType))
+  # Create string representations
+  nestStr <- factorString(formula, nest=nest, sep=sep, showNestParens=FALSE)
+  nestStrParen <- factorString(formula, nest=nest, sep=sep, showNestParens=TRUE)
+  # Create a list and return.
+  return(list(formula=formula, nest=nest, factor=factor, energyType=energyType, nestStr=nestStr, nestStrParen=nestStrParen))
 }
 
 #' Creates an id for this run of resampling
