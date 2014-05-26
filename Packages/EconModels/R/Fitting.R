@@ -819,10 +819,6 @@ addMetaData <- function(model, nest, nestString, history=""){
 #' @export
 #' 
 linexModel <- function(formula, data, response, capital, labor, energy, time, save.data=TRUE) {
-  ####################
-  # Returns an nls linex model for the country and energyType specified.
-  # 
-  
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + energy + time,
                            list( response = substitute(response),
