@@ -445,8 +445,15 @@ LDCs.\footnote{Lesser Developed Countries}
 historicalPlot(historicalData)
 @
 
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=5.8, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\theta$ values for CD resample models.">>=
 cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
+standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=country~energy, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(theta), y=expression(lambda))
+@
+
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=5.8, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
 standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
 @
 
