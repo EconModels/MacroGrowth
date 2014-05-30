@@ -835,7 +835,7 @@ literature related to each.
 %++++++++++++++++++++++++++++++
 
 In this paper, we assess three prominent energy-augmented production functions 
-appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
+that appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
 Substitution (CESe), and LINear EXponential (LINEX). The following subsections 
 describe each.
 
