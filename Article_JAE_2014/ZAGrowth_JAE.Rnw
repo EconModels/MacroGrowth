@@ -412,6 +412,7 @@ standardScatterPlot(data=linexCoeffsData_ZA, aes(a_0, c_t), facet_formula=countr
 
 **** Need to graph resampled $\theta$ values. ****
 
+**** Need to graph $\alpha$, $\beta$, and $\gamma$ as a trajectory on a ternary graph. ****
 
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="LINEX fitted models.">>=
 linexFittedData_ZA <- filter(fitted_df_ZA, model=="linex", energy=="iQ")
