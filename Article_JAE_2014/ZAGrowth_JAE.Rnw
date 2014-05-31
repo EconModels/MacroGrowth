@@ -396,10 +396,6 @@ spaghettiPlot(data=cesFittedData_ZA, facet_formula=Country~nest, level=spaghetti
 @
 
 
-
-
-
-
 %++++++++++++++++++++++++++++++
 \subsection{LINEX Model}
 \label{sec:LINEX_Parameter_Estimation}
@@ -413,14 +409,15 @@ standardScatterPlot(data=linexCoeffsData_ZA, aes(a_0, c_t), facet_formula=countr
      scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
+
+**** Need to graph resampled $\theta$ values. ****
+
+
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="LINEX fitted models.">>=
 linexFittedData_ZA <- filter(fitted_df_ZA, model=="linex", energy=="iQ")
 spaghettiPlot(data=linexFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1991=1)")
 @
-
-
-
 
 
 
