@@ -6,6 +6,7 @@
 \usepackage{microtype}  % produces hanging punctuation and beautiful type
 \usepackage[compress]{natbib}
 \usepackage[shownotes]{authNote}
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
 
 \title{Growth of the South African Economy:\\An Empirical Evaluation}
 \author{Matthew Kuperus Heun, Martin de Wit, Randall Pruim,\\Stan du Plessis, Ben Smit}
@@ -282,38 +283,6 @@ and the parameter $c_t$ represents the relative importance
 of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
 Both $a_0$ and $c_t$ are assumed constant with respect to time. 
 
-\citet{Kummel:2002tx} use the 
-LINEX production function to describe economic output 
-for the economies of the U.S., Japan, and Germany. 
-\citet{Warr:2010ga} compare the LINEX production function with 
-the Cobb-Douglas production function to assess economic growth 
-for Austria, the United Kingdom, the United States, and Japan. 
-\citet{Ayres:2005kn} argued that introducing energy inputs 
-in traditional production functions does not improve its explanatory power, 
-but including useful work in a LINEX function does. 
-
-\authNote{Martin: add more here about the conclusions of each paper 
-regarding the role of energy in economic growth? Add additional literature? 
-Or, adjust as you see fit. Especially, are there any confidence intervals 
-or statistical evaluation in each of these studies?}
-
-\authNote{If we want to keep this quote, it should be clearer what point we are trying to
-make with it. ---rjp}
-\citet{Abramovitz:1956aa} wrote:
-
-\begin{quote}
-  This result [that ``technological progress'' explained
-  175\% of the growth of the US economy since 1870] is surprising in the lopsided
-  importance which it appears to give to productivity increase,
-  and it should be, in a sense, sobering, if not discouraging,
-  to students of economic growth.
-  Since we know little about the causes of productivity increase,
-  the indicated importance of this element may be taken to be some sort of measure
-  of our ignorance about the causes of economic growth in the United States
-  and some sort of indication of where
-  we need to concentrate our attention.
-\end{quote}
-
 
 %++++++++++++++++++++++++++++++
 \section{Data}
@@ -326,15 +295,15 @@ historicalData <- subset(historicalData, subset=Country=="ZA")
 
 # Load coefficients from all models in one large data frame
 coeffs_df <- tbl_df(AllCoef)
-coeffs_df <- subset(coeffs_df, subset=country=="ZA")
+coeffs_df_ZA <- subset(coeffs_df, subset=country=="ZA")
 # Load fitted data from all models in one large data frame
 fitted_df <- tbl_df(AllFitted)
-fitted_df <- subset(fitted_df, subset=Country=="ZA")
+fitted_df_ZA <- subset(fitted_df, subset=Country=="ZA")
 # Load the original models.
-oModels <- OrigModels$ZA
+oModels_ZA <- OrigModels$ZA
 @
 
-<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=3, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 historicalPlot(historicalData)
 @
 
@@ -348,16 +317,109 @@ historicalPlot(historicalData)
 \label{sec:CD_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=3, fig.cap="Cobb-Douglas resample model parameters.">>=
-cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
-standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\lambda$ and $\\theta$ values for CD resample models.">>=
+cdCoeffsData_ZA <- filter(coeffs_df_ZA, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
+standardScatterPlot(data=cdCoeffsData_ZA, mapping=aes(scale, lambda), facet_formula=country~energy, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) +
+    scale_y_continuous(breaks=c(0, 0.002, 0.004, 0.006, 0.008)) +    
+    labs(x=expression(theta), y=expression(lambda))
 @
 
-<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=3, fig.cap="Cobb-Douglas fitted models.">>=
-cdFittedData <- filter(fitted_df, model=="cd", nest %in% c("iK+iL", "iK+iL+iQ"))
-spaghettiPlot(data=cdFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1980=1 or 1991=1)")
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Cobb-Douglas resample model parameters.">>=
+cdCoeffsData_ZA <- filter(coeffs_df_ZA, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
+standardTriPlot(data=cdCoeffsData_ZA, facet_formula=country~energy)
 @
+
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Cobb-Douglas fitted models.">>=
+cdFittedData_ZA <- filter(fitted_df_ZA, model=="cd", nest %in% c("iK+iL", "iK+iL+iQ"))
+spaghettiPlot(data=cdFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1991=1)")
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{CES Model}
+\label{sec:CES_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+<<CES_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\lambda$ and $\\theta$ values for CES resample models with various nestings.">>=
+cesCoeffsData_ZA <- filter(coeffs_df_ZA, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) +
+    scale_y_continuous(breaks=c(0, 0.002, 0.004, 0.006, 0.008)) +    
+    labs(x=expression(theta), y=expression(lambda))
+@
+
+<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with various nestings.">>=
+standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+
+<<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with various nestings.">>=
+standardScatterPlot(data=subset(cesCoeffsData_ZA, nestStr != "iK+iL"),
+                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
+for the CES model, based on values of $\delta$ and $\delta_1$.
+Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
+      \hline
+      ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
+      ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+      ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with various nestings.">>=
+standardTriPlot(data=cesCoeffsData_ZA, facet_formula=country~nest)
+@
+
+<<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="CES fitted models with various nestings.">>=
+cesFittedData_ZA <- filter(fitted_df_ZA, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+spaghettiPlot(data=cesFittedData_ZA, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1991=1)")
+@
+
+
+
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{LINEX Model}
+\label{sec:LINEX_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="LINEX model (with energy) resampling results.">>=
+linexCoeffsData_ZA <- filter(coeffs_df_ZA, model=="linex", energy=="iQ")
+standardScatterPlot(data=linexCoeffsData_ZA, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
+    labs(x=expression(a[0]), y=expression(c[t])) +
+     scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+     scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
+@
+
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="LINEX fitted models.">>=
+linexFittedData_ZA <- filter(fitted_df_ZA, model=="linex", energy=="iQ")
+spaghettiPlot(data=linexFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1991=1)")
+@
+
+
 
 
 
