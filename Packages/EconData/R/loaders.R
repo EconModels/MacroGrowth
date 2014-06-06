@@ -63,7 +63,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   dflist <- list()
   nFiles <- length(files)
   
-
+  
   
   if (length(pieces) != nFiles){
     stop("Unequal length for files and names in loadResampledData.")
@@ -124,7 +124,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   }
   
   if( kind != "fitted" ) stop("This should never happen") 
-
+  
   # We want a data frame containing the historical data (type column is "actual" and Resampled column is FALSE), 
   # the "orig" fit to historical data (type column is "fitted" and Resampled column is FALSE), and
   # and all of the fits to resampled data (type column is "fitted" and Resampled column is TRUE).  
@@ -138,14 +138,14 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       modelsList <- readRDS( connection ) # Read files from the archive
       close(connection)
     }
-
+    
     # The first model is the fit to historical data. 
     # The model object also contains the original data as an attribute
     # if the model was created with save.data=TRUE.
     origModel <- modelsList[[1]]
     # Extract the data frame containing the actual (historical) data
     actual <- subset( attr(origModel, "data"), select=c("Year", "iGDP", "Country") )
-
+    
     row.names(actual) <- NULL # Eliminates row names if they are present.
     
     countryAbbrev <- pieces[[i]][1]
@@ -175,34 +175,33 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
     dfList <- list()
-#    resampleModels <- modelsList[-1] # Cycle through all the models, except the original model
-#    nModels <- length(resampleModels)
-#    for (j in 1:nModels){
-#      resampleDF <- pred
-#      resampleDF$iGDP <- yhat(resampleModels[[j]])
-#      resampleDF$resampleNumber <- j
-#      resampleDF$resampled <- TRUE
-#      dfList[[length(dfList) + 1]] <- resampleDF
-#    }
-
-# can we do something less drastic (using environments or frames) here?
+    #    resampleModels <- modelsList[-1] # Cycle through all the models, except the original model
+    #    nModels <- length(resampleModels)
+    #    for (j in 1:nModels){
+    #      resampleDF <- pred
+    #      resampleDF$iGDP <- yhat(resampleModels[[j]])
+    #      resampleDF$resampleNumber <- j
+    #      resampleDF$resampled <- TRUE
+    #      dfList[[length(dfList) + 1]] <- resampleDF
+    #    }
+    
+    # can we do something less drastic (using environments or frames) here?
     j <<- 0
     dfList <- lapply( modelsList[-1], function(m) {
       j <<- j+1
-      return( rbind( 
-        transform(pred,
-                  iGDP = yhat(m),
-                  resampleNumber = j,
-                  resampled=TRUE,
-                  type="fitted to resampled"
-        ),
-        transform(pred,
-                  iGDP = attr(m, "data")[["iGPD"]],
-                  resampleNumber = j,
-                  resampled=TRUE,
-                  type="resampled"
-        )
-      ) )
+      Fitted <-  transform(pred,
+                           iGDP = yhat(m),
+                           resampleNumber = j,
+                           resampled=TRUE,
+                           type="fitted to resampled"
+      )
+      Resampled <- transform(pred,
+                             iGDP = attr(m, "data")[["iGPD"]],
+                             resampleNumber = j,
+                             resampled=TRUE,
+                             type="resampled" 
+      )
+      return(rbind(Fited, Resampled))
     } 
     )
     
