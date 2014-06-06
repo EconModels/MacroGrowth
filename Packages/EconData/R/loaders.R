@@ -197,7 +197,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
                   type="fitted to resampled"
         ),
         transform(pred,
-                  iGDP = attr(m, "data")$iGPD,
+                  iGDP = attr(m, "data")[["iGPD"]],
                   resampleNumber = j,
                   resampled=TRUE,
                   type="resampled"
