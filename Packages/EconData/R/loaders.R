@@ -123,6 +123,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     return(modelsList)
   }
   
+  if( kind != "fitted" ) stop("This should never happen") 
+
   # We want a data frame containing the historical data (type column is "actual" and Resampled column is FALSE), 
   # the "orig" fit to historical data (type column is "fitted" and Resampled column is FALSE), and
   # and all of the fits to resampled data (type column is "fitted" and Resampled column is TRUE).  
@@ -142,8 +144,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # if the model was created with save.data=TRUE.
     origModel <- modelsList[[1]]
     # Extract the data frame containing the actual (historical) data
-    actual <- attr(origModel, "data")
-    actual <- actual[c("Year", "iGDP", "Country")]
+    actual <- subset( attr(origModel, "data"), select=c("Year", "iGDP", "Country") )
+
     row.names(actual) <- NULL # Eliminates row names if they are present.
     
     countryAbbrev <- pieces[[i]][1]
@@ -152,7 +154,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     parsedNestStr <- parseFactorString(factorString=nestStr)
     
     actual$resampleNumber <- NA
-    actual$type <- "actual"
+    actual$type <- "historical"
     actual$resampled <- FALSE
     actual$factor <- parsedNestStr[["factor"]]
     # The historical data doesn't really have an "energy" associated with it.
@@ -168,7 +170,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # Get the fit to the original data
     pred <- actual
     pred$iGDP <- yhat(origModel)
-    pred$type <- "fitted"
+    pred$type <- "fitted to historical"
     
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
@@ -187,12 +189,20 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     j <<- 0
     dfList <- lapply( modelsList[-1], function(m) {
       j <<- j+1
-      return( 
+      return( rbind( 
         transform(pred,
                   iGDP = yhat(m),
                   resampleNumber = j,
-                  resampled=TRUE
-        ))
+                  resampled=TRUE,
+                  type="fitted to resampled"
+        ),
+        transform(pred,
+                  iGDP = attr(m, "data")$iGPD,
+                  resampleNumber = j,
+                  resampled=TRUE,
+                  type="resampled"
+        )
+      ) )
     } 
     )
     
