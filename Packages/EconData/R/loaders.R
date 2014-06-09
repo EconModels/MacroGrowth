@@ -123,7 +123,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     return(modelsList)
   }
   
-  if( kind != "fitted" ) stop("This should never happen") 
+  if( kind != "fitted" ){
+    stop("This should never happen") 
+  }
   
   # We want a data frame containing the historical data (type column is "actual" and Resampled column is FALSE), 
   # the "orig" fit to historical data (type column is "fitted" and Resampled column is FALSE), and
@@ -165,7 +167,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # The historical data doesn't really have a "nest" associated with it.
     # But, setting the nest column to the requested nest will allow this
     # actual data to show up in the correct facet on any graphs that factet on nest.
-    actual$nest <- nestStr
+    actual$nestStr <- nestStr
+    actual$nestStrParen <- parsedNestStr[["nestStrParen"]]
     
     # Get the fit to the original data
     pred <- actual
@@ -201,7 +204,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
                              resampled=TRUE,
                              type="resampled" 
       )
-      return(rbind(Fited, Resampled))
+      return(rbind(Fitted, Resampled))
     } 
     )
     
