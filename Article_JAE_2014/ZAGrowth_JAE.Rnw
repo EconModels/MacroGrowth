@@ -23,9 +23,6 @@ opts_chunk$set(
   # ********************************************************
   eval=TRUE,
   # ********************************************************
-  # tikz allows LaTeX code in graphical output. 
-  # E.g., "$y$" for a variable name in the legend for a graph.  
-  # dev='tikz',
   tidy=FALSE,
   comment=NA,
   # Tells whether to cache output from chunks are saved. Cacheing saves time. 
