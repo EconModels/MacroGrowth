@@ -81,7 +81,7 @@ AllFitted$Country <- as.factor(AllFitted$Country)
 for (lev in rev(countryAbbrevs)) { AllFitted$Country <- relevel(AllFitted$Country, ref=lev) }
 # Relevel nest
 AllFitted$nestStr <- as.factor(AllFitted$nestStr)
-for (lev in rev(nestStrLevels)) { AllFitted$nest <- relevel(AllFitted$nest, ref=lev) }
+for (lev in rev(nestStrLevels)) { AllFitted$nestStr <- relevel(AllFitted$nestStr, ref=lev) }
 # Relevel nestStrParen
 AllCoef$nestStrParen <- as.factor(AllCoef$nestStrParen)
 for (lev in rev(nestStrParenLevels)) { AllCoef$nestStrParen <- relevel(AllCoef$nestStrParen, ref=lev) }
