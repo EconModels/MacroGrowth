@@ -99,6 +99,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       df$country <- countryAbbrev
       df$model <- modelType
       df$nestStr <- nestStr
+      df$nestStrParen <- parsedNestStr[["nestStrParen"]]
       df$energy <- parsedNestStr[["energyType"]]
       df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
@@ -169,11 +170,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # actual data to show up in the correct facet on any graphs that factet on nest.
     actual$nestStr <- nestStr
     actual$nestStrParen <- parsedNestStr[["nestStrParen"]]
-    
-    # Get the fit to the original data
-    pred <- actual
-    pred$iGDP <- yhat(origModel)
-    pred$type <- "fitted to historical"
+    actual$iGDP.hat <- yhat(origModel)
     
     # Add the resampled fits. 
     # The resample models are the 2nd through nFiles models in the modelsList
@@ -192,23 +189,16 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     j <<- 0
     dfList <- lapply( modelsList[-1], function(m) {
       j <<- j+1
-      Fitted <-  transform(pred,
-                           iGDP = yhat(m),
-                           resampleNumber = j,
-                           resampled=TRUE,
-                           type="fitted to resampled"
-      )
-      Resampled <- transform(pred,
-                             iGDP = attr(m, "data")[["iGPD"]],
-                             resampleNumber = j,
-                             resampled=TRUE,
-                             type="resampled" 
-      )
-      return(rbind(Fitted, Resampled))
+      return(transform(actual,
+                       iGDP = attr(m,"response"),
+                       iGDP.hat = yhat(m),
+                       resampleNumber = j,
+                       resampled=TRUE,
+                       type="resampled"
+      ))
     } 
     )
-    
-    temp <- do.call("rbind", c(list(actual, pred), dfList))
+    temp <- do.call("rbind", c(list(actual), dfList))
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
   }
   return(outgoing)
