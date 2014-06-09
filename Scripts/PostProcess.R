@@ -57,9 +57,9 @@ for (lev in rev(countryAbbrevs)) { AllCoef$country <- relevel(AllCoef$country, r
 # Relevel nestStr
 AllCoef$nestStr <- as.factor(AllCoef$nestStr)
 for (lev in rev(nestStrLevels)) { AllCoef$nestStr <- relevel(AllCoef$nestStr, ref=lev) }
-# Relevel nest
-AllCoef$nest <- as.factor(AllCoef$nest)
-for (lev in rev(nestLevels)) { AllCoef$nest <- relevel(AllCoef$nest, ref=lev) }
+# Relevel nestStrParen
+AllCoef$nestStrParen <- as.factor(AllCoef$nestStrParen)
+for (lev in rev(nestStrParenLevels)) { AllCoef$nestStrParen <- relevel(AllCoef$nestStrParen, ref=lev) }
 # Replace energy NA with "none" and set levels
 AllCoef$energy <- replace(AllCoef$energy, which(is.na(AllCoef$energy)), "none")
 AllCoef$energy <- as.factor(AllCoef$energy)
@@ -80,8 +80,11 @@ AllFitted <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
 AllFitted$Country <- as.factor(AllFitted$Country)
 for (lev in rev(countryAbbrevs)) { AllFitted$Country <- relevel(AllFitted$Country, ref=lev) }
 # Relevel nest
-AllFitted$nest <- as.factor(AllFitted$nest)
+AllFitted$nestStr <- as.factor(AllFitted$nestStr)
 for (lev in rev(nestStrLevels)) { AllFitted$nest <- relevel(AllFitted$nest, ref=lev) }
+# Relevel nestStrParen
+AllCoef$nestStrParen <- as.factor(AllCoef$nestStrParen)
+for (lev in rev(nestStrParenLevels)) { AllCoef$nestStrParen <- relevel(AllCoef$nestStrParen, ref=lev) }
 # Replace energy NA with "none" and set levels
 AllFitted$energy <- replace(AllFitted$energy, which(is.na(AllFitted$energy)), "none")
 AllFitted$energy <- as.factor(AllFitted$energy)
