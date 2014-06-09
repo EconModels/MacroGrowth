@@ -538,7 +538,16 @@ cesModel <- function(formula, data,
   yName <- head(fNames, 1)
   
   nest <- nest[1:numComponents]
-  nestString <- paste0(
+  group1 <- paste(head(xNames, 2), collapse="+")
+  group2 <- paste(tail(xNames, -2), collapse="+")
+  if (nchar(group2) == 0){
+    # Only 2 parameters
+    nestStr <- paste0(paste(head(xNames, 2), collapse="+"))
+  } else {
+    # 3 or more parameters
+    nestStr <- paste(paste(head(xNames, 2), collapse="+"), paste(tail(xNames, -2), collapse="+"), sep="+")
+  }
+  nestStrParen <- paste0(
     "(", 
     paste(head(xNames,2), collapse=" + "),  
     ") + (", 
@@ -588,7 +597,7 @@ cesModel <- function(formula, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+      model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -611,7 +620,7 @@ cesModel <- function(formula, data,
   }
   if (! is.null( model ) ) {
     hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-    model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+    model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
     models[length(models)+1] <- list(model)
   }
   #
@@ -625,7 +634,7 @@ cesModel <- function(formula, data,
                         control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, nest=nest, nestString=nestString, history=hist)
+        model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
         models[length(models)+1] <- list(model)
       },
       error = function(e) {  
@@ -644,7 +653,6 @@ cesModel <- function(formula, data,
     attr(res, "formula") <- formula
     if (save.data) { attr(res, "data") <- data }
     attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-#    res <- addMetaData(res, nest=nest, nestString=nestString, history=hist)
   }
   
   return(res)
@@ -657,7 +665,7 @@ cesModel <- function(formula, data,
 #' work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
 #' to the object and the new object is returned from the function.
 #' 
-addMetaData <- function(model, nest, nestString, history=""){
+addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
   if (is.null(model)){
     return(model) 
   }
@@ -749,7 +757,7 @@ addMetaData <- function(model, nest, nestString, history=""){
     alpha <- delta * (1.0 - delta_1)
     beta <- 1.0 - delta
   } else {
-    stop(paste("Unknown nest:", nestString, "in addMetaData."))
+    stop(paste("Unknown nest:", nestStrParen, "in addMetaData."))
   }
   metaData <- data.frame( isConv = model$convergence,
                           algorithm = model$method,
@@ -765,7 +773,8 @@ addMetaData <- function(model, nest, nestString, history=""){
                           start.delta = as.vector(model$start["delta"]),
                           start.rho = as.vector(model$start["rho"]),
                           history=history,
-                          nest = nestString
+                          nestStr = nestStr,
+                          nestStrParen = nestStrParen
   )
   
   metaList <- list(  isConv = model$convergence,
@@ -782,7 +791,8 @@ addMetaData <- function(model, nest, nestString, history=""){
                      start.delta = as.vector(model$start["delta"]),
                      start.rho = as.vector(model$start["rho"]),
                      history=history,
-                     nest=nestString
+                     nestStr = nestStr,
+                     nestStrParen = nestStrParen
   )
   
   if ( nrow(metaData) > 1 ) {
