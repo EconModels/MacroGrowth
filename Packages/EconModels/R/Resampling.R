@@ -28,7 +28,8 @@ resampledResponse <- function( object, ...) {
 
 #' @export
 resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), 
-                                       normalize=TRUE, 
+#                                        normalize=TRUE, 
+                                       normalize=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
     multErr <- all( response(object) / yhat(object) / exp(resid(object)) - 1 < tol )
