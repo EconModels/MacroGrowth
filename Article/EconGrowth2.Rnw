@@ -1585,15 +1585,18 @@ the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
 
 <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
-cesCoeffsData <- filter(coeffs_df, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
-standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                     "(iK + iL) + (iQ)", 
+                                                                     "(iL + iQ) + (iK)", 
+                                                                     "(iQ + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
     labs(x=expression(gamma), y=expression(lambda))
 @
 
 <<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
-standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -1601,8 +1604,8 @@ standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_for
 @
 
 <<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
-standardScatterPlot(data=subset(cesCoeffsData, nestStr != "iK+iL"),
-                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+standardScatterPlot(data=subset(cesCoeffsData, nestStrParen != "(iK + iL) + ()"),
+                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -1634,7 +1637,7 @@ the ternary graph for the Cobb-Douglas models,
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
 <<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
-standardTriPlot(data=cesCoeffsData, facet_formula=country~nest)
+standardTriPlot(data=cesCoeffsData, facet_formula=country~nestStrParen)
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
@@ -1644,8 +1647,11 @@ The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
-spaghettiPlot(data=cesFittedData, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                     "(iK + iL) + (iQ)", 
+                                                                     "(iL + iQ) + (iK)", 
+                                                                     "(iQ + iK) + (iL)"))
+spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
 
@@ -1655,7 +1661,7 @@ The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
-spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nest=="iK+iL+iQ"), level=spaghettiGraphLevel) +
+spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nestStrParen=="(iK + iL) + (iQ)"), level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
 @
 
