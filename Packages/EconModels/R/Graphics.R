@@ -175,13 +175,14 @@ spaghettiPlot <- function(data,
   seData <- plyr::ddply( subset(data, resampled), split, summarise, 
                    n = length(iGDP.hat),
                    lower = quantile(iGDP.hat, alph[1]),
-                   upper = quantile(iGDP.hat, 1-alph[1])
+                   upper = quantile(iGDP.hat, 1-alph[1]),
+                   center = iGDP.hat[1]
   ) 
   graph <- ggplot(aes(y=iGDP, x=Year), 
                   data=subset(data, !resampled)) 
   
   graph <- graph + 
-    geom_smooth(aes(x=Year, ymin=lower, ymax=upper, y=NA), 
+    geom_smooth(aes(x=Year, ymin=lower, ymax=upper, y=center), 
                 data=seData,
                 col=NA, fill="gray10", 
                 lty=1, size=.5, stat="identity")
