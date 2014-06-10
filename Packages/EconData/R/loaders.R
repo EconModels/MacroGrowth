@@ -128,9 +128,6 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     stop("This should never happen") 
   }
   
-  # We want a data frame containing the historical data (type column is "actual" and Resampled column is FALSE), 
-  # the "orig" fit to historical data (type column is "fitted" and Resampled column is FALSE), and
-  # and all of the fits to resampled data (type column is "fitted" and Resampled column is TRUE).  
   outgoing <- data.frame()
   for (i in 1:nFiles){
     # Get the models associated with this file.
@@ -157,7 +154,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     parsedNestStr <- parseFactorString(factorString=nestStr)
     
     actual$resampleNumber <- NA
-    actual$type <- "historical"
+    ## actual$type <- "historical"
     actual$resampled <- FALSE
     actual$factor <- parsedNestStr[["factor"]]
     # The historical data doesn't really have an "energy" associated with it.
@@ -193,8 +190,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
                        iGDP = attr(m,"response"),
                        iGDP.hat = yhat(m),
                        resampleNumber = j,
-                       resampled=TRUE,
-                       type="resampled"
+                       resampled=TRUE
+                       ## type="resampled"
       ))
     } 
     )
