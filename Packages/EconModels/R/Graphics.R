@@ -184,18 +184,30 @@ spaghettiPlot <- function(energyType='none',
   alph = .5 * (1 - level)
   data$alph = alph
   split <- intersect( split, names(data) )
-  seData <- ddply( subset(data, type=="resampled"), split, summarise, 
-                   n = length(iGDP),
-                   lower= quantile(iGDP, alph[1]),
-                   upper= quantile(iGDP, 1-alph[1]),
-                   iGDP = iGDP[1]
+  seData <- plyr::ddply( subset(data, resampled), split, summarise, 
+                   n = length(iGDP.hat),
+                   lower = quantile(iGDP.hat, alph[1]),
+                   upper = quantile(iGDP.hat, 1-alph[1])
   ) 
-  graph <- ggplot( data=subset(data, type=="historical"), aes(Year, iGDP)) 
-  graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col=NA, fill="gray10", 
-                               lty=1, size=.5, data=seData, stat="identity")
-  graph <- graph + geom_line(color="black", size=.4, shape=1, alpha=1.0)
-  graph <- graph + geom_line(data=subset(data, !resampled & type =="fitted"), 
-                             color="gray90", size=.4, shape=1, alpha=1.0)
+  graph <- ggplot(aes(y=iGDP, x=Year), 
+                  data=subset(data, !resampled)) 
+  
+  graph <- graph + 
+    geom_smooth(aes(x=Year, ymin=lower, ymax=upper, y=NA), 
+                data=seData,
+                col=NA, fill="gray10", 
+                lty=1, size=.5, stat="identity")
+  
+  graph <- graph + 
+    geom_line( aes(x=Year, y=iGDP),
+               data = subset(data, !resampled),
+               color="black", size=.4, shape=1, alpha=1.0)
+  
+  graph <- graph + 
+    geom_line(aes(x=Year, y=iGDP.hat), 
+              data=subset(data, !resampled), 
+              color="gray90", size=.4, shape=1, alpha=1.0)
+  
   if (!is.null( facet_formula ) ) {
     if (length(facet_formula) == 2) {
       graph <- graph + facet_wrap( facet_formula, scales="free_y" )
