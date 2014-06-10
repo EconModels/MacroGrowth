@@ -122,7 +122,7 @@ standardTriPlot <- function(data,
                             orig_color = "gray70",
                             size=1.0, 
                             alpha=0.2,
-                            facet_formula = countryAbbrev ~ nest ){
+                            facet_formula = country ~ nest ){
   p <- triPlot(subset(data, method!="orig"), 
                gamma, alpha, beta,
                labels=c("gamma", "alpha", "beta"),
@@ -169,7 +169,7 @@ spaghettiPlot <- function(energyType='none',
                                                              nest=nest, ...), 
                               split = union(all.vars(facet_formula), "Year"), 
                               geom_actual = geom_line, 
-                              facet_formula = Country ~ nest,
+                              facet_formula = Country ~ nestStr,
                               alpha=0.15, level = 1, ...){
   #############
   # Returns a graph that shows lines for each resample model
@@ -184,13 +184,13 @@ spaghettiPlot <- function(energyType='none',
   alph = .5 * (1 - level)
   data$alph = alph
   split <- intersect( split, names(data) )
-  seData <- ddply( subset(data, type=="fitted"), split, summarise, 
+  seData <- ddply( subset(data, type=="resampled"), split, summarise, 
                    n = length(iGDP),
                    lower= quantile(iGDP, alph[1]),
                    upper= quantile(iGDP, 1-alph[1]),
                    iGDP = iGDP[1]
   ) 
-  graph <- ggplot( data=subset(data, type=="actual"), aes(Year, iGDP)) 
+  graph <- ggplot( data=subset(data, type=="historical"), aes(Year, iGDP)) 
   graph <- graph + geom_smooth(aes(ymin=lower, ymax=upper), col=NA, fill="gray10", 
                                lty=1, size=.5, data=seData, stat="identity")
   graph <- graph + geom_line(color="black", size=.4, shape=1, alpha=1.0)
