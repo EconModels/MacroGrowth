@@ -163,24 +163,12 @@ standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, al
 }
 
 #' @export
-spaghettiPlot <- function(energyType='none', 
-                              nest, 
-                              data=loadCESSpaghettiGraphData(energyType=energyType, 
-                                                             nest=nest, ...), 
-                              split = union(all.vars(facet_formula), "Year"), 
-                              geom_actual = geom_line, 
-                              facet_formula = Country ~ nestStr,
-                              alpha=0.15, level = 1, ...){
-  #############
-  # Returns a graph that shows lines for each resample model
-  # for the energyType and nest arguments.
-  # Alternatively, you can specify the data argument only.
-  # You can obtain data with the loadCESSpaghettiGraphData function. 
-  # For example:
-  # data <- loadCESSpaghettiGraphData(energyType="Q", nest="(kl)e", 
-  #         archive="data_archive/data_resample_2013-11-16_Best_Algorithm_Saving_Models_n=50.zip")
-  # cesSpaghettiGraph(data=data)
-  ##
+spaghettiPlot <- function(data, 
+                          split = union(all.vars(facet_formula), "Year"), 
+                          geom_actual = geom_line, 
+                          facet_formula = Country ~ nestStr,
+                          alpha=0.15, 
+                          level = 1, ...){
   alph = .5 * (1 - level)
   data$alph = alph
   split <- intersect( split, names(data) )
