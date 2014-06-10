@@ -69,7 +69,7 @@ resampledFits <- function(model,
                           save.data=FALSE,
                           seed,
                           id,
-                          rindex = FALSE,
+                          reindex = FALSE,
                           ...) {
   
   fitfun <- switch(class(model)[1],
