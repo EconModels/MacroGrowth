@@ -28,7 +28,7 @@ resampledResponse <- function( object, ...) {
 
 #' @export
 resampledResponse.default <- function( object, method=c("residual", "wild", "debug"),  
-                                       normalize=FALSE,
+                                       reindex=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
     multErr <- all( response(object) / yhat(object) / exp(resid(object)) - 1 < tol )
@@ -41,7 +41,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   } else {
     res <- yhat(object) + resample( resid(object) ) * sgn
   }
-  if (normalize) res <- res / res[1]  # normalize so first entry is 1.
+  if (reindex) res <- res / res[1]  # normalize so first entry is 1.
   return(res)
 }
 
@@ -152,7 +152,7 @@ resampledData <- function(model, method=c("residual", "resample", "wild", "debug
   } else {
     res <- data    
     res[ , 1] <- NA
-    res[ , 1] <- resampledResponse(model, method=method, normalize=reindex)
+    res[ , 1] <- resampledResponse(model, method=method, reindex=reindex)
   }
   return(res)
 }
