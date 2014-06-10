@@ -4,7 +4,7 @@
 \title{Create resampled data}
 \usage{
 resampledData(model, method = c("residual", "resample", "wild", "debug"),
-  reindex = TRUE)
+  reindex = FALSE)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},

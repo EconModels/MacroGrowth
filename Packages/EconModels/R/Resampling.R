@@ -27,8 +27,7 @@ resampledResponse <- function( object, ...) {
 }
 
 #' @export
-resampledResponse.default <- function( object, method=c("residual", "wild", "debug"), 
-#                                        normalize=TRUE, 
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug"),  
                                        normalize=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
@@ -70,6 +69,7 @@ resampledFits <- function(model,
                           save.data=FALSE,
                           seed,
                           id,
+                          rindex = FALSE,
                           ...) {
   
   fitfun <- switch(class(model)[1],
@@ -96,7 +96,7 @@ resampledFits <- function(model,
   # Now do the resample fits.
   if (n > 0L) {
     for (i in 1L:n) {
-      newData <- resampledData(model, method=method)
+      newData <- resampledData(model, method=method, reindex=reindex)
       newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
       resampleCoeffs <- extractAllMetaData(newModel)
       resampleCoeffs$method <- method
@@ -139,7 +139,8 @@ resampledFits <- function(model,
 #' the model with the response variable in the first column.
 
 #' @export
-resampledData <- function(model, method=c("residual", "resample", "wild", "debug"), reindex=TRUE){
+resampledData <- function(model, method=c("residual", "resample", "wild", "debug"), 
+                          reindex=FALSE){
   data <- attr(model, "data")
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")

@@ -4,7 +4,7 @@
 \title{Perform resample fits for a model}
 \usage{
 resampledFits(model, method = c("residual", "resample", "wild", "debug"), n,
-  save.data = FALSE, seed, id, ...)
+  save.data = FALSE, seed, id, rindex = FALSE, ...)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
