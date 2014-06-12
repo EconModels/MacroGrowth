@@ -41,7 +41,9 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   } else {
     res <- yhat(object) + resample( resid(object) ) * sgn
   }
-  if (reindex) res <- res / res[1]  # normalize so first entry is 1.
+  if (reindex) {
+    res <- res / res[1]  # normalize so first entry is 1.
+  }
   return(res)
 }
 
