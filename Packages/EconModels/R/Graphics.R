@@ -164,15 +164,15 @@ standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, al
 
 #' @export
 spaghettiPlot <- function(data, 
-                          split = union(all.vars(facet_formula), "Year"), 
+                          variables = union(all.vars(facet_formula), "Year"), 
                           geom_actual = geom_line, 
                           facet_formula = Country ~ nestStr,
                           alpha=0.15, 
                           level = 1, ...){
   alph = .5 * (1 - level)
   data$alph = alph
-  split <- intersect( split, names(data) )
-  seData <- plyr::ddply( subset(data, resampled), split, summarise, 
+  variables <- intersect( variables, names(data) )
+  seData <- plyr::ddply( subset(data, resampled), variables, plyr::summarise, 
                    n = length(iGDP.hat),
                    lower = quantile(iGDP.hat, alph[1]),
                    upper = quantile(iGDP.hat, 1-alph[1]),
