@@ -21,7 +21,7 @@ Imports:
     splines,
     mosaic
 Suggests:
-    MASS,
+    MASS
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>
