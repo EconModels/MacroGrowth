@@ -43,8 +43,6 @@ option_list <- list(
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
               help="resampling method [default=%default]"),
-#  make_option(c("-H", "--baseHistorical"), # default="data", 
-#              help="relative path to directory for historical data"),
   make_option(c("-R", "--baseResample"), # default="data_resample", 
               help="relative path to directory for resample data")
 )
@@ -58,7 +56,6 @@ if(opts$model == "all") {
   opts$model <- setdiff(modelTypes, c("cese-(kl)e", "cese-(le)k", "cese-(ek)l"))
 } else {
   opts$model <- strsplit(opts$model,",")[[1]]
-  #   opts$model <- match.arg(opts$model,choices=modelTypes,several.ok=TRUE)
 }
 
 if(opts$country== "all") {
