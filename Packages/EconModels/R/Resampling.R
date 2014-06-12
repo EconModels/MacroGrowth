@@ -62,6 +62,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @param id a character vector of length 1 used as an identifier that will be 
 #' added to the output.  This is convenient
 #' for marking data internally if you are doing resampling on many different models.
+#' @param reindex a boolean that indicates whether to reindex the resampled fits.
 #' @param ... additional arguments passed to \code{fitfun}
 #' @return a list of length two containting a data frame of coefficients and a list of models
 #' @export
