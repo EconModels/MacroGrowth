@@ -9,10 +9,8 @@ Imports:
     parallel,
     lattice,
     latticeExtra,
-    mosaic,
     plyr,
     ggplot2,
-    plyr,
     car,
     mosaic,
     xtable,
@@ -20,7 +18,8 @@ Imports:
     Hmisc,
     methods,
     utils,
-    splines
+    splines,
+    mosaic
 Suggests:
     MASS,
 VignetteBuilder: knitr

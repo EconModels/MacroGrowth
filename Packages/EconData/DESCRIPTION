@@ -12,7 +12,6 @@ Imports:
     mosaic,
     plyr,
     ggplot2,
-    plyr,
     car,
     mosaic,
     xtable,
