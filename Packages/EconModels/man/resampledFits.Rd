@@ -24,6 +24,8 @@ with each model.}
 added to the output.  This is convenient
 for marking data internally if you are doing resampling on many different models.}
 
+\item{reindex}{a boolean that indicates whether to reindex the resampled fits.}
+
 \item{...}{additional arguments passed to \code{fitfun}}
 }
 \value{
