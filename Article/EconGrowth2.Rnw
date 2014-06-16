@@ -1684,17 +1684,13 @@ To avoid this problem, we transformed the LINEX model into
 \end{equation}
 
 \noindent where $a_1 \equiv a_0 c_t$. 
-We used the \texttt{nls} function in \texttt{R}
+We used the \texttt{lm} function in \texttt{R}
 \citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
-Equation~\ref{eq:LINEX_transformed}. We recovered
-a value for $c_t$ with $c_t = a_1 / a_0$. The reparameterization
+Equation~\ref{eq:LINEX_transformed}. 
+We recovered a value for $c_t$ with $c_t = a_1 / a_0$. 
+The reparameterization
 shown in Equation~\ref{eq:LINEX_transformed} reduced the number of 
-unconverged resample fits to nearly zero: 
-The largest fraction of unconverged resample fits is found 
-for Zambia (ZM) with thermal energy ($q$), where
-\Sexpr{fracUnconvergedResampleFits(modelType="linex", countryAbbrev="ZM", energyType="Q", baseResample=baseResample)*100}\%
-of the resample fits did not converge. 
-(See Table~\ref{tab:frac_unconverged_models}.)
+unconverged resample fits to zero: 
 
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
