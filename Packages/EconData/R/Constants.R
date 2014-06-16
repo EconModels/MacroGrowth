@@ -31,7 +31,8 @@ nestStrLevels <- c("iK", "iL", "iQ", "iX", "iU",
 
 # Preferred order for nestStrParen
 #' @export
-nestStrParenLevels <- c("(iK + iL) + ()", 
+nestStrParenLevels <- c("(iK) + ()", "(iL) + ()", "(iQ) + ()", "(iX) + ()" , "(iU) + ()",
+                        "(iK + iL) + ()", 
                         "(iK + iL) + (iQ)", "(iK + iL) + (iX)", "(iK + iL) + (iU)",
                         "(iL + iQ) + (iK)", "(iL + iX) + (iK)", "(iL + iU) + (iK)",
                         "(iQ + iK) + (iL)", "(iX + iK) + (iL)", "(iU + iK) + (iL)")
