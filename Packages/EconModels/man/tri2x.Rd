@@ -4,8 +4,12 @@
 \title{Some Graphics functions}
 \usage{
 tri2x(x, y, z)
+
+tri2x(x, y, z)
 }
 \description{
+Some graphics functions for working with Economic Models.
+
 Some graphics functions for working with Economic Models.
 }
 
