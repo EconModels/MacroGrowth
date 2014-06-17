@@ -20,6 +20,9 @@ fortify.LINEXmodel <- function(model, data, ...) {
   a_0 <- naturalCoef(model)[, "a_0", drop=TRUE]
   c_t <- naturalCoef(model)[, "c_t", drop=TRUE]
   mutate( data, 
+    # These equations are from Equation 9 in 
+    # B.S. Warr and R.U. Ayres. Useful work and information as drivers of economic growth. 
+    # Ecological Economics, 73(C):93–102, Jan. 2012.
     alpha = a_0 * (l+e)/k,
     beta = a_0 * (c_t*l/e - l/k), # or beta = a_1*l/e - a_0*l/k
     gamma = 1 - alpha - beta
