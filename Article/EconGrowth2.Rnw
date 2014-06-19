@@ -1672,9 +1672,10 @@ standardTriPlot(data=cesCoeffsData, facet_formula=country~nestStrParen)
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
 to historical data for all nestings. 
-Historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+As with the Cobb-Douglas results, 
+historical data are shown as a black line, 
+the fit to historical data is shown as a white line, and 
+the gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
 cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
@@ -1703,9 +1704,8 @@ spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nestStrParen=="(iK + iL
 
 The LINEX model is given in Equation~\ref{eq:LINEX}. 
 If the fitting algorithm drives $a_0 \rightarrow 0$, 
-any changes to $c_t$ have no effect on $sse$, 
-leading the fitting algorithm to report non-convergence. 
-To avoid this problem, we transformed the LINEX model into
+any changes to $c_t$ have no effect on $sse$. 
+Therefore, we transformed the LINEX model into
 
 \begin{equation} \label{eq:LINEX_transformed}
   y = Ae; 
@@ -1716,19 +1716,15 @@ To avoid this problem, we transformed the LINEX model into
 \noindent where $a_1 \equiv a_0 c_t$. 
 We used the \texttt{lm} function in \texttt{R}
 \citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
-Equation~\ref{eq:LINEX_transformed}. 
+Equation~\ref{eq:LINEX_transformed} in log-transformed space. 
 We recovered a value for $c_t$ with $c_t = a_1 / a_0$. 
-The reparameterization
-shown in Equation~\ref{eq:LINEX_transformed} reduced the number of 
-unconverged resample fits to zero: 
-
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
 
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
-Historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+Again, historical data are shown as a black line, 
+the fit to historical data is shown as a white linem and 
+the gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
