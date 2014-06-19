@@ -1348,28 +1348,31 @@ log transformations) are discussed below.
 Bootstrappng is a statistical resampling technique for assigning
 measures of accuracy and precision to sample estimates by measuring
 properties of an estimator when sampling from a resampling
-distribution.  Resampling distributions can be formed in a number of 
+distribution.  
+Resampling distributions can be formed in a number of 
 ways in accordance with the type of data, experimental design,
-and modeling assumptions involved.  In each case, many new resamples 
+and modeling assumptions involved.  
+In each case, many new resamples 
 are created, each of which is a randomized version of the original sample data to 
-which the desired analysis method can be applied.  By investigating, for example,
+which the desired analysis method can be applied.  
+By investigating, for example,
 the variability of a parameter estimate from one resample to another,
 one can learn about the precision of the estimation method.
 \authNote{Add some references here. --rjp}
 
 In the context of linear models (regression), resamples are generally created
 by residual resampling.  In our case, we formed resamples by adding to the fitted 
-response (GDP) the product of a residual from the original model fit and 
-and random sign ($-1$ or $1$, each with probability $0.5$).  For the case of 
-Cobb-Douglas and LINEX models, this residual resampling occurs on the 
+response ($\hat{y}$) the product of a residual from the original model fit and 
+random sign ($-1$ or $1$, each with probability $0.5$).  
+For the case of Cobb-Douglas and LINEX models, 
+this residual resampling occurs on the 
 log-transformed data.
-
 
 Intuitively, this method assumes that the residuals are indicative of 
 the variability (from many potential sources) inherent in the data so that
 it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
-Thus, a resampled response $\tilde Y$ can be computed as 
+Thus, a resampled response $\tilde Y'$ can be computed as 
 \[
 \tilde Y_i' = \hat y_i \pm r_j
 \]
@@ -1379,30 +1382,31 @@ r_i = y_i - \hat y_i
 \]
 both the sign ($\pm$) and the index of the residual ($j$, typically different from $i$) 
 are chosen at random (with replacement). 
-Resampling in this way has the consequence 
-that a resampled time series could have non-unity first-year GDP ($\tilde Y_1 \neq 1$),
-so a renormalization takes place using the initial GDP from the
-resampled data as the new baseline, not the observed GDP in year 1.
-
-\begin{equation} \label{eq:resample_y}
-	\tilde y_i  = \frac{\tilde Y_i'}{\tilde Y_1'}
-\end{equation}
-to obtain a resampled indexed GDP time series.
-We repeated the resampling process \Sexpr{numResamples()} times for each
-combination of growth model and country, both with and without energy when appropriate.
+% Resampling in this way has the consequence 
+% that a resampled time series could have non-unity first-year GDP ($\tilde Y_1 \neq 1$),
+% so a renormalization takes place using the initial GDP from the
+% resampled data as the new baseline, not the observed GDP in year 1.
+% \begin{equation} \label{eq:resample_y}
+% 	\tilde y_i  = \frac{\tilde Y_i'}{\tilde Y_1'}
+% \end{equation}
+% to obtain a resampled indexed GDP time series.
+We repeated the resampling process 1000 times for each
+combination of growth model and country, 
+both with and without energy as appropriate.
 
 The coefficients from the fit to a resampled time series
 (the ``resample coefficients'') will be different from the coefficients 
 obtained from the fit to historical data (the ``base coefficients'').
-When these resample coefficients are highly variable, it is an indication
+When these resample coefficients are highly variable, 
+it is an indication
 that the data do not determine the parameter estimates very precisely.
-Lack of imprecision can stem from a number of factors, most obviously
+Lack of precision can stem from a number of factors, most obviously
 a poor model fit, low model sensitivity to one or more parameters, 
 or correlations between parameter estimates.
 \authNote{This is not precisely true:
 Large residuals in the fit to historical data (the ``base fit'')
 are expected to produce large variation in resample coefficient values
-(when the resampling is repeated \Sexpr{numResamples()} times),
+(when the resampling is repeated 1000 times),
 indicating less certainty in the value
 of those coefficients. 
 Similarly, small base fit residuals are expected to produce small
