@@ -1742,6 +1742,56 @@ spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghett
 @
 \onecolumn{}
 
+The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
+values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
+
+\begin{equation} \label{eq:LINEX_alpha}
+  \alpha = \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
+\end{equation}
+
+\begin{equation} \label{eq:LINEX_beta}
+  \beta = \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
+\end{equation}
+
+\noindent{}and
+
+\begin{equation} \label{eq:LINEX_beta}
+  \gamma = \frac{e}{y} \frac{\partial y}{\partial e} 
+         = 1 - a_0 \left[ \frac{e}{k} + c_t \frac{l}{e} \right] 
+         = 1 - \alpha - \beta \;.
+\end{equation}
+
+\noindent Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
+If the trajectory stays within the triangle, 
+the constraints of $\alpha > 0$, $\beta > 0$, and $\gamma > 0$ are respected.  
+Conversely, if the trajectory goes outside the triangle, one of the constraints has been violated.
+
+The following graphs shows trajectories for China and Iran.
+
+<<LINEX_abg_traj_graph_CN, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China.">>=
+dataCN <- fortify(OrigModels$CN$linex$`iK+iL+iQ`)
+triPlot(data=dataCN, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+@
+
+<<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=2, fig.cap="LINEX trajectory for Iran.">>=
+dataIR <- fortify(OrigModels$IR$linex$`iK+iL+iQ`)
+triPlot(data=dataIR, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+@
+
+Iran is the only country for which the trajecotry stays within the triangle for the 
+entire time period.
+Thus, in our fitted models, the LINEX model is, for the most part, 
+violating constraints on $\alpha$, $\beta$, and $\gamma$.
+If the LINEX model were made to respect the constraints on $\alpha$, $\beta$, and $\gamma$,
+it would fit worse than it already does for those countries where
+the constraints are violated (that is, for every country except Iran).
+We did nothing to correct this situation, because it is not clear what could be done.
+Constraining $\alpha = 0$ in the case of China would imply that either
+$a_0$ or $c_t$ or both varied with time.
+At that point, $a_0$ and $c_t$ are no longer fitted parameters of the model, 
+and we have a different model: it is no longer LINEX.
+
+
 %++++++++++++++++++++++++++++++
 \subsection{Parameter Estimation Summary}
 \label{sec:Parameter_Estimation_Summary}
