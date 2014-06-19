@@ -1590,11 +1590,29 @@ and \texttt{PORT} does not for the same data
 Coefficients for each resampled CES model for all countries and all nests
 are shown in 
 Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}. 
-The crosshair on each graph shows the location 
+The white crosshair on each graph shows the location 
 of the fit to historical data. 
 In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph},
 the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
+
+Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
+in Equations~\ref{eq:CES}--\ref{eq:CESekl},
+the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
+resample points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}
+are equivalent.
+That is, all points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}
+have the same $sse$. 
+As a consequence, 
+the \texttt{cesEst} fitting algorithm has no way 
+to discriminate among points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}. 
+Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
+tend to cluster at the locations of the initial grid search in 
+$\sigma$ or $\sigma_1$
+(0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
 <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
 cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
