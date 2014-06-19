@@ -2094,6 +2094,12 @@ LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
 \label{sec:FutureWork}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Energy quantification, engage with useful work literature
+More countries
+Longer time scales
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
