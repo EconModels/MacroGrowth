@@ -2094,11 +2094,23 @@ LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
 \label{sec:FutureWork}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Energy quantification, engage with useful work literature
-More countries
-Longer time scales
-
-
+In the future, we intend add an additional coordinate of analysis 
+(Section~\ref{sec:Coordinates}):
+energy quantification.
+We wish to include exergy ($X$) and useful work ($U$) energy quantifications
+in the economic models.
+Doing so will provide an opportunity to engage the 
+literature around useful work as a driver 
+of economic growth.\citep{Ayres:2003ec, Ayres:2005kn, Ayres:2010ug, 
+Warr:2006hc, Warr:2010ga, Warr:2010ht, Warr:2012cg}
+And, we will be able to assess whether any models provide better 
+descriptions of economic growth with a given energy quantification.
+We intend to look at additional countries as data becomes available
+for the various enegy quantifications.
+And, we wish to look over longer time scales.
+In particular, we wish to investigate the effects of significant 
+processes (such as industrialization) and events (world wars)
+using the resampling techniques presented herein.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
