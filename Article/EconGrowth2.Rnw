@@ -130,20 +130,6 @@ options(width=75)
 options(show.signif.stars=TRUE)
 require(knitr)
 
-# Load historical data
-# In Rstudio, this paper is generated from it's directory, which is "Article".
-# We need to define paths relative to the location of the paper. 
-# Relative path to historical data from Article
-historicalData <- Econ2011 # From the EconData package
-
-# Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(AllCoef)
-# Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(AllFitted)
-
-# Load the original models.
-oModels <- OrigModels
-
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
@@ -212,6 +198,22 @@ scaleTextSize <- 0.8  # Multiple of normal size
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
 spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+@
+
+<<data, include=FALSE>>=
+# Load historical data
+# In Rstudio, this paper is generated from it's directory, which is "Article".
+# We need to define paths relative to the location of the paper. 
+# Relative path to historical data from Article
+historicalData <- Econ2011 # From the EconData package
+
+# Load coefficients from all models in one large data frame
+coeffs_df <- tbl_df(AllCoef)
+# Load fitted data from all models in one large data frame
+fitted_df <- tbl_df(AllFitted)
+
+# Load the original models.
+oModels <- OrigModels
 @
 
 % These equations are used in several locations in the paper.
