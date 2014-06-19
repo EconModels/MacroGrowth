@@ -986,8 +986,6 @@ A third production function, the LINear EXponential (LINEX) function
 \end{equation}
 was derived from thermodynamic considerations
 \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
-%\noindent where $e$ is indexed energy and e is the base of 
-%the natural logarithm. 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
 the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
@@ -1268,9 +1266,6 @@ taken from the
 The value for $N_{workers}$ was obtained from the labor time series 
 for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
-
-
-\twocolumn{}
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 historicalPlot(historicalData)
 @
@@ -1292,18 +1287,21 @@ and high covariances among these variables can be seen in
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 \authNote{Do we want to discuss the covariances?}
 
-\onecolumn{}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%++++++++++++++++++++++++++++++
 \subsection{Point Estimates}
+%++++++++++++++++++++++++++++++
+
 Each of the economic growth models discussed in 
 Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
-from data for each economy (see Section~\ref{sec:Economy_Types}).
-We obtained parameter estimates by applying the method of least-squares to (potentially
-log-transformed) data using the \texttt{R} \citep{R} functions
+using data for each economy (see Section~\ref{sec:Economy_Types}).
+We obtained parameter estimates by applying the method of least-squares to 
+log-transformed data using the \texttt{R} \citep{R} functions
 \texttt{lm} (for Cobb-Douglas and LINEX models) 
 and \texttt{cesEst} \citep{Henningsen:2011td} (for CES models). 
 \authNote{Need to check how CES is being fit and adjust this accordingly.}%
@@ -1314,10 +1312,11 @@ y = f(t,k,l,e; \theta) + \mathrm{error} \;,
 \]
 where $\theta$ is a vector of parameters for the function $f$.
 \authNote{if we use $\theta$ this way, we need a new scaling parameter. --rjp}%
-In least squares models, parameter estimates are chosen to minimize
+Parameter estimates are chosen to minimize
 \[
-\sum_{i} (y_i - f(t,k,l,e; \theta) )^2 \;.
+\sum_{i} (y_i - f(t,k,l,e; \theta) )^2
 \]
+within constraints.
 For the optimal parameter values $\hat \theta$, we define the 
 fitted response by
 \[
