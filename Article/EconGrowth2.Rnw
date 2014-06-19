@@ -2097,19 +2097,20 @@ LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
 In the future, we intend add an additional coordinate of analysis 
 (Section~\ref{sec:Coordinates}):
 energy quantification.
-We wish to include exergy ($X$) and useful work ($U$) energy quantifications
-in the economic models.
+Specifically, we with to analyze exergy ($X$) and useful work ($U$)
+energy quantifications within the framework established in this paper.
 Doing so will provide an opportunity to engage the 
 literature around useful work as a driver 
 of economic growth.\citep{Ayres:2003ec, Ayres:2005kn, Ayres:2010ug, 
 Warr:2006hc, Warr:2010ga, Warr:2010ht, Warr:2012cg}
-And, we will be able to assess whether any models provide better 
-descriptions of economic growth with a given energy quantification.
-We intend to look at additional countries as data becomes available
-for the various enegy quantifications.
-And, we wish to look over longer time scales.
+And, we will be able to assess the interaction between economic models
+and energy quantification: 
+are there combinations of economic models and energy quantifications
+that provide significantly better descriptions of growth?
+We intend to evaluate additional countries as data become available.
+And, we wish to perform analyses over longer time scales.
 In particular, we wish to investigate the effects of significant 
-processes (such as industrialization) and events (world wars)
+economic processes (such as industrialization) and political events (world wars)
 using the resampling techniques presented herein.
 
 
