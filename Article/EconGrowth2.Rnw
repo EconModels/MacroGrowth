@@ -808,19 +808,19 @@ literature. There has been little empirical work assessing the predictive abilit
 of various energy-augmented production functions for different types of economies. 
 And, very few studies of the importance of energy in economic growth include 
 rigorous statistical assessments of energy-related fitting parameters. This paper 
-attempts to contribute to the literature by applying statistically rigorous 
-methods along three coordinates of analysis: form of the energy augmented 
-production function, energy quantification, and type of economy.
+contributes to the literature by applying statistically rigorous 
+methods along two coordinates of analysis: form of the energy augmented 
+production function and type of economy.
 
 The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
 discusses the coordinates of analysis described above. 
 Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output and factors of production. The procedures 
-for and results from parameter estimation for the various production functions 
+generate time series for economic output and factors of production. 
+The procedures for and results from parameter estimation for the various production functions 
 are discussed in Section~\ref{sec:Parameter_Estimation}. 
 Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
-of all statistical results.
+results, and Section~\ref{sec:Conclusion} concludes. 
+An appendix provides details of all statistical results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -831,30 +831,33 @@ of all statistical results.
 This section describes the two coordinates of analysis and briefly reviews 
 literature related to each.
 
+
 %++++++++++++++++++++++++++++++
 \subsection{Mathematical Forms of the Energy-augmented Production Function} 
 \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
 In this paper, we assess three prominent energy-augmented production functions 
-that appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
-Substitution (CESe), and LINear EXponential (LINEX). The following subsections 
-describe each.
+that appear in the literature: 
+Cobb-Douglas (CD), 
+Constant Elasticity of Substitution (CES), and 
+LINear EXponential (LINEX). 
+The following subsections describe each.
+
 
 %------------------------------
-\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
+\subsubsection{Cobb-Douglas (CD) Production Function} 
 \label{sec:CDe}
 %------------------------------
 
 The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
 can be augmented to include an energy term:
-%Similarly, the energy-augmented Cobb-Douglas production function is
 
 \begin{equation} \label{eq:CDe}
   y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
 \end{equation}
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
-typically TJ/year. The energy-augmented Cobb-Douglas production function 
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
+The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
 
@@ -862,14 +865,16 @@ of production: $\alpha + \beta + \gamma = 1$.
 useful work ($u$) quantifications for $e$ to describe historic Japanese 
 and American economies from 1900-2000. \citet{Froling:2009vo} uses an 
 energy-augmented Cobb-Douglas production function with thermal energy 
-quantification ($q$) to describe output for the global economy from 
-1800--1970. Fr\"{o}ling's model endogenizes labor with respect to fertility 
+quantification ($q$) to describe output for the global economy from 1800--1970. 
+Fr\"{o}ling's model endogenizes labor with respect to fertility 
 and mortality rates and separates thermal energy into two types: biomass 
-energy and coal energy. \citet{Serrenho:2010vq} use the log transform of 
+energy and coal energy. 
+\citet{Serrenho:2010vq} use the log transform of 
 the energy-augmented Cobb-Douglas function with thermal energy 
 quantification ($q$) to describe output for the EU-15 countries. 
 Serrenho divides thermal energy into renewables, non-renewables, 
-wastes, and imports. The main argument of these papers is that 
+wastes, and imports. 
+The main argument of these papers is that 
 energy is an important driver of growth and needs to be included
 as an essential factor of production.
 
@@ -878,13 +883,14 @@ the role of energy in economic growth? Add additional literature?
 Or, adjust as you see fit. Especially, are there any confidence intervals 
 or statistical evaluation in each of these studies? ****
 
+
 %------------------------------
-\subsubsection{Energy-augmented CES Production Function (CESe)} 
+\subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
 \label{sec:CES}
 %------------------------------
 
 Other energy economists use an energy-augmented 
-Constant Elasticity of Substitution (CES$e$) production function to 
+Constant Elasticity of Substitution (CES) production function to 
 describe economic growth. The \texttt{R} \citep{R} package 
 \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
 functions of the following forms (among others):
