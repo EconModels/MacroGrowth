@@ -1420,8 +1420,8 @@ It is important to note that large residuals can arise from either
 (b) a mathematical model that does not describe the underlying phenomena well.
 It is also important to note that (c) even when the residuals are small and the 
 model produces fitted values that track the observed data closely, it may
-still be difficult to estimate some or all of the model parameters precisely.
-The resampling method employed reflects all three of these potential 
+yet be difficult to estimate some or all of the model parameters precisely.
+The resampling method employed herein reflects all three of these potential 
 sources of uncertainty in parameter estimates.
 
 \authNote{Should the description of model fitting come before or after 
@@ -1438,12 +1438,12 @@ Equation~\ref{eq:CD}. Equation~\ref{eq:CD} was
 reparameterized as
 
 \begin{equation} \label{eq:CD_reparam}
-  y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{1-\alpha}
 \end{equation}
 
 \noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
 $\lambda$ and $\alpha$ were estimated by the 
-\texttt{R} \citep{R} function \texttt{nls}. 
+\texttt{R} \citep{R} function \texttt{lm} in log-transform space. 
 If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
 we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
 The value of $\beta$ was found with $\beta = 1 - \alpha$. 
@@ -1453,7 +1453,7 @@ in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe}
 was reparameterized as
 
 \begin{equation} \label{eq:CDe_AB_reparam}
-  y = A k^{\min(a,b)} l^{|b-a|} e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\min(a,b)} l^{|b-a|} e^{1 - \max(a,b)}
 \end{equation}
 
 \noindent with 
@@ -1462,39 +1462,39 @@ $\beta = |b-a|$, and
 $\gamma = 1 - \max(a,b)$.
 The reparameterization ensures that $\alpha + \beta + \gamma = 1$,
 thereby providing constant returns to scale.
-The \texttt{R} \citep{R} function \texttt{nls} was used to estimate 
-values of $\lambda$, $a$, and $b$.
-If the fitted value for $a$ ($b$) fell outside $[0,1]$, it was 
+The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
+values of $\lambda$, $a$, and $b$ in log-transform space.
+If the fitted value for $a$ ($b$) fell outside the range $[0,1]$, it was 
 set equal to its boundary value and both $\lambda$ and $b$ ($a$) 
 were re-estimated.
 
-The \texttt{nls} parameter estimation algorithm can encounter convergence difficulty 
-when the optimal value for the parameter represented by the absolute value function 
-(in Equation~\ref{eq:CDe_AB_reparam}, $\beta$) 
-lies near a boundary. If the absolute value exponent caused non-convergence of the 
-\texttt{nls} function, second and, if necessary, third reparameterizations 
-were attempted:
-
-\begin{equation} \label{eq:CDe_CD_reparam}
-  y = A k^{1 - \max(c,d)} l^{\min(c,d)} e^{|d-c|}; A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
-
-\begin{equation} \label{eq:CDe_FG_reparam}
-  y = A k^{|g-f|} l^{1 - \max(f,g)} e^{\min(f,g)}; A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
-
-\noindent If none of the three reparameterizations converged, 
-the parameterization with the smallest sum of square errors ($sse$)
-was used. \ref{sec:Convergence_Resample_Models} shows the 
-fraction of unconverged models for each model type. 
-The above approach resulted in very few unconverged
-Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
+% The \texttt{nls} parameter estimation algorithm can encounter convergence difficulty 
+% when the optimal value for the parameter represented by the absolute value function 
+% (in Equation~\ref{eq:CDe_AB_reparam}, $\beta$) 
+% lies near a boundary. If the absolute value exponent caused non-convergence of the 
+% \texttt{nls} function, second and, if necessary, third reparameterizations 
+% were attempted:
+% 
+% \begin{equation} \label{eq:CDe_CD_reparam}
+%   y = A k^{1 - \max(c,d)} l^{\min(c,d)} e^{|d-c|}; A = \mathrm{e}^{\lambda (t-t_0)}
+% \end{equation}
+% 
+% \begin{equation} \label{eq:CDe_FG_reparam}
+%   y = A k^{|g-f|} l^{1 - \max(f,g)} e^{\min(f,g)}; A = \mathrm{e}^{\lambda (t-t_0)}
+% \end{equation}
+% 
+% \noindent If none of the three reparameterizations converged, 
+% the parameterization with the smallest sum of square errors ($sse$)
+% was used. \ref{sec:Convergence_Resample_Models} shows the 
+% fraction of unconverged models for each model type. 
+% The above approach resulted in very few unconverged
+% Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (without and with energy) resample models.
 Each reample is shown as a gray dot on the graph. 
-The fit to historical data is shown as a gray circle.
+The fit to historical data is shown as a gray crosshairs.
 
 Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1547,7 +1547,8 @@ In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
 at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
 During the grid search portion of our algorithm, starting values for the free parameters
 are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
-and $\gamma$ is set to a value such that the mean of the residuals is zero.
+and $\gamma$ is set to a value such that the mean of the residuals is zero
+by the \texttt{cesEst} function.
 
 Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
 is attempted wherein all fitting parameters 
@@ -1575,7 +1576,7 @@ in their detailed analysis of \citet{Kemfert:1998vd}, found that
 \ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
 are---at least in this study---most likely to find the 
 coefficients that give the best fit to the model, 
-where the PORT algorithm can be used to restrict the estimates 
+where the \texttt{PORT} algorithm can be used to restrict the estimates 
 to the economically meaningful region.
 \end{quote}
 
