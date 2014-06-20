@@ -1773,7 +1773,7 @@ dataCN <- fortify(OrigModels$CN$linex$`iK+iL+iQ`)
 triPlot(data=dataCN, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
 
-<<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.7, fig.cap="LINEX trajectory for Iran.">>=
+<<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.5, fig.cap="LINEX trajectory for Iran.">>=
 dataIR <- fortify(OrigModels$IR$linex$`iK+iL+iQ`)
 triPlot(data=dataIR, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
