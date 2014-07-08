@@ -27,10 +27,14 @@ datadir <- file.path("Packages", "EconData", "data")
 # Load historical data and save the data frame.
 #
 cat("Loading and saving historical data..."); cat("\n")
+# Econ2011 Data Set
 Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
-# Relevel country factor.
 for (lev in rev(countryAbbrevs)) { Econ2011$Country <- relevel(Econ2011$Country, ref=lev) }
 save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
+# Warr2000 Data Set
+Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
+for (lev in rev(c("US", "UK", "JP", "AT"))) { Warr2000$Country <- relevel(Warr2000$Country, ref=lev) }
+save(Warr2000, file=file.path(datadir, "Warr2000.rda"), compress="gzip")
 
 #
 # Copy oModels.Rdata into the correct position
