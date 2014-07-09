@@ -44,13 +44,13 @@ cat("Loading and saving historical data..."); cat("\n")
 Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
 Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
 
-AllHistData <- rbind(Econ2011, Warr2000)
 # Relevel the countries in the data frames.
-databases <- list(Econ2011, Warr2000, AllHistData)
+databases <- list(Econ2011, Warr2000)
 for (data in databases){
   CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(data$Country)]
   for (lev in rev(CountryLevels)) { data$Country <- relevel(data$Country, ref=lev) }
 }
+AllHistData <- rbind(Econ2011, Warr2000)
 save(Econ2011,    file=file.path(datadir, "Econ2011.rda"),    compress="gzip")
 save(Warr2000,    file=file.path(datadir, "Warr2000.rda"),    compress="gzip")
 save(AllHistData, file=file.path(datadir, "AllHistData.rda"), compress="gzip")
