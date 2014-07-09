@@ -28,15 +28,13 @@ cat("Loading and saving historical data..."); cat("\n")
 # Econ2011 Data Set
 cat("  Econ2011..."); cat("\n")
 Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
-Econ2011Countries <- levels(Econ2011$Country)
-Econ2011CountryLevels <- countryAbbrevs[countryAbbrevs %in% Econ2011Countries]
+Econ2011CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(Econ2011$Country)]
 for (lev in rev(Econ2011CountryLevels)) { Econ2011$Country <- relevel(Econ2011$Country, ref=lev) }
 save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
 # Warr2000 Data Set
 cat("  Warr2000..."); cat("\n")
 Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
-Warr2000Countries <- levels(Warr2000$Country)
-Warr2000CountryLevels <- countryAbbrevs[countryAbbrevs %in% Warr2000Countries]
+Warr2000CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(Warr2000$Country)]
 for (lev in rev(Warr2000CountryLevels)) { Warr2000$Country <- relevel(Warr2000$Country, ref=lev) }
 save(Warr2000, file=file.path(datadir, "Warr2000.rda"), compress="gzip")
 
