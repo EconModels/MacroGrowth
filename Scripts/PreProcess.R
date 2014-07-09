@@ -41,19 +41,16 @@ cat("Loading and saving historical data..."); cat("\n")
 #   save(data, file=file.path(datadir, outfile), compress="gzip")
 # }
 
-# Econ2011 Data Set
-cat("  Econ2011..."); cat("\n")
 Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
-Econ2011CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(Econ2011$Country)]
-for (lev in rev(Econ2011CountryLevels)) { Econ2011$Country <- relevel(Econ2011$Country, ref=lev) }
-save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
-# Warr2000 Data Set
-cat("  Warr2000..."); cat("\n")
 Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
-Warr2000CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(Warr2000$Country)]
-for (lev in rev(Warr2000CountryLevels)) { Warr2000$Country <- relevel(Warr2000$Country, ref=lev) }
+# Relevel the countries in the data frames.
+databases <- list(Econ2011, Warr2000)
+for (data in databases){
+  CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(data$Country)]
+  for (lev in rev(CountryLevels)) { data$Country <- relevel(data$Country, ref=lev) }
+}
+save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
 save(Warr2000, file=file.path(datadir, "Warr2000.rda"), compress="gzip")
-
 
 #
 # Rebuild the EconData package
