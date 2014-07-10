@@ -28,7 +28,7 @@ cat("Loading and saving historical data..."); cat("\n")
 # I would like to do the following. 
 # But, the data frames get stored with the name "data", and, 
 # thus, collide with each other.
-# databases <- c("Econ2011", "Warr2000")
+# databases <- c("Calvin2011", "Warr2000")
 # for (file in databases){
 #   cat("  "); cat(file); cat("\n")
 #   infile <- paste0(file, ".txt")
@@ -41,17 +41,17 @@ cat("Loading and saving historical data..."); cat("\n")
 #   save(data, file=file.path(datadir, outfile), compress="gzip")
 # }
 
-Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
+Calvin2011 <- read.table(file.path("data", "Calvin2011.txt"), header=TRUE)
 Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
 
 # Relevel the countries in the data frames.
-databases <- list(Econ2011, Warr2000)
-for (data in databases){
+sources <- list(Calvin2011, Warr2000)
+for (data in sources){
   CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(data$Country)]
   for (lev in rev(CountryLevels)) { data$Country <- relevel(data$Country, ref=lev) }
 }
-AllHistData <- rbind(Econ2011, Warr2000)
-save(Econ2011,    file=file.path(datadir, "Econ2011.rda"),    compress="gzip")
+AllHistData <- rbind(Calvin2011, Warr2000)
+save(Calvin2011,    file=file.path(datadir, "Calvin2011.rda"),    compress="gzip")
 save(Warr2000,    file=file.path(datadir, "Warr2000.rda"),    compress="gzip")
 save(AllHistData, file=file.path(datadir, "AllHistData.rda"), compress="gzip")
 
