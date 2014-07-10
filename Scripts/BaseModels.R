@@ -21,6 +21,7 @@ nestStr <- function(nest) paste(nest, collapse="")
 
 All <- Econ2011
 # All <- rbind(Econ2011, Warr2000)
+# All <- AllHistData
 Countries <- levels(All$Country)
 Databases <- levels(All$Database)
 Energies <- c("iQ", "iX", "iU")
