@@ -1,10 +1,10 @@
 #!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 #
 # This script fits all of the base models for each combination of 
-# model, country, factor, energy type, and nesting.
+# source, country, model, factor, energy type, and nesting.
 # 
 # This script should be run from the top directory with the command
-# "Scripts/BaseModels.R"
+# "Scripts/OrigModels.R"
 #
 
 # Results are stored in the file "data_resample/oModels.Rdata"
@@ -13,14 +13,15 @@
 # oModels <- readRDS(file="data_resample/oModels.Rdata")
 #
 # To extract a model, do, for example
-# mod <- oModels[["Warr2000"]][["US"]][["cd"]][["iK+iL+iQ"]]
-#
+# mod <- OrigModels[["Warr2000"]][["US"]][["cd"]][["iK+iL+iQ"]]
+# OrigModels is an object in the EconData package.
+# So, be sure to build that package first.
 
 require(EconModels)
 require(EconData)
 require(plyr)  # for rbind.fill()
 
-nestStr <- function(nest) paste(nest, collapse="")
+nestStr <- function(nest){paste(nest, collapse="")}
 
 All <- AllHistData
 Countries <- levels(All$Country)
@@ -55,7 +56,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
@@ -95,11 +96,10 @@ cat("Saving oModels.Rdata file..."); cat("\n")
 saveRDS(oModels, file="data_resample/oModels.Rdata")
 
 #
-# Copy oModels.Rdata into correct position so that it is available in the EconData package
+# Copy oModels.Rdata into correct position so that it is available to the EconData package
+# (after EconData is built, of course).
 #
 cat("Copying original models file for EconData package..."); cat("\n")
 OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
 datadir <- file.path("Packages", "EconData", "data")
 save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
-
-
