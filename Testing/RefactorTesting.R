@@ -1,8 +1,8 @@
 require(EconModels)
 require(EconData)
 
-data(Calvin2011)
-All <- Calvin2011
+data(AllHistData)
+All <- subset(AllHistData, subset=Source=="Calvin2011")
 
 model.cd1 <-  cdwoeModel( response = iY, capital=iK, labor=iL, time=iYear, data=subset(All, Country=="US") )
 naturalCoef( model.cd1 )

@@ -19,11 +19,10 @@ require(plyr)  # for rbind.fill()
 
 nestStr <- function(nest) paste(nest, collapse="")
 
-All <- Calvin2011
-# All <- rbind(Calvin2011, Warr2000)
+All <- subset(AllHistData, subset=Source=="Calvin2011")
 # All <- AllHistData
 Countries <- levels(All$Country)
-Databases <- levels(All$Database)
+Sources <- levels(All$Source)
 Energies <- c("iQ", "iX", "iU")
 
 ModelInfos <- list(
