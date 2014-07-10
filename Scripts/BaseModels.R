@@ -19,8 +19,8 @@ require(plyr)  # for rbind.fill()
 
 nestStr <- function(nest) paste(nest, collapse="")
 
-All <- subset(AllHistData, subset=Source=="Calvin2011")
-# All <- AllHistData
+# All <- subset(AllHistData, subset=Source=="Calvin2011")
+All <- AllHistData
 Countries <- levels(All$Country)
 Sources <- levels(All$Source)
 Energies <- c("iQ", "iX", "iU")
@@ -53,38 +53,38 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
-
-for (country in Countries) {
-  cdata <- subset(All, Country==country)
-  for (m in ModelInfos) {
-    for (f in m$formulaStr) {
-      for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
-        formulaStr <- sub( "energy", energy, f ) 
-        formula <- eval( parse( text= formulaStr ) )
-        # formula <- substitute( iGDP ~ iK + iL + e + iYear, list(e = energy))
-        # tryCatch to skip over country/energy combos that don't exist.
-        cat ( paste(country, m$fun, formulaStr, m$dots, sep=" : ") )
-        cat ("\n")
-        
-        tryCatch({
-          oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          mod <- sub(pattern="Model", replacement="", x=m$fun)
-          fs <- factorString(formula=formula, nest=m$dots$nest)
-          oModels[[country]][[mod]][[fs]] <- oModel
-        }, 
-        error=function(e) {
-          cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-          print(e)
+for (src in Sources){
+  for (country in Countries) {
+    cdata <- subset(All, subset=Country==country & Source==src)
+    for (m in ModelInfos) {
+      for (f in m$formulaStr) {
+        for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
+          formulaStr <- sub( "energy", energy, f ) 
+          formula <- eval( parse( text= formulaStr ) )
+          # formula <- substitute( iGDP ~ iK + iL + e + iYear, list(e = energy))
+          # tryCatch to skip over country/energy combos that don't exist.
+          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+          cat ("\n")
+          
+          tryCatch({
+            oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
+            mod <- sub(pattern="Model", replacement="", x=m$fun)
+            fs <- factorString(formula=formula, nest=m$dots$nest)
+            oModels[[src]][[country]][[mod]][[fs]] <- oModel
+          }, 
+          error=function(e) {
+            cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+            print(e)
+          }
+          )
         }
-        )
       }
     }
   }
 }
-
 saveRDS(oModels, file="data_resample/oModels.Rdata")
 
