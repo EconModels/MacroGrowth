@@ -28,14 +28,9 @@ cat("Loading and saving historical data..."); cat("\n")
 
 Calvin2011 <- read.table(file.path("data", "Calvin2011.txt"), header=TRUE)
 Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
-
-# Relevel the countries in the data frames.
-sources <- list(Calvin2011, Warr2000)
-for (data in sources){
-  CountryLevels <- countryAbbrevs[countryAbbrevs %in% levels(data$Country)]
-  for (lev in rev(CountryLevels)) { data$Country <- relevel(data$Country, ref=lev) }
-}
 AllHistData <- rbind(Calvin2011, Warr2000)
+# Relevel the countries in the data frame.
+for (lev in rev(countryAbbrevs)) { AllHistData$Country <- relevel(AllHistData$Country, ref=lev) }
 save(AllHistData, file=file.path(datadir, "AllHistData.rda"), compress="gzip")
 
 #
