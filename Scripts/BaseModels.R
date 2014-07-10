@@ -10,7 +10,10 @@
 # Results are stored in the file "data_resample/oModels.Rdata"
 # To load this data back in, do 
 # 
-# readRDS(file="data_resample/oModels.Rdata")
+# oModels <- readRDS(file="data_resample/oModels.Rdata")
+#
+# To extract a model, do, for example
+# mod <- oModels[["Warr2000"]][["US"]][["cd"]][["iK+iL+iQ"]]
 #
 
 require(EconModels)
@@ -19,7 +22,6 @@ require(plyr)  # for rbind.fill()
 
 nestStr <- function(nest) paste(nest, collapse="")
 
-# All <- subset(AllHistData, subset=Source=="Calvin2011")
 All <- AllHistData
 Countries <- levels(All$Country)
 Sources <- levels(All$Source)
@@ -53,7 +55,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
