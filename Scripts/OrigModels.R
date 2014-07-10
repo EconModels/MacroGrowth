@@ -55,7 +55,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
@@ -88,5 +88,18 @@ for (src in Sources){
     }
   }
 }
+#
+# Save object to data_resample for inclusion in a future zipped version of all of the results.
+#
+cat("Saving oModels.Rdata file..."); cat("\n")
 saveRDS(oModels, file="data_resample/oModels.Rdata")
+
+#
+# Copy oModels.Rdata into correct position so that it is available in the EconData package
+#
+cat("Copying original models file for EconData package..."); cat("\n")
+OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
+datadir <- file.path("Packages", "EconData", "data")
+save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
+
 

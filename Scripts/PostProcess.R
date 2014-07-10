@@ -24,13 +24,6 @@ cat('\n')
 datadir <- file.path("Packages", "EconData", "data")
 
 #
-# Copy oModels.Rdata into the correct position
-#
-cat("Copying original models file..."); cat("\n")
-OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
-save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
-
-#
 # Load all coefficients. Do this task in parallel for a (minor) speed gain.
 #
 cat("Loading and saving all coefficients..."); cat("\n")
