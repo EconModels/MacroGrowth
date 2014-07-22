@@ -287,8 +287,8 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 
 <<data, echo=FALSE, message=FALSE>>=
 # Load historical data
-historicalData <- Econ2011 # From the EconData package
-historicalData <- subset(historicalData, subset=Country=="ZA")
+historicalData <- subset(AllHistData, subset=Source=="Calvin2011" & Country=="ZA") # From the EconData package
+# historicalData <- subset(historicalData, subset=Country=="ZA")
 
 # Load coefficients from all models in one large data frame
 coeffs_df <- tbl_df(AllCoef)
@@ -328,7 +328,7 @@ standardTriPlot(data=cdCoeffsData_ZA, facet_formula=country~energy)
 @
 
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Cobb-Douglas fitted models.">>=
-cdFittedData_ZA <- filter(fitted_df_ZA, model=="cd", nest %in% c("iK+iL", "iK+iL+iQ"))
+cdFittedData_ZA <- filter(fitted_df_ZA, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ"))
 spaghettiPlot(data=cdFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1991=1)")
 @
@@ -341,14 +341,16 @@ spaghettiPlot(data=cdFittedData_ZA, facet_formula=Country~energy, level=spaghett
 
 <<CES_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\lambda$ and $\\theta$ values for CES resample models with various nestings.">>=
 cesCoeffsData_ZA <- filter(coeffs_df_ZA, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
-standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(gamma_coef, lambda), facet_formula=country~nest, alpha=0.05) +
+standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(gamma_coef, lambda), 
+    facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) +
     scale_y_continuous(breaks=c(0, 0.002, 0.004, 0.006, 0.008)) +    
     labs(x=expression(theta), y=expression(lambda))
 @
 
 <<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with various nestings.">>=
-standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(delta_1, sigma_1), facet_formula=country~nest, alpha=0.05) +
+standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(delta_1, sigma_1), 
+    facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -357,7 +359,7 @@ standardScatterPlot(data=cesCoeffsData_ZA, mapping=aes(delta_1, sigma_1), facet_
 
 <<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with various nestings.">>=
 standardScatterPlot(data=subset(cesCoeffsData_ZA, nestStr != "iK+iL"),
-                    mapping=aes(delta, sigma), facet_formula=country~nest, alpha=0.05) +
+                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -383,12 +385,12 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
 \end{table}
 
 <<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with various nestings.">>=
-standardTriPlot(data=cesCoeffsData_ZA, facet_formula=country~nest)
+standardTriPlot(data=cesCoeffsData_ZA, facet_formula=country~nestStrParen)
 @
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="CES fitted models with various nestings.">>=
-cesFittedData_ZA <- filter(fitted_df_ZA, model=="ces", nest %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
-spaghettiPlot(data=cesFittedData_ZA, facet_formula=Country~nest, level=spaghettiGraphLevel) +
+cesFittedData_ZA <- filter(fitted_df_ZA, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQ", "iL+iQ+iK", "iQ+iK+iL"))
+spaghettiPlot(data=cesFittedData_ZA, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1991=1)")
 @
 

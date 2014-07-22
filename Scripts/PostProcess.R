@@ -24,22 +24,6 @@ cat('\n')
 datadir <- file.path("Packages", "EconData", "data")
 
 #
-# Load historical data and save the data frame.
-#
-cat("Loading and saving historical data..."); cat("\n")
-Econ2011 <- read.table(file.path("data", "Econ2011.txt"), header=TRUE)
-# Relevel country factor.
-for (lev in rev(countryAbbrevs)) { Econ2011$Country <- relevel(Econ2011$Country, ref=lev) }
-save(Econ2011, file=file.path(datadir, "Econ2011.rda"), compress="gzip")
-
-#
-# Copy oModels.Rdata into the correct position
-#
-cat("Copying original models file..."); cat("\n")
-OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
-save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")
-
-#
 # Load all coefficients. Do this task in parallel for a (minor) speed gain.
 #
 cat("Loading and saving all coefficients..."); cat("\n")
@@ -51,16 +35,16 @@ AllCoef <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
 # AllCoef2 <- loadResampledData(path="data_resample", kind="coeffs")
 # print(identical(AllCoef, AllCoef2))
 
-# Relevel the country abbreviations
+# Relevel the country abbreviations in AllCoef
 AllCoef$country <- as.factor(AllCoef$country)
 for (lev in rev(countryAbbrevs)) { AllCoef$country <- relevel(AllCoef$country, ref=lev) }
-# Relevel nestStr
+# Relevel nestStr in AllCoef
 AllCoef$nestStr <- as.factor(AllCoef$nestStr)
 for (lev in rev(nestStrLevels)) { AllCoef$nestStr <- relevel(AllCoef$nestStr, ref=lev) }
-# Relevel nestStrParen
+# Relevel nestStrParen in AllCoef
 AllCoef$nestStrParen <- as.factor(AllCoef$nestStrParen)
 for (lev in rev(nestStrParenLevels)) { AllCoef$nestStrParen <- relevel(AllCoef$nestStrParen, ref=lev) }
-# Replace energy NA with "none" and set levels
+# Replace energy NA with "none" and set levels in AllCoef
 AllCoef$energy <- replace(AllCoef$energy, which(is.na(AllCoef$energy)), "none")
 AllCoef$energy <- as.factor(AllCoef$energy)
 for (lev in rev(energyLevels)) { AllCoef$energy <- relevel(AllCoef$energy, ref=lev) }
@@ -76,16 +60,16 @@ AllFitted <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
   loadResampledData(path="data_resample", country=country, kind="fitted")
 }
 # system.time(AllFitted2 <- loadResampledData(path="data_resample", kind="fitted"))
-# Relevel the country abbreviations
+# Relevel the country abbreviations in AllFitted
 AllFitted$Country <- as.factor(AllFitted$Country)
 for (lev in rev(countryAbbrevs)) { AllFitted$Country <- relevel(AllFitted$Country, ref=lev) }
-# Relevel nest
+# Relevel nestStr in AllFitted
 AllFitted$nestStr <- as.factor(AllFitted$nestStr)
 for (lev in rev(nestStrLevels)) { AllFitted$nestStr <- relevel(AllFitted$nestStr, ref=lev) }
-# Relevel nestStrParen
-AllCoef$nestStrParen <- as.factor(AllCoef$nestStrParen)
-for (lev in rev(nestStrParenLevels)) { AllCoef$nestStrParen <- relevel(AllCoef$nestStrParen, ref=lev) }
-# Replace energy NA with "none" and set levels
+# Relevel nestStrParen in AllFitted
+AllFitted$nestStrParen <- as.factor(AllFitted$nestStrParen)
+for (lev in rev(nestStrParenLevels)) { AllFitted$nestStrParen <- relevel(AllFitted$nestStrParen, ref=lev) }
+# Replace energy NA with "none" and set levels in AllFitted
 AllFitted$energy <- replace(AllFitted$energy, which(is.na(AllFitted$energy)), "none")
 AllFitted$energy <- as.factor(AllFitted$energy)
 for (lev in rev(energyLevels)) { AllFitted$energy <- relevel(AllFitted$energy, ref=lev) }

@@ -130,20 +130,6 @@ options(width=75)
 options(show.signif.stars=TRUE)
 require(knitr)
 
-# Load historical data
-# In Rstudio, this paper is generated from it's directory, which is "Article".
-# We need to define paths relative to the location of the paper. 
-# Relative path to historical data from Article
-historicalData <- Econ2011 # From the EconData package
-
-# Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(AllCoef)
-# Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(AllFitted)
-
-# Load the original models.
-oModels <- OrigModels
-
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
@@ -170,33 +156,14 @@ opts_chunk$set(
 # Graph Heights
 maxHeight <- 8.5 # Inches
 ninePanelScatterGraphHeight <- maxHeight # Inches
-# ninePanelTernaryGraphHeight <- 7 # Inches
-# ninePanelSpaghettiGraphHeight <- 7 # Inches
 
 # Graph Widths
 maxWidth <- 6.5 # Inches
 fourPanelScatterGraphWidth <- maxWidth # Inches
-# threePanelScatterGraphWidth <- maxWidth*0.75 # Inches
-# onePanelScatterGraphWidth <- maxWidth*0.25
-# fourPanelTernaryGraphWidth <- maxWidth
-# twoPanelTernaryGraphWidth <- maxWidth*0.45
-# fourPanelSpaghettiGraphWidth <- maxWidth
-# twoPanelSpaghettiGraphWidth <- maxWidth*0.55
-# onePanelSpaghettiGraphWidth <- maxWidth*0.4
 
 presentationGraph1RowHeight <- 2.8 # Inches
 presentationGraph2ColWidth <- 2 # Inches
 presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
-# keyTextSize <- 0.85 # 85% of normal size
-# keyColumns <- 1 # Want only 1 column in the key for lattice graphs
-# defaultKeyXLoc <- 0.01 # x position of the key. This default is good for 9-panel graphs.
-# defaultKeyYLoc <- 0.95 # y position of the key. This default is good for 9-panel graphs.
-# Parameter graphs are tricky to ensure same size. I've found that with height set to 5 in for the 
-# cd graphs and 2.93 in for the sf graphs, I get a nearly-exact match with graph size. From these settings I 
-# can set up 2 equations:
-#    5 in = 2*hgraph + haxis
-#    2.93 in = hgraph + haxis
-# to estimate that h_axis = 0.86 in and hgraph = 2.05 in.
 h_param_graph <- 2.07 # Inches for a single panel
 h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
 # sfParameterGraphHeight <- h_param_graph + h_param_axis
@@ -212,6 +179,22 @@ scaleTextSize <- 0.8  # Multiple of normal size
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
 spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+@
+
+<<data, include=FALSE>>=
+# Load historical data
+# In Rstudio, this paper is generated from it's directory, which is "Article".
+# We need to define paths relative to the location of the paper. 
+# Relative path to historical data from Article
+historicalData <- subset(AllHistData, subset=Source=="Calvin2011") # From the EconData package
+
+# Load coefficients from all models in one large data frame
+coeffs_df <- tbl_df(AllCoef)
+# Load fitted data from all models in one large data frame
+fitted_df <- tbl_df(AllFitted)
+
+# Load the original models.
+oModels <- OrigModels
 @
 
 % These equations are used in several locations in the paper.
@@ -727,7 +710,7 @@ We are after generating insights even after deeper assumptions of econ growth th
 
 
 
-**** Orignial introduction that MKH wrote ****
+**** Original introduction that MKH wrote ****
 
 Neoclassical economic growth theory attributes output ($Y$) to factors of production:
 capital stock ($K$) and labor ($L$). The Cobb-Douglas production function 
@@ -746,20 +729,23 @@ to ``technological progress,'' but that is a very narrow reading of Solow's orig
 \end{quote}
 }
 This production function can be expressed as
+%
 \begin{equation} \label{eq:CD}
   y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
 \end{equation}
-where 
-\begin{itemize}
-	\item $y \equiv Y/Y_{0}$,  % why was 0 typeset as mathrm??
-	\item $k \equiv K/K_{0}$, 
-	\item $l \equiv L/L_{0}$, 
-	\item $Y$ represented by GDP, 
-	\item $K$ expressed in currency units, 
-	\item $L$ expressed in workers or work-hours/year, 
-	\item $t$ (time) is measured in years, 
-	\item e is the base of the natural logarithm, and 
-	\item 0 subscripts indicate values at an initial year.%
+%
+\noindent where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ (time) is measured in years,
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ is represented by GDP, 
+$K$ is expressed in currency units, 
+$L$ is expressed in workers or work-hours/year, and
+0 subscripts indicate values at an initial year.%
 \footnote{Dimensionless, indexed quantities are represented by 
 lower-case symbols 
 ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
@@ -767,7 +753,7 @@ quantities are represented by upper-case symbols
 ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
 Model parameters are represented by Greek letters
 ($\alpha$, $\beta$, $\lambda$, $\theta$).} 
-\end{itemize}
+
 %Mathematically, $A$ is nothing more than a fitting parameter 
 %that aligns the predictions of Equation~\ref{eq:CD} 
 %with historical data. 
@@ -806,19 +792,19 @@ literature. There has been little empirical work assessing the predictive abilit
 of various energy-augmented production functions for different types of economies. 
 And, very few studies of the importance of energy in economic growth include 
 rigorous statistical assessments of energy-related fitting parameters. This paper 
-attempts to contribute to the literature by applying statistically rigorous 
-methods along three coordinates of analysis: form of the energy augmented 
-production function, energy quantification, and type of economy.
+contributes to the literature by applying statistically rigorous 
+methods along two coordinates of analysis: form of the energy augmented 
+production function and type of economy.
 
 The remainder of this paper is organized as follows. Section~\ref{sec:Coordinates} 
 discusses the coordinates of analysis described above. 
 Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output and factors of production. The procedures 
-for and results from parameter estimation for the various production functions 
+generate time series for economic output and factors of production. 
+The procedures for and results from parameter estimation for the various production functions 
 are discussed in Section~\ref{sec:Parameter_Estimation}. 
 Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes. An appendix provides details 
-of all statistical results.
+results, and Section~\ref{sec:Conclusion} concludes. 
+An appendix provides details of all statistical results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -829,30 +815,34 @@ of all statistical results.
 This section describes the two coordinates of analysis and briefly reviews 
 literature related to each.
 
+
 %++++++++++++++++++++++++++++++
 \subsection{Mathematical Forms of the Energy-augmented Production Function} 
 \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
 In this paper, we assess three prominent energy-augmented production functions 
-that appear in the literature: Cobb-Douglas (CDe), Constant Elasticity of 
-Substitution (CESe), and LINear EXponential (LINEX). The following subsections 
-describe each.
+that appear in the literature: 
+Cobb-Douglas (CD), 
+Constant Elasticity of Substitution (CES), and 
+LINear EXponential (LINEX). 
+The following subsections describe each.
+
 
 %------------------------------
-\subsubsection{Energy-augmented Cobb-Douglas Production Function (CDe)} 
+\subsubsection{Cobb-Douglas (CD) Production Function} 
 \label{sec:CDe}
 %------------------------------
 
 The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
 can be augmented to include an energy term:
-%Similarly, the energy-augmented Cobb-Douglas production function is
-
+%
 \begin{equation} \label{eq:CDe}
   y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
 \end{equation}
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, 
-typically TJ/year. The energy-augmented Cobb-Douglas production function 
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
+The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
 
@@ -860,14 +850,16 @@ of production: $\alpha + \beta + \gamma = 1$.
 useful work ($u$) quantifications for $e$ to describe historic Japanese 
 and American economies from 1900-2000. \citet{Froling:2009vo} uses an 
 energy-augmented Cobb-Douglas production function with thermal energy 
-quantification ($q$) to describe output for the global economy from 
-1800--1970. Fr\"{o}ling's model endogenizes labor with respect to fertility 
+quantification ($q$) to describe output for the global economy from 1800--1970. 
+Fr\"{o}ling's model endogenizes labor with respect to fertility 
 and mortality rates and separates thermal energy into two types: biomass 
-energy and coal energy. \citet{Serrenho:2010vq} use the log transform of 
+energy and coal energy. 
+\citet{Serrenho:2010vq} use the log transform of 
 the energy-augmented Cobb-Douglas function with thermal energy 
 quantification ($q$) to describe output for the EU-15 countries. 
 Serrenho divides thermal energy into renewables, non-renewables, 
-wastes, and imports. The main argument of these papers is that 
+wastes, and imports. 
+The main argument of these papers is that 
 energy is an important driver of growth and needs to be included
 as an essential factor of production.
 
@@ -876,21 +868,22 @@ the role of energy in economic growth? Add additional literature?
 Or, adjust as you see fit. Especially, are there any confidence intervals 
 or statistical evaluation in each of these studies? ****
 
+
 %------------------------------
-\subsubsection{Energy-augmented CES Production Function (CESe)} 
+\subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
 \label{sec:CES}
 %------------------------------
 
 Other energy economists use an energy-augmented 
-Constant Elasticity of Substitution (CES$e$) production function to 
+Constant Elasticity of Substitution (CES) production function to 
 describe economic growth. The \texttt{R} \citep{R} package 
 \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
 functions of the following forms (among others):
-
+%
 \ceskl{\label{eq:CES}}
-
+%
 \ceskle{\label{eq:CESkle}}
-
+%
 \noindent Equation~\ref{eq:CES} is a CES production function with 
 capital stock ($k$) and labor ($l$) factors of production. 
 Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CES} with energy 
@@ -931,17 +924,17 @@ $\rho \in [-1,0) \cup (0,\infty)$.
 
 Two other nestings of the factors of production ($k$, $l$, and $e$)
 are possible with the CES model.
-
+%
 \ceslek{\label{eq:CESlek}}
-
+%
 \cesekl{\label{eq:CESekl}}
-
+%
 \noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
 meanings that depend upon the nesting of the factors of production.
-**** Do we want to define different variables that indicate meaning, 
-such as $\sigma_{kl}, \sigma_{(kl)e}, \delta_{(ek)l}$, and the like? If so, we'll 
-need to translate from $\rho$ and $\sigma$ in \texttt{cesEst} to the correct
-variable names in the paper. ****
+% **** Do we want to define different variables that indicate meaning, 
+% such as $\sigma_{kl}, \sigma_{(kl)e}, \delta_{(ek)l}$, and the like? If so, we'll 
+% need to translate from $\rho$ and $\sigma$ in \texttt{cesEst} to the correct
+% variable names in the paper. ****
 
 
 **** Describe here how 
@@ -972,14 +965,14 @@ intervals or statistical evaluation in each of these studies? ****
 %------------------------------
 
 A third production function, the LINear EXponential (LINEX) function
+%
 \begin{equation} \label{eq:LINEX}
   y = \theta \; \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
     + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]} \; e \;,
 \end{equation}
+%
 was derived from thermodynamic considerations
 \citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
-%\noindent where $e$ is indexed energy and e is the base of 
-%the natural logarithm. 
 In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
 the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
@@ -995,15 +988,19 @@ models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
 \begin{equation} \label{eq:rho_k}
   \rho_k \equiv \frac{k}{(1/2)(l+e)}
 \end{equation}
+%
 and
+%
 \begin{equation} \label{eq:rho_l}
   \rho_l \equiv \frac{l}{e}
 \end{equation}
+%
 and represent 
+%
 (\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
 (\ref{eq:rho_l}) labor increase relative to energy.
 The effect of energy ($e$) on production is enhanced if either
-
+%
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
       of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
@@ -1168,8 +1165,12 @@ per worker per year.
 The World Bank's World Development Indicators database 
 \citep{WorldBankWDI:2013a} provides the employment to population 
 ratio for people fifteen and older, total population, and a percentage 
-of people under fifteen for other economies (South Africa, China, Iran, 
-Saudi Arabia, Tanzania, and Zambia) for 1991--2011. The population 
+of people under fifteen for other economies 
+(China, South Africa, 
+Saudi Arabia, Iran, 
+Tanzania, and Zambia) 
+for 1991--2011. 
+The population 
 of people under fifteen years of age was subtracted from total population 
 to calculate the population of people fifteen and older. 
 Total employment was calculated by multiplying the employment to 
@@ -1185,7 +1186,11 @@ To account for all energy input to an economy, we summed consumption data
 for many energy sources, including coal, oil and petroleum products, 
 dry natural gas and natural gas plant liquids, nuclear power generation, 
 and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, 
-and hydro). We also added human and animal muscle work. 
+and hydro). 
+We also added animal muscle work. 
+Following \citet{Ayres:2010ug}, 
+human muscle work is excluded from the energy time series,
+because it is counted as labor.
 Similar to the economic data discussed in 
 Sections~\ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, 
 we obtained energy data for developed countries from 1980--2011. 
@@ -1193,30 +1198,34 @@ For all other countries,
 we obtained energy data for 1991--2011. 
 
 Thermal energy ($Q$) for fuels (in units of TJ/year) was calculated by
-
+%
 \begin{equation} \label{eq:thermal_energy}
   Q_{fuel} = C_{fuel}h_{fuel}
 \end{equation}
-
+%
 \noindent where $C_{fuel}$ is the consumption rate of the fuel 
 (in units of short tons/year for coal, barrels/year for oil and petroleum, 
 ft$^3$/year for dry natural gas and natural gas plant liquids, 
-and m$^3$/year for biomass/fuel wood) and $h_{{fuel}}$ is 
+and m$^3$/year for biomass and fuel wood) and $h_{{fuel}}$ is 
 the heat content of the fuel (in kJ/short ton for coal, kJ/barrel for oil, 
 kJ/ft$^3$ for dry natural gas and natural gas plant liquids, 
-and kJ/kg for biomass/fuel wood). Fuel wood density of 300~kg/m$^3$ 
+and kJ/kg for biomass and fuel wood). 
+Fuel wood density of 300~kg/m$^3$ 
 was taken from \citet{Ragland:2013wp} at the low end of the range 
 of density of dry wood and bark.
 
 Yearly consumption rates ($C_{fuel}$) of coal, oil and petroleum, 
 dry natural gas and natural gas plant liquids, and biofuels 
 (ethanol and biodiesel) were obtained from the \citet{EIA:2013a} 
-for all economies. Yearly average heat content data for coal, oil, 
+for all economies. 
+Yearly average heat content data for coal, oil, 
 and natural gas and natural gas plant liquids was obtained from the 
-EIA for all economies. We used lower (net) heating values of 
+\citet{EIA:2013a} for all economies. 
+We used lower (net) heating values of 
 26.8~MJ/kg \citep[Table~A-27]{Cengel:2011ww} and 37.8~MJ/kg 
 \citep[Table~7.3]{Gupta:2010vg} for the heat content of ethanol 
-and corn-based biodiesel, respectively. Yearly consumption and 
+and corn-based biodiesel, respectively. 
+Yearly consumption and 
 heat content data for biomass/fuel wood was obtained from the 
 ``Fuelwood'' time series of the FAO Statistics Database 
 \citep{FAO:2013a}.
@@ -1232,11 +1241,11 @@ REXS database \citep{Warr:2012a} and results from
 \citet{Wirsenius:2000vi}. For animal work, our analysis was 
 restricted to draught animals (horses and mules). Muscle work 
 from animals ($Q_{animals}$) was calculated using
-
+%
 \begin{equation} \label{eq:animal_muscle}
   Q_{animals} = Q_{m,horse}N_{horses} + Q_{m,mule}N_{mules}
 \end{equation}
-
+%
 \noindent where $Q_m$ is metabolizable energy (in kcal/day-animal) 
 and $N$ is the number of animals. Metabolizable energy values 
 ($Q_{m,horses}$ = 19,110 kcal/day-horse and $Q_{m,mules}$ = 
@@ -1247,25 +1256,18 @@ all countries and years. The number of horses and mules for
 each economy was taken from the ``Live Animals'' section of the 
 FAO Statistics online database \citep{FAO:2013a}.
 
-Human muscle power was calculated in a similar manner:
-
-\begin{equation} \label{eq:human_muscle}
-  Q_{workers} = Q_{m,workers} N_{workers}
-\end{equation}
-
-\noindent where the value of $Q_{m,workers}$ is the ``the amount 
-of food available for human consumption'' (i.e., at the wholesale level) 
-taken from the 
-\citet[``\texttt{Dietary~Energy~Cons.~Countries}'' tab]{FAO:2013b}. 
-The value for $N_{workers}$ was obtained from the labor time series 
-for each economy as discussed in Section~\ref{sec:Labor_Data}.
-
-
-
-\twocolumn{}
-<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot(historicalData)
-@
+% Human muscle power was calculated in a similar manner:
+% 
+% \begin{equation} \label{eq:human_muscle}
+%   Q_{workers} = Q_{m,workers} N_{workers}
+% \end{equation}
+% 
+% \noindent where the value of $Q_{m,workers}$ is the ``the amount 
+% of food available for human consumption'' (i.e., at the wholesale level) 
+% taken from the 
+% \citet[``\texttt{Dietary~Energy~Cons.~Countries}'' tab]{FAO:2013b}. 
+% The value for $N_{workers}$ was obtained from the labor time series 
+% for each economy as discussed in Section~\ref{sec:Labor_Data}.
 
 %++++++++++++++++++++++++++++++
 \subsection{Historical Data} 
@@ -1283,19 +1285,26 @@ Factors of production track each other closely,
 and high covariances among these variables can be seen in 
 Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
 \authNote{Do we want to discuss the covariances?}
+%
+<<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
+historicalPlot(historicalData)
+@
 
-\onecolumn{}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
 \label{sec:Parameter_Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%++++++++++++++++++++++++++++++
 \subsection{Point Estimates}
+%++++++++++++++++++++++++++++++
+
 Each of the economic growth models discussed in 
 Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
-from data for each economy (see Section~\ref{sec:Economy_Types}).
-We obtained parameter estimates by applying the method of least-squares to (potentially
-log-transformed) data using the \texttt{R} \citep{R} functions
+using data for each economy (see Sections~\ref{sec:Economy_Types} and~\ref{sec:Sources_of_Data}).
+We obtained parameter estimates by applying the method of least-squares to 
+log-transformed data using the \texttt{R} \citep{R} functions
 \texttt{lm} (for Cobb-Douglas and LINEX models) 
 and \texttt{cesEst} \citep{Henningsen:2011td} (for CES models). 
 \authNote{Need to check how CES is being fit and adjust this accordingly.}%
@@ -1306,31 +1315,29 @@ y = f(t,k,l,e; \theta) + \mathrm{error} \;,
 \]
 where $\theta$ is a vector of parameters for the function $f$.
 \authNote{if we use $\theta$ this way, we need a new scaling parameter. --rjp}%
-In least squares models, parameter estimates are chosen to minimize
-\[
-\sum_{i} (y_i - f(t,k,l,e; \theta) )^2 \;.
-\]
+Parameter estimates are chosen to minimize
+%
+\begin{equation} \label{eq:sse}
+  sse = \sum_{i} (y_i - f(t,k,l,e; \theta) )^2
+\end{equation}
+%
+within constraints.
 For the optimal parameter values $\hat \theta$, we define the 
 fitted response by
 \[
 \hat y_i = f(t_i, k_i, l_i, e_i; \hat \theta)
 \]
-and the residuals
+and the residuals ($r_i$)
 as the difference between the observed response and the fitted response
+%
 \begin{equation} \label{eq:residual}
   r_i 
   = y_i - \hat y_i
   = y_i - f(t,k,l,e; \hat\theta)
 \end{equation}
-The details for each of the models (including the effects of using 
-log transformations) are discussed below.
-
-
-%After back transforming to the natural scale of the data, the 
-%residuals have a multiplicative rather than additive affect.
-%The reflects an assumption that variability in GDP is roughly 
-%proportion to GDP rather than constant.
-
+%
+The details for each of the models are discussed in 
+Sections~\ref{sec:CD_Parameter_Estimation}--\ref{sec:LINEX_Parameter_Estimation} below.
 
 
 %++++++++++++++++++++++++++++++
@@ -1338,31 +1345,35 @@ log transformations) are discussed below.
 \label{sec:Resampling}
 %++++++++++++++++++++++++++++++
 
-Bootstrappng is a statistical resampling technique for assigning
+Bootstrapping is a statistical resampling technique for assigning
 measures of accuracy and precision to sample estimates by measuring
 properties of an estimator when sampling from a resampling
-distribution.  Resampling distributions can be formed in a number of 
+distribution.  
+Resampling distributions can be formed in a number of 
 ways in accordance with the type of data, experimental design,
-and modeling assumptions involved.  In each case, many new resamples 
+and modeling assumptions involved.  
+In each case, many new resamples 
 are created, each of which is a randomized version of the original sample data to 
-which the desired analysis method can be applied.  By investigating, for example,
+which the desired analysis method can be applied.  
+By investigating, for example,
 the variability of a parameter estimate from one resample to another,
 one can learn about the precision of the estimation method.
 \authNote{Add some references here. --rjp}
 
 In the context of linear models (regression), resamples are generally created
-by residual resampling.  In our case, we formed resamples by adding to the fitted 
-response (GDP) the product of a residual from the original model fit and 
-and random sign ($-1$ or $1$, each with probability $0.5$).  For the case of 
-Cobb-Douglas and LINEX models, this residual resampling occurs on the 
+by residual resampling.  
+In our case, we formed resamples by adding to the fitted 
+response ($\hat{y}$) the product of a residual from the original model fit and 
+random sign ($-1$ or $1$, each with probability $0.5$).  
+For the case of Cobb-Douglas and LINEX models, 
+this residual resampling occurs on the 
 log-transformed data.
 
-
 Intuitively, this method assumes that the residuals are indicative of 
-the variability (from many potential sources) inherent in the data so that
+the variability (from many potential sources) inherent in the data such that
 it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
-Thus, a resampled response $\tilde Y$ can be computed as 
+Thus, a resampled response $\tilde Y'$ can be computed as 
 \[
 \tilde Y_i' = \hat y_i \pm r_j
 \]
@@ -1370,51 +1381,31 @@ where
 \[
 r_i = y_i - \hat y_i
 \]
-both the sign ($\pm$) and the index of the residual ($j$, typically different from $i$) 
+both the sign ($\pm$) and the index of the residual 
+($j$,~typically different from $i$) 
 are chosen at random (with replacement). 
-Resampling in this way has the consequence 
-that a resampled time series could have non-unity first-year GDP ($\tilde Y_1 \neq 1$),
-so a renormalization takes place using the initial GDP from the
-resampled data as the new baseline, not the observed GDP in year 1.
-
-\begin{equation} \label{eq:resample_y}
-	\tilde y_i  = \frac{\tilde Y_i'}{\tilde Y_1'}
-\end{equation}
-to obtain a resampled indexed GDP time series.
-We repeated the resampling process \Sexpr{numResamples()} times for each
-combination of growth model and country, both with and without energy when appropriate.
+We repeated the resampling process 1000 times for each
+combination of growth model and country, 
+both with and without energy as appropriate.
 
 The coefficients from the fit to a resampled time series
 (the ``resample coefficients'') will be different from the coefficients 
 obtained from the fit to historical data (the ``base coefficients'').
-When these resample coefficients are highly variable, it is an indication
+When these resample coefficients are highly variable, 
+it is an indication
 that the data do not determine the parameter estimates very precisely.
-Lack of imprecision can stem from a number of factors, most obviously
+Lack of precision can stem from a number of factors, most obviously
 a poor model fit, low model sensitivity to one or more parameters, 
 or correlations between parameter estimates.
-\authNote{This is not precisely true:
-Large residuals in the fit to historical data (the ``base fit'')
-are expected to produce large variation in resample coefficient values
-(when the resampling is repeated \Sexpr{numResamples()} times),
-indicating less certainty in the value
-of those coefficients. 
-Similarly, small base fit residuals are expected to produce small
-variation in resample coefficient values, indicating more-precise knowledge
-of the model coefficients.
---rjp}
-
 
 It is important to note that large residuals can arise from either
 (a) poor quality historical time series data, or 
 (b) a mathematical model that does not describe the underlying phenomena well.
 It is also important to note that (c) even when the residuals are small and the 
 model produces fitted values that track the observed data closely, it may
-still be difficult to estimate some or all of the model parameters precisely.
-The resampling method employed reflects all three of these potential 
+yet be difficult to estimate some or all of the model parameters precisely.
+The resampling method employed herein reflects all three of these potential 
 sources of uncertainty in parameter estimates.
-
-\authNote{Should the description of model fitting come before or after 
-the description of resampling?}
 
 
 %++++++++++++++++++++++++++++++
@@ -1425,65 +1416,47 @@ the description of resampling?}
 The Cobb-Douglas model without energy is given by 
 Equation~\ref{eq:CD}. Equation~\ref{eq:CD} was
 reparameterized as
-
+%
 \begin{equation} \label{eq:CD_reparam}
-  y = A k^{\alpha} l^{1-\alpha}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{1-\alpha}
 \end{equation}
-
+%
 \noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
-$\lambda$ and $\alpha$ were estimated by the 
-\texttt{R} \citep{R} function \texttt{nls}. 
+$\theta$, $\lambda$, and $\alpha$ were estimated by the 
+\texttt{R} \citep{R} function \texttt{lm} in log-transform space. 
 If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
 we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
 The value of $\beta$ was found with $\beta = 1 - \alpha$. 
 
-To estimate the parameters $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
+To estimate the parameters $\theta$, $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
 in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
 was reparameterized as
-
+%
 \begin{equation} \label{eq:CDe_AB_reparam}
-  y = A k^{\min(a,b)} l^{|b-a|} e^{1 - \max(a,b)}; A = \mathrm{e}^{\lambda (t-t_0)}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{\beta} e^{1 - \alpha - \beta}
 \end{equation}
-
-\noindent with 
-$\alpha = \min(a,b)$, 
-$\beta = |b-a|$, and 
-$\gamma = 1 - \max(a,b)$.
-The reparameterization ensures that $\alpha + \beta + \gamma = 1$,
+%
+\noindent ensuring that $\alpha + \beta + \gamma = 1$,
 thereby providing constant returns to scale.
-The \texttt{R} \citep{R} function \texttt{nls} was used to estimate 
-values of $\lambda$, $a$, and $b$.
-If the fitted value for $a$ ($b$) fell outside $[0,1]$, it was 
-set equal to its boundary value and both $\lambda$ and $b$ ($a$) 
-were re-estimated.
-
-The \texttt{nls} parameter estimation algorithm can encounter convergence difficulty 
-when the optimal value for the parameter represented by the absolute value function 
-(in Equation~\ref{eq:CDe_AB_reparam}, $\beta$) 
-lies near a boundary. If the absolute value exponent caused non-convergence of the 
-\texttt{nls} function, second and, if necessary, third reparameterizations 
-were attempted:
-
-\begin{equation} \label{eq:CDe_CD_reparam}
-  y = A k^{1 - \max(c,d)} l^{\min(c,d)} e^{|d-c|}; A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
-
-\begin{equation} \label{eq:CDe_FG_reparam}
-  y = A k^{|g-f|} l^{1 - \max(f,g)} e^{\min(f,g)}; A = \mathrm{e}^{\lambda (t-t_0)}
-\end{equation}
-
-\noindent If none of the three reparameterizations converged, 
-the parameterization with the smallest sum of square errors ($sse$)
-was used. \ref{sec:Convergence_Resample_Models} shows the 
-fraction of unconverged models for each model type. 
-The above approach resulted in very few unconverged
-Cobb-Douglas resample models, even with \Sexpr{numResamples()} resamples.
+The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
+values of $\lambda$, $\theta$, $\alpha$, and $\beta$ in log-transform space.
+If the fitted value for $\alpha$ or $\beta$ fell outside the interval $[0,1]$,
+we fit along all boundaries 
+($\alpha = 1$,
+$\beta = 1$,
+$\gamma = 1$,
+$\alpha = 0$,
+$\beta = 0$, and
+$\gamma = 0$)
+and chose the boundary fit with
+minimum $sse$ (Equation~\ref{eq:sse}) as the winner.
+$\gamma$ was recovered with $\gamma = 1 - \alpha - \beta$.
 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (without and with energy) resample models.
 Each reample is shown as a gray dot on the graph. 
-The fit to historical data is shown as a gray circle.
+The fit to historical data is shown as a gray crosshairs.
 
 Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1521,7 +1494,7 @@ several algorithm options for parameter estimation.
 The default algorithm (Levenberg-Marquardt) does not respect
 parameter constraints (see Section~\ref{sec:CES}) and, 
 in our testing, nearly always violated them, often returning
-negative values for elasticity of substitution ($\sigma$) parameters.
+negative values for elasticity of substitution~($\sigma$) parameters.
 Thus, we used the two fitting algorithms available in \texttt{cesEst} that
 respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
 
@@ -1536,14 +1509,15 @@ In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
 at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
 During the grid search portion of our algorithm, starting values for the free parameters
 are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
-and $\gamma$ is set to a value such that the mean of the residuals is zero.
+and $\gamma$ is set to a value such that the mean of the residuals is zero
+by the \texttt{cesEst} function.
 
 Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
 is attempted wherein all fitting parameters 
 ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
 are allowed to float. 
 The start values for fitting parameters are taken from 
-the grid search fit that provided the lowest $sse$.
+the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
 
 If resampled data are being fitted, a prior fit to historical data is available.
 In the final step of our algorithm, 
@@ -1564,7 +1538,7 @@ in their detailed analysis of \citet{Kemfert:1998vd}, found that
 \ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
 are---at least in this study---most likely to find the 
 coefficients that give the best fit to the model, 
-where the PORT algorithm can be used to restrict the estimates 
+where the \texttt{PORT} algorithm can be used to restrict the estimates 
 to the economically meaningful region.
 \end{quote}
 
@@ -1578,11 +1552,29 @@ and \texttt{PORT} does not for the same data
 Coefficients for each resampled CES model for all countries and all nests
 are shown in 
 Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}. 
-The crosshair on each graph shows the location 
+The white crosshair on each graph shows the location 
 of the fit to historical data. 
 In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph},
 the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
+
+Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
+in Equations~\ref{eq:CES}--\ref{eq:CESekl},
+the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
+resample points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}
+are equivalent.
+That is, all points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}
+have the same $sse$. 
+As a consequence, 
+the \texttt{cesEst} fitting algorithm has no way 
+to discriminate among points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph} and \ref{fig:CES_sigma_delta_graph}. 
+Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
+tend to cluster at the locations of the initial grid search in 
+$\sigma$ or $\sigma_1$
+(0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
 <<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
 cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
@@ -1642,9 +1634,10 @@ standardTriPlot(data=cesCoeffsData, facet_formula=country~nestStrParen)
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
 to historical data for all nestings. 
-Historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+As with the Cobb-Douglas results, 
+historical data are shown as a black line, 
+the fit to historical data is shown as a white line, and 
+the gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
 cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
@@ -1673,36 +1666,27 @@ spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nestStrParen=="(iK + iL
 
 The LINEX model is given in Equation~\ref{eq:LINEX}. 
 If the fitting algorithm drives $a_0 \rightarrow 0$, 
-any changes to $c_t$ have no effect on $sse$, 
-leading the fitting algorithm to report non-convergence. 
-To avoid this problem, we transformed the LINEX model into
-
+any changes to $c_t$ have no effect on $sse$. 
+Therefore, we transformed the LINEX model into
+%
 \begin{equation} \label{eq:LINEX_transformed}
-  y = Ae; 
+  y = \theta A e; 
   A = \mathrm{e}^{\left[2 a_0 \left(1 - \frac{1}{\rho_k} \right) 
     + a_1 \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
 \end{equation}
-
+%
 \noindent where $a_1 \equiv a_0 c_t$. 
-We used the \texttt{nls} function in \texttt{R}
+We used the \texttt{lm} function in \texttt{R}
 \citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
-Equation~\ref{eq:LINEX_transformed}. We recovered
-a value for $c_t$ with $c_t = a_1 / a_0$. The reparameterization
-shown in Equation~\ref{eq:LINEX_transformed} reduced the number of 
-unconverged resample fits to nearly zero: 
-The largest fraction of unconverged resample fits is found 
-for Zambia (ZM) with thermal energy ($q$), where
-\Sexpr{fracUnconvergedResampleFits(modelType="linex", countryAbbrev="ZM", energyType="Q", baseResample=baseResample)*100}\%
-of the resample fits did not converge. 
-(See Table~\ref{tab:frac_unconverged_models}.)
-
+Equation~\ref{eq:LINEX_transformed} in log-transformed space. 
+We recovered a value for $c_t$ with $c_t = a_1 / a_0$. 
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
 
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
-Historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+Again, historical data are shown as a black line, 
+the fit to historical data is shown as a white linem and 
+the gray band encompasses 95\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
@@ -1720,13 +1704,71 @@ spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghett
 @
 \onecolumn{}
 
+The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
+values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
+
+\begin{equation} \label{eq:LINEX_alpha}
+  \alpha = \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
+\end{equation}
+
+\begin{equation} \label{eq:LINEX_beta}
+  \beta = \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
+\end{equation}
+
+\noindent{}and
+
+\begin{equation} \label{eq:LINEX_beta}
+  \gamma = \frac{e}{y} \frac{\partial y}{\partial e} 
+         = 1 - a_0 \left[ \frac{e}{k} + c_t \frac{l}{e} \right] 
+         = 1 - \alpha - \beta \;.
+\end{equation}
+
+\noindent Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
+If the trajectory stays within the triangle, 
+the constraints on $\alpha$, $\beta$, and $\gamma$ are respected.
+Conversely, if the trajectory goes outside the triangle, one of the constraints has been violated.
+
+Figures~\ref{fig:LINEX_abg_traj_graph_CN} and~\ref{fig:LINEX_abg_traj_graph_IR} 
+show trajectories for China and Iran, respectively.
+**** Can we make a figure that has all 9 graphs in it? --MKH ****
+
+<<LINEX_abg_traj_graph_CN, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China.">>=
+dataCN <- fortify(OrigModels$Calvin2011$CN$linex$`iK+iL+iQ`)
+triPlot(data=dataCN, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+@
+
+<<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.5, fig.cap="LINEX trajectory for Iran.">>=
+dataIR <- fortify(OrigModels$Calvin2011$IR$linex$`iK+iL+iQ`)
+triPlot(data=dataIR, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+@
+
+In our testing, Iran is the only country for which the trajectory stays within 
+the constraint triangle for the entire time period.
+Thus, in our fitted models, the LINEX model is nearly always
+violating constraints on $\alpha$, $\beta$, and $\gamma$.
+If the LINEX model were made to respect the constraints,
+it would fit worse than it already does for those countries where
+the constraints are violated (that is, for every country except Iran).
+We did nothing to correct this situation, because it is not clear what should be done.
+\citet{Warr:2012cg} constrained the values of $a_0$ and $c_t$, while still holding them constant
+for the entire time series, such that the constraints on $\alpha$, $\beta$, and $\gamma$
+were respected.
+But, Warr's approach necessarily leads to larger $sse$ values than unconstrained fitting.
+Because unconstrained LINEX models already fit worse than 
+constrained Cobb-Douglas and CES models,
+we chose to report the unconstrained LINEX model fits in this paper.
+% Constraining $\alpha = 0$ in the case of China would imply that either
+% $a_0$ or $c_t$ or both varied with time.
+% At that point, $a_0$ and $c_t$ are no longer fitted parameters of the model, 
+% and we have a different model: it is no longer LINEX.
+
+
 %++++++++++++++++++++++++++++++
 \subsection{Parameter Estimation Summary}
 \label{sec:Parameter_Estimation_Summary}
 %++++++++++++++++++++++++++++++
 
 **** Include a table here of important values. 
-Include a table of convergence? (In appendix?)
 Martin to suggest the form of this table after working 
 on the interpretation for a while. ****
 
@@ -2071,6 +2113,25 @@ LDCs: Labour and energy complementary, Capital and energy perfect substitutes.
 \section{Future Work}
 \label{sec:FutureWork}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the future, we intend add an additional coordinate of analysis 
+(Section~\ref{sec:Coordinates}):
+energy quantification.
+Specifically, we with to analyze exergy ($X$) and useful work ($U$)
+energy quantifications within the framework established in this paper.
+Doing so will provide an opportunity to engage the 
+literature around useful work as a driver 
+of economic growth.\citep{Ayres:2003ec, Ayres:2005kn, Ayres:2010ug, 
+Warr:2006hc, Warr:2010ga, Warr:2010ht, Warr:2012cg}
+And, we will be able to assess the interaction between economic models
+and energy quantification: 
+are there combinations of economic models and energy quantifications
+that provide significantly better descriptions of growth?
+We intend to evaluate additional countries as data become available.
+And, we wish to perform analyses over longer time scales.
+In particular, we wish to investigate the effects of significant 
+economic processes (such as industrialization) and political events (world wars)
+using the resampling techniques presented herein.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

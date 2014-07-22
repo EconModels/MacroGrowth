@@ -16,16 +16,12 @@
 
 # ./batch.bash "-n 1000 -C"
 
-# LOC_PATH="`pwd`/sims/"
 LOC_PATH="`pwd`" # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
 
-# EXEC="../batchEcon.R"
 EXEC="./batchEcon.R"
 
-# OUTDIR="`pwd`/data_resample"
 OUTDIR="$LOC_PATH/data_resample"
-HISTDIR="$LOC_PATH/data"
 
 # These models take hardly any time, so we'll run them all on their own node. 
 # The next line runs all countires, all energy types, and all factors
@@ -79,4 +75,4 @@ ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-34 "cd $LOC_PATH; Scripts/BaseModels.R &> $OUTDIR/node-34.txt" &
+ssh node-34 "cd $LOC_PATH; Scripts/OrigModels.R &> $OUTDIR/node-34.txt" &

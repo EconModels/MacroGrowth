@@ -1,0 +1,105 @@
+#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
+#
+# This script fits all of the base models for each combination of 
+# source, country, model, factor, energy type, and nesting.
+# 
+# This script should be run from the top directory with the command
+# "Scripts/OrigModels.R"
+#
+
+# Results are stored in the file "data_resample/oModels.Rdata"
+# To load this data back in, do 
+# 
+# oModels <- readRDS(file="data_resample/oModels.Rdata")
+#
+# To extract a model, do, for example
+# mod <- OrigModels[["Warr2000"]][["US"]][["cd"]][["iK+iL+iQ"]]
+# OrigModels is an object in the EconData package.
+# So, be sure to build that package first.
+
+require(EconModels)
+require(EconData)
+require(plyr)  # for rbind.fill()
+
+nestStr <- function(nest){paste(nest, collapse="")}
+
+All <- AllHistData
+Countries <- levels(All$Country)
+Sources <- levels(All$Source)
+Energies <- c("iQ", "iX", "iU")
+
+ModelInfos <- list(
+  list( formulaStr = c("iGDP ~ iK + iYear", 
+                       "iGDP ~ iL + iYear",
+                       "iGDP ~ energy + iYear"),
+        fun = "sfModel",
+        dots = list()),
+  list( formulaStr = c("iGDP ~ iK + iL + iYear",
+                       "iGDP ~ iK + iL + energy + iYear"),
+        fun = "cdModel",
+        dots = list()),
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
+        fun = "linexModel",
+        dots = list()),
+  list( formulaStr = "iGDP ~ iK + iL + iYear",
+        fun = "cesModel",
+        dots = list(nest=1:2)),
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=1:3)),
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=c(2,3,1))),
+  list( formulaStr = "iGDP ~ iK + iL + energy + iYear",
+        fun = "cesModel",
+        dots = list(nest=c(1,3,2)))
+)
+
+# ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
+# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+# ModelInfos <- tail( ModelInfos,2)
+
+oModels <- list()
+for (src in Sources){
+  for (country in Countries) {
+    cdata <- subset(All, subset=Country==country & Source==src)
+    for (m in ModelInfos) {
+      for (f in m$formulaStr) {
+        for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
+          formulaStr <- sub( "energy", energy, f ) 
+          formula <- eval( parse( text= formulaStr ) )
+          # formula <- substitute( iGDP ~ iK + iL + e + iYear, list(e = energy))
+          # tryCatch to skip over country/energy combos that don't exist.
+          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+          cat ("\n")
+          
+          tryCatch({
+            oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
+            mod <- sub(pattern="Model", replacement="", x=m$fun)
+            fs <- factorString(formula=formula, nest=m$dots$nest)
+            oModels[[src]][[country]][[mod]][[fs]] <- oModel
+          }, 
+          error=function(e) {
+            cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+            print(e)
+          }
+          )
+        }
+      }
+    }
+  }
+}
+#
+# Save object to data_resample for inclusion in a future zipped version of all of the results.
+#
+cat("Saving oModels.Rdata file..."); cat("\n")
+saveRDS(oModels, file="data_resample/oModels.Rdata")
+
+#
+# Copy oModels.Rdata into correct position so that it is available to the EconData package
+# (after EconData is built, of course).
+#
+cat("Copying original models file for EconData package..."); cat("\n")
+OrigModels <- readRDS(file.path("data_resample", "oModels.Rdata"))
+datadir <- file.path("Packages", "EconData", "data")
+save(OrigModels, file=file.path(datadir, "OrigModels.rda"), compress="gzip")

@@ -51,7 +51,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
 
 #' @export
 triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
-                    parse=TRUE, grid_lines=4, aes_string="", ...) {
+                    parse=TRUE, grid_lines=4, aes_string="", geom=geom_point, ...) {
   h <- seq(0, 1, by=1/grid_lines)
   points <- data.frame( h=h )
   if ( nchar(aes_string) > 0 ) aes_string <- paste(",", aes_string)
@@ -87,9 +87,10 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
                               y=c(1.02,0,0),
                               hj = c(.5,1,0),
                               vj = c(0,0.5,0.5)
-                              ), 
+              ), 
               parse=parse) +
-    geom_point(...)
+    do.call( geom, list(...) )
+      
 }
 
 #' @export
