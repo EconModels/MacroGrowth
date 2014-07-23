@@ -33,7 +33,7 @@ nestStrParenLevels <- c("(iK) + ()", "(iL) + ()", "(iQ) + ()", "(iX) + ()" , "(i
 #' If lengths are different, only \code{levs} that are also factors of \code{x}
 #' are applied. 
 #' Levels of factor \code{x} that do not appear in \code{levs} are ignored;
-#' they will appear \emph{after} \code{levs} in the levels of \code{x} in the object returned from this function.
+#' they will appear \emph{after} \code{levs} in the levels of \code{x} in object returned from this function.
 #' If none of \code{levs} are in the levels of \code{x}, an unmodified version of \code{x}
 #' will be returned.
 #' @return an object containing same data as \code{x} whose levels have been reordered according to \code{levs}.
