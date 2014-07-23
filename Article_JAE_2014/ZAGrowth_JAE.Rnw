@@ -287,8 +287,7 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 
 <<data, echo=FALSE, message=FALSE>>=
 # Load historical data
-historicalData <- subset(AllHistData, subset=Source=="Calvin2011" & Country=="ZA") # From the EconData package
-# historicalData <- subset(historicalData, subset=Country=="ZA")
+historicalData <- Calvin # From the EconData package
 
 # Load coefficients from all models in one large data frame
 coeffs_df <- tbl_df(AllCoef)

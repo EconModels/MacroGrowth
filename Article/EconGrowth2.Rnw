@@ -183,11 +183,7 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 
 <<data, include=FALSE>>=
 # Load historical data
-# In Rstudio, this paper is generated from it's directory, which is "Article".
-# We need to define paths relative to the location of the paper. 
-# Relative path to historical data from Article
-historicalData <- subset(AllHistData, subset=Source=="Calvin2011") # From the EconData package
-
+historicalData <- Calvin # From the EconData package
 # Load coefficients from all models in one large data frame
 coeffs_df <- tbl_df(AllCoef)
 # Load fitted data from all models in one large data frame
