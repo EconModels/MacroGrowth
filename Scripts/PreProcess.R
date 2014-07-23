@@ -18,7 +18,7 @@ cat(date())
 cat('\n')
 
 # Directory into which objects should be saved
-datadir <- file.path("Packages", "EconData", "data")
+outputdir <- file.path("Packages", "EconData", "data")
 
 #
 # Load historical data sets and save the data frames for inclusion in the EconData package.
@@ -26,12 +26,12 @@ datadir <- file.path("Packages", "EconData", "data")
 cat("Loading and saving Calvin historical data..."); cat("\n")
 Calvin <- read.table(file.path("data", "Calvin.txt"), header=TRUE)
 Calvin$Country <- relevelFactor(Calvin$Country, countryAbbrevs)
-save(Calvin, file=file.path(datadir, "Calvin.rda"), compress="gzip")
+save(Calvin, file=file.path(outputdir, "Calvin.rda"), compress="gzip")
 
-cat("Loading and saving Warr historical data..."); cat("\n")
-Warr <- read.table(file.path("data", "Warr.txt"), header=TRUE)
-Warr$Country <- relevelFactor(Warr$Country, countryAbbrevs)
-save(Warr,   file=file.path(datadir, "Warr.rda"),   compress="gzip")
+cat("Loading and saving REXS historical data..."); cat("\n")
+REXS <- read.table(file.path("data", "REXS.txt"), header=TRUE)
+REXS$Country <- relevelFactor(REXS$Country, countryAbbrevs)
+save(REXS, file=file.path(outputdir, "REXS.rda"),   compress="gzip")
 
 #
 # Rebuild the EconData package
