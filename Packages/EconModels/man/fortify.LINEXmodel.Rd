@@ -3,7 +3,7 @@
 \alias{fortify.LINEXmodel}
 \title{fortify LINEX models}
 \usage{
-\method{fortify}{LINEXmodel}(model, data, ...)
+fortify.LINEXmodel(model, data, ...)
 }
 \arguments{
 \item{model}{a LINEX model}
