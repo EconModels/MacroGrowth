@@ -11,7 +11,6 @@
 # live in the directory called "data_resample." ("batch.bash" does this by default.)
 
 require(EconData)
-require(EconModels)
 
 startTime <- proc.time()
 cat("\n\nStart @ ")
@@ -22,16 +21,17 @@ cat('\n')
 datadir <- file.path("Packages", "EconData", "data")
 
 #
-# Load historical data sets and save the data frames.
+# Load historical data sets and save the data frames for inclusion in the EconData package.
 #
-cat("Loading and saving historical data..."); cat("\n")
+cat("Loading and saving Calvin historical data..."); cat("\n")
+Calvin <- read.table(file.path("data", "Calvin.txt"), header=TRUE)
+Calvin$Country <- relevelFactor(Calvin$Country, countryAbbrevs)
+save(Calvin, file=file.path(datadir, "Calvin.rda"), compress="gzip")
 
-Calvin2011 <- read.table(file.path("data", "Calvin2011.txt"), header=TRUE)
-Warr2000 <- read.table(file.path("data", "Warr2000.txt"), header=TRUE)
-AllHistData <- rbind(Calvin2011, Warr2000)
-# Relevel the countries in the data frame.
-for (lev in rev(countryAbbrevs)) { AllHistData$Country <- relevel(AllHistData$Country, ref=lev) }
-save(AllHistData, file=file.path(datadir, "AllHistData.rda"), compress="gzip")
+cat("Loading and saving Warr historical data..."); cat("\n")
+Warr <- read.table(file.path("data", "Warr.txt"), header=TRUE)
+Warr$Country <- relevelFactor(Warr$Country, countryAbbrevs)
+save(Warr,   file=file.path(datadir, "Warr.rda"),   compress="gzip")
 
 #
 # Rebuild the EconData package
