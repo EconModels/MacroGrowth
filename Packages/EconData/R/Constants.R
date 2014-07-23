@@ -24,3 +24,24 @@ nestStrParenLevels <- c("(iK) + ()", "(iL) + ()", "(iQ) + ()", "(iX) + ()" , "(i
                         "(iK + iL) + (iQ)", "(iK + iL) + (iX)", "(iK + iL) + (iU)",
                         "(iL + iQ) + (iK)", "(iL + iX) + (iK)", "(iL + iU) + (iK)",
                         "(iQ + iK) + (iL)", "(iX + iK) + (iL)", "(iU + iK) + (iL)")
+
+#' Relevels a factor based on given levels
+#' 
+#' @param x a factor to be releveled
+#' @param levs desired order for the levels of factor \code{x}.
+#' @details The length of \code{levs} may be longer or shorter than the number of levels in \code{x}.
+#' If lengths are different, only \code{levs} that are also factors of \code{x}
+#' are applied. 
+#' Levels of factor \code{x} that do not appear in \code{levels} are ignored.
+#' @return an object containing same data as \code{x} whose levels have been reordered according to \code{levs}.
+#' @export
+relevelFactor <- function(x, levs){
+  if (! is.factor(x)){
+    stop("x must be a factor.")
+  }
+  availableLevels <- levs[levs %in% levels(x)]
+  for (lev in rev(availableLevels)) { 
+    x <- relevel(x, ref=lev) 
+  }
+  return(x)
+}
