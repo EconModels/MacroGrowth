@@ -28,6 +28,7 @@ Calvin <- read.table(file.path("data", "Calvin.txt"), header=TRUE)
 Calvin$Country <- relevelFactor(Calvin$Country, countryAbbrevs)
 save(Calvin, file=file.path(outputdir, "Calvin.rda"), compress="gzip")
 
+# See https://sites.google.com/site/benjaminwarr/the-economic-growth-engine/rexs-database
 cat("Loading and saving REXS historical data..."); cat("\n")
 REXS <- read.table(file.path("data", "REXS.txt"), header=TRUE)
 REXS$Country <- relevelFactor(REXS$Country, countryAbbrevs)
