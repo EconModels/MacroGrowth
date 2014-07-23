@@ -27,7 +27,8 @@ datadir <- file.path("Packages", "EconData", "data")
 # Load all coefficients. Do this task in parallel for a (minor) speed gain.
 #
 cat("Loading and saving all coefficients..."); cat("\n")
-AllCoef <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
+# .errorhandling="remove" skips missing countries.
+AllCoef <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
   loadResampledData(path="data_resample", country=country, kind="coeffs")
 }
 # This next code can be used to ensure that the results are identical. 
@@ -56,7 +57,8 @@ save(AllCoef, file=file.path(datadir, "AllCoef.rda"), compress="gzip")
 # Load all fitted models
 #
 cat("Loading and saving all fitted models..."); cat("\n")
-AllFitted <- foreach(country=countryAbbrevs, .combine=rbind) %dopar% {
+# .errorhandling="remove" skips missing countries.
+AllFitted <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
   loadResampledData(path="data_resample", country=country, kind="fitted")
 }
 # system.time(AllFitted2 <- loadResampledData(path="data_resample", kind="fitted"))
