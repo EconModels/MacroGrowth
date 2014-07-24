@@ -20,6 +20,7 @@
 require(plyr)  # for rbind.fill()
 require(EconModels)
 require(EconData)
+require(optparse)
 
 nestStr <- function(nest){
   paste(nest, collapse="")
@@ -35,8 +36,8 @@ opts <- parse_args(OptionParser(option_list=option_list))
 print(opts)
 
 historicalData <- eval(parse(text=opts$Source))
-Countries <- levels(historicalData$Country)
-Energies <- energyLevels[energyLevels %in% names(historicalData)]
+Countries <- countryAbbrevs[countryAbbrevs %in% levels(historicalData$Country)]
+Energies <- energyTypes[energyTypes %in% names(historicalData)]
 
 ModelInfos <- list(
   list( formulaStr = c("iGDP ~ iK + iYear", 
