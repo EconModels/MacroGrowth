@@ -2,26 +2,28 @@
 
 # Example usage:
 
-# Move into the top level directory that contains this file
-# for US, thermal energy, single factor model, 10 resamples, clobbering previous results, and wild resampling:
-# ./batchEcon.R -c US -f iQ -m sf -n 10 -C -M wild -R data_resample
+# Move into the top level directory of the repository (Econ-Growth-R-Analysis) that contains this file.
+# For Calvin data source, US, thermal energy, single factor model, 
+#     10 resamples, clobbering previous results, and wild resampling:
+# Scripts/batchEcon.R -c US -f iQ -m sf -n 10 -C -M wild -R data_resample/Calvin
 
-# for US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
-# ./batchEcon.R -c US -e iX -m linex -n 10 -C -M wild -R data_resample
+# for REXS data source, US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
+# Scripts/batchEcon.R -c US -e iX -m linex -n 10 -C -M wild -R data_resample/REXS
 
-# for US, all energy types, fast models (everything except CES with energy), 
+# for REXS data source, US, all energy types, fast models (everything except CES with energy), 
 #     10 resamples, clobber previous results, wild resampling:
-# ./batchEcon.R -c US -e all -f all -m fast -n 2 -C -M wild -R data_resample
+# ./batchEcon.R -c US -e all -f all -m fast -n 2 -C -M wild -R data_resample/REXS
 
-# for all countries, all energy types, all models, 1000 resamples, clobber previous results, wild resampling:
-# ./batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample
+# for Calvin data source, all countries, all energy types, all models, 
+#     1000 resamples, clobber previous results, wild resampling:
+# Scripts/batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample/Calvin
 
 require(EconModels)
 require(EconData)
 suppressPackageStartupMessages(library("optparse"))
 
 
-baseResample <- file.path("data_resample")
+# baseResample <- file.path("data_resample")
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 
 option_list <- list(
@@ -32,7 +34,7 @@ option_list <- list(
   make_option(c("-f", "--factor"), default="iK",
               help="factor [default=%default]"),
   make_option(c("-m", "--model"), default="all",
-              help="model [default=%default]"),
+              help="model [default=%default] or 'fast'"),
   make_option(c("-n", "--resamples"), default=10L, type="integer",
               help="number of resamples [default=%default]"),
   make_option(c("-F", "--constraintFree"), default=FALSE, action="store_true",
@@ -43,12 +45,12 @@ option_list <- list(
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
               help="resampling method [default=%default]"),
-  make_option(c("-R", "--baseResample"), # default="data_resample", 
-              help="relative path to directory for resample data")
+  make_option(c("-R", "--resamplePath"), default="data_resample/Calvin", 
+              help="relative path to directory in which to store resample data")
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
-# print(opts)
+print(opts)
 
 if(opts$model == "all") {
   opts$model <- modelTypes
@@ -94,13 +96,13 @@ for(model in opts$model){
     formulas <- c()
     for(factor in opts$factor){
       ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                                 fun = "sfModel",
+                                                 fitfun = "sfModel",
                                                  formulaStr = paste("iGDP ~", factor, "+ iYear"),
                                                  dots = list(constrained= ! opts$constraintFree))
     }
   } else if (model == "cd") {
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cdModel",
+                                               fitfun = "cdModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
                                                dots = list(constrained= ! opts$constraintFree))
   } else if (model == "cde"){
@@ -110,13 +112,13 @@ for(model in opts$model){
       formulas[length(formulas)+1] <- paste("iGDP ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cdModel",
+                                               fitfun = "cdModel",
                                                formulaStr = formulas,
                                                dots = list(constrained= ! opts$constraintFree))
   } else if (model == "ces"){
     # Want a CES model without energy
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cesModel",
+                                               fitfun = "cesModel",
                                                formulaStr = "iGDP ~ iK + iL + iYear",
                                                dots = list(nest=1:2))
   } else if (grepl(pattern="cese", x=model, fixed=TRUE)){
@@ -137,7 +139,7 @@ for(model in opts$model){
       stop(paste("Unknown nest in formula", formula, "in batchEcon.R"))
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "cesModel",
+                                               fitfun = "cesModel",
                                                formulaStr = formulas,
                                                dots = dots)
   } else if (model == "linex"){
@@ -147,7 +149,7 @@ for(model in opts$model){
       formulas[length(formulas)+1] <- paste("iGDP ~ iK + iL +", energy, "+ iYear")
     }
     ModelInfos[[length(ModelInfos)+1]] <- list(modelType=model,
-                                               fun = "linexModel",
+                                               fitfun = "linexModel",
                                                formulaStr = formulas,
                                                dots = list())
   } else {
@@ -160,8 +162,11 @@ cat("\n\nStart @ ")
 cat(date())
 cat('\n')
 
-# load historical data
-All <- subset(AllHistData, subset=Source=="Calvin2011")
+# Get historical data from the EconData package. Extract data source from resample directory.
+dir_pieces <- strsplit(opts$resamplePath, split=.Platform$file.sep)[[1]]
+Source <- dir_pieces[length(dir_pieces)]
+historicalData <- get(Source)
+# All <- subset(AllHistData, subset=Source=="Calvin2011")
 
 registerDoParallel()
 # print(ModelInfos)
@@ -171,13 +176,14 @@ for (m in ModelInfos) {
     # Add parallelization on countrires here!
     foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
       tryCatch({
-        cdata <- subset(All, Country==country)
+        countryData <- subset(historicalData, Country==country)
         formula <- eval( parse( text=f ) )
-        id <- fittingID(fun=m$fun, countryAbbrev=country, formula=f, nest=m$dots$nest, n=opts$resamples)
+        id <- fittingID(Source=Source, fitfun=m$fitfun, countryAbbrev=country, 
+                        formula=f, nest=m$dots$nest, n=opts$resamples)
         cat(id); cat("\n")
         if (! opts$debug) {
-          oModel <- do.call( m$fun, c( list( formula, data=cdata ), m$dots) )
-          if (m$fun == "cesModel") {
+          oModel <- do.call( m$fitfun, c( list( formula, data=countryData ), m$dots) )
+          if (m$fitfun == "cesModel") {
             # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.  
             rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
           } else {
@@ -189,7 +195,7 @@ for (m in ModelInfos) {
           # Save the data to disk in the appropriate places with the appropriate file names.
           # First step, get the factor and energy type.
           terms <- all.vars( terms(formula) )
-          if (m$fun == "sfModel"){
+          if (m$fitfun == "sfModel"){
             energyType <- NA
             # We're dealing with factors. Find the factor we're using.
             matches <- na.omit(match(x=terms, table=factors))
@@ -209,10 +215,10 @@ for (m in ModelInfos) {
             }
           }
           # Get the paths for the coefficients and models files.
-          coeffsPath <- resampleFilePath(prefix="coeffs", fun=m$fun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots$nest, baseResample=baseResample)
-          modelsPath <- resampleFilePath(prefix="models", fun=m$fun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots$nest, baseResample=baseResample)
+          coeffsPath <- resampleFilePath(prefix="coeffs", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
+                                         nest=m$dots$nest, resamplePath=opts$resamplePath)
+          modelsPath <- resampleFilePath(prefix="models", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
+                                         nest=m$dots$nest, resamplePath=opts$resamplePath)
           # Ensure that the directories exist.
           dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
           dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
@@ -224,7 +230,7 @@ for (m in ModelInfos) {
       error=function(e) {
         cat(paste0("  *** Skipping ", id, "\n"))
         print(e)
-        # print(list( m$fun, c( list( formula, data=cdata ), m$dots) ) )
+        # print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
       }
       )
     }
