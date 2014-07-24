@@ -14,7 +14,7 @@
 # The command to run everything for 1000 resamples while clobbering all previous results without 
 # massive amounts of debug information printed to the screen is
 
-# ./batch.bash "-n 1000 -C"
+# Scripts/Calvin_batch.bash "-n 1000 -C"
 
 LOC_PATH="`pwd`" # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
