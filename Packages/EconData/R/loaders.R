@@ -1,8 +1,9 @@
-
 #' @importFrom plyr rbind.fill
 
 is.in <- function( el, set ) {
-  if (is.null(set)) { return( rep(TRUE, length(el) ) ) }
+  if (is.null(set)) { 
+    return( rep(TRUE, length(el) ) ) 
+  }
   is.element(el, set)
 }
 
@@ -153,8 +154,11 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     nestStr <- pieces[[i]][3]
     parsedNestStr <- parseFactorString(factorString=nestStr)
     
+    # Get the data Source (from the directory) and add it to the data frame
+    dir_pieces <- strsplit(path, split=.Platform$file.sep)[[1]]
+    Source <- dir_pieces[length(dir_pieces)]
+    actual$Source <- Source
     actual$resampleNumber <- NA
-    ## actual$type <- "historical"
     actual$resampled <- FALSE
     actual$factor <- parsedNestStr[["factor"]]
     # The historical data doesn't really have an "energy" associated with it.
