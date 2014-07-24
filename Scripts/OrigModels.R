@@ -103,7 +103,7 @@ for (country in Countries) {
 #
 data_resample_dir <- file.path("data_resample", opts$Source)
 dir.create(data_resample_dir, showWarnings=FALSE)
-filename_Rdata <- paste0(opts$Source, "_OrigModels.Rdata")
+filename_Rdata <- paste0("OrigModels.Rdata")
 data_resample_path <- file.path(data_resample_dir, filename_Rdata)
 cat(paste("Saving", data_resample_path, "...")); cat("\n")
 saveRDS(oModels, file=data_resample_path)
