@@ -12,7 +12,7 @@
 
 # for REXS data source, US, all energy types, fast models (everything except CES with energy), 
 #     10 resamples, clobber previous results, wild resampling:
-# ./batchEcon.R -c US -e all -f all -m fast -n 2 -C -M wild -R data_resample/REXS
+# Scripts/batchEcon.R -c US -e all -f all -m fast -n 2 -C -M wild -R data_resample/REXS
 
 # for Calvin data source, all countries, all energy types, all models, 
 #     1000 resamples, clobber previous results, wild resampling:
