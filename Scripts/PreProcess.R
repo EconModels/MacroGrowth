@@ -25,7 +25,8 @@ outputdir <- file.path("Packages", "EconData", "data")
 #
 for (src in dataSources){
   cat(paste("Loading and saving", src, "historical data ...")); cat("\n")
-  data <- read.table(file.path("data", paste0(src, ".txt")), header=TRUE)
+  inputfile <- file.path("data", paste0(src, ".txt"))
+  data <- read.table(inputfile, header=TRUE)
   data$Country <- relevelFactor(data$Country, countryAbbrevs)
   assign(src, data)
   save(list=src, file=file.path(outputdir, paste0(src, ".rda")))
