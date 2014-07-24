@@ -22,8 +22,6 @@ require(EconModels)
 require(EconData)
 suppressPackageStartupMessages(library("optparse"))
 
-
-# baseResample <- file.path("data_resample")
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 
 option_list <- list(
