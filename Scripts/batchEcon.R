@@ -48,7 +48,7 @@ option_list <- list(
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
-print(opts)
+# print(opts)
 
 if(opts$model == "all") {
   opts$model <- modelTypes
