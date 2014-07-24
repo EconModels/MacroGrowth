@@ -23,16 +23,13 @@ outputdir <- file.path("Packages", "EconData", "data")
 #
 # Load historical data sets and save the data frames for inclusion in the EconData package.
 #
-cat("Loading and saving Calvin historical data..."); cat("\n")
-Calvin <- read.table(file.path("data", "Calvin.txt"), header=TRUE)
-Calvin$Country <- relevelFactor(Calvin$Country, countryAbbrevs)
-save(Calvin, file=file.path(outputdir, "Calvin.rda"), compress="gzip")
-
-# See https://sites.google.com/site/benjaminwarr/the-economic-growth-engine/rexs-database
-cat("Loading and saving REXS historical data..."); cat("\n")
-REXS <- read.table(file.path("data", "REXS.txt"), header=TRUE)
-REXS$Country <- relevelFactor(REXS$Country, countryAbbrevs)
-save(REXS, file=file.path(outputdir, "REXS.rda"),   compress="gzip")
+for (src in dataSources){
+  cat(paste("Loading and saving", src, "historical data ...")); cat("\n")
+  data <- read.table(file.path("data", paste0(src, ".txt")), header=TRUE)
+  data$Country <- relevelFactor(data$Country, countryAbbrevs)
+  assign(src, data)
+  save(list=src, file=file.path(outputdir, paste0(src, ".rda")))
+}
 
 #
 # Rebuild the EconData package
