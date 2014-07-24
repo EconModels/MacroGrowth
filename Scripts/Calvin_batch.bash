@@ -19,9 +19,9 @@
 LOC_PATH="`pwd`" # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
 
-EXEC="./batchEcon.R"
+EXEC="Scripts/batchEcon.R"
 
-OUTDIR="$LOC_PATH/data_resample"
+OUTDIR="$LOC_PATH/data_resample/Calvin"
 
 # These models take hardly any time, so we'll run them all on their own node. 
 # The next line runs all countires, all energy types, and all factors
