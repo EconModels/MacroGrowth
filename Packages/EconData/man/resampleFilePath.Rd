@@ -3,13 +3,15 @@
 \alias{resampleFilePath}
 \title{Path to resample coefficients for the given parameters}
 \usage{
-resampleFilePath(fun, countryAbbrev, formula, nest = NULL, prefix,
-  sep = "_", baseResample)
+resampleFilePath(prefix, countryAbbrev, fitfun, formula, nest = NULL,
+  sep = "_", resamplePath)
 }
 \arguments{
-\item{fun}{the function used for fitting}
+\item{prefix}{a prefix for the file name. Should not include the separator.}
 
 \item{countryAbbrev}{the country being fitted}
+
+\item{fitfun}{the function used for fitting}
 
 \item{formula}{the formula used for the fitting}
 
@@ -17,9 +19,8 @@ resampleFilePath(fun, countryAbbrev, formula, nest = NULL, prefix,
 
 \item{sep}{the separator used to create the id string. Default is "_".}
 
-\item{prefix}{a prefix for the file name. Should not include the separator.}
-
-\item{baseResample}{the relative path of the top-level directory containing the resample data.}
+\item{resamplePath}{the path to the directory containing the resample data.
+This is likely to be something like "base_resample/Calvin"}
 }
 \value{
 a string representing the file name for these resample coefficients.

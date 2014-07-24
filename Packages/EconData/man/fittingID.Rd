@@ -3,12 +3,15 @@
 \alias{fittingID}
 \title{Creates an id for this run of resampling}
 \usage{
-fittingID(fun, countryAbbrev, formula, nest = NULL, n, sep = " : ")
+fittingID(Source, fitfun, countryAbbrev, formula, nest = NULL, n,
+  sep = " : ")
 }
 \arguments{
-\item{fun}{the function used for fitting}
+\item{Source}{the data source used for this fit}
 
 \item{countryAbbrev}{the country being fitted}
+
+\item{fitfun}{the function used for fitting}
 
 \item{formula}{the formula used for the fitting}
 

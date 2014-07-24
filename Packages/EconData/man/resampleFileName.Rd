@@ -3,15 +3,15 @@
 \alias{resampleFileName}
 \title{File name for resample coefficients for the given parameters}
 \usage{
-resampleFileName(prefix, fun, countryAbbrev, formula, nest = NULL,
+resampleFileName(prefix, countryAbbrev, fitfun, formula, nest = NULL,
   sep = "_")
 }
 \arguments{
 \item{prefix}{a prefix for the file name}
 
-\item{fun}{the function used for fitting}
-
 \item{countryAbbrev}{the country being fitted}
+
+\item{fitfun}{the function used for fitting}
 
 \item{formula}{the formula used for the fitting}
 

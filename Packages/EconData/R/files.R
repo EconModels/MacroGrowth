@@ -140,8 +140,9 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
 
 #' Creates an id for this run of resampling
 #' 
-#' @param fun the function used for fitting
+#' @param Source the data source used for this fit
 #' @param countryAbbrev the country being fitted
+#' @param fitfun the function used for fitting
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A 2- or 3-vector of integers.
 #' @param nestStr if used, the string for the nesting
@@ -149,23 +150,23 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
 #' @param sep the separator used to create the id string. Default is " : ".
 #' @return a string to be used as the id for this resample
 #' @export
-fittingID <- function(fun, countryAbbrev, formula, nest=NULL, n, sep=" : "){
-  id <- paste(countryAbbrev, fun, formula, factorString(formula=formula, nest=nest), n, sep=sep)
+fittingID <- function(Source, fitfun, countryAbbrev, formula, nest=NULL, n, sep=" : "){
+  id <- paste(Source, countryAbbrev, fitfun, formula, factorString(formula=formula, nest=nest), n, sep=sep)
   return(id)
 }
 
 #' File name for resample coefficients for the given parameters
 #' 
 #' @param prefix a prefix for the file name
-#' @param fun the function used for fitting
 #' @param countryAbbrev the country being fitted
+#' @param fitfun the function used for fitting
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
 #' @return a string representing the file name for these resample coefficients.
-resampleFileName <- function(prefix, fun, countryAbbrev, formula, nest=NULL, sep="_"){
+resampleFileName <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_"){
   # Strip "Model" out of fun, if present
-  modelType <- sub(pattern="Model", replacement="", x=fun)
+  modelType <- sub(pattern="Model", replacement="", x=fitfun)
   f <- paste(prefix, countryAbbrev, modelType, factorString(formula=formula, nest=nest), sep=sep)
   f <- paste0(f, ".Rdata")
   return(f)
@@ -173,18 +174,19 @@ resampleFileName <- function(prefix, fun, countryAbbrev, formula, nest=NULL, sep
 
 #' Path to resample coefficients for the given parameters
 #' 
-#' @param fun the function used for fitting
+#' @param prefix a prefix for the file name. Should not include the separator.
 #' @param countryAbbrev the country being fitted
+#' @param fitfun the function used for fitting
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
-#' @param prefix a prefix for the file name. Should not include the separator.
-#' @param baseResample the relative path of the top-level directory containing the resample data.
+#' @param resamplePath the path to the directory containing the resample data.
+#' This is likely to be something like "base_resample/Calvin"
 #' @return a string representing the file name for these resample coefficients.
 #' @export
-resampleFilePath <- function(fun, countryAbbrev, formula, nest=NULL, prefix, sep="_", baseResample){
-  f <- resampleFileName(prefix=prefix, fun=fun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
-  path <- file.path(baseResample, f)
+resampleFilePath <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_", resamplePath){
+  f <- resampleFileName(prefix=prefix, fitfun=fitfun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
+  path <- file.path(resamplePath, f)
   return(path)
 }
 
