@@ -33,7 +33,7 @@ option_list <- list(
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
-print(opts)
+# print(opts)
 
 historicalData <- eval(parse(text=opts$Source))
 Countries <- countryAbbrevs[countryAbbrevs %in% levels(historicalData$Country)]
