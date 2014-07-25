@@ -27,7 +27,7 @@ for (src in dataSources){
   cat(paste("Loading and saving", src, "historical data ...")); cat("\n")
   inputpath <- file.path("data", paste0(src, ".txt"))
   data <- read.table(inputpath, header=TRUE)
-  data$Country <- relevelFactor(data$Country, countryAbbrevs)
+  data$Country <- relevelFactor(data$Country, levs=countryAbbrevs)
   assign(src, data)
   save(list=src, file=file.path(outputdir, paste0(src, ".rda")))
 }
