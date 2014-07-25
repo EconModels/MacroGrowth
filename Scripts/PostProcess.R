@@ -87,10 +87,10 @@ save(list=objectname, file=outpath, compress="gzip")
 # Create an archive of the results
 #
 cat(paste0("Creating archive for ", Source, "...")); cat("\n")
-zip(zipfile="data_resample.zip", files="data_resample", flags="-r9X")
+zip(zipfile=file.path("data_resample", paste0(Source, "_data_resample.zip")), files=paste0("data_resample/", Source), flags="-r9Xj")
 
 #
-# Build EconData package here?
+# Reload EconData package here?
 #
 
 cat("\n\nDone @ ")
