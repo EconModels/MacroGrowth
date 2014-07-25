@@ -76,4 +76,4 @@ ssh node-34 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-35 "cd $LOC_PATH; Scripts/OrigModels.R -R data_resample/Calvin &> $OUTDIR/node-35.txt" &
+ssh node-35 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-35.txt" &
