@@ -74,8 +74,9 @@ ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -R $OUTDIR $1
 # node-33 is down.
 # node-34 is down.
 ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-35.txt" &
-ssh node-36 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-36.txt" &
+# node-36 has a bad R install
+ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-37.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-37 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-37.txt" &
+ssh node-38 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-38.txt" &
