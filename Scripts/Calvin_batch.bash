@@ -71,9 +71,11 @@ ssh node-30 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iX -m cese-\(ek\)l -R $OUTDIR $1
 
 # node-31 appears to be down.
 ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -R $OUTDIR $1 &> $OUTDIR/node-32.txt" &
-ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-33.txt" &
-ssh node-34 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-34.txt" &
+# node-33 is down.
+# node-34 is down.
+ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-35.txt" &
+ssh node-36 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-36.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-35 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-35.txt" &
+ssh node-37 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-37.txt" &
