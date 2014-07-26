@@ -39,11 +39,12 @@ This command doesn't work on fs1 or any of the nodes (node-01 through node-42).
 * Check progress with `more data_resample/<Source>/node-*.txt`.
 
 ### Post-process the results
-* Run `PostProcess.R -R data_resample/<Source>` on dahl to create:       
+* Run `PostProcess.R -R data_resample/<Source>` on a node of dahl to create:       
     + `Packages/EconData/data/<Source>_Coeffs.rda` and
     + `Packages/EconData/data/<Source>_Fitted.rda`.         
 
 Note that this command will need to be issued from a node of the cluster (e.g., node-00), not from `fs1.calvin.edu`.
+`fs1` does not have a full install of R.
 
 ### Add processed results to the EconData package
 * From acc, push the changes to GitHub to make the new files available.
