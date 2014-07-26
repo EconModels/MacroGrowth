@@ -8,41 +8,50 @@ output: html_document
 This file contains information about the workflow for analyses.
 
 ### Add new data
-* Add the file named `<Source>.txt` in the data directory.   
+* Add a file named `<Source>.txt` in the data directory.   
 * Edit the `Packages/EconData/R/Constants.R` file to include `<Source>` in the `dataSource` variable.   
 * Add any Excel workbooks or other metadata in `data/Excel Workbooks/<Source>`.
 
 ### Create historical data frame
 * Run `Scripts/PreProcess.R -S <Source>` to create the historical data frame for `<Source>`.
 The file will be stored at `Packages/EconData/data/<Source>.rda`.
-This command can be run on a laptop, because it is fast.    
-* Build and reload the EconData package.    
+This command is fast; it can be run on a laptop.    
+* Build and reload the `EconData` package.    
 * Push the changes to GitHub.   
 * On acc, Pull from GitHub.     
 * On dahl (node-00), say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.   
+This command doesn't work on fs1 or any of the nodes (node-01 through node-42).
 
 ### Create the batch script
 * Create the file `Scripts/<Source>_batch.bash` file.
-  + It is probably best to modify an existing `<Source>_batch.bash file.`      
-  + Be sure to edit the `OUTDIR` variable to be `OUTDIR="$LOC_PATH/data_resample/<Source>"`     
-  + Change the final line (the one that runs the `OrigModels.R script`) to be
-`ssh node-xx "cd $LOC_PATH; Scripts/OrigModels.R -S <Source> &> $OUTDIR/node-xx.txt" &`        
-  + Distribute the work over the nodes in a way that makes sense.
-* Push the file to GitHub.      
-* On dahl, pull from GitHub.      
+    + It is probably best to modify an existing `<Source>_batch.bash` file.      
+    + Be sure to edit the `OUTDIR` variable to be `OUTDIR="$LOC_PATH/data_resample/<Source>"`.
+    + Change the final line (the one that runs the `OrigModels.R script`) to be `ssh node-xx "cd $LOC_PATH; Scripts/OrigModels.R -S <Source> &> $OUTDIR/node-xx.txt" &`.   
+    + Distribute the work over the nodes in a way that makes sense.
+* Push the `<Source>_batch.bash` file to GitHub.
+* On acc, Pull from GitHub.      
 
 ### Submit the job to dahl
-* Start with `Scripts/<Source>_batch.bash "-n 2 -C"`.
-* Then do `Scripts/<Source>_batch.bash "-n 1000 -C"`.
+* `cd` to the `Econ-Growth-R-Analysis` directory from fs1.calvin.edu.
+* Run `Scripts/<Source>_batch.bash "-n 2 -C"` to test that things work as expected.
+* Then do `Scripts/<Source>_batch.bash "-n 1000 -C"` to do a complete run.
+* Check dahl's status at (http://fs1.calvin.edu/ganglia/?m=load_one&r=hour&s=by%2520name&c=dahl&h=&sh=1&hc=4&z=small).
+* Check progress with `more data_resample/<Source>/node-*.txt`.
 
 ### Post-process the results
-* Run `PostProcess.R -R data_resample/<Source>` on dahl to create
-`Packages/EconData/data/<Source>_Coeffs.rda` and
-`Packages/EconData/data/<Source>_Fitted.rda`.
+* Run `PostProcess.R -R data_resample/<Source>` on dahl to create:       
+    + `Packages/EconData/data/<Source>_Coeffs.rda` and
+    + `Packages/EconData/data/<Source>_Fitted.rda`.         
+
 Note that this command will need to be issued from a node of the cluster (e.g., node-00), not from `fs1.calvin.edu`.
 
-### Add to EconData package
+### Add processed results to the EconData package
 * From acc, push the changes to GitHub to make the new files available.
-* Pull from GitHub on a local laptop, and rebuild the `EconData` package.
+* Pull from GitHub on a local laptop, and build and reload the `EconData` package.
 
 At this point, all new results should be available in the `EconData` package.
+Objects will be named:
+
+* `<Source>_Coeffs` (from the file `Packages/EconData/data/<Source>_Coeffs.rda`)  
+* `<Source>_Fitted` (from the file `Packages/EconData/data/<Source>_Fitted.rda`)  
+* `<Source>_OrigModels` (from the file `Packages/EconData/data/<Source>_OrigModels.rda`)  
