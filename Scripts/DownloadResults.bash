@@ -35,7 +35,7 @@ function HELP {
   echo "${BOLD}-d${NORM}  --Debug mode. No files transferred. Reports what would have been done."
   echo "${BOLD}-h${NORM}  --Prints help."
   echo "Example: ${BOLD}$SCRIPT -u abc -S Calvin${NORM}"
-  echo "           Downloads Calvin data from dahl as user abc."
+  echo "           Downloads Calvin results from dahl as user abc."
   echo "Example: ${BOLD}$SCRIPT -u abc -S Calvin -d${NORM}"
   echo "           Same as above, except only prints which files would have been transfered from dahl."
   echo "           No files will be transfered. Useful for debugging purposes."
