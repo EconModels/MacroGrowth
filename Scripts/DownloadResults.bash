@@ -23,7 +23,7 @@ SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 # Help function
 function HELP {
-  echo -e "\\n""
+  echo -e "\\n"
   echo "${BOLD}${SCRIPT}${NORM} copies resampling results from dahl to the"
   echo "correct location on a local machine for building the ${BOLD}EconData${NORM} package."
   echo "Run from the Econ-Growth-R-Analysis directory on a local machine."
@@ -56,10 +56,6 @@ SOURCE=""
 DEBUG=false
 
 # Parse command line flags
-# If an option should be followed by an argument, it should be followed by a ":".
-# Notice there is no ":" after "h". The leading ":" suppresses error messages from
-# getopts. This is required to get my unrecognized option code to work.
-
 while getopts :u:S:dh FLAG; do
   case $FLAG in
     u)  #set option "u"
@@ -105,9 +101,8 @@ LOCAL_DIR="$PWD/Packages/EconData/data"
 
 # Set the options for rsync.
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.
-# -r gives recursive behavior to copy contents of directories.
 # -e ssh indicates ssh protocol should be used.
-RSYNC_OPTS="-v -r -e ssh"
+RSYNC_OPTS="-v -e ssh"
 if [ "$DEBUG" = true ] ; then
   # Add the -n option. -n prevents file transfers from occurring, but prints would would have been done.
   RSYNC_OPTS="$RSYNC_OPTS -n"
