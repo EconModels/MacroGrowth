@@ -1,6 +1,7 @@
 #! /bin/bash
 # 
-# This script rsyncs results files from the directory specified by -p on dahl (or the default)
+# This script rsyncs post-processed resampling results files 
+# from the directory specified by -p on dahl (or the default)
 # to the Packages/EconData/data directory on a local machine.
 # The destination is appropriate for including the files in the EconData package.
 # Files that are rsync-ed match the pattern "<SOURCE>_*.rda"
@@ -27,7 +28,7 @@ SCRIPT=`basename ${BASH_SOURCE[0]}`
 # Help function
 function HELP {
   echo -e "\\n"
-  echo "${BOLD}${SCRIPT}${NORM} copies resampling results from dahl to the"
+  echo "${BOLD}${SCRIPT}${NORM} copies post-processed resampling results from dahl to the"
   echo "correct location on a local machine for building the ${BOLD}EconData${NORM} package."
   echo "Uses rsync over ssh, so running this script will require a password for login to dahl."
   echo "Files that are rsync-ed match the pattern <SOURCE>_*.rda"
