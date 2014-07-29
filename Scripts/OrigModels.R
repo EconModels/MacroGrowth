@@ -3,19 +3,19 @@
 # This script fits all of the base models for each combination of 
 # source, country, model, factor, energy type, and nesting.
 # 
-# This script should be run from the top directory with the command
-# "Scripts/OrigModels.R"
+# This script should be run from the top directory (Econ-Growth-R-Analysis) with the command
+# "Scripts/OrigModels.R -S <Source>"
 #
 
-# Results are stored in the file "data_resample/oModels.Rdata"
+# Results are stored in the file "data_resample/<Source>/Models.Rdata"
 # To load this data back in, do 
 # 
-# oModels <- readRDS(file="data_resample/oModels.Rdata")
+# oModels <- readRDS(file="data_resample/<Source>/Models.Rdata")
 #
 # To extract a model, do, for example
-# mod <- OrigModels[["Warr2000"]][["US"]][["cd"]][["iK+iL+iQ"]]
-# OrigModels is an object in the EconData package.
-# So, be sure to build that package first.
+# mod <- oModels$REXS$US$cd$`iK+iL+iQ`
+# 
+# Note, too, that <Source>_Models is an object in the EconData package.
 
 require(plyr)  # for rbind.fill()
 require(EconModels)
@@ -67,7 +67,7 @@ ModelInfos <- list(
 )
 
 # ModelInfos <- head(ModelInfos, -3)  # skip ces models with energy
-# ModelInfos <- head(ModelInfos, -4)  # skip all ces models
+ModelInfos <- head(ModelInfos, -4)  # skip all ces models
 # ModelInfos <- tail( ModelInfos,2)
 
 oModels <- list()
@@ -103,7 +103,7 @@ for (country in Countries) {
 #
 data_resample_dir <- file.path("data_resample", opts$Source)
 dir.create(data_resample_dir, showWarnings=FALSE)
-filename_Rdata <- paste0("OrigModels.Rdata")
+filename_Rdata <- "Models.Rdata"
 data_resample_path <- file.path(data_resample_dir, filename_Rdata)
 cat(paste("Saving", data_resample_path, "...")); cat("\n")
 saveRDS(oModels, file=data_resample_path)
@@ -112,7 +112,7 @@ saveRDS(oModels, file=data_resample_path)
 # (after EconData is built, of course).
 #
 # First, put the oModels object into the environment with the name by which it will be available from the package.
-varname <- paste0(opts$Source, "_OrigModels")
+varname <- paste0(opts$Source, "_Models")
 assign(varname, oModels)
 # Now, save the object
 package_dir <- file.path("Packages", "EconData", "data")

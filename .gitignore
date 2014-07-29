@@ -20,7 +20,7 @@ core
 # 
 *_Coeffs.rda
 *_Fitted.rda
-*_OrigModels.rda
+*_Models.rda
 #
 # Files related to running the batch.bash script
 #
