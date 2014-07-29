@@ -23,7 +23,7 @@ SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 # Help function
 function HELP {
-  echo -e \\n
+  echo -e "\\n""
   echo "${BOLD}${SCRIPT}${NORM} copies resampling results from dahl to the"
   echo "correct location on a local machine for building the ${BOLD}EconData${NORM} package."
   echo "Run from the Econ-Growth-R-Analysis directory on a local machine."
