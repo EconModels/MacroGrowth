@@ -16,7 +16,7 @@
 
 # Scripts/Calvin_batch.bash "-n 1000 -C"
 
-LOC_PATH="`pwd`" # Assuming that we're running from the top directory of the repository for this script
+LOC_PATH=$PWD # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
 
 EXEC="Scripts/batchEcon.R"
