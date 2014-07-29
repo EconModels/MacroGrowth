@@ -87,7 +87,6 @@ if [ -z "$USER" ]; then
   echo -e \\n"Option ${BOLD}-u${NORM} required."
   echo -e "Use ${BOLD}$SCRIPT -h${NORM} for help."\\n
   exit 2
-  echo "USER empty."
 fi 
 
 # Check to see if -S was specified
