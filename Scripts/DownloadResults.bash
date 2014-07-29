@@ -1,12 +1,15 @@
 #! /bin/bash
 # 
-# This script rsyncs results files from dahl to the Packages/EconData/data directory on a local machine.
+# This script rsyncs results files from the directory specified by -p on dahl (or the default)
+# to the Packages/EconData/data directory on a local machine.
 # The destination is appropriate for including the files in the EconData package.
+# Files that are rsync-ed match the pattern "<SOURCE>_*.rda"
 # 
 # In the top-level directory of this repository (Econ-Growth-R-Analysis) on the destination machine, say
 # Scripts/DownloadResults.bash -u mkh2 -S REXS
 #   -u indicates the user you want to be on dahl
 #   -S identifies the data <Source> for which you want to rsync results.
+#   -p identifies the directory on dahl from which you want to rsync results.
 #
 # You'll be prompted for the password for the user specified by -u on dahl.
 #
@@ -26,14 +29,18 @@ function HELP {
   echo -e "\\n"
   echo "${BOLD}${SCRIPT}${NORM} copies resampling results from dahl to the"
   echo "correct location on a local machine for building the ${BOLD}EconData${NORM} package."
-  echo "Run from the Econ-Growth-R-Analysis directory on a local machine."
   echo "Uses rsync over ssh, so running this script will require a password for login to dahl."
-  echo "Usage: ${BOLD}Scripts/$SCRIPT [-d] -u username -S Source${NORM}"
+  echo "Files that are rsync-ed match the pattern <SOURCE>_*.rda"
+  echo "Run from the Econ-Growth-R-Analysis directory on a local machine."
+  echo "Usage: ${BOLD}Scripts/$SCRIPT -u username -S Source${NORM} [-d] [-h] [-p path_to_data_on_dahl]"
   echo "Command line options:"
   echo "${BOLD}-u${NORM}  --Sets the username for dahl."
   echo "${BOLD}-S${NORM}  --Sets the data Source to be copied."
   echo "${BOLD}-d${NORM}  --Debug mode. No files transferred. Reports what would have been done."
   echo "${BOLD}-h${NORM}  --Prints help."
+  echo "${BOLD}-p${NORM}  --Sets path of data directory on dahl."
+  echo "           Default is appropriate for matt's account on dahl."
+  echo "           Do not include trailing file separator."
   echo "Example: ${BOLD}$SCRIPT -u abc -S Calvin${NORM}"
   echo "           Downloads Calvin results from dahl as user abc."
   echo "Example: ${BOLD}$SCRIPT -u abc -S Calvin -d${NORM}"
@@ -54,9 +61,10 @@ fi
 USER=""
 SOURCE=""
 DEBUG=false
+DAHL_PATH="/home/mkh2/github/Econ-Growth-R-Analysis/Packages/EconData/data"
 
 # Parse command line flags
-while getopts :u:S:dh FLAG; do
+while getopts :u:S:p:dh FLAG; do
   case $FLAG in
     u)  #set option "u"
       USER=$OPTARG
@@ -70,6 +78,9 @@ while getopts :u:S:dh FLAG; do
     h)  #show help
       HELP
       ;;
+    p) #set path on dahl
+      DAHL_PATH=$OPTARG
+      ;;
     \?) # unknown option - show help
       echo -e \\n"Option ${BOLD}-$OPTARG${NORM} not allowed."
       echo -e "Use ${BOLD}$SCRIPT -h${NORM} for help."\\n
@@ -78,14 +89,14 @@ while getopts :u:S:dh FLAG; do
   esac
 done
 
-# Check to see if -u was specified
+# Check whether -u was specified. It is required.
 if [ -z "$USER" ]; then
   echo -e \\n"Option ${BOLD}-u${NORM} required."
   echo -e "Use ${BOLD}$SCRIPT -h${NORM} for help."\\n
   exit 2
 fi 
 
-# Check to see if -S was specified
+# Check whether -S was specified. It is required.
 if [ -z "$SOURCE" ]; then
   echo -e \\n"Option ${BOLD}-S${NORM} required."
   echo -e "Use ${BOLD}$SCRIPT -h${NORM} for help."\\n
@@ -94,18 +105,19 @@ fi
 
 # Specify the files on dahl that we want to copy.
 # Note that the '*' wildcard will match several files, all with the same $SOURCE.
-REMOTE_FILES="/home/mkh2/github/Econ-Growth-R-Analysis/Packages/EconData/data/$SOURCE'_'*.rda"
+REMOTE_FILES="$DAHL_PATH"/"$SOURCE"_*.rda
 # Specify the local directory into which we want to save the files.
 # The assumption is that the user has set "Econ-Growth-R-Analysis"" as the working directory.
 LOCAL_DIR="$PWD/Packages/EconData/data"
 
 # Set the options for rsync.
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.
+# -t preserves time stamps on files.
 # -e ssh indicates ssh protocol should be used.
 RSYNC_OPTS="-v -t -e ssh"
 if [ "$DEBUG" = true ] ; then
   # Add the -n option. -n prevents file transfers from occurring, but prints would would have been done.
-  RSYNC_OPTS="$RSYNC_OPTS -n"
+  RSYNC_OPTS=-n" $RSYNC_OPTS"
 fi
 
 # Perform the rsync copy from dahl to the local machine.
