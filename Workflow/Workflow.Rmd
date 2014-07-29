@@ -1,15 +1,15 @@
 ---
 title: "Workflow"
 author: "Matthew Kuperus Heun"
-date: "July 25, 2014"
+date: "29 July 2014"
 output: html_document
 ---
 
 This file contains information about the workflow for analyses.
 
 ### Add new data
-* Add a file named `<Source>.txt` in the data directory.   
-* Edit the `Packages/EconData/R/Constants.R` file to include `<Source>` in the `dataSource` variable.   
+* Add a file that contains the historical data from `<Source>` (name should be `<Source>.txt`) 
+in the `data` directory at the top level of the repository.   
 * Add any Excel workbooks or other metadata in `data/Excel Workbooks/<Source>`.
 
 ### Create historical data frame
@@ -19,8 +19,9 @@ This command is fast; it can be run on a laptop.
 * Build and reload the `EconData` package.    
 * Push the changes to GitHub.   
 * On acc, Pull from GitHub.     
-* On dahl (node-00), say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.   
-This command doesn't work on fs1 or any of the nodes (node-01 through node-42).
+* On node-00, say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.
+This makes the historical data available to the nodes of dahl.
+This command doesn't work from fs1 or any of the other nodes of dahl (node-01 through node-42).
 
 ### Create the batch script
 * Create the file `Scripts/<Source>_batch.bash` file.
@@ -46,13 +47,19 @@ This command doesn't work on fs1 or any of the nodes (node-01 through node-42).
 Note that this command will need to be issued from a node of the cluster (e.g., node-00), not from `fs1.calvin.edu`.
 `fs1` does not have a full install of R.
 
-### Add processed results to the EconData package
-* From acc, push the changes to GitHub to make the new files available.
-* Pull from GitHub on a local laptop, and build and reload the `EconData` package.
+### Download post-processed results to local machine
+* From a local computer, say `Scripts/DownloadResults.R -u <user> -S <Source> -d`, where `<user>` is 
+a username on dahl, `<Source>` is the data source of interest, and `-d` will 
+print the files to be transferred to the local machine, rather than transfer them.
+* Verify that the list of files to be transferred looks right.
+* From a local computer, say `Scripts/DownloadResults.R -u <user> -S <Source>` to download the files.
 
-At this point, all new results should be available in the `EconData` package.
+### Add processed results to the EconData package
+* On the local machine, build and reload the `EconData` package.
+
+At this point, all new results should be available in the `EconData` package on the local machine.
 Objects will be named:
 
 * `<Source>_Coeffs` (from the file `Packages/EconData/data/<Source>_Coeffs.rda`)  
 * `<Source>_Fitted` (from the file `Packages/EconData/data/<Source>_Fitted.rda`)  
-* `<Source>_OrigModels` (from the file `Packages/EconData/data/<Source>_OrigModels.rda`)  
+* `<Source>_Models` (from the file `Packages/EconData/data/<Source>_OrigModels.rda`)  
