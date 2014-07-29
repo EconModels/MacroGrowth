@@ -102,7 +102,7 @@ LOCAL_DIR="$PWD/Packages/EconData/data"
 # Set the options for rsync.
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.
 # -e ssh indicates ssh protocol should be used.
-RSYNC_OPTS="-v -e ssh"
+RSYNC_OPTS="-v -t -e ssh"
 if [ "$DEBUG" = true ] ; then
   # Add the -n option. -n prevents file transfers from occurring, but prints would would have been done.
   RSYNC_OPTS="$RSYNC_OPTS -n"
