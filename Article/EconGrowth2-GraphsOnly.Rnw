@@ -137,12 +137,12 @@ require(knitr)
 historicalData <- Calvin # From the EconData package
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(AllCoef)
+coeffs_df <- tbl_df(Calvin_Coeffs)
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(AllFitted)
+fitted_df <- tbl_df(Calvin_Fitted)
 
 # Load the original models.
-oModels <- OrigModels
+oModels <- Calvin_Models
 
 opts_chunk$set(
   # ********************************************************
@@ -632,7 +632,7 @@ Each curve fit implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as
 The following graph shows China's trajectory for thermal energy ($q$):
 
 <<LINEX_abg_traj_graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China with thermal energy $q$.">>=
-data <- fortify(OrigModels$CN$linex$`iK+iL+iQ`)
+data <- fortify(oModels$Calvin$CN$linex$`iK+iL+iQ`)
 triPlot(data=data, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear")
 @
 

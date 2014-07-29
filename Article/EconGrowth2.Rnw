@@ -185,12 +185,12 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 # Load historical data
 historicalData <- Calvin # From the EconData package
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(AllCoef)
+coeffs_df <- tbl_df(Calvin_Coeffs)
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(AllFitted)
+fitted_df <- tbl_df(Calvin_Fitted)
 
 # Load the original models.
-oModels <- OrigModels
+oModels <- Calvin_Models
 @
 
 % These equations are used in several locations in the paper.
@@ -1729,12 +1729,12 @@ show trajectories for China and Iran, respectively.
 **** Can we make a figure that has all 9 graphs in it? --MKH ****
 
 <<LINEX_abg_traj_graph_CN, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China.">>=
-dataCN <- fortify(OrigModels$Calvin2011$CN$linex$`iK+iL+iQ`)
+dataCN <- fortify(oModels$Calvin$CN$linex$`iK+iL+iQ`)
 triPlot(data=dataCN, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
 
 <<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.5, fig.cap="LINEX trajectory for Iran.">>=
-dataIR <- fortify(OrigModels$Calvin2011$IR$linex$`iK+iL+iQ`)
+dataIR <- fortify(oModels$Calvin$IR$linex$`iK+iL+iQ`)
 triPlot(data=dataIR, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
 
