@@ -130,7 +130,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -844,18 +844,18 @@ tend to cluster at the locations of the initial grid search in
 $\sigma$ or $\sigma_1$
 (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
-<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).", eval=TRUE>>=
-cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                     "(iK + iL) + (iX)", 
-                                                                     "(iL + iX) + (iK)", 
-                                                                     "(iX + iK) + (iL)"))
-standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
+<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).">>=
+cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iX)", 
+                                                                      "(iL + iX) + (iK)", 
+                                                                      "(iX + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).", eval=TRUE>>=
-standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).">>=
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -863,7 +863,7 @@ standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_for
 @
 
 <<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x$).">>=
-standardScatterPlot(data=subset(cesCoeffsData, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -895,8 +895,8 @@ Figure~\ref{fig:CES_ternary_graph} is comparable to
 the ternary graph for the Cobb-Douglas models, 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
-<<CES_ternary_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models.">>=
-standardTriPlot(data=cesCoeffsData, facet_formula=country~nestStrParen)
+<<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).">>=
+standardTriPlot(data=cesCoeffsDataX, facet_formula=country~nestStrParen)
 @
 
 Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
@@ -906,27 +906,27 @@ historical data are shown as a black line,
 the fit to historical data is shown as a white line, and 
 the gray band encompasses 95\% of the fits to resampled data.
 
-<<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                     "(iK + iL) + (iQ)", 
-                                                                     "(iL + iQ) + (iK)", 
-                                                                     "(iQ + iK) + (iL)"))
-spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1980=1 or 1991=1)")
+<<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).">>=
+cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iX)", 
+                                                                      "(iL + iX) + (iK)", 
+                                                                      "(iX + iK) + (iL)"))
+spaghettiPlot(data=cesFittedDataX, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
 
-<<CES_lambda_gamma_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with useful work ($u$).", eval=TRUE>>=
-cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                     "(iK + iL) + (iU)", 
-                                                                     "(iL + iU) + (iK)", 
-                                                                     "(iU + iK) + (iL)"))
-standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
+<<CES_lambda_gamma_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with useful work ($u$).">>=
+cesCoeffsDataU <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iU)", 
+                                                                      "(iL + iU) + (iK)", 
+                                                                      "(iU + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsDataU, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     labs(x=expression(gamma), y=expression(lambda))
 @
 
 <<CES_sigma1_delta1_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with useful work ($u$).">>=
-standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+standardScatterPlot(data=cesCoeffsDataU, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -934,7 +934,7 @@ standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_for
 @
 
 <<CES_sigma_delta_graph_U, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with useful work ($u$).">>=
-standardScatterPlot(data=subset(cesCoeffsData, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=subset(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -942,25 +942,13 @@ standardScatterPlot(data=subset(cesCoeffsData, nestStrParen != "(iK + iL) + ()")
     labs(x=expression(delta), y=expression(sigma))
 @
 
-
-
-
-
-
-
-
-
-
-
-
-Figure~\ref{fig:CES_Spaghetti_Graph_CN} shows details of the resample fits for China with the (kl)e nesting.
-Again, historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
-
-<<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
-spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nestStrParen=="(iK + iL) + (iQ)"), level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
+<<CES_Spaghetti_Graph_U, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with useful work ($u$).">>=
+cesFittedDataU <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iU)", 
+                                                                      "(iL + iU) + (iK)", 
+                                                                      "(iU + iK) + (iL)"))
+spaghettiPlot(data=cesFittedDataU, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
 
 
@@ -993,9 +981,8 @@ Again, historical data are shown as a black line,
 the fit to historical data is shown as a white linem and 
 the gray band encompasses 95\% of the fits to resampled data.
 
-\twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="iQ")
+linexCoeffsData <- filter(coeffs_df, model=="linex", energy %in% c("iX", "iU"))
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
@@ -1003,11 +990,10 @@ standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~e
 @
 
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
-linexFittedData <- filter(fitted_df, model=="linex", energy=="iQ")
+linexFittedData <- filter(fitted_df, model=="linex", energy %in% c("iX", "iU"))
 spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1980=1 or 1991=1)")
+    labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
-\onecolumn{}
 
 The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
 values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
