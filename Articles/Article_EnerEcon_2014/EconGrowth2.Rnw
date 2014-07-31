@@ -103,6 +103,7 @@
 \journal{Energy Economics}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
 require(EconModels)
