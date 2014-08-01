@@ -58,6 +58,10 @@ a username on dahl, `<Source>` is the data source of interest, and `-d` will
 print the files to be transferred to the local machine, rather than transfer them.
 * Verify that the list of files to be transferred looks right.
 * From a local computer, say `Scripts/DownloadResults.R -u <user> -S <Source>` to download the files.
+* The files are downloaded to the `Packages/EconData/tmp_big_data` directory on the local machine.
+* Manually move the files to `Packages/EconData/data` if you want them to be available in the `EconData` package.
+This manual step avoids large data files automatically included in the `EconData` package, 
+thereby slowing everything down.
 
 ### Add processed results to the EconData package
 * On the local machine, build and reload the `EconData` package.
