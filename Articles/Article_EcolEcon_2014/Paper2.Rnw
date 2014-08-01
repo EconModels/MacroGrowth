@@ -1,0 +1,1170 @@
+% This article has been prepared for publication in Ecological Economics in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2014-08-01
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\journal{Ecological Economics}
+
+\begin{document}
+
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
+require(EconModels)
+require(EconData)
+# require(lattice)
+# require(latticeExtra)
+require(ggplot2)
+# require(car)
+# require(mosaic)
+# require(xtable)
+# require(nlmrt)
+# require(micEconCES)
+require(plyr)
+# require(dplyr)
+# Provides access to data melting. 
+# See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
+# require(reshape2) 
+# tikz allows use of LaTeX formatting and font in graphs. 
+# Allows for a consistent look across the paper.
+# See http://r-forge.r-project.org/R/?group_id=440 for instructions 
+# on installing tikzDevice.
+# require(tikzDevice) 
+# trellis.par.set(theme=theme.mosaic())
+# options(width=75)
+# options(show.signif.stars=TRUE)
+require(knitr)
+
+opts_chunk$set(
+  # ********************************************************
+  eval=TRUE,
+  # ********************************************************
+  # tikz allows LaTeX code in graphical output. 
+  # E.g., "$y$" for a variable name in the legend for a graph.  
+  # dev='tikz',
+  tidy=FALSE,
+  comment=NA,
+  # Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  # However, references to LaTeX tables DO NOT WORK if cacheing is turned on.
+  cache=FALSE,
+  warning=FALSE,  #Tells whether to show warnings in the output.
+  # Turns off messages for all chunks. 
+  # Set TRUE on an individual chunk to see it.
+  message=FALSE, 
+  # Tells whether to echo code for all chunks. 
+  # Set TRUE on an individual chunk to see its code.
+  echo=FALSE     
+)
+@
+
+<<constants, include=FALSE, eval=TRUE>>=
+# Graph Heights
+# maxHeight <- 8.5 # Inches
+# ninePanelScatterGraphHeight <- maxHeight # Inches
+
+# Graph Widths
+# maxWidth <- 6.5 # Inches
+# fourPanelScatterGraphWidth <- maxWidth # Inches
+# 
+# presentationGraph1RowHeight <- 2.8 # Inches
+# presentationGraph2ColWidth <- 2 # Inches
+# presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
+# h_param_graph <- 2.07 # Inches for a single panel
+# h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
+# sfParameterGraphHeight <- h_param_graph + h_param_axis
+# cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
+# cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
+# linexParameterGraphHeight <- h_param_graph + h_param_axis
+# sfParameterGraphWidth <- maxWidth
+# cdParameterGraphWidth <- maxWidth
+# cesParameterGraphWidth <- maxWidth
+# linexParameterGraphWidth <- maxWidth
+# Other graph parameters that apply to all graphs
+# scaleTextSize <- 0.8  # Multiple of normal size
+# scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
+
+spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+@
+
+<<data, include=FALSE, eval=TRUE>>=
+# Load historical data
+historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
+# Load coefficients from all models in one large data frame
+AllCoeffs <- rbind(REXS1960_Coeffs, IST_Coeffs, Leeds_Coeffs)
+AllCoeffs$Source <- as.factor(replace(AllCoeffs$Source, which(AllCoeffs$Source=="REXS1960"), "REXS"))
+AllCoeffs$Source <- relevelFactor(AllCoeffs$Source, levs = c("REXS", "IST", "Leeds"))
+AllCoeffs$energy <- relevelFactor(AllCoeffs$energy, levs = energyLevels)
+# Load fitted data from all models in one large data frame
+AllFitted <- rbind(REXS1960_Fitted, IST_Fitted, Leeds_Fitted)
+AllFitted$Source <- replace(AllFitted$Source, which(AllFitted$Source=="REXS1960"), "REXS")
+AllFitted$Source <- relevelFactor(as.factor(AllFitted$Source), levs = c("REXS", "IST", "Leeds"))
+AllFitted$energy <- relevelFactor(AllFitted$energy, levs=energyLevels)
+@
+
+% These equations are used in several locations in the paper.
+% By defining commands for them, we ensure consistent appearance
+% of the equations when they are used.
+
+% Add an argument if you want a label. Example: "\label{eq:CES}"
+\newcommand{\ceskl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}}
+
+\newcommand{\ceskle}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\ceslek}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+\newcommand{\cesekl}[1]{\begin{equation} #1
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A = \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+}
+
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Application of Bootstrap Resampling to REXS Data}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[BenWarr]{Benjamin Warr}
+\author[IST]{Tiago Domingos}
+\author[Leeds]{Paul Brockway}
+\author[Leeds]{Julia Steinberger}
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+
+\address[BenWarr]{Ben Warr's address, Zambia}
+\address[IST]{IST, Lisbon, Portugal}
+\address[Leeds]{Leeds University, Leeds, UK}
+\cortext[cor1]{Corresponding author}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+
+\begin{abstract}
+%% Text of abstract
+**** Add abstract ****
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep exergy \sep energy \sep Cobb-Douglas \sep CES \sep LINEX
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coordinates of Analysis} 
+\label{sec:Coordinates}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section describes the coordinates of analysis and briefly reviews 
+literature related to each.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Mathematical Forms of the Energy-augmented Production Function} 
+\label{sec:Prod_Func_Forms}
+%++++++++++++++++++++++++++++++
+
+In this paper, we assess three prominent energy-augmented production functions 
+that appear in the literature: 
+Cobb-Douglas (CD), 
+Constant Elasticity of Substitution (CES), and 
+LINear EXponential (LINEX). 
+The following subsections describe each.
+
+
+%------------------------------
+\subsubsection{Cobb-Douglas (CD) Production Function} 
+\label{sec:CDe}
+%------------------------------
+
+This production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
+\end{equation}
+%
+\noindent where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ (time) is measured in years,
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ is represented by GDP, 
+$K$ is expressed in currency units, 
+$L$ is expressed in workers or work-hours/year, and
+0 subscripts indicate values at an initial year.%
+\footnote{Dimensionless, indexed quantities are represented by 
+lower-case symbols 
+($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+quantities are represented by upper-case symbols 
+($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+Model parameters are represented by Greek letters
+($\alpha$, $\beta$, $\lambda$, $\theta$).} 
+
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha + \beta + \gamma = 1$.
+
+
+%------------------------------
+\subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
+\label{sec:CES}
+%------------------------------
+
+Other energy economists use an energy-augmented 
+Constant Elasticity of Substitution (CES) production function to 
+describe economic growth. The \texttt{R} \citep{R} package 
+\texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
+functions of the following forms (among others):
+%
+\ceskl{\label{eq:CES}}
+%
+\ceskle{\label{eq:CESkle}}
+%
+\noindent Equation~\ref{eq:CES} is a CES production function with 
+capital stock ($k$) and labor ($l$) factors of production. 
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CES} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CES} is a degenerate form of Equation~\ref{eq:CESkle} 
+where $\delta \rightarrow 1$. 
+
+$\gamma$ is a fitting parameter that represents productivity. 
+The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
+of substitution ($\sigma_1$ and $\sigma$).
+The elasticity of substitution 
+between capital ($k$) and labor ($l$) is given by 
+$\sigma_1 = \frac{1}{1+\rho_1}$, and
+the elasticity of substitution between ($kl$) and ($e$) is given by 
+$\sigma = \frac{1}{1+\rho}$. 
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. Similarly, 
+as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
+$\delta_1$ describes the relative importance of capital ($k$)
+and labor ($l$), and
+$\delta$ describes the importance of ($kl$) relative to ($e$).
+
+Constraints on the fitting parameters include 
+$\delta_1 \in [0,1]$,
+$\delta \in [0,1]$,
+$\rho_1 \in [-1,0) \cup (0,\infty)$, and
+$\rho \in [-1,0) \cup (0,\infty)$. 
+
+Two other nestings of the factors of production ($k$, $l$, and $e$)
+are possible with the CES model.
+%
+\ceslek{\label{eq:CESlek}}
+%
+\cesekl{\label{eq:CESekl}}
+%
+\noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
+meanings that depend upon the nesting of the factors of production.
+
+
+%------------------------------
+\subsubsection{LINEX Production Function} 
+\label{sec:LINEX}
+%------------------------------
+
+A third production function, the LINear EXponential (LINEX) function
+%
+\begin{equation} \label{eq:LINEX}
+  y = \theta \; \mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]} \; e \;,
+\end{equation}
+%
+was derived from thermodynamic considerations
+\citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
+In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and 
+\ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
+the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
+time-dependent augmentation term ($A$).
+The LINEX models assumes energy ($e$) is the only factor of production.
+
+The LINEX model does, however, include terms that represent
+efficiencies among capital, labor, and energy, in the form of 
+the ratios $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
+for the LINEX model breaks from the conventions used in the Cobb-Douglas and CES
+models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
+%
+\begin{equation} \label{eq:rho_k}
+  \rho_k \equiv \frac{k}{(1/2)(l+e)}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:rho_l}
+  \rho_l \equiv \frac{l}{e}
+\end{equation}
+%
+and represent 
+%
+(\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
+(\ref{eq:rho_l}) labor increase relative to energy.
+The effect of energy ($e$) on production is enhanced if either
+%
+\begin{itemize}
+\item{capital stock ($k$) has increased more than the average 
+      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
+\item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
+\end{itemize}
+%
+An economy that increases 
+capital stock ($k$) and labor ($l$) at the same rate as energy will have
+capital and labor efficiency ratios ($\rho_k$ and $\rho_l$, respectively) of unity.
+In that case, economic output ($y$) increases at the same rate as energy consumption ($e$).
+According to the LINEX model, an economy that increases 
+capital stock ($k$) without a commensurate increase in labor ($l$) 
+and energy ($e$) will experience an increase in output ($y$) in excess 
+of its increase of energy consumption ($e$), because
+\(
+\mathrm{e}^{a_0\left[2 \left(1 - \frac{1}{\rho_k} \right) 
+    + c_t \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]}
+	> 1.
+\) 
+Similarly, an economy benefits by increasing labor ($l$) 
+without a commensurate increase in energy ($e$). 
+Thus, $\rho_k$ is an 
+efficiency of using additional labor and energy to make 
+additional capital stock available to the economy, 
+and $\rho_l$ is an efficiency of using additional energy to make 
+additional labor available to the economy. 
+Increases in $\rho_k$ and $\rho_l$ provide upward pressure on economic output ($y$),
+as the only factor of production ($e$) is used more efficiently.
+
+The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
+and the parameter $c_t$ represents the relative importance 
+of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
+Both $a_0$ and $c_t$ are assumed constant with respect to time. 
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Economies} 
+\label{sec:Economies}
+%++++++++++++++++++++++++++++++
+
+Discuss economies here.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sources of Data}
+\label{sec:Sources_of_Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Discuss data sources here.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Historical Data} 
+\label{sec:Historical_Data}
+%++++++++++++++++++++++++++++++
+
+Graph(s) of historical data here. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation}
+\label{sec:Parameter_Estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%++++++++++++++++++++++++++++++
+\subsection{Point Estimates}
+%++++++++++++++++++++++++++++++
+
+Each of the economic growth models discussed in 
+Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
+using data for each economy (see Sections~\ref{sec:Economy_Types} and~\ref{sec:Sources_of_Data}).
+We obtained parameter estimates by applying the method of least-squares to 
+log-transformed data using the \texttt{R} \citep{R} functions
+\texttt{lm} (for Cobb-Douglas and LINEX models) 
+and \texttt{cesEst} \citep{Henningsen:2011td} (for CES models). 
+
+Although the details vary from model to model, each of our three models has the general form
+\[
+y = f(t,k,l,e; \theta) + \mathrm{error} \;,
+\]
+where $\theta$ is a vector of parameters for the function $f$.
+Parameter estimates are chosen to minimize
+%
+\begin{equation} \label{eq:sse}
+  sse = \sum_{i} (y_i - f(t,k,l,e; \theta) )^2
+\end{equation}
+%
+within constraints.
+For the optimal parameter values $\hat \theta$, we define the 
+fitted response by
+\[
+\hat y_i = f(t_i, k_i, l_i, e_i; \hat \theta)
+\]
+and the residuals ($r_i$)
+as the difference between the observed response and the fitted response
+%
+\begin{equation} \label{eq:residual}
+  r_i 
+  = y_i - \hat y_i
+  = y_i - f(t,k,l,e; \hat\theta)
+\end{equation}
+%
+The details for each of the models are discussed in 
+Sections~\ref{sec:CD_Parameter_Estimation}--\ref{sec:LINEX_Parameter_Estimation} below.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Resampling Methods}
+\label{sec:Resampling}
+%++++++++++++++++++++++++++++++
+
+Bootstrapping is a statistical resampling technique for assigning
+measures of accuracy and precision to sample estimates by measuring
+properties of an estimator when sampling from a resampling
+distribution.  
+Resampling distributions can be formed in a number of 
+ways in accordance with the type of data, experimental design,
+and modeling assumptions involved.  
+In each case, many new resamples 
+are created, each of which is a randomized version of the original sample data to 
+which the desired analysis method can be applied.  
+By investigating, for example,
+the variability of a parameter estimate from one resample to another,
+one can learn about the precision of the estimation method.
+
+In the context of linear models (regression), resamples are generally created
+by residual resampling.  
+In our case, we formed resamples by adding to the fitted 
+response ($\hat{y}$) the product of a residual from the original model fit and 
+random sign ($-1$ or $1$, each with probability $0.5$).  
+For the case of Cobb-Douglas and LINEX models, 
+this residual resampling occurs on the 
+log-transformed data.
+
+Intuitively, this method assumes that the residuals are indicative of 
+the variability (from many potential sources) inherent in the data such that
+it would be unsurprising if the residual from 
+any particular year had been observed in a different year. 
+Thus, a resampled response $\tilde Y'$ can be computed as 
+\[
+\tilde Y_i' = \hat y_i \pm r_j
+\]
+where 
+\[
+r_i = y_i - \hat y_i
+\]
+both the sign ($\pm$) and the index of the residual 
+($j$,~typically different from $i$) 
+are chosen at random (with replacement). 
+We repeated the resampling process 1000 times for each
+combination of growth model and country, 
+both with and without energy as appropriate.
+
+The coefficients from the fit to a resampled time series
+(the ``resample coefficients'') will be different from the coefficients 
+obtained from the fit to historical data (the ``base coefficients'').
+When these resample coefficients are highly variable, 
+it is an indication
+that the data do not determine the parameter estimates very precisely.
+Lack of precision can stem from a number of factors, most obviously
+a poor model fit, low model sensitivity to one or more parameters, 
+or correlations between parameter estimates.
+
+It is important to note that large residuals can arise from either
+(a) poor quality historical time series data, or 
+(b) a mathematical model that does not describe the underlying phenomena well.
+It is also important to note that (c) even when the residuals are small and the 
+model produces fitted values that track the observed data closely, it may
+yet be difficult to estimate some or all of the model parameters precisely.
+The resampling method employed herein reflects all three of these potential 
+sources of uncertainty in parameter estimates.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas Models}
+\label{sec:CD_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The Cobb-Douglas model without energy is given by 
+Equation~\ref{eq:CD}. Equation~\ref{eq:CD} was
+reparameterized as
+%
+\begin{equation} \label{eq:CD_reparam}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{1-\alpha}
+\end{equation}
+%
+\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
+$\theta$, $\lambda$, and $\alpha$ were estimated by the 
+\texttt{R} \citep{R} function \texttt{lm} in log-transform space. 
+If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
+we set $\alpha$ to its boundary value and re-estimated $\lambda$. 
+The value of $\beta$ was found with $\beta = 1 - \alpha$. 
+
+To estimate the parameters $\theta$, $\lambda$, $\alpha$, $\beta$, and $\gamma$ 
+in the energy-augmented Cobb-Douglas model, Equation~\ref{eq:CDe} 
+was reparameterized as
+%
+\begin{equation} \label{eq:CDe_AB_reparam}
+  y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{\beta} e^{1 - \alpha - \beta}
+\end{equation}
+%
+\noindent ensuring that $\alpha + \beta + \gamma = 1$,
+thereby providing constant returns to scale.
+The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
+values of $\lambda$, $\theta$, $\alpha$, and $\beta$ in log-transform space.
+If the fitted value for $\alpha$ or $\beta$ fell outside the interval $[0,1]$,
+we fit along all boundaries 
+($\alpha = 1$,
+$\beta = 1$,
+$\gamma = 1$,
+$\alpha = 0$,
+$\beta = 0$, and
+$\gamma = 0$)
+and chose the boundary fit with
+minimum $sse$ (Equation~\ref{eq:sse}) as the winner.
+$\gamma$ was recovered with $\gamma = 1 - \alpha - \beta$.
+
+Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
+for $\alpha$, $\beta$, and $\gamma$ parameter values 
+for Cobb-Douglas (without and with energy) resample models.
+Each reample is shown as a gray dot on the graph. 
+The fit to historical data is shown as a gray crosshairs.
+
+Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
+from the Cobb-Douglas models 
+(without and with energy) to historical data.
+Historical data are shown as a black line. 
+The fit to historical data is shown as a white line.
+The gray band encompasses 95\% of the fits to resampled data.
+
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for UK Cobb-Douglas resample models.">>=
+cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
+standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=energy~Source, alpha=0.05) +
+#     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+#     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    labs(x=expression(theta), y=expression(lambda))
+@
+
+
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3.9, fig.height=4, fig.cap="UK Cobb-Douglas resample model parameters.">>=
+standardTriPlot(data=cdCoeffsData, facet_formula=energy~Source)
+@
+
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="Cobb-Douglas fitted models.">>=
+cdFittedData <- subset(AllFitted, subset = model=="cd")
+spaghettiPlot(data=cdFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)")
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{CES Models}
+\label{sec:CES_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The CES model without and with energy is given by 
+Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
+The \texttt{R} \citep{R} package \texttt{micEconCES} 
+\citep{Henningsen:2011td} was used to estimate parameters 
+$\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
+The \texttt{cesEst} function of \texttt{micEconCES} provides 
+several algorithm options for parameter estimation.
+The default algorithm (Levenberg-Marquardt) does not respect
+parameter constraints (see Section~\ref{sec:CES}) and, 
+in our testing, nearly always violated them, often returning
+negative values for elasticity of substitution~($\sigma$) parameters.
+Thus, we used the two fitting algorithms available in \texttt{cesEst} that
+respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
+
+Our CES parameter estimation algorithm starts with an eleven-value grid search
+in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+which corresponds to $\sigma$ and $\sigma_1$ values of
+0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
+During the grid search, values of $\rho$ and $\rho_1$ are fixed,
+and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
+by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
+In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
+at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
+During the grid search portion of our algorithm, starting values for the free parameters
+are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
+and $\gamma$ is set to a value such that the mean of the residuals is zero
+by the \texttt{cesEst} function.
+
+Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
+is attempted wherein all fitting parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are allowed to float. 
+The start values for fitting parameters are taken from 
+the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
+
+If resampled data are being fitted, a prior fit to historical data is available.
+In the final step of our algorithm, 
+a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
+uses coefficients from the best 
+fit to historical data as its starting point. 
+In this final gradient search, all model parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are considered free parameters.
+
+The fit with lowest $sse$ of all above trials is deemed the winner,
+and its fitting parameters are used as the model.
+
+\citet{Henningsen:2011td}, 
+in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+
+\begin{quote}
+\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
+are---at least in this study---most likely to find the 
+coefficients that give the best fit to the model, 
+where the \texttt{PORT} algorithm can be used to restrict the estimates 
+to the economically meaningful region.
+\end{quote}
+
+In our testing, we found that to be mostly true. 
+\texttt{PORT} nearly always provided lower
+$sse$ than \texttt{L-BFGS-B}, despite the fact that 
+\texttt{L-BFGS-B} often reports convergence
+and \texttt{PORT} does not for the same data
+(i.e., for the same $y$, $k$, $l$, and $e$ data).
+
+Coefficients for each resampled CES model for all countries and all nests
+are shown in 
+Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
+The white crosshair on each graph shows the location 
+of the fit to historical data. 
+In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
+the bottom of the vertical axis represents $\sigma = 0$.
+The top of the vertical axis represents $\sigma = \infty$.
+
+Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
+in Equations~\ref{eq:CES}--\ref{eq:CESekl},
+the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
+resample points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+are equivalent.
+That is, all points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+have the same $sse$. 
+As a consequence, 
+the \texttt{cesEst} fitting algorithm has no way 
+to discriminate among points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
+Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
+tend to cluster at the locations of the initial grid search in 
+$\sigma$ or $\sigma_1$
+(0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
+
+<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iX)", 
+                                                                      "(iL + iX) + (iK)", 
+                                                                      "(iX + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    labs(x=expression(gamma), y=expression(lambda))
+
+@
+
+<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+
+<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x$).", eval=FALSE>>=
+standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
+                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
+for the CES model, based on values of $\delta$ and $\delta_1$.
+Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
+      \hline
+      ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
+      ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+      ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Figure~\ref{fig:CES_ternary_graph} shows 
+$\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
+Figure~\ref{fig:CES_ternary_graph} is comparable to
+the ternary graph for the Cobb-Douglas models, 
+Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
+
+<<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+standardTriPlot(data=cesCoeffsDataX, facet_formula=country~nestStrParen)
+@
+
+Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
+to historical data for all nestings. 
+As with the Cobb-Douglas results, 
+historical data are shown as a black line, 
+the fit to historical data is shown as a white line, and 
+the gray band encompasses 95\% of the fits to resampled data.
+
+<<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).", eval=FALSE>>=
+cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iX)", 
+                                                                      "(iL + iX) + (iK)", 
+                                                                      "(iX + iK) + (iL)"))
+spaghettiPlot(data=cesFittedDataX, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1900=1 or 1950=1)")
+@
+
+<<CES_lambda_gamma_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+cesCoeffsDataU <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iU)", 
+                                                                      "(iL + iU) + (iK)", 
+                                                                      "(iU + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsDataU, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    labs(x=expression(gamma), y=expression(lambda))
+@
+
+<<CES_sigma1_delta1_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+standardScatterPlot(data=cesCoeffsDataU, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1]))
+@
+
+<<CES_sigma_delta_graph_U, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+standardScatterPlot(data=subset(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
+                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma))
+@
+
+<<CES_Spaghetti_Graph_U, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with useful work ($u$).", eval=FALSE>>=
+cesFittedDataU <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iU)", 
+                                                                      "(iL + iU) + (iK)", 
+                                                                      "(iU + iK) + (iL)"))
+spaghettiPlot(data=cesFittedDataU, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1900=1 or 1950=1)")
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{LINEX Models}
+\label{sec:LINEX_Parameter_Estimation}
+%++++++++++++++++++++++++++++++
+
+The LINEX model is given in Equation~\ref{eq:LINEX}. 
+If the fitting algorithm drives $a_0 \rightarrow 0$, 
+any changes to $c_t$ have no effect on $sse$. 
+Therefore, we transformed the LINEX model into
+%
+\begin{equation} \label{eq:LINEX_transformed}
+  y = \theta A e; 
+  A = \mathrm{e}^{\left[2 a_0 \left(1 - \frac{1}{\rho_k} \right) 
+    + a_1 \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
+\end{equation}
+%
+\noindent where $a_1 \equiv a_0 c_t$. 
+We used the \texttt{lm} function in \texttt{R}
+\citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
+Equation~\ref{eq:LINEX_transformed} in log-transformed space. 
+We recovered a value for $c_t$ with $c_t = a_1 / a_0$. 
+Figure~\ref{fig:LINEXq_Resample_Graph}
+shows the coefficients estimated from resampled data.
+
+Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
+Again, historical data are shown as a black line, 
+the fit to historical data is shown as a white line and 
+the gray band encompasses 95\% of the fits to resampled data.
+
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="LINEX model (with energy) resampling results.">>=
+linexCoeffsData <- subset(AllCoeffs, subset = model=="linex")
+standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=energy~Source, alpha=0.05) +
+    labs(x=expression(a[0]), y=expression(c[t]))
+@
+
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="LINEX fitted models.">>=
+linexFittedData <- subset(AllFitted, subset = model=="linex")
+spaghettiPlot(data=linexFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)")
+@
+
+The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
+values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
+
+\begin{equation} \label{eq:LINEX_alpha}
+  \alpha = \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
+\end{equation}
+
+\begin{equation} \label{eq:LINEX_beta}
+  \beta = \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
+\end{equation}
+
+\noindent{}and
+
+\begin{equation} \label{eq:LINEX_beta_2}
+  \gamma = \frac{e}{y} \frac{\partial y}{\partial e} 
+         = 1 - a_0 \left[ \frac{e}{k} + c_t \frac{l}{e} \right] 
+         = 1 - \alpha - \beta \;.
+\end{equation}
+
+\noindent Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
+If the trajectory stays within the triangle, 
+the constraints on $\alpha$, $\beta$, and $\gamma$ are respected.
+Conversely, if the trajectory goes outside the triangle, one of the constraints has been violated.
+
+Figure~\ref{fig:LINEX_abg_traj_graph_UK}
+show trajectories for the UK and useful work ($u$) from the Leeds data set.
+
+<<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for REXS, UK, $u$.">>=
+triPlot(data=fortify(REXS1960_Models$REXS1960$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
+@
+
+<<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for IST, UK, $u$.">>=
+triPlot(data=fortify(IST_Models$IST$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
+@
+
+<<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for Leeds, UK, $u$.">>=
+triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
+@
+
+% In our testing, Iran is the only country for which the trajectory stays within 
+% the constraint triangle for the entire time period.
+% Thus, in our fitted models, the LINEX model is nearly always
+% violating constraints on $\alpha$, $\beta$, and $\gamma$.
+% If the LINEX model were made to respect the constraints,
+% it would fit worse than it already does for those countries where
+% the constraints are violated (that is, for every country except Iran).
+% We did nothing to correct this situation, because it is not clear what should be done.
+% \citet{Warr:2012cg} constrained the values of $a_0$ and $c_t$, while still holding them constant
+% for the entire time series, such that the constraints on $\alpha$, $\beta$, and $\gamma$
+% were respected.
+% But, Warr's approach necessarily leads to larger $sse$ values than unconstrained fitting.
+% Because unconstrained LINEX models already fit worse than 
+% constrained Cobb-Douglas and CES models,
+% we chose to report the unconstrained LINEX model fits in this paper.
+% Constraining $\alpha = 0$ in the case of China would imply that either
+% $a_0$ or $c_t$ or both varied with time.
+% At that point, $a_0$ and $c_t$ are no longer fitted parameters of the model, 
+% and we have a different model: it is no longer LINEX.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Parameter Estimation Summary}
+\label{sec:Parameter_Estimation_Summary}
+%++++++++++++++++++++++++++++++
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion of Results}
+\label{sec:Discussion_of_Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
+% all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
+% associated with this paper can be found at\\*
+% \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix}
+
+Include data tables here?
+
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+\bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+\bibliography{HeunWarr.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
