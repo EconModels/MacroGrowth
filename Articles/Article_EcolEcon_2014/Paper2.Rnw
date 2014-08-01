@@ -1138,7 +1138,7 @@ Include data tables here?
 
 \bibliographystyle{model2-names}
 %%\bibliography{<your-bib-database>}
-\bibliography{HeunWarr.bib}
+\bibliography{Paper2.bib}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
