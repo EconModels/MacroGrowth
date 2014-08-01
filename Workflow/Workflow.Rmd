@@ -38,6 +38,7 @@ This command doesn't work from fs1 or any of the other nodes of dahl (node-01 th
 
 ### Submit the job to dahl
 * `cd` to the `Econ-Growth-R-Analysis` directory from fs1.calvin.edu.
+* Run `Scripts/<Source>_batch.bash "-n 2 -C -d"` followed by `more data_resample/<SOURCE>/node*.txt` to obtain a printout of what will be executed.    
 * Run `Scripts/<Source>_batch.bash "-n 2 -C"` to test that things work as expected.
 * Then do `Scripts/<Source>_batch.bash "-n 1000 -C"` to do a complete run.
 * Check dahl's status at (http://fs1.calvin.edu/ganglia/?m=load_one&r=hour&s=by%2520name&c=dahl&h=&sh=1&hc=4&z=small).
