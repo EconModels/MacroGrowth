@@ -88,7 +88,6 @@ if (is.null(opts$resamplePath)){
 }
 
 print(str(opts))
-stop()
 
 #
 # Convert the options to a ModelInfos object. ModelInfos contains the 
