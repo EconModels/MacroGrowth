@@ -21,7 +21,9 @@ echo $LOC_PATH
 
 EXEC="Scripts/batchEcon.R"
 
-OUTDIR="$LOC_PATH/data_resample/Calvin"
+SRC="Calvin"
+
+OUTDIR="$LOC_PATH/data_resample/$SRC"
 
 # These models take hardly any time, so we'll run them all on their own node. 
 # The next line runs all countires, all energy types, and all factors
@@ -79,4 +81,4 @@ ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -R $OUTDIR $1
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-38 "cd $LOC_PATH; Scripts/OrigModels.R -S Calvin &> $OUTDIR/node-38.txt" &
+ssh node-38 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-38.txt" &
