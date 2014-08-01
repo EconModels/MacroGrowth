@@ -48,6 +48,8 @@ Coeffs <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove
 # coeffs2 <- loadResampledData(path=opts$resamplePath, kind="coeffs")
 # print(identical(coeffs, coeffs2))
 
+# Add the Source to the data frame.
+Coeffs$Source <- Source
 # Relevel the country abbreviations, nestStr, nestStrParen, and energy in coeffs
 Coeffs$country <- relevelFactor(as.factor(Coeffs$country), levs=countryAbbrevs)
 Coeffs$nestStr <- relevelFactor(as.factor(Coeffs$nestStr), levs=nestStrLevels)
@@ -70,6 +72,8 @@ Fitted <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove
   loadResampledData(path=opts$resamplePath, country=country, kind="fitted")
 }
 # system.time(Fitted2 <- loadResampledData(path="data_resample", kind="fitted"))
+# Add the Source to the data frame.
+Fitted$Source <- Source
 # Relevel the country abbreviations, nestStr, nestStrParen, and energy in Fitted
 Fitted$Country <- relevelFactor(as.factor(Fitted$Country), levs=countryAbbrevs)
 Fitted$nestStr <- relevelFactor(as.factor(Fitted$nestStr), levs=nestStrLevels)
