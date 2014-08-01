@@ -4,7 +4,7 @@ countryAbbrevs <- c(US="US", UK="UK", JP="JP", AT="AT", CN="CN", ZA="ZA", SA="SA
 # Energy types and factors
 #' @export
 # energyTypes <- c(Q="iQ", X="iX", U="iU") 
-energyTypes <- c(Qp="iQp", Xp="iXp", Qf="iQf", Xf="iXf, U="iU") 
+energyTypes <- c(Qp="iQp", Xp="iXp", Qf="iQf", Xf="iXf", U="iU") 
 #' @export
 energyLevels <- c(none="none", energyTypes)
 #' @export
