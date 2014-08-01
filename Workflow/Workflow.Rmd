@@ -45,7 +45,7 @@ This command doesn't work from fs1 or any of the other nodes of dahl (node-01 th
 * Check progress with `more data_resample/<Source>/node-*.txt`.
 
 ### Post-process the results
-* Run `Scripts/PostProcess.R -R data_resample/<Source>` on a node of dahl to create:       
+* Run `Scripts/PostProcess.R -S <Source>` on a node of dahl to create:       
     + `Packages/EconData/data/<Source>_Coeffs.rda` and
     + `Packages/EconData/data/<Source>_Fitted.rda`.         
 

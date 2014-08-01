@@ -21,12 +21,20 @@ cat('\n')
 
 # Provide a way to specify directory of resampled data
 option_list <- list(
-  make_option(c("-R", "--resamplePath"), default="data_resample/Calvin",
-              help="path to resampled data [default=%default]")
+  make_option(c("-S", "--Source"), default="Calvin", 
+              help="data source [default=%default]"),
+  make_option(c("-R", "--resamplePath"),
+              help="relative path to directory in which to store resample data. [default=data_resample/<Source>]")
 )
 # Parse the option list
 opts <- parse_args(OptionParser(option_list=option_list))
 print(opts)
+
+if (is.null(opts$resamplePath)){
+  # Didn't specify a resample path. 
+  # Use data_resample/<Source>
+  opts$resamplePath <- file.path("data_resample", opts$Source)
+}
 
 # Get the data Source from the resamplePath.
 dir_pieces <- strsplit(opts$resamplePath, split=.Platform$file.sep)[[1]]
@@ -71,9 +79,6 @@ cat(paste("Loading and saving", Source, "fitted models...")); cat("\n")
 Fitted <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
   loadResampledData(path=opts$resamplePath, country=country, kind="fitted")
 }
-# system.time(Fitted2 <- loadResampledData(path="data_resample", kind="fitted"))
-# Add the Source to the data frame.
-Fitted$Source <- Source
 # Relevel the country abbreviations, nestStr, nestStrParen, and energy in Fitted
 Fitted$Country <- relevelFactor(as.factor(Fitted$Country), levs=countryAbbrevs)
 Fitted$nestStr <- relevelFactor(as.factor(Fitted$nestStr), levs=nestStrLevels)
