@@ -16,10 +16,15 @@ in the `data` directory at the top level of the repository.
 * Run `Scripts/PreProcess.R -S <Source>` to create the historical data frame for `<Source>`.
 The file will be stored at `Packages/EconData/data/<Source>.rda`.
 This command is fast; it can be run on a laptop.    
-* Build and reload the `EconData` package.    
+* Build and reload the `EconData` package on a local machine.    
 * Push the changes to GitHub.   
 * On acc, Pull from GitHub.     
-* On node-00, say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.
+* Install the `EconData` package from GitHub to dahl
+    + `ssh` to node-00 on dahl.   
+    + Open an R shell by saying `R` at the command prompt.    
+    + Say `require(devtools)`.
+    + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.      
+
 This makes the historical data available to the nodes of dahl.
 This command doesn't work from fs1 or any of the other nodes of dahl (node-01 through node-42).
 
