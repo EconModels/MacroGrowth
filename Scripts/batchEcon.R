@@ -3,12 +3,15 @@
 # Example usage:
 
 # Move into the top level directory of the repository (Econ-Growth-R-Analysis) that contains this file.
-# For Calvin data source, US, thermal energy, single factor model, 
+# For Calvin data source, US, primary thermal energy, single factor model, 
 #     10 resamples, clobbering previous results, and wild resampling:
-# Scripts/batchEcon.R -c US -f iQ -m sf -n 10 -C -M wild -R data_resample/Calvin
+# Scripts/batchEcon.R -c US -f iQp -m sf -n 10 -C -M wild -S Calvin
 
-# for REXS data source, US, exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
-# Scripts/batchEcon.R -c US -e iX -m linex -n 10 -C -M wild -R data_resample/REXS
+# Same thing, but output saved to a different directory.
+# Scripts/batchEcon.R -c US -f iQp -m sf -n 10 -C -M wild -S Calvin -R ~/Desktop/data_resample
+
+# for REXS data source, US, primary exergy, linex model, 10 resamples, clobbering previous results, and wild resampling:
+# Scripts/batchEcon.R -c US -e iXp -m linex -n 10 -C -M wild -R data_resample/REXS
 
 # for REXS data source, US, all energy types, fast models (everything except CES with energy), 
 #     10 resamples, clobber previous results, wild resampling:
@@ -48,7 +51,9 @@ option_list <- list(
   make_option(c("-R", "--resamplePath"),
               help="relative path to directory in which to store resample data. [default=data_resample/<Source>]"),
   make_option(c("-v", "--verbose"), default=FALSE, action="store_true",
-              help="provide verbose output [default=%default]")
+              help="provide verbose output [default=%default]"),
+  make_option(c("-V", "--vverbose"), default=FALSE, action="store_true",
+              help="provide very verbose output, including all formulas [default=%default]")
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
@@ -80,7 +85,6 @@ if(opts$factor == "all") {
   opts$factor <- strsplit(opts$factor,",")[[1]]
 }
 
-print(opts$resamplePath)
 if (is.null(opts$resamplePath)){
   # Didn't specify a resample path. 
   # Use data_resample/<Source>
@@ -181,7 +185,7 @@ for (m in ModelInfos) {
       tryCatch({
         countryData <- subset(historicalData, Country==country)
         formula <- eval( parse( text=f ) )
-        id <- fittingID(Source=Source, fitfun=m$fitfun, countryAbbrev=country, 
+        id <- fittingID(Source=opts$Source, fitfun=m$fitfun, countryAbbrev=country, 
                         formula=f, nest=m$dots$nest, n=opts$resamples)
         cat(id); cat("\n")
         if (! opts$debug) {
@@ -234,7 +238,9 @@ for (m in ModelInfos) {
         cat(paste0("  *** Skipping ", id, "\n"))
         if (opts$verbose){
           print(e)
-          print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
+          if (opts$vverbose){
+            print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
+          }
         }
       }
       )
