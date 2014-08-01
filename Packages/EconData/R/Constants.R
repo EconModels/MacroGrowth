@@ -8,8 +8,6 @@ energyTypes <- c(Q="iQ", X="iX", U="iU")
 energyLevels <- c(none="none", energyTypes)
 #' @export
 factors <- c(K="iK", L="iL", energyTypes)
-#' @export
-dataSources <- c(Calvin="Calvin", REXS="REXS")
 
 # Preferred order for nestStr
 #' @export

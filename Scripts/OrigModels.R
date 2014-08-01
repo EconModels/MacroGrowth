@@ -28,7 +28,7 @@ nestStr <- function(nest){
 
 # Provide a way to specify data source
 option_list <- list(
-  make_option(c("-S", "--Source"), default=dataSources[1],
+  make_option(c("-S", "--Source"), default="Calvin",
               help="Source of data [default=%default]")
 )
 
