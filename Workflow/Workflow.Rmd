@@ -20,7 +20,7 @@ This command is fast; it can be run on a laptop.
 * Push the changes to GitHub.   
 * On acc, Pull from GitHub.     
 * Install the `EconData` package from GitHub to dahl
-    + `ssh` to node-00 on dahl.   
+    + `ssh` to node-00 on dahl. (For some reason, this doesn't work from `fs1` or any other node.)   
     + Open an R shell by saying `R` at the command prompt.    
     + Say `require(devtools)`.
     + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.      
