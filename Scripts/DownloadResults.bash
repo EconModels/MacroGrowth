@@ -2,11 +2,15 @@
 # 
 # This script rsyncs post-processed resampling results files 
 # from the directory specified by -p on dahl (or the default)
-# to the Packages/EconData/data directory on a local machine.
-# The destination is appropriate for including the files in the EconData package.
+# to the Packages/EconData/tmp_big_data directory on a local machine.
 # Files that are rsync-ed match the pattern "<SOURCE>_*.rda"
+# The destination (TMP_BIG_DATA) is a staging directory for including the files in the EconData package.
 # 
-# In the top-level directory of this repository (Econ-Growth-R-Analysis) on the destination machine, say
+# IMPORTANT:
+# If you want to include the files in the EconData package for an analysis, 
+# move them manually to the Packages/EconData/data directory and build and reload the EconData package.
+# 
+# Usage: in the top-level directory of this repository (Econ-Growth-R-Analysis) on the destination machine, say
 # Scripts/DownloadResults.bash -u mkh2 -S REXS
 #   -u indicates the user you want to be on dahl
 #   -S identifies the data <Source> for which you want to rsync results.
@@ -28,8 +32,10 @@ SCRIPT=`basename ${BASH_SOURCE[0]}`
 # Help function
 function HELP {
   echo -e "\\n"
-  echo "${BOLD}${SCRIPT}${NORM} copies post-processed resampling results from dahl to the"
-  echo "correct location on a local machine for building the ${BOLD}EconData${NORM} package."
+  echo "${BOLD}${SCRIPT}${NORM} copies post-processed resampling results from dahl to a"
+  echo "staging area on the local machine."
+  echo "IMPORTANT: If you want to include these large data files in the ${BOLD}EconData${NORM} package,"
+  echo "manually copy them to the ${BOLD}EconData/data${NORM} directory."
   echo "Uses rsync over ssh, so running this script will require a password for login to dahl."
   echo "Files that are rsync-ed match the pattern <SOURCE>_*.rda"
   echo "Run from the Econ-Growth-R-Analysis directory on a local machine."
@@ -109,7 +115,7 @@ fi
 REMOTE_FILES="$DAHL_PATH"/"$SOURCE"_*.rda
 # Specify the local directory into which we want to save the files.
 # The assumption is that the user has set "Econ-Growth-R-Analysis"" as the working directory.
-LOCAL_DIR="$PWD/Packages/EconData/data"
+LOCAL_DIR="$PWD/Packages/EconData/tmp_big_data"
 
 # Set the options for rsync.
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.

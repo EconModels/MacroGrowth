@@ -24,8 +24,6 @@ suppressPackageStartupMessages(library("optparse"))
 
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 
-print(energyTypes[1])
-
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
@@ -45,8 +43,12 @@ option_list <- list(
               help="runs without executing the resampling [default=%default]"),
   make_option(c("-M", "--method"), default="wild", 
               help="resampling method [default=%default]"),
-  make_option(c("-R", "--resamplePath"), default="data_resample/Calvin", 
-              help="relative path to directory in which to store resample data")
+  make_option(c("-S", "--Source"), default="Calvin", 
+              help="data source [default=%default]"),
+  make_option(c("-R", "--resamplePath"),
+              help="relative path to directory in which to store resample data. [default=data_resample/<Source>]"),
+  make_option(c("-v", "--verbose"), default=FALSE, action="store_true",
+              help="provide verbose output [default=%default]")
 )
 
 opts <- parse_args(OptionParser(option_list=option_list))
@@ -60,25 +62,33 @@ if(opts$model == "all") {
   opts$model <- strsplit(opts$model,",")[[1]]
 }
 
-if(opts$country== "all") {
+if(opts$country == "all") {
   opts$country <- countryAbbrevs
 } else {
   opts$country <- strsplit(opts$country,",")[[1]]
 }
 
-if(opts$energy== "all") {
+if(opts$energy == "all") {
   opts$energy <- energyTypes
 } else {
   opts$energy <- strsplit(opts$energy,",")[[1]]
 }
 
-if(opts$factor== "all") {
+if(opts$factor == "all") {
   opts$factor <- factors
 } else {
   opts$factor <- strsplit(opts$factor,",")[[1]]
 }
 
+print(opts$resamplePath)
+if (is.null(opts$resamplePath)){
+  # Didn't specify a resample path. 
+  # Use data_resample/<Source>
+  opts$resamplePath <- file.path("data_resample", opts$Source)
+}
+
 print(str(opts))
+stop()
 
 #
 # Convert the options to a ModelInfos object. ModelInfos contains the 
@@ -159,11 +169,8 @@ cat("\n\nStart @ ")
 cat(date())
 cat('\n')
 
-# Get historical data from the EconData package. Extract data source from resample directory.
-dir_pieces <- strsplit(opts$resamplePath, split=.Platform$file.sep)[[1]]
-Source <- dir_pieces[length(dir_pieces)]
-historicalData <- get(Source)
-# All <- subset(AllHistData, subset=Source=="Calvin2011")
+# Get historical data from the EconData package.
+historicalData <- get(opts$Source)
 
 registerDoParallel()
 # print(ModelInfos)
@@ -226,8 +233,10 @@ for (m in ModelInfos) {
       }, 
       error=function(e) {
         cat(paste0("  *** Skipping ", id, "\n"))
-        print(e)
-        # print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
+        if (opts$verbose){
+          print(e)
+          print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
+        }
       }
       )
     }

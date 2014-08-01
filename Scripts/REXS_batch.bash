@@ -29,7 +29,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m sf,cd,cde,ces,linex -R $OUTDIR $1 &> $OUTDIR/node-01.txt" &
+ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all fast -R $OUTDIR $1 &> $OUTDIR/node-01.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
@@ -39,24 +39,24 @@ ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m sf,cd,cde,ces,linex -R 
 #
 # This first batch of cese models uses only thermal energy (Q).
 
-ssh node-02 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(kl\)e -R $OUTDIR $1 &> $OUTDIR/node-02.txt" &
-ssh node-03 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-03.txt" &
-ssh node-04 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-04.txt" &
+ssh node-02 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(kl\)e -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-02.txt" &
+ssh node-03 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(le\)k -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-03.txt" &
+ssh node-04 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(ek\)l -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-04.txt" &
 
 # This next batch of cese models uses only thermal energy (X).
 
-ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(kl\)e -R $OUTDIR $1 &> $OUTDIR/node-05.txt" &
+ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(kl\)e -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-05.txt" &
 # node-06 has only 4 working processors.  We can access only 2 of those.  So, best to avoid node-06 for now.
-ssh node-07 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-07.txt" &
+ssh node-07 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(le\)k -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-07.txt" &
 # Gary Draving suggested avoiding node-08, because of I/O issues.
-ssh node-09 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-09.txt" &
+ssh node-09 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(ek\)l -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-09.txt" &
 
 # This next batch of cese models uses only thermal energy (U).
 
-ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(kl\)e -R $OUTDIR $1 &> $OUTDIR/node-10.txt" &
+ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(kl\)e -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-10.txt" &
 # node-11 is not functional.
-ssh node-12 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(le\)k -R $OUTDIR $1 &> $OUTDIR/node-12.txt" &
-ssh node-13 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -R $OUTDIR $1 &> $OUTDIR/node-13.txt" &
+ssh node-12 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(le\)k -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-12.txt" &
+ssh node-13 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -S $SRC -R $OUTDIR $1 &> $OUTDIR/node-13.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
