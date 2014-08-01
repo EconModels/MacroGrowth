@@ -24,10 +24,12 @@ suppressPackageStartupMessages(library("optparse"))
 
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')
 
+print(energyTypes[1])
+
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
-  make_option(c("-e", "--energy"), default=energyTypes[1]
+  make_option(c("-e", "--energy"), default=energyTypes[1],
               help="energy [default=%default]"),
   make_option(c("-f", "--factor"), default=factors[1],
               help="factor [default=%default]"),
