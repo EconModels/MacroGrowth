@@ -14,14 +14,14 @@
 # The command to run everything for 1000 resamples while clobbering all previous results without 
 # massive amounts of debug information printed to the screen is
 
-# Scripts/IST_batch.bash "-n 1000 -C"
+# Scripts/Leeds_batch.bash "-n 1000 -C"
 
 LOC_PATH=$PWD # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
 
 EXEC="Scripts/batchEcon.R"
 
-SRC="IST"
+SRC="Leeds"
 
 OUTDIR="$LOC_PATH/data_resample/$SRC"
 
@@ -39,9 +39,9 @@ ssh node-01 "cd $LOC_PATH; $EXEC -c UK -e all -f all -m fast -S $SRC $1 &> $OUTD
 #
 # This first batch of cese models uses only final exergy (iXf).
 
-ssh node-02 "cd $LOC_PATH; $EXEC -c UK -e iXf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
-ssh node-03 "cd $LOC_PATH; $EXEC -c UK -e iXf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-03.txt" &
-ssh node-04 "cd $LOC_PATH; $EXEC -c UK -e iXf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-04.txt" &
+ssh node-02 "cd $LOC_PATH; $EXEC -c UK -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
+ssh node-03 "cd $LOC_PATH; $EXEC -c UK -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-03.txt" &
+ssh node-04 "cd $LOC_PATH; $EXEC -c UK -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-04.txt" &
 
 # This next batch of cese models uses only useful work (iU).
 
