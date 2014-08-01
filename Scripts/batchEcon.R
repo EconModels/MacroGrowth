@@ -27,9 +27,9 @@ modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)
 option_list <- list(
   make_option(c("-c", "--country"), default="all",
               help="country [default=%default]"),
-  make_option(c("-e", "--energy"), default="iQ",
+  make_option(c("-e", "--energy"), default=enegyTypes[1]
               help="energy [default=%default]"),
-  make_option(c("-f", "--factor"), default="iK",
+  make_option(c("-f", "--factor"), default=factors[1],
               help="factor [default=%default]"),
   make_option(c("-m", "--model"), default="all",
               help="model [default=%default] or 'fast'"),
@@ -62,21 +62,18 @@ if(opts$country== "all") {
   opts$country <- countryAbbrevs
 } else {
   opts$country <- strsplit(opts$country,",")[[1]]
-  #   opts$country <- match.arg(opts$country,choices=countryAbbrevs,several.ok=TRUE)
 }
 
 if(opts$energy== "all") {
   opts$energy <- energyTypes
 } else {
   opts$energy <- strsplit(opts$energy,",")[[1]]
-  #   opts$energy <- match.arg(opts$energy,choices=energyTypes,several.ok=TRUE)
 }
 
 if(opts$factor== "all") {
   opts$factor <- factors
 } else {
   opts$factor <- strsplit(opts$factor,",")[[1]]
-  #   opts$factor <- match.arg(opts$factor,choices=factors,several.ok=TRUE)
 }
 
 print(str(opts))
