@@ -26,7 +26,7 @@ This command is fast; it can be run on a laptop.
     + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.      
 
 This makes the historical data available to the nodes of dahl.
-This command doesn't work from fs1 or any of the other nodes of dahl (node-01 through node-42).
+This command doesn't work from `fs1` or any of the other nodes of dahl (node-01 through node-42).
 
 ### Create the batch script
 * Create the file `Scripts/<Source>_batch.bash` file.
@@ -37,7 +37,7 @@ This command doesn't work from fs1 or any of the other nodes of dahl (node-01 th
 * On acc, Pull from GitHub.      
 
 ### Submit the job to dahl
-* `cd` to the `Econ-Growth-R-Analysis` directory from fs1.calvin.edu.
+* `cd` to the `Econ-Growth-R-Analysis` directory from `fs1.calvin.edu`.
 * Run `Scripts/<Source>_batch.bash "-n 2 -C -d"` followed by `more data_resample/<SOURCE>/node*.txt` to obtain a printout of what will be executed.    
 * Run `Scripts/<Source>_batch.bash "-n 2 -C"` to test that things work as expected.
 * Then do `Scripts/<Source>_batch.bash "-n 1000 -C"` to do a complete run.
@@ -60,7 +60,7 @@ print the files to be transferred to the local machine, rather than transfer the
 * From a local computer, say `Scripts/DownloadResults.R -u <user> -S <Source>` to download the files.
 * The files are downloaded to the `Packages/EconData/tmp_big_data` directory on the local machine.
 * Manually move the files to `Packages/EconData/data` if you want them to be available in the `EconData` package.
-This manual step avoids large data files automatically included in the `EconData` package, 
+This manual step prevents large data files from being automatically included in the `EconData` package, 
 thereby slowing everything down.
 
 ### Add processed results to the EconData package
