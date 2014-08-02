@@ -180,7 +180,7 @@ registerDoParallel()
 
 for (m in ModelInfos) {
   for (f in m$formulaStr) {
-    # Add parallelization on countrires here!
+    # Parallelize on countries here!
     foreach(country=opts$country, .errorhandling="pass", .init=c(), .combine=c) %dopar% {
       tryCatch({
         countryData <- subset(historicalData, Country==country)
@@ -188,50 +188,63 @@ for (m in ModelInfos) {
         id <- fittingID(Source=opts$Source, fitfun=m$fitfun, countryAbbrev=country, 
                         formula=f, nest=m$dots$nest, n=opts$resamples)
         cat(id); cat("\n")
+        
         if (! opts$debug) {
-          oModel <- do.call( m$fitfun, c( list( formula, data=countryData ), m$dots) )
-          if (m$fitfun == "cesModel") {
-            # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.  
-            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
-          } else {
-            # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-            rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), m$dots) ) 
-          }
-          rModels <- rFits[["models"]]
-          rCoeffs <- rFits[["coeffs"]]
-          # Save the data to disk in the appropriate places with the appropriate file names.
-          # First step, get the factor and energy type.
-          terms <- all.vars( terms(formula) )
-          if (m$fitfun == "sfModel"){
-            energyType <- NA
-            # We're dealing with factors. Find the factor we're using.
-            matches <- na.omit(match(x=terms, table=factors))
-            if (length(matches) <= 0){
-              factor <- NA
-            } else {
-              factor <- factors[[matches]]
-            }
-          } else {
-            factor <- NA
-            # We're dealing with energy types. Find the energy type we're using.
-            matches <- na.omit(match(x=terms, table=energyTypes))
-            if (length(matches) <= 0){
-              energyType <- NA
-            } else {
-              energyType <- energyTypes[[matches]]
-            }
-          }
+          # If we want to debug, we skip all the analysis in this loop; 
+          # we only print the id above.
           # Get the paths for the coefficients and models files.
           coeffsPath <- resampleFilePath(prefix="coeffs", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
                                          nest=m$dots$nest, resamplePath=opts$resamplePath)
           modelsPath <- resampleFilePath(prefix="models", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
                                          nest=m$dots$nest, resamplePath=opts$resamplePath)
-          # Ensure that the directories exist.
-          dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
-          dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
-          # Now save the files.
-          saveRDS(rCoeffs, file=coeffsPath)
-          saveRDS(rModels, file=modelsPath)
+          filesExist <- file.exists(coeffsPath, modelsPath)
+          # Decide if we need to run the analysis based on whether clobbering is desired and whether the files exist.
+          if (opts$clobber || ! all(filesExist)){
+            # We need to do the analysis, either because 
+            # (a) we want to clobber whatever is already present
+            # or
+            # (b) at least one of the coeffs or models files does not exist.
+            # Note that if only one file is missing, we need to re-run the analysis for both, because
+            # analyzing only one could result in files getting out of sync.
+            oModel <- do.call( m$fitfun, c( list( formula, data=countryData ), m$dots) )
+            if (m$fitfun == "cesModel") {
+              # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.  
+              rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
+            } else {
+              # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
+              rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), m$dots) ) 
+            }
+            rModels <- rFits[["models"]]
+            rCoeffs <- rFits[["coeffs"]]
+            # Save the data to disk in the appropriate places with the appropriate file names.
+            # First step, get the factor and energy type.
+            terms <- all.vars( terms(formula) )
+            if (m$fitfun == "sfModel"){
+              energyType <- NA
+              # We're dealing with factors. Find the factor we're using.
+              matches <- na.omit(match(x=terms, table=factors))
+              if (length(matches) <= 0){
+                factor <- NA
+              } else {
+                factor <- factors[[matches]]
+              }
+            } else {
+              factor <- NA
+              # We're dealing with energy types. Find the energy type we're using.
+              matches <- na.omit(match(x=terms, table=energyTypes))
+              if (length(matches) <= 0){
+                energyType <- NA
+              } else {
+                energyType <- energyTypes[[matches]]
+              }
+            }
+            # Ensure that the directories exist.
+            dir.create(dirname(coeffsPath), recursive=TRUE, showWarnings=FALSE)
+            dir.create(dirname(modelsPath), recursive=TRUE, showWarnings=FALSE)
+            # Now save the files.
+            saveRDS(rCoeffs, file=coeffsPath)
+            saveRDS(rModels, file=modelsPath)
+          }
         }
       }, 
       error=function(e) {
