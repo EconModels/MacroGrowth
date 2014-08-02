@@ -24,7 +24,7 @@ option_list <- list(
   make_option(c("-S", "--Source"), default="Calvin", 
               help="data source [default=%default]"),
   make_option(c("-R", "--resamplePath"),
-              help="relative path to directory in which to store resample data. [default=data_resample/<Source>]")
+              help="relative path to directory in which resampled data are stored. [default=data_resample/<Source>]")
 )
 # Parse the option list
 opts <- parse_args(OptionParser(option_list=option_list))
