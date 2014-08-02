@@ -176,7 +176,7 @@ opts_chunk$set(
 # scaleTextSize <- 0.8  # Multiple of normal size
 # scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
-spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
 <<data, include=FALSE, eval=TRUE>>=
@@ -253,25 +253,25 @@ AllFitted$energy <- relevelFactor(AllFitted$energy, levs=energyLevels)
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Application of Bootstrap Resampling to REXS Data}
+\title{Paper 2 !DRAFT! Do not circulate!}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[BenWarr]{Benjamin Warr}
-\author[IST]{Tiago Domingos}
-\author[Leeds]{Paul Brockway}
-\author[Leeds]{Julia Steinberger}
-\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
-\ead{mkh2@calvin.edu}
+% \author[BenWarr]{Benjamin Warr}
+% \author[IST]{Tiago Domingos}
+% \author[Leeds]{Paul Brockway}
+% \author[Leeds]{Julia Steinberger}
+% \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+% \ead{mkh2@calvin.edu}
 
-\address[BenWarr]{Ben Warr's address, Zambia}
-\address[IST]{IST, Lisbon, Portugal}
-\address[Leeds]{Leeds University, Leeds, UK}
-\cortext[cor1]{Corresponding author}
-\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+% \address[BenWarr]{Ben Warr's address, Zambia}
+% \address[IST]{IST, Lisbon, Portugal}
+% \address[Leeds]{Leeds University, Leeds, UK}
+% \cortext[cor1]{Corresponding author}
+% \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
 
 \begin{abstract}
 %% Text of abstract
@@ -322,11 +322,11 @@ The following subsections describe each.
 
 
 %------------------------------
-\subsubsection{Cobb-Douglas (CD) Production Function} 
+\subsubsection{Cobb-Douglas Production Function} 
 \label{sec:CDe}
 %------------------------------
 
-This production function can be expressed as
+The Cobb-Douglas production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
   y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
@@ -340,17 +340,20 @@ $\lambda$ is represents the pace of technological progress,
 $t$ (time) is measured in years,
 $k \equiv K/K_{0}$, 
 $l \equiv L/L_{0}$, 
-$Y$ is represented by GDP, 
-$K$ is expressed in currency units, 
-$L$ is expressed in workers or work-hours/year, and
-0 subscripts indicate values at an initial year.%
-\footnote{Dimensionless, indexed quantities are represented by 
-lower-case symbols 
-($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
-quantities are represented by upper-case symbols 
-($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
-Model parameters are represented by Greek letters
-($\alpha$, $\beta$, $\lambda$, $\theta$).} 
+$Y$ (economic output) is represented by GDP, 
+$K$ (capital) is expressed in currency units, 
+$L$ (labor) is expressed in workers or work-hours/year, and
+the 0 subscript indicates values at an initial year.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+  Model parameters are represented by Greek letters
+  ($\alpha$, $\beta$, $\lambda$, $\theta$).
+  }
+Constant returns to scale are represented by the constraint
+$\alpha + \beta = 1$.
 
 The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
 can be augmented to include an energy term:
@@ -447,7 +450,7 @@ In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
 the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
 time-dependent augmentation term ($A$).
-The LINEX models assumes energy ($e$) is the only factor of production.
+The LINEX model assumes energy ($e$) is the only factor of production.
 
 The LINEX model does, however, include terms that represent
 efficiencies among capital, labor, and energy, in the form of 
@@ -467,9 +470,9 @@ and
 %
 and represent 
 %
-(\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
+(\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy (capital deepening) and 
 (\ref{eq:rho_l}) labor increase relative to energy.
-The effect of energy ($e$) on production is enhanced if either
+The effect of energy ($e$) on output ($y$) is enhanced if either
 %
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
@@ -511,7 +514,7 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 \label{sec:Economies}
 %++++++++++++++++++++++++++++++
 
-Discuss economies here.
+Discuss economies here. EU15 and MX?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -548,9 +551,11 @@ log-transformed data using the \texttt{R} \citep{R} functions
 and \texttt{cesEst} \citep{Henningsen:2011td} (for CES models). 
 
 Although the details vary from model to model, each of our three models has the general form
-\[
-y = f(t,k,l,e; \theta) + \mathrm{error} \;,
-\]
+%
+\begin{equation}
+  y = f(t,k,l,e; \theta) + \mathrm{error} \;,
+\end{equation}
+%
 where $\theta$ is a vector of parameters for the function $f$.
 Parameter estimates are chosen to minimize
 %
@@ -610,18 +615,23 @@ the variability (from many potential sources) inherent in the data such that
 it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
 Thus, a resampled response $\tilde Y'$ can be computed as 
-\[
-\tilde Y_i' = \hat y_i \pm r_j
-\]
+%
+\begin{equation} \label{eq:Y_tilde}
+  \tilde Y_i' = \hat y_i \pm r_j \; ,
+\end{equation}
+%
 where 
-\[
-r_i = y_i - \hat y_i
-\]
-both the sign ($\pm$) and the index of the residual 
-($j$,~typically different from $i$) 
+%
+\begin{equation}
+  r_i = y_i - \hat y_i \; .
+\end{equation}
+%
+In Equation~\ref{eq:Y_tilde}, both the sign ($\pm$) 
+and the index ($j$,~typically different from $i$) 
+of the residual ($r$) 
 are chosen at random (with replacement). 
 We repeated the resampling process 1000 times for each
-combination of growth model and country, 
+combination of growth model, country, and data source, 
 both with and without energy as appropriate.
 
 The coefficients from the fit to a resampled time series
@@ -699,13 +709,13 @@ from the Cobb-Douglas models
 (without and with energy) to historical data.
 Historical data are shown as a black line. 
 The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+The gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for UK Cobb-Douglas resample models.">>=
 cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
 standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=energy~Source, alpha=0.05) +
-#     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
-#     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    scale_x_continuous(limits=c(0.95, 1.05), breaks=c(0.95, 1.0)) +
+    scale_y_continuous(breaks=c(0.01, 0.015, 0.02)) +    
     labs(x=expression(theta), y=expression(lambda))
 @
 
@@ -714,10 +724,11 @@ standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula
 standardTriPlot(data=cdCoeffsData, facet_formula=energy~Source)
 @
 
-<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="UK Cobb-Douglas fitted models.">>=
 cdFittedData <- subset(AllFitted, subset = model=="cd")
 spaghettiPlot(data=cdFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1960=1)")
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 
@@ -726,205 +737,208 @@ spaghettiPlot(data=cdFittedData, facet_formula=energy~Source, level=spaghettiGra
 \label{sec:CES_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-The CES model without and with energy is given by 
-Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
-The \texttt{R} \citep{R} package \texttt{micEconCES} 
-\citep{Henningsen:2011td} was used to estimate parameters 
-$\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
-The \texttt{cesEst} function of \texttt{micEconCES} provides 
-several algorithm options for parameter estimation.
-The default algorithm (Levenberg-Marquardt) does not respect
-parameter constraints (see Section~\ref{sec:CES}) and, 
-in our testing, nearly always violated them, often returning
-negative values for elasticity of substitution~($\sigma$) parameters.
-Thus, we used the two fitting algorithms available in \texttt{cesEst} that
-respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
+Information on CES models goes here.
 
-Our CES parameter estimation algorithm starts with an eleven-value grid search
-in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-which corresponds to $\sigma$ and $\sigma_1$ values of
-0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
-During the grid search, values of $\rho$ and $\rho_1$ are fixed,
-and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
-by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
-In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
-at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
-During the grid search portion of our algorithm, starting values for the free parameters
-are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
-and $\gamma$ is set to a value such that the mean of the residuals is zero
-by the \texttt{cesEst} function.
-
-Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
-is attempted wherein all fitting parameters 
-($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
-are allowed to float. 
-The start values for fitting parameters are taken from 
-the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
-
-If resampled data are being fitted, a prior fit to historical data is available.
-In the final step of our algorithm, 
-a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
-uses coefficients from the best 
-fit to historical data as its starting point. 
-In this final gradient search, all model parameters 
-($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
-are considered free parameters.
-
-The fit with lowest $sse$ of all above trials is deemed the winner,
-and its fitting parameters are used as the model.
-
-\citet{Henningsen:2011td}, 
-in their detailed analysis of \citet{Kemfert:1998vd}, found that 
-
-\begin{quote}
-\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
-are---at least in this study---most likely to find the 
-coefficients that give the best fit to the model, 
-where the \texttt{PORT} algorithm can be used to restrict the estimates 
-to the economically meaningful region.
-\end{quote}
-
-In our testing, we found that to be mostly true. 
-\texttt{PORT} nearly always provided lower
-$sse$ than \texttt{L-BFGS-B}, despite the fact that 
-\texttt{L-BFGS-B} often reports convergence
-and \texttt{PORT} does not for the same data
-(i.e., for the same $y$, $k$, $l$, and $e$ data).
-
-Coefficients for each resampled CES model for all countries and all nests
-are shown in 
-Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
-The white crosshair on each graph shows the location 
-of the fit to historical data. 
-In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
-the bottom of the vertical axis represents $\sigma = 0$.
-The top of the vertical axis represents $\sigma = \infty$.
-
-Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
-in Equations~\ref{eq:CES}--\ref{eq:CESekl},
-the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
-resample points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
-are equivalent.
-That is, all points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
-have the same $sse$. 
-As a consequence, 
-the \texttt{cesEst} fitting algorithm has no way 
-to discriminate among points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
-Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
-tend to cluster at the locations of the initial grid search in 
-$\sigma$ or $\sigma_1$
-(0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
-
-<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iX)", 
-                                                                      "(iL + iX) + (iK)", 
-                                                                      "(iX + iK) + (iL)"))
-standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
-    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
-    labs(x=expression(gamma), y=expression(lambda))
-
-@
-
-<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-standardScatterPlot(data=cesCoeffsDataX, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
-    coord_trans(y="sigma") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    labs(x=expression(delta[1]), y=expression(sigma[1]))
-@
-
-<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x$).", eval=FALSE>>=
-standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
-                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
-    coord_trans(y="sigma") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    labs(x=expression(delta), y=expression(sigma))
-@
-
-We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
-for the CES model, based on values of $\delta$ and $\delta_1$.
-Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
-
-\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
-\label{tab:CES_abg_equations} 
-  \begin{center}
-    \begin{tabular}{c c c c c} 
-      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
-      \hline
-      ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
-      ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
-      ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-      ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Figure~\ref{fig:CES_ternary_graph} shows 
-$\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
-Figure~\ref{fig:CES_ternary_graph} is comparable to
-the ternary graph for the Cobb-Douglas models, 
-Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
-
-<<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-standardTriPlot(data=cesCoeffsDataX, facet_formula=country~nestStrParen)
-@
-
-Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
-to historical data for all nestings. 
-As with the Cobb-Douglas results, 
-historical data are shown as a black line, 
-the fit to historical data is shown as a white line, and 
-the gray band encompasses 95\% of the fits to resampled data.
-
-<<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).", eval=FALSE>>=
-cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iX)", 
-                                                                      "(iL + iX) + (iK)", 
-                                                                      "(iX + iK) + (iL)"))
-spaghettiPlot(data=cesFittedDataX, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1900=1 or 1950=1)")
-@
-
-<<CES_lambda_gamma_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
-cesCoeffsDataU <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iU)", 
-                                                                      "(iL + iU) + (iK)", 
-                                                                      "(iU + iK) + (iL)"))
-standardScatterPlot(data=cesCoeffsDataU, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
-    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
-    labs(x=expression(gamma), y=expression(lambda))
-@
-
-<<CES_sigma1_delta1_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
-standardScatterPlot(data=cesCoeffsDataU, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
-    coord_trans(y="sigma") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    labs(x=expression(delta[1]), y=expression(sigma[1]))
-@
-
-<<CES_sigma_delta_graph_U, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
-standardScatterPlot(data=subset(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
-                    mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
-    coord_trans(y="sigma") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-    labs(x=expression(delta), y=expression(sigma))
-@
-
-<<CES_Spaghetti_Graph_U, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with useful work ($u$).", eval=FALSE>>=
-cesFittedDataU <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iU)", 
-                                                                      "(iL + iU) + (iK)", 
-                                                                      "(iU + iK) + (iL)"))
-spaghettiPlot(data=cesFittedDataU, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1900=1 or 1950=1)")
-@
+% The CES model without and with energy is given by 
+% Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
+% The \texttt{R} \citep{R} package \texttt{micEconCES} 
+% \citep{Henningsen:2011td} was used to estimate parameters 
+% $\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
+% The \texttt{cesEst} function of \texttt{micEconCES} provides 
+% several algorithm options for parameter estimation.
+% The default algorithm (Levenberg-Marquardt) does not respect
+% parameter constraints (see Section~\ref{sec:CES}) and, 
+% in our testing, nearly always violated them, often returning
+% negative values for elasticity of substitution~($\sigma$) parameters.
+% Thus, we used the two fitting algorithms available in \texttt{cesEst} that
+% respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
+% 
+% Our CES parameter estimation algorithm starts with an eleven-value grid search
+% in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+% which corresponds to $\sigma$ and $\sigma_1$ values of
+% 0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
+% During the grid search, values of $\rho$ and $\rho_1$ are fixed,
+% and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
+% by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
+% In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
+% at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
+% During the grid search portion of our algorithm, starting values for the free parameters
+% are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
+% and $\gamma$ is set to a value such that the mean of the residuals is zero
+% by the \texttt{cesEst} function.
+% 
+% Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
+% is attempted wherein all fitting parameters 
+% ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+% are allowed to float. 
+% The start values for fitting parameters are taken from 
+% the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
+% 
+% If resampled data are being fitted, a prior fit to historical data is available.
+% In the final step of our algorithm, 
+% a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
+% uses coefficients from the best 
+% fit to historical data as its starting point. 
+% In this final gradient search, all model parameters 
+% ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+% are considered free parameters.
+% 
+% The fit with lowest $sse$ of all above trials is deemed the winner,
+% and its fitting parameters are used as the model.
+% 
+% \citet{Henningsen:2011td}, 
+% in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+% 
+% \begin{quote}
+% \ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
+% are---at least in this study---most likely to find the 
+% coefficients that give the best fit to the model, 
+% where the \texttt{PORT} algorithm can be used to restrict the estimates 
+% to the economically meaningful region.
+% \end{quote}
+% 
+% In our testing, we found that to be mostly true. 
+% \texttt{PORT} nearly always provided lower
+% $sse$ than \texttt{L-BFGS-B}, despite the fact that 
+% \texttt{L-BFGS-B} often reports convergence
+% and \texttt{PORT} does not for the same data
+% (i.e., for the same $y$, $k$, $l$, and $e$ data).
+% 
+% Coefficients for each resampled CES model for all countries and all nests
+% are shown in 
+% Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
+% The white crosshair on each graph shows the location 
+% of the fit to historical data. 
+% In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
+% the bottom of the vertical axis represents $\sigma = 0$.
+% The top of the vertical axis represents $\sigma = \infty$.
+% 
+% Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
+% in Equations~\ref{eq:CES}--\ref{eq:CESekl},
+% the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
+% resample points along the left (right) edge of
+% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+% are equivalent.
+% That is, all points along the left (right) edge of
+% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+% have the same $sse$. 
+% As a consequence, 
+% the \texttt{cesEst} fitting algorithm has no way 
+% to discriminate among points along the left (right) edge of
+% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
+% Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
+% tend to cluster at the locations of the initial grid search in 
+% $\sigma$ or $\sigma_1$
+% (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
+% 
+% <<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+% cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+%                                                                       "(iK + iL) + (iX)", 
+%                                                                       "(iL + iX) + (iK)", 
+%                                                                       "(iX + iK) + (iL)"))
+% standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), 
+%                     facet_formula=country~nestStrParen, alpha=0.05) +
+%     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+%     labs(x=expression(gamma), y=expression(lambda))
+% 
+% @
+% 
+% <<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+% standardScatterPlot(data=cesCoeffsDataX, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+%     coord_trans(y="sigma") +
+%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     labs(x=expression(delta[1]), y=expression(sigma[1]))
+% @
+% 
+% <<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x$).", eval=FALSE>>=
+% standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
+%                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
+%     coord_trans(y="sigma") +
+%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     labs(x=expression(delta), y=expression(sigma))
+% @
+% 
+% We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
+% for the CES model, based on values of $\delta$ and $\delta_1$.
+% Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
+% 
+% \begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
+% \label{tab:CES_abg_equations} 
+%   \begin{center}
+%     \begin{tabular}{c c c c c} 
+%       Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
+%       \hline
+%       ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
+%       ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+%       ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+%       ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Figure~\ref{fig:CES_ternary_graph} shows 
+% $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
+% Figure~\ref{fig:CES_ternary_graph} is comparable to
+% the ternary graph for the Cobb-Douglas models, 
+% Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
+% 
+% <<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+% standardTriPlot(data=cesCoeffsDataX, facet_formula=country~nestStrParen)
+% @
+% 
+% Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
+% to historical data for all nestings. 
+% As with the Cobb-Douglas results, 
+% historical data are shown as a black line, 
+% the fit to historical data is shown as a white line, and 
+% the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
+% 
+% <<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).", eval=FALSE>>=
+% cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+%                                                                       "(iK + iL) + (iX)", 
+%                                                                       "(iL + iX) + (iK)", 
+%                                                                       "(iX + iK) + (iL)"))
+% spaghettiPlot(data=cesFittedDataX, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+%     labs(y="Indexed GDP (1900=1 or 1950=1)")
+% @
+% 
+% <<CES_lambda_gamma_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+% cesCoeffsDataU <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+%                                                                       "(iK + iL) + (iU)", 
+%                                                                       "(iL + iU) + (iK)", 
+%                                                                       "(iU + iK) + (iL)"))
+% standardScatterPlot(data=cesCoeffsDataU, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
+%     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+%     labs(x=expression(gamma), y=expression(lambda))
+% @
+% 
+% <<CES_sigma1_delta1_graph_U, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+% standardScatterPlot(data=cesCoeffsDataU, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
+%     coord_trans(y="sigma") +
+%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     labs(x=expression(delta[1]), y=expression(sigma[1]))
+% @
+% 
+% <<CES_sigma_delta_graph_U, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models with useful work ($u$).", eval=FALSE>>=
+% standardScatterPlot(data=subset(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
+%                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
+%     coord_trans(y="sigma") +
+%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+%     labs(x=expression(delta), y=expression(sigma))
+% @
+% 
+% <<CES_Spaghetti_Graph_U, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with useful work ($u$).", eval=FALSE>>=
+% cesFittedDataU <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+%                                                                       "(iK + iL) + (iU)", 
+%                                                                       "(iL + iU) + (iK)", 
+%                                                                       "(iU + iK) + (iL)"))
+% spaghettiPlot(data=cesFittedDataU, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
+%     labs(y="Indexed GDP (1900=1 or 1950=1)")
+% @
 
 
 %++++++++++++++++++++++++++++++
@@ -954,17 +968,19 @@ shows the coefficients estimated from resampled data.
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 Again, historical data are shown as a black line, 
 the fit to historical data is shown as a white line and 
-the gray band encompasses 95\% of the fits to resampled data.
+the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
-<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="LINEX model (with energy) resampling results.">>=
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="UK LINEX model (with energy) resampling results.">>=
 linexCoeffsData <- subset(AllCoeffs, subset = model=="linex")
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=energy~Source, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.6, 0.8, 1.0)) +
     labs(x=expression(a[0]), y=expression(c[t]))
 @
 
-<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="LINEX fitted models.">>=
+<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="UK LINEX fitted models.">>=
 linexFittedData <- subset(AllFitted, subset = model=="linex")
 spaghettiPlot(data=linexFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
+    scale_x_continuous(breaks=c(1960, 1980, 2000)) + 
     labs(y="Indexed GDP (1960=1)")
 @
 
@@ -972,17 +988,17 @@ The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
 values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
 
 \begin{equation} \label{eq:LINEX_alpha}
-  \alpha = \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
+  \alpha \equiv \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
 \end{equation}
 
 \begin{equation} \label{eq:LINEX_beta}
-  \beta = \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
+  \beta \equiv \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
 \end{equation}
 
 \noindent{}and
 
 \begin{equation} \label{eq:LINEX_beta_2}
-  \gamma = \frac{e}{y} \frac{\partial y}{\partial e} 
+  \gamma \equiv \frac{e}{y} \frac{\partial y}{\partial e} 
          = 1 - a_0 \left[ \frac{e}{k} + c_t \frac{l}{e} \right] 
          = 1 - \alpha - \beta \;.
 \end{equation}
@@ -990,20 +1006,26 @@ values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\c
 \noindent Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
 If the trajectory stays within the triangle, 
 the constraints on $\alpha$, $\beta$, and $\gamma$ are respected.
-Conversely, if the trajectory goes outside the triangle, one of the constraints has been violated.
+Conversely, if the trajectory goes outside the triangle, the constraints have been violated.
 
-Figure~\ref{fig:LINEX_abg_traj_graph_UK}
-show trajectories for the UK and useful work ($u$) from the Leeds data set.
+Figure~\ref{fig:LINEX_abg_traj_graph_REXS_UK_U}
+shows trajectories for the UK and useful work ($u$) from the REXS data set.
 
-<<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for REXS, UK, $u$.">>=
+<<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for REXS with $u$.">>=
 triPlot(data=fortify(REXS1960_Models$REXS1960$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
-<<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for IST, UK, $u$.">>=
+Figure~\ref{fig:LINEX_abg_traj_graph_IST_UK_U}
+shows trajectories for the UK and useful work ($u$) from the IST data set.
+
+<<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for IST with $u$.">>=
 triPlot(data=fortify(IST_Models$IST$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
-<<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for Leeds, UK, $u$.">>=
+Figure~\ref{fig:LINEX_abg_traj_graph_Leeds_UK_U}
+shows trajectories for the UK and useful work ($u$) from the Leeds data set.
+
+<<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for Leeds with $u$.">>=
 triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
