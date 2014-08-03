@@ -244,12 +244,16 @@ for (m in ModelInfos) {
             # Now save the files.
             saveRDS(rCoeffs, file=coeffsPath)
             saveRDS(rModels, file=modelsPath)
+          } else {
+            if (opts$verbose || opts$vverbose){
+              cat(paste("  *** Skipping", id, "because files already exist.\n"))
+            }
           }
         }
       }, 
       error=function(e) {
         cat(paste0("  *** Skipping ", id, "\n"))
-        if (opts$verbose){
+        if (opts$verbose || opts$vverbose){
           print(e)
           if (opts$vverbose){
             print(list( m$fitfun, c( list( formula, data=countryData ), m$dots) ) )
