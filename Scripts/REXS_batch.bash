@@ -37,21 +37,21 @@ ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all fast -R $OUTDIR $1 &> $OUT
 # 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
 # analyze for each model, so we'll put 3 countries on each compute node.
 #
-# This first batch of cese models uses only thermal energy (Q).
+# This first batch of cese models uses only thermal energy (iQ).
 
-ssh node-02 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
-ssh node-03 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-03.txt" &
-ssh node-04 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQ -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-04.txt" &
+ssh node-02 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
+ssh node-03 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-03.txt" &
+ssh node-04 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-04.txt" &
 
-# This next batch of cese models uses only thermal energy (X).
+# This next batch of cese models uses only primary thermal exergy (iXp).
 
-ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-05.txt" &
+ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-05.txt" &
 # node-06 has only 4 working processors.  We can access only 2 of those.  So, best to avoid node-06 for now.
-ssh node-07 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-07.txt" &
+ssh node-07 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-07.txt" &
 # Gary Draving suggested avoiding node-08, because of I/O issues.
-ssh node-09 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iX -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-09.txt" &
+ssh node-09 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-09.txt" &
 
-# This next batch of cese models uses only thermal energy (U).
+# This next batch of cese models uses only useful work (iU).
 
 ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-10.txt" &
 # node-11 is not functional.
