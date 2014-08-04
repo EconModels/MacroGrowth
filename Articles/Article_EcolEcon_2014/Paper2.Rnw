@@ -514,16 +514,32 @@ Discuss data sources here.
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Figure~\ref{fig:Historical_Data} shows a graph of historical data.
+Figure~\ref{fig:Historical_Data_1} shows a graph of historical data.
 
-<<Historical_Data, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=3, fig.cap="Historical data.">>=
-historicalPlot(historicalData, 
+<<Historical_Data_1, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=3, fig.cap="Historical data.", eval=TRUE>>=
+mdata <- melt(historicalData, 
+              measure.vars = c("iGDP", "iK", "iL", "iXp", "iXf", "iU"), 
+              variable.name = "variable",
+              value.name = "value")
+historicalPlot(mdata, 
                facet_formula = Country ~ Source, 
-               lines_formula = iGDP + iK + iL + iXp + iXf + iU ~ Year, 
+               lines_formula = variable + value ~ Year, 
                line_types = c(1,2,3,4,5,6)) + 
   xlab("") + 
   ylab("Indexed (1960=1)")
 @
+
+Figure~\ref{fig:Historical_Data_2} shows the same data in a different form.
+
+<<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=3, fig.cap="Historical data.", eval=TRUE>>=
+historicalPlot(mdata, 
+               facet_formula=Country~variable, 
+               lines_formula=Source+value~Year, 
+               line_types=c(1,2,3)) +  
+  xlab("") + 
+  ylab("Indexed (1960=1)")
+@
+
 
 
 
