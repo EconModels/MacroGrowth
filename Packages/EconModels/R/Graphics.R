@@ -210,36 +210,54 @@ spaghettiPlot <- function(data,
   return(graph)
 }
 
+# historicalPlot <- function(data){
+#   graph <- ggplot(aes(x=Year), data=data) +
+#     geom_line(aes(y=iGDP, lty="y")) +
+#     geom_line(aes(y=iK, lty="k")) +
+#     geom_line(aes(y=iL, lty="l")) +
+#     geom_line(aes(y=iQ, lty="q")) +
+#     facet_grid( Country ~ ., scales="free_y" ) +
+#     ylab("Indexed (1980=1 or 1991=1)") +
+#     xlab("") +
+#     scale_linetype_manual(name="",   
+#                           limits=c("y", "k", "l", "q"), 
+#                           values=c("y"=1, "k"=5, "l"=2, "q"=3) ) +
+#     xy_theme()
+#   return(graph)
+# }
+
+
+
 #' Create graph of historical data.
 #' 
 #' @param data a data frame containing the the historical data to be plotted.
 #' 
-#' @details The function returns a figure with separate graphs for each \code{Country}
-#' in \code{data}. The graphs are arranged vertically by country with year on the horizontal axis.
-#' You can change the vertical order of the graphs with \code{levels(data$Country)}. 
-#' \code{data} is assumed to contain the following columns: 
-#' \code{iGDP} (indexed GDP), 
-#' \code{Year} (the year for each row in the table), 
-#' \code{iK} (indexed capital stock), 
-#' \code{iL} (indexed labor), 
-#' \code{iQ} (indexed thermal energy), 
-#' \code{iX} (indexed exergy),
-#' \code{iU} (indexed useful work), and
-#' \code{Country} (2-letter international country code).
-#' 
+#' @details The function returns a figure with the facets specified by \code{facet_formula}
+#' and various lines as specified by \code{line_formula}.
+#' @param data a data frame containing historical data.
+#' @param facet_formula a formula of the form \code{y ~ x} where \code{y} is the varible to facet in 
+#' the y direction 
+#' and \code{x} is the variable to facet in the x direction.
+#' @param lines_formula a formula of the form \code{y_1 + y_2 + y_3 + ... ~ x} 
+#' where \code{y_i} are the variables to be plotted on the y axis of each small graph
+#' and \code{x} is the variable to be plotted on the x axis of each small graph.
+#' @param line_types is a vector of values to be applied as the line types for the \code{y_i} variables.
+#' @details Internally, \code{data} is melted to ensure that \code{lines_formula} can be applied successfully.
 #' @export
-historicalPlot <- function(data){
-  graph <- ggplot(aes(x=Year), data=data) +
-    geom_line(aes(y=iGDP, lty="y")) +
-    geom_line(aes(y=iK, lty="k")) +
-    geom_line(aes(y=iL, lty="l")) +
-    geom_line(aes(y=iQ, lty="q")) +
-    facet_grid( Country ~ ., scales="free_y" ) +
-    ylab("Indexed (1980=1 or 1991=1)") +
-    xlab("") +
-    scale_linetype_manual(name="",   
-                          limits=c("y", "k", "l", "q"), 
-                          values=c("y"=1, "k"=5, "l"=2, "q"=3) ) +
+historicalPlot <- function(data, facet_formula, lines_formula, line_types){
+  # Get the desired variables from lines_formula.
+  # lines_formula[[1]] is the tilde character
+  # lines_formula[[2]] gives the left side of the formula (y variables)
+  # lines_formula[[3]] gives the right side of the formula (x variable)
+  yVars <- all.vars(lines_formula[[2]])
+  xVar <- all.vars(lines_formula[[3]])
+  # Melt the data to put yVars in a column named "variable" and 
+  # the corresponding numerical values in a column named "value".
+  data_melted <- melt(data, measure.vars=yVars, variable.name="variable", value.name="value")
+  graph <- ggplot(data_melted) +
+    geom_line(aes_string(x=xVar, y="value", group="variable", linetype="variable")) +     
+    facet_grid( facet_formula, scales="free_y" ) +
+    scale_linetype_manual(name="", values=line_types) +
     xy_theme()
   return(graph)
 }
