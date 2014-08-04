@@ -6,25 +6,28 @@
 historicalPlot(data, facet_formula, lines_formula, line_types)
 }
 \arguments{
-\item{data}{a data frame containing the the historical data to be plotted.}
-
-\item{data}{a data frame containing historical data.}
+\item{data}{a data frame containing data to be plotted.}
 
 \item{facet_formula}{a formula of the form \code{y ~ x} where \code{y} is the varible to facet in
 the y direction
 and \code{x} is the variable to facet in the x direction.}
 
-\item{lines_formula}{a formula of the form \code{y_1 + y_2 + y_3 + ... ~ x}
-where \code{y_i} are the variables to be plotted on the y axis of each small graph
-and \code{x} is the variable to be plotted on the x axis of each small graph.}
+\item{lines_formula}{a formula of the form \code{group + y ~ x}
+where \code{group} is the column of the data frame that identifies data to be plotted as discrete lines
+(often the "variable" column in a melted data frame),
+\code{y} is the column of the data frame that contains values to be plotted on the y axis
+(often the "value" column in a melted data frame), and
+\code{x} is the column of the data frame that contains values to be plotted on the x axis.}
 
-\item{line_types}{is a vector of values to be applied as the line types for the \code{y_i} variables.}
+\item{line_types}{is a vector of linetype identifiers to be applied as the line types for the \code{group}s.}
 }
 \description{
 Create graph of historical data.
 }
 \details{
-The function returns a figure with the facets specified by \code{facet_formula}
+This function returns a figure with facets specified by \code{facet_formula}
 and various lines as specified by \code{line_formula}.
+You may have to use the package \code{reshape2} to "melt" your data to the correct form before passing
+it to this function..
 }
 
