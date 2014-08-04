@@ -3,26 +3,28 @@
 \alias{historicalPlot}
 \title{Create graph of historical data.}
 \usage{
-historicalPlot(data)
+historicalPlot(data, facet_formula, lines_formula, line_types)
 }
 \arguments{
 \item{data}{a data frame containing the the historical data to be plotted.}
+
+\item{data}{a data frame containing historical data.}
+
+\item{facet_formula}{a formula of the form \code{y ~ x} where \code{y} is the varible to facet in
+the y direction
+and \code{x} is the variable to facet in the x direction.}
+
+\item{lines_formula}{a formula of the form \code{y_1 + y_2 + y_3 + ... ~ x}
+where \code{y_i} are the variables to be plotted on the y axis of each small graph
+and \code{x} is the variable to be plotted on the x axis of each small graph.}
+
+\item{line_types}{is a vector of values to be applied as the line types for the \code{y_i} variables.}
 }
 \description{
 Create graph of historical data.
 }
 \details{
-The function returns a figure with separate graphs for each \code{Country}
-in \code{data}. The graphs are arranged vertically by country with year on the horizontal axis.
-You can change the vertical order of the graphs with \code{levels(data$Country)}.
-\code{data} is assumed to contain the following columns:
-\code{iGDP} (indexed GDP),
-\code{Year} (the year for each row in the table),
-\code{iK} (indexed capital stock),
-\code{iL} (indexed labor),
-\code{iQ} (indexed thermal energy),
-\code{iX} (indexed exergy),
-\code{iU} (indexed useful work), and
-\code{Country} (2-letter international country code).
+The function returns a figure with the facets specified by \code{facet_formula}
+and various lines as specified by \code{line_formula}.
 }
 
