@@ -105,27 +105,11 @@
 <<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
 require(EconModels)
 require(EconData)
-# require(lattice)
-# require(latticeExtra)
 require(ggplot2)
-# require(car)
-# require(mosaic)
-# require(xtable)
-# require(nlmrt)
-# require(micEconCES)
 require(plyr)
-# require(dplyr)
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
-# require(reshape2) 
-# tikz allows use of LaTeX formatting and font in graphs. 
-# Allows for a consistent look across the paper.
-# See http://r-forge.r-project.org/R/?group_id=440 for instructions 
-# on installing tikzDevice.
-# require(tikzDevice) 
-# trellis.par.set(theme=theme.mosaic())
-# options(width=75)
-# options(show.signif.stars=TRUE)
+require(reshape2) 
 require(knitr)
 
 opts_chunk$set(
@@ -530,7 +514,17 @@ Discuss data sources here.
 \label{sec:Historical_Data}
 %++++++++++++++++++++++++++++++
 
-Graph(s) of historical data here. 
+Figure~\ref{fig:Historical_Data} shows a graph of historical data.
+
+<<Historical_Data, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=3, fig.cap="Historical data.">>=
+historicalPlot(historicalData, 
+               facet_formula = Country ~ Source, 
+               lines_formula = iGDP + iK + iL + iXp + iXf + iU ~ Year, 
+               line_types = c(1,2,3,4,5,6)) + 
+  xlab("") + 
+  ylab("Indexed (1960=1)")
+@
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
