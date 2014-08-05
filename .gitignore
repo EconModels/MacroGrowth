@@ -74,9 +74,8 @@ ExperimentingWithPlots.pdf
 *.blg
 figure/
 *.notes
-#
 # Files created by beamer
-#
 *.nav
 *.snm
 *.toc
+packrat/lib*/
