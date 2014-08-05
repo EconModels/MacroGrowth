@@ -11,6 +11,7 @@ This file contains information about the workflow for analyses.
 * Add a file that contains the historical data from `<Source>` (name should be `<Source>.txt`) 
 in the `data` directory at the top level of the repository.   
 * Add any Excel workbooks or other metadata in `data/Excel Workbooks/<Source>`.
+* Add any new countries to the `countryAbbrevs` variable in `Constants.R`.
 
 ### Create historical data frame
 * Run `Scripts/PreProcess.R -S <Source>` to create the historical data frame for `<Source>`.
