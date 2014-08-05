@@ -507,7 +507,7 @@ historicalPlot(mdata,
                lines_formula = variable + value ~ Year, 
                line_types = c(1,2,3,4,5,6)) + 
   xlab("") + 
-  ylab("Indexed (1960=1)")
+  ylab("Indexed (1960=1 or 1978=1)")
 @
 
 Figure~\ref{fig:Historical_Data_2} shows the same data in a different form.
@@ -518,7 +518,7 @@ historicalPlot(mdata,
                lines_formula=Source+value~Year, 
                line_types=c(1,2,3)) +  
   xlab("") + 
-  ylab("Indexed (1960=1)")
+  ylab("Indexed (1960=1 or 1978=1)")
 @
 
 
