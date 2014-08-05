@@ -142,11 +142,17 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 # Load historical data
 historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
 # Load coefficients from all models in one large data frame
+REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs")
+IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs")
+Leeds_Coeffs <- loadPostProcessedData(Source = "Leeds", kind = "coeffs")
 AllCoeffs <- rbind(REXS1960_Coeffs, IST_Coeffs, Leeds_Coeffs)
 AllCoeffs$Source <- as.factor(replace(AllCoeffs$Source, which(AllCoeffs$Source=="REXS1960"), "REXS"))
 AllCoeffs$Source <- relevelFactor(AllCoeffs$Source, levs = c("REXS", "IST", "Leeds"))
 AllCoeffs$energy <- relevelFactor(AllCoeffs$energy, levs = energyLevels)
 # Load fitted data from all models in one large data frame
+REXS1960_Fitted <- loadPostProcessedData(Source = "REXS1960", kind = "fitted")
+IST_Fitted <- loadPostProcessedData(Source = "IST", kind = "fitted")
+Leeds_Fitted <- loadPostProcessedData(Source = "Leeds", kind = "fitted")
 AllFitted <- rbind(REXS1960_Fitted, IST_Fitted, Leeds_Fitted)
 AllFitted$Source <- replace(AllFitted$Source, which(AllFitted$Source=="REXS1960"), "REXS")
 AllFitted$Source <- relevelFactor(as.factor(AllFitted$Source), levs = c("REXS", "IST", "Leeds"))
