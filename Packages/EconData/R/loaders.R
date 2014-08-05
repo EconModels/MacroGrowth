@@ -64,8 +64,6 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   dflist <- list()
   nFiles <- length(files)
   
-  
-  
   if (length(pieces) != nFiles){
     stop("Unequal length for files and names in loadResampledData.")
   }
@@ -203,4 +201,30 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
   }
   return(outgoing)
+}
+
+
+#' Loads post-processed data files
+#' 
+#' @param Source the data source to be loaded
+#' @param kind one of \code{coeffs} (to load file named <Source>_Coeffs), 
+#' \code{models} (to load file named <Source>_Models), or 
+#' \code{fitted} (to load file named <Source>_Fitted).
+#' @param dir specifies the directory from which to load the files.
+#' Default is \code{data_postprocessed}.
+#' @export
+loadPostProcessedData <- function(Source, kind=c("coeffs","models","fitted"), dir=file.path("data_postprocessed")){
+  kind <- match.arg(kind)
+  if (kind == "coeffs"){
+    path <- file.path(dir, paste0(Source, "_Coeffs.Rdata"))
+  } else if (kind == "models"){
+    path <- file.path(dir, paste0(Source, "_Models.Rdata"))
+  } else {
+    if (kind != "fitted"){
+      # This should never happen
+      stop(paste("Unknown kind:", kind))
+    }
+    path <- file.path(dir, paste0(Source, "_Fitted.Rdata"))
+  }
+  return(readRDS(path))
 }
