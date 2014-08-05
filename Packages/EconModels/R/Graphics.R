@@ -236,31 +236,29 @@ spaghettiPlot <- function(data,
 #' and \code{x} is the variable to facet in the x direction.
 #' @param lines_formula a formula of the form \code{group + y ~ x} 
 #' where \code{group} is the column of the data frame that identifies data to be plotted as discrete lines
-#' (often the "variable" column in a melted data frame),
+#' (possibly the "variable" column in a melted data frame),
 #' \code{y} is the column of the data frame that contains values to be plotted on the y axis
-#' (often the "value" column in a melted data frame), and
+#' (possibly the "value" column in a melted data frame), and
 #' \code{x} is the column of the data frame that contains values to be plotted on the x axis.
 #' @param line_types is a vector of linetype identifiers to be applied as the line types for the \code{group}s.
 #' @details This function returns a figure with facets specified by \code{facet_formula}
-#' and various lines as specified by \code{line_formula}.
+#' and various lines specified by \code{line_formula}.
 #' You may have to use the package \code{reshape2} to "melt" your data to the correct form before passing
-#' it to this function..
+#' it to this function.
 #' @export
 historicalPlot <- function(data, facet_formula, lines_formula, line_types){
   # Get the desired variables from lines_formula.
   # lines_formula[[1]] is the tilde character
   # lines_formula[[2]] gives the left side of the formula (group and x)
   # lines_formula[[3]] gives the right side of the formula (x variable)
-  lhs <- all.vars(lines_formula[[2]])
+  lhs <- all.vars(lines_formula[[2]]) # left-hand side
   group <- lhs[[1]]
   yVar <- lhs[[2]]
   xVar <- all.vars(lines_formula[[3]])
-  # Melt the data to put yVars in a column named "variable" and 
-  # the corresponding numerical values in a column named "value".  
   graph <- ggplot(data) + 
   geom_line(aes_string(x=xVar, y=yVar, group=group, linetype=group)) + 
   facet_grid( facet_formula, scales="free_y" ) + 
-    scale_linetype_manual(name="", values=c(1,2,3,4,5,6)) + 
+    scale_linetype_manual(name="", values=line_types) + 
     xy_theme()
   return(graph)
 }

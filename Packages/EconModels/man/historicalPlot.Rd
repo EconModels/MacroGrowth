@@ -14,9 +14,9 @@ and \code{x} is the variable to facet in the x direction.}
 
 \item{lines_formula}{a formula of the form \code{group + y ~ x}
 where \code{group} is the column of the data frame that identifies data to be plotted as discrete lines
-(often the "variable" column in a melted data frame),
+(possibly the "variable" column in a melted data frame),
 \code{y} is the column of the data frame that contains values to be plotted on the y axis
-(often the "value" column in a melted data frame), and
+(possibly the "value" column in a melted data frame), and
 \code{x} is the column of the data frame that contains values to be plotted on the x axis.}
 
 \item{line_types}{is a vector of linetype identifiers to be applied as the line types for the \code{group}s.}
@@ -26,8 +26,8 @@ Create graph of historical data.
 }
 \details{
 This function returns a figure with facets specified by \code{facet_formula}
-and various lines as specified by \code{line_formula}.
+and various lines specified by \code{line_formula}.
 You may have to use the package \code{reshape2} to "melt" your data to the correct form before passing
-it to this function..
+it to this function.
 }
 
