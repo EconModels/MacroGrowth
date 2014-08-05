@@ -108,16 +108,19 @@ data_resample_path <- file.path(data_resample_dir, filename_Rdata)
 cat(paste("Saving", data_resample_path, "...")); cat("\n")
 saveRDS(oModels, file=data_resample_path)
 #
-# Save object so that it is available to the EconData package
-# (after EconData is built, of course).
+# Save object so that it is available in the data_postprocessed directory
 #
 # First, put the oModels object into the environment with the name by which it will be available from the package.
-varname <- paste0(opts$Source, "_Models")
-assign(varname, oModels)
-# Now, save the object
-package_dir <- file.path("Packages", "EconData", "data")
-dir.create(package_dir, showWarnings=FALSE)
-filename_rda <- paste0(varname, ".rda")
-package_path <- file.path(package_dir, filename_rda)
-cat(paste("Saving", package_path, "...")); cat("\n")
-save(list=varname, file=package_path)
+# varname <- paste0(opts$Source, "_Models")
+# assign(varname, oModels)
+# # Now, save the object
+# package_dir <- file.path("Packages", "EconData", "data")
+# dir.create(package_dir, showWarnings=FALSE)
+# filename_rda <- paste0(varname, ".rda")
+# package_path <- file.path(package_dir, filename_rda)
+# cat(paste("Saving", package_path, "...")); cat("\n")
+# save(list=varname, file=package_path)
+
+saveRDS(oModels, file=file.path("data_postprocessed", paste0(Source, "_", filename_Rdata))
+
+
