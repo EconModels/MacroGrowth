@@ -41,7 +41,7 @@ dir_pieces <- strsplit(opts$resamplePath, split=.Platform$file.sep)[[1]]
 Source <- dir_pieces[length(dir_pieces)]
 
 # Directory into which objects should be saved for the EconData pacakge
-outputdir <- file.path("Packages", "EconData", "data")
+outputdir <- file.path("data_postprocessed")
 
 #
 # Load all coefficients. Do this task in parallel for a (minor) speed gain.
@@ -66,10 +66,12 @@ Coeffs$energy <- replace(Coeffs$energy, which(is.na(Coeffs$energy)), "none")
 Coeffs$energy <- relevelFactor(as.factor(Coeffs$energy), levs=energyLevels)
 
 # Save all coefficients in one data frame
-objectname <- paste0(Source, "_Coeffs")
-outpath <- file.path(outputdir, paste0(objectname, ".rda"))
-assign(objectname, Coeffs)
-save(list=objectname, file=outpath, compress="gzip")
+# objectname <- paste0(Source, "_Coeffs")
+# outpath <- file.path(outputdir, paste0(objectname, ".rda"))
+# assign(objectname, Coeffs)
+# save(list=objectname, file=outpath, compress="gzip")
+outpath <- file.path(outputdir, paste0(Source, "_Coeffs.Rdata"))
+saveRDS(Coeffs, file = outpath, compress = "gzip")
 
 #
 # Load all fitted models
@@ -87,20 +89,19 @@ Fitted$energy <- replace(Fitted$energy, which(is.na(Fitted$energy)), "none")
 Fitted$energy <- relevelFactor(as.factor(Fitted$energy), levs=energyLevels)
 
 # Save all fitted models in one data frame
-objectname <- paste0(Source, "_Fitted")
-outpath <- file.path(outputdir, paste0(objectname, ".rda"))
-assign(objectname, Fitted)
-save(list=objectname, file=outpath, compress="gzip")
+# objectname <- paste0(Source, "_Fitted")
+# outpath <- file.path(outputdir, paste0(objectname, ".rda"))
+# assign(objectname, Fitted)
+# save(list=objectname, file=outpath, compress="gzip")
+outpath <- file.path(outputdir, paste0(Source, "_Fitted.Rdata"))
+saveRDS(Fitted, file = outpath, compress = "gzip")
+
 
 #
 # Create an archive of the results
 #
 cat(paste0("Creating archive for ", Source, "...")); cat("\n")
 zip(zipfile=file.path("data_resample", paste0(Source, "_data_resample.zip")), files=paste0("data_resample/", Source), flags="-r9Xj")
-
-#
-# Reload EconData package here?
-#
 
 cat("\n\nDone @ ")
 cat(date())
