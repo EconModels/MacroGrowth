@@ -42,10 +42,10 @@ function HELP {
   echo "Usage: ${BOLD}Scripts/$SCRIPT -u username -S Source${NORM} [-d] [-h] [-p path_to_data_on_dahl]"
   echo "Command line options:"
   echo "${BOLD}-u${NORM}  --Sets the username for dahl."
-  echo "${BOLD}-S${NORM}  --Sets the data Source to be copied."
+  echo "${BOLD}-S${NORM}  --Sets the data <Source> to be copied."
   echo "${BOLD}-d${NORM}  --Debug mode. No files transferred. Reports what would have been done."
   echo "${BOLD}-h${NORM}  --Prints help."
-  echo "${BOLD}-p${NORM}  --Sets path of data directory on dahl."
+  echo "${BOLD}-p${NORM}  --Sets path of data directory on dahl from which you want to copy."
   echo "           Default is appropriate for matt's account on dahl."
   echo "           Do not include trailing file separator."
   echo "Example: ${BOLD}$SCRIPT -u abc -S Calvin${NORM}"
@@ -68,7 +68,7 @@ fi
 USER=""
 SOURCE=""
 DEBUG=false
-DAHL_PATH="/home/mkh2/github/Econ-Growth-R-Analysis/Packages/EconData/data"
+DAHL_PATH="/home/mkh2/github/Econ-Growth-R-Analysis/data_postprocessed"
 
 # Parse command line flags
 while getopts :u:S:p:dh FLAG; do
@@ -112,10 +112,10 @@ fi
 
 # Specify the files on dahl that we want to copy.
 # Note that the '*' wildcard will match several files, all with the same $SOURCE.
-REMOTE_FILES="$DAHL_PATH"/"$SOURCE"_*.rda
+REMOTE_FILES="$DAHL_PATH"/"$SOURCE"_*.Rdata
 # Specify the local directory into which we want to save the files.
 # The assumption is that the user has set "Econ-Growth-R-Analysis"" as the working directory.
-LOCAL_DIR="$PWD/Packages/EconData/tmp_big_data"
+LOCAL_DIR="$PWD/data_postprocessed"
 
 # Set the options for rsync.
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.
