@@ -135,31 +135,6 @@ opts_chunk$set(
 @
 
 <<constants, include=FALSE, eval=TRUE>>=
-# Graph Heights
-# maxHeight <- 8.5 # Inches
-# ninePanelScatterGraphHeight <- maxHeight # Inches
-
-# Graph Widths
-# maxWidth <- 6.5 # Inches
-# fourPanelScatterGraphWidth <- maxWidth # Inches
-# 
-# presentationGraph1RowHeight <- 2.8 # Inches
-# presentationGraph2ColWidth <- 2 # Inches
-# presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
-# h_param_graph <- 2.07 # Inches for a single panel
-# h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
-# sfParameterGraphHeight <- h_param_graph + h_param_axis
-# cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
-# cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
-# linexParameterGraphHeight <- h_param_graph + h_param_axis
-# sfParameterGraphWidth <- maxWidth
-# cdParameterGraphWidth <- maxWidth
-# cesParameterGraphWidth <- maxWidth
-# linexParameterGraphWidth <- maxWidth
-# Other graph parameters that apply to all graphs
-# scaleTextSize <- 0.8  # Multiple of normal size
-# scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
-
 spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
