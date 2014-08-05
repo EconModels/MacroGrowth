@@ -19,8 +19,11 @@ core
 # Data files
 # 
 *_Coeffs.rda
+*_Coeffs.Rdata
 *_Fitted.rda
+*_Fitted.Rdata
 *_Models.rda
+*_Models.Rdata
 #
 # Files related to running the batch.bash script
 #
@@ -53,6 +56,8 @@ Paper2*.pdf
 EconGrowthSeminar.pdf
 Workflow.pdf
 Workflow.html
+readme.html
+readme.pdf
 CES.pdf
 ExperimentingWithPlots.pdf
 *.log

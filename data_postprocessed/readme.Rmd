@@ -1,0 +1,9 @@
+---
+title: "Readme for data_postprocessed directory"
+author: "Matthew Kuperus Heun"
+date: "August 5, 2014"
+output: html_document
+---
+
+The `data_postprocessed` directory contains `.Rdata` files that can be read by the function
+`loadPostProcessedData` in the `EconData` package. See `Workflow.Rmd` for more information.
