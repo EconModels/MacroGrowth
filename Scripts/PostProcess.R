@@ -71,7 +71,7 @@ Coeffs$energy <- relevelFactor(as.factor(Coeffs$energy), levs=energyLevels)
 # assign(objectname, Coeffs)
 # save(list=objectname, file=outpath, compress="gzip")
 outpath <- file.path(outputdir, paste0(Source, "_Coeffs.Rdata"))
-saveRDS(Coeffs, file = outpath, compress = "gzip")
+saveRDS(Coeffs, file = outpath, compress = TRUE)
 
 #
 # Load all fitted models
@@ -94,7 +94,7 @@ Fitted$energy <- relevelFactor(as.factor(Fitted$energy), levs=energyLevels)
 # assign(objectname, Fitted)
 # save(list=objectname, file=outpath, compress="gzip")
 outpath <- file.path(outputdir, paste0(Source, "_Fitted.Rdata"))
-saveRDS(Fitted, file = outpath, compress = "gzip")
+saveRDS(Fitted, file = outpath, compress = TRUE)
 
 
 #
