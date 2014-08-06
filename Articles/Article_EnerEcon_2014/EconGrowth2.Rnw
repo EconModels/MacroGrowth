@@ -185,8 +185,6 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 # Load historical data
 historicalData <- Calvin # From the EconData package
 # Load coefficients from all models in one large data frame
-print(getwd())
-print(file.exists("data_postprocessed/Calvin_Coeffs.Rdata"))
 coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir = "../../data_postprocessed")
 # Load fitted data from all models in one large data frame
 fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir = "../../data_postprocessed")
