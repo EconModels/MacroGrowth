@@ -133,11 +133,11 @@ require(knitr)
 # Load historical data
 historicalData <- Calvin # From the EconData package
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir = "../../data_postprocessed")
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir = "../../data_postprocessed")
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = "../../data_postprocessed")
 
 opts_chunk$set(
   # ********************************************************
@@ -437,11 +437,20 @@ LDCs.\footnote{Lesser Developed Countries}
 \clearpage
 
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot(historicalData)
+mdata <- melt(historicalData, 
+              measure.vars = c("iGDP", "iK", "iL", "iQp"), 
+              value.name = "value", 
+              variable.name = "variable") 
+historicalPlot(mdata, 
+               facet_formula = Country ~ Source, 
+               lines_formula = variable + value ~ Year, 
+               line_types = c(1,2,3,4)) +
+  xlab("") +
+  ylab("Indexed (1980-1 or 1991=1")
 @
 
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\theta$ values for CD resample models.">>=
-cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQ", "iK+iL+iX", "iK+iL+iU"))
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQp", "iK+iL+iXp", "iK+iL+iU"))
 standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=country~energy, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -459,7 +468,7 @@ spaghettiPlot(data=cdFittedData, facet_formula=Country~energy, level=spaghettiGr
 @
 
 <<CES_lambda_gamma_graph_kle, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (kl)e nesting.">>=
-cesCoeffsData_kle <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iK + iL) + (iQ)", "(iK + iL) + (iX)", "(iK + iL) + (iU)"))
+cesCoeffsData_kle <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iK + iL) + (iQp)", "(iK + iL) + (iXp)", "(iK + iL) + (iU)"))
 standardScatterPlot(data=cesCoeffsData_kle, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -467,7 +476,7 @@ standardScatterPlot(data=cesCoeffsData_kle, mapping=aes(gamma_coef, lambda), fac
 @
 
 <<CES_lambda_gamma_graph_lek, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (le)k nesting.">>=
-cesCoeffsData_lek <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iL + iQ) + (iK)", "(iL + iX) + (iK)", "(iL + iU) + (iK)"))
+cesCoeffsData_lek <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iL + iQp) + (iK)", "(iL + iXp) + (iK)", "(iL + iU) + (iK)"))
 standardScatterPlot(data=cesCoeffsData_lek, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -475,7 +484,7 @@ standardScatterPlot(data=cesCoeffsData_lek, mapping=aes(gamma_coef, lambda), fac
 @
 
 <<CES_lambda_gamma_graph_ekl, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with (ek)l nesting.">>=
-cesCoeffsData_ekl <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iQ + iK) + (iL)", "(iX + iK) + (iL)", "(iU + iK) + (iL)"))
+cesCoeffsData_ekl <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iQp + iK) + (iL)", "(iXp + iK) + (iL)", "(iU + iK) + (iL)"))
 standardScatterPlot(data=cesCoeffsData_ekl, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -574,19 +583,19 @@ standardTriPlot(data=cesCoeffsData_ekl, facet_formula=country~nestStrParen)
 @
 
 <<CES_Spaghetti_Graph_kle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (kl)e nesting.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iK + iL) + (iQ)", "(iK + iL) + (iX)", "(iK + iL) + (iU)"))
+cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iK + iL) + (iQp)", "(iK + iL) + (iXp)", "(iK + iL) + (iU)"))
 spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
 
 <<CES_Spaghetti_Graph_lek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (le)k nesting.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iL + iQ) + (iK)", "(iL + iX) + (iK)", "(iL + iU) + (iK)"))
+cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iL + iQp) + (iK)", "(iL + iXp) + (iK)", "(iL + iU) + (iK)"))
 spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
 
 <<CES_Spaghetti_Graph_ekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with (ek)l nesting.">>=
-cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iQ + iK) + (iL)", "(iX + iK) + (iL)", "(iU + iK) + (iL)"))
+cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", "(iQp + iK) + (iL)", "(iXp + iK) + (iL)", "(iU + iK) + (iL)"))
 spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
@@ -627,7 +636,7 @@ Each curve fit implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as
 The following graph shows China's trajectory for thermal energy ($q$):
 
 <<LINEX_abg_traj_graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China with thermal energy $q$.">>=
-data <- fortify(oModels$Calvin$CN$linex$`iK+iL+iQ`)
+data <- fortify(oModels$Calvin$CN$linex$`iK+iL+iQp`)
 triPlot(data=data, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear")
 @
 
