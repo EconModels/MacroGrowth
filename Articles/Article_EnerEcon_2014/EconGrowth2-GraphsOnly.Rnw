@@ -131,18 +131,13 @@ options(show.signif.stars=TRUE)
 require(knitr)
 
 # Load historical data
-# In Rstudio, this paper is generated from it's directory, which is "Article".
-# We need to define paths relative to the location of the paper. 
-# Relative path to historical data from Article
 historicalData <- Calvin # From the EconData package
-
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(Calvin_Coeffs)
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(Calvin_Fitted)
-
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
 # Load the original models.
-oModels <- Calvin_Models
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
 
 opts_chunk$set(
   # ********************************************************

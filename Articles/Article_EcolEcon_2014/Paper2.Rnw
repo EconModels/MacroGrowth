@@ -1003,6 +1003,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_REXS_UK_U}
 shows trajectories for the UK and useful work ($u$) from the REXS data set.
 
 <<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for REXS with $u$.">>=
+REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models")
 triPlot(data=fortify(REXS1960_Models$REXS1960$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1010,6 +1011,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_IST_UK_U}
 shows trajectories for the UK and useful work ($u$) from the IST data set.
 
 <<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for IST with $u$.">>=
+IST_Models <- loadPostProcessedData(Source = "IST", kind = "models")
 triPlot(data=fortify(IST_Models$IST$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1017,6 +1019,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_Leeds_UK_U}
 shows trajectories for the UK and useful work ($u$) from the Leeds data set.
 
 <<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for Leeds with $u$.">>=
+Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models")
 triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 

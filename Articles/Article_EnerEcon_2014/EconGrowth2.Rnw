@@ -186,12 +186,11 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 # Load historical data
 historicalData <- Calvin # From the EconData package
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(Calvin_Coeffs)
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(Calvin_Fitted)
-
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
 # Load the original models.
-oModels <- Calvin_Models
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
 @
 
 % These equations are used in several locations in the paper.

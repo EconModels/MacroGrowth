@@ -183,12 +183,11 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 # Load historical data
 historicalData <- REXS # From the EconData package
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(REXS_Coeffs)
+coeffs_df <- loadPostProcessedData(Source = "REXS", kind = "coeffs")
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(REXS_Fitted)
-
+fitted_df <- loadPostProcessedData(Source = "REXS", kind = "fitted")
 # Load the original models.
-oModels <- REXS_Models
+oModels <- loadPostProcessedData(Source = "REXS", kind = "models")
 @
 
 % These equations are used in several locations in the paper.

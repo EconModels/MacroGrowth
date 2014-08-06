@@ -290,13 +290,14 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 historicalData <- Calvin # From the EconData package
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- tbl_df(Calvin_Coeffs)
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
 coeffs_df_ZA <- subset(coeffs_df, subset=country=="ZA")
 # Load fitted data from all models in one large data frame
-fitted_df <- tbl_df(Calvin_Fitted)
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
 fitted_df_ZA <- subset(fitted_df, subset=Country=="ZA")
 # Load the original models.
-oModels_ZA <- Calvin_Models$ZA
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
+oModels_ZA <- oModels$Calvin$ZA
 @
 
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
