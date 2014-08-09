@@ -132,7 +132,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -178,7 +178,7 @@ linexParameterGraphWidth <- maxWidth
 scaleTextSize <- 0.8  # Multiple of normal size
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
-spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
 <<data>>=
@@ -560,232 +560,6 @@ a central point of long-wave economic growth modeling
 \citep{Froling:2009vo, Jones:2001wn, Galor:2000up}.
 
 
-% Approach
-% 
-% Build on articles using R to test econ growth PF, 
-% question what is reported when doing these tests (shen/whalley and others who have used micEconCES). 
-% 
-% 
-% Discussion and Insights
-% 
-% Does analysis differ from others in the conversation?
-% Yes, differs as follows:
-% \begin{itemize}
-% \item{if one do these test, report on all $\delta$, $\sigma$, $\gamma$, and $\lambda$ 
-% values as well as sse. 
-% Good fits not evidence of best values, must report uncertainties as well.}
-% \item{What motivates nesting of CES? Not well behaved $\rho$ results, driving $\sigma$s.
-% Different type of CES with parsimonious factors, sigmas can be generated but not that easy (idea Randy).
-% If you run all 3 nesting options, you can identify elasticities of all three factors in relation to each 
-% other. Furthermore, you can determine which two factors are driving overall behavior in the aggregate function.}
-% \item{necessary of different factors in PF to explain growth for countries in diff. development status}
-% \end{itemize}
-% 
-% What do we add to the conversation?
-% 
-% \begin{itemize}
-% 
-% \item{We are able to gain rich insights 
-% on what really drives growth from detailed analysis (including uncertainties) 
-% by testing all functional forms across many different 
-% economy types.}
-% 
-% \item{We were unable to gain new insights from the various energy quantifications that we tried.}
-% 
-% \item{We find, surprisingly, that energy is not necessary 
-% to be included alongside $k$ and $l$ in all PF. Models with energy and models without energy
-% all perform well on an R$^2$ basis.}
-% 
-% \item{We also find that 
-% 
-% (1) covariance of energy($e$) with both $k$ and $l$ is very high, with few exceptions (UK?).
-% 
-% (2) with few exceptions, $\sigma_{(kl)e}$, $\sigma_{ke}$, and $\sigma_{le}$ 
-% are all very low (indicating complementarity) (verify!!!!), and 
-% 
-% (3) energy-only models (SF$e$ and LINEX) achieve very good fits, just like CD$e$ and CES$e$.
-% (should we make this point or not?)}
-% 
-% \item{What does that mean? 
-% It is a fallacy to think that saying energy is unnecessary 
-% to include in an equation means energy is unimportant for economic growth. How to support this argument?
-% 
-% If you find that energy is unnecessary to include alongside capital and labor 
-% to explain growth in one economy at the macro, aggregated level, 
-% you should not assume that energy is unimportant as a driver for economic growth for all economies.
-% For developed economies, energy is captial intensive: you need to have large capital to make use 
-% of energy. In developing economies, you don't need capital to make use of energy. 
-% Rather, you need labor.
-% 
-% We need to verify the above by comparison with our results.}
-% 
-% \item{Also signals that different types of countries likely 
-% to react differently to energy constraints. 
-% Interpret $\sigma$ here, substitution possibilities.}
-% 
-% \end{itemize}
-% 
-% More work?
-% 
-% 
-% 
-% 
-% Big picture
-% [insert test test]
-% 
-% Why do we do this? Want to link energy and economics on national level 
-% and in a modeled approach,informing energy policy during energy transitions.
-% Usually macro energy economic models rely on PF with energy included. 
-% Key papers using CES in energy economics incl high impact such as 
-% Stern, Gerlagh, Tol etc. 
-% Cite in introduction met energy economists using PF approaches, specially CES.
-% But, which form to choose and using which parameters? 
-% Literature is inconclusive, very little actual empirical testing of such functions. 
-% Mostly CES in CGE models used by Wbank and others. 
-% CD adviced to be used by CBO. 
-% How do we select a functional form and what are the parameters to be used? On what basis do we select?
-% 
-% We aim. to search for empirically robust solution, one that stands up to statistical testing.
-% 
-% What we find is counterintuitive for many cases: dropping energy from the PF has little impact, 
-% but some notable exceptions. 
-% On other hand, only including energy in a PF of LINEX form also yields good results and stats tests. 
-% Is not a simple case for dropping energy, but acknowledging its key role. 
-% Do we support the call for better bottom-up understanding? 
-% What do we say on the limitations of macroeconomic modelling approaches altogether? 
-% (Note such limitations are well known in ME literature, for example capital controversy Robinson).
-% We speculate on implications for choosing PF in energy economic models that inform growth policy.
-% 
-% Points on paper so far
-% 1. Does the relative small differences in fit between different production functions warrant 
-% such a large debate on validity of one vs other? Clearly not. 
-% CD been used by economists for ease of use and extreme flexibility (Miller).  
-% PF generally used on instrumentalist grounds if give reasonable good description of data. 
-% NK econ theory provide poor causal explanation of observed data, 
-% but yet CD shows very good fit (miller, p17). 
-% CES is  more general, but is a liability in forecasting because difficult 
-% to get estimate of EoS that is consistent across studies (Miller, p26). 
-% Aggregation is problem of both CD and CES functional forms, 
-% so being careful when making strong inferences that cannot be justified.
-% 
-% 2. We think we can contribute by emphasising the need 
-% for proper stats testing or inconsistent reporting on use of preferred functions. 
-% Problems with empirical testing presented by Shen, Serrenho.
-% What are our issues with multivariate OLS (Serrenho)?
-% 
-% 3. Are we joining the forced choice between production functions or 
-% acknowledge the similar problems with aggregate prod functions in general? 
-% Do we see this as sufficient evidence to doubt the top-down approach to econ growth altogether?
-% 
-% 4. R2 is a very crude measure and only very minor improvements 
-% are achieved when others factors such as energy is added in a CD. 
-% We concur. Puzzling is conclusion that such minor improvements 
-% does prove the need to include energy in PF (Serrenho).
-% 
-% 5. We do think it is a choice between CD and CES (Miller) as 
-% both have serious deficiencies after stats tests.
-% 
-% 6. One central issue within PF is elasticity of subs (EoS). 
-% That is the \%ch in factor proportions ( k,l, etc) 
-% because of one unit ch in MRTS. 
-% MRTS is rate at which one factor can be substituted for another holding output constant. 
-% EoS is low in Leontief cases, L shaped isoquants.
-% 
-% 7. Miller makes the point that even if parameters in model are stats artifacts, 
-% they are still useful for forecasting. Do we agree?
-% 
-% 8. Is Ockham's razor relevant to what we are doing?
-% 
-% 9. Assumptions of CD are strongly rejected by empirical work, Miller still makes case for using CD.
-% 
-% 11. What about energy augmented 
-% 
-% 10. TZ case
-% CDno e: almost 80\% l
-% CD with e: 25\% energy, rest c,importance of l drops to 0
-% CES no e: 20\% c ($\sigma$), 80\% l, but large range
-% CES with e: fig 35 e may be NB
-% LINEX: one of lowest ct parameters (low relative importance of labour eff compared to cap eff)
-% Does this mean that relative small increases in cap eff can really lift the economy?
-% 
-% 11. ZA case
-% CD no e: roughly half c, l
-% CD with e: roughly half, c, e, importance of l drops to 0
-% CES no e: 10\% c, 25\% l ??
-% CES with e: fig 35 e may be NB
-% LINEX: one of highest ct parameters (high relative importance of labour eff compared to cap eff)
-% Does this mean that relative small increases in labour eff can really lift the economy?
-% 
-% 12. Capital starved Zambia. Very high importance. Understand CES param better.
-% 
-% Discussion: What is Next?
-% 
-% a. A comparative analysis between diff PF reveal interesting 
-% enough information to warrant a more diffused approach to countries. 
-% Thus, we have a case for doing this for  all countries in the world 
-% (or at least those representative of countries in different groups 80/20)
-% 
-% b. If c is relatively more important than labour or energy 
-% for growth and if capital stock is low, a situation one would expect in LDCs, 
-% a relative small addition of capital stock can give relatively large returns in terms of growth.
-% 
-% c. Now it becomes interesting, in a 'stages of growth' approach, 
-% using LT econ data it may be the case that the importance 
-% of factors are different across growth stages. 
-% It would need a composite type of analysis - both stock and importance.
-% 
-% d. Is it possible to have evidence of diff stocks and diff importances across phases of growth? 
-% Maybe test this for a data rich nation that has worked through these stages, 
-% we try to identify them and do partial analysis on time periods coinciding with these stages.
-% 
-% Should we eliminate $u$ data? Only 3 countries. Only 20 years. Doesn't add much insight. 
-% Too bad, but perhaps necessary to simplify paper.
-% 
-% Discussions:
-% 
-% Counterfactuals: energy, cap, labour what ifs for future.
-% 
-% interpretation of type of economies, what does the data presentation say 
-% on relative change in each input and change in GDP?
-% 
-% Forcing const elast of subs in CES thru nested structures violates 
-% observation that more than two factor will not be const. elasticities Uzawa 1962.
-% 
-% R programming dealt with nested CES see paper discussion on Kemfert.
-% 
-% Next steps:
-% 
-% Stages of growth crowd implicitly assumes countries at similar stage of growth will
-% have similar values for $\alpha$, $\beta$, $\gamma$. However, our results show
-% that not to be true. Needs further exploration to cover more (all?) countries.
-% 
-% 
-% 
-% 
-% **** Notes on the introduction from Martin ****
-% 
-% 1. Set scene through energy economic modelling papers. 
-% Point out that PF approaches are alive and well (Stern, Tol, Gerlagh, World Bank, IMF), 
-% short lit review as part of a longer introduction.  
-% Mention competing PF approaches and parameter choice. 
-% On what basis selection and how estimate parameters? 
-% 
-% 2. Point out the need for adequate statistical testing and economic interpretation, 
-% citing some earlier critical papers on PF limitations. Take issue with 
-% 
-% 3. Spell out the contribution we will be making in this paper, 
-% we are taking the approach that all models are wrong but some are useful. 
-% We are after generating insights even after deeper assumptions of econ growth theory are very limiting.
-% 
-% 4. Introduce coordinates of analysis.
-% 
-% 
-% 
-% 
-% 
-% **** Original introduction that MKH wrote ****
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coordinates of Analysis} 
 \label{sec:Coordinates}
@@ -823,28 +597,6 @@ where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/yea
 The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
-
-% \citet{Ayres:2008cl} uses Equation~\ref{eq:CDe} with exergy ($x$) and 
-% useful work ($u$) quantifications for $e$ to describe historic Japanese 
-% and American economies from 1900-2000. \citet{Froling:2009vo} uses an 
-% energy-augmented Cobb-Douglas production function with thermal energy 
-% quantification ($q$) to describe output for the global economy from 1800--1970. 
-% Fr\"{o}ling's model endogenizes labor with respect to fertility 
-% and mortality rates and separates thermal energy into two types: biomass 
-% energy and coal energy. 
-% \citet{Serrenho:2010vq} use the log transform of 
-% the energy-augmented Cobb-Douglas function with thermal energy 
-% quantification ($q$) to describe output for the EU-15 countries. 
-% Serrenho divides thermal energy into renewables, non-renewables, 
-% wastes, and imports. 
-% The main argument of these papers is that 
-% energy is an important driver of growth and needs to be included
-% as an essential factor of production.
-% 
-% **** Martin: add more here about the conclusions of each paper regarding 
-% the role of energy in economic growth? Add additional literature? 
-% Or, adjust as you see fit. Especially, are there any confidence intervals 
-% or statistical evaluation in each of these studies? ****
 
 
 %------------------------------
@@ -910,24 +662,6 @@ are possible with the CES model.
 \noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
 meanings that depend upon the nesting of the factors of production.
 
-% \citet{VanderWerf:2008tc} evalutes various nested CES production 
-% functions for 12 OECD countries with respect to climate change policy. 
-% \citeauthor{VanderWerf:2008tc} concludes that ($kl$)($e$) nesting structure 
-% best fits historical data. \citet{Lecca:2011kr} also evaluate a variety of 
-% CES production functions using a KLEM structure to determine how the various 
-% options for nesting the energy factor of production affect predictive ability. 
-% \citet{Stern:2012ey} also use a CES production function of the form ($kl$)($e$). 
-% \citeauthor{Stern:2012ey} apply their CES function to the Swedish economy 
-% from 1800-2000 and demonstrate the importance of the transition from wood to 
-% fossil fuels for economic growth. \citet{Shen:2013vp} included energy 
-% in nested aggregated CES production functions 
-% for China and found that the best nesting structure is ($le$)($k$).
-% 
-% 
-% **** Martin: add more here about the conclusions of each paper regarding 
-% the role of energy in economic growth? Add additional literature? 
-% Or, adjust as you see fit. Especially, are there any confidence 
-% intervals or statistical evaluation in each of these studies? ****
 
 %------------------------------
 \subsubsection{LINEX Production Function} 
@@ -1006,38 +740,6 @@ The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ a
 and the parameter $c_t$ represents the relative importance 
 of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
 Both $a_0$ and $c_t$ are assumed constant with respect to time. 
-
-% \citet{Kummel:2002tx} use the 
-% LINEX production function to describe economic output 
-% for the economies of the U.S., Japan, and Germany. 
-% \citet{Warr:2010ga} compare the LINEX production function with 
-% the Cobb-Douglas production function to assess economic growth 
-% for Austria, the United Kingdom, the United States, and Japan. 
-% \citet{Ayres:2005kn} argued that introducing energy inputs 
-% in traditional production functions does not improve its explanatory power, 
-% but including useful work in a LINEX function does. 
-% 
-% \authNote{Martin: add more here about the conclusions of each paper 
-% regarding the role of energy in economic growth? Add additional literature? 
-% Or, adjust as you see fit. Especially, are there any confidence intervals 
-% or statistical evaluation in each of these studies?}
-% 
-% \authNote{If we want to keep this quote, it should be clearer what point we are trying to
-% make with it. ---rjp}
-% \citet{Abramovitz:1956aa} wrote:
-% 
-% \begin{quote}
-%   This result [that ``technological progress'' explained
-%   175\% of the growth of the US economy since 1870] is surprising in the lopsided
-%   importance which it appears to give to productivity increase,
-%   and it should be, in a sense, sobering, if not discouraging,
-%   to students of economic growth.
-%   Since we know little about the causes of productivity increase,
-%   the indicated importance of this element may be taken to be some sort of measure
-%   of our ignorance about the causes of economic growth in the United States
-%   and some sort of indication of where
-%   we need to concentrate our attention.
-% \end{quote}
 
 
 %++++++++++++++++++++++++++++++
@@ -1449,7 +1151,7 @@ from the Cobb-Douglas models
 (without and with energy) to historical data.
 Historical data are shown as a black line. 
 The fit to historical data is shown as a white line.
-The gray band encompasses 95\% of the fits to resampled data.
+The gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to resampled data.
 
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
@@ -1623,7 +1325,7 @@ to historical data for all nestings.
 As with the Cobb-Douglas results, 
 historical data are shown as a black line, 
 the fit to historical data is shown as a white line, and 
-the gray band encompasses 95\% of the fits to resampled data.
+the gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models.">>=
 cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
@@ -1633,16 +1335,6 @@ cesFittedData <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) 
 spaghettiPlot(data=cesFittedData, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1980=1 or 1991=1)")
 @
-
-% Figure~\ref{fig:CES_Spaghetti_Graph_CN} shows details of the resample fits for China with the (kl)e nesting.
-% Again, historical data are shown as a black line. 
-% The fit to historical data is shown as a white line.
-% The gray band encompasses 95\% of the fits to resampled data.
-% 
-% <<CES_Spaghetti_Graph_CN, fig.pos="H", fig.align='center', fig.width=maxWidth, fig.height=maxHeight, fig.cap="CES fitted models for China with the (kl)e nesting.">>=
-% spaghettiPlot(data=subset(cesFittedData, Country=="CN" & nestStrParen=="(iK + iL) + (iQp)"), level=spaghettiGraphLevel) +
-%     labs(y="Indexed GDP (1980 = 1 or 1991 = 1")
-% @
 
 
 %++++++++++++++++++++++++++++++
@@ -1673,7 +1365,7 @@ We fit $a_0$ and $c_t$ unconstrained.
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 Again, historical data are shown as a black line, 
 the fit to historical data is shown as a white linem and 
-the gray band encompasses 95\% of the fits to resampled data.
+the gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to resampled data.
 
 \twocolumn{}
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
