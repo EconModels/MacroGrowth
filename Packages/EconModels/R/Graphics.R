@@ -210,24 +210,6 @@ spaghettiPlot <- function(data,
   return(graph)
 }
 
-# historicalPlot <- function(data){
-#   graph <- ggplot(aes(x=Year), data=data) +
-#     geom_line(aes(y=iGDP, lty="y")) +
-#     geom_line(aes(y=iK, lty="k")) +
-#     geom_line(aes(y=iL, lty="l")) +
-#     geom_line(aes(y=iQ, lty="q")) +
-#     facet_grid( Country ~ ., scales="free_y" ) +
-#     ylab("Indexed (1980=1 or 1991=1)") +
-#     xlab("") +
-#     scale_linetype_manual(name="",   
-#                           limits=c("y", "k", "l", "q"), 
-#                           values=c("y"=1, "k"=5, "l"=2, "q"=3) ) +
-#     xy_theme()
-#   return(graph)
-# }
-
-
-
 #' Create graph of historical data.
 #' 
 #' @param data a data frame containing data to be plotted.
