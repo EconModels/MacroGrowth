@@ -290,14 +290,20 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 # Load historical data
 historicalData <- Calvin # From the EconData package
 
+# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
+# This is the same directory from which the RStudio project runs.
+# Setting this working directory eliminates the need to use dir="../.." in the 
+# loadPostPorcessedData function calls below.
+setwd(file.path("..", ".."))
+
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir = "../../data_postprocessed")
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
 coeffs_df_ZA <- subset(coeffs_df, subset=country=="ZA")
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir = "../../data_postprocessed")
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
 fitted_df_ZA <- subset(fitted_df, subset=Country=="ZA")
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = "../../data_postprocessed")
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
 oModels_ZA <- oModels$Calvin$ZA
 @
 

@@ -184,12 +184,19 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 <<data>>=
 # Load historical data
 historicalData <- Calvin # From the EconData package
+
+# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
+# This is the same directory from which the RStudio project runs.
+# Setting this working directory eliminates the need to use dir="../.." in the 
+# loadPostPorcessedData function calls below.
+setwd(file.path("..", ".."))
+
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir = "../../data_postprocessed")
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir = "../../data_postprocessed")
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = "../../data_postprocessed")
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
 @
 
 % These equations are used in several locations in the paper.

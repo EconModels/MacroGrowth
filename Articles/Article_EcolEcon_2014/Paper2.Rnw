@@ -141,6 +141,13 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 <<data, include=FALSE, eval=TRUE>>=
 # Load historical data
 historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
+
+# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
+# This is the same directory from which the RStudio project runs.
+# Setting this working directory eliminates the need to use dir="../.." in the 
+# loadPostPorcessedData function calls below.
+setwd(file.path("..", ".."))
+
 # Load coefficients from all models in one large data frame
 REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs")
 IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs")
