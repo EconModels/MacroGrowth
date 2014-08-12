@@ -117,6 +117,35 @@ sigma_trans <- function(base = exp(1)) {
 }
 
 #' @export
+standardTriPlot2 <- function(data, 
+                            grid_lines=5, 
+                            aes_string="", #"color=lambda", 
+                            orig_color = "gray70",
+                            mapping = aes(),
+                            size=1.0, 
+                            alpha=0.2,
+                            facet_formula = country ~ nest ){
+  p <- triPlot(subset(data, method!="orig"), 
+               gamma, alpha, beta,
+               labels=c("gamma", "alpha", "beta"),
+               grid_lines=grid_lines,  aes_string=aes_string, mapping=mapping, 
+               size=size, alpha=alpha ) + 
+    geom_point(data=subset(data, method=="orig"), 
+               alpha=1, size=3, shape=10) 
+  if ( !is.null(facet_formula) ) {
+    if ( length(facet_formula)==2 ) {
+      p <- p + facet_wrap( facet_formula )
+    } else { 
+      p <- p + facet_grid( facet_formula )
+    }
+  }  
+  return(p)
+  # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+}
+
+# standardTriPlot2(ddd, facet_formula = Country ~ Source, mapping=aes(color=fred), size=3)
+
+#' @export
 standardTriPlot <- function(data, 
                             grid_lines=5, 
                             aes_string="", #"color=lambda", 
@@ -141,9 +170,9 @@ standardTriPlot <- function(data,
   return(p)
   # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
-
 #' @export
-standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, alpha=0.4, facet_formula = countryAbbrev ~ nest) {
+standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, alpha=0.4, 
+                                facet_formula = countryAbbrev ~ nest) {
   p <- ggplot( data=subset(data, method != "orig"), mapping ) 
   p <- p + geom_point(size=size, alpha=alpha) 
   # p <- p + geom_hex( bins=60) 
@@ -244,3 +273,18 @@ historicalPlot <- function(data, facet_formula, lines_formula, line_types){
     xy_theme()
   return(graph)
 }
+
+#' @export
+historicalPlot2 <- function(data, mapping, facet_formula, line_types){
+  graph <- ggplot(data, mapping=mapping) + 
+    geom_line(mapping) +
+    facet_grid( facet_formula, scales="free_y" ) + 
+    scale_linetype_manual(name="", values=line_types) + 
+    xy_theme()
+  return(graph)
+}
+
+# historicalPlot2( aes(x=Year, y=value, color=Source), 
+#                 data=mdata, 
+#                 facet_formula = Country ~ variable, 
+#                 line_types = 1:5)
