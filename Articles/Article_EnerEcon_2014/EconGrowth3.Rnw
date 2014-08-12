@@ -1005,6 +1005,7 @@ Although the details vary from model to model, each of our three models has the 
 where $\theta$ is a vector of parameters for the function $f$.
 \authNote{if we use $\theta$ this way, we need a new scaling parameter. --rjp}%
 Parameter estimates are chosen to minimize
+\authNote{Randy edit the following equation to reflect the fact that we're fitting in log space.}
 %
 \begin{equation} \label{eq:sse}
   sse = \sum_{i} (y_i - f(t,k,l,e; \theta) )^2
@@ -1371,7 +1372,7 @@ We fit $a_0$ and $c_t$ unconstrained.
 
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 Again, historical data are shown as a black line, 
-the fit to historical data is shown as a white linem and 
+the fit to historical data is shown as a white line and 
 the gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to resampled data.
 
 \twocolumn{}
