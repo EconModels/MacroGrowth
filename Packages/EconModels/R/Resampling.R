@@ -1,4 +1,3 @@
-#' @importFrom mosaic do
 #' @import foreach
 #' @import doParallel
 #' @importFrom  plyr ddply rbind.fill
