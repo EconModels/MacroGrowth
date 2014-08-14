@@ -185,18 +185,19 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 # Load historical data
 historicalData <- Calvin # From the EconData package
 
-# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
-# This is the same directory from which the RStudio project runs.
-# Setting this working directory eliminates the need to use dir="../.." in the 
-# loadPostPorcessedData function calls below.
-setwd(file.path("..", ".."))
+# The working directory is set to the directory that contains this file.
+# To reach the post-processed data, we need to move 
+# up two levels and into the data_postprocessed directory.
+# So, in each of the loadPostProcessedData calls below, we use
+# dir = "../../data_postprocessed".
+pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs")
+coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir = pp_path)
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted")
+fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir = pp_path)
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "Calvin", kind = "models")
+oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = pp_path)
 @
 
 % These equations are used in several locations in the paper.
@@ -347,11 +348,11 @@ for larger oil supply shocks,
 assuming production functions where oil plays a prominent role 
 and reduced possibilities for substitution away from oil.  
 \citet{Nel:2010fv} argue for the 
-``\dots vital importance of energy security \dots'' 
-on the basis of a model based on an explicit 
-energy-based formulation of economic growth.  
+``\dots{}vital importance of energy security\dots'' 
+on the basis of an economic growth model with explicit 
+energy-based formulation.  
 \citet{Hamilton:2013vc} argues that 
-``[c]oping with a final peak in world oil production \dots 
+``[c]oping with a final peak in world oil production\dots%
 [will] have much in common with previous historical episodes that resulted from 
 temporary geopolitical conflict, 
 being associated with significant declines in employment and output. 
@@ -369,8 +370,8 @@ The Cobb-Douglas production function
 is the canonical representation of indexed economic output ($y$) as a function of indexed 
 labor~($l$), indexed capital stock~($k$), and an additional exogenous, time-dependent 
 term.%
-  \footnote{The time-dependent term in production functions is often linked
-  to ``technological progress,'' but that is a very narrow reading of Solow's original intent:
+  \footnote{The time-dependent term in production functions is often associated with
+  ``technological progress,'' but that is a very narrow reading of Solow's original intent:
   \begin{quote}
     It will be seen that I am using the phrase ``technical change''
     as a short-hand expression for any kind of shift 
@@ -396,14 +397,18 @@ $l \equiv L/L_{0}$,
 $Y$ is represented by GDP, 
 $K$ is expressed in currency units, 
 $L$ is expressed in workers or work-hours/year, and
-0 subscripts indicate values at an initial year.%
-\footnote{Dimensionless, indexed quantities are represented by 
-lower-case symbols 
-($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
-quantities are represented by upper-case symbols 
-($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
-Model parameters are represented by Greek letters
-($\alpha$, $\beta$, $\lambda$, $\theta$).} 
+0 subscripts indicate values at an initial year.
+The parameters $\alpha$ and $\beta$ indicate the relative roles 
+of capital and labor in the economy.
+Typically, the constraint $\alpha + \beta = 1$ is assumed, 
+indicating constant returns to scale.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, and $q$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, and $Q$). 
+  Model parameters are represented by Greek letters
+  ($\alpha$, $\beta$, $\lambda$, $\theta$).} 
 
 Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
 function makes no attempt, beyond growth in capital~($k$) and labor~($l$), 
@@ -412,10 +417,6 @@ nor does it attempt, beyond different fitting parameters,
 to describe how such phenomena as
 slowdowns, speedups, and improvements of the education of the labor force
 might vary from one economy to the next. 
-The parameters $\alpha$ and $\beta$ indicate the relative roles 
-of capital and labor in the economy.
-Typically, the constraint $\alpha + \beta = 1$ is assumed, 
-indicating constant returns to scale.
 
 As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
 include an explicit term for the role of energy in economic growth. 
@@ -453,12 +454,11 @@ The remainder of this paper is organized as follows.
 Section~\ref{sec:lit_review} provides a necessarily brief overview of relevant literature.
 Section~\ref{sec:Coordinates} discusses the coordinates of analysis for the present study. 
 Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output and factors of production. 
+generate time series for economic output ($y$) and factors of production ($k$, $l$, and $q$). 
 The procedures for and results from parameter estimation for the various production functions 
 are discussed in Section~\ref{sec:Parameter_Estimation}. 
 Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes. 
-An appendix provides details of all statistical results.
+results, and Section~\ref{sec:Conclusion} concludes.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -471,7 +471,7 @@ in ecological economic and resource economic models of growth.
 \citeauthor{Stern:2011bq} points out that 
 energy is seen as the \emph{central driver of growth} 
 in ecological economic (including biophysical economic) models
-and that energy \emph{is included} in resource economic models, 
+and that energy \emph{is included in} resource economic models, 
 but \emph{remains isolated} within the sub-discipline.  
 To break through this theoretical impasse, 
 Stern proposes a synthesized Constant Elasticity of Substitution (CES) 
@@ -482,8 +482,8 @@ as a factor of production.
 On the basis of this model, 
 \citet[p. 45]{Stern:2011bq} points out that 
 energy availability plays
-``\dots a key role in enabling growth,''
-despite the evidence of decreasing energy consumed per unit of output.  
+``\dots{}a key role in enabling growth,''
+despite evidence of decreasing energy consumed per unit of output.  
 He concludes, based on theory and time-series results, 
 that including energy in the production function is warranted, 
 and that further clarification is needed 
@@ -503,10 +503,11 @@ An alternative approach, attempting to be
 and classified by \citet{Stern:2011bq} as an ecological economic model of growth, 
 is the LINEX model, 
 wherein energy is the only factor of production,
-and capital~($k$), labor~($l$), and energy~($e$)
+and capital~($k$), labor~($l$), and energy~($q$)
 combine to provide efficiencies that augment energy.
-Technological change is manifest in these efficiencies,
-as more useful work is done per joule of exergy \citep{Ayres:2005kn}.
+Technological change is manifest as increased efficiency:
+more useful work done per joule of exergy \citep{Ayres:2005kn}.
+There is no Solow-style term ($\mathrm{e}^{\lambda t}$) for technological change.
 
 Unsatisfactorily, the choice of a production function 
 and the parameters used to populate these functions 
@@ -773,7 +774,7 @@ in the economic development process.
 To gain insights from different countries 
 across different stages of development, 
 we present a comparative analysis among representatives of
-the World Bank’s main categories of countries, 
+the World Bank's main categories of countries, 
 namely Developed Countries (DCs), 
 Newly Industrialized Countries (NICs), 
 OPEC countries, and 
@@ -970,12 +971,12 @@ mdata <- melt(historicalData,
               measure.vars = c("iGDP", "iK", "iL", "iQp"), 
               value.name = "value", 
               variable.name = "variable") 
-historicalPlot(mdata, 
+historicalPlot(data=mdata, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
                facet_formula = Country ~ Source, 
-               lines_formula = variable + value ~ Year, 
-               line_types = c(1,2,3,4)) +
+               line_types = c(1,5,2,3)) +
   xlab("") +
-  ylab("Indexed (1980-1 or 1991=1")
+  ylab("Indexed (1980=1 or 1991=1)")
 @
 
 
@@ -1148,11 +1149,14 @@ and chose the boundary fit with
 minimum $sse$ (Equation~\ref{eq:sse}) as the winner.
 $\gamma$ was recovered with $\gamma = 1 - \alpha - \beta$.
 
+Figure~\ref{fig:CD_lambda_theta_graph} shows $\lambda$ and $\theta$ values
+for Cobb-Douglas resample models with and without energy.
+Each reample is shown as a gray dot on the graph. 
+The fit to historical data is shown as a gray crosshairs.
+
 Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (without and with energy) resample models.
-Each reample is shown as a gray dot on the graph. 
-The fit to historical data is shown as a gray crosshairs.
 
 Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
 from the Cobb-Douglas models 
@@ -1161,9 +1165,16 @@ Historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to resampled data.
 
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=2.8, fig.height=7.0, fig.cap="$\\lambda$ and $\\theta$ values for CD resample models.">>=
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQp"))
+standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda), facet_formula=country~energy, alpha=0.05) +
+    scale_x_continuous(limits=c(0.8, 1.2), breaks=c(0.8, 1.0, 1.2)) +
+    scale_y_continuous(limits=c(-0.05, 0.15), breaks=c(0, 0.05, 0.1)) +    
+    labs(x=expression(theta), y=expression(lambda))
+@
+
 \twocolumn{}
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=2.9, fig.height=7.7, fig.cap="Cobb-Douglas resample model parameters.">>=
-cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQp"))
 standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
 @
 

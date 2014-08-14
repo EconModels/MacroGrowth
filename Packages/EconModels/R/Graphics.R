@@ -117,7 +117,7 @@ sigma_trans <- function(base = exp(1)) {
 }
 
 #' @export
-standardTriPlot2 <- function(data, 
+standardTriPlot <- function(data, 
                             grid_lines=5, 
                             aes_string="", #"color=lambda", 
                             orig_color = "gray70",
@@ -145,33 +145,33 @@ standardTriPlot2 <- function(data,
 
 # standardTriPlot2(ddd, facet_formula = Country ~ Source, mapping=aes(color=fred), size=3)
 
+# standardTriPlot <- function(data, 
+#                             grid_lines=5, 
+#                             aes_string="", #"color=lambda", 
+#                             orig_color = "gray70",
+#                             size=1.0, 
+#                             alpha=0.2,
+#                             facet_formula = country ~ nest ){
+#   p <- triPlot(subset(data, method!="orig"), 
+#                gamma, alpha, beta,
+#                labels=c("gamma", "alpha", "beta"),
+#                grid_lines=grid_lines,  aes_string=aes_string, 
+#                size=size, alpha=alpha ) + 
+#     geom_point(data=subset(data, method=="orig"), 
+#                color=orig_color, alpha=1, size=3, shape=10) 
+#   if ( !is.null(facet_formula) ) {
+#     if ( length(facet_formula)==2 ) {
+#       p <- p + facet_wrap( facet_formula )
+#     } else { 
+#       p <- p + facet_grid( facet_formula )
+#     }
+#   }  
+#   return(p)
+#   # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+# }
+
 #' @export
-standardTriPlot <- function(data, 
-                            grid_lines=5, 
-                            aes_string="", #"color=lambda", 
-                            orig_color = "gray70",
-                            size=1.0, 
-                            alpha=0.2,
-                            facet_formula = country ~ nest ){
-  p <- triPlot(subset(data, method!="orig"), 
-               gamma, alpha, beta,
-               labels=c("gamma", "alpha", "beta"),
-               grid_lines=grid_lines,  aes_string=aes_string, 
-               size=size, alpha=alpha ) + 
-    geom_point(data=subset(data, method=="orig"), 
-               color=orig_color, alpha=1, size=3, shape=10) 
-  if ( !is.null(facet_formula) ) {
-    if ( length(facet_formula)==2 ) {
-      p <- p + facet_wrap( facet_formula )
-    } else { 
-      p <- p + facet_grid( facet_formula )
-    }
-  }  
-  return(p)
-  # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
-}
-#' @export
-standardScatterPlot <- function(data, mapping, orig_color="gray70", size=2.0, alpha=0.4, 
+standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2.0, alpha=0.4, 
                                 facet_formula = countryAbbrev ~ nest) {
   p <- ggplot( data=subset(data, method != "orig"), mapping ) 
   p <- p + geom_point(size=size, alpha=alpha) 
@@ -242,40 +242,18 @@ spaghettiPlot <- function(data,
 #' Create graph of historical data.
 #' 
 #' @param data a data frame containing data to be plotted.
+#' @param mapping the argument to the geom_line function. 
+#' Use for setting, x, y, color, among other things: mapping=aes(x=scale, y=lambda, color=country)
 #' @param facet_formula a formula of the form \code{y ~ x} where \code{y} is the varible to facet in 
 #' the y direction 
 #' and \code{x} is the variable to facet in the x direction.
-#' @param lines_formula a formula of the form \code{group + y ~ x} 
-#' where \code{group} is the column of the data frame that identifies data to be plotted as discrete lines
-#' (possibly the "variable" column in a melted data frame),
-#' \code{y} is the column of the data frame that contains values to be plotted on the y axis
-#' (possibly the "value" column in a melted data frame), and
-#' \code{x} is the column of the data frame that contains values to be plotted on the x axis.
 #' @param line_types is a vector of linetype identifiers to be applied as the line types for the \code{group}s.
 #' @details This function returns a figure with facets specified by \code{facet_formula}
 #' and various lines specified by \code{line_formula}.
 #' You may have to use the package \code{reshape2} to "melt" your data to the correct form before passing
 #' it to this function.
 #' @export
-historicalPlot <- function(data, facet_formula, lines_formula, line_types){
-  # Get the desired variables from lines_formula.
-  # lines_formula[[1]] is the tilde character
-  # lines_formula[[2]] gives the left side of the formula (group and x)
-  # lines_formula[[3]] gives the right side of the formula (x variable)
-  lhs <- all.vars(lines_formula[[2]]) # left-hand side
-  group <- lhs[[1]]
-  yVar <- lhs[[2]]
-  xVar <- all.vars(lines_formula[[3]])
-  graph <- ggplot(data) + 
-  geom_line(aes_string(x=xVar, y=yVar, group=group, linetype=group)) + 
-  facet_grid( facet_formula, scales="free_y" ) + 
-    scale_linetype_manual(name="", values=line_types) + 
-    xy_theme()
-  return(graph)
-}
-
-#' @export
-historicalPlot2 <- function(data, mapping, facet_formula, line_types){
+historicalPlot <- function(data, mapping, facet_formula, line_types){
   graph <- ggplot(data, mapping=mapping) + 
     geom_line(mapping) +
     facet_grid( facet_formula, scales="free_y" ) + 
@@ -283,8 +261,3 @@ historicalPlot2 <- function(data, mapping, facet_formula, line_types){
     xy_theme()
   return(graph)
 }
-
-# historicalPlot2( aes(x=Year, y=value, color=Source), 
-#                 data=mdata, 
-#                 facet_formula = Country ~ variable, 
-#                 line_types = 1:5)

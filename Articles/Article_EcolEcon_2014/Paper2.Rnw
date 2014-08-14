@@ -142,24 +142,25 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 # Load historical data
 historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
 
-# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
-# This is the same directory from which the RStudio project runs.
-# Setting this working directory eliminates the need to use dir="../.." in the 
-# loadPostPorcessedData function calls below.
-setwd(file.path("..", ".."))
+# The working directory is set to the directory that contains this file.
+# To reach the post-processed data, we need to move 
+# up two levels and into the data_postprocessed directory.
+# So, in each of the loadPostProcessedData calls below, we use
+# dir = "../../data_postprocessed".
+pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs")
-IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs")
-Leeds_Coeffs <- loadPostProcessedData(Source = "Leeds", kind = "coeffs")
+REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs",dir = pp_path)
+IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs",dir = pp_path)
+Leeds_Coeffs <- loadPostProcessedData(Source = "Leeds", kind = "coeffs", dir = pp_path)
 AllCoeffs <- rbind(REXS1960_Coeffs, IST_Coeffs, Leeds_Coeffs)
 AllCoeffs$Source <- as.factor(replace(AllCoeffs$Source, which(AllCoeffs$Source=="REXS1960"), "REXS"))
 AllCoeffs$Source <- relevelFactor(AllCoeffs$Source, levs = c("REXS", "IST", "Leeds"))
 AllCoeffs$energy <- relevelFactor(AllCoeffs$energy, levs = energyLevels)
 # Load fitted data from all models in one large data frame
-REXS1960_Fitted <- loadPostProcessedData(Source = "REXS1960", kind = "fitted")
-IST_Fitted <- loadPostProcessedData(Source = "IST", kind = "fitted")
-Leeds_Fitted <- loadPostProcessedData(Source = "Leeds", kind = "fitted")
+REXS1960_Fitted <- loadPostProcessedData(Source = "REXS1960", kind = "fitted", dir = pp_path)
+IST_Fitted <- loadPostProcessedData(Source = "IST", kind = "fitted", dir = pp_path)
+Leeds_Fitted <- loadPostProcessedData(Source = "Leeds", kind = "fitted", dir = pp_path)
 AllFitted <- rbind(REXS1960_Fitted, IST_Fitted, Leeds_Fitted)
 AllFitted$Source <- replace(AllFitted$Source, which(AllFitted$Source=="REXS1960"), "REXS")
 AllFitted$Source <- relevelFactor(as.factor(AllFitted$Source), levs = c("REXS", "IST", "Leeds"))
@@ -504,31 +505,29 @@ Discuss data sources here.
 
 Figure~\ref{fig:Historical_Data_1} shows a graph of historical data.
 
-<<Historical_Data_1, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=3, fig.cap="Historical data.", eval=TRUE>>=
+<<Historical_Data_1, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=6, fig.cap="Historical data.", eval=TRUE>>=
 mdata <- melt(historicalData, 
               measure.vars = c("iGDP", "iK", "iL", "iXp", "iXf", "iU"), 
               variable.name = "variable",
               value.name = "value")
 historicalPlot(mdata, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
                facet_formula = Country ~ Source, 
-               lines_formula = variable + value ~ Year, 
-               line_types = c(1,2,3,4,5,6)) + 
+               line_types = c(1,5,2,6,4,3)) + 
   xlab("") + 
   ylab("Indexed (1960=1 or 1978=1)")
 @
 
 Figure~\ref{fig:Historical_Data_2} shows the same data in a different form.
 
-<<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=3, fig.cap="Historical data.", eval=TRUE>>=
+<<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=6, fig.cap="Historical data.", eval=TRUE>>=
 historicalPlot(mdata, 
-               facet_formula=Country~variable, 
-               lines_formula=Source+value~Year, 
-               line_types=c(1,2,3)) +  
+               mapping=aes(x=Year, y=value, group=Source, linetype=Source), 
+               facet_formula = Country ~ variable, 
+               line_types = c(1,5,3)) + 
   xlab("") + 
   ylab("Indexed (1960=1 or 1978=1)")
 @
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -709,22 +708,55 @@ Historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
-<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for UK Cobb-Douglas resample models.">>=
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
 cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
-standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=energy~Source, alpha=0.05) +
-    scale_x_continuous(limits=c(0.95, 1.05), breaks=c(0.95, 1.0)) +
-    scale_y_continuous(breaks=c(0.01, 0.015, 0.02)) +    
-    labs(x=expression(theta), y=expression(lambda))
+standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda, color=Source), 
+                    facet_formula=country~energy, alpha=0.05) +
+    scale_x_continuous(limits=c(0.8, 1.2), breaks=c(0.9, 1.0, 1.1)) +
+    scale_y_continuous(limits=c(-0.1, 0.2), breaks=c(0.0, 0.1, 0.2)) +    
+    labs(x=expression(theta), y=expression(lambda)) +
+    guides(colour=guide_legend(override.aes = aes(alpha=1))) #+
+#     geom_density2d()
 @
 
-
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3.9, fig.height=4, fig.cap="UK Cobb-Douglas resample model parameters.">>=
-standardTriPlot(data=cdCoeffsData, facet_formula=energy~Source)
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=4, fig.cap="Cobb-Douglas resample model parameters.">>=
+standardTriPlot2(data=cdCoeffsData, 
+                mapping=aes(color=Source),
+                facet_formula=country~energy) +
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="UK Cobb-Douglas fitted models.">>=
-cdFittedData <- subset(AllFitted, subset = model=="cd")
-spaghettiPlot(data=cdFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
+<<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="US Cobb-Douglas fitted models.">>=
+cdFittedDataUS <- subset(AllFitted, subset = model=="cd" & Country=="US")
+spaghettiPlot(data=cdFittedDataUS, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CD_GDP_Spaghetti_Graphs_UK, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="UK Cobb-Douglas fitted models.">>=
+cdFittedDataUK <- subset(AllFitted, subset = model=="cd" & Country=="UK")
+spaghettiPlot(data=cdFittedDataUK, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CD_GDP_Spaghetti_Graphs_JP, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="JP Cobb-Douglas fitted models.">>=
+cdFittedDataJP <- subset(AllFitted, subset = model=="cd" & Country=="JP")
+spaghettiPlot(data=cdFittedDataJP, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CD_GDP_Spaghetti_Graphs_AT, fig.pos="H", fig.align='center', fig.width=5, fig.height=3.5, fig.cap="AT Cobb-Douglas fitted models.">>=
+cdFittedDataAT <- subset(AllFitted, subset = model=="cd" & Country=="AT")
+spaghettiPlot(data=cdFittedDataAT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CD_GDP_Spaghetti_Graphs_CN, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="CN Cobb-Douglas fitted models.">>=
+cdFittedDataCN <- subset(AllFitted, subset = model=="cd" & Country=="CN")
+spaghettiPlot(data=cdFittedDataCN, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
@@ -1010,7 +1042,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_REXS_UK_U}
 shows trajectories for the UK and useful work ($u$) from the REXS data set.
 
 <<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for REXS with $u$.">>=
-REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models")
+REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models", dir=pp_path)
 triPlot(data=fortify(REXS1960_Models$REXS1960$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1018,7 +1050,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_IST_UK_U}
 shows trajectories for the UK and useful work ($u$) from the IST data set.
 
 <<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for IST with $u$.">>=
-IST_Models <- loadPostProcessedData(Source = "IST", kind = "models")
+IST_Models <- loadPostProcessedData(Source = "IST", kind = "models", dir=pp_path)
 triPlot(data=fortify(IST_Models$IST$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1026,7 +1058,7 @@ Figure~\ref{fig:LINEX_abg_traj_graph_Leeds_UK_U}
 shows trajectories for the UK and useful work ($u$) from the Leeds data set.
 
 <<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for Leeds with $u$.">>=
-Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models")
+Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models", dir=pp_path)
 triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 

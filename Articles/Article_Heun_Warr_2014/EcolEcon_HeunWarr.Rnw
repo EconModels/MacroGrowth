@@ -183,18 +183,19 @@ spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the da
 # Load historical data
 historicalData <- REXS # From the EconData package
 
-# Set working directory to the top level of the repository: Econ-Growt-R-Analysis
-# This is the same directory from which the RStudio project runs.
-# Setting this working directory eliminates the need to use dir="../.." in the 
-# loadPostPorcessedData function calls below.
-setwd(file.path("..", ".."))
+# The working directory is set to the directory that contains this file.
+# To reach the post-processed data, we need to move 
+# up two levels and into the data_postprocessed directory.
+# So, in each of the loadPostProcessedData calls below, we use
+# dir = "../../data_postprocessed".
+pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "REXS", kind = "coeffs")
+coeffs_df <- loadPostProcessedData(Source = "REXS", kind = "coeffs", dir=pp_path)
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "REXS", kind = "fitted")
+fitted_df <- loadPostProcessedData(Source = "REXS", kind = "fitted", dir=pp_path)
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "REXS", kind = "models")
+oModels <- loadPostProcessedData(Source = "REXS", kind = "models", dir=pp_path)
 @
 
 % These equations are used in several locations in the paper.

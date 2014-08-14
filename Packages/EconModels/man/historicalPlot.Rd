@@ -3,21 +3,17 @@
 \alias{historicalPlot}
 \title{Create graph of historical data.}
 \usage{
-historicalPlot(data, facet_formula, lines_formula, line_types)
+historicalPlot(data, mapping, facet_formula, line_types)
 }
 \arguments{
 \item{data}{a data frame containing data to be plotted.}
 
+\item{mapping}{the argument to the geom_line function.
+Use for setting, x, y, color, among other things: mapping=aes(x=scale, y=lambda, color=country)}
+
 \item{facet_formula}{a formula of the form \code{y ~ x} where \code{y} is the varible to facet in
 the y direction
 and \code{x} is the variable to facet in the x direction.}
-
-\item{lines_formula}{a formula of the form \code{group + y ~ x}
-where \code{group} is the column of the data frame that identifies data to be plotted as discrete lines
-(possibly the "variable" column in a melted data frame),
-\code{y} is the column of the data frame that contains values to be plotted on the y axis
-(possibly the "value" column in a melted data frame), and
-\code{x} is the column of the data frame that contains values to be plotted on the x axis.}
 
 \item{line_types}{is a vector of linetype identifiers to be applied as the line types for the \code{group}s.}
 }
