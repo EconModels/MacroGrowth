@@ -701,7 +701,8 @@ for Cobb-Douglas (without and with energy) resample models.
 Each reample is shown as a gray dot on the graph. 
 The fit to historical data is shown as a gray crosshairs.
 
-Figure~\ref{fig:CD_GDP_Spaghetti_Graph} compares predictions 
+Figures~\ref{fig:CD_GDP_Spaghetti_Graph_US}--\ref{fig:CD_GDP_Spaghetti_Graph_CN} 
+compare predictions 
 from the Cobb-Douglas models 
 (without and with energy) to historical data.
 Historical data are shown as a black line. 
@@ -720,7 +721,7 @@ standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda, color=Sour
 @
 
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=4, fig.cap="Cobb-Douglas resample model parameters.">>=
-standardTriPlot2(data=cdCoeffsData, 
+standardTriPlot(data=cdCoeffsData, 
                 mapping=aes(color=Source),
                 facet_formula=country~energy) +
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
@@ -1002,17 +1003,58 @@ the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resam
 
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="UK LINEX model (with energy) resampling results.">>=
 linexCoeffsData <- subset(AllCoeffs, subset = model=="linex")
-standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=energy~Source, alpha=0.05) +
-    scale_x_continuous(breaks=c(0.6, 0.8, 1.0)) +
-    labs(x=expression(a[0]), y=expression(c[t]))
+standardScatterPlot(data=linexCoeffsData,
+                    mapping=aes(x=a_0, y=c_t, color=Source),
+                    facet_formula=country~energy, alpha=0.05) +
+    scale_x_continuous(limits=c(0.0, 1.0), breaks=c(0.0, 0.5, 1.0)) +
+    scale_y_continuous(limits=c(-10.0, 10.0), breaks=c(10.0, -5.0, 0.0, 5.0, 10.0)) +
+    labs(x=expression(a[0]), y=expression(c[t])) +
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="UK LINEX fitted models.">>=
-linexFittedData <- subset(AllFitted, subset = model=="linex")
-spaghettiPlot(data=linexFittedData, facet_formula=energy~Source, level=spaghettiGraphLevel) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) + 
-    labs(y="Indexed GDP (1960=1)")
+<<LINEX_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=3, fig.height=2.5, fig.cap="US LINEX fitted models.">>=
+linexFittedDataUS <- subset(AllFitted, subset = model=="linex" & Country=="US")
+spaghettiPlot(data=linexFittedDataUS, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
+
+<<LINEX_GDP_Spaghetti_Graphs_UK, fig.pos="H", fig.align='center', fig.width=3, fig.height=4.5, fig.cap="UK LINEX fitted models.">>=
+linexFittedDataUK <- subset(AllFitted, subset = model=="linex" & Country=="UK")
+spaghettiPlot(data=linexFittedDataUK, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<LINEX_GDP_Spaghetti_Graphs_JP, fig.pos="H", fig.align='center', fig.width=3, fig.height=2.5, fig.cap="JP LINEX fitted models.">>=
+linexFittedDataJP <- subset(AllFitted, subset = model=="linex" & Country=="JP")
+spaghettiPlot(data=linexFittedDataJP, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<LINEX_GDP_Spaghetti_Graphs_AT, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="AT LINEX fitted models.">>=
+linexFittedDataAT <- subset(AllFitted, subset = model=="linex" & Country=="AT")
+spaghettiPlot(data=linexFittedDataAT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<LINEX_GDP_Spaghetti_Graphs_CN, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="CN LINEX fitted models.">>=
+linexFittedDataCN <- subset(AllFitted, subset = model=="linex" & Country=="CN")
+spaghettiPlot(data=linexFittedDataCN, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+
+
+
+
+
+
+
+
 
 The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
 values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
