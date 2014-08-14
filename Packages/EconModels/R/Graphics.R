@@ -143,33 +143,6 @@ standardTriPlot <- function(data,
   # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
 }
 
-# standardTriPlot2(ddd, facet_formula = Country ~ Source, mapping=aes(color=fred), size=3)
-
-# standardTriPlot <- function(data, 
-#                             grid_lines=5, 
-#                             aes_string="", #"color=lambda", 
-#                             orig_color = "gray70",
-#                             size=1.0, 
-#                             alpha=0.2,
-#                             facet_formula = country ~ nest ){
-#   p <- triPlot(subset(data, method!="orig"), 
-#                gamma, alpha, beta,
-#                labels=c("gamma", "alpha", "beta"),
-#                grid_lines=grid_lines,  aes_string=aes_string, 
-#                size=size, alpha=alpha ) + 
-#     geom_point(data=subset(data, method=="orig"), 
-#                color=orig_color, alpha=1, size=3, shape=10) 
-#   if ( !is.null(facet_formula) ) {
-#     if ( length(facet_formula)==2 ) {
-#       p <- p + facet_wrap( facet_formula )
-#     } else { 
-#       p <- p + facet_grid( facet_formula )
-#     }
-#   }  
-#   return(p)
-#   # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
-# }
-
 #' @export
 standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2.0, alpha=0.4, 
                                 facet_formula = countryAbbrev ~ nest) {
