@@ -176,7 +176,7 @@ linexParameterGraphWidth <- maxWidth
 scaleTextSize <- 0.8  # Multiple of normal size
 scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
 
-spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
 <<data, include=FALSE, eval=TRUE>>=
@@ -558,7 +558,16 @@ energy ($q$)
 for 1900--2000 (US, UK, JP) and 1950--2000 (AT). 
 %
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
-historicalPlot(historicalData)
+mdata <- melt(historicalData, 
+              measure.vars = c("iGDP", "iK", "iL", "iXp", "iU"), 
+              variable.name = "variable",
+              value.name = "value")
+historicalPlot(mdata, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = Country ~ Source, 
+               line_types = c(1,5,2,6,4)) + 
+  xlab("") + 
+  ylab("Indexed (1900=1 or 1950=1)")
 @
 
 
@@ -734,7 +743,7 @@ The fit to historical data is shown as a white line.
 The gray band encompasses 95\% of the fits to resampled data.
 
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
-cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iX", "iK+iL+iU"))
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iXp", "iK+iL+iU"))
 standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula=country~energy, alpha=0.05) +
 #     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
 #     scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
@@ -743,12 +752,12 @@ standardScatterPlot(data=cdCoeffsData, mapping=aes(scale, lambda), facet_formula
 
 
 <<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=3.9, fig.height=4, fig.cap="Cobb-Douglas resample model parameters.">>=
-cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iX", "iK+iL+iU"))
+cdCoeffsData <- filter(coeffs_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iXp", "iK+iL+iU"))
 standardTriPlot(data=cdCoeffsData, facet_formula=country~energy)
 @
 
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="Cobb-Douglas fitted models.">>=
-cdFittedData <- filter(fitted_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iX", "iK+iL+iU"))
+cdFittedData <- filter(fitted_df, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iXp", "iK+iL+iU"))
 spaghettiPlot(data=cdFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
@@ -853,9 +862,9 @@ $\sigma$ or $\sigma_1$
 
 <<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).">>=
 cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iX)", 
-                                                                      "(iL + iX) + (iK)", 
-                                                                      "(iX + iK) + (iL)"))
+                                                                      "(iK + iL) + (iXp)", 
+                                                                      "(iL + iXp) + (iK)", 
+                                                                      "(iXp + iK) + (iL)"))
 standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     labs(x=expression(gamma), y=expression(lambda))
@@ -915,9 +924,9 @@ the gray band encompasses 95\% of the fits to resampled data.
 
 <<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).">>=
 cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-                                                                      "(iK + iL) + (iX)", 
-                                                                      "(iL + iX) + (iK)", 
-                                                                      "(iX + iK) + (iL)"))
+                                                                      "(iK + iL) + (iXp)", 
+                                                                      "(iL + iXp) + (iK)", 
+                                                                      "(iXp + iK) + (iL)"))
 spaghettiPlot(data=cesFittedDataX, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
@@ -989,7 +998,7 @@ the fit to historical data is shown as a white linem and
 the gray band encompasses 95\% of the fits to resampled data.
 
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7, fig.cap="LINEX model (with energy) resampling results.">>=
-linexCoeffsData <- filter(coeffs_df, model=="linex", energy %in% c("iX", "iU"))
+linexCoeffsData <- filter(coeffs_df, model=="linex", energy %in% c("iXp", "iU"))
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
      scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
@@ -997,7 +1006,7 @@ standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~e
 @
 
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=2, fig.height=7.1, fig.cap="LINEX fitted models.">>=
-linexFittedData <- filter(fitted_df, model=="linex", energy %in% c("iX", "iU"))
+linexFittedData <- filter(fitted_df, model=="linex", energy %in% c("iXp", "iU"))
 spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1900=1 or 1950=1)")
 @
@@ -1026,18 +1035,17 @@ If the trajectory stays within the triangle,
 the constraints on $\alpha$, $\beta$, and $\gamma$ are respected.
 Conversely, if the trajectory goes outside the triangle, one of the constraints has been violated.
 
-Figures~\ref{fig:LINEX_abg_traj_graph_CN} and~\ref{fig:LINEX_abg_traj_graph_IR} 
-show trajectories for China and Iran, respectively.
-**** Can we make a figure that has all 9 graphs in it? --MKH ****
+Figures~\ref{fig:LINEX_abg_traj_graph_US} and~\ref{fig:LINEX_abg_traj_graph_UK} 
+show trajectories for US and UK, respectively with $u$.
 
-<<LINEX_abg_traj_graph_CN, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for China.">>=
-dataCN <- fortify(oModels$Calvin$CN$linex$`iK+iL+iQ`)
-triPlot(data=dataCN, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+<<LINEX_abg_traj_graph_US, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="LINEX trajectory for US.">>=
+dataUS <- fortify(oModels$REXS$US$linex$`iK+iL+iU`)
+triPlot(data=dataUS, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
 
-<<LINEX_abg_traj_graph_IR, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.5, fig.cap="LINEX trajectory for Iran.">>=
-dataIR <- fortify(oModels$Calvin$IR$linex$`iK+iL+iQ`)
-triPlot(data=dataIR, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
+<<LINEX_abg_traj_graph_UK, fig.pos="H", fig.align='center', fig.width=3, fig.height=1.5, fig.cap="LINEX trajectory for UK.">>=
+dataUK <- fortify(oModels$REXS$UK$linex$`iK+iL+iU`)
+triPlot(data=dataUK, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1990")
 @
 
 In our testing, Iran is the only country for which the trajectory stays within 
