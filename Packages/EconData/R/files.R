@@ -145,12 +145,11 @@ parseFactorString <- function(factorString, sep="+", rVar="iGDP", kVar=factors[[
 #' @param fitfun the function used for fitting
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A 2- or 3-vector of integers.
-#' @param nestStr if used, the string for the nesting
 #' @param n the number of resamples being attempted
 #' @param sep the separator used to create the id string. Default is " : ".
 #' @return a string to be used as the id for this resample
 #' @export
-fittingID <- function(Source, fitfun, countryAbbrev, formula, nest=NULL, n, sep=" : "){
+fittingID <- function(Source, countryAbbrev, fitfun, formula, nest=NULL, n, sep=" : "){
   id <- paste(Source, countryAbbrev, fitfun, formula, factorString(formula=formula, nest=nest), n, sep=sep)
   return(id)
 }

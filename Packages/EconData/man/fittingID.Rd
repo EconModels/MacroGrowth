@@ -3,7 +3,7 @@
 \alias{fittingID}
 \title{Creates an id for this run of resampling}
 \usage{
-fittingID(Source, fitfun, countryAbbrev, formula, nest = NULL, n,
+fittingID(Source, countryAbbrev, fitfun, formula, nest = NULL, n,
   sep = " : ")
 }
 \arguments{
@@ -16,8 +16,6 @@ fittingID(Source, fitfun, countryAbbrev, formula, nest = NULL, n,
 \item{formula}{the formula used for the fitting}
 
 \item{nest}{if used, the nest employed for this fit. A 2- or 3-vector of integers.}
-
-\item{nestStr}{if used, the string for the nesting}
 
 \item{n}{the number of resamples being attempted}
 
