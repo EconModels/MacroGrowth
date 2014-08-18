@@ -1,5 +1,6 @@
 require(EconData)
 require(EconModels)
+require(plyr)
 
 # setwd() to the location of this file.
 ppData <- loadPostProcessedData(Source = "REXS1960", kind = "fitted", dir="../data_postprocessed/")
@@ -36,4 +37,5 @@ models <- resampled[[2]]
 model777 <- models[[778]] # first model is the original
 yhat777 <- yhat(model777)
 yhat777 <- as.data.frame(yhat777)
-historicalAndResampledData <- cbind(historicalData, yhat777)
+# Clean off the last year (due to missing K) and then cbind the prediction to the historical data
+historicalAndResampledData <- cbind(historicalData[-length(historicalData$Year), ], yhat777)
