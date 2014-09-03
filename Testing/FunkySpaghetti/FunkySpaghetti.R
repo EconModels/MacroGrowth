@@ -80,3 +80,13 @@ cat(paste("Is logscale same?", all.equal(model777$coefficients[[1]], lmModelCons
 cat(paste("Is lambda same?", all.equal(model777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
 
 # The above analysis shows that the manual fit using lm is better than cdModel. A bug in cdModel?
+
+# Let's try to find out where things go wrong:
+
+# grab the data used for the fits
+model.frame(newModel777) -> mf777
+model.frame(lmModelConstrained) -> mfc
+# these look pretty different
+ggplot() +
+  geom_point(aes(y=mf777[,1], x=mf777[,2], color="cdeModel")) +
+  geom_point(aes(y=mfc[,1], x=mfc[,2], color="lm")) 
