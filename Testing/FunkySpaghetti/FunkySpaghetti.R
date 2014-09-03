@@ -84,9 +84,12 @@ cat(paste("Is lambda same?", all.equal(model777$coefficients[[2]], lmModelConstr
 # Let's try to find out where things go wrong:
 
 # grab the data used for the fits
-model.frame(newModel777) -> mf777
-model.frame(lmModelConstrained) -> mfc
+model.frame(model777) -> mf777
+model.frame(newModel777) -> mf777new
+model.frame(lmModelConstrained) -> mf777man
 # these look pretty different
 ggplot() +
-  geom_point(aes(y=mf777[,1], x=mf777[,2], color="cdeModel")) +
-  geom_point(aes(y=mfc[,1], x=mfc[,2], color="lm")) 
+  geom_point(aes(y=mf777[,1], x=mf777[,2], color="cached"), size=2, shape=1) +
+  geom_point(aes(y=mf777new[,1], x=mf777new[,2], color="refit"), size=4, shape=1)  +
+  geom_point(aes(y=mf777man[,1], x=mf777man[,2], color="manual"), size=2, shape=1) 
+
