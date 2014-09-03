@@ -139,12 +139,15 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   )
   # Build the additional object to add as an atrribute to the output
   if (constrained){
-    res <- lm( formulas[[2]], data=data )
+    # res <- lm( formulas[[2]], data=data )
+    res <- eval( substitute(lm(f, data=data), list(f=formulas[[2]])) )
+    
     m <- 1.0
     logscale <- coef(res)[1]
     lambda <- coef(res)[2]
   } else {
-    res <- lm( formulas[[1]], data=data )
+    # res <- lm( formulas[[1]], data=data )
+    res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
     logscale <- coef(res)[1]
     m <- coef(res)[2]
     lambda <- as.vector(coef(res)[3])
@@ -239,14 +242,14 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
     )
   }
   
-  sdata <- subset(data, select= all.vars(formula))
+  sdata <- subset(data, select=all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
   
   formulas <- list(
     log(y) - log(labor) ~ I(log(capital) - log(labor)) + time,
-    log(y) - log(capital) ~ time,  
-    log(y) - log(labor) ~ time
+    log(y) - log(labor) ~ time,
+    log(y) - log(capital) ~ time  
     )
   
   formulas <- lapply( formulas,
@@ -260,7 +263,8 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                                           )
                       )
   )
-  res <- lm(formulas[[1]], data=sdata)
+  # res <- lm(formulas[[1]], data=sdata)
+  res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[1]])))
   # Build the additional object to add as an atrribute to the output
   # could try this, but it is a hack.
   # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
@@ -271,10 +275,12 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        res <- lm( formulas[[2]], data=sdata )
+        # res <- lm( formulas[[2]], data=sdata )
+        res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
       } else {
         alpha <- 1.0
-        res <- lm( formulas[[3]], data=sdata )
+        # res <- lm( formulas[[3]], data=sdata )
+        res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
       }
       # Refit for lambda only
       names(res$coefficients) <- c("logscale", "lambda")
@@ -854,7 +860,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   ) 
   ) ) )
   
-  res <- lm( formulas[[1]], data=data )
+  res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
   
   # Build the additional object to add as an atrribute to the output
   a_0 <- coef(res)[2]
