@@ -79,3 +79,4 @@ cat(paste("Is logscale same?", all.equal(model777$coefficients[[1]], lmModelCons
 # Well, that didn't work. What about lambda?
 cat(paste("Is lambda same?", all.equal(model777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
 
+# The above analysis shows that the manual fit using lm is better than cdModel. A bug in cdModel?
