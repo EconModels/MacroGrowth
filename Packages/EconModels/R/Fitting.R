@@ -389,7 +389,9 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
     c("logscale", "lambda"),
     c("logscale", "lambda")
   )
-  models <- lapply( formulas, function(form)  lm( form, data=sdata )  )
+  models <- lapply( formulas, function(form)
+    eval(substitute(lm(f, data=sdata), list(f=form)))  
+  )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
   if ( constrained ) {
     good <- sapply( models, respectsConstraints)
