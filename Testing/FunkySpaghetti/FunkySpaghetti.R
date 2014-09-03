@@ -44,14 +44,38 @@ cat(paste("Are all coefficients of model777 and newModel777 same?", all.equal(mo
 cat(paste("Are all residuals of model777 and newModel777 same?", all.equal(model777$residuals, newModel777$residuals)))
 # So, using our own cdModel function on the same data is consistent, as expected.
 
-# What about using bare lm on the data?
+# What about using manual lm on the data?
 # Fit without constraints
 lmModel <- lm(log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear, data = data777)
 cat(paste("alpha =", lmModel$coefficients[[2]]), "so we need to fit with constraints of alpha = 0.")
+# Get the fitted response from lmModel. Need to take exp(), because fit was accomplished 
+# in log-transform space.
+data_manual_fit <- as.data.frame(cbind(data777$Year, exp(fitted(lmModel) + log(data777$iL))))
+# Rename columns
+names(data_manual_fit)[1]<-"Year"
+names(data_manual_fit)[2]<-"yhat"
+data_manual_fit$Source <- "exp_fitted_lmModel"
+# Add to plot
+plot <- plot + geom_line(data=data_manual_fit, mapping=aes(x=Year, y=yhat, color = as.character(Source)))
+show(plot)
 
 # Fit with constraint of alpha = 0, because the unconstrainted fit gave alpha < 0.
 lmModelConstrained <- lm(log(iGDP) - log(iL) ~ iYear, data = data777)
+# Get the fitted response
+data_manual_fit_constrained <- as.data.frame(cbind(data777$Year, exp(fitted(lmModelConstrained) + log(data777$iL))))
+# Rename columns
+names(data_manual_fit_constrained)[1]<-"Year"
+names(data_manual_fit_constrained)[2]<-"yhat"
+data_manual_fit_constrained$Source <- "exp_fitted_lmModel_constrained"
+# Add to plot
+plot <- plot + geom_line(data=data_manual_fit_constrained, mapping=aes(x=Year, y=yhat, 
+                                                                       color = as.character(Source)))
+show(plot)
+cat(paste("Are yhats for manual lm constrained and unconstrained same?", 
+          all.equal(data_manual_fit$yhat, data_manual_fit_constrained$yhat))) # Pretty close!
+
 # Now compare to model777
-cat(paste("Are logscale same?", all.equal(model777$coefficients[[1]], lmModelConstrained$coefficients[[1]])))
+cat(paste("Is logscale same?", all.equal(model777$coefficients[[1]], lmModelConstrained$coefficients[[1]])))
 # Well, that didn't work. What about lambda?
-cat(paste("Are lambda same?", all.equal(model777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
+cat(paste("Is lambda same?", all.equal(model777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
+
