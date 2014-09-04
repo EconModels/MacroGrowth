@@ -74,12 +74,12 @@ show(plot)
 cat(paste("Are yhats for manual lm constrained and unconstrained same?", 
           all.equal(data_manual_fit$yhat, data_manual_fit_constrained$yhat))) # Pretty close!
 
-# Now compare to model777
-cat(paste("Is logscale same?", all.equal(model777$coefficients[[1]], lmModelConstrained$coefficients[[1]])))
+# Now compare to newModel777. After fixing the bug, they should be the same.
+cat(paste("Is logscale same?", all.equal(newModel777$coefficients[[1]], lmModelConstrained$coefficients[[1]])))
 # Well, that didn't work. What about lambda?
-cat(paste("Is lambda same?", all.equal(model777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
+cat(paste("Is lambda same?", all.equal(newModel777$coefficients[[2]], lmModelConstrained$coefficients[[2]])))
 
-# The above analysis shows that the manual fit using lm is better than cdModel. A bug in cdModel?
+# We now see that newModel777 and lmModelConstrained are the same! Bug has been fixed.
 
 # Let's try to find out where things go wrong:
 
