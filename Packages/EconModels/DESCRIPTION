@@ -21,6 +21,7 @@ Imports:
     splines,
     mosaic
 Suggests:
+    testthat,
     MASS
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
