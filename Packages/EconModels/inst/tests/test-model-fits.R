@@ -16,10 +16,12 @@ test_that("cdModel() fits are correct", {
   modelFree <- cdModel(fitGDP ~ iK + iL + iYear, data = testData, constrained = FALSE, 
                        save.data = TRUE)
   
-  expect_equivalent(coef(modelFree), c(0.0, alpha, lambda) )
+  expect_equivalent(naturalCoef(modelFree)[, c("alpha","beta","gamma","lambda"), drop=TRUE], 
+                    list(alpha, beta, 0, lambda) )
   
   modelConstrained <- cdModel(fitGDP ~ iK + iL + iYear, data = testData, 
                               constrained = TRUE, save.data = TRUE)
   
-  expect_equal(coef(modelConstrained)["alpha"], 0.0)
+  expect_equivalent(naturalCoef(modelConstrained)[, c("alpha", "beta", "gamma"), drop=TRUE], 
+                    list(0, 1, 0))
 })
