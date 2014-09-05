@@ -22,7 +22,8 @@ Imports:
     mosaic
 Suggests:
     testthat,
-    MASS
+    MASS,
+    EconData
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>
