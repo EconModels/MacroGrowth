@@ -198,13 +198,14 @@ test_that("sfModel() fits are correct", {
   lambda <- 0.02
   m <- 1
   testData <- transform(testData, fitGDP = exp(lambda * iYear) * iK^m)
-  # Now fit using the single factor model.
-  modelsf <- sfModel(fitGDP ~ iK + iYear, data = testData, constrained = TRUE, save.data = TRUE)
+
   # Try a manual fit using lm
   model_manual <- lm(log(fitGDP) - log(iK) ~ iYear, data = testData)
   # Expect intercept (in log space) to be 0, and coefficient for iYear to be 0.02.
   expect_equivalent(coef(model_manual)[c("(Intercept)", "iYear")], list(0, 0.02))
+  
   # Fit using sfModel
+  modelsf <- sfModel(fitGDP ~ iK + iYear, data = testData, constrained = TRUE, save.data = TRUE)
   # We expect scale to be 1.0, because we should fit exactly.
   # We expect m and lambda to be the same as we used to create fitGDP.
   expect_equivalent(naturalCoef(modelsf)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))
@@ -215,5 +216,5 @@ test_that("cesModel() fits are correct", {
   # Use the US factors of production from the Calvin source
   testData <- subset(EconData::Calvin, Country=="US")
   
-  # The cesCalc function 
+  # The cesCalc function can be used here.
 })
