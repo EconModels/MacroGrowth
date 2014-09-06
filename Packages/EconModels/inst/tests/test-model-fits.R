@@ -148,7 +148,7 @@ test_that("cdModel() with energy fits are correct", {
   # gamma = 1
   alpha <- -0.1
   beta <- -0.1
-  gamma <- 1.2
+  gamma <- 1.3
   testData$fitGDPgamma1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
   modelGamma1 <- cdModel(fitGDPgamma1 ~ iK + iL + iU + iYear, data = testData, 
                         constrained = TRUE, save.data = TRUE)
@@ -157,7 +157,6 @@ test_that("cdModel() with energy fits are correct", {
   # because we will not exactly fit the data when constrained.
   # alpha will be 1 instead of 1.1.
   expect_equivalent(naturalCoef(modelGamma1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(0, 0, 1) )
-  
 })
 
 test_that("linexModel() fits are correct", {
