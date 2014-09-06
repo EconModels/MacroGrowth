@@ -211,10 +211,31 @@ test_that("sfModel() fits are correct", {
   expect_equivalent(naturalCoef(modelsf)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))
 })
 
-test_that("cesModel() fits are correct", {
+test_that("cesModel() fits without energy are correct", {
   
   # Use the US factors of production from the Calvin source
   testData <- subset(EconData::Calvin, Country=="US")
   
-  # The cesCalc function can be used here.
+  # Concoct some data and add it to testData
+  scale <- 1.0 # cesEst calls this "gamma"
+  lambda <- 0.02
+  delta <- 0.3
+  rho <- 0.4
+  nu <- 1.0
+  delta_1 <- 0.7
+  rho_1 <- 0.7
+  fitGDP <- cesCalc(xNames = c("iK", "iL"), data = testData, 
+                    coef = c(gamma=scale, lambda=lambda, delta=delta, rho=rho, nu=nu),
+                    tName = "iYear")
+  testData <- cbind(testData, fitGDP)
+  
+  # Try a manual fit using cesEst.
+  model_manual <- cesEst(yName = "fitGDP", xNames = c("iK", "iL"), data = testData, tName = "iYear", 
+                         method = "PORT", multErr = TRUE)
+  expect_equivalent(coef(model_manual)[c("gamma", "lambda", "delta", "rho")], list(scale, lambda, delta, rho))
+  
+  # Fit using cesModel() 
+  modelces <- cesModel(fitGDP ~ iK + iL + iYear, data = testData, nest = c(1, 2))
+  expect_equivalent(coef(modelces)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta, rho))
 })
