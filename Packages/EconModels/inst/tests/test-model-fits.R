@@ -74,7 +74,7 @@ test_that("cdModel() with energy fits are correct", {
   expect_equivalent(naturalCoef(modelFree3)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
                     list(1, beta, gamma, alpha, lambda) )
   
-  # Hit the constraint where alpha < 0.
+  # alpha < 0
   alpha <- -0.1
   beta <- 0.2
   gamma <- 0.9
@@ -89,7 +89,7 @@ test_that("cdModel() with energy fits are correct", {
   # beta and gamma should sum to 1
   expect_equal(sum(naturalCoef(modelAlpha0)[, c("beta", "gamma")]), 1)
   
-  # Hit the constraint where beta < 0.
+  # beta < 0
   alpha <- 0.3
   beta <- -0.2
   gamma <- 0.9
@@ -104,7 +104,7 @@ test_that("cdModel() with energy fits are correct", {
   # alpha and gamma should sum to 1
   expect_equal(sum(naturalCoef(modelBeta0)[, c("alpha", "gamma")]), 1)
   
-  # Hit the constraint where gamma < 0.
+  # gamma < 0
   alpha <- 0.3
   beta <- 0.9
   gamma <- -0.2
@@ -119,11 +119,44 @@ test_that("cdModel() with energy fits are correct", {
   # alpha and gamma should sum to 1
   expect_equal(sum(naturalCoef(modelGamma0)[, c("alpha", "beta")]), 1)
   
-  # Hit the constraint where alpha = 1
+  # alpha = 1
+  alpha <- 1.2
+  beta <- -0.1
+  gamma <- -0.1
+  testData$fitGDPalpha1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  modelAlpha1 <- cdModel(fitGDPalpha1 ~ iK + iL + iU + iYear, data = testData, 
+                         constrained = TRUE, save.data = TRUE)
+  # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
+  # lambda is not expected to be exactly the value we used to create testData, 
+  # because we will not exactly fit the data when constrained.
+  # alpha will be 1 instead of 1.1.
+  expect_equivalent(naturalCoef(modelAlpha1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(1, 0, 0) )
   
-  # Hit the constraint where beta = 1
+  # beta = 1
+  alpha <- -0.1
+  beta <- 1.2
+  gamma <- -0.1
+  testData$fitGDPbeta1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  modelBeta1 <- cdModel(fitGDPbeta1 ~ iK + iL + iU + iYear, data = testData, 
+                         constrained = TRUE, save.data = TRUE)
+  # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
+  # lambda is not expected to be exactly the value we used to create testData, 
+  # because we will not exactly fit the data when constrained.
+  # alpha will be 1 instead of 1.1.
+  expect_equivalent(naturalCoef(modelBeta1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(0, 1, 0) )
   
-  # Hit the constraint where gamma = 1
+  # gamma = 1
+  alpha <- -0.1
+  beta <- -0.1
+  gamma <- 1.2
+  testData$fitGDPgamma1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  modelGamma1 <- cdModel(fitGDPgamma1 ~ iK + iL + iU + iYear, data = testData, 
+                        constrained = TRUE, save.data = TRUE)
+  # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
+  # lambda is not expected to be exactly the value we used to create testData, 
+  # because we will not exactly fit the data when constrained.
+  # alpha will be 1 instead of 1.1.
+  expect_equivalent(naturalCoef(modelGamma1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(0, 0, 1) )
   
 })
 
