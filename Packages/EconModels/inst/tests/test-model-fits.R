@@ -11,7 +11,8 @@ test_that("cdModel() without energy fits are correct", {
   beta <- 1.1
   gamma <- 0
   lambda <- 0.02
-  testData$fitGDPnoe <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta
+  testData <- transform(testData,
+                        fitGDPnoe = exp(lambda * iYear) * iK^alpha * iL^beta)
   
   # Fit without constraints
   modelFree <- cdModel(fitGDPnoe ~ iK + iL + iYear, data = testData, constrained = FALSE, 
@@ -39,7 +40,9 @@ test_that("cdModel() without energy fits are correct", {
   # Hit the constraint of beta < 0, alpha > 1.
   alpha <- 1.1
   beta <- -0.1
-  testData$fitGDPnoebeta <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta
+  testData <- transform(testData,
+                        fitGDPnoebeta = exp(lambda * iYear) * iK^alpha * iL^beta)
+  
   modelConstrainedbeta <- cdModel(fitGDPnoebeta ~ iK + iL + iYear, data = testData, 
                                   constrained = TRUE, save.data = TRUE)
   expect_equivalent(naturalCoef(modelConstrainedbeta)[, c("alpha", "beta", "gamma"), drop=TRUE], 
@@ -56,7 +59,9 @@ test_that("cdModel() with energy fits are correct", {
   beta <- 0.8
   gamma <- 0.3
   lambda <- 0.02
-  testData$fitGDPe <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPe = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
+  
   
   # Fit without constraints
   modelFree <- cdModel(fitGDPe ~ iK + iL + iU + iYear, data = testData, constrained = FALSE, 
@@ -78,7 +83,8 @@ test_that("cdModel() with energy fits are correct", {
   alpha <- -0.1
   beta <- 0.2
   gamma <- 0.9
-  testData$fitGDPalpha0 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPalpha0 = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
   modelAlpha0 <- cdModel(fitGDPalpha0 ~ iK + iL + iU + iYear, data = testData, 
                               constrained = TRUE, save.data = TRUE)
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
@@ -93,7 +99,8 @@ test_that("cdModel() with energy fits are correct", {
   alpha <- 0.3
   beta <- -0.2
   gamma <- 0.9
-  testData$fitGDPbeta0 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPbeta0 = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
   modelBeta0 <- cdModel(fitGDPbeta0 ~ iK + iL + iU + iYear, data = testData, 
                          constrained = TRUE, save.data = TRUE)
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
@@ -108,7 +115,8 @@ test_that("cdModel() with energy fits are correct", {
   alpha <- 0.3
   beta <- 0.9
   gamma <- -0.2
-  testData$fitGDPgamma0 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPgamma0 = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
   modelGamma0 <- cdModel(fitGDPgamma0 ~ iK + iL + iU + iYear, data = testData, 
                          constrained = TRUE, save.data = TRUE)
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
@@ -123,7 +131,9 @@ test_that("cdModel() with energy fits are correct", {
   alpha <- 1.2
   beta <- -0.1
   gamma <- -0.1
-  testData$fitGDPalpha1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPalpha1 = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
+  
   modelAlpha1 <- cdModel(fitGDPalpha1 ~ iK + iL + iU + iYear, data = testData, 
                          constrained = TRUE, save.data = TRUE)
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
@@ -136,7 +146,8 @@ test_that("cdModel() with energy fits are correct", {
   alpha <- -0.1
   beta <- 1.2
   gamma <- -0.1
-  testData$fitGDPbeta1 <- exp(lambda * testData$iYear) * testData$iK^alpha * testData$iL^beta * testData$iU^gamma
+  testData <- transform(testData,
+                        fitGDPbeta1 = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
   modelBeta1 <- cdModel(fitGDPbeta1 ~ iK + iL + iU + iYear, data = testData, 
                          constrained = TRUE, save.data = TRUE)
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
@@ -161,8 +172,21 @@ test_that("cdModel() with energy fits are correct", {
 
 test_that("linexModel() fits are correct", {
   
-  # add tests here.
-  expect_equal(1,1)
+  # Use the US factors of production from the Calvin source
+  testData <- subset(EconData::Calvin, Country=="US")
+
+  # Concoct some data and add it to testData.
+  a_0 <- 0.2
+  c_t <- 0.5
+  testData <- within(testData, {
+    rho_l <- iL / iU
+    rho_k <- iK / (0.5 * (iL + iU))
+    fitGDP <- iU * exp(a_0*(2*(1-1/rho_k) + c_t * (rho_l - 1)))
+  })
   
-  
+  # Use testData to perform a fit.
+  modelLinex <- linexModel(fitGDP ~ iK + iL + iU + iYear, data = testData, save.data = TRUE)
+  # We expect scale to be 1.0, because we fit exactly
+  # We expect a_0 and c_t to be the same as we used to create fitGDP.
+  expect_equivalent(naturalCoef(modelLinex)[, c("scale", "a_0", "c_t"), drop=TRUE], list(1, a_0, c_t) )
 })
