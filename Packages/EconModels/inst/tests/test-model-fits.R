@@ -178,15 +178,21 @@ test_that("linexModel() fits are correct", {
   # Concoct some data and add it to testData.
   a_0 <- 0.2
   c_t <- 0.5
-  testData <- within(testData, {
-    rho_l <- iL / iU
-    rho_k <- iK / (0.5 * (iL + iU))
-    fitGDP <- iU * exp(a_0*(2*(1-1/rho_k) + c_t * (rho_l - 1)))
-  })
-  
+  a_1 <- a_0 * c_t
+  testData <- transform(testData, rho_l = iL / iU)
+  testData <- transform(testData, rho_k = iK / (0.5 * (iL + iU)))
+  testData <- transform(testData, fitGDP = iU * exp(a_0*(2*(1-1/rho_k) + c_t * (rho_l - 1))))
   # Use testData to perform a fit.
   modelLinex <- linexModel(fitGDP ~ iK + iL + iU + iYear, data = testData, save.data = TRUE)
   # We expect scale to be 1.0, because we fit exactly
   # We expect a_0 and c_t to be the same as we used to create fitGDP.
-  expect_equivalent(naturalCoef(modelLinex)[, c("scale", "a_0", "c_t"), drop=TRUE], list(1, a_0, c_t) )
+  expect_equivalent(naturalCoef(modelLinex)[, c("scale", "a_0", "c_t", "a_1"), drop=TRUE], list(1, a_0, c_t, a_1))
 })
+
+test_that("sfModel() fits are correct", {
+  
+  # Use the US factors of production from the Calvin source
+  testData <- subset(EconData::Calvin, Country=="US")
+  
+})
+
