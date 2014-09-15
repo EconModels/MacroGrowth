@@ -1,7 +1,7 @@
 
 context('Testing Model Fits')
 
-test_that("cdModel() fits are correct", {
+test_that("cdModel() fits are correct (no energy)", {
 
   # Use the US factors of production from the Calvin source
   testData <- subset(EconData::Calvin, Country=="US")  
@@ -29,10 +29,11 @@ test_that("cdModel() fits are correct", {
                     list(0, 1, 0))
 })
 
-test_that("linexModel() fits are correct", {
-  
+test_that("cdModel() fits are correct (with energy)", {
   # add tests here.
   expect_equal(1,1)
+})
   
-  
+test_that("linexModel() fits are correct", {
+  expect_equal(1,1)
 })
