@@ -630,7 +630,6 @@ cesModel <- function(formula, data,
   start <- coef(bestMod)
   
   for (algorithm in algorithms) {
-    print (algorithm)
     model <- tryCatch( {
       eval(substitute(
         cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
