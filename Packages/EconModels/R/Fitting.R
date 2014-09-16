@@ -583,8 +583,15 @@ cesModel <- function(formula, data,
     if (numFactors == 2) {
       # We want a model with only 2 factors. No need for a rho1 argument.
       model <- tryCatch( {
-        cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-               rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
+        eval(substitute(cesEst(data = data, yName = yNAME, xNames = xNAMES, 
+                               tName = tNAME, method=ALGORITHM, rho = RHO,
+                               control = CONTROL, multErr = MULTERR, ...),
+                        list(DATA = data, yNAME = yName, xNAMES=xNames,
+                             tNAME = tName, ALGORITHM = algorithm, RHO = rho,
+                             CONTROL = chooseCESControl(algorithm), MULTERR = multErr)
+        ))
+        # cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
+        #       rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e)))
