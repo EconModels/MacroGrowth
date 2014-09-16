@@ -234,7 +234,7 @@ test_that("cesModel() fits without energy are correct", {
                     list(scale, lambda, delta, rho))
   
   # Fit using cesModel() 
-  modelces <- cesModel(fitGDP ~ iK + iL + iYear, data = testData, nest = c(1, 2))
+  modelces <- cesModel(fitGDP ~ iK + iL + iYear, data = testData, nest = c(1, 2), digits=30)
   expect_equivalent(coef(modelces)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, delta, rho))
 })
