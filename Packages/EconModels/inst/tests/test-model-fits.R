@@ -254,30 +254,65 @@ test_that("cesModel() fits with energy are correct", {
   nu <- 1.0
   
   # Concoct some data and add it to testData
-  fitGDP <- cesCalc(xNames = c("iK", "iL", "iXp"), data = testData, 
-                    coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
-                             rho_1=rho_1, rho=rho, nu=nu),
-                    nested = TRUE,
-                    tName = "iYear")
-  testData <- cbind(testData, fitGDP)
+  fitGDPXp <- cesCalc(xNames = c("iK", "iL", "iXp"), data = testData, 
+                      coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
+                               rho_1=rho_1, rho=rho, nu=nu),
+                      nested = TRUE,
+                      tName = "iYear")
+  testData <- cbind(testData, fitGDPXp)
   
   # Try a manual fit using cesEst
-  # Commented for now, because the call to cesEst is not working.
-#   model_manual <- cesEst(yName = "fitGDP", xNames = c("iK", "iL", "iXp"), tName = "iYear", 
-#                          data = testData, method = "PORT", multErr = TRUE,
-#                          start = c(gamma=scale, lambda=lambda,
-#                                    delta_1=delta_1, delta=delta),
-#                          rho = rho,
-#                          rho1 = rho_1,
-#                          control=chooseCESControl("PORT"))
-#   expect_equivalent(coef(model_manual)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho")], 
-#                     list(scale, lambda, delta_1, delta, rho_1, rho))
+  model_manualXP <- cesEst(yName = "fitGDPXp", xNames = c("iK", "iL", "iXp"), tName = "iYear", 
+                           data = testData, method = "PORT", multErr = TRUE,
+                           start = c(gamma=scale, lambda=lambda,
+                                     delta_1=delta_1, delta=delta),
+                           rho = rho,
+                           rho1 = rho_1,
+                           control=chooseCESControl("PORT"))
+  expect_equivalent(coef(model_manualXP)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho")], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
 
-  # Try a fit using cesModel
-  # Commented for now, because it takes a long time.
-  # But, this test fails.
-  # Re-enable it after we fix the no energy tests above.
-#   modelces <- cesModel(fitGDP ~ iK + iL + iXp + iYear, data = testData, nest = c(1,2,3))
-#   expect_equivalent(coef(modelces)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
-#                     list(scale, lambda, delta_1, delta, rho_1, rho))
+  # Fit using cesModel and compare to concocted data
+  modelcesXp <- cesModel(fitGDPXp ~ iK + iL + iXp + iYear, data = testData, nest = c(1,2,3), digits=30)
+  expect_equivalent(coef(modelcesXp)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
+  
+  # Try to fit using a different energy
+  fitGDPU <- cesCalc(xNames = c("iK", "iL", "iU"), data = testData, 
+                      coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
+                               rho_1=rho_1, rho=rho, nu=nu),
+                      nested = TRUE,
+                      tName = "iYear")
+  testData <- cbind(testData, fitGDPU)
+
+  # Fit using cesModel and compare to concocted data
+  modelcesU <- cesModel(fitGDPU ~ iK + iL + iU + iYear, data = testData, nest = c(1,2,3), digits=30)
+  expect_equivalent(coef(modelcesU)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
+  
+  # Try to fit using kle nest
+  fitGDPUlek <- cesCalc(xNames = c("iL", "iU", "iK"), data = testData, 
+                        coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
+                                 rho_1=rho_1, rho=rho, nu=nu),
+                        nested = TRUE,
+                        tName = "iYear")
+  testData <- cbind(testData, fitGDPUlek)
+  
+  # Fit with cesModel and compare to concocted data
+  modelcesUlek <- cesModel(fitGDPUlek ~ iK + iL + iU + iYear, data = testData, nest = c(2,3,1), digits=30)
+  expect_equivalent(coef(modelcesUlek)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
+
+  # Try to fit using ekl nest
+  fitGDPUekl <- cesCalc(xNames = c("iU", "iK", "iL"), data = testData, 
+                        coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
+                                 rho_1=rho_1, rho=rho, nu=nu),
+                        nested = TRUE,
+                        tName = "iYear")
+  testData <- cbind(testData, fitGDPUekl)
+
+  # Fit with cesModel and compare to concocted data
+  modelcesUekl <- cesModel(fitGDPUekl ~ iK + iL + iU + iYear, data = testData, nest = c(3,1,2), digits=30)
+  expect_equivalent(coef(modelcesUekl)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
 })
