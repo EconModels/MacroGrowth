@@ -480,6 +480,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from 
 #' the default values.
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
+#' @param digits the number of sse digits that is to be considered significant.
 #' @note For now the components in \code{formula} (or the arguments \code{response}, 
 #' \code{a}, \code{b}, etc. ) must correspond to variables in \code{data} and may
 #' not be other kinds of expressions.
@@ -583,12 +584,13 @@ cesModel <- function(formula, data,
     if (numFactors == 2) {
       # We want a model with only 2 factors. No need for a rho1 argument.
       model <- tryCatch( {
-        eval(substitute(cesEst(data = data, yName = yNAME, xNames = xNAMES, 
-                               tName = tNAME, method=ALGORITHM, rho = RHO,
-                               control = CONTROL, multErr = MULTERR, ...),
-                        list(DATA = data, yNAME = yName, xNAMES=xNames,
-                             tNAME = tName, ALGORITHM = algorithm, RHO = rho,
-                             CONTROL = chooseCESControl(algorithm), MULTERR = multErr)
+        eval(substitute(
+          cesEst(data = DATA, yName = yNAME, xNames = xNAMES, 
+                 tName = tNAME, method=ALGORITHM, rho = RHO,
+                 control = CONTROL, multErr = MULTERR, ...),
+          list(DATA = data, yNAME = yName, xNAMES=xNames,
+               tNAME = tName, ALGORITHM = algorithm, RHO = rho,
+               CONTROL = chooseCESControl(algorithm), MULTERR = multErr)
         ))
         # cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
         #       rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
@@ -602,11 +604,12 @@ cesModel <- function(formula, data,
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-                 rho = RHO, rho1 = RHO1, control=CONTROL, start=START, multErr=MULTERR, ...),
-          list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-                RHO = rho, RHO1 = rho1, 
-                CONTROL =  chooseCESControl(algorithm), START=start, MULTERR=multErr)
+          cesEst(data=DATA, yName=yNAME, xNames=xNAMES, 
+                 tName=tNAME, method=ALGORITHM, rho = RHO, rho1 = RHO1, 
+                 control=CONTROL, multErr=MULTERR, ...),
+          list( DATA = data, yNAME = yName, xNAMES = xNames, 
+                tNAME = tName, ALGORITHM = algorithm, RHO = rho, RHO1 = rho1, 
+                CONTROL = chooseCESControl(algorithm), MULTERR=multErr)
         ))
         #cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
         #       rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
@@ -635,7 +638,7 @@ cesModel <- function(formula, data,
         cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
                control=CONTROL, start=START, multErr=MULTERR, ...),
         list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-              CONTROL =  chooseCESControl(algorithm), START=start, MULTERR=multErr)
+              CONTROL = chooseCESControl(algorithm), START=start, MULTERR=multErr)
       ))
       #      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
       #             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
