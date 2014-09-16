@@ -678,7 +678,7 @@ cesModel <- function(formula, data,
     }
   }
   
-  res <- bestModel(models)
+  res <- bestModel(models, digits=digits)
   if ( is.null( res ) ) {
     warning("cesModel() produced a NULL model.")
   } else {
