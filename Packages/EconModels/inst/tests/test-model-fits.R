@@ -228,9 +228,10 @@ test_that("cesModel() fits without energy are correct", {
   testData <- cbind(testData, fitGDP)
   
   # Try a manual fit using cesEst.
-  model_manual <- cesEst(yName = "fitGDP", xNames = c("iK", "iL"), data = testData, tName = "iYear", 
-                         method = "PORT", multErr = TRUE)
-  expect_equivalent(coef(model_manual)[c("gamma", "lambda", "delta", "rho")], list(scale, lambda, delta, rho))
+  model_manual <- cesEst(yName = "fitGDP", xNames = c("iK", "iL"), data = testData, 
+                         tName = "iYear", method = "PORT", multErr = TRUE)
+  expect_equivalent(coef(model_manual)[c("gamma", "lambda", "delta", "rho")], 
+                    list(scale, lambda, delta, rho))
   
   # Fit using cesModel() 
   modelces <- cesModel(fitGDP ~ iK + iL + iYear, data = testData, nest = c(1, 2))
