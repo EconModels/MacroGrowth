@@ -126,7 +126,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
     ) 
   }
   formulas <- list( log(y) ~ x + time,
-                    log(y) - x ~ time)
+                    log(y) - log(x) ~ time)
   formulas <- lapply( formulas,
                       function(x) do.call(substitute, 
                                           list(x,
@@ -454,6 +454,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
 #' \code{c} and \code{d} are optional.
 #' @param data a data frame, in which to evaluate the formula.
+#' #' @param formula a formula of the form \code{response ~ captial + labor + energy + time}
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param a instead of specifying a formula, expressions for
