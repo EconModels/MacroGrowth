@@ -233,10 +233,21 @@ test_that("cesModel() fits without energy are correct", {
   expect_equivalent(coef(model_manual)[c("gamma", "lambda", "delta", "rho")], 
                     list(scale, lambda, delta, rho))
   
-  # Fit using cesModel() 
+  # Fit using cesModel()
   modelces <- cesModel(fitGDP ~ iK + iL + iYear, data = testData, nest = c(1, 2), digits=30)
   expect_equivalent(coef(modelces)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, delta, rho))
+  
+  # Try different nesting
+  fitGDP2 <- cesCalc(xNames = c("iL", "iK"), data = testData, 
+                     coef = c(gamma=scale, lambda=lambda, delta=delta, rho=rho, nu=nu),
+                     tName = "iYear")
+  testData <- cbind(testData, fitGDP2)
+  
+  modelces2 <- cesModel(fitGDP2 ~ iK + iL + iYear, data = testData, nest = c(2, 1), digits=30)
+  expect_equivalent(coef(modelces2)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
+                    list(scale, lambda, 1-delta, rho))
+  
 })
 
 test_that("cesModel() fits with energy are correct", {
