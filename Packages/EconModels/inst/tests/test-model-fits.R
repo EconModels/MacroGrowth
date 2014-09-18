@@ -202,13 +202,33 @@ test_that("sfModel() fits are correct", {
   # Try a manual fit using lm
   model_manual <- lm(log(fitGDP) - log(iK) ~ iYear, data = testData)
   # Expect intercept (in log space) to be 0, and coefficient for iYear to be 0.02.
-  expect_equivalent(coef(model_manual)[c("(Intercept)", "iYear")], list(0, 0.02))
+  expect_equivalent(coef(model_manual)[c("(Intercept)", "iYear")], list(0, lambda))
   
   # Fit using sfModel
   modelsf <- sfModel(fitGDP ~ iK + iYear, data = testData, constrained = TRUE, save.data = TRUE)
   # We expect scale to be 1.0, because we should fit exactly.
   # We expect m and lambda to be the same as we used to create fitGDP.
   expect_equivalent(naturalCoef(modelsf)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))
+  
+  # Fit using a different factor of production.
+  testData <- transform(testData, fitGDPU = exp(lambda * iYear) * iU^m)
+  # Fit using sfModel
+  modelsfU <- sfModel(fitGDPU ~ iU + iYear, data = testData, constrained = TRUE, save.data = TRUE)
+  expect_equivalent(naturalCoef(modelsfU)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))
+  
+  # Try with lambda = 0
+  lambda <- 0
+  testData <- transform(testData, fitGDPsmalll = exp(lambda * iYear) * iL^m)
+  # Fit using sfModel
+  modelsfsmalll <- sfModel(fitGDPsmalll ~ iL + iYear, data = testData, constrained = TRUE, save.data = TRUE)
+  expect_equivalent(naturalCoef(modelsfsmalll)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))
+  
+  # Try with very large lambda
+  lambda <- 0.9
+  testData <- transform(testData, fitGDPlargel = exp(lambda * iYear) * iL^m)
+  # Fit using sfModel
+  modelsflargel <- sfModel(fitGDPlargel ~ iL + iYear, data = testData, constrained = TRUE, save.data = TRUE)
+  expect_equivalent(naturalCoef(modelsflargel)[, c("scale", "lambda", "m"), drop=TRUE], list(1, lambda, m))  
 })
 
 test_that("cesModel() fits without energy are correct", {
