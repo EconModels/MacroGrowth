@@ -248,6 +248,21 @@ test_that("cesModel() fits without energy are correct", {
   expect_equivalent(coef(modelces2)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, 1-delta, rho))
   
+  # Try data near a boundary, delta = 0.99
+  scale <- 1.0 # cesEst calls this "gamma"
+  lambda <- 0.02
+  delta <- 0.99
+  rho <- 0.4
+  nu <- 1.0
+
+  fitGDP3 <- cesCalc(xNames = c("iK", "iL"), data = testData, 
+                     coef = c(gamma=scale, lambda=lambda, delta=delta, rho=rho, nu=nu),
+                     tName = "iYear")
+  testData <- cbind(testData, fitGDP3)
+  
+  modelces3 <- cesModel(fitGDP3 ~ iK + iL + iYear, data = testData, nest = c(1, 2), digits=30)
+  expect_equivalent(coef(modelces3)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta, rho))
 })
 
 test_that("cesModel() fits with energy are correct", {
@@ -258,7 +273,7 @@ test_that("cesModel() fits with energy are correct", {
   # Concoct some data and add it to testData
   scale <- 1.0 # cesEst calls this "gamma"
   lambda <- 0.02
-  delta_1 <- 0.45
+  delta_1 <- 0.3
   delta <- 0.4
   rho_1 <- 0.35
   rho <- 0.4
@@ -287,6 +302,24 @@ test_that("cesModel() fits with energy are correct", {
   modelcesXp <- cesModel(fitGDPXp ~ iK + iL + iXp + iYear, data = testData, nest = c(1,2,3), digits=30)
   expect_equivalent(coef(modelcesXp)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
                     list(scale, lambda, delta_1, delta, rho_1, rho))
+  
+  # Fit using different nest
+  fitGDPXp2 <- cesCalc(xNames = c("iL", "iK", "iXp"), data = testData, 
+                       coef = c(gamma=scale, lambda=lambda, delta_1=delta_1, delta=delta, 
+                                rho_1=rho_1, rho=rho, nu=nu),
+                       nested = TRUE,
+                       tName = "iYear")
+  testData <- cbind(testData, fitGDPXp2)
+  
+  # Fit using cesModel and compare to concocted data
+  modelcesXp2 <- cesModel(fitGDPXp2 ~ iK + iL + iXp + iYear, data = testData, nest = c(2,1,3), digits=30)
+  expect_equivalent(coef(modelcesXp2)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, delta_1, delta, rho_1, rho))
+
+  # Try with mixed up variables
+  modelcesXp3 <- cesModel(fitGDPXp ~ iK + iL + iXp + iYear, data = testData, nest = c(2,1,3), digits=30)
+  expect_equivalent(coef(modelcesXp3)[c("gamma", "lambda", "delta_1", "delta", "rho_1", "rho"), drop=TRUE], 
+                    list(scale, lambda, 1 - delta_1, delta, rho_1, rho))
   
   # Try to fit using a different energy
   fitGDPU <- cesCalc(xNames = c("iK", "iL", "iU"), data = testData, 
