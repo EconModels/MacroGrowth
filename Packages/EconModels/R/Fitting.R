@@ -717,7 +717,7 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
   # rho_1 and delta_1 parameters. 
   # Test for the without energy model.
   withoutEnergy <- is.na(coef(model)["rho_1"]) || is.na(coef(model)["delta_1"])
-  
+
   if (withoutEnergy){
     # The coefficient representing the split between k and l 
     # is given by delta in the model. But, in our calculations, 
@@ -764,10 +764,14 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
                               sse = sum(resid(model)^2)
   )
   # Calculate some metadata, including gamma. See comments above.
-  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2) ) {
+  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) {
     alpha <- delta_1
     beta <- 1.0 - delta_1
     gamma <- 0.0
+  } else if (nestMatch(nest, c(2, 1))){
+    alpha <- 1 - delta_1
+    beta <- delta_1
+    gamma <- 0
   } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
     alpha <- delta * delta_1
     beta  <- delta * (1.0 - delta_1)
