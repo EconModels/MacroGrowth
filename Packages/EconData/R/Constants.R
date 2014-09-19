@@ -1,6 +1,7 @@
 # List of countries in our data set.
 #' @export
-countryAbbrevs <- c(US="US", UK="UK", JP="JP", AT="AT", CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
+countryAbbrevs <- c(US="US", UK="UK", JP="JP", AT="AT", PT="PT", 
+                    CN="CN", ZA="ZA", SA="SA", IR="IR", TZ="TZ", ZM="ZM")
 # Energy types and factors
 #' @export
 energyTypes <- c(Qp="iQp", Xp="iXp", Qf="iQf", Xf="iXf", U="iU") 
