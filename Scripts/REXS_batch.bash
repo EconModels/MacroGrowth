@@ -55,9 +55,10 @@ ssh node-09 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(ek\)l -S $SRC $
 
 ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-10.txt" &
 # node-11 is not functional.
-ssh node-12 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-12.txt" &
-ssh node-13 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" &
+# node-12 is not functional.
+ssh node-13 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-13.txt" &
+ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-14.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-14 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-14.txt" &
+ssh node-15 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-15.txt" &
