@@ -49,36 +49,37 @@ ssh node-07 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 &
 ssh node-09 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-09.txt" &
 ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-10.txt" &
 # node-11 is not functional.
-ssh node-12 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-12.txt" & 
-ssh node-13 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" &
+# node-12 does not have a reasonable home directory.
+ssh node-13 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" & 
+ssh node-14 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-14.txt" &
 
 # The next lines run the cese analyses for exergy (X)
 
-ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-14.txt" &
 # node-15 doesn't work. Can't find the object "Calvin" for some reason.
-ssh node-16 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
+ssh node-16 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
 # node-17 is missing
-ssh node-18 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-18.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-19.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-18 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
 # Faulty R installations on nodes 21, 22, 23, and 24.
 # node-25 is missing.
 # Faulty R installation on node 26.
-ssh node-27 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-27.txt" &
-ssh node-28 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-28.txt" &
-ssh node-29 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-29.txt" &
-ssh node-30 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-30.txt" &
+ssh node-27 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-27.txt" &
+ssh node-28 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-28.txt" &
+ssh node-29 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-29.txt" &
+ssh node-30 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-30.txt" &
+# node-31 appears to be down.
+ssh node-32 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-32.txt" &
 
 # We have useful work (U) data for US, UK, and JP only.
 
-# node-31 appears to be down.
-ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-32.txt" &
 # node-33 is down.
 # node-34 is down.
-ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-35.txt" &
+ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-35.txt" &
 # node-36 has a bad R install
-ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-37.txt" &
+ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-37.txt" &
+ssh node-38 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-38.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-38 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-38.txt" &
+ssh node-39 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-39.txt" &
