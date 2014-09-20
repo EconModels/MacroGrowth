@@ -128,4 +128,4 @@ if [ "$DEBUG" = true ] ; then
 fi
 
 # Perform the rsync copy from dahl to the local machine.
-rsync $RSYNC_OPTS $USER@fs1.calvin.edu:$REMOTE_FILES $LOCAL_DIR
+rsync $RSYNC_OPTS $USER@dahl.calvin.edu:$REMOTE_FILES $LOCAL_DIR
