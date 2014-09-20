@@ -61,6 +61,9 @@ show the files to be transferred to the local machine, without actually transfer
 * The files are downloaded to the `data_postprocessed` directory on the local machine.
 * Use the function `loadPostProcessedData` in the `EconData` package to load the downloaded data into
 the environment. 
+* The `DownloadPostProcessed.bash` script connects to `dahl.calvin.edu` (`node-00`). 
+That choice was made to minimize the risk that a file won't prpogate across the cluster 
+file system prior to the download request.
 
 The data files are saved with `saveRDS` by `PostProcess.R`, so `loadPostProcessedData` uses `readRDS` to 
 load the data into memory. 
