@@ -142,6 +142,13 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 # Load historical data
 historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
 
+# Add some pre-econometric data
+historicalData <- transform(historicalData, KPerGDP = iK/iGDP)
+historicalData <- transform(historicalData, LPerGDP = iL/iGDP)
+historicalData <- transform(historicalData, XpPerGDP = iXp/iGDP)
+historicalData <- transform(historicalData, XfPerGDP = iXf/iGDP)
+historicalData <- transform(historicalData, UPerGDP = iU/iGDP)
+
 # The working directory is set to the directory that contains this file.
 # To reach the post-processed data, we need to move 
 # up two levels and into the data_postprocessed directory.
@@ -150,7 +157,7 @@ historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
 pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs",dir = pp_path)
+REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs", dir = pp_path)
 IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs",dir = pp_path)
 Leeds_Coeffs <- loadPostProcessedData(Source = "Leeds", kind = "coeffs", dir = pp_path)
 AllCoeffs <- rbind(REXS1960_Coeffs, IST_Coeffs, Leeds_Coeffs)
@@ -505,7 +512,7 @@ Discuss data sources here.
 
 Figure~\ref{fig:Historical_Data_1} shows a graph of historical data.
 
-<<Historical_Data_1, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=6, fig.cap="Historical data.", eval=TRUE>>=
+<<Historical_Data_1, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=7, fig.cap="Historical data.">>=
 mdata <- melt(historicalData, 
               measure.vars = c("iGDP", "iK", "iL", "iXp", "iXf", "iU"), 
               variable.name = "variable",
@@ -518,9 +525,10 @@ historicalPlot(mdata,
   ylab("Indexed (1960=1 or 1978=1)")
 @
 
-Figure~\ref{fig:Historical_Data_2} shows the same data in a different form.
+Figure~\ref{fig:Historical_Data_2} shows the same data as Figure~\ref{fit:Historical_Data_1} 
+in a different form.
 
-<<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=6, fig.cap="Historical data.", eval=TRUE>>=
+<<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=7, fig.cap="Historical data.">>=
 historicalPlot(mdata, 
                mapping=aes(x=Year, y=value, group=Source, linetype=Source), 
                facet_formula = Country ~ variable, 
@@ -528,6 +536,36 @@ historicalPlot(mdata,
   xlab("") + 
   ylab("Indexed (1960=1 or 1978=1)")
 @
+
+Figure~\ref{fig:Preeconometric_1} shows a graph of factors of production relative to GDP.
+
+<<Preeconometric_1, fig.pos="H", fig.align='center', fig.width=8, fig.height=7, fig.cap="Pre-econometric data.">>=
+mdata2 <- melt(historicalData, 
+               measure.vars = c("KPerGDP", "LPerGDP", "XpPerGDP", "XfPerGDP", "UPerGDP"), 
+               variable.name = "variable",
+               value.name = "value")
+
+historicalPlot(mdata2, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = Country ~ Source, 
+               line_types = c(1,5,2,6,4)) + 
+  xlab("") + 
+  ylab("Indexed Econometric Ratios (1960=1 or 1978=1)")
+@
+
+Figure~\ref{fig:Preeconometric_2} shows the same data as Figure~\ref{fig:Preeconometric_1} 
+in a different form.
+
+<<Preeconometric_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=7, fig.cap="Pre-econometric data.">>=
+historicalPlot(mdata2, 
+               mapping=aes(x=Year, y=value, group=Source, linetype=Source), 
+               facet_formula = Country ~ variable, 
+               line_types = c(1,3,5)) + 
+  xlab("") + 
+  ylab("Indexed Econometric Ratios (1960=1 or 1978=1)")
+@
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -709,25 +747,25 @@ Historical data are shown as a black line.
 The fit to historical data is shown as a white line.
 The gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
-<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=4.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
+<<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=5.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
 cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
 standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda, color=Source), 
                     facet_formula=country~energy, alpha=0.05) +
-    scale_x_continuous(limits=c(0.8, 1.2), breaks=c(0.9, 1.0, 1.1)) +
-    scale_y_continuous(limits=c(-0.1, 0.2), breaks=c(0.0, 0.1, 0.2)) +    
+    scale_x_continuous(limits=c(0.9, 1.5), breaks=c(1.0, 1.2, 1.4)) +
+    scale_y_continuous(limits=c(-0.02, 0.05), breaks=c(0.0, 0.025, 0.05)) +    
     labs(x=expression(theta), y=expression(lambda)) +
     guides(colour=guide_legend(override.aes = aes(alpha=1))) #+
 #     geom_density2d()
 @
 
-<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=4, fig.cap="Cobb-Douglas resample model parameters.">>=
+<<CD_Ternary_Scatter_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=5, fig.cap="Cobb-Douglas resample model parameters.">>=
 standardTriPlot(data=cdCoeffsData, 
                 mapping=aes(color=Source),
                 facet_formula=country~energy) +
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="US Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="US Cobb-Douglas fitted models.">>=
 cdFittedDataUS <- subset(AllFitted, subset = model=="cd" & Country=="US")
 spaghettiPlot(data=cdFittedDataUS, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
@@ -751,6 +789,13 @@ spaghettiPlot(data=cdFittedDataJP, facet_formula=Source~energy, level=spaghettiG
 <<CD_GDP_Spaghetti_Graphs_AT, fig.pos="H", fig.align='center', fig.width=5, fig.height=3.5, fig.cap="AT Cobb-Douglas fitted models.">>=
 cdFittedDataAT <- subset(AllFitted, subset = model=="cd" & Country=="AT")
 spaghettiPlot(data=cdFittedDataAT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CD_GDP_Spaghetti_Graphs_PT, fig.pos="H", fig.align='center', fig.width=5, fig.height=2.5, fig.cap="PT Cobb-Douglas fitted models.">>=
+cdFittedDataPT <- subset(AllFitted, subset = model=="cd" & Country=="PT")
+spaghettiPlot(data=cdFittedDataPT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
@@ -1001,13 +1046,24 @@ Again, historical data are shown as a black line,
 the fit to historical data is shown as a white line and 
 the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
-<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=4, fig.height=4, fig.cap="UK LINEX model (with energy) resampling results.">>=
+<<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="LINEX model resampling results.">>=
 linexCoeffsData <- subset(AllCoeffs, subset = model=="linex")
 standardScatterPlot(data=linexCoeffsData,
                     mapping=aes(x=a_0, y=c_t, color=Source),
                     facet_formula=country~energy, alpha=0.05) +
     scale_x_continuous(limits=c(0.0, 1.0), breaks=c(0.0, 0.5, 1.0)) +
     scale_y_continuous(limits=c(-10.0, 10.0), breaks=c(10.0, -5.0, 0.0, 5.0, 10.0)) +
+    labs(x=expression(a[0]), y=expression(c[t])) +
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
+@
+
+<<LINEXq_Resample_Graph_PT, fig.pos="H", fig.align='center', fig.width=6, fig.height=2.5, fig.cap="LINEX model resampling results for PT.">>=
+linexCoeffsData <- subset(AllCoeffs, subset = model=="linex" & country=="PT")
+standardScatterPlot(data=linexCoeffsData,
+                    mapping=aes(x=a_0, y=c_t, color=Source),
+                    facet_formula=country~energy, alpha=0.05) +
+#     scale_x_continuous(limits=c(0.0, 1.0), breaks=c(0.0, 0.5, 1.0)) +
+#     scale_y_continuous(limits=c(-10.0, 10.0), breaks=c(10.0, -5.0, 0.0, 5.0, 10.0)) +
     labs(x=expression(a[0]), y=expression(c[t])) +
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
@@ -1036,6 +1092,13 @@ spaghettiPlot(data=linexFittedDataJP, facet_formula=Source~energy, level=spaghet
 <<LINEX_GDP_Spaghetti_Graphs_AT, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="AT LINEX fitted models.">>=
 linexFittedDataAT <- subset(AllFitted, subset = model=="linex" & Country=="AT")
 spaghettiPlot(data=linexFittedDataAT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<LINEX_GDP_Spaghetti_Graphs_PT, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="PT LINEX fitted models.">>=
+linexFittedDataPT <- subset(AllFitted, subset = model=="linex" & Country=="PT")
+spaghettiPlot(data=linexFittedDataPT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
