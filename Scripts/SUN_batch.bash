@@ -1,4 +1,4 @@
-s#! /bin/bash
+#! /bin/bash
 # This is a shell script that is specific to the dahl supercomputer at Calvin College.
 # (See http://dahl.calvin.edu)
 # 
