@@ -37,7 +37,7 @@ opts_chunk$set(
   # Set echo=TRUE on an individual chunk to see its code.
   echo=FALSE     
 )
-spaghettiGraphLevel <- 0.95 # Spaghetti graph bands will encompass 95% of the data.
+spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
 % These equations are used in several locations in the paper.
@@ -288,7 +288,7 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 
 <<data, echo=FALSE, message=FALSE>>=
 # Load historical data
-historicalData <- Calvin # From the EconData package
+historicalData <- SUN # From the EconData package
 
 # The working directory is set to the directory that contains this file.
 # To reach the post-processed data, we need to move 
@@ -298,14 +298,14 @@ historicalData <- Calvin # From the EconData package
 pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "Calvin", kind = "coeffs", dir=pp_path)
+coeffs_df <- loadPostProcessedData(Source = "SUN", kind = "coeffs", dir=pp_path)
 coeffs_df_ZA <- subset(coeffs_df, subset=country=="ZA")
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "Calvin", kind = "fitted", dir=pp_path)
+fitted_df <- loadPostProcessedData(Source = "SUN", kind = "fitted", dir=pp_path)
 fitted_df_ZA <- subset(fitted_df, subset=Country=="ZA")
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir=pp_path)
-oModels_ZA <- oModels$Calvin$ZA
+oModels <- loadPostProcessedData(Source = "SUN", kind = "models", dir=pp_path)
+oModels_ZA <- oModels$SUN$ZA
 @
 
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
@@ -318,7 +318,7 @@ historicalPlot(data=mdata,
                facet_formula = Country ~ Source, 
                line_types = c(1,5,2,3)) +
   xlab("") +
-  ylab("Indexed (1991=1)")
+  ylab("Indexed (1973=1)")
 @
 
 
@@ -347,7 +347,7 @@ standardTriPlot(data=cdCoeffsData_ZA, facet_formula=country~energy)
 <<CD_GDP_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="Cobb-Douglas fitted models.">>=
 cdFittedData_ZA <- filter(fitted_df_ZA, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQp"))
 spaghettiPlot(data=cdFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1991=1)")
+    labs(y="Indexed GDP (1973=1)")
 @
 
 
@@ -408,7 +408,7 @@ standardTriPlot(data=cesCoeffsData_ZA, facet_formula=country~nestStrParen)
 <<CES_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="CES fitted models with various nestings.">>=
 cesFittedData_ZA <- filter(fitted_df_ZA, model=="ces", nestStr %in% c("iK+iL", "iK+iL+iQp", "iL+iQp+iK", "iQp+iK+iL"))
 spaghettiPlot(data=cesFittedData_ZA, facet_formula=Country~nestStrParen, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1991=1)")
+    labs(y="Indexed GDP (1973=1)")
 @
 
 
@@ -433,7 +433,7 @@ standardScatterPlot(data=linexCoeffsData_ZA, aes(a_0, c_t), facet_formula=countr
 <<LINEX_Spaghetti_Graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="LINEX fitted models.">>=
 linexFittedData_ZA <- filter(fitted_df_ZA, model=="linex", energy=="iQp")
 spaghettiPlot(data=linexFittedData_ZA, facet_formula=Country~energy, level=spaghettiGraphLevel) +
-    labs(y="Indexed GDP (1991=1)")
+    labs(y="Indexed GDP (1973=1)")
 @
 
 
