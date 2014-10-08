@@ -335,8 +335,8 @@ historicalPlot(data=mdata,
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=5, fig.height=3, fig.cap="$\\lambda$ and $\\theta$ values for CD resample models.">>=
 cdCoeffsData_ZA <- filter(coeffs_df_ZA, model=="cd", nestStr %in% c("iK+iL", "iK+iL+iQp"))
 standardScatterPlot(data=cdCoeffsData_ZA, mapping=aes(scale, lambda), facet_formula=country~energy, alpha=0.05) +
-    scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) +
-    scale_y_continuous(breaks=c(0, 0.002, 0.004, 0.006, 0.008)) +    
+#     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) +
+#     scale_y_continuous(breaks=c(0, 0.002, 0.004, 0.006, 0.008)) +    
     labs(x=expression(theta), y=expression(lambda))
 @
 
