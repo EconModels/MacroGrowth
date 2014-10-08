@@ -49,6 +49,45 @@ test_that("cdModel() without energy fits are correct", {
                     list(1, 0, gamma))
 })
 
+test_that("cdModel() without energy is correct at edges", {
+  
+  # Use the US factors of production from the Calvin source
+  testData <- subset(EconData::Calvin, Country=="US")  
+  
+  # Cobb-Douglas without energy, alpha=1, beta=0.
+  alpha <- 1.0
+  beta <- 0.0
+  gamma <- 0.0
+  lambda <- 0.1
+  testData <- transform(testData,
+                        fitGDPnoe_alpha1 = exp(lambda * iYear) * iK^alpha * iL^beta)
+  
+  # Fit without constraints
+  modelFree_alpha1 <- cdModel(fitGDPnoe_alpha1 ~ iK + iL + iYear, data = testData, constrained = FALSE, 
+                       save.data = TRUE)
+  # We should obtain scale = 1, because every data point should be fit exactly.
+  # We should obtain gamma = 0, because there is no energy.
+  expect_equivalent(naturalCoef(modelFree_alpha1)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+                    list(1, alpha, beta, gamma, lambda) )
+  
+  # Now switch alpha and beta.
+  # Cobb-Douglas without energy, alpha=1, beta=0.
+  alpha <- 0.0
+  beta <- 1.0
+  gamma <- 0.0
+  lambda <- 0.1
+  testData <- transform(testData,
+                        fitGDPnoe_beta1 = exp(lambda * iYear) * iK^alpha * iL^beta)
+  
+  # Fit without constraints
+  modelFree_beta1 <- cdModel(fitGDPnoe_beta1 ~ iK + iL + iYear, data = testData, constrained = FALSE, 
+                              save.data = TRUE)
+  # We should obtain scale = 1, because every data point should be fit exactly.
+  # We should obtain gamma = 0, because there is no energy.
+  expect_equivalent(naturalCoef(modelFree_beta1)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+                    list(1, alpha, beta, gamma, lambda) )
+})
+
 test_that("cdModel() with energy fits are correct", {
   
   # Use the US factors of production from the Calvin source
