@@ -289,6 +289,7 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 <<data, echo=FALSE, message=FALSE>>=
 # Load historical data
 historicalData <- SUN # From the EconData package
+sourceOfData <- "SUN"
 
 # The working directory is set to the directory that contains this file.
 # To reach the post-processed data, we need to move 
@@ -298,13 +299,13 @@ historicalData <- SUN # From the EconData package
 pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
-coeffs_df <- loadPostProcessedData(Source = "SUN", kind = "coeffs", dir=pp_path)
+coeffs_df <- loadPostProcessedData(Source = sourceOfData, kind = "coeffs", dir=pp_path)
 coeffs_df_ZA <- subset(coeffs_df, subset=country=="ZA")
 # Load fitted data from all models in one large data frame
-fitted_df <- loadPostProcessedData(Source = "SUN", kind = "fitted", dir=pp_path)
+fitted_df <- loadPostProcessedData(Source = sourceOfData, kind = "fitted", dir=pp_path)
 fitted_df_ZA <- subset(fitted_df, subset=Country=="ZA")
 # Load the original models.
-oModels <- loadPostProcessedData(Source = "SUN", kind = "models", dir=pp_path)
+oModels <- loadPostProcessedData(Source = sourceOfData, kind = "models", dir=pp_path)
 oModels_ZA <- oModels$SUN$ZA
 @
 
