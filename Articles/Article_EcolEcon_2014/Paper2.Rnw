@@ -494,7 +494,7 @@ Both $a_0$ and $c_t$ are assumed constant with respect to time.
 \label{sec:Economies}
 %++++++++++++++++++++++++++++++
 
-Discuss economies here. EU15 and MX?
+Discuss economies here.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -525,7 +525,7 @@ historicalPlot(mdata,
   ylab("Indexed (1960=1 or 1970=1)")
 @
 
-Figure~\ref{fig:Historical_Data_2} shows the same data as Figure~\ref{fit:Historical_Data_1} 
+Figure~\ref{fig:Historical_Data_2} shows the same data as Figure~\ref{fig:Historical_Data_1} 
 in a different form.
 
 <<Historical_Data_2, fig.pos="H", fig.align='center', fig.width=8, fig.height=7, fig.cap="Historical data.">>=
@@ -579,7 +579,7 @@ historicalPlot(mdata2,
 
 Each of the economic growth models discussed in 
 Section~\ref{sec:Prod_Func_Forms} has parameters which must be estimated (fitted)
-using data for each economy (see Sections~\ref{sec:Economy_Types} and~\ref{sec:Sources_of_Data}).
+using data for each economy (see Sections~\ref{sec:Economies} and~\ref{sec:Sources_of_Data}).
 We obtained parameter estimates by applying the method of least-squares to 
 log-transformed data using the \texttt{R} \citep{R} functions
 \texttt{lm} (for Cobb-Douglas and LINEX models) 
@@ -739,7 +739,7 @@ for Cobb-Douglas (without and with energy) resample models.
 Each reample is shown as a gray dot on the graph. 
 The fit to historical data is shown as a gray crosshairs.
 
-Figures~\ref{fig:CD_GDP_Spaghetti_Graph_US}--\ref{fig:CD_GDP_Spaghetti_Graph_CN} 
+Figures~\ref{fig:CD_GDP_Spaghetti_Graphs_US}--\ref{fig:CD_GDP_Spaghetti_Graphs_CN} 
 compare predictions 
 from the Cobb-Douglas models 
 (without and with energy) to historical data.
@@ -1225,28 +1225,13 @@ triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=al
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Reproducible Research}
+% \section*{Reproducible Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
 % all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
 % associated with this paper can be found at\\*
 % \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
-
-%% The Appendices part is started with the command \appendix;
-%% appendix sections are then done as normal sections
-%% \appendix
-%% \section{}
-%% \label{}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Appendix}
-
-Include data tables here?
 
 
 
@@ -1296,6 +1281,10 @@ Include data tables here?
 
 %% References with bibTeX database:
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \bibliographystyle{model2-names}
 %%\bibliography{<your-bib-database>}
 \bibliography{Paper2.bib}
@@ -1323,6 +1312,23 @@ Include data tables here?
 % \bibitem[ ()]{}
 
 % \end{thebibliography}
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix}
+
+Include data tables here?
+
 
 \end{document}
 
