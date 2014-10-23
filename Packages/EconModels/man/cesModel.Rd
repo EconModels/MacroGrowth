@@ -50,6 +50,8 @@ starting values for \code{rho} and \code{rho1}, so that we don't need to do a fi
 the default values.
 \code{rho = 0.25} corresponds to \code{sigma = 0.8}.}
 
+\item{digits}{the number of sse digits that is to be considered significant.}
+
 \item{formula}{a formula of the form \code{response ~ captial + labor + energy + time}}
 }
 \value{
