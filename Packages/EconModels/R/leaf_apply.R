@@ -5,7 +5,9 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
   if (is.null(list_names)) {
     list_names <- as.character(1L: length(l)) 
   }
-  for (idx in 1:length(l)) {
+  idx <- 0L
+  while(idx < length(l)) {
+    idx <- idx + 1
     item <- l[[idx]]
     if (nchar(name) > 0) {
       item_name <- paste(name, list_names[idx], sep=sep)
