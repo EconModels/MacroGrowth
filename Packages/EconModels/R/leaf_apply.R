@@ -1,4 +1,15 @@
-
+#' Applies a function to leaves of a list.
+#' 
+#' This function applies a function to leaves of a nested list (depth-first) if and only if the 
+#' class of the leaf matches one of the names in \code{class}.
+#' 
+#' @param l the list to be traversed.
+#' @param f the function to be applied to the leaves of the list. 
+#' @param class a list of classes to be matched.
+#' @param name a prefix for the names in the resulting list
+#' @param sep the separator to be used when creating the names of the leaves from the list nesting.
+#' @return a flat, named list of the results of applying \code{f} to the leaves of \code{l}.
+#' @export
 leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
   res <- list()
   list_names <- names(l)
