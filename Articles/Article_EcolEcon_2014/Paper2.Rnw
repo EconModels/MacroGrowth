@@ -172,6 +172,30 @@ AllFitted <- rbind(REXS1960_Fitted, IST_Fitted, Leeds_Fitted)
 AllFitted$Source <- replace(AllFitted$Source, which(AllFitted$Source=="REXS1960"), "REXS")
 AllFitted$Source <- relevelFactor(as.factor(AllFitted$Source), levs = c("REXS", "IST", "Leeds"))
 AllFitted$energy <- relevelFactor(AllFitted$energy, levs=energyLevels)
+
+# Load models
+REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models", dir=pp_path)
+IST_Models <- loadPostProcessedData(Source = "IST", kind = "models", dir=pp_path)
+Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models", dir=pp_path)
+All_Models <- unlist(list(REXS1960_Models, IST_Models, Leeds_Models), recursive=FALSE)
+
+# The function to extract data from the models
+extract_data <- function(x, name) {
+  # Names are in the form Source.Country.modelType.factor_string
+  # Parse various pieces of name
+  name_pieces <- strsplit(name, split=".", fixed=TRUE)[[1]]
+  Source <- name_pieces[[1]]
+  Country <- name_pieces[[2]]
+  modelType <- name_pieces[[3]]
+  factorString <- name_pieces[[4]]
+  # Parse the factorString to get the energyType
+  energyType <- parseFactorString(factorString)$energyType
+  data.frame(year = (attr(x, which="data"))$Year, resid = resid(x), name=name, Source=Source, Country=Country,
+             modelType=modelType, energyType=energyType)
+}
+residual_data <- leaf_apply(All_Models, extract_data, class=c("CDEmodel", "cesEst", "LINEXModel"))
+# Bind these all in a data frame. 
+residuals_df <- do.call(rbind, residual_data)
 @
 
 % These equations are used in several locations in the paper.
@@ -807,6 +831,22 @@ spaghettiPlot(data=cdFittedDataCN, facet_formula=Source~energy, level=spaghettiG
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
+<<CD_Residual_Plot, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="Cobb-Douglas Residual Plots.">>=
+# Use residuals_df to make a graph.
+
+
+
+
+
+
+
+
+
+
+
+
+@
+
 
 %++++++++++++++++++++++++++++++
 \subsection{CES Models}
@@ -1041,7 +1081,8 @@ We recovered a value for $c_t$ with $c_t = a_1 / a_0$.
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
 
-Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
+Figures~\ref{fig:LINEX_GDP_Spaghetti_Graphs_US}--\ref{fig:LINEX_GDP_Spaghetti_Graphs_CN} 
+compare LINEX model predictions to historical data.
 Again, historical data are shown as a black line, 
 the fit to historical data is shown as a white line and 
 the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
@@ -1147,7 +1188,6 @@ Figure~\ref{fig:LINEX_abg_traj_graph_REXS_UK_U}
 shows trajectories for the UK and useful work ($u$) from the REXS data set.
 
 <<LINEX_abg_traj_graph_REXS_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for REXS with $u$.">>=
-REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models", dir=pp_path)
 triPlot(data=fortify(REXS1960_Models$REXS1960$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1155,7 +1195,6 @@ Figure~\ref{fig:LINEX_abg_traj_graph_IST_UK_U}
 shows trajectories for the UK and useful work ($u$) from the IST data set.
 
 <<LINEX_abg_traj_graph_IST_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for IST with $u$.">>=
-IST_Models <- loadPostProcessedData(Source = "IST", kind = "models", dir=pp_path)
 triPlot(data=fortify(IST_Models$IST$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
@@ -1163,7 +1202,6 @@ Figure~\ref{fig:LINEX_abg_traj_graph_Leeds_UK_U}
 shows trajectories for the UK and useful work ($u$) from the Leeds data set.
 
 <<LINEX_abg_traj_graph_Leeds_UK_U, fig.pos="H", fig.align='center', fig.width=3, fig.height=3.5, fig.cap="UK LINEX trajectory for Leeds with $u$.">>=
-Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models", dir=pp_path)
 triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear + 1960")
 @
 
