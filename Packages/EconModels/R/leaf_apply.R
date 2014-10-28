@@ -44,7 +44,3 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
   }
   res
 }
-
-extract_resid <- function(x, name) {
-  data.frame(resid = resid(x), name=name)
-}
