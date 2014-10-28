@@ -158,7 +158,7 @@ pp_path <- file.path("..", "..", "data_postprocessed")
 
 # Load coefficients from all models in one large data frame
 REXS1960_Coeffs <- loadPostProcessedData(Source = "REXS1960", kind = "coeffs", dir = pp_path)
-IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs",dir = pp_path)
+IST_Coeffs <- loadPostProcessedData(Source = "IST", kind = "coeffs", dir = pp_path)
 Leeds_Coeffs <- loadPostProcessedData(Source = "Leeds", kind = "coeffs", dir = pp_path)
 AllCoeffs <- rbind(REXS1960_Coeffs, IST_Coeffs, Leeds_Coeffs)
 AllCoeffs$Source <- as.factor(replace(AllCoeffs$Source, which(AllCoeffs$Source=="REXS1960"), "REXS"))
@@ -177,8 +177,7 @@ AllFitted$energy <- relevelFactor(AllFitted$energy, levs=energyLevels)
 REXS1960_Models <- loadPostProcessedData(Source = "REXS1960", kind = "models", dir=pp_path)
 IST_Models <- loadPostProcessedData(Source = "IST", kind = "models", dir=pp_path)
 Leeds_Models <- loadPostProcessedData(Source = "Leeds", kind = "models", dir=pp_path)
-All_Models <- unlist(list(REXS1960_Models, IST_Models, Leeds_Models), recursive=FALSE)
-
+AllModels <- unlist(list(REXS1960_Models, IST_Models, Leeds_Models), recursive=FALSE)
 # The function to extract data from the models
 extract_data <- function(x, name) {
   # Names are in the form Source.Country.modelType.factor_string
@@ -193,9 +192,16 @@ extract_data <- function(x, name) {
   data.frame(year = (attr(x, which="data"))$Year, resid = resid(x), name=name, Source=Source, Country=Country,
              modelType=modelType, energyType=energyType)
 }
-residual_data <- leaf_apply(All_Models, extract_data, class=c("CDEmodel", "cesEst", "LINEXModel"))
+residual_data <- leaf_apply(AllModels, extract_data, class=c("CDEmodel", "cesEst", "LINEXModel"))
 # Bind these all in a data frame. 
 residuals_df <- do.call(rbind, residual_data)
+# Re-order the factors as desired for our graphs.
+residuals_df$Source <- as.factor(
+  replace(as.character(residuals_df$Source), which(residuals_df$Source=="REXS1960"), "REXS"))
+residuals_df$Source <- relevelFactor(residuals_df$Source, levs = c("REXS", "IST", "Leeds"))
+residuals_df$energyType <- as.factor(
+  replace(as.character(residuals_df$energyType), which(is.na(residuals_df$energyType)), "none"))
+residuals_df$energyType <- relevelFactor(as.factor(residuals_df$energyType), levs = energyLevels)
 @
 
 % These equations are used in several locations in the paper.
@@ -831,20 +837,14 @@ spaghettiPlot(data=cdFittedDataCN, facet_formula=Source~energy, level=spaghettiG
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-<<CD_Residual_Plot, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="Cobb-Douglas Residual Plots.">>=
+<<CD_Residual_Plot, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="Cobb-Douglas Residual Plots.">>=
 # Use residuals_df to make a graph.
-
-
-
-
-
-
-
-
-
-
-
-
+cd_residuals_df <- subset(residuals_df, subset = modelType=="cd")
+ggplot(data=cd_residuals_df, aes(x=year, y=resid, color=Source)) + 
+  geom_point(size = 1.0) +
+  facet_grid(Country ~ energyType) +
+  labs(x = "", y = "Residuals") + 
+  xy_theme()
 @
 
 
