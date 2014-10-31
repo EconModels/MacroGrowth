@@ -192,7 +192,7 @@ extract_data <- function(x, name) {
   data.frame(year = (attr(x, which="data"))$Year, resid = resid(x), name=name, Source=Source, Country=Country,
              modelType=modelType, energyType=energyType)
 }
-residual_data <- leaf_apply(AllModels, extract_data, class=c("CDEmodel", "cesEst", "LINEXModel"))
+residual_data <- leaf_apply(AllModels, extract_data, class=c("CDEmodel", "cesEst", "LINEXmodel"))
 # Bind these all in a data frame. 
 residuals_df <- do.call(rbind, residual_data)
 # Re-order the factors as desired for our graphs.
@@ -1151,13 +1151,17 @@ spaghettiPlot(data=linexFittedDataCN, facet_formula=Source~energy, level=spaghet
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-
-
-
-
-
-
-
+<<LINEX_Residual_Plot, fig.pos="H", fig.align='center', fig.width=5, fig.height=6, fig.cap="LINEX Residual Plots.">>=
+# Use residuals_df to make a graph.
+linex_residuals_df <- subset(residuals_df, subset = modelType=="linex")
+ggplot(data=linex_residuals_df, aes(x=year, y=resid, color=Source)) + 
+  geom_point(size = 1.0) +
+  facet_grid(Country ~ energyType) +
+  labs(x = "", y = "Residuals") + 
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) + 
+  scale_y_continuous(limits=c(-0.3, 0.2)) +
+  xy_theme()
+@
 
 
 The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
