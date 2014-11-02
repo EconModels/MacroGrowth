@@ -1,0 +1,39 @@
+---
+title: "Education Investigation"
+author: "MK Heun"
+date: "November 2, 2014"
+output: pdf_document
+---
+
+```{r Setup, echo=FALSE, message=FALSE, warning=FALSE}
+require(EconData)
+require(EconModels)
+require(ggplot2)
+```
+
+This is a study of the effects of education on the estimation of parameters for South African growth.
+
+Data
+----------------------------------------------------------------
+The following graph shows historical data, indexed to 1973.
+
+```{r HistoricalData}
+historicalData <- SUN
+```
+
+
+Formal Education Only
+----------------------------------------------------------------
+We begin by fitting GDP to the historical capital (K) and labor (L) data, using formal labor data only.
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
