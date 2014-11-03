@@ -1,6 +1,7 @@
 ---
-title: "Education Investigation"
-author: "MK Heun"
+title: "The Effect of Education Adjustment on Parameter Estimates 
+for Cobb-Douglas Economic Growth in South Africa"
+author: "Matthew Kuperus Heun"
 date: "November 2, 2014"
 output: pdf_document
 ---
@@ -9,31 +10,138 @@ output: pdf_document
 require(EconData)
 require(EconModels)
 require(ggplot2)
-```
-
-This is a study of the effects of education on the estimation of parameters for South African growth.
-
-Data
-----------------------------------------------------------------
-The following graph shows historical data, indexed to 1973.
-
-```{r HistoricalData}
+require(reshape2)
 historicalData <- SUN
 ```
 
+This is a study of the effects of education on the estimation of parameters for South African economic growth.
 
-Formal Education Only
+Historical Data
 ----------------------------------------------------------------
-We begin by fitting GDP to the historical capital (K) and labor (L) data, using formal labor data only.
+The following figure shows historical data for GDP, capital stock, and thermal energy data, indexed to 1973.
 
-```{r}
-summary(cars)
+```{r HistoricalData, warning=FALSE, fig.cap="Historical GDP, capital stock, and thermal energy data."}
+mdata <- melt(historicalData, 
+              measure.vars = c("iGDP", "iK", "iQp"), 
+              variable.name = "variable",
+              value.name = "value")
+mapping <- aes(x=Year, y=value, group=variable, linetype=variable)
+ggplot(mdata, mapping=mapping) + 
+  geom_line(mapping) +
+  xy_theme() +
+  xlab("") + 
+  ylab("Indexed (1973=1)")
 ```
 
-You can also embed plots, for example:
+The following figure shows four different time series for labor.
+$iLf$ is indexed formal labor.
+$iLfe$ is indexed formal labor adjusted for education.
+$iLfi$ is indexed formal plus informal labor.
+$ilfie$ is indexed formal plus informal labor adjusted for education.
+Adjustment for education is performed as described in du Plessis and Smit. (2007)
 
-```{r, echo=FALSE}
-plot(cars)
+```{r HistoricalDataLabor, warning=FALSE, fig.cap="Historical labor time series."}
+mdata_labor <- melt(historicalData, 
+                    measure.vars = c("iLf", "iLfe", "iLfi", "iLfie"), 
+                    variable.name = "variable",
+                    value.name = "value")
+mapping <- aes(x=Year, y=value, group=variable, linetype=variable)
+ggplot(mdata_labor, mapping=mapping) + 
+  geom_line(mapping) +
+  xy_theme() +
+  xlab("") + 
+  ylab("Indexed (1973=1)") +
+  scale_y_continuous(breaks=c(1, 1.5, 2.0))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Note that the effect of education is not observed until 1986, 
+because the average education level is given as 4.8 years
+from 1970--1985.
+
+du Plessis and Smit (2007, p. 681) report that 
+capital income share is 0.43
+and wage income share is 0.57
+for the time period 1985--1994.
+For 1995--2004, 
+capital income share is 0.46
+and wage income share is 0.54
+
+
+Cobb-Douglas Equation
+----------------------------------------------------------------
+We fit a Cobb-Douglas equation of the form
+
+\begin{equation}
+  GDP = \mathrm{e}^{\lambda t} k^\alpha l^\beta
+\end{equation}
+
+under the constraint $\alpha + \beta = 1$ to ensure constant returns to scale.
+The GDP and capital stock time series are fixed.
+However, we will try four different labor time series.
+
+Without Education Adjustment
+----------------------------------------------------------------
+We begin by fitting GDP to the historical capital ($iK$) and formal sector labor ($iLf$) data.
+
+```{r Formal}
+naturalCoef(cdModel(formula = iGDP ~ iK + iLf + iYear, 
+                    data = historicalData, constrained = TRUE))
+```
+
+Next, fit using formal and informal labor data ($iLfi$)
+```{r FormalPlusInformal}
+naturalCoef(cdModel(formula = iGDP ~ iK + iLfi + iYear, 
+                    data = historicalData, constrained = TRUE))
+```
+
+Without adjusting for education, 
+both formal and formal+informal labor time series produce 
+$\alpha = 0$
+and $\beta = 1$.
+The Solow residual ($\lambda$) is on the order of 1.5 \%/year.
+
+
+With Education Adjustment
+----------------------------------------------------------------
+Now we fit using education-adjusted formal sector labor data ($iLfe$).
+```{r FormalPlusEducation}
+naturalCoef(cdModel(formula = iGDP ~ iK + iLfe + iYear, 
+                    data = historicalData, constrained = TRUE))
+```
+
+Finally, fit using education-adjusted formal and informal labor data ($iLfie$)
+```{r FormalPlusInformalPlueEducation}
+naturalCoef(cdModel(formula = iGDP ~ iK + iLfie + iYear, 
+                    data = historicalData, constrained = TRUE))
+```
+
+When adjustment is made for education, we obtain significantly different 
+coefficients for capital ($\alpha$) and labor ($\beta$), namely
+$\alpha \approx 0.44$
+and $\beta \approx 0.56$.
+The Solow residual is $\lambda \approx 0.5$ \%/year.
+
+
+Analysis
+----------------------------------------------------------------
+The education-adjusted coefficient estimates above 
+($\alpha \approx 0.44$
+and $\beta \approx 0.56$) 
+align closely with income shares as reported in du Plessis and Smit. (2007, p. 681)
+
+The fit to historical data is slightly better without education adjustment
+than with education adjustment
+($sse = 0.18$ without adjusting for education 
+vs. $sse = 0.27$ with education adjustment).
+However, the Solow residual is smaller when adjusting for education
+($\lambda \approx 1.5$ \%/year without adjusting for education
+vs. $\lambda \approx 0.5$ \%/year after adjusting for education).
+
+Furthermore $sse$ improves when the informal labor sector is included,
+regardless of whether labor is adjusted for education.
+
+The improvement in Solow residual 
+argues strongly in favor of including both education and the informal labor sector.
+
+It appears that adjusting for education 
+will be an important feature of these analyses moving forward.
