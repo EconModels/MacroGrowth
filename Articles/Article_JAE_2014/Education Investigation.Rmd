@@ -22,7 +22,7 @@ The following figure shows historical data for GDP, capital stock, and thermal e
 
 ```{r HistoricalData, warning=FALSE, fig.cap="Historical GDP, capital stock, and thermal energy data."}
 mdata <- melt(historicalData, 
-              measure.vars = c("iGDP", "iK", "iQp"), 
+              measure.vars = c("iGDP", "iK", "iQp", "iQf"), 
               variable.name = "variable",
               value.name = "value")
 mapping <- aes(x=Year, y=value, group=variable, linetype=variable)
@@ -110,7 +110,7 @@ naturalCoef(cdModel(formula = iGDP ~ iK + iLfe + iYear,
 ```
 
 Finally, fit using education-adjusted formal and informal labor data ($iLfie$)
-```{r FormalPlusInformalPlueEducation}
+```{r FormalPlusInformalPlusEducation}
 naturalCoef(cdModel(formula = iGDP ~ iK + iLfie + iYear, 
                     data = historicalData, constrained = TRUE))
 ```
@@ -145,3 +145,34 @@ argues strongly in favor of including both education and the informal labor sect
 
 It appears that adjusting for education 
 will be an important feature of these analyses moving forward.
+
+
+Effect of Energy
+----------------------------------------------------------------
+
+Now, we use the Cobb-Douglas equation with an energy term.
+
+\begin{equation}
+  GDP = \mathrm{e}^{\lambda t} k^\alpha l^\beta e^\gamma
+\end{equation}
+
+under the constraint $\alpha + \beta + \gamma = 1$ to ensure constant returns to scale.
+
+First, we fit using education-adjusted formal and informal labor data ($iLfie$)
+and primary thermal energy ($iQp$).
+```{r FormalPlusInformalPlusEducationWithPrimaryEnergy}
+res <- naturalCoef(cdModel(formula = iGDP ~ iK + iLfie + iQp + iYear, 
+                           data = historicalData, constrained = TRUE))
+row.names(res)<-NULL
+res
+```
+
+Next, we fit using education-adjusted formal and informal labor data ($iLfie$)
+and final thermal energy ($iQf$).
+```{r FormalPlusInformalPlusEducationWithFinalEnergy}
+res <- naturalCoef(cdModel(formula = iGDP ~ iK + iLfie + iQf + iYear, 
+                           data = historicalData, constrained = TRUE))
+row.names(res)<-NULL
+res
+```
+
