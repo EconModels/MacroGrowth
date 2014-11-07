@@ -107,10 +107,12 @@ require(EconModels)
 require(EconData)
 require(ggplot2)
 require(plyr)
+require(dplyr) # Load in this order or the mutate and arrange functions will not work as desired.
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 require(reshape2) 
 require(knitr)
+require(mosaic)
 
 opts_chunk$set(
   # ********************************************************
@@ -138,7 +140,7 @@ opts_chunk$set(
 spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
 @
 
-<<data, include=FALSE, eval=TRUE>>=
+<<data, include=FALSE>>=
 # Load historical data
 historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
 
@@ -376,6 +378,113 @@ where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/yea
 The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
+
+The term $\mathrm{e}^{\lambda (t-t_0)}$ is known as the Solow Residual ($A$). 
+Assuming that parameters $\theta$, $\alpha$, and $\beta$ are known,
+we can estimate the value of $\lambda$ as follows.
+First, assume constant returns to scale such that $\gamma = 1 - \alpha - \beta$.
+Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CD} to obtain
+%
+\begin{equation} \label{eq:lnCD}
+  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
+\end{equation}
+%
+By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
+and noting that model parameters $\theta$ and $\alpha$ are 
+constant with respect to time, we obtain
+%
+\begin{equation} \label{eq:ddtlnCD}
+  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
+\end{equation}
+%
+Solving for the Solow Residual term gives
+%
+\begin{equation} \label{eq:solow_resid}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+        \right] \;.
+\end{equation}
+%
+Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
+%
+\begin{equation}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
+    = \lambda \; ,
+\end{equation}
+%
+which can be substituted into Equation~\ref{eq:solow_resid} to find
+%
+\begin{equation} \label{eq:lambda}
+  \lambda 
+    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+    - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+      \right] \;.
+\end{equation}
+%
+Equation~\ref{eq:lambda} applies for any instant in time.
+
+If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
+between times $i$ and $j$, we find
+%
+\begin{equation} \label{eq:lambdaij}
+  \lambda_{i,j}
+    \approx \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
+    - \left[
+            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
+      \right] \;,
+\end{equation}
+% 
+where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
+between times $i$ and $j$.
+
+Interestingly, 
+%
+\begin{equation}
+  \lambda_{1,n}
+    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
+\end{equation}
+% 
+Rather,
+%
+\begin{equation} \label{eq:lambda1n}
+  \lambda_{1,n}
+    \approx \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
+      - \left[ 
+            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
+            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
+            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
+      \right] \; ,
+\end{equation}
+% 
+which will become increasingly inaccurate over large time spans,
+because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
+of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
+This suggests that an averaging approach such as
+%
+\begin{equation}
+  \lambda_{1,n}
+    \approx \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
+\end{equation}
+%
+is a better approximation of Equation~\ref{eq:lambda1n},
+which is, itself, an approximation of the true value of $\lambda$ 
+given by Equation~\ref{eq:lambda}.
+
+
 
 
 %------------------------------
@@ -794,6 +903,63 @@ standardTriPlot(data=cdCoeffsData,
                 facet_formula=country~energy) +
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
+
+Given the estimates for $\alpha$, $\beta$, and $\gamma$ for the Cobb-Douglas model,
+we can estimate values for $\lambda$ on a year-by-year basis using Equation~\ref{eq:lambdaij}.
+The results are shown in the Figure~\ref{fig:CD_lambda_time_series}.
+
+<<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
+# Add a bogus "none" column that we can use for the no-energy case
+m_histData <- historicalData
+m_histData$none <- 1.0
+# Melt the the historical data to put energy in one column
+m_histData <- melt(select(m_histData, Year, iGDP, iK, iL, iXp, iXf, iU, none, Country, Source), 
+                   measure.vars = c("none", "iXp", "iXf", "iU"),
+                   variable.name = "energyType",
+                   value.name = "iE")
+# Calculate finite difference approximations of time derivatives for output and all factors of production
+fd <- m_histData %>% group_by(Source, Country, energyType) %>% arrange(Year) %>% 
+  mutate(dydt = ediff(iGDP, pad="tail") / ediff(Year, pad="tail")) %>%
+  mutate(dkdt = ediff(iK, pad="tail") / ediff(Year, pad="tail")) %>%
+  mutate(dldt = ediff(iL, pad="tail") / ediff(Year, pad="tail")) %>%
+  mutate(dedt = ediff(iE, pad="tail") / ediff(Year, pad="tail"))
+
+origCDKLCoeffs <- subset(AllCoeffs, method=="orig" & model=="cd")
+origCDKLCoeffs <- origCDKLCoeffs %>% select(method, country, Source, nestStr, energy, lambda, alpha, beta, gamma)
+# Change name of Source REXS to REXS1960 and relevel to conform to information in fdlambda.
+origCDKLCoeffs$Source <- as.character(origCDKLCoeffs$Source)
+origCDKLCoeffs$Source <- replace(origCDKLCoeffs$Source, which(origCDKLCoeffs$Source=="REXS"), "REXS1960")
+origCDKLCoeffs$Source <- as.factor(origCDKLCoeffs$Source)
+origCDKLCoeffs$Source <- relevelFactor(origCDKLCoeffs$Source, levs = c("REXS1960", "IST", "Leeds"))
+
+# Fill new columns in the fd data frame with 
+# lambda, alpha, beta, and gamma values from the parameter estimation process.
+# lambda, alpha, beta, and gamma values for the orig fits are in the origCDKLCoeffs data frame.
+# Using the hint at 
+# http://stackoverflow.com/questions/15059076/
+# r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
+labg <- apply(fd[ , c('Country', 'Source', 'energyType')], 1, function(x){
+    row <- as.data.frame(subset(origCDKLCoeffs, 
+                                country==x["Country"] & Source==x["Source"] & energy==x["energyType"]))
+    abg <- subset(row, select=c(lambda, alpha, beta, gamma))
+    if (nrow(abg) < 1){ abg[1, ] <- NA }
+    return(abg)
+  })
+cols <- do.call(rbind, labg)
+fd <- cbind(fd, cols)
+
+# Now calculate lambda by finite difference for every year to make a time series
+fdlambda <- mutate(fd, lambda_diff = 1/iGDP*dydt - (alpha/iK*dkdt + beta/iL*dldt + gamma/iE*dedt))
+
+# Create a time series graph of the lambda_diff values
+ggplot(data=fdlambda, aes(x=Year, y=lambda_diff, color=Source)) + 
+  geom_point(size = 1.0) +
+  facet_grid(Country ~ energyType) +
+  labs(x = "", y = expression(lambda)) + 
+#   scale_y_continuous(limits=c(-0.1, 0.1)) +
+  xy_theme()
+@
+
 
 <<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="US Cobb-Douglas fitted models.">>=
 cdFittedDataUS <- subset(AllFitted, subset = model=="cd" & Country=="US")
