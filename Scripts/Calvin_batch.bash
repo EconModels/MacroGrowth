@@ -63,8 +63,8 @@ ssh node-19 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &
 ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
 # Faulty R installations on nodes 21, 22, 23, and 24.
 # node-25 is missing.
-# Faulty R installation on node 26.
-ssh node-27 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-27.txt" &
+ssh node-26 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-26.txt" &
+# node-27 is missing.
 ssh node-28 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-28.txt" &
 ssh node-29 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-29.txt" &
 ssh node-30 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-30.txt" &
