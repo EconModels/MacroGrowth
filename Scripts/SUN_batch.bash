@@ -47,6 +47,6 @@ ssh node-18 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUT
 
 ssh node-19 "cd $LOC_PATH; $EXEC -c ZA -e iQf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
 ssh node-20 "cd $LOC_PATH; $EXEC -c ZA -e iQf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
-ssh node-27 "cd $LOC_PATH; $EXEC -c ZA -e iQf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-27.txt" &
+ssh node-26 "cd $LOC_PATH; $EXEC -c ZA -e iQf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-26.txt" &
 
 ssh node-28 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-28.txt" &
