@@ -72,7 +72,7 @@ Cobb-Douglas Equation
 We fit a Cobb-Douglas equation of the form
 
 \begin{equation}
-  GDP = \mathrm{e}^{\lambda t} k^\alpha l^\beta
+  GDP = \theta \mathrm{e}^{\lambda t} k^\alpha l^\beta
 \end{equation}
 
 under the constraint $\alpha + \beta = 1$ to ensure constant returns to scale.
@@ -153,7 +153,7 @@ Effect of Energy
 Now, we use the Cobb-Douglas equation with an energy term.
 
 \begin{equation}
-  GDP = \mathrm{e}^{\lambda t} k^\alpha l^\beta e^\gamma
+  GDP = \theta \mathrm{e}^{\lambda t} k^\alpha l^\beta e^\gamma
 \end{equation}
 
 under the constraint $\alpha + \beta + \gamma = 1$ to ensure constant returns to scale.
@@ -175,4 +175,3 @@ res <- naturalCoef(cdModel(formula = iGDP ~ iK + iLfie + iQf + iYear,
 row.names(res)<-NULL
 res
 ```
-
