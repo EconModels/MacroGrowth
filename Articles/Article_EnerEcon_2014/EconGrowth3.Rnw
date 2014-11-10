@@ -823,48 +823,34 @@ A final subsection presents the historical data in graphical form.
 %++++++++++++++++++++++++++++++
 
 We measure economic output ($Y$) by gross domestic product (GDP). 
-GDP data in real 2005 U.S. dollars for developed countries (1980--2011) 
-and all other countries (1991--2011) was obtained from 
-the World Bank's Global Economic Prospects (GEP) database 
-\citep{WorldBankGEP:2013a}.
+GDP data in real 2005 U.S. dollars for all countries was obtained from the
+RGDP$^{\mathrm{NA}}$ time series of the Penn World Table.~\citep{Feenstra:2013aa}
 
 %++++++++++++++++++++++++++++++
-\subsection{Capital Stock} 
+\subsection{Capital Stock}
 \label{sec:Capital_Stock_Data}
 %++++++++++++++++++++++++++++++
 
 Gross capital stock in real 2005 U.S. dollars 
-for developed countries (1980--2011) and 
-all other countries (1991--2011) was obtained from 
-the World Bank's Global Economic Prospects (GEP) database 
-\citep{WorldBankGEP:2013a}.
+for all countries was obtained from the
+RK$^{\mathrm{NA}}$ time series of the Penn World Table.~\citep{Feenstra:2013aa}
 
 %++++++++++++++++++++++++++++++
 \subsection{Labor and Employment}
 \label{sec:Labor_Data}
 %++++++++++++++++++++++++++++++
 
-Total employment and average hours worked per worker per year 
-for the developed nations (United States, United Kingdom, and Japan) 
-for 1980--2011 were obtained from the United States 
-\citet[Tables 6 and 7]{BLS:2013a}. Total hours worked per year was 
-calculated by multiplying total employment by average hours worked 
-per worker per year.  
+Total employment (persons engaged) for all countries
+was obtained from the 
+EMP time series of the Penn World Table.~\citep{Feenstra:2013aa}
+The EMP time series was used as the labor factor of production 
+for CN, ZA, SA, IR, TZ, and ZM.
+For the developed nations (US, UK, and JP), 
+average hours worked per worker per year 
+was obtained from the AVH time series of the Penn World Table.~\citep{Feenstra:2013aa}
+The product of EMP and AVH was used as the labor factor of production 
+for the developed nations.
 
-The World Bank's World Development Indicators database 
-\citep{WorldBankWDI:2013a} provides the employment to population 
-ratio for people fifteen and older, total population, and a percentage 
-of people under fifteen for other economies 
-(China, South Africa, 
-Saudi Arabia, Iran, 
-Tanzania, and Zambia) 
-for 1991--2011. 
-The population 
-of people under fifteen years of age was subtracted from total population 
-to calculate the population of people fifteen and older. 
-Total employment was calculated by multiplying the employment to 
-population ratio of people fifteen and older by the population 
-of people fifteen and older.
 
 %++++++++++++++++++++++++++++++
 \subsection{Energy} 
