@@ -379,8 +379,9 @@ The energy-augmented Cobb-Douglas production function
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
 
-The term $\mathrm{e}^{\lambda (t-t_0)}$ is known as the Solow Residual ($A$). 
-Assuming that parameters $\theta$, $\alpha$, and $\beta$ are known,
+The term $\mathrm{e}^{\lambda (t-t_0)}$ is known as total factor productivity~($A$),
+and $\lambda$ is the Solow residual. 
+Assuming that parameters $\theta$, $\alpha$, and $\beta$ are known from parameter estimation,
 we can estimate the value of $\lambda$ as follows.
 First, assume constant returns to scale such that $\gamma = 1 - \alpha - \beta$.
 Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CD} to obtain
@@ -390,7 +391,7 @@ Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CD} to obtain
 \end{equation}
 %
 By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
-and noting that model parameters $\theta$ and $\alpha$ are 
+and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
 constant with respect to time, we obtain
 %
 \begin{equation} \label{eq:ddtlnCD}
@@ -908,7 +909,7 @@ Given the estimates for $\alpha$, $\beta$, and $\gamma$ for the Cobb-Douglas mod
 we can estimate values for $\lambda$ on a year-by-year basis using Equation~\ref{eq:lambdaij}.
 The results are shown in the Figure~\ref{fig:CD_lambda_time_series}.
 
-<<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
+<<CD_finite_diff_calcs, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
 # Add a bogus "none" column that we can use for the no-energy case
 m_histData <- historicalData
 m_histData$none <- 1.0
@@ -949,8 +950,23 @@ cols <- do.call(rbind, labg)
 fd <- cbind(fd, cols)
 
 # Now calculate lambda by finite difference for every year to make a time series
-fdlambda <- mutate(fd, lambda_diff = 1/iGDP*dydt - (alpha/iK*dkdt + beta/iL*dldt + gamma/iE*dedt))
+fdlambda <- mutate(fd, lambda_diff = dydt/iGDP - (alpha/iK*dkdt + beta/iL*dldt + gamma/iE*dedt))
 
+# Calculate the fraction of GDP growth in each year that is explained by the solow residual
+fdlambda <- mutate(fdlambda, solowFrac = lambda_diff / (dydt/iGDP))
+
+# Calculate average values for lambda and solowFrac
+avgs <- fdlambda %>% 
+  group_by(Source, Country, energyType) %>% 
+  summarise(
+    avg.lambda_diff = mean(lambda_diff, na.rm=TRUE),
+    avg.solowFrac = mean(solowFrac, na.rm=TRUE)
+    )
+
+@
+
+
+<<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
 # Create a time series graph of the lambda_diff values
 ggplot(data=fdlambda, aes(x=Year, y=lambda_diff, color=Source)) + 
   geom_point(size = 1.0) +
@@ -960,6 +976,15 @@ ggplot(data=fdlambda, aes(x=Year, y=lambda_diff, color=Source)) +
   xy_theme()
 @
 
+<<CD_solowPerc_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
+# Create a time series graph of the solowPerc values
+ggplot(data=fdlambda, aes(x=Year, y=solowFrac, color=Source)) + 
+  geom_point(size = 1.0) +
+  facet_grid(Country ~ energyType) +
+  labs(x = "", y = "Fraction of GDP growth explained by Solow residual") + 
+  scale_y_continuous(limits=c(-0.5, 2)) +
+  xy_theme()
+@
 
 <<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="US Cobb-Douglas fitted models.">>=
 cdFittedDataUS <- subset(AllFitted, subset = model=="cd" & Country=="US")
