@@ -20,7 +20,8 @@ loadResampledData(path = "", archive = NULL, country = NULL,
 
 \item{sep}{the separator within the file names between country, model, and factors}
 
-\item{kind}{a character string that identifies which kind of resampled data to load.}
+\item{kind}{a character string that identifies which kind of resampled data to load, one of
+\code{coeffs}, \code{models}, or \code{fitted}.}
 }
 \value{
 a data frame containing resampled coefficients (if \code{kind="coeffs"}),
