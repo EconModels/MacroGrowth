@@ -30,10 +30,12 @@ This command is fast; it can be run on a local machine.
 This command doesn't work from `fs1` or any of the other nodes of `dahl` (`node-01` through `node-42`).
 
 ### Create the batch script
+* Run the script `r-versions` on `dahl` to see which nodes are operational and which nodes have a working version of `R`.
 * Create the file `Scripts/<Source>_batch.bash` file.
     + It is probably best to modify an existing `<Source>_batch.bash` file.      
     + Be sure to edit the `$SRC` variable.
     + Distribute the work over the nodes in a way that makes sense.
+    + Avoid non-working nodes or nodes that have an out-of-date version of `R` as revealed by `r-versions`.
 * Push the `<Source>_batch.bash` file to GitHub.
 * On `acc`, pull from GitHub.      
 
