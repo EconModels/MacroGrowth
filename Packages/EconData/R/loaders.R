@@ -15,7 +15,8 @@ is.in <- function( el, set ) {
 #' @param model a model or vector of models of the form \code{c("sf", "cd", "ces", "linex")}, for example.
 #' @param factors strings of factors used in fitting the models. 
 #' @param sep the separator within the file names between country, model, and factors
-#' @param kind a character string that identifies which kind of resampled data to load.
+#' @param kind a character string that identifies which kind of resampled data to load, one of 
+#' \code{coeffs}, \code{models}, or \code{fitted}.
 #' @return a data frame containing resampled coefficients (if \code{kind="coeffs"}),
 #' a list of models which contain the resample fits (if \code{kind="models"}), or
 #' a data frame containing resampled fits to the response variable (if \code{kind="fitted"}).
