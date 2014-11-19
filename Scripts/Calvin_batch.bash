@@ -51,17 +51,18 @@ ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &
 # node-11 is not functional.
 # node-12 does not have a reasonable home directory.
 ssh node-13 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" & 
-ssh node-14 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-14.txt" &
+# node-14 sometimes loses connection and is unreliable
+# node-15 doesn't work. Can't find the object "Calvin" for some reason.
+ssh node-16 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-16.txt" &
 
 # The next lines run the cese analyses for exergy (X)
 
-# node-15 doesn't work. Can't find the object "Calvin" for some reason.
-ssh node-16 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
 # node-17 is missing
-ssh node-18 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-18.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
-# Faulty R installations on nodes 21, 22, 23, and 24.
+ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-21.txt" &
+# Faulty R installations on nodes 22, 23, and 24.
 # node-25 is missing.
 ssh node-26 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-26.txt" &
 # node-27 is missing.
