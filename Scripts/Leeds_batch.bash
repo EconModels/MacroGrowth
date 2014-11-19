@@ -39,14 +39,14 @@ ssh node-13 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 #
 # This first batch of cese models uses only final exergy (iXf).
 
-ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-14.txt" &
-ssh node-16 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-16.txt" &
-ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-16 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
+ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-19.txt" &
 
 # This next batch of cese models uses only useful work (iU).
 
-ssh node-19 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-21.txt" &
 ssh node-26 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-26.txt" &
 
 ssh node-28 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-28.txt" &
