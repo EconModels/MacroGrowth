@@ -114,8 +114,6 @@ require(car)
 require(mosaic)
 require(xtable)
 require(nlmrt)
-# require(micEconCES)
-require(plyr)
 require(dplyr)
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf

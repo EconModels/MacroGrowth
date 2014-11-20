@@ -1,6 +1,5 @@
 
 require(EconModels2)
-require(plyr)  # for rbind.fill()
 
 All <- read.table("data/AllData.txt", header=TRUE)
 Countries <- unique(All$Country)
@@ -89,6 +88,6 @@ for (country in Countries) {
   }
 }
 
-coefs2 <- do.call(rbind.fill, coefs)
+coefs2 <- do.call(plyr::rbind.fill, coefs)
 
 

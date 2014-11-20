@@ -17,7 +17,6 @@
 # 
 # Note, too, that <Source>_Models is an object in the EconData package.
 
-require(plyr)  # for rbind.fill()
 require(EconModels)
 require(EconData)
 require(optparse)

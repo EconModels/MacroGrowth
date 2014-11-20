@@ -21,6 +21,7 @@
 #     1000 resamples, clobber previous results, wild resampling:
 # Scripts/batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample/Calvin
 
+library(plyr); library(dplyr)
 require(EconModels)
 require(EconData)
 suppressPackageStartupMessages(library("optparse"))

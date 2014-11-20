@@ -17,7 +17,6 @@
 require(EconModels)
 require(EconData)
 require(knitr)
-require(plyr)
 require(dplyr)
 require(ggplot2)
 require(reshape2)

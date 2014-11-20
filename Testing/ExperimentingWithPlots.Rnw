@@ -9,7 +9,6 @@ opts_chunk$set(
   tidy=FALSE
 )
 require(ggplot2)
-require(plyr)
 source('Econ-Growth-Functions2.R')
 @
 

@@ -106,7 +106,6 @@
 require(EconModels)
 require(EconData)
 require(ggplot2)
-require(plyr)
 require(dplyr) # Load in this order or the mutate and arrange functions will not work as desired.
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
@@ -142,7 +141,8 @@ spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the dat
 
 <<data, include=FALSE>>=
 # Load historical data
-historicalData <- rbind.fill(REXS1960, IST, Leeds) # From the EconData package
+historicalData <- plyr::rbind.fill(REXS1960, IST, Leeds) # From the EconData package
+
 
 # Add some pre-econometric data
 historicalData <- transform(historicalData, KPerGDP = iK/iGDP)

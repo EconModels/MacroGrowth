@@ -1,6 +1,5 @@
 require(EconData)
 require(EconModels)
-require(plyr)
 require(ggplot2)
 
 # setwd() to the location of this file.
