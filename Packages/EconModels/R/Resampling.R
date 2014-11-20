@@ -1,6 +1,5 @@
 #' @import foreach
 #' @import doParallel
-#' @importFrom  plyr ddply rbind.fill
 
 # This file contains code to resample data for economic growth
 # functions. The idea is that we can resample the historical
@@ -102,7 +101,7 @@ resampledFits <- function(model,
       newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
       resampleCoeffs <- extractAllMetaData(newModel)
       resampleCoeffs$method <- method
-      coeffs <- rbind.fill(coeffs, resampleCoeffs)
+      coeffs <- plyr::rbind.fill(coeffs, resampleCoeffs)
       models[length(models)+1] <- list(newModel)
       names(models)[length(models)] <- paste(method, ".", i, sep="")
     }

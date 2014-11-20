@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
+#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 
 # Example usage:
 
@@ -21,9 +21,8 @@
 #     1000 resamples, clobber previous results, wild resampling:
 # Scripts/batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample/Calvin
 
-library(plyr); library(dplyr)
-require(EconModels)
 require(EconData)
+require(EconModels)
 suppressPackageStartupMessages(library("optparse"))
 
 modelTypes <- c('sf', 'cd', 'cde', 'ces', 'cese-(kl)e', 'cese-(le)k', 'cese-(ek)l', 'linex')

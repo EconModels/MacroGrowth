@@ -1,4 +1,3 @@
-#' @importFrom plyr rbind.fill
 
 is.in <- function( el, set ) {
   if (is.null(set)) { 
@@ -104,7 +103,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
       df$factor <- parsedNestStr[["factor"]]
       dflist[[i]] <- df
     }
-    res <- do.call( rbind.fill, dflist ) 
+    res <- do.call( plyr::rbind.fill, dflist ) 
     return(res)
   }
   
