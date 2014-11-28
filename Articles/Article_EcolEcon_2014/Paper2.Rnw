@@ -1046,127 +1046,131 @@ ggplot(data=cd_residuals_df, aes(x=year, y=resid, color=Source)) +
 
 Information on CES models goes here.
 
-% The CES model without and with energy is given by 
-% Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
-% The \texttt{R} \citep{R} package \texttt{micEconCES} 
-% \citep{Henningsen:2011td} was used to estimate parameters 
-% $\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
-% The \texttt{cesEst} function of \texttt{micEconCES} provides 
-% several algorithm options for parameter estimation.
-% The default algorithm (Levenberg-Marquardt) does not respect
-% parameter constraints (see Section~\ref{sec:CES}) and, 
-% in our testing, nearly always violated them, often returning
-% negative values for elasticity of substitution~($\sigma$) parameters.
-% Thus, we used the two fitting algorithms available in \texttt{cesEst} that
-% respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
-% 
-% Our CES parameter estimation algorithm starts with an eleven-value grid search
-% in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-% which corresponds to $\sigma$ and $\sigma_1$ values of
-% 0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
-% During the grid search, values of $\rho$ and $\rho_1$ are fixed,
-% and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
-% by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
-% In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
-% at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
-% During the grid search portion of our algorithm, starting values for the free parameters
-% are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
-% and $\gamma$ is set to a value such that the mean of the residuals is zero
-% by the \texttt{cesEst} function.
-% 
-% Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
-% is attempted wherein all fitting parameters 
-% ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
-% are allowed to float. 
-% The start values for fitting parameters are taken from 
-% the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
-% 
-% If resampled data are being fitted, a prior fit to historical data is available.
-% In the final step of our algorithm, 
-% a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
-% uses coefficients from the best 
-% fit to historical data as its starting point. 
-% In this final gradient search, all model parameters 
-% ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
-% are considered free parameters.
-% 
-% The fit with lowest $sse$ of all above trials is deemed the winner,
-% and its fitting parameters are used as the model.
-% 
-% \citet{Henningsen:2011td}, 
-% in their detailed analysis of \citet{Kemfert:1998vd}, found that 
-% 
-% \begin{quote}
-% \ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
-% are---at least in this study---most likely to find the 
-% coefficients that give the best fit to the model, 
-% where the \texttt{PORT} algorithm can be used to restrict the estimates 
-% to the economically meaningful region.
-% \end{quote}
-% 
-% In our testing, we found that to be mostly true. 
-% \texttt{PORT} nearly always provided lower
-% $sse$ than \texttt{L-BFGS-B}, despite the fact that 
-% \texttt{L-BFGS-B} often reports convergence
-% and \texttt{PORT} does not for the same data
-% (i.e., for the same $y$, $k$, $l$, and $e$ data).
-% 
-% Coefficients for each resampled CES model for all countries and all nests
-% are shown in 
-% Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
-% The white crosshair on each graph shows the location 
-% of the fit to historical data. 
-% In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
-% the bottom of the vertical axis represents $\sigma = 0$.
-% The top of the vertical axis represents $\sigma = \infty$.
-% 
-% Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
-% in Equations~\ref{eq:CES}--\ref{eq:CESekl},
-% the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
-% resample points along the left (right) edge of
-% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
-% are equivalent.
-% That is, all points along the left (right) edge of
-% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
-% have the same $sse$. 
-% As a consequence, 
-% the \texttt{cesEst} fitting algorithm has no way 
-% to discriminate among points along the left (right) edge of
-% Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
-% Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
-% tend to cluster at the locations of the initial grid search in 
-% $\sigma$ or $\sigma_1$
-% (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
-% 
-% <<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-% cesCoeffsDataX <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
-%                                                                       "(iK + iL) + (iX)", 
-%                                                                       "(iL + iX) + (iK)", 
-%                                                                       "(iX + iK) + (iL)"))
-% standardScatterPlot(data=cesCoeffsDataX, mapping=aes(gamma_coef, lambda), 
-%                     facet_formula=country~nestStrParen, alpha=0.05) +
-%     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
-%     labs(x=expression(gamma), y=expression(lambda))
-% 
-% @
-% 
-% <<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-% standardScatterPlot(data=cesCoeffsDataX, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
-%     coord_trans(y="sigma") +
-%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-%     labs(x=expression(delta[1]), y=expression(sigma[1]))
-% @
-% 
-% <<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x$).", eval=FALSE>>=
-% standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
-%                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
-%     coord_trans(y="sigma") +
-%     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-%     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
-%     labs(x=expression(delta), y=expression(sigma))
-% @
-% 
+The CES model without and with energy is given by 
+Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
+The \texttt{R} \citep{R} package \texttt{micEconCES} 
+\citep{Henningsen:2011td} was used to estimate parameters 
+$\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
+The \texttt{cesEst} function of \texttt{micEconCES} provides 
+several algorithm options for parameter estimation.
+The default algorithm (Levenberg-Marquardt) does not respect
+parameter constraints (see Section~\ref{sec:CES}) and, 
+in our testing, nearly always violated them, often returning
+negative values for elasticity of substitution~($\sigma$) parameters.
+Thus, we used the two fitting algorithms available in \texttt{cesEst} that
+respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
+
+Our CES parameter estimation algorithm starts with an eleven-value grid search
+in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+which corresponds to $\sigma$ and $\sigma_1$ values of
+0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
+During the grid search, values of $\rho$ and $\rho_1$ are fixed,
+and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
+by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
+In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
+at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
+During the grid search portion of our algorithm, starting values for the free parameters
+are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
+and $\gamma$ is set to a value such that the mean of the residuals is zero
+by the \texttt{cesEst} function.
+
+Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
+is attempted wherein all fitting parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are allowed to float. 
+The start values for fitting parameters are taken from 
+the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
+
+If resampled data are being fitted, a prior fit to historical data is available.
+In the final step of our algorithm, 
+a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
+uses coefficients from the best 
+fit to historical data as its starting point. 
+In this final gradient search, all model parameters 
+($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+are considered free parameters.
+
+The fit with lowest $sse$ of all above trials is deemed the winner,
+and its fitting parameters are used as the model.
+
+\citet{Henningsen:2011td}, 
+in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+
+\begin{quote}
+\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
+are---at least in this study---most likely to find the 
+coefficients that give the best fit to the model, 
+where the \texttt{PORT} algorithm can be used to restrict the estimates 
+to the economically meaningful region.
+\end{quote}
+
+In our testing, we found that to be mostly true. 
+\texttt{PORT} nearly always provided lower
+$sse$ than \texttt{L-BFGS-B}, despite the fact that 
+\texttt{L-BFGS-B} often reports convergence
+and \texttt{PORT} does not for the same data
+(i.e., for the same $y$, $k$, $l$, and $e$ data).
+
+Coefficients for each resampled CES model for all countries and all nests
+are shown in 
+Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
+The white crosshair on each graph shows the location 
+of the fit to historical data. 
+In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
+the bottom of the vertical axis represents $\sigma = 0$.
+The top of the vertical axis represents $\sigma = \infty$.
+
+Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
+in Equations~\ref{eq:CES}--\ref{eq:CESekl},
+the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
+resample points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+are equivalent.
+That is, all points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+have the same $sse$. 
+As a consequence, 
+the \texttt{cesEst} fitting algorithm has no way 
+to discriminate among points along the left (right) edge of
+Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
+Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
+tend to cluster at the locations of the initial grid search in 
+$\sigma$ or $\sigma_1$
+(0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
+
+<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).", eval=FALSE>>=
+cesCoeffsDataX <- filter(AllCoeffs, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+                                                                      "(iK + iL) + (iXp)", 
+                                                                      "(iL + iXp) + (iK)", 
+                                                                      "(iXp + iK) + (iL)"))
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=gamma_coef, y=lambda, color=Source), 
+                    facet_formula=country~nestStrParen, alpha=0.05) +
+    scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
+    labs(x=expression(gamma), y=expression(lambda)) + 
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
+@
+
+<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).", eval=FALSE>>=
+standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=delta_1, y=sigma_1, color=Source), 
+                    facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta[1]), y=expression(sigma[1])) + 
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
+@
+
+<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x_p$).", eval=FALSE>>=
+standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
+                    mapping=aes(x=delta, y=sigma, color=Source), 
+                    facet_formula=country~nestStrParen, alpha=0.05) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
+    labs(x=expression(delta), y=expression(sigma)) +
+    guides(colour=guide_legend(override.aes = aes(alpha=1)))
+@
+
 % We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
 % for the CES model, based on values of $\delta$ and $\delta_1$.
 % Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
