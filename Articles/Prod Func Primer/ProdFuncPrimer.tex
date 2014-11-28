@@ -55,7 +55,7 @@
 \usepackage{hyperref}   % To create hyperlinks in the paper
 \usepackage{microtype}  % Produces hanging punctuation and beautiful type
 \usepackage{booktabs}   % For nice tables
-
+\usepackage{nicefrac}   % For beautiful fractions
 
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
@@ -505,7 +505,7 @@ efficiencies among capital, labor, and energy, in the form of
 the ratios $\rho_k$ and $\rho_l$ which are defined by
 %
 \begin{equation} \label{eq:rho_k}
-  \rho_k \equiv \frac{k}{(1/2)(l+e)}
+  \rho_k \equiv \frac{k}{(\nicefrac{1}{2})(l+e)}
 \end{equation}
 %
 and
@@ -527,13 +527,13 @@ The effect of energy ($e$) on output ($y$) is enhanced if either
 \end{itemize}
 %
 An economy that increases 
-capital stock ($k$) and labor ($l$) at the same rate as energy will have
+capital stock ($k$) and labor ($l$) at the same rate as energy ($e$) will have
 capital and labor efficiency ratios ($\rho_k$ and $\rho_l$, respectively) of unity.
 In that case, economic output ($y$) increases at the same rate as energy consumption ($e$).
 According to the LiNex model, an economy that increases 
-capital stock ($k$) without a commensurate increase in labor ($l$) 
-and energy ($e$) will experience an increase in output ($y$) in excess 
-of its increase of energy consumption ($e$), because
+capital stock ($k$) without a commensurate increase in the average of labor
+and energy [$(\nicefrac{1}{2})(l+e)$] will experience an increase in output ($y$) in excess 
+of its increase of energy consumption ($e$), because $\rho_k > 1$ and
 %
 \begin{equation}
     \mathrm{e}^{a \left[2 \left(1 - \frac{1}{\rho_k} \right) 
@@ -542,22 +542,22 @@ of its increase of energy consumption ($e$), because
 \end{equation}
 %
 Similarly, an economy benefits by increasing labor ($l$) 
-without a commensurate increase in energy ($e$). 
+without a commensurate increase in energy ($e$), because $\rho_l > 0$. 
 Thus, $\rho_k$ is an 
-efficiency of using additional labor and energy to make 
-additional capital stock available to the economy, 
-and $\rho_l$ is an efficiency of using additional energy to make 
-additional labor available to the economy. 
-Increases in $\rho_k$ and $\rho_l$ provide upward pressure on economic output ($y$),
-as the only factor of production ($e$) is used more efficiently.
+efficiency of using additional labor~($l$) and energy~($e$) to make 
+additional capital stock~($k$) available to the economy, 
+and $\rho_l$ is an efficiency of using additional energy~($e$) to make 
+additional labor~($l$) available to the economy. 
+Increases in $\rho_k$ and $\rho_l$ provide upward pressure on economic output~($y$),
+as the only factor of production~($e$) is used more efficiently.
 
 The parameter $a$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
 and the parameter $c$ represents the relative importance 
-of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
+of the labor efficiency term~($\rho_l$) compared to the capital stock efficiency term~($\rho_k$). 
 
 \citet{Kummel:2010vz} use primary exergy for $e$ and find that 
 both $a$ and $c$ vary with time.
-\citet{Warr:2012cg} use useful work for $u$ and find that 
+\citet{Warr:2012cg} use useful work for $e$ and find that 
 constant values of $a$ and $c$ are sufficient to describe economic growth 
 over the long run. 
 
