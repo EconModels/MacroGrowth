@@ -281,7 +281,7 @@ In Equation~\ref{eq:linear}, $a$, $b$, and $c$ are positive constants.
 In the linear world, factors of production are perfect substitutes.
 
 Continuing the cooking analogy, consider producing toast ($Y$) 
-with a fatty substance~(butter or margarine).
+with a fatty substance~(butter, $B$, or margarine, $M$).
 %
 \begin{equation} \label{eq:toast}
   Y = a B + b M
@@ -291,7 +291,7 @@ The linear model (Equation~\ref{eq:toast}) indicates that butter~($B$) and marga
 can be used interchangably as the fatty substance.
 Butter~($B$) and margarine~($M$) are perfect substitutes.%
   \footnote{
-  Butter and margarine may be perfect substitutes for all but the most discerning toast consumers.
+  Butter and margarine are perfect substitutes for all but the most discerning toast consumers.
   }%
 
 
@@ -356,7 +356,7 @@ As $\delta_1 \rightarrow 0$, only labor~($l$) is necessary for production.
 
 $\rho_1$ indicates the elasticity 
 of substitution~($\sigma_1$) between capital~($k$) and labor~($l$).
-The elasticity of substitution 
+The elasticity of substitution~($\sigma_1$)
 between capital~($k$) and labor~($l$) is related to $\rho_1$ and given by 
 %
 \begin{equation} \label{eq:sigma_1}
@@ -454,8 +454,8 @@ graphically.
 \begin{figure}[!ht]
 \centering\
 \includegraphics[width=0.8\linewidth]{figure/CESIsoquants.png}
-\caption[CES isoquants]{CES isoquants (lines of constant output). 
-$K$ is capital and $N$ is labor.~\citep{Klump:2011aa}}
+\caption[CES isoquants]{CES isoquants (lines of constant output, $Y$). 
+$K$ is capital and $N$ is labor. From \citet{Klump:2011aa}.}
 \label{fig:CES_isoquants}
 \end{figure}
 
@@ -471,10 +471,11 @@ An additional production function, the Linear Exponential (LinEx%
     production is \emph{linear} in energy~($e$) and \emph{exponential}
     in ratios of the factors of production~($k$, $l$, and $e$).
     }%
-) function is given by K\"{u}mmel in several places as
+) function is given by K\"{u}mmel in several places~\citep{Kummel:1980wx,Kummel:1982vy,
+Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz} as
 %
 \begin{equation} \label{eq:LinEx-kummel}
-  y = e \exp{\left[ a \left( 2 - \frac{l + e}{k} \right)  + a c \left( \frac{l}{e} - 1 \right)\right]}
+  y = e \exp{\left[ a \left( 2 - \frac{l + e}{k} \right)  + a c \left( \frac{l}{e} - 1 \right)\right]} \; .
 \end{equation}
 %
 An alternative presentation that affords easier interpretation is
@@ -484,13 +485,12 @@ An alternative presentation that affords easier interpretation is
     + c \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]} \; .
 \end{equation}
 %
-The LinEx function was derived from thermodynamic considerations
-\citep{Kummel:1980wx,Kummel:1982vy,Kummel:1985vz,Kummel:1989tf,Kummel:2002tx,Kummel:2010vz}. 
+The LinEx function was derived from thermodynamic considerations. 
 A key feature of the derivation involves
 constraints among capital~($k$), labor~($l$), and energy~($e$).
 These constraints were discussed in Section~\ref{sec:Leontief} above.%
   \footnote{
-  As an aside, I'm not sure the constraints 
+  As an aside, I question whether the constraints 
   described in Section~\ref{sec:Leontief} are the right ones.
   }%
 
@@ -518,11 +518,12 @@ and represent
 %
 (\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy (capital deepening) and 
 (\ref{eq:rho_l}) labor increase relative to energy.
-The effect of energy ($e$) on output ($y$) is enhanced if either
+The effect of energy ($e$) on output ($y$) is enhanced when $A > 1$,
+which occurs if either
 %
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
-      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1, or}
+      of labor ($l$) and energy ($e$), i.e. if $\rho_k >$ 1 or}
 \item{labor ($l$) has increased more than energy ($e$), i.e. if $\rho_l >$ 1.}
 \end{itemize}
 %
@@ -542,7 +543,7 @@ of its increase of energy consumption ($e$), because $\rho_k > 1$ and
 \end{equation}
 %
 Similarly, an economy benefits by increasing labor ($l$) 
-without a commensurate increase in energy ($e$), because $\rho_l > 0$. 
+without a commensurate increase in energy ($e$), because $\rho_l > 1$. 
 Thus, $\rho_k$ is an 
 efficiency of using additional labor~($l$) and energy~($e$) to make 
 additional capital stock~($k$) available to the economy, 
@@ -553,7 +554,7 @@ as the only factor of production~($e$) is used more efficiently.
 
 The parameter $a$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
 and the parameter $c$ represents the relative importance 
-of the labor efficiency term~($\rho_l$) compared to the capital stock efficiency term~($\rho_k$). 
+of labor efficiency~($\rho_l$) compared to capital stock efficiency~($\rho_k$). 
 
 \citet{Kummel:2010vz} use primary exergy for $e$ and find that 
 both $a$ and $c$ vary with time.
@@ -566,7 +567,7 @@ output elasticities are constant with respect to time.
 However, for the LinEx function, 
 the values of coefficients $a$ and $c$ imply time-dependent
 values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
-
+%
 \begin{equation} \label{eq:LINEX_alpha}
   \alpha \equiv \frac{k}{y}\frac{\partial y}{\partial k} = a \left( \frac{l + e}{k} \right) \;,
 \end{equation}
@@ -574,14 +575,16 @@ values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\c
 \begin{equation} \label{eq:LINEX_beta}
   \beta \equiv \frac{l}{y} \frac{\partial y}{\partial l} = a \left[ c \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
 \end{equation}
-
+%
 \noindent{}and
-
+%
 \begin{equation} \label{eq:LINEX_beta_2}
   \gamma \equiv \frac{e}{y} \frac{\partial y}{\partial e} 
          = 1 - a \left[ \frac{e}{k} + c \frac{l}{e} \right] 
          = 1 - \alpha - \beta \;.
 \end{equation}
+%
+The LinEx model assumes constant returns to scale.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
