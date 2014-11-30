@@ -309,6 +309,13 @@ The Cobb-Douglas production function is given by
 %
 $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual.
+Constant returns to scale is represented by $\alpha + \beta + \gamma = 1$.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas and substutitability} 
+\label{sec:CD-substitution}
+%++++++++++++++++++++++++++++++
 
 In the Cobb-Douglas world, factors of production are substitutable, 
 eg., a reduction of labor~($l$) can be compensated by an increase of capital~($k$)
@@ -318,8 +325,25 @@ without affecting output~($y$).%
   }
 Furthermore, an increase in one factor of production (say, $k$)
 without a concomitant increase in the others ($l$ or $e$) 
-will result in an increase of output ($y$), provided that the output elasticity 
+will always result in an increase of output ($y$), provided that the output elasticity 
 ($\alpha$) is non-zero.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{The cost share theorem} 
+\label{sec:CD-cost-share}
+%++++++++++++++++++++++++++++++
+
+The so-called ``cost share theorem'' says that coefficients ($\alpha$, $\beta$, and $\gamma$) 
+in the Cobb-Douglas model are equal to cost shares in the economy.~\citep[p.~150]{Kummel:2010vz}
+\citet[Eqn.~12]{Kummel:2010vz} shows (through the use of Lagrange multipliers) 
+that the ``cost share theorem'' is strictly true for a profit maximizing economy
+if and only if there are \emph{no technological constraints} on economic production.
+
+There are many technological constraints that affect economic production, such as
+the Second Law of Thermodynamics and
+the productive capability and energy efficiency 
+of capital~($k$) at any instant in time.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -333,7 +357,7 @@ and perfectly substitutable (linear) factors of production.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{CES with Two Factors of Production} 
+\subsection{CES with two factors of production} 
 \label{sec:CES-2}
 %++++++++++++++++++++++++++++++
 
@@ -376,7 +400,7 @@ $\rho_1 \in (-1,0) \cup (0,\infty)$.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{CES with Three Factors of Production} 
+\subsection{CES with three factors of production} 
 \label{sec:CES-3}
 %++++++++++++++++++++++++++++++
 
@@ -418,6 +442,28 @@ Or nest energy and capital in a~($ek$)($l$) structure?
       + (1-\delta) l^{-\rho} \right\}^{-1/\rho} \; ; \; 
       A = \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{CES assumptions} 
+\label{sec:CES_assumptions}
+%++++++++++++++++++++++++++++++
+
+The CES production function was derived by assuming profit maximization
+and perfect competition in the markets for both output and 
+factors of production.~\citep[p.~228]{Arrow:1961aa}
+In particular the assumption that 
+``the real wage equals the marginal product of labor''~\citep[p.~6]{Klump:2011aa}
+is made.
+
+As I have written before, these assumptions become problematic
+when considering energy.
+Many countries have parastatal or full government control 
+over electricity generation and/or fuel markets.  
+Many countries subsidize energy markets.  
+And, there are always health and environmental externalities 
+that are not priced into fossil fuel energy markets.  
+So, the conditions for perfect competition are not present for energy markets.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -573,10 +619,11 @@ values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\c
 \end{equation}
 
 \begin{equation} \label{eq:LINEX_beta}
-  \beta \equiv \frac{l}{y} \frac{\partial y}{\partial l} = a \left[ c \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
+  \beta \equiv \frac{l}{y} \frac{\partial y}{\partial l} 
+  = a \left[ c \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
 \end{equation}
 %
-\noindent{}and
+and
 %
 \begin{equation} \label{eq:LINEX_beta_2}
   \gamma \equiv \frac{e}{y} \frac{\partial y}{\partial e} 
@@ -592,18 +639,42 @@ The LinEx model assumes constant returns to scale.
 \label{sec:Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Common forms of macroeconomic production functions have been reviewed.
+Relationships among production functions have been examined.
+Key assumptions for each have been discussed.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
 \label{sec:FutureWork}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+After reviewing this literature, I think there is a need
+for a book entitled \emph{Energy in the Production Function}
+which would start with Equation~\ref{eq:diff_growth}
+and carefully derive each of the production functions.
+In each derivation, assumptions should be clearly exposed.
+The constraints associated with the LiNex equation should be critically
+examined.
+New constraints should be introduced to round out the picture of 
+economic growth in an energy- and materials-constrained world.
+If possible, the price elasticity of supply, especially for energy, should be 
+included in the production function.
+I'm unsure how this should be done, 
+although a profitable route might be found by
+re-thinking the marginal product of energy.
+Finally, a new form of the production function should be derived
+and applied.
 
+This new piece should be an entry point for people interested 
+in the role of energy in macroeconomic growth
+who have a differential equations background.
+\emph{Lecture Notes in Energy} might be a good home for it.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Acknowledgements}
-\label{sec:Acknowledgements}
+% \section*{Acknowledgements}
+% \label{sec:Acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -698,12 +769,12 @@ The LinEx model assumes constant returns to scale.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
+% \appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Appendix}
-
-Include data tables here?
+% \section{Appendix}
+%
+% Include data tables here?
 
 
 \end{document}
