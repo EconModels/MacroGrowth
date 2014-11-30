@@ -4,7 +4,7 @@
 # 
 # Ths script executes a number of sub-scripts that are designed to run together at the same time
 # on dahl. 
-# The subscripts are IST, Leeds, SUN, and REXS1960.
+# The sub-scripts are IST, Leeds, SUN, and REXS1960.
 #
 # Invoke with this command
 #
