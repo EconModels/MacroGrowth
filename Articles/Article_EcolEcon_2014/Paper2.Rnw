@@ -344,7 +344,7 @@ The Cobb-Douglas production function can be expressed as
   y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
 \end{equation}
 %
-\noindent where 
+where 
 $y \equiv Y/Y_{0}$,
 $\theta$ is a scale parameter,
 e is the base of the natural logarithm, 
@@ -503,7 +503,7 @@ functions of the following forms (among others):
 %
 \ceskle{\label{eq:CESkle}}
 %
-\noindent Equation~\ref{eq:CES} is a CES production function with 
+Equation~\ref{eq:CES} is a CES production function with 
 capital stock ($k$) and labor ($l$) factors of production. 
 Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CES} with energy 
 using a ($kl$)($e$) nesting structure, as is typical in the literature. 
@@ -548,7 +548,7 @@ are possible with the CES model.
 %
 \cesekl{\label{eq:CESekl}}
 %
-\noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
+Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
 meanings that depend upon the nesting of the factors of production.
 
 
@@ -842,7 +842,7 @@ reparameterized as
   y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{1-\alpha}
 \end{equation}
 %
-\noindent to ensure $\alpha + \beta = 1$ for constant returns to scale. 
+to ensure $\alpha + \beta = 1$ for constant returns to scale. 
 $\theta$, $\lambda$, and $\alpha$ were estimated by the 
 \texttt{R} \citep{R} function \texttt{lm} in log-transform space. 
 If the estimated value for $\alpha$ was found outside the interval $[0,1]$, 
@@ -857,7 +857,7 @@ was reparameterized as
   y = \theta \mathrm{e}^{\lambda (t-t_0)} k^{\alpha} l^{\beta} e^{1 - \alpha - \beta}
 \end{equation}
 %
-\noindent ensuring that $\alpha + \beta + \gamma = 1$,
+ensuring that $\alpha + \beta + \gamma = 1$,
 thereby providing constant returns to scale.
 The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
 values of $\lambda$, $\theta$, $\alpha$, and $\beta$ in log-transform space.
@@ -1268,7 +1268,7 @@ Therefore, we transformed the LINEX model into
     + a_1 \left(\vphantom{\frac{1}{\rho_k}}\rho_l - 1 \right)\right]},
 \end{equation}
 %
-\noindent where $a_1 \equiv a_0 c_t$. 
+where $a_1 \equiv a_0 c_t$. 
 We used the \texttt{lm} function in \texttt{R}
 \citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
 Equation~\ref{eq:LINEX_transformed} in log-transformed space. 
@@ -1361,24 +1361,24 @@ ggplot(data=linex_residuals_df, aes(x=year, y=resid, color=Source)) +
 
 The LINEX model coefficients $a_0$ and $c_t$ imply time-dependent
 values of $\alpha$, $\beta$, and $\gamma$ as given by the following equations~\citep{Warr:2012cg}:
-
+%
 \begin{equation} \label{eq:LINEX_alpha}
-  \alpha \equiv \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \;,
+  \alpha \equiv \frac{k}{y}\frac{\partial y}{\partial k} = a_0 \left( \frac{l + e}{k} \right) \; ,
 \end{equation}
-
+%
 \begin{equation} \label{eq:LINEX_beta}
   \beta \equiv \frac{l}{y} \frac{\partial y}{\partial l} = a_0 \left[ c_t \left( \frac{l}{e}\right) - \frac{l}{k} \right] \;,
 \end{equation}
-
-\noindent{}and
-
+%
+and
+%
 \begin{equation} \label{eq:LINEX_beta_2}
   \gamma \equiv \frac{e}{y} \frac{\partial y}{\partial e} 
          = 1 - a_0 \left[ \frac{e}{k} + c_t \frac{l}{e} \right] 
          = 1 - \alpha - \beta \;.
 \end{equation}
-
-\noindent Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
+%
+Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
 If the trajectory stays within the triangle, 
 the constraints on $\alpha$, $\beta$, and $\gamma$ are respected.
 Conversely, if the trajectory goes outside the triangle, the constraints have been violated.
