@@ -50,7 +50,8 @@ This command doesn't work from `fs1` or any of the other nodes of `dahl` (`node-
 ### Post-process the results
 * Run `Scripts/PostProcess.R -S <Source>` on a node of `dahl` to create:       
     + `data_postprocessed/<Source>_Coeffs.rda` and
-    + `data_postprocessed/<Source>_Fitted.rda`.         
+    + `data_postprocessed/<Source>_Fitted.rda`.  
+* `PostProcess.R` will accept multiple `<Source>`s. E.g., `Scripts/PostProcess.R -S IST,Leeds,SUN,REXS1960`
 * Note that this command must be issued from a node of the cluster (e.g., `node-00`), not from `fs1.calvin.edu`.
 `fs1` does not have a full install of `R`.
 
