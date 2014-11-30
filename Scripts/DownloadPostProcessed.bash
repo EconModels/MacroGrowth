@@ -114,7 +114,7 @@ fi
 # Note that the '*' wildcard will match several files, all with the same $SOURCE.
 REMOTE_FILES="$DAHL_PATH"/"$SOURCE"_*.Rdata
 # Specify the local directory into which we want to save the files.
-# The assumption is that the user has set "Econ-Growth-R-Analysis"" as the working directory.
+# The assumption is that the user has set "Econ-Growth-R-Analysis" as the working directory.
 LOCAL_DIR="$PWD/data_postprocessed"
 
 # Set the options for rsync.
