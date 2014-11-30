@@ -106,7 +106,7 @@
 require(EconModels)
 require(EconData)
 require(ggplot2)
-require(dplyr) # Load in this order or the mutate and arrange functions will not work as desired.
+require(dplyr)
 # Provides access to data melting. 
 # See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 require(reshape2) 
@@ -1044,8 +1044,6 @@ ggplot(data=cd_residuals_df, aes(x=year, y=resid, color=Source)) +
 \label{sec:CES_Parameter_Estimation}
 %++++++++++++++++++++++++++++++
 
-Information on CES models goes here.
-
 The CES model without and with energy is given by 
 Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
 The \texttt{R} \citep{R} package \texttt{micEconCES} 
@@ -1138,7 +1136,7 @@ tend to cluster at the locations of the initial grid search in
 $\sigma$ or $\sigma_1$
 (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
-<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).", eval=FALSE>>=
+<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.0, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).">>=
 cesCoeffsDataX <- filter(AllCoeffs, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
                                                                       "(iK + iL) + (iXp)", 
                                                                       "(iL + iXp) + (iK)", 
@@ -1150,7 +1148,7 @@ standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=gamma_coef, y=lambda, col
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=5, fig.height=5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).", eval=FALSE>>=
+<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).">>=
 standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=delta_1, y=sigma_1, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1160,7 +1158,7 @@ standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=delta_1, y=sigma_1, color
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=4.4, fig.height=5, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using exergy ($x_p$).", eval=FALSE>>=
+<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using primary exergy ($x_p$).">>=
 standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(x=delta, y=sigma, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
@@ -1171,34 +1169,37 @@ standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-% We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
-% for the CES model, based on values of $\delta$ and $\delta_1$.
-% Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
-% 
-% \begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
-% \label{tab:CES_abg_equations} 
-%   \begin{center}
-%     \begin{tabular}{c c c c c} 
-%       Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
-%       \hline
-%       ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
-%       ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
-%       ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-%       ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
-%     \end{tabular}
-%   \end{center}
-% \end{table}
-% 
-% Figure~\ref{fig:CES_ternary_graph} shows 
-% $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
-% Figure~\ref{fig:CES_ternary_graph} is comparable to
-% the ternary graph for the Cobb-Douglas models, 
-% Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
-% 
-% <<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-% standardTriPlot(data=cesCoeffsDataX, facet_formula=country~nestStrParen)
-% @
-% 
+We can develop pseudo $\alpha$, $\beta$, and $\gamma$ parameters 
+for the CES model, based on values of $\delta$ and $\delta_1$.
+Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nesting.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                \\
+      \hline
+      ($kl$)     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
+      ($kl$)$e$  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+      ($le$)$k$  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$)$l$  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Figure~\ref{fig:CES_ternary_graph} shows 
+$\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
+Figure~\ref{fig:CES_ternary_graph} is comparable to
+the ternary graph for the Cobb-Douglas models, 
+Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
+
+<<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+standardTriPlot(data=cesCoeffsDataX, 
+                mapping=aes(color=Source), 
+                facet_formula=country~nestStrParen) +
+  guides(colour=guide_legend(override.aes = aes(alpha=1)))
+@
+
 % Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
 % to historical data for all nestings. 
 % As with the Cobb-Douglas results, 
