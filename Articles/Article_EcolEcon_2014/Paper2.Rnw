@@ -1137,11 +1137,11 @@ $\sigma$ or $\sigma_1$
 (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
 <<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.0, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).">>=
-cesCoeffsDataX <- filter(AllCoeffs, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
+cesCoeffsDataXp <- filter(AllCoeffs, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
                                                                       "(iK + iL) + (iXp)", 
                                                                       "(iL + iXp) + (iK)", 
                                                                       "(iXp + iK) + (iL)"))
-standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=gamma_coef, y=lambda, color=Source), 
+standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=gamma_coef, y=lambda, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
     labs(x=expression(gamma), y=expression(lambda)) + 

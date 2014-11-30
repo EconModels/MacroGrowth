@@ -29,18 +29,17 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-29 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-29.txt" &
+ssh node-32 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-32.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
 # can, apparently, access only one of those processors. So, at most, we can run only
-# 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
-# analyze for each model, so we'll put 3 countries on each compute node.
-#
+# 4 analyses in parallel. Our code is parallelized on countries.
+
 # This first batch of cese models uses only primary exergy (iXp).
 
-ssh node-30 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-30.txt" &
-ssh node-32 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-32.txt" &
+ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-33.txt" &
+ssh node-34 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-34.txt" &
 ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-35.txt" &
 
 # This next batch of cese models uses only useful work (iU).

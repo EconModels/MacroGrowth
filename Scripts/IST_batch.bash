@@ -29,26 +29,30 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-01.txt" &
+ssh node-09 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-09.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
 # can, apparently, access only one of those processors. So, at most, we can run only
-# 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
-# analyze for each model, so we'll put 3 countries on each compute node.
-#
-# This first batch of cese models uses only final exergy (iXf).
+# 4 analyses in parallel. Our code is parallelized on countries.
 
-ssh node-02 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
-ssh node-03 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-03.txt" &
-ssh node-04 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-04.txt" &
+
+# This first batch of cese models uses only primary exergy (iXp).
+
+ssh node-10 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-10.txt" &
+ssh node-12 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-12.txt" &
+ssh node-13 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" &
+
+# This second batch of cese models uses only final exergy (iXf).
+
+ssh node-14 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-14.txt" &
+ssh node-15 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-15.txt" &
+ssh node-16 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-16.txt" &
 
 # This next batch of cese models uses only useful work (iU).
 
-ssh node-05 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-05.txt" &
-# node-06 has only 4 working processors.  We can access only 2 of those.  So, best to avoid node-06 for now.
-ssh node-07 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-07.txt" &
-# Gary Draving suggested avoiding node-08, because of I/O issues.
-ssh node-09 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-09.txt" &
+ssh node-17 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-17.txt" &
+ssh node-18 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-19.txt" &
 
-ssh node-10 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-10.txt" &
+ssh node-20 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-20.txt" &

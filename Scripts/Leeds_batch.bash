@@ -29,24 +29,23 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-13 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-13.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-21.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
 # can, apparently, access only one of those processors. So, at most, we can run only
-# 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
-# analyze for each model, so we'll put 3 countries on each compute node.
+# 4 analyses in parallel. Our code is parallelized on countries.
 #
-# This first batch of cese models uses only final exergy (iXf).
+# This first batch of cese models uses only final exergy (iXp).
 
-ssh node-16 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
-ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-19.txt" &
+ssh node-22 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-22.txt" &
+ssh node-23 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-23.txt" &
+ssh node-25 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-25.txt" &
 
 # This next batch of cese models uses only useful work (iU).
 
-ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-20.txt" &
-ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-21.txt" &
-ssh node-26 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-26.txt" &
+ssh node-26 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-26.txt" &
+ssh node-28 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-28.txt" &
+ssh node-29 "cd $LOC_PATH; $EXEC -c US,UK,CN -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-29.txt" &
 
-ssh node-28 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-28.txt" &
+ssh node-30 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-30.txt" &
