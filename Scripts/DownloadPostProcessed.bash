@@ -21,6 +21,22 @@
 # Inspried by http://tuxtweaks.com/2014/05/bash-getopts/
 #
 
+# In the future, if I want to extend this to downloading from several <Source>s
+# simulteneously, look at this hint.
+# IN="bla@some.com;john@home.com"
+# arrIN=(${IN//;/ }) # split at the semicolon
+# from partway down this page:
+# http://stackoverflow.com/questions/918886/how-do-i-split-a-string-on-a-delimiter-in-bash
+
+# Or this hint is probably better.
+# IN='bla@some.com;john@home.com;Charlie Brown <cbrown@acme.com;!"#$%&/()[]{}*? are no problem;simple is beautiful :-)'
+# oldifs="$IFS"
+# IFS=';' arrayIN=($IN)
+# IFS="$oldifs"
+# for i in "${arrayIN[@]}"; do
+# echo "$i"
+# done
+
 # Set fonts
 NORM=`tput sgr0`
 BOLD=`tput bold`
