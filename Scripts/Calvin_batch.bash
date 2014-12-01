@@ -29,7 +29,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-01.txt" &
+ssh node-14 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-14.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
@@ -39,48 +39,38 @@ ssh node-01 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 #
 # This first batch of cese models uses only thermal energy (Q).
 
-ssh node-02 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-02.txt" &
-ssh node-03 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-03.txt" &
-ssh node-04 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-04.txt" &
-ssh node-05 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-05.txt" &
-# node-06 has only 4 working processors.  We can access only 2 of those.  So, best to avoid node-06 for now.
-ssh node-07 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-07.txt" &
-# Gary Draving suggested avoiding node-08, because of I/O issues.
-ssh node-09 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-09.txt" &
-ssh node-10 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-10.txt" &
-# node-11 is not functional.
-# node-12 does not have a reasonable home directory.
-ssh node-13 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" & 
-# node-14 sometimes loses connection and is unreliable
-# node-15 doesn't work. Can't find the object "Calvin" for some reason.
-ssh node-16 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-16.txt" &
+ssh node-15 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-15.txt" &
+ssh node-16 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
+ssh node-17 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-17.txt" &
 
-# The next lines run the cese analyses for exergy (X)
+ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-19.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
 
-# node-17 is missing
-ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-18.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-19.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-20.txt" &
-ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-21.txt" &
-# Faulty R installations on nodes 22, 23, and 24.
-# node-25 is missing.
-ssh node-26 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-26.txt" &
-# node-27 is missing.
-ssh node-28 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-28.txt" &
-ssh node-29 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-29.txt" &
-ssh node-30 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-30.txt" &
-# node-31 appears to be down.
-ssh node-32 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-32.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-21.txt" &
+ssh node-22 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-22.txt" & 
+ssh node-23 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-23.txt" &
+
+# The next lines run the cese analyses for primary exergy (X)
+
+ssh node-25 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-25.txt" &
+ssh node-26 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-26.txt" &
+ssh node-28 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-28.txt" &
+
+ssh node-29 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-29.txt" &
+ssh node-30 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-30.txt" &
+ssh node-32 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-32.txt" &
+
+ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-33.txt" &
+ssh node-34 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-34.txt" &
+ssh node-35 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-35.txt" &
 
 # We have useful work (U) data for US, UK, and JP only.
 
-# node-33 is down.
-# node-34 is down.
-ssh node-35 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-35.txt" &
-# node-36 has a bad R install
-ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-37.txt" &
-ssh node-38 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-38.txt" &
+ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-37.txt" &
+ssh node-38 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-38.txt" &
+ssh node-39 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-39.txt" &
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-39 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-39.txt" &
+ssh node-40 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-40.txt" &
