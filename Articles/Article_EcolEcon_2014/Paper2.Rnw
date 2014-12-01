@@ -1149,7 +1149,7 @@ standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=gamma_coef, y=lambda, co
 @
 
 <<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).">>=
-standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=delta_1, y=sigma_1, color=Source), 
+standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=delta_1, y=sigma_1, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0)) +
@@ -1159,7 +1159,7 @@ standardScatterPlot(data=cesCoeffsDataX, mapping=aes(x=delta_1, y=sigma_1, color
 @
 
 <<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using primary exergy ($x_p$).">>=
-standardScatterPlot(data=subset(cesCoeffsDataX, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=subset(cesCoeffsDataXp, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(x=delta, y=sigma, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1194,7 +1194,7 @@ the ternary graph for the Cobb-Douglas models,
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
 <<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
-standardTriPlot(data=cesCoeffsDataX, 
+standardTriPlot(data=cesCoeffsDataXp, 
                 mapping=aes(color=Source), 
                 facet_formula=country~nestStrParen) +
   guides(colour=guide_legend(override.aes = aes(alpha=1)))
