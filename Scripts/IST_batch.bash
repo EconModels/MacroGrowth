@@ -39,9 +39,9 @@ ssh node-09 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 
 # This first batch of cese models uses only primary exergy (iXp).
 
-ssh node-10 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-10.txt" &
-ssh node-12 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-12.txt" &
-ssh node-13 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXf -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" &
+ssh node-10 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-10.txt" &
+ssh node-12 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-12.txt" &
+ssh node-13 "cd $LOC_PATH; $EXEC -c UK,AT,PT -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-13.txt" &
 
 # This second batch of cese models uses only final exergy (iXf).
 
