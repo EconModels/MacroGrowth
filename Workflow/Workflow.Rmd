@@ -56,16 +56,17 @@ This command doesn't work from `fs1` or any of the other nodes of `dahl` (`node-
 `fs1` does not have a full install of `R`.
 
 ### Download post-processed results to local machine
-* From a local machine, say `Scripts/DownloadPostProcessed.bash -u <user> -S <Source> -d`, where `<user>` is 
-a username on `dahl`, `<Source>` is the data source of interest, and `-d` (debug) will 
+* From the `Econ-Growth-R-Analysis` directory of a local machine, 
+say `Scripts/DownloadPostProcessed.R -u <user> -S <Source> -d`, where `<user>` is 
+a username on `dahl`, `<Source>` is a comma-separated list of data sources of interest, and `-d` (debug) will 
 show the files to be transferred to the local machine, without actually transferring them.
 * Verify that the list of files to be transferred looks right.
-* From a local computer, say `Scripts/DownloadPostProcessed.bash -u <user> -S <Source>` to download the files.
+* From a local computer, say `Scripts/DownloadPostProcessed.R -u <user> -S <Source>` to download the files.
 * The files are downloaded to the `data_postprocessed` directory on the local machine.
 * Use the function `loadPostProcessedData` in the `EconData` package to load the downloaded data into
 the environment. 
-* The `DownloadPostProcessed.bash` script connects to `dahl.calvin.edu` (`node-00`). 
-That choice was made to minimize the risk that a file won't prpogate across the cluster 
+* The `DownloadPostProcessed.R` script connects to `dahl.calvin.edu` (`node-00`). 
+The choice to connect to `node-00` was made to minimize the risk that a file won't propagate across the cluster's 
 file system prior to the download request.
 
 The data files are saved with `saveRDS` by `PostProcess.R`, so `loadPostProcessedData` uses `readRDS` to 
