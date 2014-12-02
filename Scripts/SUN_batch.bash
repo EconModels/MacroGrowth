@@ -29,7 +29,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-21 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-21.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-20.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
@@ -38,8 +38,8 @@ ssh node-21 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 #
 # This first batch of cese models uses only primary energy (iQp).
 
-ssh node-22 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-22.txt" &
-ssh node-23 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-23.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-21.txt" &
+ssh node-22 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-22.txt" &
 ssh node-25 "cd $LOC_PATH; $EXEC -c ZA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-25.txt" &
 
 # This next batch of cese models uses only final energy (iQf).

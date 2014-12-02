@@ -29,7 +29,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-ssh node-14 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-14.txt" &
+ssh node-13 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUTDIR/node-13.txt" &
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
@@ -39,17 +39,17 @@ ssh node-14 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 #
 # This first batch of cese models uses only thermal energy (Q).
 
-ssh node-15 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-15.txt" &
-ssh node-16 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
-ssh node-17 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-17.txt" &
+ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-14.txt" &
+ssh node-15 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-15.txt" &
+ssh node-16 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-16.txt" &
 
-ssh node-18 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
-ssh node-19 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-19.txt" &
-ssh node-20 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-17 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-17.txt" &
+ssh node-18 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-18.txt" &
+ssh node-19 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-19.txt" &
 
-ssh node-21 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-21.txt" &
-ssh node-22 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-22.txt" & 
-ssh node-23 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-23.txt" &
+ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-20.txt" &
+ssh node-21 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-21.txt" & 
+ssh node-22 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-22.txt" &
 
 # The next lines run the cese analyses for primary exergy (X)
 
