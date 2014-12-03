@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,plyr,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
+#!/usr/bin/Rscript  --default-packages=utils,stats,lattice,grid,mosaic,methods,graphics,foreach,doParallel,xtable,nlmrt,micEconCES,systemfit,Matrix,lmtest,zoo,miscTools,micEcon,minpack.lm,DEoptim,iterators,parallel,latticeExtra,RColorBrewer,ggplot2,reshape2,scales
 #
 # This script fits all of the base models for each combination of 
 # source, country, model, factor, energy type, and nesting.
@@ -28,11 +28,16 @@ nestStr <- function(nest){
 # Provide a way to specify data source
 option_list <- list(
   make_option(c("-S", "--Source"), default="Calvin",
-              help="Source of data [default=%default]")
+              help="Source of data [default=%default]"),
+  make_option(c("-d", "--debug"), default=FALSE, action="store_true",
+              help="Debug mode. No work is performed. Reports what would have been done. [default=%default]")
 )
 
-opts <- parse_args(OptionParser(option_list=option_list))
-# print(opts)
+# Using positional_arguments=TRUE splits the arguments into two lists, options and args.
+# Options contains the arguments given in option_list.  Args contains all unknown arguments.
+opts <- parse_args(OptionParser(option_list=option_list), positional_arguments=TRUE)
+opts <- opts$options
+print(opts)
 
 historicalData <- eval(parse(text=opts$Source))
 Countries <- countryAbbrevs[countryAbbrevs %in% levels(historicalData$Country)]
@@ -82,17 +87,20 @@ for (country in Countries) {
         cat ( paste(opts$Source, country, m$fun, formulaStr, m$dots, sep=" : ") )
         cat ("\n")
         
-        tryCatch({
-          oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
-          mod <- sub(pattern="Model", replacement="", x=m$fun)
-          fs <- factorString(formula=formula, nest=m$dots$nest)
-          oModels[[opts$Source]][[country]][[mod]][[fs]] <- oModel
-        }, 
-        error=function(e) {
-          cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-          print(e)
+        if (! opts$debug){
+          # If we're not in debug mode, do the calculations.
+          tryCatch({
+            oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
+            mod <- sub(pattern="Model", replacement="", x=m$fun)
+            fs <- factorString(formula=formula, nest=m$dots$nest)
+            oModels[[opts$Source]][[country]][[mod]][[fs]] <- oModel
+          }, 
+          error=function(e) {
+            cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+            print(e)
+          }
+          )
         }
-        )
       }
     }
   }
@@ -101,27 +109,19 @@ for (country in Countries) {
 # Save object to data_resample for inclusion in a future zipped version of all of the results.
 #
 data_resample_dir <- file.path("data_resample", opts$Source)
-dir.create(data_resample_dir, showWarnings=FALSE)
 filename_Rdata <- "Models.Rdata"
 data_resample_path <- file.path(data_resample_dir, filename_Rdata)
-cat(paste("Saving", data_resample_path, "...")); cat("\n")
-saveRDS(oModels, file=data_resample_path)
-#
-# Save object so that it is available in the data_postprocessed directory
-#
-# First, put the oModels object into the environment with the name by which it will be available from the package.
-# varname <- paste0(opts$Source, "_Models")
-# assign(varname, oModels)
-# # Now, save the object
-# package_dir <- file.path("Packages", "EconData", "data")
-# dir.create(package_dir, showWarnings=FALSE)
-# filename_rda <- paste0(varname, ".rda")
-# package_path <- file.path(package_dir, filename_rda)
-# cat(paste("Saving", package_path, "...")); cat("\n")
-# save(list=varname, file=package_path)
-
-saveRDS(oModels, file=file.path("data_postprocessed", paste0(opts$Source, "_", filename_Rdata)))
+data_postprocessed_path <- file.path("data_postprocessed", paste0(opts$Source, "_", filename_Rdata))
+if (opts$debug){
+  cat(paste("Would have saved", data_resample_path)); cat("\n")
+  cat(paste("Would have saved", data_postprocessed_path)); cat("\n")
+} else {
+  cat(paste("Saving", data_resample_path, "...")); cat("\n")
+  dir.create(data_resample_dir, showWarnings=FALSE)
+  saveRDS(oModels, file=data_resample_path)  
+  # Save object so that it is available in the data_postprocessed directory
+  cat(paste("Saving", data_postprocessed_path, "...")); cat("\n")
+  saveRDS(oModels, file=data_postprocessed_path)
+}
 
 cat("\n\nDone!\n")
-
-
