@@ -16,7 +16,8 @@ loadResampledData(path = "", archive = NULL, country = NULL,
 
 \item{model}{a model or vector of models of the form \code{c("sf", "cd", "ces", "linex")}, for example.}
 
-\item{factors}{strings of factors used in fitting the models.}
+\item{factors}{strings of factors used in fitting the models
+of the form \code{"iK+iL+iQp"} or \code{"iQp+iK+iL"}.}
 
 \item{sep}{the separator within the file names between country, model, and factors}
 

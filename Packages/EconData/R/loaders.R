@@ -12,7 +12,8 @@ is.in <- function( el, set ) {
 #' @param archive a zip archive containing resampled coefficient files
 #' @param country a country or vector of countries.
 #' @param model a model or vector of models of the form \code{c("sf", "cd", "ces", "linex")}, for example.
-#' @param factors strings of factors used in fitting the models. 
+#' @param factors strings of factors used in fitting the models 
+#' of the form \code{"iK+iL+iQp"} or \code{"iQp+iK+iL"}.
 #' @param sep the separator within the file names between country, model, and factors
 #' @param kind a character string that identifies which kind of resampled data to load, one of 
 #' \code{coeffs}, \code{models}, or \code{fitted}.
