@@ -48,4 +48,4 @@ ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(kl\)e -S $SRC $1
 ssh node-38 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-38.txt" &
 ssh node-39 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-39.txt" &
 
-ssh node-40 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-40.txt" &
+ssh node-40 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC $1 &> $OUTDIR/node-40.txt" &

@@ -60,4 +60,4 @@ ssh node-13 "cd $LOC_PATH; $EXEC -c US,UK,JP,AT -e iU -m cese-\(ek\)l -S $SRC $1
 
 # Run the script to generate all orig fits and models on a node.  
 
-ssh node-14 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC &> $OUTDIR/node-14.txt" &
+ssh node-14 "cd $LOC_PATH; Scripts/OrigModels.R -S $SRC $1 &> $OUTDIR/node-14.txt" &
