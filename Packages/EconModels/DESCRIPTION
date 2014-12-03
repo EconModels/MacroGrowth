@@ -1,19 +1,16 @@
-Package: EconModels
+Package: EconData
 Type: Package
-Title: Economics Models
+Title: Economics Data
 Version: 0.1-7
-Date: 2014-06-12
+Date: 2014-07-23
 Depends:
     micEconCES
 Imports:
-    foreach,
-    doParallel,
     parallel,
     lattice,
     latticeExtra,
-    plyr,
+    mosaic,
     ggplot2,
-    scales,
     car,
     mosaic,
     xtable,
@@ -21,17 +18,13 @@ Imports:
     Hmisc,
     methods,
     utils,
-    splines,
-    mosaic
+    splines
 Suggests:
-    testthat,
-    MASS,
-    EconData,
-    knitr
+    MASS
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>
-Description: package associated with a paper
+Description: package associated with 2014 Economics paper
 License: GPL (>=2)
 LazyLoad: yes
 LazyData: yes
