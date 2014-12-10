@@ -454,7 +454,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
 #' \code{c} and \code{d} are optional.
 #' @param data a data frame, in which to evaluate the formula.
-#' #' @param formula a formula of the form \code{response ~ captial + labor + energy + time}
+#' #' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param a instead of specifying a formula, expressions for
@@ -854,7 +854,7 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
 
 #' Fitting LINEX models
 #' 
-#' @param formula a formula of the form \code{response ~ captial + labor + energy + time}
+#' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param capital instead of specifying a formula, expressions for
