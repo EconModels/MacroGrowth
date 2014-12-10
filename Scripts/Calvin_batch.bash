@@ -37,7 +37,7 @@ ssh node-13 "cd $LOC_PATH; $EXEC -c all -e all -f all -m fast -S $SRC $1 &> $OUT
 # 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
 # analyze for each model, so we'll put 3 countries on each compute node.
 #
-# This first batch of cese models uses only thermal energy (Q).
+# This first batch of cese models uses only primary thermal energy (iQp).
 
 ssh node-14 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-14.txt" &
 ssh node-15 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-15.txt" &
@@ -51,7 +51,7 @@ ssh node-20 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 &
 ssh node-21 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-21.txt" & 
 ssh node-22 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-22.txt" &
 
-# The next lines run the cese analyses for primary exergy (X)
+# The next lines run the cese analyses for primary exergy (iXp)
 
 ssh node-25 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-25.txt" &
 ssh node-26 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-26.txt" &
@@ -65,7 +65,7 @@ ssh node-33 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 &
 ssh node-34 "cd $LOC_PATH; $EXEC -c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-34.txt" &
 ssh node-35 "cd $LOC_PATH; $EXEC -c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 &> $OUTDIR/node-35.txt" &
 
-# We have useful work (U) data for US, UK, and JP only.
+# We have useful work (iU) data for US, UK, and JP only.
 
 ssh node-37 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 &> $OUTDIR/node-37.txt" &
 ssh node-38 "cd $LOC_PATH; $EXEC -c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 &> $OUTDIR/node-38.txt" &
