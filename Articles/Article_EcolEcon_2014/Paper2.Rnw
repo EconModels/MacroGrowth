@@ -191,8 +191,10 @@ extract_data <- function(x, name) {
   factorString <- name_pieces[[4]]
   # Parse the factorString to get the energyType
   energyType <- parseFactorString(factorString)$energyType
+  
   data.frame(year = (attr(x, which="data"))$Year, resid = resid(x), name=name, Source=Source, Country=Country,
-             modelType=modelType, energyType=energyType)
+             modelType=modelType, factorString=factorString, 
+             nestStrParen=parseFactorString(factorString)$nestStrParen, energyType=energyType)
 }
 residual_data <- leaf_apply(AllModels, extract_data, class=c("CDEmodel", "cesEst", "LINEXmodel"))
 # Bind these all in a data frame. 
@@ -993,14 +995,14 @@ spaghettiPlot(data=cdFittedDataUS, facet_formula=Source~energy, level=spaghettiG
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-<<CD_GDP_Spaghetti_Graphs_UK, fig.pos="H", fig.align='center', fig.width=4, fig.height=4.5, fig.cap="UK Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graphs_UK, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="UK Cobb-Douglas fitted models.">>=
 cdFittedDataUK <- subset(AllFitted, subset = model=="cd" & Country=="UK")
 spaghettiPlot(data=cdFittedDataUK, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-<<CD_GDP_Spaghetti_Graphs_JP, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="JP Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graphs_JP, fig.pos="H", fig.align='center', fig.width=4, fig.height=2, fig.cap="JP Cobb-Douglas fitted models.">>=
 cdFittedDataJP <- subset(AllFitted, subset = model=="cd" & Country=="JP")
 spaghettiPlot(data=cdFittedDataJP, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
@@ -1014,14 +1016,14 @@ spaghettiPlot(data=cdFittedDataAT, facet_formula=Source~energy, level=spaghettiG
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-<<CD_GDP_Spaghetti_Graphs_PT, fig.pos="H", fig.align='center', fig.width=5, fig.height=2.5, fig.cap="PT Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graphs_PT, fig.pos="H", fig.align='center', fig.width=5, fig.height=2, fig.cap="PT Cobb-Douglas fitted models.">>=
 cdFittedDataPT <- subset(AllFitted, subset = model=="cd" & Country=="PT")
 spaghettiPlot(data=cdFittedDataPT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
-<<CD_GDP_Spaghetti_Graphs_CN, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="CN Cobb-Douglas fitted models.">>=
+<<CD_GDP_Spaghetti_Graphs_CN, fig.pos="H", fig.align='center', fig.width=4, fig.height=2, fig.cap="CN Cobb-Douglas fitted models.">>=
 cdFittedDataCN <- subset(AllFitted, subset = model=="cd" & Country=="CN")
 spaghettiPlot(data=cdFittedDataCN, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
@@ -1034,7 +1036,8 @@ cd_residuals_df <- subset(residuals_df, subset = modelType=="cd")
 ggplot(data=cd_residuals_df, aes(x=year, y=resid, color=Source)) + 
   geom_point(size = 1.0) +
   facet_grid(Country ~ energyType) +
-  labs(x = "", y = "Residuals") + 
+  labs(x = "", y = "Residuals") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) + 
   xy_theme()
 @
 
@@ -1111,10 +1114,10 @@ and \texttt{PORT} does not for the same data
 
 Coefficients for each resampled CES model for all countries and all nests
 are shown in 
-Figures~\ref{fig:CES_lambda_gamma_graph_X}--\ref{fig:CES_sigma_delta_graph_X}. 
+Figures~\ref{fig:CES_lambda_gamma_graph_Xp}--\ref{fig:CES_sigma_delta_graph_Xp}. 
 The white crosshair on each graph shows the location 
 of the fit to historical data. 
-In Figures~\ref{fig:CES_sigma1_delta1_graph_X} and~\ref{fig:CES_sigma_delta_graph_X},
+In Figures~\ref{fig:CES_sigma1_delta1_graph_Xp} and~\ref{fig:CES_sigma_delta_graph_Xp},
 the bottom of the vertical axis represents $\sigma = 0$.
 The top of the vertical axis represents $\sigma = \infty$.
 
@@ -1122,21 +1125,29 @@ Note that as $\delta$ or $\delta_1$ approaches 0 (1)
 in Equations~\ref{eq:CES}--\ref{eq:CESekl},
 the corresponding value of $\sigma$ or $\sigma_1$ becomes irrelevant, and
 resample points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+Figures \ref{fig:CES_sigma1_delta1_graph_Xp} and \ref{fig:CES_sigma_delta_graph_Xp}
 are equivalent.
 That is, all points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}
+Figures \ref{fig:CES_sigma1_delta1_graph_Xp} and \ref{fig:CES_sigma_delta_graph_Xp}
 have the same $sse$. 
 As a consequence, 
 the \texttt{cesEst} fitting algorithm has no way 
 to discriminate among points along the left (right) edge of
-Figures \ref{fig:CES_sigma1_delta1_graph_X} and \ref{fig:CES_sigma_delta_graph_X}. 
+Figures \ref{fig:CES_sigma1_delta1_graph_Xp} and \ref{fig:CES_sigma_delta_graph_Xp}. 
 Thus, resample point estimates where $\delta$ or $\delta_1$ approaches 0 (1)
 tend to cluster at the locations of the initial grid search in 
 $\sigma$ or $\sigma_1$
 (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
-<<CES_lambda_gamma_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.0, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).">>=
+
+%------------------------------
+\subsubsection{CES with primary exergy ($x_p$)} 
+\label{sec:ces_xp}
+%------------------------------
+
+The following graphs show results for the CES model using primary exergy ($x_p$).
+
+<<CES_lambda_gamma_graph_Xp, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.0, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models with primary exergy ($x_p$).">>=
 cesCoeffsDataXp <- filter(AllCoeffs, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
                                                                       "(iK + iL) + (iXp)", 
                                                                       "(iL + iXp) + (iK)", 
@@ -1148,7 +1159,7 @@ standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=gamma_coef, y=lambda, co
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CES_sigma1_delta1_graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).">>=
+<<CES_sigma1_delta1_graph_Xp, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6.5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models with primary exergy ($x_p$).">>=
 standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=delta_1, y=sigma_1, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1158,7 +1169,7 @@ standardScatterPlot(data=cesCoeffsDataXp, mapping=aes(x=delta_1, y=sigma_1, colo
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-<<CES_sigma_delta_graph_X, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using primary exergy ($x_p$).">>=
+<<CES_sigma_delta_graph_Xp, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using primary exergy ($x_p$).">>=
 standardScatterPlot(data=subset(cesCoeffsDataXp, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(x=delta, y=sigma, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
@@ -1187,25 +1198,96 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
   \end{center}
 \end{table}
 
-Figure~\ref{fig:CES_ternary_graph} shows 
+Figure~\ref{fig:CES_ternary_graphXp} shows 
 $\alpha$, $\beta$, and $\gamma$ parameters for the CES model for all nests and countries.
-Figure~\ref{fig:CES_ternary_graph} is comparable to
+Figure~\ref{fig:CES_ternary_graphXp} is comparable to
 the ternary graph for the Cobb-Douglas models, 
 Figure~\ref{fig:CD_Ternary_Scatter_Graph}.
 
-<<CES_ternary_graphX, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with exergy ($x$).", eval=FALSE>>=
+<<CES_ternary_graphXp, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="$\\alpha$, $\\beta$, and $\\gamma$ values for CES resample models with primary exergy ($x_p$).", eval=TRUE>>=
 standardTriPlot(data=cesCoeffsDataXp, 
                 mapping=aes(color=Source), 
                 facet_formula=country~nestStrParen) +
   guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-% Figure~\ref{fig:CES_Spaghetti_Graph} compares CES model predictions 
-% to historical data for all nestings. 
-% As with the Cobb-Douglas results, 
-% historical data are shown as a black line, 
-% the fit to historical data is shown as a white line, and 
-% the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
+Figures~\ref{fig:CES_GDP_Spaghetti_Graph_US_xp}--\ref{fig:CES_GDP_Spaghetti_Graph_CN_xp} 
+compare CES model predictions 
+to historical data for all nestings, countries, and data sources. 
+As with the Cobb-Douglas results, 
+historical data are shown as a black line, 
+the fit to historical data is shown as a white line, and 
+the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
+
+<<CES_GDP_Spaghetti_Graph_US_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=3.5, fig.cap="US CES with $x_p$ fitted models.">>=
+cesFittedDataUS_xp <- subset(AllFitted, subset = model=="ces" & Country=="US" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cesFittedDataUS_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_GDP_Spaghetti_Graph_UK_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=4.5, fig.cap="UK CES with $x_p$ fitted models.">>=
+cesFittedDataUK_xp <- subset(AllFitted, subset = model=="ces" & Country=="UK" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cesFittedDataUK_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_GDP_Spaghetti_Graph_JP_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=2.5, fig.cap="JP CES with $x_p$ fitted models.">>=
+cdFittedDataJP_xp <- subset(AllFitted, subset = model=="ces" & Country=="JP" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cdFittedDataJP_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_GDP_Spaghetti_Graph_AT_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=3.5, fig.cap="AT CES with $x_p$ fitted models.">>=
+cdFittedDataAT_xp <- subset(AllFitted, subset = model=="ces" & Country=="AT" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cdFittedDataAT_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_GDP_Spaghetti_Graph_PT_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=2.5, fig.cap="PT CES with $x_p$ fitted models.">>=
+cdFittedDataPT_xp <- subset(AllFitted, subset = model=="ces" & Country=="PT" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cdFittedDataPT_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_GDP_Spaghetti_Graph_CN_xp, fig.pos="H", fig.align='center', fig.width=5, fig.height=2.5, fig.cap="CN CES with $x_p$ fitted models.">>=
+cdFittedDataCN_xp <- subset(AllFitted, subset = model=="ces" & Country=="CN" & (energy=="iXp" | energy=="none"))
+spaghettiPlot(data=cdFittedDataCN_xp, facet_formula=Source~nestStrParen, level=spaghettiGraphLevel) +
+    labs(y="Indexed GDP (1960=1)") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000))
+@
+
+<<CES_Residual_Plot, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="CES with $x_p$ Residual Plots.">>=
+# Use residuals_df to make a graph.
+ces_xp_residuals_df <- subset(residuals_df, subset = modelType=="ces" & (energyType=="iXp" | energyType=="none"))
+ggplot(data=ces_xp_residuals_df, aes(x=year, y=resid, color=Source)) + 
+  geom_point(size = 1.0) +
+  facet_grid(Country ~ nestStrParen) +
+  labs(x = "", y = "Residuals") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) + 
+  xy_theme()
+@
+
+
+%------------------------------
+\subsubsection{CES with final exergy ($x_f$)} 
+\label{sec:ces_xf}
+%------------------------------
+
+
+
+%------------------------------
+\subsubsection{CES with useful work ($u$)} 
+\label{sec:ces_u}
+%------------------------------
+
+
+
+
 % 
 % <<CES_Spaghetti_Graph_X, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="CES fitted models with exergy ($x$).", eval=FALSE>>=
 % cesFittedDataX <- filter(fitted_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
