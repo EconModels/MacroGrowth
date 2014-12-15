@@ -25,7 +25,7 @@ resampledResponse <- function( object, ...) {
 }
 
 #' @export
-resampledResponse.default <- function( object, method=c("residual", "wild", "debug","parameteric"),  
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug", "parametric"),  
                                        reindex=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
