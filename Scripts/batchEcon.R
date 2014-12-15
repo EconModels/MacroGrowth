@@ -209,10 +209,10 @@ for (m in ModelInfos) {
             oModel <- do.call( m$fitfun, c( list( formula, data=countryData ), m$dots) )
             if (m$fitfun == "cesModel") {
               # Want to set prevModel to oModel in the call to cesModel. It will be passed in the ... argument.  
-              rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
+              rFits <- do.call(resampledFits, c( list( oModel, opts$method, n=opts$resamples, id=id, prevModel=oModel), m$dots ) )
             } else {
               # No need for a prevModel argument, because none of the model functions (except cesModel) use it.
-              rFits <- do.call(resampledFits, c( list( oModel, "wild", n=opts$resamples, id=id), m$dots) ) 
+              rFits <- do.call(resampledFits, c( list( oModel, opts$method, n=opts$resamples, id=id), m$dots) ) 
             }
             rModels <- rFits[["models"]]
             rCoeffs <- rFits[["coeffs"]]
