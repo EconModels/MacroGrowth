@@ -3,8 +3,8 @@
 \alias{resampledData}
 \title{Create resampled data}
 \usage{
-resampledData(model, method = c("residual", "resample", "wild", "debug"),
-  reindex = FALSE)
+resampledData(model, method = c("residual", "resample", "wild", "parametric",
+  "debug"), reindex = FALSE)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
@@ -12,9 +12,10 @@ resampledData(model, method = c("residual", "resample", "wild", "debug"),
 have been fit with \code{save.data = TRUE}.}
 
 \item{method}{One of
-resample:  resample rows from data. Can result in repeated years.
-residual:  resamples the residuals and applies them to the data. All years are present.
-wild:      same as residuals but randomly select sign of resampled residuals.}
+resample:   resample rows from data. Can result in repeated years.
+residual:   resamples the residuals and applies them to the data. All years are present.
+wild:       same as residuals but randomly select sign of resampled residuals.
+parametric: resample residuals from normal distribution}
 
 \item{reindex}{a logical indicating whether response values should be
 reindexed before fitting.}

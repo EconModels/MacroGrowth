@@ -61,7 +61,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @param model a model returned from \code{linexModel}, \code{cdModel}, 
 #' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
-#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}
+#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, \code{"parametric"}, or \code{"debug"}
 #' @param n the number of resamples you want to perform
 #' @param save.data a logical indicating whether the data should be saved 
 #' with each model.
@@ -74,7 +74,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @return a list of length two containting a data frame of coefficients and a list of models
 #' @export
 resampledFits <- function(model,
-                          method=c("residual", "resample", "wild", "debug"),
+                          method=c("residual", "resample", "wild", "parametric", "debug"),
                           n,
                           save.data=FALSE,
                           seed,
@@ -138,9 +138,10 @@ resampledFits <- function(model,
 #' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method One of 
-#'      resample:  resample rows from data. Can result in repeated years.
-#'      residual:  resamples the residuals and applies them to the data. All years are present.
-#'      wild:      same as residuals but randomly select sign of resampled residuals.
+#'      resample:   resample rows from data. Can result in repeated years.
+#'      residual:   resamples the residuals and applies them to the data. All years are present.
+#'      wild:       same as residuals but randomly select sign of resampled residuals.
+#'      parametric: resample residuals from normal distribution
 #' @param  reindex a logical indicating whether response values should be
 #' reindexed before fitting.
 #' 
@@ -149,7 +150,7 @@ resampledFits <- function(model,
 #' the model with the response variable in the first column.
 
 #' @export
-resampledData <- function(model, method=c("residual", "resample", "wild", "debug"), 
+resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"), 
                           reindex=FALSE){
   data <- attr(model, "data")
   if (is.null(data)) {

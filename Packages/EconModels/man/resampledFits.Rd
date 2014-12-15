@@ -3,15 +3,15 @@
 \alias{resampledFits}
 \title{Perform resample fits for a model}
 \usage{
-resampledFits(model, method = c("residual", "resample", "wild", "debug"), n,
-  save.data = FALSE, seed, id, reindex = FALSE, ...)
+resampledFits(model, method = c("residual", "resample", "wild", "parametric",
+  "debug"), n, save.data = FALSE, seed, id, reindex = FALSE, ...)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
 \code{cesModel}, or \code{sfModel}.  \code{model} must
 have been fit with \code{save.data = TRUE}.}
 
-\item{method}{one of \code{"resample"}, \code{"residual"}, \code{"wild"}, or \code{"debug"}}
+\item{method}{one of \code{"resample"}, \code{"residual"}, \code{"wild"}, \code{"parametric"}, or \code{"debug"}}
 
 \item{n}{the number of resamples you want to perform}
 
