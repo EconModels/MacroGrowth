@@ -7,7 +7,7 @@ linexModel(formula, data, response, capital, labor, energy, time,
   save.data = TRUE)
 }
 \arguments{
-\item{formula}{a formula of the form \code{response ~ captial + labor + energy + time}}
+\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
 
 \item{data}{a data frame in which \code{formula} is evaluated}
 

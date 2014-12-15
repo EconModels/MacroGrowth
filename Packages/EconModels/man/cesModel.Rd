@@ -52,7 +52,7 @@ the default values.
 
 \item{digits}{the number of sse digits that is to be considered significant.}
 
-\item{formula}{a formula of the form \code{response ~ captial + labor + energy + time}}
+\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
 }
 \value{
 a cesEst model with additional information attached as attributes.

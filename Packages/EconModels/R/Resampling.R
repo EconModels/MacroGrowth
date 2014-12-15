@@ -25,7 +25,7 @@ resampledResponse <- function( object, ...) {
 }
 
 #' @export
-resampledResponse.default <- function( object, method=c("residual", "wild", "debug"),  
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug","parameteric"),  
                                        reindex=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
@@ -34,10 +34,19 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   method <- match.arg(method)
   n <- length(fitted(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
+                             
   if (multErr) {
-    res <- yhat(object) * resample( exp(resid(object)) ) ^ sgn
+    if (method == "paramteric") {
+      res <- rlnorm( n, 0, sd(resid(object)) *sqrt((n-1) / (n - length(coef(object)))) )
+    } else {
+      res <- yhat(object) * resample( exp(resid(object)) ) ^ sgn
+    }
   } else {
-    res <- yhat(object) + resample( resid(object) ) * sgn
+    if (method == "paramteric") {
+      res <- rnorm( n, 0, sd(resid(object)) *sqrt((n-1) / (n - length(coef(object)))) )
+    } else {
+      res <- yhat(object) + resample( resid(object) ) * sgn
+    }
   }
   if (reindex) {
     res <- res / res[1]  # normalize so first entry is 1.
