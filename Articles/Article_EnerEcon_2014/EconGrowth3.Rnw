@@ -65,6 +65,7 @@
 \usepackage{multirow}   % To create multirow tables
 \usepackage{hyperref}   % To create hyperlinks in the paper
 \usepackage{microtype}  % produces hanging punctuation and beautiful type
+\usepackage{booktabs}   % produces beautiful tables
 
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
@@ -130,7 +131,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -367,17 +368,7 @@ capital stock~($K$) and labor~($L$).
 The Cobb-Douglas production function 
 is the canonical representation of indexed economic output ($y$) as a function of indexed 
 labor~($l$), indexed capital stock~($k$), and an additional exogenous, time-dependent 
-term.%
-  \footnote{The time-dependent term in production functions is often associated with
-  ``technological progress,'' but that is a very narrow reading of Solow's original intent:
-  \begin{quote}
-    It will be seen that I am using the phrase ``technical change''
-    as a short-hand expression for any kind of shift 
-    in the production function. 
-    Thus slowdowns, speed-ups, improvements in the education of the labor force, 
-    and all sorts of things will appear as ``technical change.''~\citep{solow1957technical}
-  \end{quote}
-  }
+term.
 This production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
@@ -665,8 +656,8 @@ are possible with the CES model.
 %
 \cesekl{\label{eq:CESekl}}
 %
-\noindent Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
-meanings that depend upon the nesting of the factors of production.
+\noindent Note that the parameters $\rho$ ($\sigma$) and $\delta$ have different
+meanings depending upon the nesting of the factors of production.
 
 
 %------------------------------
@@ -1274,7 +1265,7 @@ cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) 
                                                                      "(iQp + iK) + (iL)"))
 standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_formula=country~nestStrParen, alpha=0.05) +
     scale_x_continuous(breaks=c(0.9, 1.0, 1.1)) +
-    scale_y_continuous(breaks=c(0, 0.025, 0.05, 0.075)) +    
+    scale_y_continuous(limits=c(-0.05, 0.15), breaks=c(0, 0.05, 0.1)) +    
     labs(x=expression(gamma), y=expression(lambda))
 @
 
@@ -1408,14 +1399,258 @@ we chose to report unconstrained LINEX model fits in this paper.
 \label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Interpretation goes here. 
+We find it beneficial to discuss results through a series of questions 
+about the techniques presented above.
 
-*** One item from previous version of paper led me to a question that could be answered by our approach:
-Is it true that economies at similar stages of development will have similar
-$\alpha$, $\beta$, and $\gamma$ values? ****
 
-**** Another question to address: Would better data reduce the uncertainty in parameter estimates?
-Probably not. The US, presumably the best data in the world, still shows very high uncertainty. ****
+%++++++++++++++++++++++++++++++
+\subsection{Is it important to include energy in the production function?} 
+\label{sec:important_to_include_energy}
+%++++++++++++++++++++++++++++++
+
+For the Cobb-Douglas and CES production functions, 
+augmentation with energy improves goodness of fit when $\gamma > 0$.%
+  \footnote{
+  The LINEX function is unhelpful in answering the question 
+  ``Is it important to include energy in production functions?'' 
+  because LINEX presupposes that energy is the only factor of production.
+  }
+
+First, we look at the results of the Cobb-Douglas functions 
+in Figures~\ref{fig:CD_lambda_theta_graph} and~\ref{fig:CD_Ternary_Scatter_Graph}. 
+Visually, $\gamma > 0$ is shown in the right column 
+of Figure~\ref{fig:CD_Ternary_Scatter_Graph} 
+as data points that are above the horizontal base of the ternary plots. 
+We note that the list of countries for which $\gamma \gg 0$ includes 
+Tanzania, South Africa, Saudi Arabia, and the United Kingdom. 
+Especially for Tanzania, but also for Saudi Arabia and the United Kingdom, 
+it appears certain that including energy improves goodness of fit: 
+both the fit to historical data (crosshairs) 
+and all resample data points (black dots) 
+are above the base of the triangle in the energy columns of Figure~\ref{fig:CD_Ternary_Scatter_Graph}. 
+However, for South Africa, significant uncertainty in $\gamma$, 
+as shown by the large vertical spread of resample data points, 
+leads us to exercise caution in concluding that adding energy to the production function is helpful
+for improving fit to historical data. 
+A robust result 
+($\gamma$ equal or close to zero and very little vertical spread of the resample points) 
+indicates that including energy does not help to explain economic growth in Zambia,
+while for United States, Japan, China, and especially Iran, 
+it is less certain that augmenting with energy is unhelpful 
+(larger vertical spread of resample points).
+
+The results for the CES analysis (Figure~\ref{fig:CES_ternary_graph}) 
+indicate that including energy is clearly helpful 
+in explaining economic growth in Saudi Arabia, 
+because all resample data points are consistently far above the base of the ternary plots 
+($\gamma \gg 0$) for all possible ways of nesting of energy with capital and labor. 
+Two out of the three possible nestings suggest the importance of including energy for Japan and Tanzania.
+For Iran, the crosshairs indicate that energy may explain some growth, 
+but this is highly uncertain as the resample data points have a very large vertical spread.  
+Explaining economic growth in the United States, China, and Zambia will benefit 
+relatively less by including energy, 
+but the vertical spreads indicate some uncertainty 
+in the cases of the United States and Zambia.  
+The results for both the United Kingdom and South Africa 
+exhibit significant uncertainty and are contradictory for the various nests.
+
+Based on this analysis of the empirical data, 
+we find no grounds to argue for augmenting the production function 
+with energy for all economies. 
+Our results support \citeapos{Stern:2011bq} conclusion that energy 
+may or may not be required in production functions,
+depending on its abundance or scarcity. 
+But, one cannot know \emph{a-priori} the economies 
+for which augmenting by energy will improve goodness of fit. 
+Statistical testing is clearly warranted. 
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Are the World Bank country categories
+helpful for conceptualizing the role of energy in economic growth?} 
+\label{sec:wb_categories_helpful}
+%++++++++++++++++++++++++++++++
+
+Some developed economies (US) benefit little from including energy as a factor of production, 
+while some others (UK) benefit in a minor way. 
+For other developed economies (JP), the results of CD and CES models point in opposite directions.  
+For NICs the results are mixed; 
+China does not convincingly benefit from energy-augmented production functions, 
+and results are uncertain for South Africa (ZA) due to lack of precision in determining $\gamma$.  
+In one OPEC country (SA), adding energy clearly helps to explain economic growth, 
+while in another (IR), the benefit of energy augmentation is small and uncertain. 
+For LDCs there is a either a strong indication that energy-augmented production functions 
+are beneficial as an explanation for growth (TZ) or string indication otherwise (ZM).  
+
+In summary, we observe that World Bank country categories (Table~\ref{tab:Economy_Examples}) 
+do not predict whether energy augmentation will be beneficial. 
+In fact, 
+there is as much variation of the role of energy in economic growth 
+within World Bank country categories
+as between World Bank country categories. 
+Thus, we conclude that the World Bank’s country categories are not helpful 
+in explaining the role of energy in economic growth. 
+Rather, a nuanced approach is necessary wherein the energy situation 
+in each economy is assessed independently.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does augmentation by energy reduce the Solow residual?} 
+\label{sec:energy_reduce_solow}
+%++++++++++++++++++++++++++++++
+
+The so-called Solow residual ($\lambda$ in Equations~\ref{eq:CD}--\ref{eq:CESekl}) 
+accounts for “slowdowns, speed-ups, improvements in the education of the labor force, 
+and all sorts of things [that] appear as ``technical change.''~\citep{solow1957technical} 
+The time-dependent term is often associated with
+``technological progress,'' but that is a very narrow reading of Solow's original intent:
+  \begin{quote}
+    It will be seen that I am using the phrase ``technical change''
+    as a short-hand expression for any kind of shift 
+    in the production function. 
+    Thus slowdowns, speed-ups, improvements in the education of the labor force, 
+    and all sorts of things will appear as ``technical change.''~\citep{solow1957technical}
+  \end{quote}
+
+It has been shown elsewhere~\citep{Ayres:2010ug}
+that consideration of energy (specifically, useful work) 
+in the production function eliminates the need for the Solow residual~($\lambda$) 
+over the very long run (e.g.,~1900--2000). 
+The purpose of this paper, however, is to assess common production functions \emph{as used in practice}, 
+so we include $\lambda$ terms in all fitted production functions. 
+The present approach allows us to answer the question of whether augmentation by 
+primary energy in the production function reduces the \emph{value of} the Solow residual,
+as opposed to eliminating the \emph{need for} the Solow residual altogether (Ayres and Warr's question).
+After augmenting by energy, the Solow-residual ($\lambda$) 
+in the Cobb-Douglas~(Figure~\ref{fig:CD_lambda_theta_graph}) 
+and CES models~(\ref{fig:CES_lambda_gamma_graph}) 
+still explains a part of economic growth in several economies, 
+especially China, but also in the United Kingdom, Japan, and Tanzania,  
+and to a lesser extent in the United States and Iran. 
+In South Africa and Zambia, the Solow-residual is zero, while in Saudi Arabia it is negative.%
+  \footnote{
+  The negative Solow residual ($\lambda$) for Saudi Arabia is a consequence
+  of the fact that all indexed factors of production ($k$, $l$, and $e$) are greater than 
+  economic output ($y$) for most of the period under study (1991--2011).
+  }
+For the Chinese economy, energy augmentation significantly reduces 
+the uncertainty of the value of the Solow residual~(Figure~\ref{fig:CES_lambda_gamma_graph}). 
+Furthermore, no economies show reduced magnitude of the Solow residual from left to right
+in Figures~\ref{fig:CD_lambda_theta_graph} and~\ref{fig:CES_lambda_gamma_graph}.
+
+Thus, we conclude that energy augmentation of the production function 
+by primary thermal energy does not decrease the value of the Solow residual~($\lambda$) 
+over the years studied (1980--2011 and 1991--2011). 
+Longer-term analyses involving other energy quantifications (exergy or useful work) 
+are warranted.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does the CES model structure (nesting) matter?} 
+\label{sec:nest_matter}
+%++++++++++++++++++++++++++++++
+
+The choice of CES nesting structure has significant influence 
+on model results for both 
+relative importance of factors of production ($\delta$ and $\delta_1$ values) and 
+substitutability among factors of production ($\sigma$ and $\sigma_1$ values). 
+
+
+%------------------------------
+\subsubsection{Relative importance of factors of production ($\delta$ and $\delta_1$ values)} 
+\label{sec:importance_of_factors}
+%------------------------------
+
+For most economies (UK, JP, CN, ZA, SA, IR, and TZ), 
+Figure~\ref{fig:CES_ternary_graph} shows that the relative importance of 
+production factors capital~($k$), labour~($l$), and energy~($e$) 
+is different for the three different CES nestings (Equations~\ref{eq:CESkle}--\ref{eq:CESekl}). 
+In other words, you cannot view two of the ternary plots 
+in the rightmost three columns of Figure~\ref{fig:CES_ternary_graph} and predict the third. 
+Nesting structure matters little for the economies of the United States and Zambia.
+
+Certain combinations of economy, parameter values, and CES nesting structure 
+come with very large resampling spreads, 
+indicating large fitted parameter uncertainties. 
+For example, 
+for Iran's ($kl$)$e$ nesting in Figures~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph} 
+there is virtually no useful information 
+in $\delta$, $\delta_1$, $\alpha$, $\beta$, and $\gamma$. 
+
+
+%------------------------------
+\subsubsection{Elasticity of substitution among factors of production ($\sigma$ and $\sigma_1$ values)} 
+\label{sec:elasticity_of_substitution}
+%------------------------------
+
+The interpretation of elasticities of substitution 
+among factors of production ($k$, $l$, and $e$) is challenging,
+because a version of each elasticity of substitution appears three or four times 
+among the various nests. 
+For example, an elasticity of substitution between capital~($k$) and labor~($l$) 
+appears in the following nests: 
+($\underline{kl}$), 
+($\underline{kl}$)$e$, 
+($\underline{l}e$)$\underline{k}$, and 
+($e\underline{k}$)$\underline{l}$. 
+The following tables assist interpretation: 
+C (c) indicates strong (weak) complementarity, 
+S (s) indicates strong (weak) substitutability, 
+$\sim\sim\sim$ indicates large uncertainty, 
+and $\sim$ indicates small uncertainty.
+
+\begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
+  \begin{center}
+    \begin{tabular}{r l l l} 
+      \toprule
+      & $k$ \& $l$ & $k$ \& $e$ & $l$ \& $e$ \\
+      \midrule
+      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$): C 
+                                        & 
+                                              &  \\
+                                  & ($\underline{kl}$)$e$: C 
+                                        & ($\underline{ek}$)$l$: $\sim\sim\sim$ 
+                                              & ($\underline{le}$)$k$: $\sim\sim\sim$ \\
+      \midrule
+      \multirow{3}{*}{$\sigma$} & 
+                                      & ($\underline{k}l$)$\underline{e}$: $\sim\sim\sim$
+                                            & ($k\underline{l}$)$\underline{e}$: $\sim\sim\sim$ \\
+                                & ($\underline{l}e$)$\underline{k}$: C
+                                      & ($l\underline{e}$)$\underline{k}$: C
+                                            &  \\
+                                & ($e\underline{k}$)$\underline{l}$: C
+                                      & 
+                                            & ($\underline{e}k$)$\underline{l}$: C \\
+      \bottomrule
+%       \multirow{2}{*}{$sigma_1$}  & ($kl$): C        &                           &                           \\
+%                                   & ($kl$)$e$: C     & ($ek$)$l$: $\var\var\var$ & ($le$)$k$: $\var\var\var$ \\
+% 
+% 
+%       \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
+%                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
+%                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
+%       \hline
+%       \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
+%                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
+%       \hline
+%       \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
+%                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
+%       \hline
+%       \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
+%                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+
+
+
+
+
+
 
 
 
