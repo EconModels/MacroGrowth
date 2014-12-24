@@ -773,18 +773,20 @@ Table~\ref{tab:Economy_Examples} shows our example countries.
 \begin{table} \caption{Example economies and years of evaluation.} \label{tab:Economy_Examples} 
   \begin{center}
     \begin{tabular}{r c c l l} 
+      \toprule
       \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
-      \hline
+      \midrule
       \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
-      \hline
+      \midrule
       \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
-      \hline
+      \midrule
       \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
+      \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
@@ -1294,12 +1296,14 @@ Table~\ref{tab:CES_abg_equations} shows the permuted equations for each CES nest
 \label{tab:CES_abg_equations} 
   \begin{center}
     \begin{tabular}{c c c c c} 
-      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$                     \\
-      \hline
-      ($kl$) + ()     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0                       \\
-      ($kl$) + ($e$)  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$            \\   
+      \toprule
+      Nesting    & Equation        & $\alpha$                & $\beta$                 & $\gamma$       \\
+      \midrule
+      ($kl$) + ()     & \ref{eq:CES}    & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$) + ($e$)  & \ref{eq:CESkle} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
       ($le$) + ($k$)  & \ref{eq:CESlek} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-      ($ek$) + ($l$)  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$       \\
+      ($ek$) + ($l$)  & \ref{eq:CESekl} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
@@ -1601,43 +1605,29 @@ and $\sim$ indicates small uncertainty.
 
 \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
   \begin{center}
-    \begin{tabular}{r l l l} 
+    \begin{tabular}{r l c l c l c} 
       \toprule
-      & $k$ \& $l$ & $k$ \& $e$ & $l$ \& $e$ \\
+         & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
       \midrule
-      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$): C 
-                                        & 
-                                              &  \\
-                                  & ($\underline{kl}$)$e$: C 
-                                        & ($\underline{ek}$)$l$: $\sim\sim\sim$ 
-                                              & ($\underline{le}$)$k$: $\sim\sim\sim$ \\
+      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & C 
+                                        &  & 
+                                              & &  \\
+                                  & ($\underline{kl}$)$e$ & C 
+                                        & ($\underline{ek}$)$l$ & $\sim\sim\sim$ 
+                                              & ($\underline{le}$)$k$ & $\sim\sim\sim$ \\
       \midrule
-      \multirow{3}{*}{$\sigma$} & 
-                                      & ($\underline{k}l$)$\underline{e}$: $\sim\sim\sim$
-                                            & ($k\underline{l}$)$\underline{e}$: $\sim\sim\sim$ \\
-                                & ($\underline{l}e$)$\underline{k}$: C
-                                      & ($l\underline{e}$)$\underline{k}$: C
-                                            &  \\
-                                & ($e\underline{k}$)$\underline{l}$: C
-                                      & 
-                                            & ($\underline{e}k$)$\underline{l}$: C \\
+      \multirow{3}{*}{$\sigma$} & &
+                                      & ($\underline{k}l$)$\underline{e}$ & $\sim\sim\sim$
+                                            & ($k\underline{l}$)$\underline{e}$ & $\sim\sim\sim$ \\
+                                & ($\underline{l}e$)$\underline{k}$ & C
+                                      & ($l\underline{e}$)$\underline{k}$ & C
+                                            &  & \\
+                                & ($e\underline{k}$)$\underline{l}$ & C
+                                      & &
+                                            & ($\underline{e}k$)$\underline{l}$ & C \\
+      \midrule
+                                & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} \\
       \bottomrule
-%       \multirow{2}{*}{$sigma_1$}  & ($kl$): C        &                           &                           \\
-%                                   & ($kl$)$e$: C     & ($ek$)$l$: $\var\var\var$ & ($le$)$k$: $\var\var\var$ \\
-% 
-% 
-%       \multirow{3}{*}{Developed} & \includegraphics[height=0.11in]{flag/flag_US.png} & US & USA & \multirow{3}{*}{1980--2011}\\
-%                                  & \includegraphics[height=0.11in]{flag/flag_UK.png} & UK & United Kingdom & \\
-%                                  & \includegraphics[height=0.11in]{flag/flag_JP.png} & JP & Japan          & \\
-%       \hline
-%       \multirow{2}{*}{NICs}      & \includegraphics[height=0.11in]{flag/flag_CN.png} & CN & China & \multirow{2}{*}{1991--2011}        \\
-%                                  & \includegraphics[height=0.11in]{flag/flag_ZA.png} & ZA & South Africa & \\
-%       \hline
-%       \multirow{2}{*}{OPEC}      & \includegraphics[height=0.11in]{flag/flag_SA.png} & SA & Saudi Arabia & \multirow{2}{*}{1991--2011} \\
-%                                  & \includegraphics[height=0.11in]{flag/flag_IR.png} & IR & Iran         &  \\
-%       \hline
-%       \multirow{2}{*}{LDCs}      & \includegraphics[height=0.11in]{flag/flag_TZ.png} & TZ & Tanzania & \multirow{2}{*}{1991--2011}     \\
-%                                  & \includegraphics[height=0.11in]{flag/flag_ZM.png} & ZM & Zambia      & \\
     \end{tabular}
   \end{center}
 \end{table}
