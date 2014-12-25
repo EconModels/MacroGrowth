@@ -1231,7 +1231,7 @@ In our testing, we found that to be mostly true.
 $sse$ than \texttt{L-BFGS-B}, despite the fact that 
 \texttt{L-BFGS-B} often reports convergence
 and \texttt{PORT} does not for the same data
-(i.e., for the same $y$, $k$, $l$, and $e$ data).
+(i.e., for the same $y$, $k$, $l$, and $e$ time series).
 
 Coefficients for each resampled CES model for all countries and all nests
 are shown in 
@@ -1239,8 +1239,8 @@ Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}.
 The white crosshair on each graph shows the location 
 of the fit to historical data. 
 In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph},
-the bottom of the vertical axis represents $\sigma = 0$.
-The top of the vertical axis represents $\sigma = \infty$.
+the bottom of the vertical axis represents $\sigma = 0$ (perfect complements).
+The top of the vertical axis represents $\sigma = \infty$ (perfect substitutes).
 
 Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
 in Equations~\ref{eq:CES}--\ref{eq:CESekl},
@@ -1370,7 +1370,7 @@ the gray band encompasses \Sexpr{spaghettiGraphLevel * 100.0}\% of the fits to r
 linexCoeffsData <- filter(coeffs_df, model=="linex", energy=="iQp")
 standardScatterPlot(data=linexCoeffsData, aes(a_0, c_t), facet_formula=country~energy, alpha=0.05) +
     labs(x=expression(a[0]), y=expression(c[t])) +
-     scale_x_continuous(limits=c(-1, 2), breaks=c(-1, 0, 1.0, 2.0)) +
+     scale_x_continuous(limits=c(0, 2), breaks=c(0, 1.0, 2.0)) +
      scale_y_continuous(limits=c(0, 10), breaks=c(0, 5, 10))
 @
 
@@ -1603,6 +1603,23 @@ S (s) indicates strong (weak) substitutability,
 $\sim\sim\sim$ indicates large uncertainty, 
 and $\sim$ indicates small uncertainty. 
 
+**** Need to think this presentation through, 
+want to see how balances with the rest of the paper; 
+do we have the space seems to be the limiting factor? --MdW ****
+
+**** I'm fine if we want to change to another form of these tables.
+But, I found the presentation below to be a good way to think about the results.
+My idea was to say ``hang on! We have several ways to get at some of these elasticities.
+Let's compare all the different ways to look at the elasticity between any two factors of production.
+Do they agree?  
+Are they in conflict?''  
+Another point to make is that these comparisons need to be done honestly. 
+We should not claim anything when the data are uncertain.
+
+Regarding Martin's question about length, 
+I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. (Saunders, 2008)
+I expect we are fine on length. --MKH ****
+
 \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
   \begin{center}
     \begin{tabular}{r l c l c l c} 
@@ -1716,6 +1733,34 @@ to perform sensitivity analysis on nesting choices in economies to enhance the r
 
 
 %++++++++++++++++++++++++++++++
+\subsection{Which production function is best for energy augmentation?} 
+\label{sec:which_best}
+%++++++++++++++++++++++++++++++
+
+**** Shall we have a section here discussing which function is ``best''? --MKH ****
+What are the criteria?
+
+Allows assymetric uncertainty estimation via resampling: all work fine.
+
+Best match to historical data: CES. 
+
+No ambiguity from model structure: CD and LinEx OK here. 
+CES has the undesireable characteristic that form (nesting) affects outcome.
+
+Easy to estimate: CD and LinEx can be fitted with linear function. 
+CES requires complex and time-consuming optimzation techniques.
+
+Small uncertainties in fitted parameters: CD and LinEx better than CES.
+
+Our assessment: None of the production functions is perfect. 
+Probably CD is best compromise among ease of estimating, good (but not best) fit to historical data, and
+small uncertainties in fitted parameters. 
+
+Caution: none of the production functions analyzed herein allows for complex energy-economy phenomena
+like rebound effect, backfire, and super-conservation.
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Implications of resampling results } 
 \label{sec:implications}
 %++++++++++++++++++++++++++++++
@@ -1770,10 +1815,14 @@ additional work is needed to contextualize the results,
 for example, 
 sector-based analysis or ****. **** Martin, add more here? ****
 
+**** Not sure whether contextualization will work. 
+Could be read that macroeconomic growth modeling in such cases is not really useful at all? 
+--MdW ****
+
 We further caution against using $R^2$ only as the criteria for choosing a model, 
 because, in our experience, 
 both Cobb-Douglas and CES models yield high $R^2$ values for all countries. 
-(See Figures~\ref{fig:CD_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}.) 
+(See Figures~\ref{fig:CD_GDP_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}.) 
 LinEx models fare poorly in some cases and might be excluded on that basis. 
 (See SA and TZ in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
 It is more important to know the uncertainty of estimated parameters than to assess $R^2$. 
@@ -1795,6 +1844,14 @@ We conclude that the best policy will be made
 with a macroeconomic modeling approach that is highly interpretative, 
 uses several production functions, and 
 estimates asymmetric uncertainties of fitted parameters.
+
+**** Other notes from our word document ****
+
+Lastly, what do aggregate models say? 
+
+What direction can take from this work? 
+
+What is the status of ME growth modeling after this?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
