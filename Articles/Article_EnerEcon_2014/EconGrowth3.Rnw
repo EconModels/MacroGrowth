@@ -1384,7 +1384,7 @@ spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghett
 The LINEX model coefficients $a_0$ and $c_t$ imply time-varying
 values of $\alpha$, $\beta$, and $\gamma$ as shown by \citet[Equations~7]{Warr:2012cg}.
 Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
-We found unconstrained fitting produced $\alpha$,$\beta$,$\gamma$ trajectories
+We found unconstrained fitting produced $\alpha$, $\beta$, $\gamma$ trajectories
 that violated parameter constraints ($[0,1]$) for all countries, with the exception of Iran.
 If the LINEX model were forced to respect the constraints,
 it would fit worse than it already does for those countries where
@@ -1738,11 +1738,11 @@ to perform sensitivity analysis on nesting choices in economies to enhance the r
 %++++++++++++++++++++++++++++++
 
 **** Shall we have a section here discussing which function is ``best''? --MKH ****
-What are the criteria?
+Here is a first cut at some criteria and a recommendation.
 
 Allows assymetric uncertainty estimation via resampling: all work fine.
 
-Best match to historical data: CES. 
+Best match to historical data: CES. But CD is close. LinEx struggles.
 
 No ambiguity from model structure: CD and LinEx OK here. 
 CES has the undesireable characteristic that form (nesting) affects outcome.
@@ -1752,9 +1752,13 @@ CES requires complex and time-consuming optimzation techniques.
 
 Small uncertainties in fitted parameters: CD and LinEx better than CES.
 
+Easy to respect constraints during fitting process: CD and CES easy. LinEx difficult.
+
 Our assessment: None of the production functions is perfect. 
 Probably CD is best compromise among ease of estimating, good (but not best) fit to historical data, and
 small uncertainties in fitted parameters. 
+If precise fitting to historical data is paramount (and you're unconcerned about uncertainties
+in fitted coefficients), CES is the best.
 
 Caution: none of the production functions analyzed herein allows for complex energy-economy phenomena
 like rebound effect, backfire, and super-conservation.
@@ -1859,8 +1863,9 @@ What is the status of ME growth modeling after this?
 \label{sec:Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Conclusion goes here.  
 
-Conclusion goes here.
+Maybe put the discussion of ``Which production function is best'' here?
 
 
 
