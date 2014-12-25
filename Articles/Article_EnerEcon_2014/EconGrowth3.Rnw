@@ -131,7 +131,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1403,8 +1403,8 @@ we chose to report unconstrained LINEX model fits in this paper.
 \label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We find it beneficial to discuss results through a series of questions 
-about the techniques presented above.
+We find it beneficial to discuss results through a series of questions, 
+answers to which are illuminated by the techniques and results presented above.
 
 
 %++++++++++++++++++++++++++++++
@@ -1601,7 +1601,7 @@ The following tables assist interpretation:
 C (c) indicates strong (weak) complementarity, 
 S (s) indicates strong (weak) substitutability, 
 $\sim\sim\sim$ indicates large uncertainty, 
-and $\sim$ indicates small uncertainty.
+and $\sim$ indicates small uncertainty. 
 
 \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
   \begin{center}
@@ -1632,17 +1632,169 @@ and $\sim$ indicates small uncertainty.
   \end{center}
 \end{table}
 
+\begin{table} \caption{Elasticities of substitution (UK).} \label{tab:sigma_UK} 
+  \begin{center}
+    \begin{tabular}{r l c l c l c} 
+      \toprule
+         & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
+      \midrule
+      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & C 
+                                        &  & 
+                                              & &  \\
+                                  & ($\underline{kl}$)$e$ & $\sim\sim\sim$ 
+                                        & ($\underline{ek}$)$l$ & C
+                                              & ($\underline{le}$)$k$ & C \\
+      \midrule
+      \multirow{3}{*}{$\sigma$} & &
+                                      & ($\underline{k}l$)$\underline{e}$ & C
+                                            & ($k\underline{l}$)$\underline{e}$ & C \\
+                                & ($\underline{l}e$)$\underline{k}$ & C
+                                      & ($l\underline{e}$)$\underline{k}$ & C
+                                            &  & \\
+                                & ($e\underline{k}$)$\underline{l}$ & $\sim\sim\sim$
+                                      & &
+                                            & ($\underline{e}k$)$\underline{l}$ & $\sim\sim\sim$ \\
+      \midrule
+                                & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+**** For the time being, I've added two of these tables.
+We can add the remaining seven tables easily, either here or in an appendix. --MKH ****
+
+For many estimates of elasticity of substitution, the resampling technique indicates high uncertainty. 
+Where results are not uncertain, 
+we find complementarity among factors of production 
+for most economies with the exception of China 
+where an indication of substitutability between labor and energy is observed.
+
+That so many estimates of elasticity of substitution exhibit large uncertainty, 
+often spanning the range from perfect complements ($\sigma, \sigma_1 = 0$) 
+to perfect substitutes ($\sigma, \sigma_1 = 1$), 
+is a troubling characteristic of the estimated CES models. 
+For some countries (IR, ZM), 
+estimating any elasticity of substitution at all is problematic and fraught with peril. 
+Note that this result is unlikely to be caused by poor-quality data alone. 
+Presumably the best data in the world (US, UK, JP) exhibits large uncertainty. 
+(See US and UK rows in Figures~\ref{fig:CD_Ternary_Scatter_Graph}  
+and~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph}.)
+
+Some of the uncertainty is explained by the structure of the CES model. 
+If $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
+the corresponding elasticity of substitution ($\sigma$ and $\sigma_1$) becomes meaningless. 
+(See Equations~\ref{eq:CES}--\ref{eq:CESekl}.) 
+Thus, large uncertainty in $\sigma$ and $\sigma_1$ is expected for any resampled model 
+in which parameter estimates are positioned on the left or right boundaries 
+of Figures~\ref{fig:CES_sigma1_delta1_graph} or~\ref{fig:CES_sigma_delta_graph}.
+
+Some of the uncertainty in parameter estimates may be explained by structural change in the economies. 
+For example, 
+**** Martin: can you select one of the highly uncertain economies and discuss it? 
+Perhaps Iran or Zambia? ****. 
+To account for the large uncertainty, 
+it may be useful to perform piecewise analyses of smaller time periods. 
+For the present study, doing piecewise analysis of, say, 
+Iran **** Use the economy that Martin discusses above **** 
+would mean that the CES model is estimated on a 10-year period. 
+Considering that there are six fitted parameters in the CES model 
+($\gamma$, $\lambda$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$), 
+ten years of historical data leaves precious few (only 4) degrees of freedom for the fitting process. 
+
+Based on the results and discussions above 
+regarding the relative importance of and 
+the elasticity of substitution among factors of production, 
+we conclude that use of the CES model for energy analysis 
+should be undertaken with utmost caution. 
+Indeed, empirical testing on the relative importance 
+of production factors and elasticities of substitution is highly recommended. 
+Sensitivity analysis is essential. 
+Our results support \citeapos{Lecca:2011kr} conclusion 
+for the need to econometrically specify production function relationships and 
+to perform sensitivity analysis on nesting choices in economies to enhance the reliability of results. 
 
 
+%++++++++++++++++++++++++++++++
+\subsection{Implications of resampling results } 
+\label{sec:implications}
+%++++++++++++++++++++++++++++++
 
+In addition to the usual parameter estimation process 
+by linear coefficient determination (Cobb-Douglas and LinEx) 
+and non-linear optimization algorithms (CES), 
+the resampling/bootstrapping analysis performed herein 
+provides insight into the question of how accurately parameters are known. 
+We chose the resampling approach instead of the more-common technique 
+of estimating confidence intervals from standard errors for two reasons. 
+(1)~Model parameters are highly constrained, and confidence intervals often violate the constraints. 
+For example a result of $\alpha = 0.25 \pm 0.3$ is nonsensical, 
+because $ \alpha \in [0, 1]$. 
+(2)~True confidence intervals for constrained parameters are often asymmetric
+(e.g., $\alpha = 0.2 + 0.1, -0.05$), 
+but the standard error approach yields symmetric confidence intervals. 
+The resampling approach that we employed both respects constraints 
+and allows for asymmetric confidence intervals.%
+  \footnote{
+    We have chosen to present parameter uncertainty results visually, 
+    both because the resampling technique lends itself to visual presentation and 
+    because we believe visual comparison is more effective than tablefuls of numbers.
+  }
+A significant result to emerge from this work is that large parameter uncertainty 
+does not necessarily lead to poor model fit to economic output. 
+To choose one example of many, 
+the value of $\gamma$ for the Cobb-Douglas model for Tanzania (0.59) 
+shows a resampling range of 0.2–0.9. 
+(See Figure~\ref{fig:CD_Ternary_Scatter_Graph}.) 
+Yet, Cobb-Douglas models for Tanzania, with and without energy, both 
+(a)~fit historical data very well 
+(white line compared to black line in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}) 
+and 
+(b)~exhibit a very narrow range of resampled fits 
+(thin gray band in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}). 
+This means that a good fit to historical data does not indicate 
+that model parameters have small uncertainty. 
+In fact, similar to Tanzania, 
+many economies exhibit both large uncertainty in model parameters and
+very good fit to historical data. 
+(See Figures~\ref{fig:CD_lambda_theta_graph} ~\ref{fig:CD_Ternary_Scatter_Graph} 
+compared to Figure~\ref{fig:CD_GDP_Spaghetti_Graph}
+for the Cobb-Douglas models and 
+Figure~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}
+compared to Figure~\ref{fig:CES_Spaghetti_Graph} for CES models.) 
+This result is consistent across almost all economies and models. 
+Thus, we conclude that great care must be taken when interpreting estimated parameters: 
+it is very easy to claim more certainty than is warranted. 
+Where large uncertainty is observed, 
+additional work is needed to contextualize the results, 
+for example, 
+sector-based analysis or ****. **** Martin, add more here? ****
 
+We further caution against using $R^2$ only as the criteria for choosing a model, 
+because, in our experience, 
+both Cobb-Douglas and CES models yield high $R^2$ values for all countries. 
+(See Figures~\ref{fig:CD_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}.) 
+LinEx models fare poorly in some cases and might be excluded on that basis. 
+(See SA and TZ in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
+It is more important to know the uncertainty of estimated parameters than to assess $R^2$. 
+With rigorous uncertainty testing as we have done here, 
+the quality of parameter estimates is exposed: 
+at a glance, the tightness of resampled results indicates 
+whether or not confidence in the model and data is warranted. 
+We conclude that it is insufficient to argue 
+in favor of a particular production function 
+on the grounds of its ability to fit historical data.
 
+The implications of parameter uncertainties should be obvious, 
+but we will state them here. 
+Basing policy upon parameters with high uncertainty can lead to bad, or completely wrong, policy. 
+**** Martin: can you find an example in our results that drives this point home? --MKH  
+May be barking up wrong production factor, may assume subs when complementarity: ****
 
-
-
-
-
-
+We conclude that the best policy will be made 
+with a macroeconomic modeling approach that is highly interpretative, 
+uses several production functions, and 
+estimates asymmetric uncertainties of fitted parameters.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
