@@ -131,7 +131,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -363,7 +363,7 @@ as argued by the above-mentioned scholars
 raise the question of
 whether and how to include appropriate energy indicators 
 in economic growth modeling.  
-Neoclassical economic growth theory attributes output~($Y$) to factors of production:
+Mainstream economic growth theory attributes output~($Y$) to factors of production:
 capital stock~($K$) and labor~($L$). 
 The Cobb-Douglas production function 
 is the canonical representation of indexed economic output ($y$) as a function of indexed 
@@ -387,7 +387,8 @@ $Y$ is represented by GDP,
 $K$ is expressed in currency units, 
 $L$ is expressed in workers or work-hours/year, and
 0 subscripts indicate values at an initial year.
-The parameters $\alpha$ and $\beta$ indicate the relative roles 
+The parameters $\alpha$ and $\beta$ are output elasticities
+that indicate the relative roles 
 of capital and labor in the economy.
 Typically, the constraint $\alpha + \beta = 1$ is assumed, 
 indicating constant returns to scale.%
@@ -399,40 +400,83 @@ indicating constant returns to scale.%
   Model parameters are represented by Greek letters
   ($\alpha$, $\beta$, $\lambda$, $\theta$).} 
 
-Neoclassical economic growth theory as expressed in the Cobb-Douglas production 
+Mainstream economic growth theory as expressed in the Cobb-Douglas production 
 function makes no attempt, beyond growth in capital~($k$) and labor~($l$), 
 to describe the mechanisms that affect economic growth, 
-nor does it attempt, beyond different fitting parameters,
+nor does it attempt, beyond different values for the fitting parameters,
 to describe how such phenomena as
 slowdowns, speedups, and improvements of the education of the labor force
 might vary from one economy to the next. 
 
-As shown in Equation~\ref{eq:CD} above, neoclassical economic theory does not 
+As shown in Equation~\ref{eq:CD} above, mainstream economic theory does not 
 include an explicit term for the role of energy in economic growth. 
 However, \citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, 
-\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, \citet{Ayres:2013aa} and others indicate that the 
+\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, \citet{Ayres:2013aa}, and others indicate that the 
 importance of energy for economic growth may far outweigh its cost share in the 
 economy. 
-That neoclassical economic growth theory ignores energy is, therefore, 
+That mainstream economic growth theory ignores energy is, therefore, 
 cause for concern, and inquiry into the proper approach for including energy 
 as a factor of production in economic growth modeling is both relevant and important.
+
+Furthermore, the \emph{cost share theorem} from mainstream economics states that 
+output elasticities 
+$\alpha$, $\beta$, and $\gamma$ 
+(if augmenting the production function by energy)
+can be calibrated from national accounts data as the 
+cost shares of capital, labor, and energy, respectively.
+However, the cost share theorem applies only under conditions of perfect competition
+in the markets for the factors of production.
+Although no market ever exhibits perfect competition, 
+in our opinion, energy markets are \emph{least} likely to be ``perfect.''
+Many governments have parastatal or full control 
+of electricity generation and/or fuel markets.  
+Other governments subsidize or incentivize energy markets.  
+And, there are always health and environmental externalities 
+that are not priced into fossil fuel energy markets.  
+If energy markets are farther from ``perfect'' 
+than capital~($K$) and/or labor~($L$) markets, 
+then energy is the factor of production least likely to have its
+output elasticity~($\gamma$) be well-represented 
+by cost share as reported in national accounts.
+Thus, when augmenting production functions by energy, 
+much care should be taken in estimating 
+the relative importance of the factors of production 
+($\alpha$, $\beta$, and $\gamma$). 
+
+\citet{Kummel:2010vz} showed that the cost share theorem applies 
+only when economic growth is unconstrained.
+Real-world constraints such as the degree of automation and
+the degree of utilization of capital stock 
+result in shadow prices that move the values 
+of $\alpha$, $\beta$, and $\\gamma$ away from 
+their cost shares in the economy.\citep[Equations~12 and~13]{Kummel:2010vz}
+Thus, for this study, 
+we reject the cost share theorem and
+we have no \emph{a-priori} expectation that output elasticities 
+estimated from historical output data
+will match cost shares.
 
 Some energy economists augment economic growth models by including energy as an 
 additional (or the only) factor of production. 
 However, there is little agreement on how this should be done. 
 Neither the mathematical form of the energy-augmented 
-production function nor the quantification%
+production function nor the quantification of energy%
   \footnote{
   Various energy quantifications have been used in economic growth modeling: 
   thermal energy (primary and final), 
   exergy (primary and final), and useful work.
   }
-of energy is consistent in the 
-literature. 
+is consistent in the literature. 
+
+**** Suggest moving content of the literature review section up to this point. --MKH ****
+
+**** Suggest deleting the next sentences:
 Furthermore, there has been little empirical work assessing the predictive ability 
 of various energy-augmented production functions for different types of economies. 
 And, very few studies of the importance of energy in economic growth include 
 rigorous statistical assessments of energy-related fitting parameters. 
+End of deleted section --MKH ****
+
 This paper contributes to the literature on the role of energy in economic growth
 by applying statistically rigorous 
 methods along two coordinates of analysis: 
@@ -454,6 +498,9 @@ results, and Section~\ref{sec:Conclusion} concludes.
 \section{Literature Review} 
 \label{sec:lit_review}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+**** Merge the literature review into the Introduction? 
+We're already doing some literature review in the Introduction. --MKH ****
 
 \citet[p.~26]{Stern:2011bq} provides an overview of approaches to including energy 
 in ecological economic and resource economic models of growth.  
@@ -503,7 +550,7 @@ and the parameters used to populate these functions
 affects results significantly.
 This situation leaves far too much latitude 
 for misuse of model specifications 
-and selection of parameters 
+and selection of model parameters 
 to support certain theories (rather than empirically testing the theories
 and parameters \emph{before} they are employed).  
 For example, \citet{Lecca:2011kr} pointed out that 
@@ -523,8 +570,18 @@ achieved with the use of Cobb-Douglas production functions in economic models.
 wherein empirical analysis on the estimated substitution elasticities 
 is performed before choosing any particular 
 nested CES production function structure. 
-As a result, \citeauthor{Shen:2013vp} propose an atypical structure 
-for the Chinese economy. **** More detail here about nesting? ****  
+As a result, \citeauthor{Shen:2013vp} propose an atypical CES nesting structure 
+for the Chinese economy. **** More detail here about nesting? --MKH ****  
+\citet{Saunders:2008aa} evaluated several production and cost functions
+(including the Cobb-Douglas, CES, and LINEX functions studied herein)
+to assess whether they are capable of reproducing 
+rebound, backfire, and super-conservation effects.~\citep{Sorrell:2007um}
+\citeauthor{Saunders:2008aa} concludes that only the CES function is a candidate for 
+rebound analysis.
+The Cobb-Douglas function was found to exhibit only backfire.
+The LINEX function was found to 
+``not satisfy the standard concavity (diminishing marginal productivity) 
+conditions.''~\citet[p.~2195]{Saunders:2008aa}
 Both the choice of production function structure 
 and the value of the model parameters 
 drive model results, and empirical and statistical testing 
@@ -540,10 +597,10 @@ We understand, however,
 that macroeconomic policymaking is needed 
 and is increasingly informed by integrated energy-economic models, 
 in a world where energy constraints are possible 
-\citep{Beckman:2011gb, Benes:2012tm, Nel:2010fv}.  
+\citep{Beckman:2011gb, Benes:2012tm, Nel:2010fv, Kummel:2010vz}.  
 We support the call from \citet{Shen:2013vp} that both
 the structure of the production function 
-and the parameters used to populate this function
+and the parameters that populate it 
 need empirical testing. 
 Building on the argument of \citet{Stern:2011bq} 
 that energy may or may not be required in production functions 
@@ -554,7 +611,13 @@ This further leaves open the possibility for
 different explanations of growth in various countries
 at different stages of their development, 
 a central point of long-wave economic growth modeling 
-\citep{Froling:2009vo, Jones:2001wn, Galor:2000up}.
+\citep{Froling:2009vo, Jones:2001wn, Galor:2000up}. 
+**** The previous sentences sound a lot like we'll show that some groups of countries
+have similar charactersitics. 
+That's what we thought we might find, 
+but our new conclusion is that one must treat each country 
+individually. 
+We should consider revising the few sentences. --MKH ****
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -605,7 +668,7 @@ Other energy economists use an energy-augmented
 Constant Elasticity of Substitution (CES) production function to 
 describe economic growth. The \texttt{R} \citep{R} package 
 \texttt{micEconCES} \citep{Henningsen:2011td} estimates CES production 
-functions of the following forms (among others):
+functions of the following forms (among others).
 %
 \ceskl{\label{eq:CES}}
 %
@@ -682,10 +745,12 @@ The LINEX models assumes energy ($e$) is the only factor of production.
 
 The LINEX model does, however, include terms that represent
 efficiencies among capital, labor, and energy, in the form of 
-the ratios $\rho_k$ and $\rho_l$ which are defined by\footnote{The notation
-for the LINEX model breaks from the conventions used in the Cobb-Douglas and CES
-models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.}
-%
+the ratios $\rho_k$ and $\rho_l$ which are defined by%
+  \footnote{
+  The notation
+  for the LINEX model breaks from the conventions used in the Cobb-Douglas and CES
+  models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.
+  }
 \begin{equation} \label{eq:rho_k}
   \rho_k \equiv \frac{k}{(1/2)(l+e)}
 \end{equation}
@@ -814,7 +879,7 @@ A final subsection presents the historical data in graphical form.
 %++++++++++++++++++++++++++++++
 
 We measure economic output ($Y$) by gross domestic product (GDP). 
-GDP data in real 2005 U.S. dollars for all countries was obtained from the
+GDP data in real 2005 US dollars for all countries was obtained from the
 RGDP$^{\mathrm{NA}}$ time series of the Penn World Table.~\citep{Feenstra:2013aa}
 
 %++++++++++++++++++++++++++++++
@@ -938,10 +1003,6 @@ capital stock ($k$),
 labor ($l$), and 
 energy ($q$) 
 for 1980--2011 (developed economies) and 1991--2011 (other economies). 
-% Factors of production track each other closely, 
-% and high covariances among these variables can be seen in 
-% Tables~\ref{tab:Covariance_US}--\ref{tab:Covariance_ZM}. 
-% \authNote{Do we want to discuss the covariances?}
 %
 <<Historical_Graph, fig.pos="H", fig.align='center', fig.width=3, fig.height=7.5, fig.cap="Historical data: indexed GDP ($y$), capital stock ($k$), labor ($l$), and thermal energy ($q$).">>=
 mdata <- melt(historicalData, 
@@ -981,9 +1042,9 @@ Although the details vary from model to model, each of our three models has the 
 \end{equation}
 %
 where $\theta$ is a vector of parameters for the function $f$.
-\authNote{if we use $\theta$ this way, we need a new scaling parameter. --rjp}%
+**** if we use $\theta$ this way, we need a new scaling parameter. --rjp ****
 Parameter estimates are chosen to minimize
-\authNote{Randy edit the following equation to reflect the fact that we're fitting in log space.}
+**** Randy edit the following equation to reflect the fact that we're fitting in log space. --MKH ****
 %
 \begin{equation} \label{eq:sse}
   sse = \sum_{i} (y_i - f(t,k,l,e; \theta) )^2
@@ -1028,7 +1089,7 @@ which the desired analysis method can be applied.
 By investigating, for example,
 the variability of a parameter estimate from one resample to another,
 one can learn about the precision of the estimation method.
-\authNote{Add some references here. --rjp}
+**** Add some references here. --rjp ****
 
 In the context of linear models (regression), resamples are generally created
 by residual resampling.  
@@ -1413,7 +1474,7 @@ answers to which are illuminated by the techniques and results presented above.
 %++++++++++++++++++++++++++++++
 
 For the Cobb-Douglas and CES production functions, 
-augmentation with energy improves goodness of fit when $\gamma > 0$.%
+augmentation by energy improves goodness of fit when $\gamma > 0$.%
   \footnote{
   The LINEX function is unhelpful in answering the question 
   ``Is it important to include energy in production functions?'' 
@@ -1785,9 +1846,9 @@ but the standard error approach yields symmetric confidence intervals.
 The resampling approach that we employed both respects constraints 
 and allows for asymmetric confidence intervals.%
   \footnote{
-    We have chosen to present parameter uncertainty results visually, 
-    both because the resampling technique lends itself to visual presentation and 
-    because we believe visual comparison is more effective than tablefuls of numbers.
+  We have chosen to present parameter uncertainty results visually, 
+  both because the resampling technique lends itself to visual presentation and 
+  because we believe visual comparison is more effective than tablefuls of numbers.
   }
 A significant result to emerge from this work is that large parameter uncertainty 
 does not necessarily lead to poor model fit to economic output. 
@@ -1907,9 +1968,12 @@ the Calvin College Alumni Association.
 Partial support for Matthew Kuperus Heun was 
 provided by a Calvin College Research Followship. 
 Partial funding for Martin de Wit was provided 
-by the South African National Research Foundation (NRF).\footnote{Any opinion, 
-findings, and conclusions or recommendations expressed herein are those 
-of the authors, and, therefore, NRF does not accept any liability in regard thereto.} 
+by the South African National Research Foundation (NRF).%
+  \footnote{
+  Any opinion, 
+  findings, and conclusions or recommendations expressed herein are those 
+  of the authors, and, therefore, NRF does not accept any liability in regard thereto.
+  }
 The authors are grateful to Benjamin S. Warr (INSEAD) for providing 
 the REXS database \citep{Warr:2012a}. 
 The authors thank Loren L. Heun (Western Michigan University) 
