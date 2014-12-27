@@ -341,6 +341,8 @@ on current and future economic growth.
 geological physical constraints and 
 technological solutions to oil production, 
 suggest a near doubling of the real price of over the next decade.  
+**** Should we re-think this discussion in the light of the shale oil boom and the 
+recent drop in oil prices? --MKH ****
 \citet{Kumhof:2012ua} point out that 
 significant impacts on GDP growth could occur
 for larger oil supply shocks, 
@@ -411,50 +413,13 @@ might vary from one economy to the next.
 As shown in Equation~\ref{eq:CD} above, mainstream economic theory does not 
 include an explicit term for the role of energy in economic growth. 
 However, \citet{Bashmakov:2007ek}, \citet{Hamilton:2009ui}, \citet{Murphy:2011jh}, 
-\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, \citet{Ayres:2013aa}, and others indicate that the 
+\citet{Benes:2012tm}, \citet{Kumhof:2012ua}, \cite{Ayres:2010ug}, 
+\citet{Ayres:2013aa}, and others indicate that the 
 importance of energy for economic growth may far outweigh its cost share in the 
 economy. 
 That mainstream economic growth theory ignores energy is, therefore, 
 cause for concern, and inquiry into the proper approach for including energy 
 as a factor of production in economic growth modeling is both relevant and important.
-
-Furthermore, the \emph{cost share theorem} from mainstream economics states that 
-output elasticities 
-$\alpha$, $\beta$, and $\gamma$ 
-(if augmenting the production function by energy)
-can be calibrated from national accounts data as the 
-cost shares of capital, labor, and energy, respectively.
-However, the cost share theorem applies only under conditions of perfect competition
-in the markets for the factors of production.
-Although no market ever exhibits perfect competition, 
-in our opinion, energy markets are \emph{least} likely to be ``perfect.''
-Many governments have parastatal or full control 
-of electricity generation and/or fuel markets.  
-Other governments subsidize or incentivize energy markets.  
-And, there are always health and environmental externalities 
-that are not priced into fossil fuel energy markets.  
-If energy markets are farther from ``perfect'' 
-than capital~($K$) and/or labor~($L$) markets, 
-then energy is the factor of production least likely to have its
-output elasticity~($\gamma$) be well-represented 
-by cost share as reported in national accounts.
-Thus, when augmenting production functions by energy, 
-much care should be taken in estimating 
-the relative importance of the factors of production 
-($\alpha$, $\beta$, and $\gamma$). 
-
-\citet{Kummel:2010vz} showed that the cost share theorem applies 
-only when economic growth is unconstrained.
-Real-world constraints such as the degree of automation and
-the degree of utilization of capital stock 
-result in shadow prices that move the values 
-of $\alpha$, $\beta$, and $\\gamma$ away from 
-their cost shares in the economy.\citep[Equations~12 and~13]{Kummel:2010vz}
-Thus, for this study, 
-we reject the cost share theorem and
-we have no \emph{a-priori} expectation that output elasticities 
-estimated from historical output data
-will match cost shares.
 
 Some energy economists augment economic growth models by including energy as an 
 additional (or the only) factor of production. 
@@ -467,41 +432,6 @@ production function nor the quantification of energy%
   exergy (primary and final), and useful work.
   }
 is consistent in the literature. 
-
-**** Suggest moving content of the literature review section up to this point. --MKH ****
-
-**** Suggest deleting the next sentences:
-Furthermore, there has been little empirical work assessing the predictive ability 
-of various energy-augmented production functions for different types of economies. 
-And, very few studies of the importance of energy in economic growth include 
-rigorous statistical assessments of energy-related fitting parameters. 
-End of deleted section --MKH ****
-
-This paper contributes to the literature on the role of energy in economic growth
-by applying statistically rigorous 
-methods along two coordinates of analysis: 
-form of the energy augmented production function 
-and type of economy.
-
-The remainder of this paper is organized as follows. 
-Section~\ref{sec:lit_review} provides a necessarily brief overview of relevant literature.
-Section~\ref{sec:Coordinates} discusses the coordinates of analysis for the present study. 
-Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
-generate time series for economic output ($y$) and factors of production ($k$, $l$, and $q$). 
-The procedures for and results from parameter estimation for the various production functions 
-are discussed in Section~\ref{sec:Parameter_Estimation}. 
-Section~\ref{sec:Discussion_of_Results} discusses implications of the parameter estimation 
-results, and Section~\ref{sec:Conclusion} concludes.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Literature Review} 
-\label{sec:lit_review}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-**** Merge the literature review into the Introduction? 
-We're already doing some literature review in the Introduction. --MKH ****
-
 \citet[p.~26]{Stern:2011bq} provides an overview of approaches to including energy 
 in ecological economic and resource economic models of growth.  
 \citeauthor{Stern:2011bq} points out that 
@@ -545,9 +475,9 @@ Technological change is manifest as increased efficiency:
 more useful work done per joule of exergy \citep{Ayres:2005kn}.
 There is no Solow-style term ($\mathrm{e}^{\lambda t}$) for technological change.
 
-Unsatisfactorily, the choice of a production function 
+Unsatisfactorily, both the choice of a production function 
 and the parameters used to populate these functions 
-affects results significantly.
+affect results significantly.
 This situation leaves far too much latitude 
 for misuse of model specifications 
 and selection of model parameters 
@@ -575,15 +505,56 @@ for the Chinese economy. **** More detail here about nesting? --MKH ****
 \citet{Saunders:2008aa} evaluated several production and cost functions
 (including the Cobb-Douglas, CES, and LINEX functions studied herein)
 to assess whether they are capable of reproducing 
-rebound, backfire, and super-conservation effects.~\citep{Sorrell:2007um}
-\citeauthor{Saunders:2008aa} concludes that only the CES function is a candidate for 
+rebound and backfire effects.~\citep{Sorrell:2007um}
+\citeauthor{Saunders:2008aa} concludes that,
+of the production functions evaluated in the present study,
+only the CES function is a candidate for 
 rebound analysis.
 The Cobb-Douglas function was found to exhibit only backfire.
 The LINEX function was found to 
 ``not satisfy the standard concavity (diminishing marginal productivity) 
 conditions.''~\citet[p.~2195]{Saunders:2008aa}
+
+In addition to model structure, 
+the way in which model parameters are determined is also subject to debate.
+The \emph{cost share theorem} from mainstream economics states that 
+output elasticities 
+$\alpha$, $\beta$, and $\gamma$ 
+(if augmenting the production function by energy)
+can be calibrated from national accounts data as the 
+cost shares of capital, labor, and energy, respectively.
+However, the cost share theorem applies only under conditions of perfect competition
+in the markets for the factors of production.
+Although no market ever exhibits perfect competition, 
+in our opinion, energy markets are \emph{least} likely to be ``perfect.''
+Many governments have parastatal or full control 
+of electricity generation and/or fuel markets.  
+Other governments subsidize or incentivize energy markets.  
+And, there are always health and environmental externalities 
+that are not priced into fossil fuel energy markets.  
+If energy markets are farther from ``perfect'' 
+than capital and/or labor markets, 
+then energy is the factor of production least likely to have its
+output elasticity~($\gamma$) be well-represented 
+by cost share as reported in national accounts.
+Thus, when augmenting production functions by energy, 
+much care should be taken in estimating 
+the relative importance of the factors of production 
+($\alpha$, $\beta$, and $\gamma$). 
+\citet{Kummel:2010vz} showed that the cost share theorem applies 
+only when economic growth is unconstrained.
+Real-world constraints such as the degree of automation and
+the degree of utilization of capital stock 
+result in shadow prices that move the values 
+of $\alpha$, $\beta$, and $\gamma$ away from 
+their cost shares in the economy.~\citep[Equations~12 and~13]{Kummel:2010vz}
+Thus, for this study, 
+we reject the cost share theorem and
+we have no \emph{a-priori} expectation that output elasticities 
+estimated from historical output data
+will match cost shares.
 Both the choice of production function structure 
-and the value of the model parameters 
+and the values of the model parameters 
 drive model results, and empirical and statistical testing 
 of such approaches is prudent, but rarely conducted.
 
@@ -591,13 +562,13 @@ These are not idle academic debates.
 Macroeconomic growth models are used often to inform economic policy,
 and the paths of economies worldwide are determined by
 such policy choices. 
-Therefore, we agree with those who have serious concerns 
-about the reliability of the results from economic growth models \citep{Lecca:2011kr}. 
+Therefore, we agree with those who express serious concerns 
+about the reliability of the results from economic growth models.~\citep{Lecca:2011kr} 
 We understand, however, 
 that macroeconomic policymaking is needed 
 and is increasingly informed by integrated energy-economic models, 
-in a world where energy constraints are possible 
-\citep{Beckman:2011gb, Benes:2012tm, Nel:2010fv, Kummel:2010vz}.  
+in a world where energy constraints are possible.~\citep{Beckman:2011gb, 
+Benes:2012tm, Nel:2010fv, Kummel:2010vz}
 We support the call from \citet{Shen:2013vp} that both
 the structure of the production function 
 and the parameters that populate it 
@@ -605,19 +576,41 @@ need empirical testing.
 Building on the argument of \citet{Stern:2011bq} 
 that energy may or may not be required in production functions 
 depending on its abundance or scarcity, 
-we will further argue in this paper that different types of countries 
+we will further test whether different types of countries 
 may need different factors of production to explain their respective growth paths.  
 This further leaves open the possibility for 
 different explanations of growth in various countries
 at different stages of their development, 
-a central point of long-wave economic growth modeling 
-\citep{Froling:2009vo, Jones:2001wn, Galor:2000up}. 
-**** The previous sentences sound a lot like we'll show that some groups of countries
+a central point of long-wave economic growth modeling.~\citep{Froling:2009vo, Jones:2001wn, Galor:2000up} 
+**** The previous sentences sound like we'll show that some groups of countries
 have similar charactersitics. 
-That's what we thought we might find, 
+That's what we thought we would find, 
 but our new conclusion is that one must treat each country 
 individually. 
-We should consider revising the few sentences. --MKH ****
+We should consider revising the previous few sentences. --MKH ****
+
+**** Suggest deleting the next two sentences:
+Furthermore, there has been little empirical work assessing the predictive ability 
+of various energy-augmented production functions for different types of economies. 
+And, very few studies of the importance of energy in economic growth include 
+rigorous statistical assessments of energy-related fitting parameters. 
+End of deleted section --MKH ****
+
+This paper contributes to the literature on the role of energy in economic growth
+by applying statistically rigorous 
+methods along two coordinates of analysis: 
+form of the energy augmented production function 
+and type of economy.
+
+The remainder of this paper is organized as follows. 
+% Section~\ref{sec:lit_review} provides a necessarily brief overview of relevant literature.
+Section~\ref{sec:Coordinates} discusses the coordinates of analysis for the present study. 
+Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
+generate time series for economic output ($y$) and factors of production ($k$, $l$, and $q$). 
+The procedures for and results from parameter estimation for the various production functions 
+are discussed in Section~\ref{sec:Parameter_Estimation}. 
+Section~\ref{sec:Discussion} discusses implications of the parameter estimation 
+results, and Section~\ref{sec:Conclusion} concludes.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1460,12 +1453,15 @@ we chose to report unconstrained LINEX model fits in this paper.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Discussion of Results}
-\label{sec:Discussion_of_Results}
+\section{Discussion}
+\label{sec:Discussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We find it beneficial to discuss results through a series of questions, 
-answers to which are illuminated by the techniques and results presented above.
+We find it beneficial to discuss the results through a series of questions, 
+answers to which are illuminated by the techniques and data presented
+in Section~\ref{sec:Parameter_Estimation} above.
+
+**** We need to think about the order of the subsections below. --MKH ****
 
 
 %++++++++++++++++++++++++++++++
@@ -1480,7 +1476,6 @@ augmentation by energy improves goodness of fit when $\gamma > 0$.%
   ``Is it important to include energy in production functions?'' 
   because LINEX presupposes that energy is the only factor of production.
   }
-
 First, we look at the results of the Cobb-Douglas functions 
 in Figures~\ref{fig:CD_lambda_theta_graph} and~\ref{fig:CD_Ternary_Scatter_Graph}. 
 Visually, $\gamma > 0$ is shown in the right column 
@@ -1495,8 +1490,9 @@ and all resample data points (black dots)
 are above the base of the triangle in the energy columns of Figure~\ref{fig:CD_Ternary_Scatter_Graph}. 
 However, for South Africa, significant uncertainty in $\gamma$, 
 as shown by the large vertical spread of resample data points, 
-leads us to exercise caution in concluding that adding energy to the production function is helpful
-for improving fit to historical data. 
+leads us to exercise caution in concluding that 
+augmenting the Cobb-Douglas production function by energy 
+is helpful for improving the goodness of fit to historical data. 
 A robust result 
 ($\gamma$ equal or close to zero and very little vertical spread of the resample points) 
 indicates that including energy does not help to explain economic growth in Zambia,
@@ -1525,7 +1521,7 @@ with energy for all economies.
 Our results support \citeapos{Stern:2011bq} conclusion that energy 
 may or may not be required in production functions,
 depending on its abundance or scarcity. 
-But, one cannot know \emph{a-priori} the economies 
+One cannot know \emph{a-priori} the economies 
 for which augmenting by energy will improve goodness of fit. 
 Statistical testing is clearly warranted. 
 
@@ -1539,13 +1535,13 @@ helpful for conceptualizing the role of energy in economic growth?}
 Some developed economies (US) benefit little from including energy as a factor of production, 
 while some others (UK) benefit in a minor way. 
 For other developed economies (JP), the results of CD and CES models point in opposite directions.  
-For NICs the results are mixed; 
+For NICs, the results are mixed; 
 China does not convincingly benefit from energy-augmented production functions, 
 and results are uncertain for South Africa (ZA) due to lack of precision in determining $\gamma$.  
 In one OPEC country (SA), adding energy clearly helps to explain economic growth, 
 while in another (IR), the benefit of energy augmentation is small and uncertain. 
 For LDCs there is a either a strong indication that energy-augmented production functions 
-are beneficial as an explanation for growth (TZ) or string indication otherwise (ZM).  
+are beneficial as an explanation for growth (TZ) or strong indication otherwise (ZM).  
 
 In summary, we observe that World Bank country categories (Table~\ref{tab:Economy_Examples}) 
 do not predict whether energy augmentation will be beneficial. 
@@ -1556,7 +1552,7 @@ as between World Bank country categories.
 Thus, we conclude that the World Bank’s country categories are not helpful 
 in explaining the role of energy in economic growth. 
 Rather, a nuanced approach is necessary wherein the energy situation 
-in each economy is assessed independently.
+in each economy is assessed individually.
 
 
 %++++++++++++++++++++++++++++++
@@ -1660,9 +1656,8 @@ appears in the following nests:
 ($e\underline{k}$)$\underline{l}$. 
 The following tables assist interpretation: 
 C (c) indicates strong (weak) complementarity, 
-S (s) indicates strong (weak) substitutability, 
-$\sim\sim\sim$ indicates large uncertainty, 
-and $\sim$ indicates small uncertainty. 
+S (s) indicates strong (weak) substitutability, and
+$\sim\sim\sim$ ($\sim$) indicates large (small) uncertainty. 
 
 **** Need to think this presentation through, 
 want to see how balances with the rest of the paper; 
@@ -1677,8 +1672,8 @@ Are they in conflict?''
 Another point to make is that these comparisons need to be done honestly. 
 We should not claim anything when the data are uncertain.
 
-Regarding Martin's question about length, 
-I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. (Saunders, 2008)
+Regarding Martin's question about space, 
+I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. \citep{Saunders:2008aa}
 I expect we are fine on length. --MKH ****
 
 \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
@@ -1739,8 +1734,9 @@ I expect we are fine on length. --MKH ****
   \end{center}
 \end{table}
 
-**** For the time being, I've added two of these tables.
-We can add the remaining seven tables easily, either here or in an appendix. --MKH ****
+**** For the time being, I've added two of these tables, US and UK.
+We can add the remaining seven tables easily, either here or in an appendix. 
+Data to fill the appendices is in the Word document on Dropbox. --MKH ****
 
 For many estimates of elasticity of substitution, the resampling technique indicates high uncertainty. 
 Where results are not uncertain, 
@@ -1749,9 +1745,10 @@ for most economies with the exception of China
 where an indication of substitutability between labor and energy is observed.
 
 That so many estimates of elasticity of substitution exhibit large uncertainty, 
-often spanning the range from perfect complements ($\sigma, \sigma_1 = 0$) 
-to perfect substitutes ($\sigma, \sigma_1 = 1$), 
-is a troubling characteristic of the estimated CES models. 
+often spanning the range from perfect complements ($\sigma, \, \sigma_1 = 0$) 
+to perfect substitutes ($\sigma, \, \sigma_1 = \infty$), 
+is a troubling characteristic of the estimated CES coefficients 
+that is rarely reported in the literature.
 For some countries (IR, ZM), 
 estimating any elasticity of substitution at all is problematic and fraught with peril. 
 Note that this result is unlikely to be caused by poor-quality data alone. 
@@ -1774,23 +1771,24 @@ Perhaps Iran or Zambia? ****.
 To account for the large uncertainty, 
 it may be useful to perform piecewise analyses of smaller time periods. 
 For the present study, doing piecewise analysis of, say, 
-Iran **** Use the economy that Martin discusses above **** 
-would mean that the CES model is estimated on a 10-year period. 
+Iran **** use the economy that Martin discusses above **** 
+would mean that the CES model is estimated on two 10-year periods. 
 Considering that there are six fitted parameters in the CES model 
 ($\gamma$, $\lambda$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$), 
-ten years of historical data leaves precious few (only 4) degrees of freedom for the fitting process. 
+ten years of historical data leaves precious few 
+(only 4) degrees of freedom for the fitting process. 
 
 Based on the results and discussions above 
 regarding the relative importance of and 
 the elasticity of substitution among factors of production, 
 we conclude that use of the CES model for energy analysis 
 should be undertaken with utmost caution. 
-Indeed, empirical testing on the relative importance 
+Indeed, rigorous statistical testing on the relative importance 
 of production factors and elasticities of substitution is highly recommended. 
-Sensitivity analysis is essential. 
 Our results support \citeapos{Lecca:2011kr} conclusion 
 for the need to econometrically specify production function relationships and 
-to perform sensitivity analysis on nesting choices in economies to enhance the reliability of results. 
+to perform sensitivity analysis on nesting choices in economies 
+to enhance the reliability of results. 
 
 
 %++++++++++++++++++++++++++++++
@@ -1818,15 +1816,22 @@ Easy to respect constraints during fitting process: CD and CES easy. LinEx diffi
 Our assessment: None of the production functions is perfect. 
 Probably CD is best compromise among ease of estimating, good (but not best) fit to historical data, and
 small uncertainties in fitted parameters. 
+
 If precise fitting to historical data is paramount (and you're unconcerned about uncertainties
 in fitted coefficients), CES is the best.
 
-Caution: none of the production functions analyzed herein allows for complex energy-economy phenomena
-like rebound effect, backfire, and super-conservation.
+If you need to represent rebound effects (not just backfire), 
+CES must be employed, 
+because the CES function was found by \citet{Saunders:2008aa} to be the only one of the production
+functions studied here that is capable of representing rebound rebound in addition to backfire.
+However, its ability to do so is tied to the values of the elasticity of substitution.
+Unfortunately, we find that value of the elasticity of substitution is often highly uncertain.
+Thus, whether the CES function is helpful for estimating both rebound and backfire effects
+is questionable.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Implications of resampling results } 
+\subsection{Implications of parameter uncertainty} 
 \label{sec:implications}
 %++++++++++++++++++++++++++++++
 
@@ -1835,6 +1840,8 @@ by linear coefficient determination (Cobb-Douglas and LinEx)
 and non-linear optimization algorithms (CES), 
 the resampling/bootstrapping analysis performed herein 
 provides insight into the question of how accurately parameters are known. 
+
+**** Move this paragraph elsewhere? --MKH ****
 We chose the resampling approach instead of the more-common technique 
 of estimating confidence intervals from standard errors for two reasons. 
 (1)~Model parameters are highly constrained, and confidence intervals often violate the constraints. 
@@ -1850,11 +1857,12 @@ and allows for asymmetric confidence intervals.%
   both because the resampling technique lends itself to visual presentation and 
   because we believe visual comparison is more effective than tablefuls of numbers.
   }
+
 A significant result to emerge from this work is that large parameter uncertainty 
 does not necessarily lead to poor model fit to economic output. 
 To choose one example of many, 
 the value of $\gamma$ for the Cobb-Douglas model for Tanzania (0.59) 
-shows a resampling range of 0.2–0.9. 
+shows a resampling range of 0.2--0.9. 
 (See Figure~\ref{fig:CD_Ternary_Scatter_Graph}.) 
 Yet, Cobb-Douglas models for Tanzania, with and without energy, both 
 (a)~fit historical data very well 
@@ -1884,33 +1892,37 @@ sector-based analysis or ****. **** Martin, add more here? ****
 Could be read that macroeconomic growth modeling in such cases is not really useful at all? 
 --MdW ****
 
-We further caution against using $R^2$ only as the criteria for choosing a model, 
-because, in our experience, 
-both Cobb-Douglas and CES models yield high $R^2$ values for all countries. 
-(See Figures~\ref{fig:CD_GDP_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}.) 
-LinEx models fare poorly in some cases and might be excluded on that basis. 
-(See SA and TZ in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
-It is more important to know the uncertainty of estimated parameters than to assess $R^2$. 
-With rigorous uncertainty testing as we have done here, 
-the quality of parameter estimates is exposed: 
-at a glance, the tightness of resampled results indicates 
-whether or not confidence in the model and data is warranted. 
-We conclude that it is insufficient to argue 
-in favor of a particular production function 
-on the grounds of its ability to fit historical data.
-
 The implications of parameter uncertainties should be obvious, 
 but we will state them here. 
 Basing policy upon parameters with high uncertainty can lead to bad, or completely wrong, policy. 
 **** Martin: can you find an example in our results that drives this point home? --MKH  
 May be barking up wrong production factor, may assume subs when complementarity: ****
 
-We conclude that the best policy will be made 
-with a macroeconomic modeling approach that is highly interpretative, 
-uses several production functions, and 
-estimates asymmetric uncertainties of fitted parameters.
 
-**** Other notes from our word document ****
+%++++++++++++++++++++++++++++++
+\subsection{Is $R^2$ a good criterion for choosing a model?} 
+\label{sec:is_r2_good}
+%++++++++++++++++++++++++++++++
+
+We caution against using $R^2$ as the only criterion for choosing a model, 
+because, in our experience, 
+both Cobb-Douglas and CES models yield high $R^2$ values for all countries 
+(see Figures~\ref{fig:CD_GDP_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}), yet
+very different uncertainties for fitted parameters.
+In some cases, LINEX models fare poorly regarding $R^2$ and might be excluded on that basis. 
+(See SA and TZ in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
+In our opinion, 
+it is equally, if not more, important to know the uncertainty 
+of estimated parameters than to assess $R^2$.
+With rigorous uncertainty testing as we have done here, 
+the quality of parameter estimates is exposed: 
+at a glance, the tightness of resampled results indicates 
+whether or not confidence in the model and data is warranted. 
+We conclude that it is insufficient to argue 
+in favor of a particular production function 
+on the grounds $R^2$.
+
+**** Other notes from our Word document that didn't fit anywhere above. ****
 
 Lastly, what do aggregate models say? 
 
@@ -1919,15 +1931,33 @@ What direction can take from this work?
 What is the status of ME growth modeling after this?
 
 
+%++++++++++++++++++++++++++++++
+\subsection{Summary of discussion} 
+\label{sec:summary_of_discussion}
+%++++++++++++++++++++++++++++++
+
+**** Do we want to summarize the discussion here? --MKH ****
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{sec:Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Conclusion goes here.  
+**** Conclusion goes here.  ****
 
-Maybe put the discussion of ``Which production function is best'' here?
+Review the issues.
 
+Review our methods.
+
+Review our significant results.
+
+**** Maybe put the discussion of ``Which production function is best'' here? ****
+ 
+We conclude that the best policy will be made 
+with a macroeconomic modeling approach that is highly interpretative, 
+uses several production functions, and 
+estimates asymmetric uncertainties of fitted parameters.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
