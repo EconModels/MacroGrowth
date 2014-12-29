@@ -1800,11 +1800,28 @@ I expect we are fine on length. --MKH ****
 
 % label is tab:sigma_SA
 \eostable{SA}
-          {\firstrow{c$\sim$}{$\sim\sim\sim$}{C}{$\sim\sim\sim$}}
-          {\secondrow{C}{C}{C}{C}{$\sim\sim\sim$}{C\tablefootnote{Points on right are all same.}}}
-          {\thirdrow{c}{C}{C}}
+          {\firstrow{$\sim\sim\sim$}{$\sim\sim\sim$}{C}{C}}
+          {\secondrow{C}{C}{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\thirdrow{$\sim\sim\sim$}{C}{C}}
 
+% label is tab:sigma_IR
+\eostable{IR}
+          {\firstrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\secondrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}{C}{C}}
+          {\thirdrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
 
+% label is tab:sigma_TZ
+\eostable{TZ}
+          {\firstrow{C}{C}{$\sim\sim\sim$}{C}}
+          {\secondrow{$\sim\sim\sim$}{$\sim\sim\sim$}{C}{C}{C}{C}}
+          {\thirdrow{C}{$\sim\sim\sim$}{C}}
+
+% label is tab:sigma_ZM
+\eostable{ZM}
+          {\firstrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\secondrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}
+                     {$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\thirdrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
 
 **** For the time being, I've added two of these tables, US and UK.
 We can add the remaining seven tables easily, either here or in an appendix. 
