@@ -1716,10 +1716,15 @@ appears in the following nests:
 ($\underline{kl}$)$e$, 
 ($\underline{l}e$)$\underline{k}$, and 
 ($e\underline{k}$)$\underline{l}$. 
-The following tables assist interpretation: 
+Tables~\ref{tab:sigma_US}--\ref{tab:sigma_ZM} 
+provide interpretation of Figures~\ref{fig:CES_sigma1_delta1_graph}
+and~\ref{fig:CES_sigma1_delta1_graph}. 
+In the tables,
 C (c) indicates strong (weak) complementarity, 
 S (s) indicates strong (weak) substitutability, and
 $\sim\sim\sim$ ($\sim$) indicates large (small) uncertainty. 
+
+**** If we stick with these tables, do we want to use $\sim\sim\sim$ to indicate uncertainty? ****
 
 **** Need to think this presentation through, 
 want to see how balances with the rest of the paper; 
@@ -1738,6 +1743,8 @@ Regarding Martin's question about space,
 I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. \citep{Saunders:2008aa}
 I expect we are fine on length. --MKH ****
 
+% This is the original sigma table. 
+% It has been replaced by macros that make for more-efficient LaTeX code.
 % \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
 %   \begin{center}
 %     \begin{tabular}{r l c l c l c} 
@@ -1823,26 +1830,24 @@ I expect we are fine on length. --MKH ****
                      {$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
           {\thirdrow{$\sim\sim\sim$}{$\sim\sim\sim$}{$\sim\sim\sim$}}
 
-**** For the time being, I've added two of these tables, US and UK.
-We can add the remaining seven tables easily, either here or in an appendix. 
-Data to fill the appendices is in the Word document on Dropbox. --MKH ****
-
-For many estimates of elasticity of substitution, the resampling technique indicates high uncertainty. 
+For many estimates of elasticity of substitution~($\sigma$ and $\sigma_1$), 
+the resampling technique indicates high uncertainty~($\sim\sim\sim$). 
 Where results are not uncertain, 
-we find complementarity among factors of production 
+we find complementarity~(C and c) among factors of production 
 for most economies with the exception of China 
-where an indication of substitutability between labor and energy is observed.
+where an indication of substitutability between labor and energy is observed~(S and s).
 
 That so many estimates of elasticity of substitution exhibit large uncertainty, 
 often spanning the range from perfect complements ($\sigma, \, \sigma_1 = 0$) 
 to perfect substitutes ($\sigma, \, \sigma_1 = \infty$), 
 is a troubling characteristic of the estimated CES coefficients 
 that is rarely reported in the literature.
-For some countries (IR, ZM), 
+For some economies (Iran and Zambia), 
 estimating any elasticity of substitution at all is problematic and fraught with peril. 
 Note that this result is unlikely to be caused by poor-quality data alone. 
-Presumably the best data in the world (US, UK, JP) exhibits large uncertainty. 
-(See US and UK rows in Figures~\ref{fig:CD_Ternary_Scatter_Graph}  
+Presumably the best data in the world 
+(United States, United Kingdom, and Japan) exhibits large uncertainty. 
+(See United States and United Kingdom rows in Figures~\ref{fig:CD_Ternary_Scatter_Graph}  
 and~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph}.)
 
 Some of the uncertainty is explained by the structure of the CES model. 
