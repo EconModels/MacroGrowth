@@ -66,6 +66,7 @@
 \usepackage{hyperref}   % To create hyperlinks in the paper
 \usepackage{microtype}  % produces hanging punctuation and beautiful type
 \usepackage{booktabs}   % produces beautiful tables
+\usepackage{tablefootnote}  % allows footnotes in tables
 
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
@@ -234,6 +235,67 @@ oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = pp_pa
 \end{equation}
 }
 
+% The following commands assist making tables for elasticity of substitution (sigma and sigma_1).
+% The \firstrow macro creates the sigma_1 row.  The following arguments apply:
+% #1 sigma_1 for (kl) nest
+% #2 sigma_1 for (kl)e nest
+% #3 sigma_1 for (ek)l nest
+% #4 sigma_1 for (le)k nest
+\newcommand{\firstrow}[4]{\multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & #1 
+                                  &  & 
+                                        & &  \\
+                            & ($\underline{kl}$)$e$ & #2
+                                  & ($\underline{ek}$)$l$ & #3
+                                        & ($\underline{le}$)$k$ & #4 \\
+}
+
+% The \secondrow macro creates the sigma row.  The following arguments apply:
+% #1 sigma for (kl)e nest
+% #2 sigma for (kl)e nest
+% #3 sigma for (le)k nest
+% #4 sigma for (le)k nest
+% #5 sigma for (ek)l nest
+% #6 sigma for (ek)l nest
+\newcommand{\secondrow}[6]{      \multirow{3}{*}{$\sigma$} & &
+                                      & ($\underline{k}l$)$\underline{e}$ & #1
+                                            & ($k\underline{l}$)$\underline{e}$ & #2 \\
+                                & ($\underline{l}e$)$\underline{k}$ & #3
+                                      & ($l\underline{e}$)$\underline{k}$ & #4
+                                            &  & \\
+                                & ($e\underline{k}$)$\underline{l}$ & #5
+                                      & &
+                                            & ($\underline{e}k$)$\underline{l}$ & #6 \\
+}
+
+% The \thirdrow macro creates the summary row at the bottom.  The following arguments apply:
+% #1 summary for elasticity of substitution between k and l
+% #2 summary for elasticity of substitution between k and e
+% #3 summary for elasticity of substitution between l and e
+\newcommand{\thirdrow}[3]{    & \multicolumn{2}{c}{#1} & \multicolumn{2}{c}{#2} & \multicolumn{2}{c}{#3} \\ }
+
+% The \eostable macro creates the overall table.  
+% The label for the table is tab:sigma_#1, i.e., tab:sigma_<2-letter country code>.  
+% The following arguments apply:
+% #1 2-letter country abbreviation
+% #2 sigma_1 row.  Use \firstrow macro here.
+% #3 sigma row.  Use \secondrow macro here.
+% #4 summary row.  Use \thirdrow macro here.
+\newcommand{\eostable}[4] {\begin{table} \caption{Elasticities of substitution (#1).} \label{tab:sigma_#1} 
+  \begin{center}
+    \begin{tabular}{r l c l c l c} 
+      \toprule
+         & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
+      \midrule
+      #2
+      \midrule
+      #3
+      \midrule
+      #4
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+}
 
 \begin{frontmatter}
 
@@ -1528,7 +1590,7 @@ Statistical testing is clearly warranted.
 
 %++++++++++++++++++++++++++++++
 \subsection{Are the World Bank country categories
-helpful for conceptualizing the role of energy in economic growth?} 
+helpful for understanding the role of energy in economic growth?} 
 \label{sec:wb_categories_helpful}
 %++++++++++++++++++++++++++++++
 
@@ -1676,63 +1738,73 @@ Regarding Martin's question about space,
 I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. \citep{Saunders:2008aa}
 I expect we are fine on length. --MKH ****
 
-\begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
-  \begin{center}
-    \begin{tabular}{r l c l c l c} 
-      \toprule
-         & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
-      \midrule
-      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & C 
-                                        &  & 
-                                              & &  \\
-                                  & ($\underline{kl}$)$e$ & C 
-                                        & ($\underline{ek}$)$l$ & $\sim\sim\sim$ 
-                                              & ($\underline{le}$)$k$ & $\sim\sim\sim$ \\
-      \midrule
-      \multirow{3}{*}{$\sigma$} & &
-                                      & ($\underline{k}l$)$\underline{e}$ & $\sim\sim\sim$
-                                            & ($k\underline{l}$)$\underline{e}$ & $\sim\sim\sim$ \\
-                                & ($\underline{l}e$)$\underline{k}$ & C
-                                      & ($l\underline{e}$)$\underline{k}$ & C
-                                            &  & \\
-                                & ($e\underline{k}$)$\underline{l}$ & C
-                                      & &
-                                            & ($\underline{e}k$)$\underline{l}$ & C \\
-      \midrule
-                                & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
+% \begin{table} \caption{Elasticities of substitution (US).} \label{tab:sigma_US} 
+%   \begin{center}
+%     \begin{tabular}{r l c l c l c} 
+%       \toprule
+%          & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
+%       \midrule
+%       \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & C 
+%                                         &  & 
+%                                               & &  \\
+%                                   & ($\underline{kl}$)$e$ & C 
+%                                         & ($\underline{ek}$)$l$ & $\sim\sim\sim$ 
+%                                               & ($\underline{le}$)$k$ & $\sim\sim\sim$ \\
+%       \midrule
+%       \multirow{3}{*}{$\sigma$} & &
+%                                       & ($\underline{k}l$)$\underline{e}$ & $\sim\sim\sim$
+%                                             & ($k\underline{l}$)$\underline{e}$ & $\sim\sim\sim$ \\
+%                                 & ($\underline{l}e$)$\underline{k}$ & C
+%                                       & ($l\underline{e}$)$\underline{k}$ & C
+%                                             &  & \\
+%                                 & ($e\underline{k}$)$\underline{l}$ & C
+%                                       & &
+%                                             & ($\underline{e}k$)$\underline{l}$ & C \\
+%       \midrule
+%                                 & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
 
-\begin{table} \caption{Elasticities of substitution (UK).} \label{tab:sigma_UK} 
-  \begin{center}
-    \begin{tabular}{r l c l c l c} 
-      \toprule
-         & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
-      \midrule
-      \multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & C 
-                                        &  & 
-                                              & &  \\
-                                  & ($\underline{kl}$)$e$ & $\sim\sim\sim$ 
-                                        & ($\underline{ek}$)$l$ & C
-                                              & ($\underline{le}$)$k$ & C \\
-      \midrule
-      \multirow{3}{*}{$\sigma$} & &
-                                      & ($\underline{k}l$)$\underline{e}$ & C
-                                            & ($k\underline{l}$)$\underline{e}$ & C \\
-                                & ($\underline{l}e$)$\underline{k}$ & C
-                                      & ($l\underline{e}$)$\underline{k}$ & C
-                                            &  & \\
-                                & ($e\underline{k}$)$\underline{l}$ & $\sim\sim\sim$
-                                      & &
-                                            & ($\underline{e}k$)$\underline{l}$ & $\sim\sim\sim$ \\
-      \midrule
-                                & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} & \multicolumn{2}{c}{C} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
+% label is tab:sigma_US
+\eostable{US}
+          {\firstrow{C}{C}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\secondrow{$\sim\sim\sim$}{$\sim\sim\sim$}{C}{C}{C}{C}}
+          {\thirdrow{C}{C}{C}}
+
+% label is tab:sigma_UK
+\eostable{UK}
+          {\firstrow{C}{$\sim\sim\sim$}{C}{C}}
+          {\secondrow{C}{C}{C}{C}{$\sim\sim\sim$}{$\sim\sim\sim$}}
+          {\thirdrow{C}{C}{C}}
+          
+% label is tab:sigma_JP
+\eostable{JP}
+          {\firstrow{c}{C}{$\sim\sim\sim$}{C}}
+          {\secondrow{C}{C}{C}{C}{C}{C}}
+          {\thirdrow{C}{C}{C}}
+
+% label is tab:sigma_CN
+\eostable{CN}
+          {\firstrow{$\sim\sim\sim$}{C}{C}{S}}
+%           {\secondrow{S {\scriptsize (driven by $le$?)}}{S}{C}{C}{c}{c {\scriptsize (driven by $kl$?)}}}
+          {\secondrow{S\tablefootnote{Driven by $le$?}}{S}{C}{C}{c}{c\tablefootnote{Driven by $kl$?}}}
+          {\thirdrow{C}{C}{S}}
+
+% label is tab:sigma_ZA
+\eostable{ZA}
+          {\firstrow{c$\sim$}{$\sim\sim\sim$}{C}{$\sim\sim\sim$}}
+          {\secondrow{C}{C}{C}{C}{$\sim\sim\sim$}{C\tablefootnote{Points on right are all same.}}}
+          {\thirdrow{c}{C}{C}}
+
+% label is tab:sigma_SA
+\eostable{SA}
+          {\firstrow{c$\sim$}{$\sim\sim\sim$}{C}{$\sim\sim\sim$}}
+          {\secondrow{C}{C}{C}{C}{$\sim\sim\sim$}{C\tablefootnote{Points on right are all same.}}}
+          {\thirdrow{c}{C}{C}}
+
+
 
 **** For the time being, I've added two of these tables, US and UK.
 We can add the remaining seven tables easily, either here or in an appendix. 
