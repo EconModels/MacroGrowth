@@ -1594,16 +1594,16 @@ helpful for understanding the role of energy in economic growth?}
 \label{sec:wb_categories_helpful}
 %++++++++++++++++++++++++++++++
 
-Some developed economies (US) benefit little from including energy as a factor of production, 
-while some others (UK) benefit in a minor way. 
-For other developed economies (JP), the results of CD and CES models point in opposite directions.  
+Some developed economies (United States) benefit little from including energy as a factor of production, 
+while some others (United Kingdom) benefit in a minor way. 
+For other developed economies (Japan), the results of CD and CES models point in opposite directions.  
 For NICs, the results are mixed; 
 China does not convincingly benefit from energy-augmented production functions, 
-and results are uncertain for South Africa (ZA) due to lack of precision in determining $\gamma$.  
-In one OPEC country (SA), adding energy clearly helps to explain economic growth, 
-while in another (IR), the benefit of energy augmentation is small and uncertain. 
+and results are uncertain for South Africa due to lack of precision in determining $\gamma$.  
+In one OPEC country, Saudi Arabia, adding energy clearly helps to explain economic growth, 
+while in another, Iran, the benefit of energy augmentation is small and uncertain. 
 For LDCs there is a either a strong indication that energy-augmented production functions 
-are beneficial as an explanation for growth (TZ) or strong indication otherwise (ZM).  
+are beneficial as an explanation for growth (Tanzania) or strong indication otherwise (Zambia).  
 
 In summary, we observe that World Bank country categories (Table~\ref{tab:Economy_Examples}) 
 do not predict whether energy augmentation will be beneficial. 
@@ -1684,7 +1684,7 @@ substitutability among factors of production ($\sigma$ and $\sigma_1$ values).
 \label{sec:importance_of_factors}
 %------------------------------
 
-For most economies (UK, JP, CN, ZA, SA, IR, and TZ), 
+For most economies (United Kingdom, Japan, China, South Africa, Saudi Arabia, Iran, and Tanzania), 
 Figure~\ref{fig:CES_ternary_graph} shows that the relative importance of 
 production factors capital~($k$), labour~($l$), and energy~($e$) 
 is different for the three different CES nestings (Equations~\ref{eq:CESkle}--\ref{eq:CESekl}). 
@@ -1724,7 +1724,7 @@ C (c) indicates strong (weak) complementarity,
 S (s) indicates strong (weak) substitutability, and
 $\sim\sim\sim$ ($\sim$) indicates large (small) uncertainty. 
 
-**** If we stick with these tables, do we want to use $\sim\sim\sim$ to indicate uncertainty? ****
+**** If we stick with these tables, do we want to use $\sim\sim\sim$ to indicate uncertainty? --MKH ****
 
 **** Need to think this presentation through, 
 want to see how balances with the rest of the paper; 
@@ -1737,9 +1737,9 @@ Let's compare all the different ways to look at the elasticity between any two f
 Do they agree?  
 Are they in conflict?''  
 Another point to make is that these comparisons need to be done honestly. 
-We should not claim anything when the data are uncertain.
+We should not claim anything when the data are uncertain. --MKH ****
 
-Regarding Martin's question about space, 
+**** Regarding Martin's question about space, 
 I've seen other papers in \emph{Energy Economics} that are 51 printed journal pages. \citep{Saunders:2008aa}
 I expect we are fine on length. --MKH ****
 
@@ -1886,45 +1886,6 @@ to enhance the reliability of results.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Which production function is best for energy augmentation?} 
-\label{sec:which_best}
-%++++++++++++++++++++++++++++++
-
-**** Shall we have a section here discussing which function is ``best''? --MKH ****
-Here is a first cut at some criteria and a recommendation.
-
-Allows assymetric uncertainty estimation via resampling: all work fine.
-
-Best match to historical data: CES. But CD is close. LinEx struggles.
-
-No ambiguity from model structure: CD and LinEx OK here. 
-CES has the undesireable characteristic that form (nesting) affects outcome.
-
-Easy to estimate: CD and LinEx can be fitted with linear function. 
-CES requires complex and time-consuming optimzation techniques.
-
-Small uncertainties in fitted parameters: CD and LinEx better than CES.
-
-Easy to respect constraints during fitting process: CD and CES easy. LinEx difficult.
-
-Our assessment: None of the production functions is perfect. 
-Probably CD is best compromise among ease of estimating, good (but not best) fit to historical data, and
-small uncertainties in fitted parameters. 
-
-If precise fitting to historical data is paramount (and you're unconcerned about uncertainties
-in fitted coefficients), CES is the best.
-
-If you need to represent rebound effects (not just backfire), 
-CES must be employed, 
-because the CES function was found by \citet{Saunders:2008aa} to be the only one of the production
-functions studied here that is capable of representing rebound rebound in addition to backfire.
-However, its ability to do so is tied to the values of the elasticity of substitution.
-Unfortunately, we find that value of the elasticity of substitution is often highly uncertain.
-Thus, whether the CES function is helpful for estimating both rebound and backfire effects
-is questionable.
-
-
-%++++++++++++++++++++++++++++++
 \subsection{Implications of parameter uncertainty} 
 \label{sec:implications}
 %++++++++++++++++++++++++++++++
@@ -1932,8 +1893,10 @@ is questionable.
 In addition to the usual parameter estimation process 
 by linear coefficient determination (Cobb-Douglas and LinEx) 
 and non-linear optimization algorithms (CES), 
-the resampling/bootstrapping analysis performed herein 
-provides insight into the question of how accurately parameters are known. 
+the resampling analysis performed herein 
+provides insight into the questions of 
+(a)~how accurately parameters are known and 
+(b)~the implications of parameter imprecision. 
 
 **** Move this paragraph elsewhere? --MKH ****
 We chose the resampling approach instead of the more-common technique 
@@ -1953,7 +1916,7 @@ and allows for asymmetric confidence intervals.%
   }
 
 A significant result to emerge from this work is that large parameter uncertainty 
-does not necessarily lead to poor model fit to economic output. 
+does not necessarily lead to poor model fit to historical economic output. 
 To choose one example of many, 
 the value of $\gamma$ for the Cobb-Douglas model for Tanzania (0.59) 
 shows a resampling range of 0.2--0.9. 
@@ -2026,11 +1989,205 @@ What is the status of ME growth modeling after this?
 
 
 %++++++++++++++++++++++++++++++
+\subsection{Which production function is best for energy augmentation?} 
+\label{sec:which_best}
+%++++++++++++++++++++++++++++++
+
+Several criteria could be applied 
+to the question of which production function is best
+for describing the role of energy in economic growth:
+best match to historical data, 
+minimum ambiguity in model structure,
+minimum uncertainty in model parameters, and
+easy parameter estimation process.
+In the sections below, we evaluate the Cobb-Douglas, CES, and LINEX
+models using these criteria.
+
+
+%------------------------------
+\subsubsection{Best match to historical data} 
+\label{sec:match_history}
+%------------------------------
+
+Figures~\ref{fig:CD_GDP_Spaghetti_Graph}, \ref{fig:CES_Spaghetti_Graph}, and
+\ref{fig:LINEX_Spaghetti_Graph} indicate that the CES production function
+is consistently better than Cobb-Douglas or LINEX in terms of matching historical data.
+Cobb-Douglas is a close second, but
+LINEX struggles, especially with the Saudi Arabian and Tanzanian economies.%
+  \footnote{
+  The order of these results is unsurprising: 
+  CES contains 6 fitted parameters; Cobb-Douglas, 4; and LINEX, 3.
+  We expect models with more parameters to provide a better fit to historical data.
+  }$^,$%
+  \footnote{
+  We also note that in contrast to our approach, shared by \citet{Warr:2012cg},
+  of fitting constant $a_0$ and $c_t$ values, 
+  \citet{Kummel:2011aa} used logistic functions to generate time-varying
+  $a_0$ and $c_t$ values.
+  \citeauthor{Kummel:2011aa}'s approach will necessarily produce a better match to historical data,
+  because the logistic curves involve several additional fitting parameters.
+  }
+
+Thus, CES is preferred on this criterion.
+
+
+%------------------------------
+\subsubsection{Minimum ambiguity in model structure and interpretation} 
+\label{sec:min_ambiguity}
+%------------------------------
+
+For each production function, 
+values of fitted parameters give rise to interpretations of macroeconomic dynamics
+that, in turn, have significant implications for macroeconomic policy
+and human well-being.
+Thus, it is desirable that such interpretations have little ambiguity.
+
+The energy-augmented CES production function presents ambiguity to the energy analyst
+in the form of the choice of factor nesting.
+We showed above that nesting can significantly affect 
+the interpretation of macroecnomic dynamics, especially 
+the relative importance of factors of production~(\ref{fig:CES_ternary_graph}) and 
+the understanding of substitutibility 
+among factors of production. (See Section~\ref{sec:elasticity_of_substitution}).
+Thus, the CES production function has the undesireable characteristic 
+that model structure (i.e., nesting) affects both parameter values 
+and macroeconomic interpretation.
+Neither the Cobb-Douglas nor the LINEX production function 
+exhibits similar structural ambiguity.
+
+Thus, Cobb-Douglas or LINEX are preferred on this criterion.
+
+
+%------------------------------
+\subsubsection{Minimum uncertainty in model parameters} 
+\label{sec:min_uncertainty}
+%------------------------------
+
+Uncertainties in fitted parameters give rise to uncertainty 
+in macroeconomic dynamics inferred from fitted parameters.
+Thus, small uncertainty in fitted parameters is desirable. 
+Figures~\ref{fig:CD_lambda_theta_graph}, \ref{fig:CD_Ternary_Scatter_Graph},
+\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}, and
+\ref{fig:LINEXq_Resample_Graph} show that 
+Cobb-Douglas and LINEX have, by and large, 
+smaller uncertainties in fitted parameters than the CES production function.
+Thus, Cobb-Douglas and LINEX are preferred on this criterion.
+
+
+%------------------------------
+\subsubsection{Robust parameter estimation process} 
+\label{sec:robust_estimation}
+%------------------------------
+
+It is desirable that the combination of production function and parameter estimation process
+has the following characteristics:
+affords easy mathematical and numerical implementation, 
+provides an easy way to respect fitted parameter constraints, and
+allows asymmetric estimates of fitted parameter uncertainty.
+
+
+%..............................
+\paragraph{Easy mathematical and numerical implementation} 
+\label{sec:easy_implementation}
+%..............................
+
+For the Cobb-Douglas and LINEX models, 
+logarithmic transformation of the production functions 
+allows simple linear estimation of model parameters.
+In contrast, it is impossible to fit the CES model linearly,
+so parameters must be estimated by a more-complicated and time-consuming optimization process.
+(See Section~\ref{sec:CES_Parameter_Estimation}.)
+On the 40-node \texttt{dahl} supercomputer at Calvin College~\citep{Adams:2008aa},
+complete analysis of all data shown in this paper
+(including 1000 resamples for every model, every economy, and every CES nesting)
+takes about 15 hours.
+Approximately 98\% of the processing effort is spent on the CES models.%
+  \footnote{
+  All Cobb-Douglas and LINEX models run on a single node (using 4 processors per node) 
+  in about 1.5 hours (6 processor-hours).
+  All CES models run on 9 nodes (using 3 processors per node for a total of 27 processors) 
+  in about 15 hours (405 processor-hours).
+  }
+Thus, Cobb-Douglas and LINEX are preferred on this criterion.
+
+
+%..............................
+\paragraph{Easy to respect parameter constraints} 
+\label{sec:easy_constraints}
+%..............................
+
+It is relatively easy to implement constraints on fitting parameter 
+for the Cobb-Douglas production function. (See Section~\ref{sec:CD_Parameter_Estimation}.)
+For the CES prodcution function, 
+the capability to respect parameter constraints is a feature of the 
+\texttt{cesEst} function~\citep{Henningsen:2011td} and is, therefore,
+relatively easy to implement.
+In contrast, because output elasticities $\alpha$, $\beta$, and $\gamma$ 
+are not directly available as parameters in the LINEX model
+(see Equations~\ref{eq:LINEX} and~\ref{eq:LINEX_transformed}),
+it is very difficult to enforce constraints during the fitting process.%
+  \footnote{
+  See \citet{Kummel:2011aa} for one approach to respecting parameter constraints 
+  for the LINEX function. 
+  }
+Indeed, we found in Section~\ref{sec:LINEX_Parameter_Estimation}
+that the LINEX model regularly violates parameter constraints.
+
+Thus, Cobb-Douglas and CES are preferred on this criterion.
+
+
+%..............................
+\paragraph{Easy asymmetric uncertainties} 
+\label{sec:asymmetric_uncertainty}
+%..............................
+
+As discussed in Section~\ref{sec:implications},
+constraints on fitting parameters make it 
+desirable that the combination of production function
+and the parameter estimation process
+allows estimation of asymmetric parameter uncertainties.
+In the present work, we found that the resampling techniques described 
+in Section~\ref{sec:Resampling} afford estimates 
+of asymmetric parameter uncertainties. 
+Thus, none of the prodcution functions are preferred over the others on this criterion.
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Summary of discussion} 
 \label{sec:summary_of_discussion}
 %++++++++++++++++++++++++++++++
 
-**** Do we want to summarize the discussion here? --MKH ****
+The evidence above indicates that 
+there is no quick or easy answer to the question
+``which production function is best for augmentation by energy?''
+We find that the answer depends upon the objective of the analysis.
+In our opinion, 
+the Cobb-Douglas models provides a good compromise among the competing criteria of
+ease of parameter estimation, good fit to historical data, and
+small uncertainties in fitted parameters. 
+
+If precise fitting to historical data is paramount and uncertainty
+in fitted coefficients, especially elasticities of substitution, is not an issue, 
+the CES model is the best.
+
+If you need to represent rebound effects (not just backfire), 
+CES \emph{must} be employed, 
+because the CES function was found by \citet{Saunders:2008aa} to be the only production
+function studied here that is capable of representing rebound in addition to backfire.
+However, the ability of CES to represent rebound effects 
+is tied to the presence of elasticities of substitution ($\sigma$ and $\sigma_1$) in the CES model.
+Unfortunately, we resampling analyses show that estimated values 
+of elasticity of substitution are often highly uncertain.
+Thus, whether the CES function is helpful for estimating rebound in addition to backfire effects
+remains an open question.
+
+The LINEX model is intriguing, because of its thermodynamic roots, 
+but our implementation suffers from 
+poor reproduction of historical data and
+difficulty in respecting parameter constraints.
+If the LINEX function is to be used, we recommend that 
+\citeapos{Kummel:2011aa} fitting approach (logistic curves for $a_0$ and $c_t$) be employed
+and that the results be thoroughly tested and compared against other production functions.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
