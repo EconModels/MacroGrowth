@@ -426,7 +426,7 @@ the possible dire impacts on the world economy
 as argued by the above-mentioned scholars 
 raise the question of
 whether and how to include appropriate energy indicators 
-in economic growth modeling.  
+in macroeconomic growth modeling.  
 Mainstream economic growth theory attributes output~($Y$) to factors of production:
 capital stock~($K$) and labor~($L$). 
 The Cobb-Douglas production function 
@@ -436,7 +436,7 @@ term.
 This production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
-  y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
+  y = \theta A k^\alpha l^\beta \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
 \end{equation}
 %
 \noindent where 
@@ -504,7 +504,7 @@ but \emph{remains isolated} within the sub-discipline.
 To break through this theoretical impasse, 
 Stern proposes a synthesized Constant Elasticity of Substitution (CES) 
 production function 
-where the constraints or abundance of energy 
+where the constraints on or abundance of energy 
 determines whether to include energy explicitly 
 as a factor of production.  
 On the basis of this model, 
@@ -531,7 +531,7 @@ An alternative approach, attempting to be
 and classified by \citet{Stern:2011bq} as an ecological economic model of growth, 
 is the LINEX model, 
 wherein energy is the only factor of production,
-and capital~($k$), labor~($l$), and energy~($q$)
+and capital~($k$), labor~($l$), and energy~($e$)
 combine to provide efficiencies that augment energy.
 Technological change is manifest as increased efficiency:
 more useful work done per joule of exergy \citep{Ayres:2005kn}.
@@ -565,9 +565,13 @@ nested CES production function structure.
 As a result, \citeauthor{Shen:2013vp} propose an atypical CES nesting structure 
 for the Chinese economy. **** More detail here about nesting? --MKH ****  
 \citet{Saunders:2008aa} evaluated several production and cost functions
-(including the Cobb-Douglas, CES, and LINEX functions studied herein)
+(including the Cobb-Douglas, CES, and LINEX functions studied herein, 
+see Section~\ref{sec:Prod_Func_Forms})
 to assess whether they are capable of reproducing 
-rebound and backfire effects.~\citep{Sorrell:2007um}
+rebound and backfire effects.%
+  \footnote{
+  See \citet{Sorrell:2007um} for details about rebound and backfire effects.
+  }
 \citeauthor{Saunders:2008aa} concludes that,
 of the production functions evaluated in the present study,
 only the CES function is a candidate for 
@@ -615,7 +619,8 @@ we reject the cost share theorem and
 we have no \emph{a-priori} expectation that output elasticities 
 estimated from historical output data
 will match cost shares.
-Both the choice of production function structure 
+
+Thus, both the choice of production function structure 
 and the values of the model parameters 
 drive model results, and empirical and statistical testing 
 of such approaches is prudent, but rarely conducted.
@@ -628,35 +633,26 @@ Therefore, we agree with those who express serious concerns
 about the reliability of the results from economic growth models.~\citep{Lecca:2011kr} 
 We understand, however, 
 that macroeconomic policymaking is needed 
-and is increasingly informed by integrated energy-economic models, 
+and is increasingly informed by integrated energy-economy models, 
 in a world where energy constraints are possible.~\citep{Beckman:2011gb, 
 Benes:2012tm, Nel:2010fv, Kummel:2010vz}
-We support the call from \citet{Shen:2013vp} that both
+Unfortunately, there has been little empirical work assessing the predictive ability 
+of various energy-augmented production functions for different types of economies. 
+And, very few studies of the importance of energy in economic growth include 
+rigorous statistical assessments of energy-related fitting parameters. 
+Thus, we support the call from \citet{Shen:2013vp} that both
 the structure of the production function 
 and the parameters that populate it 
 need empirical testing. 
 Building on the argument of \citet{Stern:2011bq} 
 that energy may or may not be required in production functions 
 depending on its abundance or scarcity, 
-we will further test whether different types of countries 
-may need different factors of production to explain their respective growth paths.  
-This further leaves open the possibility for 
+we will test whether different types of countries 
+may need different factors of production to explain their respective growth paths, 
+leaving open the possibility for 
 different explanations of growth in various countries
 at different stages of their development, 
-a central point of long-wave economic growth modeling.~\citep{Froling:2009vo, Jones:2001wn, Galor:2000up} 
-**** The previous sentences sound like we'll show that some groups of countries
-have similar charactersitics. 
-That's what we thought we would find, 
-but our new conclusion is that one must treat each country 
-individually. 
-We should consider revising the previous few sentences. --MKH ****
-
-**** Suggest deleting the next two sentences:
-Furthermore, there has been little empirical work assessing the predictive ability 
-of various energy-augmented production functions for different types of economies. 
-And, very few studies of the importance of energy in economic growth include 
-rigorous statistical assessments of energy-related fitting parameters. 
-End of deleted section --MKH ****
+a central point of long-wave economic growth modeling.~\citep{Froling:2009vo, Jones:2001wn, Galor:2000up}
 
 This paper contributes to the literature on the role of energy in economic growth
 by applying statistically rigorous 
@@ -702,10 +698,10 @@ The following subsections describe each.
 %------------------------------
 
 The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
-can be augmented to include an energy term:
+can be augmented by energy:
 %
 \begin{equation} \label{eq:CDe}
-  y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
+  y = \theta A k^\alpha l^\beta e^\gamma \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
 \end{equation}
 %
 where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
@@ -796,15 +792,15 @@ In contrast to both the Cobb-Douglas model (Equations~\ref{eq:CD} and
 \ref{eq:CDe}) and the CES model (Equations~\ref{eq:CES}--\ref{eq:CESekl}), 
 the LINEX model (Equation~\ref{eq:LINEX}) does not include a generic, 
 time-dependent augmentation term ($A$).
-The LINEX models assumes energy ($e$) is the only factor of production.
 
-The LINEX model does, however, include terms that represent
+The LINEX model assumes energy ($e$) is the only factor of production.
+However, the LINEX model also includes terms that represent
 efficiencies among capital, labor, and energy, in the form of 
 the ratios $\rho_k$ and $\rho_l$ which are defined by%
   \footnote{
   The notation
   for the LINEX model breaks from the conventions used in the Cobb-Douglas and CES
-  models:  $a_0$ and $c_t$ are parameters and $\rho_k$ and $\rho_l$ are not.
+  models:  $a_0$ and $c_t$ are parameters, and $\rho_k$ and $\rho_l$ are not.
   }
 \begin{equation} \label{eq:rho_k}
   \rho_k \equiv \frac{k}{(1/2)(l+e)}
@@ -820,7 +816,7 @@ and represent
 %
 (\ref{eq:rho_k}) capital stock increase relative to the average of labor and energy and 
 (\ref{eq:rho_l}) labor increase relative to energy.
-The effect of energy ($e$) on production is enhanced if either
+The effect of the only factor of production, energy ($e$), on production is enhanced if either
 %
 \begin{itemize}
 \item{capital stock ($k$) has increased more than the average 
@@ -856,7 +852,9 @@ as the only factor of production ($e$) is used more efficiently.
 The parameter $a_0$ represents the overall importance of efficiencies $\rho_k$ and $\rho_l$, 
 and the parameter $c_t$ represents the relative importance 
 of the labor efficiency term ($\rho_l$) compared to the capital stock efficiency term ($\rho_k$). 
-Both $a_0$ and $c_t$ are assumed constant with respect to time. 
+For this study, 
+we assume both $a_0$ and $c_t$ are constant 
+with respect to time. 
 
 
 %++++++++++++++++++++++++++++++
@@ -869,9 +867,9 @@ almost exclusively on developed economies from North America
 and Europe. 
 Examples include \citet{Kummel:1980wx} applying 
 LINEX to describe the West German economy, 
-\citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 countries, 
+\citet{Serrenho:2010vq} applying Cobb-Douglas variants to EU-15 economies, 
 \citet{VanderWerf:2008tc} applying CES nesting variants 
-to the 12 OECD countries, 
+to the 12 OECD economies, 
 \citet{Lecca:2011kr} applying CES nesting variants to the Scottish economy, 
 \citet{Stern:2012ey} applying CES to describe the Swedish economy, 
 and \citet{Warr:2012cg} using LINEX and Cobb-Douglas to describe the Austrian, 
@@ -883,7 +881,7 @@ in the economic development process.
 To gain insights from different countries 
 across different stages of development, 
 we present a comparative analysis among representatives of
-the World Bank's main categories of countries, 
+the World Bank's country categories, 
 namely Developed Countries (DCs), 
 Newly Industrialized Countries (NICs), 
 OPEC countries, and 
@@ -923,7 +921,7 @@ historical data for
 economic output~($Y$), 
 capital stock~($K$), 
 labor~($L$), and 
-thermal energy~($Q$)
+primary thermal energy~($Q_p$)
 are required. 
 Subsections below describe sources for and calculations to obtain historical data. 
 A final subsection presents the historical data in graphical form.
@@ -974,9 +972,6 @@ dry natural gas and natural gas plant liquids, nuclear power generation,
 and renewable energy sources (solar, wind, geothermal, biomass/fuel wood, 
 and hydro). 
 We also added animal muscle work. 
-Following \citet{Ayres:2010ug}, 
-human muscle work is excluded from the energy time series,
-because it is counted as labor.
 Similar to the economic data discussed in 
 Sections~\ref{sec:Economic_Output_Data}--\ref{sec:Labor_Data}, 
 we obtained energy data for developed countries from 1980--2011. 
@@ -1022,12 +1017,15 @@ the \citet{EIA:2013a} for all economies, so
 Equation~\ref{eq:thermal_energy} was unnecessary.
 
 Animal muscle work was estimated using an approach 
-similar to \citet{Ayres:2010ug}, using data from Warr's 
+similar to \citet{Ayres:2010ug}, using data from \citeauthor{Warr:2012a}'s
 REXS database \citep{Warr:2012a} and results from 
-\citet{Wirsenius:2000vi}. 
-Similar to Warr, we excluded human muscle work from the energy term
-on the grounds that labor terms are
-already present in all production functions.
+\citet{Wirsenius:2000vi}.%
+  \footnote{
+  Following \citet{Ayres:2010ug}, 
+  human muscle work is excluded from the energy time series,
+  on the grounds that labor terms are
+  already present in all production functions.
+  }
 For animal work, our analysis was 
 restricted to draught animals (horses and mules). Muscle work 
 from animals ($Q_{animals}$) was calculated using
@@ -1115,6 +1113,7 @@ fitted response by
 %
 and the residuals ($r_i$)
 as the difference between the observed response and the fitted response
+**** Randy edit the following equation to reflect the fact that we're fitting in log space. --MKH ****
 %
 \begin{equation} \label{eq:residual}
   r_i 
@@ -1122,7 +1121,7 @@ as the difference between the observed response and the fitted response
   = y_i - f(t,k,l,e; \hat\theta)
 \end{equation}
 %
-The details for each of the models are discussed in 
+Details for each of the models are discussed in 
 Sections~\ref{sec:CD_Parameter_Estimation}--\ref{sec:LINEX_Parameter_Estimation} below.
 
 
@@ -1160,6 +1159,7 @@ the variability (from many potential sources) inherent in the data such that
 it would be unsurprising if the residual from 
 any particular year had been observed in a different year. 
 Thus, a resampled response $\tilde Y'$ can be computed as 
+**** Randy edit the following equations to reflect the fact that we're fitting in log space? --MKH ****
 %
 \begin{equation}
   \tilde Y_i' = \hat y_i \pm r_j
@@ -1294,7 +1294,7 @@ several algorithm options for parameter estimation.
 The default algorithm (Levenberg-Marquardt) does not respect
 parameter constraints (see Section~\ref{sec:CES}) and, 
 in our testing, nearly always violated them, often returning
-negative values for elasticity of substitution~($\sigma$) parameters.
+negative values for elasticity of substitution parameters $\sigma$ and $\sigma_1$.
 Thus, we used the two fitting algorithms available in \texttt{cesEst} that
 respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
 
@@ -1317,7 +1317,7 @@ is attempted wherein all fitting parameters
 ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
 are allowed to float. 
 The start values for fitting parameters are taken from 
-the grid search fit that provided the lowest $sse$ (Equation~\ref{eq:sse}).
+the grid search point that provided the lowest $sse$ (Equation~\ref{eq:sse}).
 
 If resampled data are being fitted, a prior fit to historical data is available.
 In the final step of our algorithm, 
@@ -1355,8 +1355,8 @@ Figures~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}.
 The white crosshair on each graph shows the location 
 of the fit to historical data. 
 In Figures~\ref{fig:CES_sigma1_delta1_graph} and~\ref{fig:CES_sigma_delta_graph},
-the bottom of the vertical axis represents $\sigma = 0$ (perfect complements).
-The top of the vertical axis represents $\sigma = \infty$ (perfect substitutes).
+the bottom of the vertical axes represents $\sigma = 0$ (perfect complements).
+The top of the vertical axes represents $\sigma = \infty$ (perfect substitutes).
 
 Note that as $\delta$ or $\delta_1$ approaches 0 (1) 
 in Equations~\ref{eq:CES}--\ref{eq:CESekl},
@@ -1471,10 +1471,10 @@ Therefore, we transformed the LINEX model into
 We used the \texttt{lm} function in \texttt{R}
 \citep{R} to estimate least-squares values for $a_0$ and $a_1$ in 
 Equation~\ref{eq:LINEX_transformed} in log-transformed space. 
-We recovered a value for $c_t$ with $c_t = a_1 / a_0$. 
+We recovered the value of $c_t$ with $c_t = a_1 / a_0$. 
 Figure~\ref{fig:LINEXq_Resample_Graph}
 shows the coefficients estimated from resampled data.
-We fit $a_0$ and $c_t$ unconstrained.
+We fit $a_0$ and $c_t$ as unconstrained constants.
 
 Figure~\ref{fig:LINEX_Spaghetti_Graph} compares LINEX model predictions to historical data.
 Again, historical data are shown as a black line, 
