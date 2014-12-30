@@ -241,12 +241,12 @@ oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = pp_pa
 % #2 sigma_1 for (kl)e nest
 % #3 sigma_1 for (ek)l nest
 % #4 sigma_1 for (le)k nest
-\newcommand{\firstrow}[4]{\multirow{2}{*}{$\sigma_1$} & ($\underline{kl}$) & #1 
+\newcommand{\firstrow}[4]{\multirow{2}{*}{$\sigma_1$} & ($\underline{k}$+$\underline{l}$)+() & #1 
                                   &  & 
                                         & &  \\
-                            & ($\underline{kl}$)$e$ & #2
-                                  & ($\underline{ek}$)$l$ & #3
-                                        & ($\underline{le}$)$k$ & #4 \\
+                            & ($\underline{k}$+$\underline{l}$)+($e$) & #2
+                                  & ($\underline{e}$+$\underline{k}$)+($l$) & #3
+                                        & ($\underline{l}$+$\underline{e}$)+($k$) & #4 \\
 }
 
 % The \secondrow macro creates the sigma row.  The following arguments apply:
@@ -257,14 +257,14 @@ oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = pp_pa
 % #5 sigma for (ek)l nest
 % #6 sigma for (ek)l nest
 \newcommand{\secondrow}[6]{      \multirow{3}{*}{$\sigma$} & &
-                                      & ($\underline{k}l$)$\underline{e}$ & #1
-                                            & ($k\underline{l}$)$\underline{e}$ & #2 \\
-                                & ($\underline{l}e$)$\underline{k}$ & #3
-                                      & ($l\underline{e}$)$\underline{k}$ & #4
+                                      & ($\underline{k}$+$l$)+($\underline{e}$) & #1
+                                            & ($k$+$\underline{l}$)+($\underline{e}$) & #2 \\
+                                & ($\underline{l}$+$e$)+($\underline{k}$) & #3
+                                      & ($l$+$\underline{e}$)+($\underline{k}$) & #4
                                             &  & \\
-                                & ($e\underline{k}$)$\underline{l}$ & #5
+                                & ($e$+$\underline{k}$)+($\underline{l}$) & #5
                                       & &
-                                            & ($\underline{e}k$)$\underline{l}$ & #6 \\
+                                            & ($\underline{e}$+$k$)+($\underline{l}$) & #6 \\
 }
 
 % The \thirdrow macro creates the summary row at the bottom.  The following arguments apply:
@@ -1197,6 +1197,25 @@ yet be difficult to estimate some or all of the model parameters precisely.
 The resampling method employed herein reflects all three of these potential 
 sources of uncertainty in parameter estimates.
 
+We choose the resampling approach instead of the more-common technique 
+of estimating confidence intervals from standard errors for two reasons. 
+First, model parameters are highly constrained, and confidence intervals often violate the constraints. 
+For example a result of $\alpha = 0.25 \pm 0.3$ is nonsensical, 
+because $ \alpha \in [0, 1]$. 
+Second, true confidence intervals for constrained parameters are often asymmetric
+(e.g., $\alpha = 0.2 + 0.1, -0.05$), 
+but the standard error approach yields symmetric confidence intervals. 
+The resampling approach that we employed both respects constraints 
+and allows for asymmetric confidence intervals.%
+  \footnote{
+  In addition, we choose to present parameter uncertainty results visually 
+  (see Figures~\ref{fig:CD_lambda_theta_graph}, \ref{fig:CD_Ternary_Scatter_Graph},
+  \ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}, and
+  \ref{fig:LINEXq_Resample_Graph}),
+  both because the resampling technique lends itself to visual presentation and 
+  because we believe visual comparison is more effective than tables of numbers.
+  }
+
 
 %++++++++++++++++++++++++++++++
 \subsection{Cobb-Douglas Models}
@@ -1497,6 +1516,14 @@ spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghett
 @
 \onecolumn{}
 
+<<abg_trajectories, eval=FALSE>>=
+# This code can be run to test the conclusion about the LINEX model meeting constraints.
+# This chunk of R code has eval=FALSE, because it is not a part of the paper.
+Calvin_Models <- loadPostProcessedData(Source = "Calvin", kind = "models", dir=pp_path)
+abgplotdata <- fortify(Calvin_Models$Calvin$IR$linex$`iK+iL+iQp`)
+triPlot(data=abgplotdata, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear")
+@
+
 The LINEX model coefficients $a_0$ and $c_t$ imply time-varying
 values of $\alpha$, $\beta$, and $\gamma$ as shown by \citet[Equations~7]{Warr:2012cg}.
 Thus, each fitted model implies a trajectory of $\alpha$, $\beta$, and $\gamma$ values as time proceeds.
@@ -1519,11 +1546,24 @@ we chose to report unconstrained LINEX model fits in this paper.
 \label{sec:Discussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+**** Other notes from our Word document that didn't fit anywhere above. ****
+
+Lastly, what do aggregate models say? 
+
+What direction can take from this work? 
+
+What is the status of ME growth modeling after this?
+
+**** End other notes ****
+
 We find it beneficial to discuss the results through a series of questions, 
 answers to which are illuminated by the techniques and data presented
 in Section~\ref{sec:Parameter_Estimation} above.
 
-**** We need to think about the order of the subsections below. --MKH ****
+**** Martin: Do you think it would be helpful to tie the conclusions 
+of each section to the literature? 
+If so, give it a shot. --MKH ****
 
 
 %++++++++++++++++++++++++++++++
@@ -1538,7 +1578,7 @@ augmentation by energy improves goodness of fit when $\gamma > 0$.%
   ``Is it important to include energy in production functions?'' 
   because LINEX presupposes that energy is the only factor of production.
   }
-First, we look at the results of the Cobb-Douglas functions 
+First, we evaluate the results of the Cobb-Douglas functions 
 in Figures~\ref{fig:CD_lambda_theta_graph} and~\ref{fig:CD_Ternary_Scatter_Graph}. 
 Visually, $\gamma > 0$ is shown in the right column 
 of Figure~\ref{fig:CD_Ternary_Scatter_Graph} 
@@ -1566,7 +1606,7 @@ The results for the CES analysis (Figure~\ref{fig:CES_ternary_graph})
 indicate that including energy is clearly helpful 
 in explaining economic growth in Saudi Arabia, 
 because all resample data points are consistently far above the base of the ternary plots 
-($\gamma \gg 0$) for all possible ways of nesting of energy with capital and labor. 
+($\gamma \gg 0$) for all possible ways of nesting energy with capital and labor. 
 Two out of the three possible nestings suggest the importance of including energy for Japan and Tanzania.
 For Iran, the crosshairs indicate that energy may explain some growth, 
 but this is highly uncertain as the resample data points have a very large vertical spread.  
@@ -1596,12 +1636,13 @@ helpful for understanding the role of energy in economic growth?}
 
 Some developed economies (United States) benefit little from including energy as a factor of production, 
 while some others (United Kingdom) benefit in a minor way. 
-For other developed economies (Japan), the results of CD and CES models point in opposite directions.  
-For NICs, the results are mixed; 
+For other developed economies (Japan), 
+the results of Cobb-Douglas and CES models point in opposite directions.  
+For NICs, the results are mixed:
 China does not convincingly benefit from energy-augmented production functions, 
 and results are uncertain for South Africa due to lack of precision in determining $\gamma$.  
-In one OPEC country, Saudi Arabia, adding energy clearly helps to explain economic growth, 
-while in another, Iran, the benefit of energy augmentation is small and uncertain. 
+In one OPEC country (Saudi Arabia) adding energy clearly helps to explain economic growth, 
+while in another (Iran), the benefit of energy augmentation is small and uncertain. 
 For LDCs there is a either a strong indication that energy-augmented production functions 
 are beneficial as an explanation for growth (Tanzania) or strong indication otherwise (Zambia).  
 
@@ -1643,18 +1684,20 @@ The purpose of this paper, however, is to assess common production functions \em
 so we include $\lambda$ terms in all fitted production functions. 
 The present approach allows us to answer the question of whether augmentation by 
 primary energy in the production function reduces the \emph{value of} the Solow residual,
-as opposed to eliminating the \emph{need for} the Solow residual altogether (Ayres and Warr's question).
-After augmenting by energy, the Solow-residual ($\lambda$) 
+as opposed to eliminating the \emph{need for} the Solow residual altogether 
+(\citeauthor{Ayres:2010ug}'s question).
+After augmenting by energy, the Solow-residual~($\lambda$) 
 in the Cobb-Douglas~(Figure~\ref{fig:CD_lambda_theta_graph}) 
-and CES models~(\ref{fig:CES_lambda_gamma_graph}) 
-still explains a part of economic growth in several economies, 
-especially China, but also in the United Kingdom, Japan, and Tanzania,  
-and to a lesser extent in the United States and Iran. 
-In South Africa and Zambia, the Solow-residual is zero, while in Saudi Arabia it is negative.%
+and CES models~(Figure~\ref{fig:CES_lambda_gamma_graph}) 
+still explains a part of economic growth for several economies, 
+especially China, but also for the United Kingdom, Japan, and Tanzania,  
+and to a lesser extent for the United States and Iran. 
+In South Africa and Zambia, the Solow-residual is zero, while for Saudi Arabia it is negative.%
   \footnote{
   The negative Solow residual ($\lambda$) for Saudi Arabia is a consequence
-  of the fact that all indexed factors of production ($k$, $l$, and $e$) are greater than 
-  economic output ($y$) for most of the period under study (1991--2011).
+  of the fact that all indexed factors of production~($k$, $l$, and $e$) are greater than 
+  economic output~($y$) for most of the period under study (1991--2011).
+  See Figure~\ref{fig:Historical_Graph}.
   }
 For the Chinese economy, energy augmentation significantly reduces 
 the uncertainty of the value of the Solow residual~(Figure~\ref{fig:CES_lambda_gamma_graph}). 
@@ -1669,12 +1712,90 @@ are warranted.
 
 
 %++++++++++++++++++++++++++++++
+\subsection{Implications of parameter uncertainty} 
+\label{sec:implications}
+%++++++++++++++++++++++++++++++
+
+In addition to the usual parameter estimation process 
+by linear coefficient determination (Cobb-Douglas and LINEX) 
+and non-linear optimization algorithms (CES), 
+the resampling analysis performed herein 
+provides insight into the questions of 
+(a)~how accurately parameters are known and 
+(b)~the implications of parameter imprecision. 
+
+A significant result to emerge from this work is that large parameter uncertainty 
+does not necessarily lead to poor model fit to historical economic output. 
+To choose one example of many, 
+the value of $\gamma$ for the Cobb-Douglas model for Tanzania (0.59) 
+shows a resampling range of 0.2--0.9. 
+(See Figure~\ref{fig:CD_Ternary_Scatter_Graph}.) 
+Yet, Cobb-Douglas models for Tanzania, with and without energy, both 
+(a)~fit historical data very well 
+(white line compared to black line in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}) 
+and 
+(b)~exhibit a very narrow range of resampled fits 
+(thin gray band in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}). 
+This means that a good fit to historical data does not indicate 
+that model parameters have small uncertainty. 
+In fact, similar to Tanzania, 
+many economies exhibit both large uncertainty in model parameters and
+very good fit to historical data. 
+(See Figures~\ref{fig:CD_lambda_theta_graph} and~\ref{fig:CD_Ternary_Scatter_Graph} 
+compared to Figure~\ref{fig:CD_GDP_Spaghetti_Graph}
+for the Cobb-Douglas models and 
+Figure~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}
+compared to Figure~\ref{fig:CES_Spaghetti_Graph} for CES models.) 
+This result is consistent across almost all economies and models. 
+Thus, we conclude that great care must be taken when interpreting estimated parameters: 
+it is very easy to claim more certainty than is warranted. 
+Where large uncertainty is observed, 
+additional work is needed to contextualize the results, 
+for example, 
+sector-based analysis or ****. **** Martin, add more here? ****
+
+**** Not sure whether contextualization will work. 
+Could be read that macroeconomic growth modeling in such cases is not really useful at all? 
+--MdW ****
+
+The implications of parameter uncertainties should be obvious, 
+but we will state them here. 
+Policy based upon parameters with high uncertainty can lead to bad, or completely wrong, policy. 
+**** Martin: can you find an example in our results that drives this point home? --MKH  
+May be barking up wrong production factor, may assume subs when complementarity: ****
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Is $R^2$ a good criterion for choosing a model?} 
+\label{sec:is_r2_good}
+%++++++++++++++++++++++++++++++
+
+We caution against using $R^2$ as the only criterion for choosing a model, 
+because, in our experience, 
+both Cobb-Douglas and CES models yield high $R^2$ values for all countries 
+(see Figures~\ref{fig:CD_GDP_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}), yet
+very different uncertainties for fitted parameters.
+In some cases, LINEX models fare poorly regarding $R^2$ and might be excluded on that basis. 
+(See South Africa and Tanzania in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
+In our opinion, 
+it is equally, if not more, important to know the uncertainty 
+of estimated parameters than to assess $R^2$.
+With rigorous uncertainty testing as we have done here, 
+the quality of parameter estimates is exposed: 
+at a glance, the tightness of resampled results indicates 
+whether or not confidence in the parameters or model is warranted. 
+We conclude that it is insufficient to argue 
+in favor of a particular production function 
+on the grounds of $R^2$ alone.
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Does the CES model structure (nesting) matter?} 
 \label{sec:nest_matter}
 %++++++++++++++++++++++++++++++
 
-The choice of CES nesting structure has significant influence 
-on model results for both 
+The subsections below assess whether the choice of CES nesting structure 
+influences model results for both 
 relative importance of factors of production ($\delta$ and $\delta_1$ values) and 
 substitutability among factors of production ($\sigma$ and $\sigma_1$ values). 
 
@@ -1686,7 +1807,7 @@ substitutability among factors of production ($\sigma$ and $\sigma_1$ values).
 
 For most economies (United Kingdom, Japan, China, South Africa, Saudi Arabia, Iran, and Tanzania), 
 Figure~\ref{fig:CES_ternary_graph} shows that the relative importance of 
-production factors capital~($k$), labour~($l$), and energy~($e$) 
+production factors capital~($k$), labor~($l$), and energy~($e$) 
 is different for the three different CES nestings (Equations~\ref{eq:CESkle}--\ref{eq:CESekl}). 
 In other words, you cannot view two of the ternary plots 
 in the rightmost three columns of Figure~\ref{fig:CES_ternary_graph} and predict the third. 
@@ -1696,9 +1817,11 @@ Certain combinations of economy, parameter values, and CES nesting structure
 come with very large resampling spreads, 
 indicating large fitted parameter uncertainties. 
 For example, 
-for Iran's ($kl$)$e$ nesting in Figures~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph} 
+for Iran's ($k$+$l$)+($e$) nesting in Figures~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph}, 
 there is virtually no useful information 
 in $\delta$, $\delta_1$, $\alpha$, $\beta$, and $\gamma$. 
+
+Thus, we find that nesting has significant influence on model results.
 
 
 %------------------------------
@@ -1712,13 +1835,13 @@ because a version of each elasticity of substitution appears three or four times
 among the various nests. 
 For example, an elasticity of substitution between capital~($k$) and labor~($l$) 
 appears in the following nests: 
-($\underline{kl}$), 
-($\underline{kl}$)$e$, 
-($\underline{l}e$)$\underline{k}$, and 
-($e\underline{k}$)$\underline{l}$. 
+($\underline{k}$+$\underline{l}$), 
+($\underline{k}$+$\underline{l}$)+($e$), 
+($\underline{l}$+$e$)+$\underline{k}$, and 
+($e$+$\underline{k}$)+$\underline{l}$. 
 Tables~\ref{tab:sigma_US}--\ref{tab:sigma_ZM} 
 provide interpretation of Figures~\ref{fig:CES_sigma1_delta1_graph}
-and~\ref{fig:CES_sigma1_delta1_graph}. 
+and~\ref{fig:CES_sigma_delta_graph}. 
 In the tables,
 C (c) indicates strong (weak) complementarity, 
 S (s) indicates strong (weak) substitutability, and
@@ -1834,23 +1957,21 @@ For many estimates of elasticity of substitution~($\sigma$ and $\sigma_1$),
 the resampling technique indicates high uncertainty~($\sim\sim\sim$). 
 Where results are not uncertain, 
 we find complementarity~(C and c) among factors of production 
-for most economies with the exception of China 
-where an indication of substitutability between labor and energy is observed~(S and s).
+for most economies with the exception of China, 
+where an indication of substitutability between labor and energy is observed.
 
 That so many estimates of elasticity of substitution exhibit large uncertainty, 
 often spanning the range from perfect complements ($\sigma, \, \sigma_1 = 0$) 
 to perfect substitutes ($\sigma, \, \sigma_1 = \infty$), 
 is a troubling characteristic of the estimated CES coefficients 
-that is rarely reported in the literature.
-For some economies (Iran and Zambia), 
+that is rarely investigated in the literature.
+Indeed, for some economies (Iran and Zambia), 
 estimating any elasticity of substitution at all is problematic and fraught with peril. 
 Note that this result is unlikely to be caused by poor-quality data alone. 
 Presumably the best data in the world 
 (United States, United Kingdom, and Japan) exhibits large uncertainty. 
-(See United States and United Kingdom rows in Figures~\ref{fig:CD_Ternary_Scatter_Graph}  
-and~\ref{fig:CES_sigma1_delta1_graph}--\ref{fig:CES_ternary_graph}.)
 
-Some of the uncertainty is explained by the structure of the CES model. 
+Some of the uncertainty is explained by the structure of the CES model itself. 
 If $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
 the corresponding elasticity of substitution ($\sigma$ and $\sigma_1$) becomes meaningless. 
 (See Equations~\ref{eq:CES}--\ref{eq:CESekl}.) 
@@ -1872,6 +1993,8 @@ Considering that there are six fitted parameters in the CES model
 ten years of historical data leaves precious few 
 (only 4) degrees of freedom for the fitting process. 
 
+\vspace{5 mm}
+
 Based on the results and discussions above 
 regarding the relative importance of and 
 the elasticity of substitution among factors of production, 
@@ -1883,109 +2006,9 @@ Our results support \citeapos{Lecca:2011kr} conclusion
 for the need to econometrically specify production function relationships and 
 to perform sensitivity analysis on nesting choices in economies 
 to enhance the reliability of results. 
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Implications of parameter uncertainty} 
-\label{sec:implications}
-%++++++++++++++++++++++++++++++
-
-In addition to the usual parameter estimation process 
-by linear coefficient determination (Cobb-Douglas and LinEx) 
-and non-linear optimization algorithms (CES), 
-the resampling analysis performed herein 
-provides insight into the questions of 
-(a)~how accurately parameters are known and 
-(b)~the implications of parameter imprecision. 
-
-**** Move this paragraph elsewhere? --MKH ****
-We chose the resampling approach instead of the more-common technique 
-of estimating confidence intervals from standard errors for two reasons. 
-(1)~Model parameters are highly constrained, and confidence intervals often violate the constraints. 
-For example a result of $\alpha = 0.25 \pm 0.3$ is nonsensical, 
-because $ \alpha \in [0, 1]$. 
-(2)~True confidence intervals for constrained parameters are often asymmetric
-(e.g., $\alpha = 0.2 + 0.1, -0.05$), 
-but the standard error approach yields symmetric confidence intervals. 
-The resampling approach that we employed both respects constraints 
-and allows for asymmetric confidence intervals.%
-  \footnote{
-  We have chosen to present parameter uncertainty results visually, 
-  both because the resampling technique lends itself to visual presentation and 
-  because we believe visual comparison is more effective than tablefuls of numbers.
-  }
-
-A significant result to emerge from this work is that large parameter uncertainty 
-does not necessarily lead to poor model fit to historical economic output. 
-To choose one example of many, 
-the value of $\gamma$ for the Cobb-Douglas model for Tanzania (0.59) 
-shows a resampling range of 0.2--0.9. 
-(See Figure~\ref{fig:CD_Ternary_Scatter_Graph}.) 
-Yet, Cobb-Douglas models for Tanzania, with and without energy, both 
-(a)~fit historical data very well 
-(white line compared to black line in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}) 
-and 
-(b)~exhibit a very narrow range of resampled fits 
-(thin gray band in Tanzania row of Figure~\ref{fig:CD_GDP_Spaghetti_Graph}). 
-This means that a good fit to historical data does not indicate 
-that model parameters have small uncertainty. 
-In fact, similar to Tanzania, 
-many economies exhibit both large uncertainty in model parameters and
-very good fit to historical data. 
-(See Figures~\ref{fig:CD_lambda_theta_graph} ~\ref{fig:CD_Ternary_Scatter_Graph} 
-compared to Figure~\ref{fig:CD_GDP_Spaghetti_Graph}
-for the Cobb-Douglas models and 
-Figure~\ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_sigma_delta_graph}
-compared to Figure~\ref{fig:CES_Spaghetti_Graph} for CES models.) 
-This result is consistent across almost all economies and models. 
-Thus, we conclude that great care must be taken when interpreting estimated parameters: 
-it is very easy to claim more certainty than is warranted. 
-Where large uncertainty is observed, 
-additional work is needed to contextualize the results, 
-for example, 
-sector-based analysis or ****. **** Martin, add more here? ****
-
-**** Not sure whether contextualization will work. 
-Could be read that macroeconomic growth modeling in such cases is not really useful at all? 
---MdW ****
-
-The implications of parameter uncertainties should be obvious, 
-but we will state them here. 
-Basing policy upon parameters with high uncertainty can lead to bad, or completely wrong, policy. 
-**** Martin: can you find an example in our results that drives this point home? --MKH  
-May be barking up wrong production factor, may assume subs when complementarity: ****
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Is $R^2$ a good criterion for choosing a model?} 
-\label{sec:is_r2_good}
-%++++++++++++++++++++++++++++++
-
-We caution against using $R^2$ as the only criterion for choosing a model, 
-because, in our experience, 
-both Cobb-Douglas and CES models yield high $R^2$ values for all countries 
-(see Figures~\ref{fig:CD_GDP_Spaghetti_Graph} and~\ref{fig:CES_Spaghetti_Graph}), yet
-very different uncertainties for fitted parameters.
-In some cases, LINEX models fare poorly regarding $R^2$ and might be excluded on that basis. 
-(See SA and TZ in Figure~\ref{fig:LINEX_Spaghetti_Graph}.) 
-In our opinion, 
-it is equally, if not more, important to know the uncertainty 
-of estimated parameters than to assess $R^2$.
-With rigorous uncertainty testing as we have done here, 
-the quality of parameter estimates is exposed: 
-at a glance, the tightness of resampled results indicates 
-whether or not confidence in the model and data is warranted. 
-We conclude that it is insufficient to argue 
-in favor of a particular production function 
-on the grounds $R^2$.
-
-**** Other notes from our Word document that didn't fit anywhere above. ****
-
-Lastly, what do aggregate models say? 
-
-What direction can take from this work? 
-
-What is the status of ME growth modeling after this?
+**** Would econometrically specifying production function relationships and
+performing sensitivity analysis really ``enhance the reliability'' of results? 
+Or, would doing so improve transparency? --MKH ****
 
 
 %++++++++++++++++++++++++++++++
@@ -1995,13 +2018,14 @@ What is the status of ME growth modeling after this?
 
 Several criteria could be applied 
 to the question of which production function is best
-for describing the role of energy in economic growth:
+for describing the role of energy in economic growth. 
+We consider four criteria here:
 best match to historical data, 
 minimum ambiguity in model structure,
 minimum uncertainty in model parameters, and
-easy parameter estimation process.
+robust parameter estimation process.
 In the sections below, we evaluate the Cobb-Douglas, CES, and LINEX
-models using these criteria.
+models on these criteria.
 
 
 %------------------------------
@@ -2016,12 +2040,14 @@ Cobb-Douglas is a close second, but
 LINEX struggles, especially with the Saudi Arabian and Tanzanian economies.%
   \footnote{
   The order of these results is unsurprising: 
-  CES contains 6 fitted parameters; Cobb-Douglas, 4; and LINEX, 3.
+  energy-augmented CES contains 6 fitted parameters; 
+  Cobb-Douglas, 4; 
+  and LINEX, 3.
   We expect models with more parameters to provide a better fit to historical data.
   }$^,$%
   \footnote{
-  We also note that in contrast to our approach, shared by \citet{Warr:2012cg},
-  of fitting constant $a_0$ and $c_t$ values, 
+  We also note that in contrast to our approach of fitting constant $a_0$ and $c_t$ values, 
+  which is shared by \citet{Warr:2012cg},
   \citet{Kummel:2011aa} used logistic functions to generate time-varying
   $a_0$ and $c_t$ values.
   \citeauthor{Kummel:2011aa}'s approach will necessarily produce a better match to historical data,
@@ -2042,20 +2068,24 @@ that, in turn, have significant implications for macroeconomic policy
 and human well-being.
 Thus, it is desirable that such interpretations have little ambiguity.
 
-The energy-augmented CES production function presents ambiguity to the energy analyst
+The energy-augmented CES production function presents 
+significant ambiguity to the energy analyst
 in the form of the choice of factor nesting.
-We showed above that nesting can significantly affect 
-the interpretation of macroecnomic dynamics, especially 
-the relative importance of factors of production~(\ref{fig:CES_ternary_graph}) and 
+We showed above that choice of nesting 
+can significantly affect 
+the interpretation of macroecnomic dynamics, 
+especially the relative importance of 
+factors of production (see Section~\ref{sec:importance_of_factors}
+and Figure~\ref{fig:CES_ternary_graph}) and 
 the understanding of substitutibility 
-among factors of production. (See Section~\ref{sec:elasticity_of_substitution}).
+among factors of production (see Section~\ref{sec:elasticity_of_substitution}).
 Thus, the CES production function has the undesireable characteristic 
 that model structure (i.e., nesting) affects both parameter values 
 and macroeconomic interpretation.
 Neither the Cobb-Douglas nor the LINEX production function 
-exhibits similar structural ambiguity.
+presents similar structural ambiguity.
 
-Thus, Cobb-Douglas or LINEX are preferred on this criterion.
+Thus, Cobb-Douglas and LINEX are preferred on this criterion.
 
 
 %------------------------------
@@ -2070,7 +2100,7 @@ Figures~\ref{fig:CD_lambda_theta_graph}, \ref{fig:CD_Ternary_Scatter_Graph},
 \ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}, and
 \ref{fig:LINEXq_Resample_Graph} show that 
 Cobb-Douglas and LINEX have, by and large, 
-smaller uncertainties in fitted parameters than the CES production function.
+smaller uncertainties in fitted parameters than CES.
 Thus, Cobb-Douglas and LINEX are preferred on this criterion.
 
 
@@ -2082,7 +2112,7 @@ Thus, Cobb-Douglas and LINEX are preferred on this criterion.
 It is desirable that the combination of production function and parameter estimation process
 has the following characteristics:
 affords easy mathematical and numerical implementation, 
-provides an easy way to respect fitted parameter constraints, and
+provides an easy way to respect constraints on fitted parameters, and
 allows asymmetric estimates of fitted parameter uncertainty.
 
 
@@ -2097,7 +2127,7 @@ allows simple linear estimation of model parameters.
 In contrast, it is impossible to fit the CES model linearly,
 so parameters must be estimated by a more-complicated and time-consuming optimization process.
 (See Section~\ref{sec:CES_Parameter_Estimation}.)
-On the 40-node \texttt{dahl} supercomputer at Calvin College~\citep{Adams:2008aa},
+On the \texttt{dahl} supercomputer at Calvin College~\citep{Adams:2008aa},
 complete analysis of all data shown in this paper
 (including 1000 resamples for every model, every economy, and every CES nesting)
 takes about 15 hours.
@@ -2121,16 +2151,16 @@ for the Cobb-Douglas production function. (See Section~\ref{sec:CD_Parameter_Est
 For the CES prodcution function, 
 the capability to respect parameter constraints is a feature of the 
 \texttt{cesEst} function~\citep{Henningsen:2011td} and is, therefore,
-relatively easy to implement.
+also relatively easy to implement.
 In contrast, because output elasticities $\alpha$, $\beta$, and $\gamma$ 
 are not directly available as parameters in the LINEX model
 (see Equations~\ref{eq:LINEX} and~\ref{eq:LINEX_transformed}),
 it is very difficult to enforce constraints during the fitting process.%
   \footnote{
-  See \citet{Kummel:2011aa} for one approach to respecting parameter constraints 
+  See \citet{Kummel:2011aa} for an approach to respecting parameter constraints 
   for the LINEX function. 
   }
-Indeed, we found in Section~\ref{sec:LINEX_Parameter_Estimation}
+Indeed, we found (Section~\ref{sec:LINEX_Parameter_Estimation})
 that the LINEX model regularly violates parameter constraints.
 
 Thus, Cobb-Douglas and CES are preferred on this criterion.
@@ -2149,7 +2179,7 @@ allows estimation of asymmetric parameter uncertainties.
 In the present work, we found that the resampling techniques described 
 in Section~\ref{sec:Resampling} afford estimates 
 of asymmetric parameter uncertainties. 
-Thus, none of the prodcution functions are preferred over the others on this criterion.
+Thus, none of the prodcution functions are preferred over any other on this criterion.
 
 
 %++++++++++++++++++++++++++++++
@@ -2170,18 +2200,18 @@ If precise fitting to historical data is paramount and uncertainty
 in fitted coefficients, especially elasticities of substitution, is not an issue, 
 the CES model is the best.
 
-If you need to represent rebound effects (not just backfire), 
+If one needs to represent rebound effects (not just backfire), 
 CES \emph{must} be employed, 
 because the CES function was found by \citet{Saunders:2008aa} to be the only production
 function studied here that is capable of representing rebound in addition to backfire.
 However, the ability of CES to represent rebound effects 
 is tied to the presence of elasticities of substitution ($\sigma$ and $\sigma_1$) in the CES model.
-Unfortunately, we resampling analyses show that estimated values 
+Unfortunately, the resampling analyses show that estimated values 
 of elasticity of substitution are often highly uncertain.
 Thus, whether the CES function is helpful for estimating rebound in addition to backfire effects
 remains an open question.
 
-The LINEX model is intriguing, because of its thermodynamic roots, 
+The LINEX model is intriguing because of its thermodynamic roots, 
 but our implementation suffers from 
 poor reproduction of historical data and
 difficulty in respecting parameter constraints.
