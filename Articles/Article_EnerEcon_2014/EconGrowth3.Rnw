@@ -1712,7 +1712,7 @@ are warranted.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Implications of parameter uncertainty} 
+\subsection{What are the implications of parameter uncertainty?}
 \label{sec:implications}
 %++++++++++++++++++++++++++++++
 
