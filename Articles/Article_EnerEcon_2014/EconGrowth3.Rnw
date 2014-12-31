@@ -132,7 +132,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1518,9 +1518,9 @@ spaghettiPlot(data=linexFittedData, facet_formula=Country~energy, level=spaghett
 
 <<abg_trajectories, eval=FALSE>>=
 # This code can be run to test the conclusion about the LINEX model meeting constraints.
+# Need to put oModels in the environment much earlier in this file.
 # This chunk of R code has eval=FALSE, because it is not a part of the paper.
-Calvin_Models <- loadPostProcessedData(Source = "Calvin", kind = "models", dir=pp_path)
-abgplotdata <- fortify(Calvin_Models$Calvin$IR$linex$`iK+iL+iQp`)
+abgplotdata <- fortify(oModels$Calvin$IR$linex$`iK+iL+iQp`)
 triPlot(data=abgplotdata, grid_lines=5, x=alpha, y=beta, z=gamma, geom=geom_line, aes_string="colour = iYear")
 @
 
