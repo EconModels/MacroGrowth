@@ -153,32 +153,7 @@ opts_chunk$set(
 @
 
 <<constants, include=FALSE, eval=TRUE>>=
-# Graph Heights
-maxHeight <- 8.5 # Inches
-ninePanelScatterGraphHeight <- maxHeight # Inches
-
-# Graph Widths
-maxWidth <- 6.5 # Inches
-fourPanelScatterGraphWidth <- maxWidth # Inches
-
-presentationGraph1RowHeight <- 2.8 # Inches
-presentationGraph2ColWidth <- 2 # Inches
-presentationGraph1ColWidth <- 2*presentationGraph2ColWidth
-h_param_graph <- 2.07 # Inches for a single panel
-h_param_axis <- 0.86 # Inches (also includes whatever margin is applied)
-# sfParameterGraphHeight <- h_param_graph + h_param_axis
-cdParameterGraphHeight <- 2*h_param_graph + h_param_axis
-cesParameterGraphHeight <- 3*h_param_graph + h_param_axis
-linexParameterGraphHeight <- h_param_graph + h_param_axis
-sfParameterGraphWidth <- maxWidth
-cdParameterGraphWidth <- maxWidth
-cesParameterGraphWidth <- maxWidth
-linexParameterGraphWidth <- maxWidth
-# Other graph parameters that apply to all graphs
-scaleTextSize <- 0.8  # Multiple of normal size
-scaleTickSize <- -0.5 # 50% of normal size and pointing INWARD!
-
-spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass 95% of the data.
+spaghettiGraphLevel <- 1.0 # Spaghetti graph bands will encompass a certain percentage of the data.
 @
 
 <<data>>=
@@ -1395,7 +1370,7 @@ tend to cluster at the locations of the initial grid search in
 $\sigma$ or $\sigma_1$
 (0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100).
 
-<<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
+<<CES_lambda_gamma_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="$\\lambda$ and $\\gamma$ values for CES resample models.">>=
 cesCoeffsData <- filter(coeffs_df, model=="ces", nestStrParen %in% c("(iK + iL) + ()", 
                                                                      "(iK + iL) + (iQp)", 
                                                                      "(iL + iQp) + (iK)", 
@@ -1406,7 +1381,7 @@ standardScatterPlot(data=cesCoeffsData, mapping=aes(gamma_coef, lambda), facet_f
     labs(x=expression(gamma), y=expression(lambda))
 @
 
-<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=fourPanelScatterGraphWidth, fig.height=ninePanelScatterGraphHeight, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
+<<CES_sigma1_delta1_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=8.5, fig.cap="$\\sigma_1$ and $\\delta_1$ values for CES resample models.">>=
 standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
