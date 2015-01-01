@@ -927,14 +927,6 @@ for Cobb-Douglas (without and with energy) resample models.
 Each reample is shown as a gray dot on the graph. 
 The fit to historical data is shown as a gray crosshairs.
 
-Figures~\ref{fig:CD_GDP_Spaghetti_Graphs_US}--\ref{fig:CD_GDP_Spaghetti_Graphs_CN} 
-compare predictions 
-from the Cobb-Douglas models 
-(without and with energy) to historical data.
-Historical data are shown as a black line. 
-The fit to historical data is shown as a white line.
-The gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
-
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=5.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
 cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
 standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda, color=Source), 
@@ -1045,6 +1037,14 @@ ggplot(data=fdlambda, aes(x=Year, y=solowFrac, color=Source)) +
   scale_y_continuous(limits=c(-0.5, 2)) +
   xy_theme()
 @
+
+Figures~\ref{fig:CD_GDP_Spaghetti_Graphs_US}--\ref{fig:CD_GDP_Spaghetti_Graphs_CN} 
+compare predictions 
+from the Cobb-Douglas models 
+(without and with energy) to historical data.
+Historical data are shown as a black line. 
+The fit to historical data is shown as a white line.
+The gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
 <<CD_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="US Cobb-Douglas fitted models.">>=
 cdFittedDataUS <- subset(AllFitted, subset = model=="cd" & Country=="US")
