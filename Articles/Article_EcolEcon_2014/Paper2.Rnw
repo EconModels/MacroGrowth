@@ -502,7 +502,7 @@ given by Equation~\ref{eq:lambda}.
 \label{sec:fraction_of_growth_solow}
 %..............................
 
-The fraction of GDP growth explained by the Solow residual~($f$)
+The fraction~($f$) of GDP growth explained by the Solow residual
 can be given as
 %
 \begin{equation} \label{eq:frac_growth_explained_by_solow}
@@ -523,7 +523,7 @@ Using forward differences to estimate $f$ yields
             {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
 \end{equation}
 %
-Simplifying slightly gives
+Simplifying by cancelling $t_j - t_i$ terms and simplifying gives
 %
 \begin{equation} \label{eq:f_finite_diff_2}
   f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
@@ -532,7 +532,7 @@ Simplifying slightly gives
             {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
 \end{equation}
 %
-which is an estimate to the instantaneous value of $f$ 
+which is an estimate of the instantaneous value of $f$ 
 given by Equation~\ref{eq:frac_growth_explained_by_solow}.
 
 
@@ -1011,11 +1011,11 @@ with $i$ and $j$ in Equation~\ref{eq:lambdaij} separated by \Sexpr{lag} years.
 The results are shown in Figure~\ref{fig:CD_lambda_time_series}.
 
 We can also estimate values for 
-the fraction of economic growth explained by the Solow residual ($f$)
+the fraction~($f$) of economic growth explained by the Solow residual
 by $f_{ij}$
 with $i$ and $j$ in Equation~\ref{eq:f_finite_diff_2} separated by \Sexpr{lag} years.
 The results are shown in Figure~\ref{fig:CD_solowPerc_time_series}. 
-Note that data spanning year~$i$ to year~$j$ is plotted at year~$i$ in 
+Note that data spanning year~$i$--year~$j$ is plotted at year~$i$ in 
 Figures~\ref{fig:CD_lambda_time_series} and~\ref{fig:CD_solow_Perc_time_series}.
 
 <<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
