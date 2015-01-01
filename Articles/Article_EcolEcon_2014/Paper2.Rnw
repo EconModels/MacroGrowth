@@ -343,7 +343,7 @@ The following subsections describe each.
 The Cobb-Douglas production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
-  y = \theta \mathrm{e}^{\lambda(t-t_0)} k^\alpha l^\beta \;,
+  y = \theta A k^\alpha l^\beta \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
 \end{equation}
 %
 where 
@@ -373,14 +373,14 @@ The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
 can be augmented to include an energy term:
 %
 \begin{equation} \label{eq:CDe}
-  y = \theta \mathrm{e}^{\lambda(t-t_0)}  k^\alpha l^\beta e^\gamma \;,
+  y = \theta A k^\alpha l^\beta e^\gamma \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
 \end{equation}
 %
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
 The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
-The term $\mathrm{e}^{\lambda (t-t_0)}$ is known as total factor productivity~($A$),
+The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 
 
@@ -389,9 +389,12 @@ and $\lambda$ is the Solow residual.
 \label{sec:estimating_the_solow_residual}
 %..............................
 
-Assuming that parameters $\theta$, $\alpha$, and $\beta$ are known from parameter estimation,
+Assuming that parameters $\theta$, $\alpha$, and $\beta$
+in Equation~\ref{eq:CDe} are known from parameter estimation,
 we can estimate the value of $\lambda$ as follows.
-First, assume constant returns to scale such that $\gamma = 1 - \alpha - \beta$.
+First, assume constant returns to scale such that 
+$\alpha + \beta + \gamma = 1$, 
+and calculate $\gamma = 1 - \alpha - \beta$.
 Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
 %
 \begin{equation} \label{eq:lnCD}
@@ -458,7 +461,7 @@ between times $i$ and $j$, we find
 \end{equation}
 % 
 where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
-between times $i$ and $j$.
+from Equation~\ref{eq:lambda} between times $i$ and $j$.
 
 Interestingly, 
 %
@@ -512,15 +515,25 @@ can be given as
 %
 Using forward differences to estimate $f$ yields
 %
-\begin{equation} \label{eq:f_finite_diff}
+\begin{equation} \label{eq:f_finite_diff_1}
   f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
        = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
             + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
             + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
-            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; ,
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
 \end{equation}
 %
-which is an estimate to the true value of $f$ given by Equation~\ref{eq:frac_growth_explained_by_solow}.
+Simplifying slightly gives
+%
+\begin{equation} \label{eq:f_finite_diff_2}
+  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
+                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
+                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
+            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
+\end{equation}
+%
+which is an estimate to the instantaneous value of $f$ 
+given by Equation~\ref{eq:frac_growth_explained_by_solow}.
 
 
 %------------------------------
@@ -1008,7 +1021,7 @@ The results are shown in Figure~\ref{fig:CD_lambda_time_series}.
 We can also estimate values for 
 the fraction of economic growth explained by the Solow residual ($f$)
 by $f_{ij}$
-with $i$ and $j$ in Equation~\ref{eq:f_finite_diff} separated by \Sexpr{lag} years.
+with $i$ and $j$ in Equation~\ref{eq:f_finite_diff_2} separated by \Sexpr{lag} years.
 The results are shown in Figure~\ref{fig:CD_solowPerc_time_series}. 
 
 <<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
