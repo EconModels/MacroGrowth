@@ -115,7 +115,7 @@ require(mosaic)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -380,9 +380,15 @@ where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/yea
 The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
 of production: $\alpha + \beta + \gamma = 1$.
-
 The term $\mathrm{e}^{\lambda (t-t_0)}$ is known as total factor productivity~($A$),
 and $\lambda$ is the Solow residual. 
+
+
+%..............................
+\paragraph{Estimating the Solow residual} 
+\label{sec:estimating_the_solow_residual}
+%..............................
+
 Assuming that parameters $\theta$, $\alpha$, and $\beta$ are known from parameter estimation,
 we can estimate the value of $\lambda$ as follows.
 First, assume constant returns to scale such that $\gamma = 1 - \alpha - \beta$.
@@ -404,7 +410,7 @@ constant with respect to time, we obtain
       + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
 \end{equation}
 %
-Solving for the Solow Residual term gives
+Solving for the total factor productivity term gives
 %
 \begin{equation} \label{eq:solow_resid}
   \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
@@ -438,17 +444,6 @@ which can be substituted into Equation~\ref{eq:solow_resid} to find
 %
 Equation~\ref{eq:lambda} applies for any instant in time.
 
-The fraction of GDP growth explained by the Solow residual~($f$)
-can be given as
-%
-\begin{equation} \label{eq:frac_growth_explained_by_solow}
-  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
-            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
-                  {\frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}}}
-\end{equation}
-%
 If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
 between times $i$ and $j$, we find
 %
@@ -498,6 +493,23 @@ is a better approximation of Equation~\ref{eq:lambda1n},
 which is, itself, an approximation of the true value of $\lambda$ 
 given by Equation~\ref{eq:lambda}.
 
+
+%..............................
+\paragraph{Fraction of growth explained by the Solow residual} 
+\label{sec:fraction_of_growth_solow}
+%..............................
+
+The fraction of GDP growth explained by the Solow residual~($f$)
+can be given as
+%
+\begin{equation} \label{eq:frac_growth_explained_by_solow}
+  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
+            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
+                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
+\end{equation}
+%
 Using forward differences to estimate $f$ yields
 %
 \begin{equation} \label{eq:f_finite_diff}
@@ -505,12 +517,10 @@ Using forward differences to estimate $f$ yields
        = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
             + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
             + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
-            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; ,
 \end{equation}
 %
 which is an estimate to the true value of $f$ given by Equation~\ref{eq:frac_growth_explained_by_solow}.
-
-
 
 
 %------------------------------
@@ -930,9 +940,6 @@ standardTriPlot(data=cdCoeffsData,
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
-Given the estimates for $\alpha$, $\beta$, and $\gamma$ for the Cobb-Douglas model,
-we can estimate values for $\lambda$ on a year-by-year basis using Equation~\ref{eq:lambdaij}.
-The results are shown in the Figure~\ref{fig:CD_lambda_time_series}.
 
 <<CD_finite_diff_calcs, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
 # Add a bogus "none" column that we can use for the no-energy case
@@ -944,11 +951,13 @@ m_histData <- melt(select(m_histData, Year, iGDP, iK, iL, iXp, iXf, iU, none, Co
                    variable.name = "energyType",
                    value.name = "iE")
 # Calculate finite difference approximations of time derivatives for output and all factors of production
+lag <- 5       # Desired lag for calculations. Set to n for differences across n years.
+pad <- "tail"  # Desired padding for NA valuse
 fd <- m_histData %>% group_by(Source, Country, energyType) %>% arrange(Year) %>% 
-  mutate(dydt = ediff(iGDP, pad="tail") / ediff(Year, pad="tail")) %>%
-  mutate(dkdt = ediff(iK, pad="tail") / ediff(Year, pad="tail")) %>%
-  mutate(dldt = ediff(iL, pad="tail") / ediff(Year, pad="tail")) %>%
-  mutate(dedt = ediff(iE, pad="tail") / ediff(Year, pad="tail"))
+  mutate(dydt = ediff(iGDP, pad=pad, lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
+  mutate(dkdt = ediff(iK, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
+  mutate(dldt = ediff(iL, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
+  mutate(dedt = ediff(iE, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag))
 
 origCDKLCoeffs <- subset(AllCoeffs, method=="orig" & model=="cd")
 origCDKLCoeffs <- origCDKLCoeffs %>% select(method, country, Source, nestStr, energy, lambda, alpha, beta, gamma)
@@ -991,6 +1000,17 @@ avgs <- fdlambda %>%
 @
 
 
+Given the estimates for $\alpha$, $\beta$, and $\gamma$ for the Cobb-Douglas model,
+we can estimate values for $\lambda$ by $\lambda_{i,j}$,
+with $i$ and $j$ in Equation~\ref{eq:lambdaij} separated by \Sexpr{lag} years.
+The results are shown in Figure~\ref{fig:CD_lambda_time_series}.
+
+We can also estimate values for 
+the fraction of economic growth explained by the Solow residual ($f$)
+by $f_{ij}$
+with $i$ and $j$ in Equation~\ref{eq:f_finite_diff} separated by \Sexpr{lag} years.
+The results are shown in Figure~\ref{fig:CD_solowPerc_time_series}. 
+
 <<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
 # Create a time series graph of the lambda_diff values
 ggplot(data=fdlambda, aes(x=Year, y=lambda_diff, color=Source)) + 
@@ -1001,12 +1021,12 @@ ggplot(data=fdlambda, aes(x=Year, y=lambda_diff, color=Source)) +
   xy_theme()
 @
 
-<<CD_solowPerc_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Fraction of GDP growth explained by Solow residual~($\\lambda$).'>>=
+<<CD_solowPerc_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Fraction of GDP growth explained by Solow residual.'>>=
 # Create a time series graph of the solowPerc values
 ggplot(data=fdlambda, aes(x=Year, y=solowFrac, color=Source)) + 
   geom_point(size = 1.0) +
   facet_grid(Country ~ energyType) +
-  labs(x = "", y = "Fraction of GDP growth explained by Solow residual") + 
+  labs(x = "", y = "f") + 
   scale_y_continuous(limits=c(-0.5, 2)) +
   xy_theme()
 @
