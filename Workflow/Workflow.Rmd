@@ -14,8 +14,9 @@ in the `data` directory at the top level of the repository.
 * Add any new countries to the `countryAbbrevs` variable in `Packages/EconData/R/Constants.R`.
 
 ### Create historical data frame
-* Run `Scripts/PreProcess.R -S <Source>` to create the historical data frame for `<Source>`.
-The file will be stored at `Packages/EconData/data/<Source>.rda`.
+* Run `Scripts/PreProcess.R -S <Sources>` to create the historical data frame for `<Sources>`.
+Note that` <Sources>` can be a comma-separated list of sources.
+The files will be stored at `Packages/EconData/data/<Source>.rda`.
 This command is fast; it can be run on a local machine.    
 * Build and reload the `EconData` package on a local machine.    
 * Push the changes to GitHub.   
