@@ -1956,16 +1956,26 @@ is a troubling characteristic of the estimated CES coefficients
 that is rarely investigated in the literature.
 Indeed, for some economies (Iran and Zambia), 
 estimating any elasticity of substitution at all is problematic and fraught with peril. 
+Earlier, we noted that 
+even when residuals for the fit to historical data are small 
+and the model produces fitted values that track the historical data closely, 
+it may yet be difficult to estimate some or all of the model parameters precisely.
+That appears to be the case for 
+values of $\rho$ and $\rho_1$ and associated
+elasticities of substitution~($\sigma$ and $\sigma_1$)
+in the CES production function.
 Note that this result is unlikely to be caused by poor-quality data alone. 
-Presumably the best data in the world 
-(United States, United Kingdom, and Japan) exhibits large uncertainty. 
+Elasticities of substitution for the economies with presumably the best data in the world 
+(United States, United Kingdom, and Japan) exhibit large uncertainty. 
 
-Some of the uncertainty is explained by the structure of the CES model itself. 
-If $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
-the corresponding elasticity of substitution ($\sigma$ and $\sigma_1$) becomes meaningless. 
-(See Equations~\ref{eq:CES}--\ref{eq:CESekl}.) 
-Thus, large uncertainty in $\sigma$ and $\sigma_1$ is expected for any resampled model 
-in which parameter estimates are positioned on the left or right boundaries 
+Some of the uncertainty in parameter estimates is explained by 
+the mathematical structure of the CES model itself. 
+Equations~\ref{eq:CES}--\ref{eq:CESekl} indicate that 
+if $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
+the corresponding elasticity of substitution ($\sigma$ or $\sigma_1$) becomes meaningless. 
+If $\delta$ approaches unity, values of $\delta_1$ and $\sigma_1$ become meaningless.
+Thus, large uncertainty in $\sigma$, $\sigma_1$, and $\delta_1$ can be expected for any CES model 
+in which parameter estimates are positioned on the left or right boundaries
 of Figures~\ref{fig:CES_sigma1_delta1_graph} or~\ref{fig:CES_sigma_delta_graph}.
 
 Some of the uncertainty in parameter estimates may be explained by structural change in the economies. 
@@ -1977,20 +1987,20 @@ it may be useful to perform piecewise analyses of smaller time periods.
 For the present study, doing piecewise analysis of, say, 
 Iran **** use the economy that Martin discusses above **** 
 would mean that the CES model is estimated on two 10-year periods. 
-Considering that there are six fitted parameters in the CES model 
-($\gamma$, $\lambda$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$), 
+Considering that there are six fitted parameters in the energy-augmented CES model 
+($\gamma$, $\lambda$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$
+in Equations~\ref{eq:CESkle}--\ref{eq:CESekl}), 
 ten years of historical data leaves precious few 
 (only 4) degrees of freedom for the fitting process. 
 
 \vspace{5 mm}
 
 Based on the results and discussions above 
-regarding the relative importance of and 
-the elasticity of substitution among factors of production, 
+regarding (a)~the relative importance of factors of production and 
+(b)~the elasticity of substitution among factors of production, 
 we conclude that use of the CES model for energy analysis 
+(Equations \ref{eq:CESkle}--\ref{eq:CESekl})
 should be undertaken with utmost caution. 
-Indeed, rigorous statistical testing on the relative importance 
-of production factors and elasticities of substitution is highly recommended. 
 Our results support \citeapos{Lecca:2011kr} conclusion 
 for the need to econometrically specify production function relationships and 
 to perform sensitivity analysis on nesting choices in economies 
@@ -1998,6 +2008,8 @@ to enhance the reliability of results.
 **** Would econometrically specifying production function relationships and
 performing sensitivity analysis really ``enhance the reliability'' of results? 
 Or, would doing so improve transparency? --MKH ****
+Indeed, rigorous statistical testing on the relative importance 
+of production factors and elasticities of substitution is strongly recommended. 
 
 
 %++++++++++++++++++++++++++++++
@@ -2204,14 +2216,16 @@ The LINEX model is intriguing because of its thermodynamic roots,
 but our implementation suffers from 
 poor reproduction of historical data and
 difficulty in respecting parameter constraints.
-If the LINEX function is to be used, 
-we recommend that \citeapos{Kummel:2011aa} fitting approach 
+If the LINEX function is to be used for energy analysis, 
+we recommend that either \citeapos{Kummel:2011aa} fitting approach 
 (energy quantified by primary thermal energy and logistic curves for $a_0$ and $c_t$) 
-or \citeapos{Ayres:2010ug} approach (energy quantified by useful work and constant values for $a_0$ and $c_t$) 
+or \citeapos{Ayres:2010ug} fitting approach 
+(energy quantified by useful work and constant values for $a_0$ and $c_t$) 
 be employed 
 and that the results be 
 thoroughly tested and compared 
 against other production functions.
+Doing so is left as future work.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
