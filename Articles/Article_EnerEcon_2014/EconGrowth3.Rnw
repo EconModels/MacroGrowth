@@ -132,7 +132,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -495,12 +495,12 @@ on the role of energy in economic growth.
 The inclusion of energy as a factor of production 
 in Cobb-Douglas and CES production functions 
 is generally accepted by most 
-resource and energy economists
-\citep{Smulders:2003wc, vanderZwaan:2002wn, Kemfert:1998vd}.
+resource and energy economists \citep{Smulders:2003wc, vanderZwaan:2002wn, Kemfert:1998vd}.
 Researchers interested in explaining long-term economic growth 
 and possible constraints on growth 
-have started to include energy as an explicit factor of production
-\citep{Froling:2009vo, Tahvonen:2001tz}.  
+have begun to include energy 
+as an explicit factor of production, too \citep{Froling:2009vo, Tahvonen:2001tz}.
+
 An alternative approach, attempting to be 
 ``\dots more consistent with physical laws \dots'' \citep{Ayres:2001tx}
 and classified by \citet{Stern:2011bq} as an ecological economic model of growth, 
@@ -508,9 +508,25 @@ is the LINEX model,
 wherein energy is the only factor of production,
 and capital~($k$), labor~($l$), and energy~($e$)
 combine to provide efficiencies that augment energy.
-Technological change is manifest as increased efficiency:
-more useful work done per joule of exergy \citep{Ayres:2005kn}.
 There is no Solow-style term ($\mathrm{e}^{\lambda t}$) for technological change.
+Rather, technological change is manifest as increased efficiency:
+more useful work done per joule of exergy input to the economy \citep{Ayres:2005kn}.
+\citet{Kummel:1980wx} developed the LINEX function
+using energy quantified as primary thermal energy input to the economy.
+\citeauthor{Kummel:1980wx} represented 
+energy efficiency coefficients in the LINEX function by logistic functions,
+effectively converting from primary thermal energy to energy at the point of use
+within the LINEX function itself.
+
+In a series of papers culminating in a book~\citep{Ayres:2010ug},
+\citeauthor{Ayres:2010ug} used the LINEX function with energy quantified as ``useful work,''
+which is much closer to the point of use than 
+the primary thermal energy quantification favored by \citeauthor{Kummel:1980wx}.
+\citeauthor{Ayres:2010ug} do not find the need to use logistic functions representing energy efficiency,
+presumably because useful work ``already incorporate[s] the energy-related efficiency changes 
+in the economic system''~\citep[p.~35]{Kummel:2013aa}.
+Both \citeauthor{Kummel:1980wx} and \citeauthor{Ayres:2010ug}
+report satisfactory agreement between the LINEX function and historical economic output.
 
 Unsatisfactorily, both the choice of a production function 
 and the parameters used to populate these functions 
@@ -518,8 +534,8 @@ affect results significantly.
 This situation leaves far too much latitude 
 for misuse of model specifications 
 and selection of model parameters 
-to support certain theories (rather than empirically testing the theories
-and parameters \emph{before} they are employed).  
+to support certain theories, rather than empirically testing the theories
+and parameters \emph{before} they are employed.  
 For example, \citet{Lecca:2011kr} pointed out that 
 the modellers' choice for the structure of a production function 
 reflects his or her assumptions about
@@ -538,14 +554,14 @@ wherein empirical analysis on the estimated substitution elasticities
 is performed before choosing any particular 
 nested CES production function structure. 
 As a result, \citeauthor{Shen:2013vp} propose an atypical CES nesting structure 
-for the Chinese economy. **** More detail here about nesting? --MKH ****  
+for the Chinese economy. **** Martin: More detail here about nesting? --MKH ****  
 \citet{Saunders:2008aa} evaluated several production and cost functions
 (including the Cobb-Douglas, CES, and LINEX functions studied herein, 
 see Section~\ref{sec:Prod_Func_Forms})
 to assess whether they are capable of reproducing 
 rebound and backfire effects.%
   \footnote{
-  See \citet{Sorrell:2007um} for details about rebound and backfire effects.
+  See \citet{Sorrell:2007um} for background on rebound and backfire.
   }
 \citeauthor{Saunders:2008aa} concludes that,
 of the production functions evaluated in the present study,
@@ -560,42 +576,41 @@ In addition to model structure,
 the way in which model parameters are determined is also subject to debate.
 The \emph{cost share theorem} from mainstream economics states that 
 output elasticities 
-$\alpha$, $\beta$, and $\gamma$ 
-(if augmenting the production function by energy)
 can be calibrated from national accounts data as the 
-cost shares of capital, labor, and energy, respectively.
+cost shares of factors of production: capital, labor, 
+and energy (if augmenting the production function by energy).
 However, the cost share theorem applies only under conditions of perfect competition
 in the markets for the factors of production.
 Although no market ever exhibits perfect competition, 
-in our opinion, energy markets are \emph{least} likely to be ``perfect.''
+in our opinion energy markets are \emph{least} likely to be ``perfect.''
 Many governments have parastatal or full control 
-of electricity generation and/or fuel markets.  
+of electricity generation and fuel markets.  
 Other governments subsidize or incentivize energy markets.  
 And, there are always health and environmental externalities 
 that are not priced into fossil fuel energy markets.  
 If energy markets are farther from ``perfect'' 
-than capital and/or labor markets, 
+than capital and labor markets, 
 then energy is the factor of production least likely to have its
-output elasticity~($\gamma$) be well-represented 
-by cost share as reported in national accounts.
+output elasticity be well-represented 
+by cost share as reported in national accounts~\citep{Ayres:2013aa, Kummel:2013aa}.
 Thus, when augmenting production functions by energy, 
 much care should be taken in estimating 
-the relative importance of the factors of production 
-($\alpha$, $\beta$, and $\gamma$). 
+the relative importance of the factors of production. 
 \citet{Kummel:2010vz} showed that the cost share theorem applies 
 only when economic growth is unconstrained.
 Real-world constraints such as the degree of automation and
 the degree of utilization of capital stock 
-result in shadow prices that move the values 
-of $\alpha$, $\beta$, and $\gamma$ away from 
-their cost shares in the economy.~\citep[Equations~12 and~13]{Kummel:2010vz}
+result in shadow prices that move 
+output elasticities away from 
+their cost shares in the economy \citep[Equations~12 and~13]{Kummel:2010vz}.
 Thus, for this study, 
-we reject the cost share theorem and
+we reject the cost share theorem, and
 we have no \emph{a-priori} expectation that output elasticities 
 estimated from historical output data
 will match cost shares.
 
-Thus, both the choice of production function structure 
+Thus, there are stong indications in the literature that
+both the choice of production function structure 
 and the values of the model parameters 
 drive model results, and empirical and statistical testing 
 of such approaches is prudent, but rarely conducted.
@@ -605,17 +620,23 @@ Macroeconomic growth models are used often to inform economic policy,
 and the paths of economies worldwide are determined by
 such policy choices. 
 Therefore, we agree with those who express serious concerns 
-about the reliability of the results from economic growth models.~\citep{Lecca:2011kr} 
+about the reliability of the results from economic growth models \citep{Lecca:2011kr}.
 We understand, however, 
 that macroeconomic policymaking is needed 
 and is increasingly informed by integrated energy-economy models, 
-in a world where energy constraints are possible.~\citep{Beckman:2011gb, 
-Benes:2012tm, Nel:2010fv, Kummel:2010vz}
+in a world where energy constraints are possible \citep{Beckman:2011gb, 
+Benes:2012tm, Nel:2010fv, Kummel:2010vz}.
 Unfortunately, there has been little empirical work assessing the predictive ability 
 of various energy-augmented production functions for different types of economies. 
 And, very few studies of the importance of energy in economic growth include 
-rigorous statistical assessments of energy-related fitting parameters. 
-Thus, we support the call from \citet{Shen:2013vp} that both
+rigorous statistical assessment of energy-related fitting parameters. 
+
+This paper contributes to the literature on the role of energy in economic growth
+by applying statistically rigorous 
+methods along two coordinates of analysis: 
+form of the energy augmented production function 
+and type of economy.
+We support the call from \citet{Shen:2013vp} that both
 the structure of the production function 
 and the parameters that populate it 
 need empirical testing. 
@@ -627,16 +648,9 @@ may need different factors of production to explain their respective growth path
 leaving open the possibility for 
 different explanations of growth in various countries
 at different stages of their development, 
-a central point of long-wave economic growth modeling.~\citep{Froling:2009vo, Jones:2001wn, Galor:2000up}
-
-This paper contributes to the literature on the role of energy in economic growth
-by applying statistically rigorous 
-methods along two coordinates of analysis: 
-form of the energy augmented production function 
-and type of economy.
+a central point of long-wave economic growth modeling \citep{Froling:2009vo, Jones:2001wn, Galor:2000up}.
 
 The remainder of this paper is organized as follows. 
-% Section~\ref{sec:lit_review} provides a necessarily brief overview of relevant literature.
 Section~\ref{sec:Coordinates} discusses the coordinates of analysis for the present study. 
 Section~\ref{sec:Sources_of_Data} details sources of data and calculations to 
 generate time series for economic output ($y$) and factors of production ($k$, $l$, and $q$). 
@@ -2190,9 +2204,14 @@ The LINEX model is intriguing because of its thermodynamic roots,
 but our implementation suffers from 
 poor reproduction of historical data and
 difficulty in respecting parameter constraints.
-If the LINEX function is to be used, we recommend that 
-\citeapos{Kummel:2011aa} fitting approach (logistic curves for $a_0$ and $c_t$) be employed
-and that the results be thoroughly tested and compared against other production functions.
+If the LINEX function is to be used, 
+we recommend that \citeapos{Kummel:2011aa} fitting approach 
+(energy quantified by primary thermal energy and logistic curves for $a_0$ and $c_t$) 
+or \citeapos{Ayres:2010ug} approach (energy quantified by useful work and constant values for $a_0$ and $c_t$) 
+be employed 
+and that the results be 
+thoroughly tested and compared 
+against other production functions.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
