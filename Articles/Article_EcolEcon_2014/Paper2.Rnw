@@ -523,7 +523,7 @@ Using forward differences to estimate $f$ yields
             {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
 \end{equation}
 %
-Simplifying by cancelling $t_j - t_i$ terms and simplifying gives
+Cancelling $t_j - t_i$ terms and simplifying gives
 %
 \begin{equation} \label{eq:f_finite_diff_2}
   f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
@@ -1004,7 +1004,6 @@ avgs <- fdlambda %>%
 
 @
 
-
 Given the estimates for $\alpha$, $\beta$, and $\gamma$ for the Cobb-Douglas model,
 we can estimate values for $\lambda$ by $\lambda_{i,j}$,
 with $i$ and $j$ in Equation~\ref{eq:lambdaij} separated by \Sexpr{lag} years.
@@ -1015,8 +1014,8 @@ the fraction~($f$) of economic growth explained by the Solow residual
 by $f_{ij}$
 with $i$ and $j$ in Equation~\ref{eq:f_finite_diff_2} separated by \Sexpr{lag} years.
 The results are shown in Figure~\ref{fig:CD_solowPerc_time_series}. 
-Note that data spanning year~$i$--year~$j$ is plotted at year~$i$ in 
-Figures~\ref{fig:CD_lambda_time_series} and~\ref{fig:CD_solow_Perc_time_series}.
+Note that data spanning years~$i \rightarrow j$ is plotted at year~$i$ in 
+Figures~\ref{fig:CD_lambda_time_series} and~\ref{fig:CD_solowPerc_time_series}.
 
 <<CD_lambda_time_series, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap='Solow residual time series.'>>=
 # Create a time series graph of the lambda_diff values
