@@ -928,7 +928,7 @@ Each reample is shown as a gray dot on the graph.
 The fit to historical data is shown as a gray crosshairs.
 
 <<CD_lambda_theta_graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=5.5, fig.cap="$\\lambda$ and $\\theta$ values for Cobb-Douglas resample models.">>=
-cdCoeffsData <- subset(AllCoeffs, subset = model=="cd")
+cdCoeffsData <- filter(AllCoeffs, model=="cd")
 standardScatterPlot(data=cdCoeffsData, mapping=aes(x=scale, y=lambda, color=Source), 
                     facet_formula=country~energy, alpha=0.05) +
     scale_x_continuous(limits=c(0.9, 1.5), breaks=c(1.0, 1.2, 1.4)) +
@@ -964,7 +964,7 @@ fd <- m_histData %>% group_by(Source, Country, energyType) %>% arrange(Year) %>%
   mutate(dldt = ediff(iL, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
   mutate(dedt = ediff(iE, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag))
 
-origCDKLCoeffs <- subset(AllCoeffs, method=="orig" & model=="cd")
+origCDKLCoeffs <- filter(AllCoeffs, method=="orig", model=="cd")
 origCDKLCoeffs <- origCDKLCoeffs %>% select(method, country, Source, nestStr, energy, lambda, alpha, beta, gamma)
 # Change name of Source REXS to REXS1960 and relevel to conform to information in fdlambda.
 origCDKLCoeffs$Source <- as.character(origCDKLCoeffs$Source)
@@ -979,8 +979,8 @@ origCDKLCoeffs$Source <- relevelFactor(origCDKLCoeffs$Source, levs = c("REXS1960
 # http://stackoverflow.com/questions/15059076/
 # r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
 labg <- apply(fd[ , c('Country', 'Source', 'energyType')], 1, function(x){
-    row <- as.data.frame(subset(origCDKLCoeffs, 
-                                country==x["Country"] & Source==x["Source"] & energy==x["energyType"]))
+    row <- as.data.frame(filter(origCDKLCoeffs, 
+                                country==x["Country"], Source==x["Source"], energy==x["energyType"]))
     abg <- subset(row, select=c(lambda, alpha, beta, gamma))
     if (nrow(abg) < 1){ abg[1, ] <- NA }
     return(abg)
@@ -1092,7 +1092,7 @@ spaghettiPlot(data=cdFittedDataCN, facet_formula=Source~energy, level=spaghettiG
 
 <<CD_Residual_Plot, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="Cobb-Douglas Residual Plots.">>=
 # Use residuals_df to make a graph.
-cd_residuals_df <- subset(residuals_df, subset = modelType=="cd")
+cd_residuals_df <- filter(residuals_df, modelType=="cd")
 ggplot(data=cd_residuals_df, aes(x=year, y=resid, color=Source)) + 
   geom_point(size = 1.0) +
   facet_grid(Country ~ energyType) +
@@ -1377,7 +1377,7 @@ standardScatterPlot(data=cesCoeffsDataXf, mapping=aes(x=delta_1, y=sigma_1, colo
 @
 
 <<CES_sigma_delta_graph_Xf, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using final exergy ($x_f$).">>=
-standardScatterPlot(data=subset(cesCoeffsDataXf, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=filter(cesCoeffsDataXf, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(x=delta, y=sigma, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1478,7 +1478,7 @@ standardScatterPlot(data=cesCoeffsDataU, mapping=aes(x=delta_1, y=sigma_1, color
 @
 
 <<CES_sigma_delta_graph_U, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=6, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models using useful work ($u$).">>=
-standardScatterPlot(data=subset(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=filter(cesCoeffsDataU, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(x=delta, y=sigma, color=Source), 
                     facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
@@ -1561,7 +1561,7 @@ spaghettiPlot(data=cesFittedDataCN_u, facet_formula=Source~nestStrParen, level=s
 
 <<CES_Residual_Plot_u, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="CES with $i$ Residual Plots.">>=
 # Use residuals_df to make a graph.
-ces_u_residuals_df <- subset(residuals_df, subset = modelType=="ces" & (energyType=="iU" | energyType=="none"))
+ces_u_residuals_df <- filter(residuals_df, modelType=="ces", energyType %in% c("iU", "none"))
 ggplot(data=ces_u_residuals_df, aes(x=year, y=resid, color=Source)) + 
   geom_point(size = 1.0) +
   facet_grid(Country ~ nestStrParen) +
@@ -1602,7 +1602,7 @@ the fit to historical data is shown as a white line and
 the gray band encompasses \Sexpr{spaghettiGraphLevel*100}\% of the fits to resampled data.
 
 <<LINEXq_Resample_Graph, fig.pos="H", fig.align='center', fig.width=6, fig.height=6, fig.cap="LINEX model resampling results.">>=
-linexCoeffsData <- subset(AllCoeffs, subset = model=="linex")
+linexCoeffsData <- filter(AllCoeffs, model=="linex")
 standardScatterPlot(data=linexCoeffsData,
                     mapping=aes(x=a_0, y=c_t, color=Source),
                     facet_formula=country~energy, alpha=0.05) +
@@ -1613,53 +1613,54 @@ standardScatterPlot(data=linexCoeffsData,
 @
 
 <<LINEXq_Resample_Graph_PT, fig.pos="H", fig.align='center', fig.width=6, fig.height=2.5, fig.cap="LINEX model resampling results for PT.">>=
-linexCoeffsData <- subset(AllCoeffs, subset = model=="linex" & country=="PT")
+linexCoeffsData <- filter(AllCoeffs, model=="linex", country=="PT")
 standardScatterPlot(data=linexCoeffsData,
                     mapping=aes(x=a_0, y=c_t, color=Source),
                     facet_formula=country~energy, alpha=0.05) +
-#     scale_x_continuous(limits=c(0.0, 1.0), breaks=c(0.0, 0.5, 1.0)) +
-#     scale_y_continuous(limits=c(-10.0, 10.0), breaks=c(10.0, -5.0, 0.0, 5.0, 10.0)) +
+    scale_y_continuous(limits=c(-10.0, 10.0), breaks=c(10.0, -5.0, 0.0, 5.0, 10.0)) +
     labs(x=expression(a[0]), y=expression(c[t])) +
     guides(colour=guide_legend(override.aes = aes(alpha=1)))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_US, fig.pos="H", fig.align='center', fig.width=3, fig.height=2.5, fig.cap="US LINEX fitted models.">>=
-linexFittedDataUS <- subset(AllFitted, subset = model=="linex" & Country=="US")
+linexFittedData <- filter(AllFitted, model=="linex")
+
+linexFittedDataUS <- filter(linexFittedData, Country=="US")
 spaghettiPlot(data=linexFittedDataUS, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_UK, fig.pos="H", fig.align='center', fig.width=3, fig.height=4.5, fig.cap="UK LINEX fitted models.">>=
-linexFittedDataUK <- subset(AllFitted, subset = model=="linex" & Country=="UK")
+linexFittedDataUK <- filter(linexFittedData, Country=="UK")
 spaghettiPlot(data=linexFittedDataUK, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_JP, fig.pos="H", fig.align='center', fig.width=3, fig.height=2.5, fig.cap="JP LINEX fitted models.">>=
-linexFittedDataJP <- subset(AllFitted, subset = model=="linex" & Country=="JP")
+linexFittedDataJP <- filter(linexFittedData, Country=="JP")
 spaghettiPlot(data=linexFittedDataJP, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_AT, fig.pos="H", fig.align='center', fig.width=4, fig.height=3.5, fig.cap="AT LINEX fitted models.">>=
-linexFittedDataAT <- subset(AllFitted, subset = model=="linex" & Country=="AT")
+linexFittedDataAT <- filter(linexFittedData, Country=="AT")
 spaghettiPlot(data=linexFittedDataAT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_PT, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="PT LINEX fitted models.">>=
-linexFittedDataPT <- subset(AllFitted, subset = model=="linex" & Country=="PT")
+linexFittedDataPT <- filter(linexFittedData, Country=="PT")
 spaghettiPlot(data=linexFittedDataPT, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
 @
 
 <<LINEX_GDP_Spaghetti_Graphs_CN, fig.pos="H", fig.align='center', fig.width=4, fig.height=2.5, fig.cap="CN LINEX fitted models.">>=
-linexFittedDataCN <- subset(AllFitted, subset = model=="linex" & Country=="CN")
+linexFittedDataCN <- filter(linexFittedData, Country=="CN")
 spaghettiPlot(data=linexFittedDataCN, facet_formula=Source~energy, level=spaghettiGraphLevel) +
     labs(y="Indexed GDP (1960=1)") +
   scale_x_continuous(breaks=c(1960, 1980, 2000))
@@ -1667,7 +1668,7 @@ spaghettiPlot(data=linexFittedDataCN, facet_formula=Source~energy, level=spaghet
 
 <<LINEX_Residual_Plot, fig.pos="H", fig.align='center', fig.width=5, fig.height=6, fig.cap="LINEX Residual Plots.">>=
 # Use residuals_df to make a graph.
-linex_residuals_df <- subset(residuals_df, subset = modelType=="linex")
+linex_residuals_df <- filter(residuals_df, modelType=="linex")
 ggplot(data=linex_residuals_df, aes(x=year, y=resid, color=Source)) + 
   geom_point(size = 1.0) +
   facet_grid(Country ~ energyType) +
