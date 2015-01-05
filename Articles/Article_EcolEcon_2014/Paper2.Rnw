@@ -1757,6 +1757,48 @@ triPlot(data=fortify(Leeds_Models$Leeds$UK$linex$`iK+iL+iU`), grid_lines=5, x=al
 \label{sec:Discussion_of_Results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Certain combinations of economy, parameter values, CES nesting structure, and data source
+come with very large resampling spreads, 
+indicating large fitted parameter uncertainties. 
+Often, there is virtually no useful information 
+in $\delta$, $\delta_1$, $\alpha$, $\beta$, and $\gamma$. 
+
+Thus, we find that nesting has significant influence on model results.
+
+That so many estimates of elasticity of substitution exhibit large uncertainty, 
+often spanning the range from perfect complements ($\sigma, \, \sigma_1 = 0$) 
+to perfect substitutes ($\sigma, \, \sigma_1 = \infty$), 
+is a troubling characteristic of the estimated CES coefficients 
+that is rarely investigated in the literature.
+Indeed, for some economies, 
+estimating any elasticity of substitution at all is problematic and fraught with peril. 
+Earlier, we noted that 
+even when residuals for the fit to historical data are small 
+and the model produces fitted values that track the historical data closely, 
+it may yet be difficult to estimate some or all of the model parameters precisely.
+That appears to be the case for 
+values of $\rho$ and $\rho_1$ and associated
+elasticities of substitution~($\sigma$ and $\sigma_1$)
+in the CES production function.
+Note that this result is unlikely to be caused by poor-quality data alone. 
+Elasticities of substitution for the economies with presumably the best data in the world 
+(United States, United Kingdom, Japan, and Austria) exhibit large uncertainty. 
+
+Some of the uncertainty in parameter estimates is explained by 
+the mathematical structure of the CES model itself. 
+Equations~\ref{eq:CES}--\ref{eq:CESekl} indicate that 
+if $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
+the corresponding elasticity of substitution ($\sigma$ or $\sigma_1$) becomes meaningless. 
+If $\delta$ approaches unity, values of $\delta_1$ and $\sigma_1$ become meaningless.
+Thus, large uncertainty in $\sigma$, $\sigma_1$, and $\delta_1$ can be expected for any CES model 
+in which parameter estimates are positioned on the left or right boundaries
+of Figures~\ref{fig:CES_sigma1_delta1_graph} or~\ref{fig:CES_sigma_delta_graph}.
+
+Some of the uncertainty in parameter estimates may be explained by structural change 
+in the economies over the time period under study (1960--2011). 
+To account for the large uncertainty, 
+it may be useful to perform piecewise analyses of smaller time periods. 
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
