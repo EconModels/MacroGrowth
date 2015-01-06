@@ -132,7 +132,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -261,8 +261,8 @@ oModels <- loadPostProcessedData(Source = "Calvin", kind = "models", dir = pp_pa
       \toprule
          & \multicolumn{2}{c}{$k$ \& $l$} & \multicolumn{2}{c}{$k$ \& $e$} & \multicolumn{2}{c}{$l$ \& $e$} \\
       \midrule
-      #2
-      \midrule
+      #2 [3 mm]
+%       \midrule
       #3
       \midrule
       #4
@@ -1969,14 +1969,135 @@ Elasticities of substitution for the economies with presumably the best data in 
 (United States, United Kingdom, and Japan) exhibit large uncertainty. 
 
 Some of the uncertainty in parameter estimates is explained by 
-the mathematical structure of the CES model itself. 
-Equations~\ref{eq:CES}--\ref{eq:CESekl} indicate that 
-if $\delta$ or $\delta_1$ achieves an extreme value (0 or 1), 
-the corresponding elasticity of substitution ($\sigma$ or $\sigma_1$) becomes meaningless. 
-If $\delta$ approaches unity, values of $\delta_1$ and $\sigma_1$ become meaningless.
-Thus, large uncertainty in $\sigma$, $\sigma_1$, and $\delta_1$ can be expected for any CES model 
-in which parameter estimates are positioned on the left or right boundaries
-of Figures~\ref{fig:CES_sigma1_delta1_graph} or~\ref{fig:CES_sigma_delta_graph}.
+the mathematical structure of the CES model itself.%
+  \footnote{
+  Numbers in parentheses indicate rows in Table~\ref{tab:ces_sensitivity_table}.
+  }
+(1, 2)~Equations~\ref{eq:CES}--\ref{eq:CESekl} indicate that 
+if $\delta_1 = 0$
+or $\delta_1 = 1$,
+$\rho_1$ cancels.
+As a result, 
+$sse$ becomes increasingly insensitive to $\rho_1$ (and, therefore, $\sigma_1$)
+as $\delta_1 \rightarrow 0$ or $\delta_1 \rightarrow 1$.
+Decreasing sensitivity leads to reduced precision in estimating $\sigma_1$.
+%
+(3)~If $\delta = 0$, $\delta_1$ and $\rho_1$ are eliminated.
+Furthermore, with $\delta = 0$, $\rho$ cancels, 
+and $sse$ becomes insensitive to $\rho$ and, therefore, $\sigma$.
+Thus, as $\delta \rightarrow 0$, the precision with which 
+$\delta_1$, $\sigma_1$, and $\sigma$ are estimated declines.
+%
+(4)~If $\delta = 1$, $\rho$ cancels, 
+and $sse$ becomes insensitive to values of $\sigma$.
+Given that both (a)~ the \texttt{cesEst} fitting algorithm
+still uses a meaningless value for $\rho$ when $\delta \rightarrow 1$
+and (b)~the ratio $\rho/\rho_1$ appears in the CES equation,
+the value of $\rho_1$ will also become highly uncertain 
+as $\delta \rightarrow 1$
+due to the large uncertainty of $\rho$.
+Essentially, $\rho_1$ compensates for imprecise values of $\rho$
+on each successive resample,
+taking on $\rho$'s uncertainty.
+Thus, as $\delta \rightarrow 1$, 
+the precision with which both $\sigma$ and $\sigma_1$ can be estimated declines.
+%
+(5)~If $\rho_1 = \infty$, $\sigma_1 = 0$, 
+and the CES function (Equation~\ref{eq:CES}) simplifies to the Leontief function:
+%
+\begin{equation} \label{eq:ces_simplified_2_terms}
+  y = \gamma A \min \left[ k, \, l \right] \; ,
+\end{equation}
+%
+and $\delta_1$ is eliminated.
+Thus, as $\sigma_1 \rightarrow 0$, estimation of $\delta_1$ becomes increasingly imprecise.
+(6)~If $\rho = \infty$, $\sigma = 0$.
+Using Equation~\ref{eq:CESkle} as an example, we find that 
+%
+\begin{equation} \label{eq:ces_simplifies_3_terms}
+  y = \gamma A \min \left[ \delta_1 k^{-\rho_1} + (1-\delta_1) l^{-\rho_1}, \; e \right] \; ,
+\end{equation}
+%
+and $\delta$ is eliminated.
+Thus, as $\sigma \rightarrow 0$, estimation of $\delta$ becomes increasingly imprecise.
+
+\begin{table} \caption{Implications of CES model structure 
+                        on parameter precision.} \label{tab:ces_sensitivity_table} 
+  \begin{center}
+    \begin{tabular}{c c l c l} 
+      \toprule
+       & \multicolumn{2}{c}{Mathematical effect} & \multicolumn{2}{c}{Affect on precision} \\
+      \midrule
+% Row 1
+      1 & $\delta_1 = 0$ & $\rho_1$ cancels & $\delta_1 \rightarrow 0$ & $\sigma_1$ imprecise \\ [2 mm]
+% Row 2
+      2 & $\delta_1 = 1$ & $\rho_1$ cancels & $\delta_1 \rightarrow 1$ & $\sigma_1$ imprecise \\ [2 mm]
+% Row 3
+      \multirow{3}{*}{3} 
+        & \multirow{3}{*}{$\delta = 0$}   
+                         & $\delta_1$ eliminated
+                                            & \multirow{3}{*}{$\delta \rightarrow 0$}
+                                                                       & $\delta_1$ imprecise \\ [-1 mm]
+%
+        &                & $\rho_1$ eliminated &                       & $\sigma_1$ imprecise \\ [-1 mm]
+%
+        &                & $\rho$\; cancels   
+                                            &                          & $\sigma$\; imprecise \\ [2 mm]
+% Row 4
+      \multirow{2}{*}{4}
+        & \multirow{2}{*}{$\delta = 1$}
+                         & \multirow{2}{*}{$\rho$\; cancels}
+                                            & \multirow{2}{*}{$\delta \rightarrow 1$}
+                                                                       & $\sigma$\; imprecise   \\ [-1 mm] 
+%
+        &                &                  &                          & $\sigma_1$ imprecise    \\ [2 mm]
+% Row 5
+      \multirow{2}{*}{5}
+        & \multirow{2}{*}{$\rho_1 = \infty$}
+                         & $\sigma_1 = 0$   & \multirow{2}{*}{$\sigma_1 \rightarrow 0$}
+                                                                       & \multirow{2}{*}{$\delta_1$ imprecise} 
+                                                                                    \\ [-1 mm]
+%
+        &                & $\delta_1$ eliminated
+                                            &                          &                      \\ [2 mm]
+% Row 6
+      \multirow{2}{*}{6}
+        & \multirow{2}{*}{$\rho = \infty$}
+                         & $\sigma = 0$     & \multirow{2}{*}{$\sigma \rightarrow 0$}
+                                                                       & \multirow{2}{*}{$\delta$ imprecise} 
+                                                                                    \\ [-1 mm]
+%
+        &                & $\delta$\; eliminated
+                                            &                          &                      \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Some of the uncertainty in parameter estimates may be explained by structural change in the economies. 
 For example, 
