@@ -2036,7 +2036,7 @@ it will be difficult to estimate many CES parameters with precision.
 It is concerning that so many of our CES results end up on boundaries. 
 I don't think we know why we hit the boundaries so frequently. 
 I think it's real, i.e., lowest $sse$ occurs at the boundary. 
-But, I can't know for sure, because the \texttt{cesEst} function
+But, we can't know for sure, because the \texttt{cesEst} function
 is a black box to us.
 One thing in our favor is that we do a thorough grid search in $\rho$ and $\rho_1$ first.
 Presumably, the grid search finds any potential 
