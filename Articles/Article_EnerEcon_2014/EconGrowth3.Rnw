@@ -1404,7 +1404,7 @@ standardScatterPlot(data=cesCoeffsData, mapping=aes(delta_1, sigma_1), facet_for
 @
 
 <<CES_sigma_delta_graph, fig.pos="H", fig.align='center', fig.width=4.5, fig.height=7, fig.cap="$\\sigma$ and $\\delta$ values for CES resample models.">>=
-standardScatterPlot(data=subset(cesCoeffsData, nestStrParen != "(iK + iL) + ()"),
+standardScatterPlot(data=filter(cesCoeffsData, nestStrParen != "(iK + iL) + ()"),
                     mapping=aes(delta, sigma), facet_formula=country~nestStrParen, alpha=0.05) +
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0)) +
@@ -2023,6 +2023,64 @@ Using Equation~\ref{eq:CESkle} as an example, we find that
 %
 and $\delta$ is eliminated \citep{Csontos:1992aa}.
 Thus, as $\sigma \rightarrow 0$, the precision with which $\delta$ can be estimated declines.
+
+
+
+
+
+
+**** From the above discussion, 
+it is clear that when $\min{sse}$ occurs at any boundary 
+(with the exception of $\sigma, \, \sigma_1 = 0$, $\rho, \, \rho_1 = -1$), 
+it will be difficult to estimate many CES parameters with precision.
+It is concerning that so many of our CES results end up on boundaries. 
+I don't think we know why we hit the boundaries so frequently. 
+I think it's real, i.e., lowest $sse$ occurs at the boundary. 
+But, I can't know for sure, because the \texttt{cesEst} function
+is a black box to us.
+One thing in our favor is that we do a thorough grid search in $\rho$ and $\rho_1$ first.
+Presumably, the grid search finds any potential 
+$sse$ valleys before starting the full gradient search. 
+This is probably an issue to be discussed with Randy. --MKH ****
+
+**** We do a thorough job of fitting along the boundaries for the Cobb-Douglas function.
+Perhaps we should do something similar for the CES model? 
+I.e., we could fit the CES model unconstrained.
+We could set up a list of models to try along each boundary. 
+Similar to Cobb-Douglas, if an unconstrained CES point estimate lands beyond the boundary,
+we could simply choose the lowest $sse$ anywhere on the boundary as the winner. --MKH ****
+
+**** This raises another question,
+namely whether we should be reporting coefficients that are, by definition unknowable.
+In the worst case, when $\delta = 0$ 
+(as it is for the fit to historical data for 
+US;
+(le)k nesting, Equation~\ref{eq:CESlek}; in Figure~\ref{fig:CES_sigma_delta_graph}), 
+CES simplifies to $y = \gamma A l$.
+All of $\sigma$, $\delta$, $\sigma_1$, and $\delta_1$
+are eliminated from the model
+and are, therefore, unknowable.  
+At present, we report the values of uknowable coefficients on the resample graphs.
+One approach would be to decide \emph{not} to report unknowable values.
+But, there are a few resample models that are rather close to but not exactly at $\delta = 1$
+in Figure~\ref{fig:CES_sigma_delta_graph}.
+Should we report parameters for the resample models where $\delta \ne 1$? --MKH ****
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \begin{table} \caption{Implications of CES model structure 
                         on parameter precision.} \label{tab:ces_sensitivity_table} 
