@@ -50,6 +50,7 @@ EconModels_*.tar.gz
 Paper2.tex
 EcolEcon_HeunWarr.tex
 EconGrowth3.tex
+EconGrowth4.tex
 ZAGrowth_JAE.tex
 ExperimentingWithPlots.tex
 #
@@ -58,6 +59,7 @@ ExperimentingWithPlots.tex
 EconGrowth.pdf
 EconGrowth2.pdf
 EconGrowth3.pdf
+EconGrowth4.pdf
 EconGrowth2-GraphsOnly.pdf
 ZAGrowth_JAE.pdf
 Education_Investigation.pdf
