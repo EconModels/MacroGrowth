@@ -133,7 +133,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -370,15 +370,9 @@ in the most of these studies [surveyed].''
 \citet{Stern:2013aa} found similar results,
 noting that the direction of causality may change over time.
 
-Many who accept that energy use is closely correlated with
-economic performance, regardless of the direction of causality,
-express concern regarding the negative effects of 
-rising energy prices and fossil fuel depletion 
-on current and future economic growth.
-\citet{Benes:2012tm}, incorporating views on both
-geological physical constraints and 
-technological solutions to oil production, 
-suggest a near doubling of the real price of oil over the next decade.  
+**** Possibly insert here what we make of the last few months' 
+developments in oil prices. 
+But, as it will be speculative, it needs to be very short and focused. --MdW ****
 **** Should we re-think this discussion in the light of the shale oil boom and the 
 recent drop in oil prices? --MKH ****
 **** Yes, we need to explain in a sentence or two what we think is going on. 
@@ -386,6 +380,27 @@ Saudi's playing for market share and increased supply
 from the US. 
 Potential crippling impacts on green energy upstarts. 
 Possible rebound of oil price soon? --MdW ****
+
+**** How does this discussion sound now? --MKH ****
+Many who accept that energy use is closely correlated with
+economic performance, regardless of the direction of causality,
+express concern regarding the negative effects of 
+energy market volatility, 
+rising energy prices,
+and fossil fuel depletion 
+on current and future economic performance.
+\citet{Benes:2012tm}, incorporating views on both
+geological physical constraints and 
+technological solutions to oil production, 
+suggest a near doubling of the real price of oil over the next decade.  
+The recent 50\% drop in oil prices, 
+brought about by the US shale boom,
+has led to costs exceeding revenue for many producers
+and put future viability of many firms in question~\citep{Krauss:2015aa}.
+For many OPEC countries, 
+the price of oil is below the break-even point for national budgets,
+but they may be willing to wait for a shakeout of marginal shale producers
+before providing oil price support~\citep{Krauss:2014ab}.
 \citet{Kumhof:2012ua} point out that 
 significant impacts on GDP growth could occur
 for larger oil supply shocks, 
@@ -396,14 +411,14 @@ and reduced possibilities for substitution away from oil.
 on the basis of an economic growth model with explicit 
 energy-based formulation.  
 \citet{Hamilton:2013vc} argues that 
-``[c]oping with a final peak in world oil production\dots%
+``[c]oping with a final peak in world oil production\dots{}
 [will] have much in common with previous historical episodes that resulted from 
 temporary geopolitical conflict, 
 being associated with significant declines in employment and output. 
 If the future decades look like the last 5 years, we are in for a rough time.'' 
-**** Possibly insert here what we make of the last few months' 
-developments in oil prices. 
-But, as it will be speculative, it needs to be very short and focused. --MdW ****
+Lower oil prices may be good for many world economies in the short term, 
+but the long-term viablity of today's \$50/barrel oil is questionable
+as the shale industry shakes out and as demand creeps upward.
 
 The current trends in energy production and consumption and 
 the possible significant impacts on the world economy 
