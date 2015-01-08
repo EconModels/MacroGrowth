@@ -1160,10 +1160,16 @@ by residual resampling.
 In our case, we formed resamples by adding to the fitted 
 response ($\hat{y}$) the product of a residual from the original model fit and 
 random sign ($-1$ or $1$, each with probability $0.5$).  
+**** I have little idea what this means, 
+and more importantly why we follow this particular approach :) 
+(another way of saying as we are publishing 
+in an economics journal with an audience limited in statistics, 
+we must be very clear) --MdW ****
+**** Randy: can you do a little more explaining here? 
+Perhaps we should say that this is a standard way of forming the resample time series? --MKH ****
 For the case of Cobb-Douglas and LINEX models, 
 this residual resampling occurs on the 
 log-transformed data.
-
 Intuitively, this method assumes that the residuals are indicative of 
 the variability (from many potential sources) inherent in the data such that
 it would be unsurprising if the residual from 
@@ -1187,6 +1193,9 @@ are chosen at random (with replacement).
 We repeated the resampling process 1000 times for each
 combination of growth model and country, 
 both with and without energy as appropriate.
+**** do we follow precedent here? or just a number we fell comfortable with? 
+may warrant a reference and/or short explanation why we choose 1000 times. --MdW ****
+**** Randy: Can you provide some additional explanation here? --MKH ****
 
 The coefficients from the fit to a resampled time series
 (the ``resample coefficients'') will be different from the coefficients 
