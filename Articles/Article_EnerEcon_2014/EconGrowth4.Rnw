@@ -67,6 +67,7 @@
 \usepackage{microtype}  % produces hanging punctuation and beautiful type
 \usepackage{booktabs}   % produces beautiful tables
 \usepackage{tablefootnote}  % allows footnotes in tables
+\usepackage{nicefrac}   % Gives nice fractions
 
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
@@ -132,7 +133,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -1208,9 +1209,9 @@ a poor model fit, low model sensitivity to one or more parameters,
 or correlations between parameter estimates.
 
 It is important to note that large residuals can arise from either
-(a) poor quality historical time series data, or 
-(b) a mathematical model that does not describe the underlying phenomena well.
-It is also important to note that (c) even when the residuals are small and the 
+poor quality historical time series data or 
+a mathematical model that does not describe the underlying phenomena well.
+It is also important to note that even when the residuals are small and the 
 model produces fitted values that track the observed data closely, it may
 yet be difficult to estimate some or all of the model parameters precisely.
 The resampling method employed herein reflects all three of these potential 
@@ -1232,7 +1233,8 @@ and allows for asymmetric confidence intervals.%
   \ref{fig:CES_lambda_gamma_graph}--\ref{fig:CES_ternary_graph}, and
   \ref{fig:LINEXq_Resample_Graph}),
   both because the resampling technique lends itself to visual presentation and 
-  because we believe visual comparison is more effective than tables of numbers.
+  because we believe visual comparison is more effective 
+  in communicating results than endless tables of numbers.
   }
 
 
@@ -1282,10 +1284,25 @@ $\gamma$ was recovered with $\gamma = 1 - \alpha - \beta$.
 
 Figure~\ref{fig:CD_lambda_theta_graph} shows $\lambda$ and $\theta$ values
 for Cobb-Douglas resample models with and without energy.
-Each reample is shown as a gray dot on the graph. 
+Each resample is shown as a gray dot on the graph. 
 The fit to historical data is shown as a gray crosshairs.
 
-Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots 
+Figure~\ref{fig:CD_Ternary_Scatter_Graph} shows ternary plots%
+  \footnote{
+  Ternary plots are effective for communicating relationships among three variables
+  that sum to a constant value.
+  Each vertex is labeled with a variable ($\alpha$, $\beta$, or $\gamma$)
+  whose value is unity at that location.
+  For example, a data point at the top of the ternary plots in Figure~\ref{fig:CD_Ternary_Scatter_Graph}
+  has $\gamma = 1$ and both $\alpha = 0$ and $\beta = 0$, 
+  by the constant returns to scale assumption.
+  Along each edge, the variable labeled at the opposite vertex is equal to zero.
+  For example, a data point along the bottom edge 
+  of the ternary plots in Figure~\ref{fig:CD_Ternary_Scatter_Graph}
+  has $\gamma = 0$.
+  A data point along the bottom edge and two-thirds of the way toward the $\beta$ vertex
+  has $\alpha = \nicefrac{1}{3}$, $\beta = \nicefrac{2}{3}$, and $\gamma = 0$.
+  }
 for $\alpha$, $\beta$, and $\gamma$ parameter values 
 for Cobb-Douglas (without and with energy) resample models.
 
