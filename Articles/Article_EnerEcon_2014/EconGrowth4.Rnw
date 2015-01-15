@@ -1417,9 +1417,12 @@ are considered free parameters.
 
 ****
 
-In addition to the above trials, we also fit along all boundaries.
-Table~\ref{tab:CES_boundary_models} shows the degenerate forms of CES that are fitted,
-assuming
+In addition to the above trials, we fit along all boundaries.
+Table~\ref{tab:CES_boundary_models} shows the degenerate forms of CES on each boundary.
+Equation~\ref{eq:ces_generic} accompanies Table~\ref{tab:CES_boundary_models}
+and provides the generic CES equation
+in which factors of production ($x_1$, $x_2$, $x_3$) 
+are permutations of ($k$, $l$, $e$).
 %
 \begin{equation} \label{eq:ces_generic}
   y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
@@ -1427,31 +1430,44 @@ assuming
           + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho} \; ,
 \end{equation}
 %
-where $x_1$, $x_2$, and $x_3$ are permutations of $k$, $l$, and $e$.
+In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
+``---'' indicates that a parameter is unknowable on that boundary
+(because it has been eliminated from the model), and
+an empty space indicates that the parameter is to be estimated on that boundary.
 
 \begin{table} \caption{Boundary models for the CES equation.} 
 \label{tab:CES_boundary_models} 
   \begin{center}
     \begin{tabular}{c c c c l} 
       \toprule
-      $\delta_1$  & $\sigma_1$ & $\delta$ & $\sigma$ & Boundary model \\
+      $\delta_1$  & $\delta$   & $\sigma_1$ & $\sigma$ & Boundary model \\
       \midrule
-      1           & ---        & 1        & ---      & $y = \gamma A x_1$ \\
-      0           & ---        & 1        & ---      & $y = \gamma A x_2$ \\
-      ---         & ---        & 0        & ---      & $y = \gamma A x_3$ \\
-      ---         & 0          & 1        & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
-      0           & ---        & ---      & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
-      1           & ---        & ---      & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
-      ---         & 0          & ---      & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+      1           & 1          & ---        & ---      & $y = \gamma A x_1$ \\
+      0           & 1          & ---        & ---      & $y = \gamma A x_2$ \\
+      ---         & 0          & ---        & ---      & $y = \gamma A x_3$ \\
+      ---         & 1          & 0          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
+      0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
+      1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
+      ---         & ---        & 0          & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
 %
-                  & $\infty$   & 1        & ---        
-            & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right] $ \\
+                  & 1          & $\infty$   & ---        
+            & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
 %
-      0           & ---        &          & $\infty$        
-            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right] $ \\
+      0           &            & ---        & $\infty$        
+            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
 %
-      1           & ---        &          & $\infty$        
-            & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right] $ \\
+      1           &            & ---        & $\infty$        
+            & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
+%
+                  &            & $\infty$   & $\infty$        
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\
+%
+      ---         &            & 0          & $\infty$        
+            & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
+%
+                  & ---        & $\infty$   & 0
+            & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
 %
       \bottomrule
     \end{tabular}
@@ -1460,10 +1476,14 @@ where $x_1$, $x_2$, and $x_3$ are permutations of $k$, $l$, and $e$.
 
 
 
+
+
+
+
 ****
 
 The fit with lowest $sse$ of all above trials 
-is deemed the winning model to be presented in graphs.
+is deemed the winning model and presented in graphs.
 
 \citet{Henningsen:2011td}, 
 in their detailed analysis of \citet{Kemfert:1998vd}, found that 
