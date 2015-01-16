@@ -1417,74 +1417,102 @@ are considered free parameters.
 
 ****
 
-In addition to the above trials, we fit along all boundaries.
-Table~\ref{tab:CES_boundary_models} shows the degenerate forms of CES on each boundary.
-Equation~\ref{eq:ces_generic} accompanies Table~\ref{tab:CES_boundary_models}
-and provides the generic CES equation
-in which factors of production ($x_1$, $x_2$, $x_3$) 
-are permutations of ($k$, $l$, $e$).
+In addition to the above trials, 
+and in a manner similar to our approach to the Cobb-Douglas model,
+we fit along all possible CES boundaries.
+Boundaries are given by all combinations of the following:
+$\delta_1$~=~0~or~1, 
+$\sigma_1$~=~0~or~$\infty$,
+$\delta$~=~0~or~1, and
+$\sigma$~=~0~or~$\infty$.
+Equation~\ref{eq:ces_generic} shows the generic three-factor CES equation,
+wherein factors of production ($x_1$,~$x_2$,~$x_3$) 
+are permutations of ($k$,~$l$,~$e$).
 %
 \begin{equation} \label{eq:ces_generic}
   y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
       + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
-          + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho} \; ,
+          + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}
 \end{equation}
 %
+Table~\ref{tab:CES_boundary_models} shows the set 
+of degenerate equations found along parameter boundaries.
+Each degenerate equation provides a boundary model.
+Note that many boundary parameter combinations 
+yield equivalent CES degenerate equations,%
+  \footnote{
+  For example, all possible boundary parameter combinations 
+  that include $\delta = 0$ yield the same boundary model, $y = \gamma A x_3$.
+  }
+so there are far fewer than the maximum possible number of boundary models, 81.%
+  \footnote{
+  There are three possible states (unspecified, lower boundary, upper boundary)
+  for four parameters ($\delta_1$, $\sigma_1$, $\delta$, $\sigma$),
+  which gives $3^4 = 81$ possible boundary models.
+  }
 In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
 ``---'' indicates that a parameter is unknowable on that boundary
-(because it has been eliminated from the model), and
-an empty space indicates that the parameter is to be estimated on that boundary.
+(because it does not appear in the boundary model), and
+an empty space indicates that the parameter 
+can be estimated on that boundary using the degenerate equation.
+The top portion of Table~\ref{tab:CES_boundary_models} shows 
+two-parameter CES boundary models
+(similar to the CES model without energy in Equation~\ref{eq:CES})
+with $\delta = 1$, $\sigma$ unknowable, and $x_3$ absent.
+If the fitted parameters in a boundary model violate constraints, 
+the boundary model is rejected.
 
 \begin{table} \caption{Boundary models for the CES equation.} 
 \label{tab:CES_boundary_models} 
   \begin{center}
     \begin{tabular}{c c c c l} 
       \toprule
-      $\delta_1$  & $\delta$   & $\sigma_1$ & $\sigma$ & Boundary model \\
+      $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
       \midrule
-      1           & 1          & ---        & ---      & $y = \gamma A x_1$ \\
-      0           & 1          & ---        & ---      & $y = \gamma A x_2$ \\
-      ---         & 0          & ---        & ---      & $y = \gamma A x_3$ \\
-      ---         & 1          & 0          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
-      0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
-      1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
-      ---         & ---        & 0          & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+      1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
+      0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
+      ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
 %
-                  & 1          & $\infty$   & ---        
+                  & $\infty$   & 1          & ---        
             & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
 %
-      0           &            & ---        & $\infty$        
-            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
+                  &            & 1          & ---
+            & $y = \gamma A \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}$ \\
+\midrule
+      ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
+      1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
+      0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
+      ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
 %
-      1           &            & ---        & $\infty$        
+      1           & ---        &            & $\infty$        
             & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
 %
-                  &            & $\infty$   & $\infty$        
+      0           & ---        &            & $\infty$        
+            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
+%
+                  & $\infty$   &            & $\infty$        
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
                     + \left( 1 - \delta \right) x_3  \right\}$ \\
 %
-      ---         &            & 0          & $\infty$        
+      ---         & 0          &            & $\infty$        
             & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
 %
-                  & ---        & $\infty$   & 0
+                  & $\infty$   & ---        & 0
             & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
 %
-                  & 1          &            & ---
-            & $y = \gamma A \left[ \delta x_1^{-\rho_1} 
-                    + \left( 1 - \delta \right) x_2^{-\rho_1} \right]^{-1/\rho_1}$ \\
-%
-      0           &            & ---        & 
-            & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
-%
-      1           &            & ---        & 
+      1           & ---        &         & 
             & $y = \gamma A \left[ \delta x_1^{-\rho} 
                     + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$ \\ 
 %
-                  & ---        &            & 0
+      0           & ---        &            & 
+            & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
+%
+                  &            & ---     & 0
             & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
 %
-      ---         &            & 0          & 
+      ---         & 0          &            & 
             & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
 %
@@ -1493,11 +1521,10 @@ an empty space indicates that the parameter is to be estimated on that boundary.
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}  
                     + \left( 1 - \delta \right) x_3  \right\}$ \\ 
 %
-                  &            & $\infty$   &
+                  & $\infty$   &            &
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
                     + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
-                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}  $ \\ 
-%
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
