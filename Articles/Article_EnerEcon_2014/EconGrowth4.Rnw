@@ -1436,19 +1436,35 @@ are permutations of ($k$,~$l$,~$e$).
 \end{equation}
 %
 Table~\ref{tab:CES_boundary_models} shows the set 
-of degenerate equations found along parameter boundaries.
+of 20 degenerate equations found along parameter boundaries.
 Each degenerate equation provides a boundary model.
 Note that many boundary parameter combinations 
-yield equivalent CES degenerate equations,%
+yield equivalent CES boundary models,%
   \footnote{
   For example, all possible boundary parameter combinations 
   that include $\delta = 0$ yield the same boundary model, $y = \gamma A x_3$.
   }
-so there are far fewer than the maximum possible number of boundary models, 81.%
+so there are far fewer than the maximum possible number of degenerate equations~(81).%
   \footnote{
   There are three possible states (unspecified, lower boundary, upper boundary)
   for four parameters ($\delta_1$, $\sigma_1$, $\delta$, $\sigma$),
   which gives $3^4 = 81$ possible boundary models.
+  }
+Boundary models obtained when $\delta_1$ or $\delta$ is at an extreme value
+are straightforward to derive from Equation~\ref{eq:ces_generic}.
+When $\sigma_1$ or $\sigma$ is 0, 
+factors of production are complimentary,
+and the Leontief model applies.%
+  \footnote{
+  For the case of $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
+  $y = \gamma A \min (x_1, x_2)$.
+  }
+When $\sigma_1$ or $\sigma$ is $\infty$, 
+factors of production are subsitutible,
+and the linear model applies.%
+  \footnote{
+  For the case of $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
+  $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$.
   }
 In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
 ``---'' indicates that a parameter is unknowable on that boundary
@@ -1458,7 +1474,7 @@ can be estimated on that boundary using the degenerate equation.
 The top portion of Table~\ref{tab:CES_boundary_models} shows 
 two-parameter CES boundary models
 (similar to the CES model without energy in Equation~\ref{eq:CES})
-with $\delta = 1$, $\sigma$ unknowable, and $x_3$ absent.
+with $\delta~=~1$, $\sigma$~unknowable, and $x_3$~absent.
 If the fitted parameters in a boundary model violate constraints, 
 the boundary model is rejected.
 
