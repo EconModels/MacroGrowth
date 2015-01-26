@@ -191,7 +191,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param constrained a logical indicating whether the parameters are constrained
+#' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @export
 cdModel <- function(formula, data, response, capital, labor, energy, time, 
@@ -454,7 +454,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
 #' \code{c} and \code{d} are optional.
 #' @param data a data frame, in which to evaluate the formula.
-#' #' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param a instead of specifying a formula, expressions for
