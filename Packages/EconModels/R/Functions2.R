@@ -61,6 +61,7 @@ chooseCESControl <- function(algorithm){
   control <- switch(algorithm,
                     "PORT" = list(iter.max=2000, eval.max=2000),
                     "L-BFGS-B" = list(maxit=5000),
+                    "LM" = nls.lm.control( maxiter = 1000 ),
                     list()
   )
   return(control)
