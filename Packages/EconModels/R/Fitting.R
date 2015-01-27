@@ -733,7 +733,8 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
     # The no-energy situation is tantamount to saying that there is
     # infinite substitutability between (kl) and e. 
     # So, assign the value of rho to be -1 (sigma = Inf).
-    rho <- -1
+    # rho <- -1
+    rho <- NA
   } else {
     # This is the no-energy situation. Things are more straightforward.
     delta_1 <- coef(model)["delta_1"]
