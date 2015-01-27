@@ -36,12 +36,15 @@ the components can be specified individually}
 
 \item{nest}{a permutation (a,b,c,d) of the integers 1 through 4.
 For models with 3 factors, the nesting
-is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
-because \code{origModel} will be used to obtain the starting point for a gradient search.}
+is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)}
 
-\item{prevModel}{a model used to start gradient searches.
-Use \code{NULL} if you want to use the default start locations AND do a grid search
-in sigma.}
+\item{prevModel}{a model used to start a gradient search.
+\code{prevModel} will be used as a starting point for a gradient search after
+(a) grid search in \code{rho} and \code{rho1} and
+(b) a gradient search starting from the best grid search
+are complete.
+#' Use \code{NULL} (the default value)
+if you want to skip the gradient search from a previous model.}
 
 \item{rho,rho1}{Default values for \code{rho} and \code{rho1} are a grid upon which
 searches will be made.
@@ -50,10 +53,11 @@ starting values for \code{rho} and \code{rho1}, so that we don't need to do a fi
 the default values.
 \code{rho = 0.25} corresponds to \code{sigma = 0.8}.}
 
-\item{digits}{the number of sse digits that is to be considered significant.}
+\item{digits}{the number of sse digits that is to be considered significant
+when comparing one fit against another.}
 
 \item{save.data}{a logical indicating whether data is to be saved with the model.
-Be sure to set TRUE if resampling is needed later.}
+Be sure to set \code{TRUE} if resampling is needed later.}
 
 \item{constrained}{a logical indicating whether the parameters should be constrained in the fitting process.}
 }
@@ -65,7 +69,11 @@ This function fits a CES model
 }
 \note{
 For now the components in \code{formula} (or the arguments \code{response},
-\code{a}, \code{b}, etc. ) must correspond to variables in \code{data} and may
+\code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
 not be other kinds of expressions.
+
+For now, this function works for only 2 or 3 factors of production.
+Setting the value of \code{d} or using a formula of the form \code{y ~ a + b + c + d + time}
+will not work.
 }
 

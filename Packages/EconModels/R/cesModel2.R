@@ -19,23 +19,30 @@
 #' @param nest a permutation (a,b,c,d) of the integers 1 through 4.
 #' For models with 3 factors, the nesting
 #' is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
-#' because \code{origModel} will be used to obtain the starting point for a gradient search.
-#' @param prevModel a model used to start gradient searches.
-#' Use \code{NULL} if you want to use the default start locations AND do a grid search 
-#' in sigma.
+#' @param prevModel a model used to start a gradient search.
+#' \code{prevModel} will be used as a starting point for a gradient search after
+#' (a) grid search in \code{rho} and \code{rho1} and 
+#' (b) a gradient search starting from the best grid search 
+#' are complete.
+#' #' Use \code{NULL} (the default value) 
+#' if you want to skip the gradient search from a previous model.
 #' @param rho,rho1 Default values for \code{rho} and \code{rho1} are a grid upon which 
 #' searches will be made.
 #' Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default 
 #' starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from 
 #' the default values.
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
-#' @param digits the number of sse digits that is to be considered significant.
+#' @param digits the number of sse digits that is to be considered significant 
+#' when comparing one fit against another.
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @param save.data a logical indicating whether data is to be saved with the model.
-#' Be sure to set TRUE if resampling is needed later.
+#' Be sure to set \code{TRUE} if resampling is needed later.
 #' @note For now the components in \code{formula} (or the arguments \code{response}, 
-#' \code{a}, \code{b}, etc. ) must correspond to variables in \code{data} and may
+#' \code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
 #' not be other kinds of expressions.
+#' @note For now, this function works for only 2 or 3 factors of production.
+#' Setting the value of \code{d} or using a formula of the form \code{y ~ a + b + c + d + time}
+#' will not work.
 #' @return a cesEst model with additional information attached as attributes.
 #' @export
 cesModel2 <- function(formula, data,
@@ -74,18 +81,21 @@ cesModel2 <- function(formula, data,
       numComponents <- 4
     }
   } else {
-    numComponents <- ncol(attr(terms(formula),"factors")) - 1 # subtract off time
+    numComponents <- ncol(attr(terms(formula), "factors")) - 1 # subtract off time
   }
   
   # Note: we don't have to verify algorithms. 
-  # If constrained fitting is desired, we fit along boundaries with special equations.
+  # If constrained fitting is desired, we fit along boundaries with special equations below.
   # cesEst will be used in its unconstrained mode always.
  
   # Set up *Names 
   fNames <- rownames( attr(terms(formula), "factors") )
   numFactors <- length(fNames) - 2  # not response, not time
+  if (numFactors >= 4){
+    stop("4 factors of prodcution not supported in cesModel at this time.")
+  }
   xNames <- switch( as.character(numFactors),
-                    "2" = fNames[1 + (1:2)],      # add 1 here to avoid response
+                    "2" = fNames[1 + nest[1:2]],      # add 1 here to avoid response
                     "3" = fNames[1 + nest[1:3]],
                     "4" = fNames[1 + nest[1:4]]
   )
@@ -122,6 +132,33 @@ cesModel2 <- function(formula, data,
   #  sdata <- subset(data, select = all.vars(formula))
   #  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
+  #
+  # If we are fitting constrained, do fits along all constraints.
+  #
+  if (constrained){
+    # Calculate new combinations of variables.
+    # Note that xNames contains the variable names for the factors of production 
+    # in the left-to-right order that they appear in the CES function.
+    x1Name <- xNames[[1]]
+    x1 <- eval(substitute(data$colx1, list(colx1 = x1Name)))
+    x2Name <- xNames[[2]]
+    x2 <- eval(substitute(data$colx2, list(colx2 = x2Name)))
+    minx1x2 <- pmin(x1, x2)
+    if (numFactors >= 3){
+      x3Name <- xNames[[3]]
+      x3 <- eval(substitute(data$colx3, list(colx3 = x3Name)))
+      minx1x3 <- pmin(x1, x3)
+      minx2x3 <- pmin(x2, x3)
+      minx1x2x3 <- pmin(x1, x2, x3)
+    }
+    if (numFactors == 4){
+      # Full support for 4 factors of production has not been included in this function.
+      x4Name <- xNames[[4]]
+      x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
+    }
+  }  
+  
+  
   models <- list()
   for (algorithm in algorithms) {
     #
@@ -131,14 +168,13 @@ cesModel2 <- function(formula, data,
       # We want a model with only 2 factors. No need for a rho1 argument.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data = DATA, yName = yNAME, xNames = xNAMES, 
+          cesEst(data = data, yName = yNAME, xNames = xNAMES, 
                  tName = tNAME, method=ALGORITHM, rho = RHO,
                  control = CONTROL, multErr = MULTERR, 
-                 lower = LOWER, upper = UPPER, ...),
-          list(DATA = data, yNAME = yName, xNAMES=xNames,
+                 lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
+          list(yNAME = yName, xNAMES=xNames,
                tNAME = tName, ALGORITHM = algorithm, RHO = rho,
-               CONTROL = chooseCESControl(algorithm), MULTERR = multErr,
-               LOWER = -Inf, UPPER = Inf) # Always fit unconstrained. Constraints applied later.
+               CONTROL = chooseCESControl(algorithm), MULTERR = multErr) 
         ))
         # cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
         #       rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
@@ -152,14 +188,13 @@ cesModel2 <- function(formula, data,
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data=DATA, yName=yNAME, xNames=xNAMES, 
+          cesEst(data=data, yName=yNAME, xNames=xNAMES, 
                  tName=tNAME, method=ALGORITHM, rho = RHO, rho1 = RHO1, 
                  control=CONTROL, multErr=MULTERR, 
-                 lower = LOWER, upper = UPPER, ...),
-          list( DATA = data, yNAME = yName, xNAMES = xNames, 
+                 lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
+          list( yNAME = yName, xNAMES = xNames, 
                 tNAME = tName, ALGORITHM = algorithm, RHO = rho, RHO1 = rho1, 
-                CONTROL = chooseCESControl(algorithm), MULTERR=multErr,
-                LOWER = -Inf, UPPER = Inf) # Always fit unconstrained. Constraints applied later.
+                CONTROL = chooseCESControl(algorithm), MULTERR=multErr) 
         ))
         #cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
         #       rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
@@ -187,10 +222,9 @@ cesModel2 <- function(formula, data,
       eval(substitute(
         cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
                control=CONTROL, start=START, multErr=MULTERR, 
-               lower = LOWER, upper = UPPER, ...),
+               lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
         list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-              CONTROL = chooseCESControl(algorithm), START=start, MULTERR=multErr, 
-              LOWER = -Inf, UPPER = Inf) # Always fit unconstrained. Constraints applied later.
+              CONTROL = chooseCESControl(algorithm), START=start, MULTERR=multErr) 
       ))
       #      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
       #             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
@@ -217,10 +251,9 @@ cesModel2 <- function(formula, data,
           eval(substitute(
             cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
                    control=CONTROL, start=START, multErr=MULTERR, 
-                   lower = LOWER, upper = UPPER, ...),
+                   lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
             list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-                  CONTROL =  chooseCESControl(algorithm), START=start, MULTERR=multErr, 
-                  LOWER = -Inf, UPPER = Inf) # Always fit unconstrained. Constraints applied later.
+                  CONTROL =  chooseCESControl(algorithm), START=start, MULTERR=multErr) 
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
@@ -234,6 +267,8 @@ cesModel2 <- function(formula, data,
       )
     }
   }
+
+  
   
   res <- bestModel(models, digits=digits)
   if ( is.null( res ) ) {
