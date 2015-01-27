@@ -730,13 +730,13 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
     # we're defining that substitutability as rho_1.
     # So, reassign here.
     rho_1 <- coef(model)["rho"]
-    # The no-energy situation is tantamount to saying that there is
-    # infinite substitutability between (kl) and e. 
-    # So, assign the value of rho to be -1 (sigma = Inf).
-    # rho <- -1
+    # In the no-energy situation, we have no way of knowing the value of rho.
+    # So, assign the value of rho to be NA.
     rho <- NA
   } else {
-    # This is the no-energy situation. Things are more straightforward.
+    # This is the with-energy situation. Things are more straightforward.
+    # delta_1 and sigma_1 are for the inner nest.
+    # delta and rho are for the outer nest.
     delta_1 <- coef(model)["delta_1"]
     delta <- coef(model)["delta"]
     rho_1 <- coef(model)["rho_1"]
@@ -763,7 +763,9 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
                               sigma = as.vector(1 / (1 + rho)),
                               sse = sum(resid(model)^2)
   )
-  # Calculate some metadata, including gamma. See comments above.
+  # Calculate some metadata, including gamma. 
+  # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
+  # And that the nest argument provides the actual ordering of the factors of production in the CES model.
   if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) {
     alpha <- delta_1
     beta <- 1.0 - delta_1
