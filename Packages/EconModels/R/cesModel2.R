@@ -156,7 +156,25 @@ cesModel2 <- function(formula, data,
       x4Name <- xNames[[4]]
       x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
     }
+    y <- eval(substitute(data$y, list(y = yName)))
+    time <- eval(substitute(data$time, list(time = tName)))
   }  
+  # Fit model 1: y = gamma * A * x1 as ln(y/x1) = ln(gamma) + lambda*time
+  # For model 1, the constraints are delta_1 = 1, and delta = 1.
+  # rho_1 (sigma_1) and rho (sigma) are unknowable.
+  mod1 <- lm(log(y/x1) ~ time)
+  naturalCoeffs <- data.frame(
+    gamma_coef = as.vector(exp(mod1$coefficients[[1]])),
+    lambda = as.vector(mod1$coefficients[[2]]),
+    delta_1 = as.vector(1),
+    delta = as.vector(1),
+    sigma_1 = NA,
+    rho_1 = NA, 
+    sigma = NA,
+    rho = NA,
+    sse = as.vector(sum(resid(mod1)^2))
+  )
+  attr(mod1, "naturalCoeffs") <- naturalCoeffs
   
   
   models <- list()
