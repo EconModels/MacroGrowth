@@ -766,11 +766,11 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
   # Calculate some metadata, including gamma. 
   # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
   # And that the nest argument provides the actual ordering of the factors of production in the CES model.
-  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) {
+  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) { # (nest == "(kl)"){
     alpha <- delta_1
     beta <- 1.0 - delta_1
     gamma <- 0.0
-  } else if (nestMatch(nest, c(2, 1))){
+  } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
     alpha <- 1 - delta_1
     beta <- delta_1
     gamma <- 0
