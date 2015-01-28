@@ -158,7 +158,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
     lambda = as.vector(lambda),
     m = as.vector(m),
     sse = sum(resid(res)^2),
-    isConv = TRUE
+    isConv = TRUE # always, because we use lm
   )
   
   attr(res, "naturalCoeffs") <- naturalCoeffs
@@ -170,7 +170,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   attr(res, "formula") <- formula
   
-  class(res) <- c("sfModel", class(res))
+  class(res) <- c("SFmodel", class(res))
   return(res)
   
 }
@@ -275,11 +275,9 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
       # Need to adjust alpha, because we are beyond 0.0 or 1.0
       if (alpha < 0.0){
         alpha <- 0.0
-        # res <- lm( formulas[[2]], data=sdata )
         res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
       } else {
         alpha <- 1.0
-        # res <- lm( formulas[[3]], data=sdata )
         res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
       }
       # Refit for lambda only
@@ -293,7 +291,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                               beta = as.vector(1.0 - alpha),
                               gamma = 0.0, # Energy is not a factor for this model.
                               sse = sum(resid(res)^2),
-                              isConv = TRUE  # res$convInfo$isConv
+                              isConv = TRUE  # always, because we use lm.
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
 
@@ -409,7 +407,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
     logscale= cf["logscale"],
     scale = exp( cf["logscale"] ),
     sse = sum(resid(res)^2),
-    isConv = TRUE,
+    isConv = TRUE, # always, because we use lm.
     winner = winner,
     lambda = cf["lambda"]
   )
@@ -621,7 +619,7 @@ cesModel <- function(formula, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -649,7 +647,7 @@ cesModel <- function(formula, data,
     )
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -669,7 +667,7 @@ cesModel <- function(formula, data,
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+        model <- addMetaData(model, formula=formula, nest=nest, history=hist)
         models[length(models)+1] <- list(model)
       },
       error = function(e) {  
@@ -690,79 +688,96 @@ cesModel <- function(formula, data,
     attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   }
   
+  class(res) <- c("CESmodel", class(res))
   return(res)
 }
 
-#' Add meta data to CES model object
+#' Add meta data to model object.
 #'
-#'  
-#' This function adds metadata to a model.  Currently this is only designed to
-#' work with CES models. Metadata is attached as attributes (naturalCoeffs and meta)
-#' to the object and the new object is returned from the function.
+#' This function adds metadata (\code{naturalCoeffs} and \code{meta}) to a model.  
+#' Currently this is designed to work with CES models only. 
+#' @param model the model to which metadata is to be added.
+#' @param formula the original CES formula. Assumed to be of the form \code{y ~ k + l + e + t}.
+#' @param nest the nesting for a CES model. Assumed to be of the form \code{c(1,2,3,4)}.
+#' @param naturalCoeffs the \code{naturalCoeffs} object to be added as metadata.
+#' @param history the fitting history to be attached to the meta attribute.
+#' @note If no \code{naturalCoeffs} argument is specified, 
+#' an attempt will be made to calculate a \code{naturalCoeffs} object. 
+#' The calculated \code{naturalCoeffs} object will be added to the model.
+#' @return \code{model} with two additional attributes, \code{naturalCoeffs} and \code{meta}.
 #' 
-addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
+addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   if (is.null(model)){
     return(model) 
   }
   
-  if ( ! as.character(model$call[[1]]) == "cesEst" ){
-    stop("Unsupported model type.  Must be NULL or the result of calling cesEst()")
+  # cesEst is from the cesEst function. CESmodel comes from constrained fits to CES.
+  if ( ! ( ("cesEst" %in% class(model)) || ("CESmodel" %in% class(model)) ) ){
+    stop(paste0("Unsupported model class: " + class(model) + ". model must be NULL, cesEst, or CESmodel"))
   }
   
-  grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
-  
-  # We may be arriving here with a model that was estimated wihthout energy.
-  # If that is the case, we will have only rho and sigma parameters, not
-  # rho_1 and delta_1 parameters. 
-  # Test for the without energy model.
-  withoutEnergy <- is.na(coef(model)["rho_1"]) || is.na(coef(model)["delta_1"])
+  if (is.null(naturalCoeffs)){
+    # Need to calculate naturalCoeffs, because they weren't supplied.
+    
+    # We may be arriving here with a model that was estimated wihthout energy.
+    # If that is the case, we will have only rho and sigma parameters, not
+    # rho_1 and delta_1 parameters. 
+    # Test for the without energy model.
+    withoutEnergy <- is.na(coef(model)["rho_1"]) || is.na(coef(model)["delta_1"])
 
-  if (withoutEnergy){
-    # The coefficient representing the split between k and l 
-    # is given by delta in the model. But, in our calculations, 
-    # we're defining the split between k and l and delta_1.
-    # So, reassign here.
-    delta_1 <- coef(model)["delta"]
-    # The without-energy model has delta <- 1
-    delta <- 1
-    # The coefficient representing the substitutability between k and l
-    # is given by rho in the model argument. But, in our calculations,
-    # we're defining that substitutability as rho_1.
-    # So, reassign here.
-    rho_1 <- coef(model)["rho"]
-    # In the no-energy situation, we have no way of knowing the value of rho.
-    # So, assign the value of rho to be NA.
-    rho <- NA
-  } else {
-    # This is the with-energy situation. Things are more straightforward.
-    # delta_1 and sigma_1 are for the inner nest.
-    # delta and rho are for the outer nest.
-    delta_1 <- coef(model)["delta_1"]
-    delta <- coef(model)["delta"]
-    rho_1 <- coef(model)["rho_1"]
-    rho <- coef(model)["rho"]
+    if (withoutEnergy){
+      # The coefficient representing the split between k and l 
+      # is given by delta in the model. But, in our calculations, 
+      # we're defining the split between k and l and delta_1.
+      # So, reassign here.
+      delta_1 <- coef(model)["delta"]
+      # The without-energy model has delta <- 1
+      delta <- 1
+      # The coefficient representing the substitutability between k and l
+      # is given by rho in the model argument. But, in our calculations,
+      # we're defining that substitutability as rho_1.
+      # So, reassign here.
+      rho_1 <- coef(model)["rho"]
+      # In the no-energy situation, we have no way of knowing the value of rho.
+      # So, assign the value of rho to be NA.
+      rho <- NA
+    } else {
+      # This is the with-energy situation. Things are more straightforward.
+      # delta_1 and sigma_1 are for the inner nest.
+      # delta and rho are for the outer nest.
+      delta_1 <- coef(model)["delta_1"]
+      delta <- coef(model)["delta"]
+      rho_1 <- coef(model)["rho_1"]
+      rho <- coef(model)["rho"]
+    }
+    naturalCoeffs <- data.frame(lambda = as.vector(coef(model)["lambda"]),
+                                delta_1 = as.vector(delta_1),
+                                rho_1 = as.vector(rho_1),
+                                sigma_1 = as.vector(1 / (1 + rho_1)),
+                                # Variable name collision alert: there is a gamma coefficient
+                                # in the CES model (gamma_coef) and a gamma calculated 
+                                # from the delta values.
+                                # gamma_coef is the coefficient in the CES model. It should be near 1.0.
+                                # gamma is calculated from the delta values in the model.
+                                # gamma is analogous to the gamma exponent on energy in the Cobb-Douglas model.
+                                # And, gamma is the required name of the variable to be plotted with the ternary 
+                                # plot function standardTriPlot.  (standardTriPlot assumes that one variable 
+                                # is named "gamma", and it plots that variable.)  
+                                # gamma_coef is in the naturalCoeffs attribute.
+                                # gamma is in the meta attribute.
+                                gamma_coef = as.vector(coef(model)["gamma"]),
+                                delta = as.vector(delta),
+                                rho = as.vector(rho),
+                                sigma = as.vector(1 / (1 + rho)),
+                                isConv = model$convergence,
+                                sse = sum(resid(model)^2)
+    )    
+  } else{
+    # naturalCoeffs was supplied. Use it for important information.
+    delta <- naturalCoeffs$delta
+    delta_1 <- naturalCoeffs$delta_1
   }
-  naturalCoeffs <- data.frame(lambda = as.vector(coef(model)["lambda"]),
-                              delta_1 = as.vector(delta_1),
-                              rho_1 = as.vector(rho_1),
-                              sigma_1 = as.vector(1 / (1 + rho_1)),
-                              # Variable name collision alert: there is a gamma coefficient
-                              # in the CES model (gamma_coef) and a gamma calculated 
-                              # from the delta values.
-                              # gamma_coef is the coefficient in the CES model. It should be near 1.0.
-                              # gamma is calculated from the delta values in the model.
-                              # gamma is analogous to the gamma exponent on energy in the Cobb-Douglas model.
-                              # And, gamma is the required name of the variable to be plotted with the ternary 
-                              # plot function standardTriPlot.  (standardTriPlot assumes that one variable 
-                              # is named "gamma", and it plots that variable.)  
-                              # gamma_coef is in the naturalCoeffs attribute.
-                              # gamma is in the meta attribute.
-                              gamma_coef = as.vector(coef(model)["gamma"]),
-                              delta = as.vector(delta),
-                              rho = as.vector(rho),
-                              sigma = as.vector(1 / (1 + rho)),
-                              sse = sum(resid(model)^2)
-  )
+
   # Calculate some metadata, including gamma. 
   # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
   # And that the nest argument provides the actual ordering of the factors of production in the CES model.
@@ -801,22 +816,30 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
   } else {
     stop(paste("Unknown nest:", nestStrParen, "in addMetaData."))
   }
-  metaData <- data.frame( isConv = model$convergence,
-                          algorithm = model$method,
+  
+  # Tell whether a grid search was used.
+  grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
+  
+  # Get the nest information
+  fNames <- cesFormulaNames(formula, nest)
+  
+  # Boundary models may come in here with NULL items. Convert NULL to NA before adding to the data.frame.
+  metaData <- data.frame( isConv = if (is.null(model$convergence)){NA} else {model$convergence},
+#                           algorithm = model$method,
                           #                          iter = as.vector(model["iter"]),
-                          grid = grid,
-                          alpha = as.vector(alpha),
-                          beta = as.vector(beta),
-                          gamma = as.vector(gamma),
-                          start.lambda = as.vector(model$start["lambda"]),
-                          start.delta_1 = as.vector(model$start["delta_1"]),
-                          start.rho_1 = as.vector(model$start["rho_1"]),
-                          start.gamma_coef = as.vector(model$start["gamma"]),
-                          start.delta = as.vector(model$start["delta"]),
-                          start.rho = as.vector(model$start["rho"]),
-                          history=history,
-                          nestStr = nestStr,
-                          nestStrParen = nestStrParen
+                          grid = grid
+#                           alpha = as.vector(alpha),
+#                           beta = as.vector(beta),
+#                           gamma = as.vector(gamma)
+#                           start.lambda = as.vector(model$start["lambda"]),
+#                           start.delta_1 = as.vector(model$start["delta_1"]),
+#                           start.rho_1 = as.vector(model$start["rho_1"]),
+#                           start.gamma_coef = as.vector(model$start["gamma"]),
+#                           start.delta = as.vector(model$start["delta"]),
+#                           start.rho = as.vector(model$start["rho"]),
+#                           history=history
+#                           nestStr = fNames$nestStr,
+#                           nestStrParen = fNames$nestStrParen
   )
   
   metaList <- list(  isConv = model$convergence,
@@ -833,8 +856,8 @@ addMetaData <- function(model, nest, nestStr, nestStrParen, history=""){
                      start.delta = as.vector(model$start["delta"]),
                      start.rho = as.vector(model$start["rho"]),
                      history=history,
-                     nestStr = nestStr,
-                     nestStrParen = nestStrParen
+                     nestStr = fNames$nestStr,
+                     nestStrParen = fNames$nestStrParen
   )
   
   if ( nrow(metaData) > 1 ) {

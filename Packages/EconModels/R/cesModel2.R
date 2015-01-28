@@ -54,7 +54,7 @@ cesModel2 <- function(formula, data,
                       time,
                       nest=1:4,
                       prevModel=NULL,
-                      algorithms=c("PORT","L-BFGS-B", "LM"), 
+                      algorithms=c("PORT","L-BFGS-B"), 
                       multErr=TRUE,
                       rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
@@ -85,6 +85,7 @@ cesModel2 <- function(formula, data,
   yName <- fNames$yName
   xNames <- fNames$xNames
   tName <- fNames$tName
+  numFactors <- fNames$numFactors
 
   sdata <- data[ , cesNames ]
   if ( ! any( complete.cases(sdata) ) ) {
@@ -116,27 +117,29 @@ cesModel2 <- function(formula, data,
       # Full support for 4 factors of production has not been included in this function.
       x4Name <- xNames[[4]]
       x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
+      stop("Full support for 4 factoros of production has not been implemented in cesModel.")
     }
     y <- eval(substitute(data$y, list(y = yName)))
     time <- eval(substitute(data$time, list(time = tName)))
+
+    # Fit model 1: y = gamma * A * x1 as ln(y/x1) = ln(gamma) + lambda*time
+    # For model 1, the constraints are delta_1 = 1, and delta = 1.
+    # rho_1 (sigma_1) and rho (sigma) are unknowable.
+    mod1 <- lm(log(y/x1) ~ time)
+    class(mod1) <- c("CESmodel", class(mod1))
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(mod1$coefficients[[1]])),
+      lambda = as.vector(mod1$coefficients[[2]]),
+      delta_1 = as.vector(1),
+      delta = as.vector(1),
+      sigma_1 = NA,
+      rho_1 = NA, 
+      sigma = NA,
+      rho = NA,
+      sse = as.vector(sum(resid(mod1)^2))
+    )
+    mod1 <- addMetaData(model=mod1, formula=formula, nest=nest, naturalCoeffs=naturalCoeffs)
   }  
-  # Fit model 1: y = gamma * A * x1 as ln(y/x1) = ln(gamma) + lambda*time
-  # For model 1, the constraints are delta_1 = 1, and delta = 1.
-  # rho_1 (sigma_1) and rho (sigma) are unknowable.
-  mod1 <- lm(log(y/x1) ~ time)
-  mod1 <- addMetaData(mod1, nest, )
-  naturalCoeffs <- data.frame(
-    gamma_coef = as.vector(exp(mod1$coefficients[[1]])),
-    lambda = as.vector(mod1$coefficients[[2]]),
-    delta_1 = as.vector(1),
-    delta = as.vector(1),
-    sigma_1 = NA,
-    rho_1 = NA, 
-    sigma = NA,
-    rho = NA,
-    sse = as.vector(sum(resid(mod1)^2))
-  )
-  attr(mod1, "naturalCoeffs") <- naturalCoeffs
   
   
   models <- list()
@@ -156,8 +159,6 @@ cesModel2 <- function(formula, data,
                tNAME = tName, ALGORITHM = algorithm, RHO = rho,
                CONTROL = chooseCESControl(algorithm), MULTERR = multErr) 
         ))
-        # cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-        #       rho=rho, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e)))
@@ -176,8 +177,6 @@ cesModel2 <- function(formula, data,
                 tNAME = tName, ALGORITHM = algorithm, RHO = rho, RHO1 = rho1, 
                 CONTROL = chooseCESControl(algorithm), MULTERR=multErr) 
         ))
-        #cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-        #       rho=rho, rho1=rho1, control=chooseCESControl(algorithm), multErr=multErr, ...)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e)))
@@ -187,7 +186,7 @@ cesModel2 <- function(formula, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -206,8 +205,6 @@ cesModel2 <- function(formula, data,
         list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
               CONTROL = chooseCESControl(algorithm), START=start, MULTERR=multErr) 
       ))
-      #      cesEst(data=data, yName=yName, xNames=xNames, tName=tName, method=algorithm, 
-      #             control=chooseCESControl(algorithm), start=start, multErr=multErr, ...)
     },
     error = function(e) { 
       warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e)))
@@ -216,7 +213,7 @@ cesModel2 <- function(formula, data,
     )
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -237,7 +234,7 @@ cesModel2 <- function(formula, data,
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, nest=nest, nestStr=nestStr, nestStrParen=nestStrParen, history=hist)
+        model <- addMetaData(model, formula=formula, nest=nest, history=hist)
         models[length(models)+1] <- list(model)
       },
       error = function(e) {  
@@ -257,7 +254,7 @@ cesModel2 <- function(formula, data,
     if (save.data) { attr(res, "data") <- data }
     attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   }
-  
+
   return(res)
 }
 
@@ -318,7 +315,6 @@ cesFormulaNames <- function(formula, nest){
     ")"
   )
   
-  # remove incomplete cases because cesEst() fails with incomplete cases.
   cesNames <- c(yName, xNames, tName)
   
   out <- list(numFactors = numFactors, 
@@ -327,6 +323,6 @@ cesFormulaNames <- function(formula, nest){
               yName = yName,
               nestStr = nestStr,
               nestStrParen = nestStrParen,
-              cesNames)
+              cesNames = cesNames)
   return(out)  
 }
