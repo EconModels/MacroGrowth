@@ -94,6 +94,8 @@ cesModel2 <- function(formula, data,
   # This ensures that response is the first column.  This is assumed in downstream code.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
+  models <- list()
+  
   #
   # If we are fitting constrained, do fits along all constraints.
   #
@@ -139,10 +141,11 @@ cesModel2 <- function(formula, data,
       sse = as.vector(sum(resid(mod1)^2))
     )
     mod1 <- addMetaData(model=mod1, formula=formula, nest=nest, naturalCoeffs=naturalCoeffs)
+    attr(mod1, "boundaryModNum") <- 1
+    models[length(models)+1] <- list(mod1)
   }  
   
   
-  models <- list()
   for (algorithm in algorithms) {
     #
     # Try grid search.
