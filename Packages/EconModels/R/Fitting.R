@@ -822,29 +822,11 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   
   # Get the nest information
   fNames <- cesFormulaNames(formula, nest)
-  
-  # Boundary models may come in here with NULL items. Convert NULL to NA before adding to the data.frame.
-  metaData <- data.frame( isConv = if (is.null(model$convergence)){NA} else {model$convergence},
-#                           algorithm = model$method,
-                          #                          iter = as.vector(model["iter"]),
-                          grid = grid
-#                           alpha = as.vector(alpha),
-#                           beta = as.vector(beta),
-#                           gamma = as.vector(gamma)
-#                           start.lambda = as.vector(model$start["lambda"]),
-#                           start.delta_1 = as.vector(model$start["delta_1"]),
-#                           start.rho_1 = as.vector(model$start["rho_1"]),
-#                           start.gamma_coef = as.vector(model$start["gamma"]),
-#                           start.delta = as.vector(model$start["delta"]),
-#                           start.rho = as.vector(model$start["rho"]),
-#                           history=history
-#                           nestStr = fNames$nestStr,
-#                           nestStrParen = fNames$nestStrParen
-  )
-  
-  metaList <- list(  isConv = model$convergence,
-                     algorithm = model$method,
-                     iter = as.vector(model$iter),
+
+  # Create the list of meta information.
+  metaList <- list(  isConv = naturalCoeffs$isConv,
+                     algorithm = as.vector(model$method),
+                     iter = as.vector(model$iter["function"]),
                      grid = grid,
                      alpha = as.vector(alpha),
                      beta = as.vector(beta),
@@ -855,13 +837,17 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                      start.gamma_coef = as.vector(model$start["gamma"]),
                      start.delta = as.vector(model$start["delta"]),
                      start.rho = as.vector(model$start["rho"]),
-                     history=history,
+                     history=as.vector(history),
                      nestStr = fNames$nestStr,
                      nestStrParen = fNames$nestStrParen
   )
   
+  # Boundary models may come in here with NULL items. Convert NULL to NA before adding to the data.frame.
+  metaList <- replace(metaList, unlist(lapply(metaList, is.null)), NA)
+  metaData <- data.frame(metaList)
+  
   if ( nrow(metaData) > 1 ) {
-    warning( paste0("\nmeta data has ", nrow(metaData), " rows: ", paste(nest,history, sep="|")) )
+    warning( paste0("\nmetaData has ", nrow(metaData), " rows: ", paste(metaList$nestStr,history, sep="|")) )
     for (item in metaList) { 
       if ( length(item) > 1 ) {
         warning(paste0("\t", toString(item)))
