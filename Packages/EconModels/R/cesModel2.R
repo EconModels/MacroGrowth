@@ -78,63 +78,20 @@ cesModel2 <- function(formula, data,
       formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
     }
   }
-  
+    
+  fNames <- cesFormulaNames(formula, nest)
+  # Extract names for convenience.
+  cesNames <- fNames$cesNames
+  yName <- fNames$yName
+  xNames <- fNames$xNames
+  tName <- fNames$tName
 
-  # Note: we don't have to verify algorithms. 
-  # If constrained fitting is desired, we fit along boundaries with special equations below.
-  # cesEst will be used in its unconstrained mode always.
-  
-  # ***************************************************** BEGIN
-  
-  numComponents <- ncol(attr(terms(formula), "factors")) - 1 # subtract off time
- 
-  # Set up *Names 
-  fNames <- rownames( attr(terms(formula), "factors") )
-  numFactors <- length(fNames) - 2  # not response, not time
-  if (numFactors >= 4){
-    stop("4 factors of prodcution not supported in cesModel at this time.")
-  }
-  xNames <- switch( as.character(numFactors),
-                    "2" = fNames[1 + nest[1:2]],      # add 1 here to avoid response
-                    "3" = fNames[1 + nest[1:3]],
-                    "4" = fNames[1 + nest[1:4]]
-  )
-  tName <- tail(fNames, 1)
-  yName <- head(fNames, 1)
-  
-  nest <- nest[1:numComponents]
-  group1 <- paste(head(xNames, 2), collapse="+")
-  group2 <- paste(tail(xNames, -2), collapse="+")
-  if (nchar(group2) == 0){
-    # Only 2 parameters
-    nestStr <- paste0(paste(head(xNames, 2), collapse="+"))
-  } else {
-    # 3 or more parameters
-    nestStr <- paste(paste(head(xNames, 2), collapse="+"), paste(tail(xNames, -2), collapse="+"), sep="+")
-  }
-  nestStrParen <- paste0(
-    "(", 
-    paste(head(xNames,2), collapse=" + "),  
-    ") + (", 
-    paste(tail(xNames, -2), collapse=" + "),
-    ")"
-  )
-  
-  # remove incomplete cases because cesEst() fails with incomplete cases.
-  cesNames <- c(yName, xNames, tName)
-  
-  # ****************************** END
-  
-  
   sdata <- data[ , cesNames ]
   if ( ! any( complete.cases(sdata) ) ) {
     stop("No valid rows of data for your model.")
   }
   # This ensures that response is the first column.  This is assumed in downstream code.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
-  
-  #  sdata <- subset(data, select = all.vars(formula))
-  #  sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
   #
   # If we are fitting constrained, do fits along all constraints.
