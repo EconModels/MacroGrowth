@@ -773,7 +773,8 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                                 sse = sum(resid(model)^2)
     )    
   } else{
-    # naturalCoeffs was supplied. Use it for important information.
+    # naturalCoeffs was supplied. Use it for delta and delta_1. 
+    # These values will be used below for calculating alpha, beta, and gamma.
     delta <- naturalCoeffs$delta
     delta_1 <- naturalCoeffs$delta_1
   }
