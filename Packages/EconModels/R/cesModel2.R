@@ -72,21 +72,21 @@ cesModel2 <- function(formula, data,
     )
     if (is.null(c) & is.null(d)) {
       formula <- substitute( response ~ capital + labor + time, substitutionList )
-      numComponents <- 2
     } else if (is.null(d)) {
       formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
-      numComponents <- 3
     } else {
       formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
-      numComponents <- 4
     }
-  } else {
-    numComponents <- ncol(attr(terms(formula), "factors")) - 1 # subtract off time
   }
   
+
   # Note: we don't have to verify algorithms. 
   # If constrained fitting is desired, we fit along boundaries with special equations below.
   # cesEst will be used in its unconstrained mode always.
+  
+  # ***************************************************** BEGIN
+  
+  numComponents <- ncol(attr(terms(formula), "factors")) - 1 # subtract off time
  
   # Set up *Names 
   fNames <- rownames( attr(terms(formula), "factors") )
@@ -120,8 +120,12 @@ cesModel2 <- function(formula, data,
     ")"
   )
   
-  # remove incomplete cases since cesEst() fails with incomplete cases.
+  # remove incomplete cases because cesEst() fails with incomplete cases.
   cesNames <- c(yName, xNames, tName)
+  
+  # ****************************** END
+  
+  
   sdata <- data[ , cesNames ]
   if ( ! any( complete.cases(sdata) ) ) {
     stop("No valid rows of data for your model.")
@@ -163,6 +167,7 @@ cesModel2 <- function(formula, data,
   # For model 1, the constraints are delta_1 = 1, and delta = 1.
   # rho_1 (sigma_1) and rho (sigma) are unknowable.
   mod1 <- lm(log(y/x1) ~ time)
+  mod1 <- addMetaData(mod1, nest, )
   naturalCoeffs <- data.frame(
     gamma_coef = as.vector(exp(mod1$coefficients[[1]])),
     lambda = as.vector(mod1$coefficients[[2]]),
@@ -286,8 +291,6 @@ cesModel2 <- function(formula, data,
     }
   }
 
-  
-  
   res <- bestModel(models, digits=digits)
   if ( is.null( res ) ) {
     warning("cesModel() produced a NULL model.")
@@ -299,4 +302,74 @@ cesModel2 <- function(formula, data,
   }
   
   return(res)
+}
+
+#' Extract CES variable names from a CES formula
+#' 
+#' This function sets up names of parameters for a CES model fit in various formats.
+#' In particular, it handles nesting and returns nest strings.
+#' @param formula the CES fitting formula. 
+#' @param nest the nesting for the factors of production.
+#' @note \code{formula} is assumed to be in the form \code{response ~ a + b + c + d + time}
+#' where \code{a}, \code{b}, \code{c}, and \code{d} are factors of production,
+#' \code{response} is the response variable (typically economic output), and
+#' \code{time} is the time variable.
+#' @note \code{nest} is assumed to be integers in the form of \code{c(1,2,3,4)}. 
+#' Nest indicates the left-to-right order of parameters in the CES function.
+#' @return a list of information extracted from the \code{formula} and \code{nest}, including
+#' \code{numFactors} (the number of factors of production), 
+#' \code{xNames} (a list containing the variable names of the factors of production, 
+#' \code{a}, \code{b}, \code{c}, and \code{d}),
+#' \code{tName} (the variable name for time),
+#' \code{yName} (the variable name for response),
+#' \code{nestStr} (a string representing the nest, in the form of \code{k+l+e}),
+#' \code{nestStrParen} (a string representing the nest, in the form of \code{(k + l) + (e)}), and
+#' \code{cesNames} (a list of variable names in the order they appear in the formula, 
+#' \code{response}, \code{xNames}, \code{tName}).
+#' @export
+cesFormulaNames <- function(formula, nest){
+  
+  # Set up *Names 
+  fNames <- rownames( attr(terms(formula), "factors") )
+  numFactors <- length(fNames) - 2  # not response, not time
+#   if (numFactors >= 4){
+#     stop("4 factors of prodcution not supported in cesModel at this time.")
+#   }
+  xNames <- switch( as.character(numFactors),
+                    "2" = fNames[1 + nest[1:2]],      # add 1 here to avoid response
+                    "3" = fNames[1 + nest[1:3]],
+                    "4" = fNames[1 + nest[1:4]]
+  )
+  tName <- tail(fNames, 1)
+  yName <- head(fNames, 1)
+  
+  nest <- nest[1:numFactors]
+  group1 <- paste(head(xNames, 2), collapse="+")
+  group2 <- paste(tail(xNames, -2), collapse="+")
+  if (nchar(group2) == 0){
+    # Only 2 parameters
+    nestStr <- paste0(paste(head(xNames, 2), collapse="+"))
+  } else {
+    # 3 or more parameters
+    nestStr <- paste(paste(head(xNames, 2), collapse="+"), paste(tail(xNames, -2), collapse="+"), sep="+")
+  }
+  nestStrParen <- paste0(
+    "(", 
+    paste(head(xNames,2), collapse=" + "),  
+    ") + (", 
+    paste(tail(xNames, -2), collapse=" + "),
+    ")"
+  )
+  
+  # remove incomplete cases because cesEst() fails with incomplete cases.
+  cesNames <- c(yName, xNames, tName)
+  
+  out <- list(numFactors = numFactors, 
+              xNames = xNames,
+              tName = tName,
+              yName = yName,
+              nestStr = nestStr,
+              nestStrParen = nestStrParen,
+              cesNames)
+  return(out)  
 }
