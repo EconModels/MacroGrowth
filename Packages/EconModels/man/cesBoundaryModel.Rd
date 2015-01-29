@@ -17,7 +17,7 @@ assumed to be of the form \code{c(1,2,3)}.}
 \item{id}{the identification number (from Table 2) for the boundary model you want to fit.}
 }
 \value{
-a model object with class \code{CESModel} with \code{naturalCoeffs} and \code{meta} attributes.
+a model object with class \code{CESModel} and \code{naturalCoeffs} and \code{meta} attributes.
 }
 \description{
 The boundary models are given in Table 2 of
@@ -25,6 +25,6 @@ Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth
 }
 \note{
 the \code{naturalCoeffs} attribute includes correct values of boundary parameters.
-\code{NA} values indicate that the parameter is unknowable at that boundary.
+\code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 }
 

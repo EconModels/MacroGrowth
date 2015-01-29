@@ -17,7 +17,10 @@ cesBoundaryModel <- function(data, f, nest, id){
   y <- timeSeries$y
   x1 <- timeSeries$x1
   x2 <- timeSeries$x2
+  x3 <- timeSeries$x3
+  x4 <- timeSeries$x4
   time <- timeSeries$time
+  numFactors <- cesFormulaNames(f, nest)$numFactors
   
   if (id == 1){
     # Constraints are delta_1 = 1 and delta = 1.
@@ -71,22 +74,22 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
-#   } else if (id == 4){
-#     # Constraints are sigma_1 = Inf and delta = 1.
-#     # rho and sigma are unknowable and set to NA.
-#     # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
-#     # We do not log transform this model. We use nls.
-#     
-#   } else if (id == 5){
-#     # Constraint is delta = 1.
-#     # rho and sigma are unknowable and set to NA.
-#     # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
-#     # We do not log transform this model. We use nls.
+    #   } else if (id == 4){
+    #     # Constraints are sigma_1 = Inf and delta = 1.
+    #     # rho and sigma are unknowable and set to NA.
+    #     # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
+    #     # We do not log transform this model. We use nls.
+    #     
+    #   } else if (id == 5){
+    #     # Constraint is delta = 1.
+    #     # rho and sigma are unknowable and set to NA.
+    #     # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
+    #     # We do not log transform this model. We use nls.
     
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
-
+  
   class(mod) <- c("CESmodel", class(mod))
   attr(mod, "bmodID") <- id
   mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
