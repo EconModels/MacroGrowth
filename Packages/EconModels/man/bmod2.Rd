@@ -4,9 +4,12 @@
 \alias{bmod2}
 \title{Fits CES boundary model 2}
 \usage{
-bmod2(y, x2, time, formula, nest)
+bmod2(data, f, nest)
 }
 \arguments{
+\item{nest}{identifies the nesting of the variables in the original formula,
+assumed to be of the form \code{c(1,2,3)}.}
+
 \item{y}{the response variable, assumed to be a vector}
 
 \item{x2}{the second factor of production, assumed to be a vector}
@@ -14,9 +17,9 @@ bmod2(y, x2, time, formula, nest)
 \item{time}{the indexed time variable, assumed to be a vector}
 
 \item{formula}{the original CES formula that is being fitted}
-
-\item{nest}{identifies the nesting of the variables in the original formula,
-assumed to be of the form \code{c(1,2,3)}.}
+}
+\value{
+an \code{lm} model object with \code{naturalCoeffs} and \code{meta} attributes.
 }
 \description{
 The boundary model is \code{y = gamma * A * x2} in log transform space

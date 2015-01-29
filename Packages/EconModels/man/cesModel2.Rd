@@ -4,14 +4,14 @@
 \alias{cesModel2}
 \title{Fitting CES models}
 \usage{
-cesModel2(formula, data, response, a, b, c = NULL, d = NULL, time,
-  nest = 1:4, prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
-  multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9,
-  -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+cesModel2(f, data, response, a, b, c = NULL, d = NULL, time, nest = 1:4,
+  prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"), multErr = TRUE,
+  rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+  rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   digits = 6, save.data = TRUE, constrained = TRUE, ...)
 }
 \arguments{
-\item{formula}{a formula of the form \code{response ~ a + b + c + d + time}.
+\item{f}{a formula of the form \code{response ~ a + b + c + d + time}.
 \code{c} and \code{d} are optional.}
 
 \item{data}{a data frame, in which to evaluate the formula.}
@@ -68,12 +68,12 @@ a cesEst model with additional information attached as attributes.
 This function fits a CES model
 }
 \note{
-For now the components in \code{formula} (or the arguments \code{response},
+For now the components in \code{f} (or the arguments \code{response},
 \code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
 not be other kinds of expressions.
 
 For now, this function works for only 2 or 3 factors of production.
-Setting the value of \code{d} or using a formula of the form \code{y ~ a + b + c + d + time}
+Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 will not work.
 }
 

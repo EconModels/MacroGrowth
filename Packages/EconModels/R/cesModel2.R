@@ -1,7 +1,7 @@
 #' Fitting CES models
 #' 
 #' This function fits a CES model
-#' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
+#' @param f a formula of the form \code{response ~ a + b + c + d + time}.  
 #' \code{c} and \code{d} are optional.
 #' @param data a data frame, in which to evaluate the formula.
 #' @param response instead of specifying a formula, expressions for
@@ -37,15 +37,15 @@
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @param save.data a logical indicating whether data is to be saved with the model.
 #' Be sure to set \code{TRUE} if resampling is needed later.
-#' @note For now the components in \code{formula} (or the arguments \code{response}, 
+#' @note For now the components in \code{f} (or the arguments \code{response}, 
 #' \code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
 #' not be other kinds of expressions.
 #' @note For now, this function works for only 2 or 3 factors of production.
-#' Setting the value of \code{d} or using a formula of the form \code{y ~ a + b + c + d + time}
+#' Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 #' will not work.
 #' @return a cesEst model with additional information attached as attributes.
 #' @export
-cesModel2 <- function(formula, data,
+cesModel2 <- function(f, data,
                       response,
                       a,
                       b,
@@ -62,7 +62,7 @@ cesModel2 <- function(formula, data,
                       save.data=TRUE,
                       constrained=TRUE,
                       ...){
-  if ( missing(formula) ) { 
+  if ( missing(f) ) { 
     substitutionList <-  list( response = substitute(response),
                                capital = substitute(a),
                                labor = substitute(b),
@@ -71,15 +71,15 @@ cesModel2 <- function(formula, data,
                                time = substitute(time)
     )
     if (is.null(c) & is.null(d)) {
-      formula <- substitute( response ~ capital + labor + time, substitutionList )
+      f <- substitute( response ~ capital + labor + time, substitutionList )
     } else if (is.null(d)) {
-      formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
+      f <- substitute( response ~ capital + labor + energy + time, substitutionList )
     } else {
-      formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
+      f <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
     }
   }
     
-  fNames <- cesFormulaNames(formula, nest)
+  fNames <- cesFormulaNames(f, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames
   yName <- fNames$yName
@@ -94,34 +94,19 @@ cesModel2 <- function(formula, data,
   # This ensures that response is the first column.  This is assumed in downstream code.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
-  models <- list()
-  
   #
   # If we are fitting constrained, fit along all boundaries.
   #
   if (constrained){
-    # Extract variales from data.
-    y <- eval(substitute(data$y, list(y = yName)))
-    # Calculate new combinations of variables.
-    # Note that xNames contains the variable names for the factors of production 
-    # in the left-to-right order that they appear in the CES function.
-    x1 <- eval(substitute(data$colx1, list(colx1 = xNames[[1]])))
-    x2 <- eval(substitute(data$colx2, list(colx2 = xNames[[2]])))
-    if (numFactors >= 3){
-      x3 <- eval(substitute(data$colx3, list(colx3 = xNames[[3]])))
-    }
-    if (numFactors == 4){
-      x4 <- eval(substitute(data$colx4, list(colx4 = xNames[[4]])))
-      stop("Full support for 4 factors of production has not been implemented in cesModel.")
-    }
-    time <- eval(substitute(data$time, list(time = tName)))
-    
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    models[length(models)+1] <- list(bmod1(y=y, x1=x1, time=time, formula=formula, nest=nest))
-    models[length(models)+1] <- list(bmod2(y=y, x2=x2, time=time, formula=formula, nest=nest))
-    models[length(models)+1] <- list(bmod3(y=y, x1=x1, x2=x2, time=time, formula=formula, nest=nest))
-  }  
+    models <- lapply(c(1:3), function(n){
+      eval(call(paste0("bmod", n), data=data, f=f, nest=nest))
+    })
+  } else {
+    # start with an empty list of models
+    models <- list()
+  }
   
   for (algorithm in algorithms) {
     #
@@ -166,7 +151,7 @@ cesModel2 <- function(formula, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+      model <- addMetaData(model, formula=f, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -193,7 +178,7 @@ cesModel2 <- function(formula, data,
     )
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+      model <- addMetaData(model, formula=f, nest=nest, history=hist)
       models[length(models)+1] <- list(model)
     }
   }
@@ -214,7 +199,7 @@ cesModel2 <- function(formula, data,
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+        model <- addMetaData(model, formula=f, nest=nest, history=hist)
         models[length(models)+1] <- list(model)
       },
       error = function(e) {  
@@ -239,9 +224,9 @@ cesModel2 <- function(formula, data,
     warning("cesModel() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
-    attr(res, "formula") <- formula
+    attr(res, "formula") <- f
     if (save.data) { attr(res, "data") <- data }
-    attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+    attr(res, "response") <- eval( f[[2]], sdata, parent.frame() )
   }
 
   return(res)
@@ -251,15 +236,15 @@ cesModel2 <- function(formula, data,
 #' 
 #' This function sets up names of parameters for a CES model fit in various formats.
 #' In particular, it handles nesting and returns nest strings.
-#' @param formula the CES fitting formula. 
+#' @param f the CES fitting formula. 
 #' @param nest the nesting for the factors of production.
-#' @note \code{formula} is assumed to be in the form \code{response ~ a + b + c + d + time}
+#' @note \code{f} is assumed to be in the form \code{response ~ a + b + c + d + time}
 #' where \code{a}, \code{b}, \code{c}, and \code{d} are factors of production,
 #' \code{response} is the response variable (typically economic output), and
 #' \code{time} is the time variable.
 #' @note \code{nest} is assumed to be integers in the form of \code{c(1,2,3,4)}. 
 #' Nest indicates the left-to-right order of parameters in the CES function.
-#' @return a list of information extracted from the \code{formula} and \code{nest}, including
+#' @return a list of information extracted from the \code{f} and \code{nest}, including
 #' \code{numFactors} (the number of factors of production), 
 #' \code{xNames} (a list containing the variable names of the factors of production, 
 #' \code{a}, \code{b}, \code{c}, and \code{d}),
@@ -267,24 +252,21 @@ cesModel2 <- function(formula, data,
 #' \code{yName} (the variable name for response),
 #' \code{nestStr} (a string representing the nest, in the form of \code{k+l+e}),
 #' \code{nestStrParen} (a string representing the nest, in the form of \code{(k + l) + (e)}), and
-#' \code{cesNames} (a list of variable names in the order they appear in the formula, 
+#' \code{cesNames} (a list of variable names in the order they appear in \code{f}, 
 #' \code{response}, \code{xNames}, \code{tName}).
 #' @export
-cesFormulaNames <- function(formula, nest){
+cesFormulaNames <- function(f, nest){
   
   # Set up *Names 
-  fNames <- rownames( attr(terms(formula), "factors") )
+  fNames <- rownames( attr(terms(f), "factors") )
   numFactors <- length(fNames) - 2  # not response, not time
-#   if (numFactors >= 4){
-#     stop("4 factors of prodcution not supported in cesModel at this time.")
-#   }
   xNames <- switch( as.character(numFactors),
                     "2" = fNames[1 + nest[1:2]],      # add 1 here to avoid response
                     "3" = fNames[1 + nest[1:3]],
                     "4" = fNames[1 + nest[1:4]]
   )
-  tName <- tail(fNames, 1)
   yName <- head(fNames, 1)
+  tName <- tail(fNames, 1)
   
   nest <- nest[1:numFactors]
   group1 <- paste(head(xNames, 2), collapse="+")

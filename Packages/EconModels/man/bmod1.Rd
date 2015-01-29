@@ -4,9 +4,12 @@
 \alias{bmod1}
 \title{Fits CES boundary model 1}
 \usage{
-bmod1(y, x1, time, formula, nest)
+bmod1(data, f, nest)
 }
 \arguments{
+\item{nest}{identifies the nesting of the variables in the original formula,
+assumed to be of the form \code{c(1,2,3)}.}
+
 \item{y}{the response variable, assumed to be a vector}
 
 \item{x1}{the first factor of production, assumed to be a vector}
@@ -14,14 +17,11 @@ bmod1(y, x1, time, formula, nest)
 \item{time}{the indexed time variable, assumed to be a vector}
 
 \item{formula}{the original CES formula that is being fitted}
-
-\item{nest}{identifies the nesting of the variables in the original formula,
-assumed to be of the form \code{c(1,2,3)}.}
+}
+\value{
+an \code{lm} model object with \code{naturalCoeffs} and \code{meta} attributes.
 }
 \description{
-The boundary model is \code{y = gamma * A * x1} in log transform space
-as {ln(y/x1) = ln(gamma) + lambda*time}.
-For ces boundary model 1, the constraints are \code{delta_1 = 1}, and \code{delta = 1}.
-\code{rho_1} (\code{sigma_1}) and \code{rho} (\code{sigma}) are unknowable and set to \code{NA}.
+Fits CES boundary model 1
 }
 
