@@ -75,7 +75,8 @@ bmod2 <- function(y, x2, time, formula, nest){
 #' @param formula the original CES formula that is being fitted
 #' @param nest identifies the nesting of the variables in the original formula,
 #' assumed to be of the form \code{c(1,2,3)}.
-bmod3 <- function(y, minx1x2, time, formula, nest){
+bmod3 <- function(y, x1, x2, time, formula, nest){
+  minx1x2 <- pmin(x1, x2)
   mod <- lm(log(y/minx1x2) ~ time)
   attr(mod, "bmod") <- 3
   class(mod) <- c("CESmodel", class(mod))

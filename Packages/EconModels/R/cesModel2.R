@@ -102,34 +102,25 @@ cesModel2 <- function(formula, data,
   if (constrained){
     # Extract variales from data.
     y <- eval(substitute(data$y, list(y = yName)))
-    time <- eval(substitute(data$time, list(time = tName)))
     # Calculate new combinations of variables.
     # Note that xNames contains the variable names for the factors of production 
     # in the left-to-right order that they appear in the CES function.
-    x1Name <- xNames[[1]]
-    x1 <- eval(substitute(data$colx1, list(colx1 = x1Name)))
-    x2Name <- xNames[[2]]
-    x2 <- eval(substitute(data$colx2, list(colx2 = x2Name)))
-    minx1x2 <- pmin(x1, x2)
+    x1 <- eval(substitute(data$colx1, list(colx1 = xNames[[1]])))
+    x2 <- eval(substitute(data$colx2, list(colx2 = xNames[[2]])))
     if (numFactors >= 3){
-      x3Name <- xNames[[3]]
-      x3 <- eval(substitute(data$colx3, list(colx3 = x3Name)))
-      minx1x3 <- pmin(x1, x3)
-      minx2x3 <- pmin(x2, x3)
-      minx1x2x3 <- pmin(x1, x2, x3)
+      x3 <- eval(substitute(data$colx3, list(colx3 = xNames[[3]])))
     }
     if (numFactors == 4){
-      # Full support for 4 factors of production has not been included in this function.
-      x4Name <- xNames[[4]]
-      x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
+      x4 <- eval(substitute(data$colx4, list(colx4 = xNames[[4]])))
       stop("Full support for 4 factors of production has not been implemented in cesModel.")
     }
-
+    time <- eval(substitute(data$time, list(time = tName)))
+    
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    models[length(models)+1] <- list(bmod1(y, x1, time, formula, nest))
-    models[length(models)+1] <- list(bmod2(y, x2, time, formula, nest))
-    models[length(models)+1] <- list(bmod3(y, minx1x2, time, formula, nest))
+    models[length(models)+1] <- list(bmod1(y=y, x1=x1, time=time, formula=formula, nest=nest))
+    models[length(models)+1] <- list(bmod2(y=y, x2=x2, time=time, formula=formula, nest=nest))
+    models[length(models)+1] <- list(bmod3(y=y, x1=x1, x2=x2, time=time, formula=formula, nest=nest))
   }  
   
   for (algorithm in algorithms) {

@@ -4,12 +4,10 @@
 \alias{bmod3}
 \title{Fits CES boundary model 3}
 \usage{
-bmod3(y, minx1x2, time, formula, nest)
+bmod3(y, x1, x2, time, formula, nest)
 }
 \arguments{
 \item{y}{the response variable, assumed to be a vector}
-
-\item{minx1x2}{the factor of production, assumed to be a vector}
 
 \item{time}{the indexed time variable, assumed to be a vector}
 
@@ -17,6 +15,8 @@ bmod3(y, minx1x2, time, formula, nest)
 
 \item{nest}{identifies the nesting of the variables in the original formula,
 assumed to be of the form \code{c(1,2,3)}.}
+
+\item{minx1x2}{the factor of production, assumed to be a vector}
 }
 \description{
 The boundary model is \code{y = gamma * A * min(x1, x2)} in log transform space
