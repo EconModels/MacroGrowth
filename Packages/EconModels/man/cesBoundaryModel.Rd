@@ -20,7 +20,8 @@ assumed to be of the form \code{c(1,2,3)}.}
 a model object with class \code{CESModel} with \code{naturalCoeffs} and \code{meta} attributes.
 }
 \description{
-The boundary models are given in Table 2 of Heun et al "An Empirical Investigation..."
+The boundary models are given in Table 2 of
+Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth"
 }
 \note{
 the \code{naturalCoeffs} attribute includes correct values of boundary parameters.
