@@ -101,8 +101,13 @@ cesModel2 <- function(f, data,
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
     models <- lapply(c(1:3), function(n){
-      eval(call(paste0("bmod", n), data=data, f=f, nest=nest))
+      cesBoundaryModel(data=data, f=f, nest=nest, id=n)
     })
+    
+    
+#     models <- lapply(c(1:3), function(n){
+#       eval(call(paste0("bmod", n), data=data, f=f, nest=nest))
+#     })
   } else {
     # start with an empty list of models
     models <- list()
