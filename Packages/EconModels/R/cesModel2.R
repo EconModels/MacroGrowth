@@ -100,6 +100,9 @@ cesModel2 <- function(formula, data,
   # If we are fitting constrained, fit along all boundaries.
   #
   if (constrained){
+    # Extract variales from data.
+    y <- eval(substitute(data$y, list(y = yName)))
+    time <- eval(substitute(data$time, list(time = tName)))
     # Calculate new combinations of variables.
     # Note that xNames contains the variable names for the factors of production 
     # in the left-to-right order that they appear in the CES function.
@@ -121,9 +124,9 @@ cesModel2 <- function(formula, data,
       x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
       stop("Full support for 4 factors of production has not been implemented in cesModel.")
     }
-    y <- eval(substitute(data$y, list(y = yName)))
-    time <- eval(substitute(data$time, list(time = tName)))
 
+    # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
+    # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
     models[length(models)+1] <- list(bmod1(y, x1, time, formula, nest))
     models[length(models)+1] <- list(bmod2(y, x2, time, formula, nest))
     models[length(models)+1] <- list(bmod3(y, minx1x2, time, formula, nest))
