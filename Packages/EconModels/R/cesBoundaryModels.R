@@ -25,7 +25,6 @@ cesBoundaryModel <- function(data, f, nest, id){
     # The model is y = gamma * A * x1.
     # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x1) ~ time)
-    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(mod$coefficients[[1]])),
       lambda = as.vector(mod$coefficients[[2]]),
@@ -37,14 +36,12 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
-    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 2){
     # Constraints are delta_1 = 0 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
     # The model is y = gamma * A * x2.
     # In log transform space, ln(y/x2) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x2) ~ time)
-    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(mod$coefficients[[1]])),
       lambda = as.vector(mod$coefficients[[2]]),
@@ -56,7 +53,6 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
-    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 3){
     # Constraints are sigma_1 = 0 and delta = 1.
     # delta_1, rho, and sigma are unknowable and set to NA.
@@ -64,7 +60,6 @@ cesBoundaryModel <- function(data, f, nest, id){
     # In log transform space, ln(y/min(x1, x2)) = ln(gamma_coef) + lambda*time.
     minx1x2 <- pmin(timeSeries$x1, timeSeries$x2)
     mod <- lm(log(y/minx1x2) ~ time)
-    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(mod$coefficients[[1]])),
       lambda = as.vector(mod$coefficients[[2]]),
@@ -76,7 +71,6 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
-    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
 #   } else if (id == 4){
 #     # Constraints are sigma_1 = Inf and delta = 1.
 #     # rho and sigma are unknowable and set to NA.
@@ -93,7 +87,9 @@ cesBoundaryModel <- function(data, f, nest, id){
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
 
+  class(mod) <- c("CESmodel", class(mod))
   attr(mod, "bmodID") <- id
+  mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   return(mod)
 }
 
