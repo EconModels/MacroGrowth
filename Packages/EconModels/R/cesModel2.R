@@ -97,7 +97,7 @@ cesModel2 <- function(formula, data,
   models <- list()
   
   #
-  # If we are fitting constrained, do fits along all constraints.
+  # If we are fitting constrained, fit along all boundaries.
   #
   if (constrained){
     # Calculate new combinations of variables.
@@ -119,7 +119,7 @@ cesModel2 <- function(formula, data,
       # Full support for 4 factors of production has not been included in this function.
       x4Name <- xNames[[4]]
       x4 <- eval(substitute(data$colx4, list(colx4 = x4Name)))
-      stop("Full support for 4 factoros of production has not been implemented in cesModel.")
+      stop("Full support for 4 factors of production has not been implemented in cesModel.")
     }
     y <- eval(substitute(data$y, list(y = yName)))
     time <- eval(substitute(data$time, list(time = tName)))
@@ -128,7 +128,6 @@ cesModel2 <- function(formula, data,
     models[length(models)+1] <- list(bmod2(y, x2, time, formula, nest))
     models[length(models)+1] <- list(bmod3(y, minx1x2, time, formula, nest))
   }  
-  
   
   for (algorithm in algorithms) {
     #
@@ -230,6 +229,15 @@ cesModel2 <- function(formula, data,
       }
       )
     }
+  }
+  
+  if (constrained){
+    # Reject models that fail to meet constraints.
+    #######################
+    # TODO: Finish this code.
+    # Be sure to save ALL models (not just ones that meet constraints)
+    # in the "model.attempts" attribute below.
+    #######################
   }
 
   res <- bestModel(models, digits=digits)
