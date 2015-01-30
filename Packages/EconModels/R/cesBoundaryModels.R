@@ -116,7 +116,7 @@ cesBoundaryModel <- function(data, f, nest, id){
   } else if (id == 5){
     # Constraint is delta = 1.
     # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
-    # This is nothing more that the CES function in two variables, x1, and x2.
+    # This is nothing more than the CES function in two variables, x1, and x2.
     # So, fit by calling cesModel unconstrained.
     # Make a data frame with the correct variables
     bmod5data <- data.frame(y, x1, x2, time)
