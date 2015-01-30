@@ -16,13 +16,28 @@ metaData <- function(object) {
   return( attr(object, "meta") )
 }
 
+#' Extracts the best model (least sse) from a list of models
+#' 
+#' @param models the list of models
+#' @param digits the number of digits of \code{sse} that is considered significant
+#' @param orderOnly if \code{FALSE}, returns a reordered list of models. 
+#' If \code{TRUE}, returns an integer vector representing the order of the models.
+#' @note The ordering process preserves the original order in the event of ties at the desired significance level.
+#' @note This function relies upon the \code{sse} value being stored 
+#' in an attribute of the model called \code{naturalCoeffs}.
+#' @return an integer vector representing the order of the models if \code{orderOnly} is \code{TRUE}. 
+#' A reordered list of models if \code{orderOnly} is \code{FALSE} (the default). 
 #' @export
 bestModel <- function(models, digits=6, orderOnly=FALSE) {
-  ###################
-  # Extracts the best model (least sse) from a list of models
-  ##
-  # Note that the order function below preserves the original order in the event of ties.
-  o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
+
+  # Our original code is commented below. 
+  # After we added boundary models for CES, we get nlmin objects in the models argument.
+  # nlmin objects return NULL from resid.
+  # NULL is sorted before any number, so we have to rely upon the presence of the naturalCoeffs
+  # attribute of the model.
+  
+  # o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
+  o <- order(sapply( models, function(model) { round(attr(model, "naturalCoeffs")$sse, digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
   return(out) 
