@@ -97,7 +97,12 @@ cesModel2 <- function(f, data,
   if (constrained){
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    boundary.models <- lapply(c(1:5), function(n){
+    if (numFactors == 2){
+      numBoundaryModels <- 5 # The first 5 boundary models involve only 2 factors of production
+    } else if (numFactors == 3){
+      numBoundaryModels <- 6 # The first 20 boundary models are appropriate for 3 factors of production
+    }
+    boundary.models <- lapply(c(1:numBoundaryModels), function(n){
       cesBoundaryModel(data=data, f=f, nest=nest, id=n)
     })
   } else {
@@ -211,15 +216,14 @@ cesModel2 <- function(f, data,
   
   models <- c(boundary.models, unbounded.models)
   if (constrained){
-    # Reject models that fail to meet constraints.
-    #######################
-    # TODO: Finish this code.
-    # Be sure to save ALL models (not just ones that meet constraints)
-    # in the "model.attempts" attribute below.
-    #######################
+    # Keep only those models that meet constraints for the economically meaningful region.
+    validModels <- models[sapply(models, withinConstraints)]
+    res <- bestModel(validModels)
+  } else {
+    # We're fitting unconstrained. Take the best of everything.
+    res <- bestModel(models, digits=digits)
   }
 
-  res <- bestModel(models, digits=digits)
   if ( is.null( res ) ) {
     warning("cesModel() produced a NULL model.")
   } else {
@@ -296,4 +300,63 @@ cesFormulaNames <- function(f, nest){
               nestStrParen = nestStrParen,
               cesNames = cesNames)
   return(out)  
+}
+
+#' Tells whether a CES model is within constraints
+#' 
+#' This function evaluates a fitted CES model for economic meaningfullness as expressed in constraints on 
+#' \code{delta_1}, \code{sigma_1} and, if present, \code{delta_2}, \code{sigma_2}, \code{delta}, and \code{sigma}.
+#' Specifically, this function checks whether \code{0 <= delta <= 1} and \code{sigma >= 0}
+#' @param model the CES model to be evaluated
+#' @note Missing, \code{NULL}, and \code{NA} parameters are interpreted as meeting constraints.
+#' @note If none of \code{delta_1}, \code{sigma_1}, \code{delta_2}, \code{sigma_2}, \code{delta}, and \code{sigma}
+#' is present, \code{FALSE} is returned.
+#' @note This function relies upon the presence of the \code{naturalCoeffs} attribute to model.
+#' If \code{naturalCoeffs} is \code{NULL}, \code{FALSE} is returned.
+#' @return \code{TRUE} if the fitted model is within the constraints, \code{FALSE} if not.
+#' @export
+withinConstraints <- function(model){
+  withinConstraints <- TRUE
+  naturalCoeffs <- naturalCoef(model)
+  if (is.null(naturalCoeffs)){
+    return(FALSE)
+  }
+  delta_1 <- naturalCoeffs$delta_1
+  delta_2 <- naturalCoeffs$delta_2
+  delta   <- naturalCoeffs$delta
+  sigma_1 <- naturalCoeffs$sigma_1
+  sigma_2 <- naturalCoeffs$sigma_2
+  sigma   <- naturalCoeffs$sigma
+  if ((is.null(delta_1) || is.na(delta_1)) 
+      && (is.null(delta_2) || is.na(delta_2))
+      && (is.null(delta) || is.na(delta)) 
+      && (is.null(sigma_1) || is.na(sigma_1))
+      && (is.null(sigma_2) || is.na(sigma_2))
+      && (is.null(sigma) || is.na(sigma))){
+    # We have no valid fitted parameters
+    return(FALSE)
+  }
+  
+  if (!is.null(delta_1) && !is.na(delta_1) && (delta_1 < 0 || delta_1 > 1)){
+    return(FALSE)
+  }
+  if (!is.null(delta_2) && !is.na(delta_2) && (delta_2 < 0 || delta_2 > 1)){
+    return(FALSE)
+  }
+  if (!is.null(delta) && !is.na(delta) && (delta < 0 || delta > 1)){
+    return(FALSE)
+  }
+  
+  if (!is.null(sigma_1) && !is.na(sigma_1) && sigma_1 < 0){
+    return(FALSE)
+  }
+  if (!is.null(sigma_2) && !is.na(sigma_2) && sigma_2 < 0){
+    return(FALSE)
+  }
+  if (!is.null(sigma) && !is.na(sigma) && sigma < 0){
+    return(FALSE)
+  }
+  
+  # If we get here, we meet constraints for the economically meaningful region of the model
+  return(TRUE)
 }

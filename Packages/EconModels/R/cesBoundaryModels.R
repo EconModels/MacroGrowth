@@ -121,6 +121,25 @@ cesBoundaryModel <- function(data, f, nest, id){
     # Make a data frame with the correct variables
     bmod5data <- data.frame(y, x1, x2, time)
     mod <- cesModel2(f = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
+  } else if (id == 6){
+    # Constraints is delta = 0.
+    # delta_1, rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
+    # The model is y = gamma * A * x3.
+    # In log transform space, ln(y/x3) = ln(gamma_coef) + lambda*time.
+    mod <- lm(log(y/x3) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
+      delta_1 = NA,
+      delta = as.vector(0),
+      sigma_1 = NA,
+      rho_1 = NA, 
+      sigma = NA,
+      rho = NA,
+      sse = as.vector(sum(resid(mod)^2))
+    )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }

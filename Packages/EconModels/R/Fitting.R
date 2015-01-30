@@ -765,26 +765,26 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
       rho_1 <- coef(model)["rho_1"]
       rho <- coef(model)["rho"]
     }
-    naturalCoeffs <- data.frame(lambda = as.vector(coef(model)["lambda"]),
-                                delta_1 = as.vector(delta_1),
-                                rho_1 = as.vector(rho_1),
-                                sigma_1 = as.vector(1 / (1 + rho_1)),
-                                # Variable name collision alert: there is a gamma coefficient
+    naturalCoeffs <- data.frame(# Variable name collision alert: there is a gamma coefficient
                                 # in the CES model (gamma_coef) and a gamma calculated 
                                 # from the delta values.
                                 # gamma_coef is the coefficient in the CES model. It should be near 1.0.
                                 # gamma is calculated from the delta values in the model.
                                 # gamma is analogous to the gamma exponent on energy in the Cobb-Douglas model.
                                 # And, gamma is the required name of the variable to be plotted with the ternary 
-                                # plot function standardTriPlot.  (standardTriPlot assumes that one variable 
+                                # plot function standardTriPlot.  
+                                # (standardTriPlot assumes that one variable 
                                 # is named "gamma", and it plots that variable.)  
                                 # gamma_coef is in the naturalCoeffs attribute.
                                 # gamma is in the meta attribute.
                                 gamma_coef = as.vector(coef(model)["gamma"]),
+                                lambda = as.vector(coef(model)["lambda"]),
+                                delta_1 = as.vector(delta_1),
                                 delta = as.vector(delta),
-                                rho = as.vector(rho),
+                                sigma_1 = as.vector(1 / (1 + rho_1)),
+                                rho_1 = as.vector(rho_1),
                                 sigma = as.vector(1 / (1 + rho)),
-                                isConv = model$convergence,
+                                rho = as.vector(rho),
                                 sse = sum(resid(model)^2)
     )    
   } else{
