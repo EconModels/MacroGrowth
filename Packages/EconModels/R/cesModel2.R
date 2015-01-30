@@ -97,7 +97,7 @@ cesModel2 <- function(f, data,
   if (constrained){
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    boundary.models <- lapply(c(1:4), function(n){
+    boundary.models <- lapply(c(1:5), function(n){
       cesBoundaryModel(data=data, f=f, nest=nest, id=n)
     })
   } else {

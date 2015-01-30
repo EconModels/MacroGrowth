@@ -121,7 +121,7 @@ cesBoundaryModel <- function(data, f, nest, id){
     # Make a data frame with the correct variables
     bmod5data <- data.frame(y, x1, x2, time)
     # Not working yet.
-#     mod <- cesModel2(formula = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
+    mod <- cesModel2(f = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
