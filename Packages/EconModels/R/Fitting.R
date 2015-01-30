@@ -977,12 +977,6 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
     c_t = as.vector(c_t),
     sse = sum(resid(res)^2),
     isConv = TRUE, # Always, because we're fitting with lm.
-    # These equations for alpha, beta, and gamma are from Equation 9 in 
-    # B.S. Warr and R.U. Ayres. Useful work and information as drivers of economic growth. 
-    # Ecological Economics, 73(C):93–102, Jan. 2012.
-    alpha = a_0 * (l+e)/k,
-    beta = a_0 * (c_t*l/e - l/k), # or beta = a_1*l/e - a_0*l/k
-    gamma = 1 - alpha - beta
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
   #  sdata <- subset(data, 
