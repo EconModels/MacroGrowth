@@ -180,6 +180,26 @@ cesBoundaryModel <- function(data, f, nest, id){
       sse = as.vector(sum(resid(mod)^2))
     )    
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  } else if (id == 9){
+    # Constraints are sigma_1 = 0 and sigma = 0.
+    # delta_1 and delta are unknowable and set to NA.
+    # The model is y = gamma * A * min(x1 x2, x3).
+    # In log transform space, ln(y/min(x1, x2, x3)) = ln(gamma_coef) + lambda*time.
+    minx1x2x3 <- pmin(timeSeries$x1, timeSeries$x2, timeSeries$x3)
+    mod <- lm(log(y/minx1x2x3) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
+      delta_1 = NA,
+      delta = NA,
+      sigma_1 = as.vector(0),
+      rho_1 = Inf,
+      sigma = as.vector(0),
+      rho = Inf,
+      sse = as.vector(sum(resid(mod)^2))
+    )    
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
@@ -231,4 +251,19 @@ cesTimeSeries <- function(data, f, nest){
     x4 <- eval(substitute(data$colx4, list(colx4 = xNames[[4]])))
     return(list(y = y, x1=x1, x2=x2, x3=x3, x4=x4, time=time))
   }
+}
+
+#' Tells whether variables are always similarly ordered across all observations.
+#' 
+#' @param data a data frame that contains rows that are to be compared for ordering
+#' @return \code{TRUE} if all rows are ordered the same, \code{FALSE} if they are not.
+#' @export
+rowsSameOrdered <- function(data){
+  # orders is a matrix where each row gives a permutation of the numerical order (smallest to largest) 
+  # of the same row in the data argument.
+  orders <- t(apply(data, 1, order))
+  # Gives a logical vector telling whether each row of data has the same ordering as row 1 of data.
+  sameOrderAsRow1 <- apply(orders, 1, function(x){all(orders[1,] == x)})
+  # return TRUE only if all rows of data have the same ordering as row 1 of data.
+  return(all(sameOrderAsRow1))
 }
