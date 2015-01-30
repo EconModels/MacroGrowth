@@ -29,8 +29,8 @@ cesBoundaryModel <- function(data, f, nest, id){
     # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x1) ~ time)
     naturalCoeffs <- data.frame(
-      gamma_coef = as.vector(exp(mod$coefficients[[1]])),
-      lambda = as.vector(mod$coefficients[[2]]),
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
       delta_1 = as.vector(1),
       delta = as.vector(1),
       sigma_1 = NA,
@@ -46,8 +46,8 @@ cesBoundaryModel <- function(data, f, nest, id){
     # In log transform space, ln(y/x2) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x2) ~ time)
     naturalCoeffs <- data.frame(
-      gamma_coef = as.vector(exp(mod$coefficients[[1]])),
-      lambda = as.vector(mod$coefficients[[2]]),
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
       delta_1 = as.vector(0),
       delta = as.vector(1),
       sigma_1 = NA,
@@ -64,27 +64,52 @@ cesBoundaryModel <- function(data, f, nest, id){
     minx1x2 <- pmin(timeSeries$x1, timeSeries$x2)
     mod <- lm(log(y/minx1x2) ~ time)
     naturalCoeffs <- data.frame(
-      gamma_coef = as.vector(exp(mod$coefficients[[1]])),
-      lambda = as.vector(mod$coefficients[[2]]),
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
       delta_1 = NA,
       delta = as.vector(1),
-      sigma_1 = 0,
+      sigma_1 = as.vector(0),
       rho_1 = Inf,
       sigma = NA,
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
-    #   } else if (id == 4){
-    #     # Constraints are sigma_1 = Inf and delta = 1.
-    #     # rho and sigma are unknowable and set to NA.
-    #     # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
-    #     # We do not log transform this model. We use nls.
-    #     
-    #   } else if (id == 5){
-    #     # Constraint is delta = 1.
-    #     # rho and sigma are unknowable and set to NA.
-    #     # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
-    #     # We do not log transform this model. We use nls.
+  } else if (id == 4){
+    # Constraints are sigma_1 = Inf and delta = 1.
+    # rho and sigma are unknowable and set to NA.
+    # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
+    # We use a nested fitting approach.
+    # Given a value for delta_1, the variable group is calculated. 
+    # We fit the log transform of the equation,
+    # log(y/group) ~ time
+    # with lm to obtain estimates for gamma_coef and lambda.
+    # Then, we use nlmin to find the best value of delta_1.
+    sse4 <- function(delta_1) {
+      blendedX <- delta_1*x1 + (1-delta_1)*x2
+      inner.model <- lm(log(y/blendedX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse4, p=c(delta_1=0.5) )
+    sse <- sse4(mod$estimate)
+    innerMod <- attr(sse, "inner.model")
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
+      lambda = as.vector(coef(innerMod)[[2]]),
+      delta_1 = as.vector(mod$estimate),
+      delta = as.vector(1),
+      sigma_1 = as.vector(Inf),
+      rho_1 = as.vector(-1),
+      sigma = NA,
+      rho = NA,
+      sse = as.vector(sse)
+    )
+  } else if (id == 5){
+    # Constraint is delta = 1.
+    # rho and sigma are unknowable and set to NA.
+    # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
+    # We do not log transform this model. We use nls.
     
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))

@@ -97,15 +97,16 @@ cesModel2 <- function(f, data,
   if (constrained){
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    models <- lapply(c(1:3), function(n){
+    boundary.models <- lapply(c(1:4), function(n){
       cesBoundaryModel(data=data, f=f, nest=nest, id=n)
     })
   } else {
     # We don't need to fit the boundary models.
     # Start with an empty list before going into the unconstrained fitting with the full function.
-    models <- list()
+    boundary.models <- list()
   }
   
+  unbounded.models <- list()
   for (algorithm in algorithms) {
     #
     # Try grid search.
@@ -150,13 +151,13 @@ cesModel2 <- function(f, data,
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
       model <- addMetaData(model, formula=f, nest=nest, history=hist)
-      models[length(models)+1] <- list(model)
+      unbounded.models[length(unbounded.models)+1] <- list(model)
     }
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
   #
-  bestMod <- bestModel(models, digits=digits)
+  bestMod <- bestModel(unbounded.models, digits=digits)
   start <- coef(bestMod)
   
   for (algorithm in algorithms) {
@@ -177,7 +178,7 @@ cesModel2 <- function(f, data,
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
       model <- addMetaData(model, formula=f, nest=nest, history=hist)
-      models[length(models)+1] <- list(model)
+      unbounded.models[length(unbounded.models)+1] <- list(model)
     }
   }
   #
@@ -198,7 +199,7 @@ cesModel2 <- function(f, data,
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         model <- addMetaData(model, formula=f, nest=nest, history=hist)
-        models[length(models)+1] <- list(model)
+        unbounded.models[length(unbounded.models)+1] <- list(model)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e)))
@@ -208,6 +209,7 @@ cesModel2 <- function(f, data,
     }
   }
   
+  models <- c(boundary.models, unbounded.models)
   if (constrained){
     # Reject models that fail to meet constraints.
     #######################
