@@ -100,7 +100,7 @@ cesModel2 <- function(f, data,
     if (numFactors == 2){
       numBoundaryModels <- 5 # The first 5 boundary models involve only 2 factors of production
     } else if (numFactors == 3){
-      numBoundaryModels <- 6 # The first 20 boundary models are appropriate for 3 factors of production
+      numBoundaryModels <- 8 # The first 20 boundary models are appropriate for 3 factors of production
     }
     boundary.models <- lapply(c(1:numBoundaryModels), function(n){
       cesBoundaryModel(data=data, f=f, nest=nest, id=n)
@@ -220,7 +220,7 @@ cesModel2 <- function(f, data,
     validModels <- models[sapply(models, withinConstraints)]
     res <- bestModel(validModels)
   } else {
-    # We're fitting unconstrained. Take the best of everything.
+    # We're fitting unconstrained. Take the best of all possible models.
     res <- bestModel(models, digits=digits)
   }
 

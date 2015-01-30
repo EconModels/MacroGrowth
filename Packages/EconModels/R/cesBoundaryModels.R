@@ -140,6 +140,46 @@ cesBoundaryModel <- function(data, f, nest, id){
       sse = as.vector(sum(resid(mod)^2))
     )
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  } else if (id == 7){
+    # Constraints are delta_1 = 1 and sigma = 0.
+    # delta, sigma_1, and rho_1 are unknowable and set to NA.
+    # The model is y = gamma * A * min(x1, x3).
+    # In log transform space, ln(y/min(x1, x3)) = ln(gamma_coef) + lambda*time.
+    minx1x3 <- pmin(timeSeries$x1, timeSeries$x3)
+    mod <- lm(log(y/minx1x3) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
+      delta_1 = as.vector(1),
+      delta = NA,
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = as.vector(0),
+      rho = Inf,
+      sse = as.vector(sum(resid(mod)^2))
+    )    
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  } else if (id == 8){
+    # Constraints are delta_1 = 0 and sigma = 0.
+    # delta, sigma_1, and rho_1 are unknowable and set to NA.
+    # The model is y = gamma * A * min(x2, x3).
+    # In log transform space, ln(y/min(x2, x3)) = ln(gamma_coef) + lambda*time.
+    minx2x3 <- pmin(timeSeries$x2, timeSeries$x3)
+    mod <- lm(log(y/minx2x3) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(mod)[[1]])),
+      lambda = as.vector(coef(mod)[[2]]),
+      delta_1 = as.vector(0),
+      delta = NA,
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = as.vector(0),
+      rho = Inf,
+      sse = as.vector(sum(resid(mod)^2))
+    )    
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
