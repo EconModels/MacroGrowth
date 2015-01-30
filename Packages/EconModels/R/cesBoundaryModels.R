@@ -28,6 +28,7 @@ cesBoundaryModel <- function(data, f, nest, id){
     # The model is y = gamma * A * x1.
     # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x1) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(coef(mod)[[1]])),
       lambda = as.vector(coef(mod)[[2]]),
@@ -39,12 +40,14 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 2){
     # Constraints are delta_1 = 0 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
     # The model is y = gamma * A * x2.
     # In log transform space, ln(y/x2) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x2) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(coef(mod)[[1]])),
       lambda = as.vector(coef(mod)[[2]]),
@@ -56,6 +59,7 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 3){
     # Constraints are sigma_1 = 0 and delta = 1.
     # delta_1, rho, and sigma are unknowable and set to NA.
@@ -63,6 +67,7 @@ cesBoundaryModel <- function(data, f, nest, id){
     # In log transform space, ln(y/min(x1, x2)) = ln(gamma_coef) + lambda*time.
     minx1x2 <- pmin(timeSeries$x1, timeSeries$x2)
     mod <- lm(log(y/minx1x2) ~ time)
+    class(mod) <- c("CESmodel", class(mod))
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(coef(mod)[[1]])),
       lambda = as.vector(coef(mod)[[2]]),
@@ -74,17 +79,19 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 4){
     # Constraints are sigma_1 = Inf and delta = 1.
     # rho and sigma are unknowable and set to NA.
     # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
     # We use a nested fitting approach.
-    # Given a value for delta_1, the variable group is calculated. 
+    # Given a value for delta_1, the variable blendedX is calculated. 
     # We fit the log transform of the equation,
-    # log(y/group) ~ time
+    # log(y/blendedX) ~ time
     # with lm to obtain estimates for gamma_coef and lambda.
     # Then, we use nlmin to find the best value of delta_1.
-    sse4 <- function(delta_1) {
+    sse4 <- function(params) {
+      delta_1 <- params[[1]]
       blendedX <- delta_1*x1 + (1-delta_1)*x2
       inner.model <- lm(log(y/blendedX) ~ time)
       sse <- sum(resid(inner.model)^2)
@@ -92,32 +99,34 @@ cesBoundaryModel <- function(data, f, nest, id){
       return(sse)
     }
     mod <- nlmin(sse4, p=c(delta_1=0.5) )
-    sse <- sse4(mod$estimate)
-    innerMod <- attr(sse, "inner.model")
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse4(mod$estimate), "inner.model")
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
       lambda = as.vector(coef(innerMod)[[2]]),
-      delta_1 = as.vector(mod$estimate),
+      delta_1 = as.vector(mod$estimate[[1]]),
       delta = as.vector(1),
       sigma_1 = as.vector(Inf),
       rho_1 = as.vector(-1),
       sigma = NA,
       rho = NA,
-      sse = as.vector(sse)
+      sse = mod$minimum
     )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 5){
     # Constraint is delta = 1.
-    # rho and sigma are unknowable and set to NA.
     # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
-    # We do not log transform this model. We use nls.
-    
+    # This is nothing more that the CES function in two variables, x1, and x2.
+    # So, fit by calling cesModel unconstrained.
+    # Make a data frame with the correct variables
+    bmod5data <- data.frame(y, x1, x2, time)
+    # Not working yet.
+#     mod <- cesModel2(formula = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
   
-  class(mod) <- c("CESmodel", class(mod))
   attr(mod, "bmodID") <- id
-  mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   return(mod)
 }
 
