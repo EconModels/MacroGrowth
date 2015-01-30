@@ -839,26 +839,70 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   # Get the nest information
   fNames <- cesFormulaNames(formula, nest)
 
+  ##########################################
+  # There is probably a better way to do this.
+  # But, for now, check the class of the model and react appropriately.
+  ##########################################
   # Create the list of meta information.
-  metaList <- list(  isConv = naturalCoeffs$isConv,
-                     algorithm = as.vector(model$method),
-                     iter = as.vector(model$iter["function"]),
-                     grid = grid,
-                     alpha = as.vector(alpha),
-                     beta = as.vector(beta),
-                     gamma = as.vector(gamma),
-                     start.lambda = as.vector(model$start["lambda"]),
-                     start.delta_1 = as.vector(model$start["delta_1"]),
-                     start.rho_1 = as.vector(model$start["rho_1"]),
-                     start.gamma_coef = as.vector(model$start["gamma"]),
-                     start.delta = as.vector(model$start["delta"]),
-                     start.rho = as.vector(model$start["rho"]),
-                     history=as.vector(history),
-                     nestStr = fNames$nestStr,
-                     nestStrParen = fNames$nestStrParen
-  )
+  if ("cesEst" %in% class(model)){
+    metaList <- list(  isConv = naturalCoeffs$isConv,
+                       algorithm = as.vector(model$method),
+                       iter = as.vector(model$iter["function"]),
+                       grid = grid,
+                       alpha = as.vector(alpha),
+                       beta = as.vector(beta),
+                       gamma = as.vector(gamma),
+                       start.lambda = as.vector(model$start["lambda"]),
+                       start.delta_1 = as.vector(model$start["delta_1"]),
+                       start.rho_1 = as.vector(model$start["rho_1"]),
+                       start.gamma_coef = as.vector(model$start["gamma"]),
+                       start.delta = as.vector(model$start["delta"]),
+                       start.rho = as.vector(model$start["rho"]),
+                       history=as.vector(history),
+                       nestStr = fNames$nestStr,
+                       nestStrParen = fNames$nestStrParen
+    )
+  } else if ("lm" %in% class(model)){
+    metaList <- list(  isConv = TRUE, # lm always converges.
+                       algorithm = as.vector("lm"),
+                       iter = as.vector(0), # lm doesn't iterate.
+                       grid = grid,
+                       alpha = as.vector(alpha),
+                       beta = as.vector(beta),
+                       gamma = as.vector(gamma),
+                       start.lambda = NA,
+                       start.delta_1 = NA,
+                       start.rho_1 = NA, 
+                       start.gamma_coef = NA,
+                       start.delta = NA,
+                       start.rho = NA,
+                       history = NA,
+                       nestStr = fNames$nestStr,
+                       nestStrParen = fNames$nestStrParen
+    )
+  } else if ("nlmin" %in% class(model)){
+    metaList <- list(  isConv = (model$code == 1) || (model$code == 2), # 1: gradient close to zero, 2: successive iterations within tolerance
+                       algorithm = as.vector("nlmin"),
+                       iter = as.vector(model$iterations),
+                       grid = grid,
+                       alpha = as.vector(alpha),
+                       beta = as.vector(beta),
+                       gamma = as.vector(gamma),
+                       start.lambda = NA, # None of the start values are available from a nlm object.
+                       start.delta_1 = NA,
+                       start.rho_1 = NA, 
+                       start.gamma_coef = NA,
+                       start.delta = NA,
+                       start.rho = NA,
+                       history = NA,
+                       nestStr = fNames$nestStr,
+                       nestStrParen = fNames$nestStrParen
+    )
+  } else {
+    stop(paste("Unknown model class", class(model), "in addMetaData."))
+  }
   
-  # Boundary models may come in here with NULL items. Convert NULL to NA before adding to the data.frame.
+  # Boundary models may come in here with NULL items. Convert NULL to NA before creating the data.frame.
   metaList <- replace(metaList, unlist(lapply(metaList, is.null)), NA)
   metaData <- data.frame(metaList)
   
@@ -871,9 +915,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
     }
   }
   attr(model, "naturalCoeffs") <- naturalCoeffs[1,]
-  metaData$metaDataRows <- nrow(metaData)
   attr(model, "meta") <- metaData[1,] 
-  attr(model, "metaList") <- metaList 
   
   return(model)
 }
