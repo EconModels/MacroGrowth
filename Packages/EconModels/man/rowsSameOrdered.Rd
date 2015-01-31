@@ -15,4 +15,7 @@ rowsSameOrdered(data)
 \description{
 Tells whether variables are always similarly ordered across all observations.
 }
+\note{
+If all rows are comprised of equal numbers, \code{FALSE} is returned.
+}
 

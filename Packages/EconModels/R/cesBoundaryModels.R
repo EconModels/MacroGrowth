@@ -257,19 +257,40 @@ cesTimeSeries <- function(data, f, nest){
 #' 
 #' @param data a data frame that contains rows that are to be compared for ordering
 #' @return \code{TRUE} if all rows are ordered the same, \code{FALSE} if they are not.
+#' @note If all rows are comprised of equal numbers, \code{FALSE} is returned.
 #' @export
 rowsSameOrdered <- function(data){
-  # First, find a row of data in which none of the values equals any of the others.
-  iCompRow <- 2
+  # Look at all the rows. 
+  # Make a vector with length equal to the number of rows in data whose
+  # values are TRUE if there was at least two numbers equal on the row and FALSE if all numbers were unique.
+  somethingEqualOnRow <- apply(data, 1,
+                               function(row){
+                                 if (length(row) < 2){
+                                   stop(paste("row has length", length(row), "in rowsSameOrdered. length must be >= 2"))
+                                 }
+                                 # row is each row of data.
+                                 for (i in 1:(length(row)-1)){
+                                   for (j in (i+1):length(row)){
+                                     if (row[i] == row[j]){
+                                       return(TRUE)
+                                     }
+                                   }
+                                 }
+                                 return(FALSE)
+                               })
+  # Find the index of the first row contining unique numbers (no duplicates)
+  iCompRow <- match(FALSE, somethingEqualOnRow)
+  if (is.na(iCompRow)){
+    # No rows have differing data. Return false.
+    return(FALSE)
+  }
+  # Use the first unique row as our comparison row.
   compRow <- data[iCompRow, ]
   # Find the order for compRow
   oCompRow <- order(compRow)
   # Now, check to see if every other row has a similar order.
   order <- apply(data, 1, 
                  function(row){
-                   if (length(row) < 2){
-                     stop(paste("row has length", length(row), "in rowsSameOrdered. length must be >= 2"))
-                   }
                    # row is each row of data.
                    # arrange row in least-to-greatest order of compRow.
                    reorderedRow <- row[oCompRow]
@@ -282,7 +303,7 @@ rowsSameOrdered <- function(data){
                    }
                    # row has same ordering as compRow.
                    return(TRUE)
-                   })
+                 })
   # All rows are same-ordered if all items in order are TRUE.
   return(all(order))
 }
