@@ -259,11 +259,31 @@ cesTimeSeries <- function(data, f, nest){
 #' @return \code{TRUE} if all rows are ordered the same, \code{FALSE} if they are not.
 #' @export
 rowsSameOrdered <- function(data){
-  # orders is a matrix where each row gives a permutation of the numerical order (smallest to largest) 
-  # of the same row in the data argument.
-  orders <- t(apply(data, 1, order))
-  # Gives a logical vector telling whether each row of data has the same ordering as row 1 of data.
-  sameOrderAsRow1 <- apply(orders, 1, function(x){all(orders[1,] == x)})
-  # return TRUE only if all rows of data have the same ordering as row 1 of data.
-  return(all(sameOrderAsRow1))
+  # First, find a row of data in which none of the values equals any of the others.
+  iCompRow <- 2
+  compRow <- data[iCompRow, ]
+  # Find the order for compRow
+  oCompRow <- order(compRow)
+  # Now, check to see if every other row has a similar order.
+  order <- apply(data, 1, 
+                 function(row){
+                   if (length(row) < 2){
+                     stop(paste("row has length", length(row), "in rowsSameOrdered. length must be >= 2"))
+                   }
+                   # row is each row of data.
+                   # arrange row in least-to-greatest order of compRow.
+                   reorderedRow <- row[oCompRow]
+                   # If reorderedRow is itself in least-to-greatest order, it has same ordering as compRow.
+                   for (j in 2:length(reorderedRow)){
+                     if (reorderedRow[j-1] > reorderedRow[j]){
+                       # Didn't have least-to-greatest order when arranged as compRow. No need to check any further.
+                       return(FALSE)
+                     }
+                   }
+                   # row has same ordering as compRow.
+                   return(TRUE)
+                   })
+  # All rows are same-ordered if all items in order are TRUE.
+  return(all(order))
 }
+
