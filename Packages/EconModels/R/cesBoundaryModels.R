@@ -25,7 +25,7 @@ cesBoundaryModel <- function(data, f, nest, id){
   if (id == 1){
     # Constraints are delta_1 = 1 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
-    # The model is y = gamma * A * x1.
+    # The model is y = gamma_coef * A * x1.
     # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x1) ~ time)
     class(mod) <- c("CESmodel", class(mod))
@@ -44,7 +44,7 @@ cesBoundaryModel <- function(data, f, nest, id){
   } else if (id == 2){
     # Constraints are delta_1 = 0 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
-    # The model is y = gamma * A * x2.
+    # The model is y = gamma_coef * A * x2.
     # In log transform space, ln(y/x2) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x2) ~ time)
     class(mod) <- c("CESmodel", class(mod))
@@ -61,9 +61,17 @@ cesBoundaryModel <- function(data, f, nest, id){
     )
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 3){
+    # When variables x1 and x2 have the same order 
+    # (e.g., x_1 < x_2 (or the other way around) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with the model y = gamma_coef * A * x_1 
+    # or y = gamma_coef * A * x_2, depending on which one is always the minimum.
+    if (rowsSameOrdered(data.frame(x1, x2))){
+      return(NULL)
+    }
     # Constraints are sigma_1 = 0 and delta = 1.
     # delta_1, rho, and sigma are unknowable and set to NA.
-    # The model is y = gamma * A * min(x1, x2).
+    # The model is y = gamma_coef * A * min(x1, x2).
     # In log transform space, ln(y/min(x1, x2)) = ln(gamma_coef) + lambda*time.
     minx1x2 <- pmin(timeSeries$x1, timeSeries$x2)
     mod <- lm(log(y/minx1x2) ~ time)
@@ -83,7 +91,7 @@ cesBoundaryModel <- function(data, f, nest, id){
   } else if (id == 4){
     # Constraints are sigma_1 = Inf and delta = 1.
     # rho and sigma are unknowable and set to NA.
-    # The model is y = gamma * A * [delta_1 * x1 + (1-delta_1) * x2].
+    # The model is y = gamma_coef * A * [delta_1 * x1 + (1-delta_1) * x2].
     # We use a nested fitting approach.
     # Given a value for delta_1, the variable blendedX is calculated. 
     # We fit the log transform of the equation,
@@ -115,7 +123,7 @@ cesBoundaryModel <- function(data, f, nest, id){
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 5){
     # Constraint is delta = 1.
-    # The model is y = gamma * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
+    # The model is y = gamma_coef * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
     # This is nothing more than the CES function in two variables, x1, and x2.
     # So, fit by calling cesModel unconstrained.
     # Make a data frame with the correct variables
@@ -124,7 +132,7 @@ cesBoundaryModel <- function(data, f, nest, id){
   } else if (id == 6){
     # Constraints is delta = 0.
     # delta_1, rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
-    # The model is y = gamma * A * x3.
+    # The model is y = gamma_coef * A * x3.
     # In log transform space, ln(y/x3) = ln(gamma_coef) + lambda*time.
     mod <- lm(log(y/x3) ~ time)
     class(mod) <- c("CESmodel", class(mod))
@@ -141,9 +149,17 @@ cesBoundaryModel <- function(data, f, nest, id){
     )
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 7){
+    # When variables x1 and x3 have the same order 
+    # (e.g., x_1 < x_3 (or the other way around) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with the model y = gamma_coef * A * x_1
+    # or y = gamma_coef * A * x_3, depending on which one is always the minimum.
+    if (rowsSameOrdered(data.frame(x1, x3))){
+      return(NULL)
+    }
     # Constraints are delta_1 = 1 and sigma = 0.
     # delta, sigma_1, and rho_1 are unknowable and set to NA.
-    # The model is y = gamma * A * min(x1, x3).
+    # The model is y = gamma_coef * A * min(x1, x3).
     # In log transform space, ln(y/min(x1, x3)) = ln(gamma_coef) + lambda*time.
     minx1x3 <- pmin(timeSeries$x1, timeSeries$x3)
     mod <- lm(log(y/minx1x3) ~ time)
@@ -161,9 +177,17 @@ cesBoundaryModel <- function(data, f, nest, id){
     )    
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 8){
+    # When variables x2 and x3 have the same order 
+    # (e.g., x_2 < x_3 (or the other way around) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with the model y = gamma_coef * A * x_2
+    # or y = gamma_coef * A * x_3, depending on which one is always the minimum.
+    if (rowsSameOrdered(data.frame(x2, x3))){
+      return(NULL)
+    }
     # Constraints are delta_1 = 0 and sigma = 0.
     # delta, sigma_1, and rho_1 are unknowable and set to NA.
-    # The model is y = gamma * A * min(x2, x3).
+    # The model is y = gamma_coef * A * min(x2, x3).
     # In log transform space, ln(y/min(x2, x3)) = ln(gamma_coef) + lambda*time.
     minx2x3 <- pmin(timeSeries$x2, timeSeries$x3)
     mod <- lm(log(y/minx2x3) ~ time)
@@ -181,9 +205,17 @@ cesBoundaryModel <- function(data, f, nest, id){
     )    
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 9){
+    # When variables x1, x2, and x3 have the same order 
+    # (e.g., x_1 < x_2 < x3 (or another permutation) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with the model y = gamma_coef * A * x_1 
+    # or y = gamma_coef * A * x_2 or y = gamma_coef * A * x_3, depending on which one is always the minimum.
+    if (rowsSameOrdered(data.frame(x1, x2, x3))){
+      return(NULL)
+    }
     # Constraints are sigma_1 = 0 and sigma = 0.
     # delta_1 and delta are unknowable and set to NA.
-    # The model is y = gamma * A * min(x1 x2, x3).
+    # The model is y = gamma_coef * A * min(x1 x2, x3).
     # In log transform space, ln(y/min(x1, x2, x3)) = ln(gamma_coef) + lambda*time.
     minx1x2x3 <- pmin(timeSeries$x1, timeSeries$x2, timeSeries$x3)
     mod <- lm(log(y/minx1x2x3) ~ time)
