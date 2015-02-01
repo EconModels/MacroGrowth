@@ -1456,14 +1456,14 @@ When $\sigma_1$ or $\sigma$ is 0,
 factors of production are complimentary,
 and the Leontief model applies.%
   \footnote{
-  For the case of $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
+  E.g., when $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
   $y = \gamma A \min (x_1, x_2)$.
   }
 When $\sigma_1$ or $\sigma$ is $\infty$, 
 factors of production are subsitutible,
 and the linear model applies.%
   \footnote{
-  For the case of $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
+  E.g., when $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
   $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$.
   }
 In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
@@ -1524,23 +1524,23 @@ the boundary model is rejected.
      16. & 0           & ---        &            & 
             & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
 %
-     17. &            &            & ---     & 0
-            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
-                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
+     17. &             & $\infty$   &            &
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
+                    + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
 %
-      18. & ---         & 0          &            & 
+     18. & ---         & 0          &            & 
             & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
 %
-      19. &             &            &            & $\infty$
+     19. &             &            &            & $\infty$
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}  
                     + \left( 1 - \delta \right) x_3  \right\}$ \\ 
 %
-      20. &             & $\infty$   &            &
-            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
-                    + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
-                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
+     20. &            &            & ---     & 0
+            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
       \bottomrule
     \end{tabular}
   \end{center}
