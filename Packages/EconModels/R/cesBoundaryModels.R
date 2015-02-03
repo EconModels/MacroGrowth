@@ -12,7 +12,7 @@
 #' @note the \code{naturalCoeffs} attribute includes correct values of boundary parameters. 
 #' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 #' @export
-cesBoundaryModel <- function(data, f, nest, id){
+cesBoundaryModel <- function(f, data, nest, id){
   timeSeries <- cesTimeSeries(data, f, nest)
   y <- timeSeries$y
   x1 <- timeSeries$x1
@@ -231,6 +231,72 @@ cesBoundaryModel <- function(data, f, nest, id){
       rho = Inf,
       sse = as.vector(sum(resid(mod)^2))
     )    
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  } else if (id == 10){
+    # Constraints are delta_1 = 1 and sigma = Inf.
+    # sigma_1 is unknowable and set to NA.
+    # The model is y = gamma_coef * A * [delta * x1 + (1-delta) * x3].
+    # We use a nested fitting approach.
+    # Given a value for delta, the variable blendedX is calculated. 
+    # We fit the log transform of the equation,
+    # log(y/blendedX) ~ time
+    # with lm to obtain estimates for gamma_coef and lambda.
+    # Then, we use nlmin to find the best value of delta.
+    sse10 <- function(params) {
+      delta <- params[[1]]
+      blendedX <- delta*x1 + (1-delta)*x3
+      inner.model <- lm(log(y/blendedX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse10, p=c(delta=0.5))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse10(mod$estimate), "inner.model")
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
+      lambda = as.vector(coef(innerMod)[[2]]),
+      delta = as.vector(mod$estimate[[1]]),
+      delta_1 = as.vector(1),
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = Inf,
+      rho = as.vector(0),
+      sse = mod$minimum
+    )
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  } else if (id == 11){
+    # Constraints are delta_1 = 0 and sigma = Inf.
+    # sigma_1 is unknowable and set to NA.
+    # The model is y = gamma_coef * A * [delta * x2 + (1-delta) * x3].
+    # We use a nested fitting approach.
+    # Given a value for delta, the variable blendedX is calculated. 
+    # We fit the log transform of the equation,
+    # log(y/blendedX) ~ time
+    # with lm to obtain estimates for gamma_coef and lambda.
+    # Then, we use nlmin to find the best value of delta.
+    sse11 <- function(params) {
+      delta <- params[[1]]
+      blendedX <- delta*x2 + (1-delta)*x3
+      inner.model <- lm(log(y/blendedX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse11, p=c(delta=0.5))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse11(mod$estimate), "inner.model")
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
+      lambda = as.vector(coef(innerMod)[[2]]),
+      delta = as.vector(mod$estimate[[1]]),
+      delta_1 = as.vector(1),
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = Inf,
+      rho = as.vector(0),
+      sse = mod$minimum
+    )
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
