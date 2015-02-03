@@ -975,8 +975,8 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
     a_0 = as.vector(a_0),
     a_1 = as.vector(a_1),
     c_t = as.vector(c_t),
-    sse = sum(resid(res)^2),
-    isConv = TRUE, # Always, because we're fitting with lm.
+    sse = as.vector(sum(resid(res)^2)),
+    isConv = TRUE # Always, because we're fitting with lm.
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
   #  sdata <- subset(data, 
