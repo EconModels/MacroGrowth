@@ -312,13 +312,19 @@ test_that("cesModel() fits without energy are correct", {
   lambda <- 0.02
   delta <- 0.99
   rho <- 0.4
-  nu <- 1.0
-
-  fitGDP3 <- cesCalc(xNames = c("iK", "iL"), data = testData, 
+  nu <- 1.0  
+  
+  fitGDP3 <- cesCalc(xNames = c("iL", "iK"), data = testData, 
                      coef = c(gamma=scale, lambda=lambda, delta=delta, rho=rho, nu=nu),
                      tName = "iYear")
   testData <- cbind(testData, fitGDP3)
   
+  # Try a manual fit using cesEst.
+  model_manual_3 <- cesEst(yName = "fitGDP3", xNames = c("iK", "iL"), data = testData, 
+                           tName = "iYear", method = "L-BFGS-B", multErr = TRUE)
+  expect_equivalent(coef(model_manual_3)[c("gamma", "lambda", "delta", "rho")], 
+                    list(scale, lambda, delta, rho))
+
   modelces3 <- cesModel(fitGDP3 ~ iK + iL + iYear, data = testData, nest = c(1, 2), digits=30)
   expect_equivalent(coef(modelces3)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, delta, rho))
