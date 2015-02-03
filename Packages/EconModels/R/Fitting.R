@@ -845,9 +845,10 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   ##########################################
   # Create the list of meta information.
   if ("cesEst" %in% class(model)){
-    metaList <- list(  isConv = naturalCoeffs$isConv,
+    metaList <- list(  isConv = model$convergence,
                        algorithm = as.vector(model$method),
-                       iter = as.vector(model$iter["function"]),
+                       # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
+                       iter = as.vector(ifelse(is.list(model$iter), model$iter["function"], model$iter)),
                        grid = grid,
                        alpha = as.vector(alpha),
                        beta = as.vector(beta),
