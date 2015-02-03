@@ -308,6 +308,14 @@ test_that("cesModel() fits without energy are correct", {
                     list(scale, lambda, 1-delta, rho))
   
   # Try data near a boundary, delta = 0.95
+  # When exploring a bug, I noted that cesEst (and cesModel) have 
+  # difficulty very near the boundary (delta = 0.99). 
+  # I suppose that is not unexpected. 
+  # For example, with delta = 0.99, cesEst fails the tests below,
+  # i.e., it does not not land on the variables (scale, lambda, delta, rho) that were used
+  # to create the fitGDP3 time series in the first place. 
+  # But, at delta = 0.95, both cesEst and cesModel work fine. 
+  # Thus, I left delta = 0.95 in the test.
   scale <- 1.0 # cesEst calls this "gamma"
   lambda <- 0.02
   delta <- 0.95
