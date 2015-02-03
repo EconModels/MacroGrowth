@@ -4,12 +4,12 @@
 \alias{cesBoundaryModel}
 \title{Fits CES boundary models}
 \usage{
-cesBoundaryModel(data, f, nest, id)
+cesBoundaryModel(f, data, nest, id)
 }
 \arguments{
-\item{data}{historical time series data}
-
 \item{f}{a CES formula in the form \code{y ~ a + b + c + d + time}}
+
+\item{data}{historical time series data}
 
 \item{nest}{identifies the nesting of the variables in the original formula,
 assumed to be of the form \code{c(1,2,3)}.}
