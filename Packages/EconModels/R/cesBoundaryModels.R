@@ -40,6 +40,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 2){
     # Constraints are delta_1 = 0 and delta = 1.
@@ -59,6 +60,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 3){
     # When variables x1 and x2 have the same order 
@@ -87,6 +89,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 4){
     # Constraints are sigma_1 = Inf and delta = 1.
@@ -120,6 +123,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = NA,
       sse = mod$minimum
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 5){
     # Constraint is delta = 1.
@@ -147,6 +151,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = NA,
       sse = as.vector(sum(resid(mod)^2))
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 7){
     # When variables x1 and x3 have the same order 
@@ -175,6 +180,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = Inf,
       sse = as.vector(sum(resid(mod)^2))
     )    
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 8){
     # When variables x2 and x3 have the same order 
@@ -203,6 +209,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = Inf,
       sse = as.vector(sum(resid(mod)^2))
     )    
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 9){
     # When variables x1, x2, and x3 have the same order 
@@ -231,6 +238,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = Inf,
       sse = as.vector(sum(resid(mod)^2))
     )    
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 10){
     # Constraints are delta_1 = 1 and sigma = Inf.
@@ -264,6 +272,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = as.vector(0),
       sse = mod$minimum
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 11){
     # Constraints are delta_1 = 0 and sigma = Inf.
@@ -297,6 +306,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = as.vector(0),
       sse = mod$minimum
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else if (id == 12){
     # Constraints are sigma_1 = 0 and sigma = Inf.
@@ -330,12 +340,12 @@ cesBoundaryModel <- function(f, data, nest, id){
       rho = as.vector(0),
       sse = mod$minimum
     )
+    attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
   
-  attr(mod, "bmodID") <- id
   return(mod)
 }
 
