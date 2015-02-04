@@ -8,7 +8,8 @@ cesModel2(f, data, response, a, b, c = NULL, d = NULL, time, nest = 1:4,
   prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"), multErr = TRUE,
   rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-  digits = 6, save.data = TRUE, constrained = TRUE, ...)
+  digits = 6, save.data = TRUE, constrained = TRUE,
+  fitBoundaries = TRUE, ...)
 }
 \arguments{
 \item{f}{a formula of the form \code{response ~ a + b + c + d + time}.
@@ -61,7 +62,11 @@ when comparing one fit against another.}
 \item{save.data}{a logical indicating whether data is to be saved with the model.
 Be sure to set \code{TRUE} if resampling is needed later.}
 
-\item{constrained}{a logical indicating whether the parameters should be constrained in the fitting process.}
+\item{constrained}{a logical indicating whether the parameters should be constrained in the fitting process.
+Default is \code{TRUE}.}
+
+\item{fitBoundaries}{a logical indicating whether fits should be performed along boundaries.
+Default is \code{TRUE}.}
 }
 \value{
 a cesEst model with additional information attached as attributes.

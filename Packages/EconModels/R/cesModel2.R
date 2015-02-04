@@ -35,9 +35,12 @@
 #' \code{rho = 0.25} corresponds to \code{sigma = 0.8}.
 #' @param digits the number of sse digits that is to be considered significant 
 #' when comparing one fit against another.
-#' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @param save.data a logical indicating whether data is to be saved with the model.
 #' Be sure to set \code{TRUE} if resampling is needed later.
+#' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
+#' Default is \code{TRUE}.
+#' @param fitBoundaries a logical indicating whether fits should be performed along boundaries.
+#' Default is \code{TRUE}.
 #' @note For now the components in \code{f} (or the arguments \code{response}, 
 #' \code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
 #' not be other kinds of expressions.
@@ -62,6 +65,7 @@ cesModel2 <- function(f, data,
                       digits=6,
                       save.data=TRUE,
                       constrained=TRUE,
+                      fitBoundaries=TRUE,
                       ...){
   if ( missing(f) ) { 
     substitutionList <-  list( response = substitute(response),
@@ -95,17 +99,28 @@ cesModel2 <- function(f, data,
   # This ensures that response is the first column.  This is assumed in downstream code.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
-  if (constrained){
+  if (constrained && fitBoundaries){
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
     if (numFactors == 2){
       numBoundaryModels <- 5 # The first 5 boundary models involve only 2 factors of production
     } else if (numFactors == 3){
-      numBoundaryModels <- 14 # The first 20 boundary models are appropriate for 3 factors of production
+      numBoundaryModels <- 15 # The first 20 boundary models are appropriate for 3 factors of production
     }
     boundary.models <- lapply(c(1:numBoundaryModels), function(n){
       cesBoundaryModel(f=f, data=data, nest=nest, id=n)
     })
+
+    # This is another possible design for the boundary models. 
+    # Each boundary model would be contained in its own function 
+    # named cesBmodX where X is the number of the model.
+    # In some ways this approach would be cleaner.
+    # But, the current design (one big function) allows us to extract data
+    # at the top of the function once, thereby minimizing some duplicated code.
+#     boundary.models <- lapply(c(1:3), function(n){
+#       eval(call(paste0("cesBmod", n), f=f, data=data, nest=nest))
+#     })
+    
   } else {
     # We don't need to fit the boundary models.
     # Start with an empty list before going into the unconstrained fitting with the full function.

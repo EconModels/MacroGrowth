@@ -133,10 +133,16 @@ cesBoundaryModel <- function(f, data, nest, id){
     # Constraint is delta = 1.
     # The model is y = gamma_coef * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
     # This is nothing more than the CES function in two variables, x1, and x2.
-    # So, fit by calling cesModel unconstrained.
+    # So, fit by calling cesModel. 
     # Make a data frame with the correct variables
     bmod5data <- data.frame(y, x1, x2, time)
-    mod <- cesModel2(f = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
+    # Don't fit along boundaries. 
+    # Boundary fits will be addressed by other boundary models.
+    mod <- cesModel2(f = y ~ x1 + x2 + time, 
+                     data = bmod5data, 
+                     nest = c(1,2), 
+                     constrained = TRUE, 
+                     fitBoundaries = FALSE)
     return(mod)
   } else if (id == 6){
     # Constraints is delta = 0.
@@ -431,6 +437,21 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
+    return(mod)
+  } else if (id == 15){
+    # Constraint is delta_1 = 1. sigma_1 and rho_1 are unknowable.
+    # The model is y = gamma_coef * A * [delta * x1^(-rho) + (1-delta) * x3^(-rho)]^(-1/rho).
+    # This is nothing more than the CES function in two variables, x1, and x3.
+    # So, fit by calling cesModel constrained.
+    # Make a data frame with the correct variables
+    bmod15data <- data.frame(y, x1, x3, time)
+    # Don't fit along boundaries. 
+    # Boundary fits will be addressed by other boundary models.
+    mod <- cesModel2(f = y ~ x1 + x3 + time, 
+                     data = bmod15data, 
+                     nest = c(1,2), 
+                     constrained = TRUE, 
+                     fitBoundaries = FALSE)
     return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
