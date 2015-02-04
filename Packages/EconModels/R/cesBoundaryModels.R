@@ -143,6 +143,10 @@ cesBoundaryModel <- function(f, data, nest, id){
                      nest = c(1,2), 
                      constrained = TRUE, 
                      fitBoundaries = FALSE)
+    mod <- addMetaData(mod, 
+                       formula = f, 
+                       nest = nest, 
+                       history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
     return(mod)
   } else if (id == 6){
     # Constraints is delta = 0.
@@ -452,6 +456,24 @@ cesBoundaryModel <- function(f, data, nest, id){
                      nest = c(1,2), 
                      constrained = TRUE, 
                      fitBoundaries = FALSE)
+    # mod comes back with naturalCoeffs appropriate for a 2-factor model.
+    # Need to adjust for this boundary model.
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(naturalCoef(mod)$gamma_coef),
+      lambda = as.vector(naturalCoef(mod)$lambda),
+      delta = as.vector(naturalCoef(mod)$delta_1),
+      delta_1 = as.vector(1),
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = as.vector(as.vector(naturalCoef(mod)$sigma_1)),
+      rho = as.vector(as.vector(naturalCoef(mod)$rho_1)),
+      sse = as.vector(as.vector(naturalCoef(mod)$sse))
+    )
+    mod <- addMetaData(mod, 
+                       formula = f, 
+                       nest = nest, 
+                       naturalCoeffs = naturalCoeffs,
+                       history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
     return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
