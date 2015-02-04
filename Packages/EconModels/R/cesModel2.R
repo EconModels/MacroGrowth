@@ -26,6 +26,7 @@
 #' are complete.
 #' #' Use \code{NULL} (the default value) 
 #' if you want to skip the gradient search from a previous model.
+#' @param multErr logical, tells whether errors are to be assessed in a multiplicative manner
 #' @param rho,rho1 Default values for \code{rho} and \code{rho1} are a grid upon which 
 #' searches will be made.
 #' Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default 
@@ -111,7 +112,20 @@ cesModel2 <- function(f, data,
     boundary.models <- list()
   }
   
-  unbounded.models <- list()
+  # Define lower and upper based on whether constrained fitting is desired.
+  if (constrained){
+    # Setting lower and upper to NULL invokes the default constraints, 
+    # namely 0 <= gamma <= Inf, 0 <= delta <= 1, and -1 <= rho <= Inf
+    lower <- NULL
+    upper <- NULL
+  } else {
+    # Setting lower and upper to -Inf and Inf, respectively, removes the constraints.
+    lower <- -Inf
+    upper <- Inf
+  }
+  
+  cesEst.models <- list()
+  
   for (algorithm in algorithms) {
     #
     # Try grid search.
@@ -120,13 +134,11 @@ cesModel2 <- function(f, data,
       # We want a model with only 2 factors. No need for a rho1 argument.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data = data, yName = yNAME, xNames = xNAMES, 
-                 tName = tNAME, method=ALGORITHM, rho = RHO,
-                 control = CONTROL, multErr = MULTERR, 
-                 lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
-          list(yNAME = yName, xNAMES=xNames,
-               tNAME = tName, ALGORITHM = algorithm, RHO = rho,
-               CONTROL = chooseCESControl(algorithm), MULTERR = multErr) 
+          cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho,
+                 control = CONTROL, multErr = multErr, 
+                 lower = lower, upper = upper, ...), # Always fit unconstrained. Constraints applied later.
+          list( yNAME = yName, xNAMES=xNames, tNAME = tName, 
+                ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
         ))
       },
       error = function(e) {  
@@ -138,13 +150,11 @@ cesModel2 <- function(f, data,
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data=data, yName=yNAME, xNames=xNAMES, 
-                 tName=tNAME, method=ALGORITHM, rho = RHO, rho1 = RHO1, 
-                 control=CONTROL, multErr=MULTERR, 
-                 lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
-          list( yNAME = yName, xNAMES = xNames, 
-                tNAME = tName, ALGORITHM = algorithm, RHO = rho, RHO1 = rho1, 
-                CONTROL = chooseCESControl(algorithm), MULTERR=multErr) 
+          cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho, rho1=rho1, 
+                 control=CONTROL, multErr=multErr, 
+                 lower = lower, upper = upper, ...),
+          list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+                ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )   
         ))
       },
       error = function(e) {  
@@ -156,23 +166,23 @@ cesModel2 <- function(f, data,
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
       model <- addMetaData(model, formula=f, nest=nest, history=hist)
-      unbounded.models[length(unbounded.models)+1] <- list(model)
+      cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
   #
   # Now try gradient search starting from the best place found by the grid searches above.
   #
-  bestMod <- bestModel(unbounded.models, digits=digits)
+  bestMod <- bestModel(cesEst.models, digits=digits)
   start <- coef(bestMod)
   
   for (algorithm in algorithms) {
     model <- tryCatch( {
       eval(substitute(
         cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-               control=CONTROL, start=START, multErr=MULTERR, 
-               lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
-        list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-              CONTROL = chooseCESControl(algorithm), START=start, MULTERR=multErr) 
+               control=CONTROL, start=start, multErr=multErr, 
+               lower = lower, upper = upper, ...),
+        list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+              ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
       ))
     },
     error = function(e) { 
@@ -183,7 +193,7 @@ cesModel2 <- function(f, data,
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
       model <- addMetaData(model, formula=f, nest=nest, history=hist)
-      unbounded.models[length(unbounded.models)+1] <- list(model)
+      cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
   #
@@ -196,15 +206,15 @@ cesModel2 <- function(f, data,
         model <- 
           eval(substitute(
             cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-                   control=CONTROL, start=START, multErr=MULTERR, 
-                   lower = -Inf, upper = Inf, ...), # Always fit unconstrained. Constraints applied later.
-            list( yNAME = yName, xNAMES = xNames, tNAME = tName, ALGORITHM = algorithm,
-                  CONTROL =  chooseCESControl(algorithm), START=start, MULTERR=multErr) 
+                   control=CONTROL, start=start, multErr=multErr, 
+                   lower = lower, upper = upper, ...), 
+            list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+                  ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         model <- addMetaData(model, formula=f, nest=nest, history=hist)
-        unbounded.models[length(unbounded.models)+1] <- list(model)
+        cesEst.models[length(cesEst.models)+1] <- list(model)
       },
       error = function(e) {  
         warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e)))
@@ -214,7 +224,7 @@ cesModel2 <- function(f, data,
     }
   }
   
-  models <- c(boundary.models, unbounded.models)
+  models <- c(boundary.models, cesEst.models)
   if (constrained){
     # Keep only those models that meet constraints for the economically meaningful region.
     validModels <- models[sapply(models, withinConstraints)]
