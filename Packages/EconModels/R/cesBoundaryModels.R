@@ -13,7 +13,7 @@
 #' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 #' @export
 cesBoundaryModel <- function(f, data, nest, id){
-  timeSeries <- cesTimeSeries(data, f, nest)
+  timeSeries <- cesTimeSeries(f=f, data=data, nest=nest)
   y <- timeSeries$y
   x1 <- timeSeries$x1
   x2 <- timeSeries$x2
@@ -475,6 +475,39 @@ cesBoundaryModel <- function(f, data, nest, id){
                        naturalCoeffs = naturalCoeffs,
                        history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
     return(mod)
+  } else if (id == 16){
+    # Constraint is delta_1 = 0. sigma_1 and rho_1 are unknowable.
+    # The model is y = gamma_coef * A * [delta * x2^(-rho) + (1-delta) * x3^(-rho)]^(-1/rho).
+    # This is nothing more than the CES function in two variables, x2, and x3.
+    # So, fit by calling cesModel constrained.
+    # Make a data frame with the correct variables
+    bmod15data <- data.frame(y, x2, x3, time)
+    # Don't fit along boundaries. 
+    # Boundary fits will be addressed by other boundary models.
+    mod <- cesModel2(f = y ~ x2 + x3 + time, 
+                     data = bmod15data, 
+                     nest = c(1,2), 
+                     constrained = TRUE, 
+                     fitBoundaries = FALSE)
+    # mod comes back with naturalCoeffs appropriate for a 2-factor model.
+    # Need to adjust for this boundary model.
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(naturalCoef(mod)$gamma_coef),
+      lambda = as.vector(naturalCoef(mod)$lambda),
+      delta = as.vector(naturalCoef(mod)$delta_1),
+      delta_1 = as.vector(0),
+      sigma_1 = NA,
+      rho_1 = NA,
+      sigma = as.vector(as.vector(naturalCoef(mod)$sigma_1)),
+      rho = as.vector(as.vector(naturalCoef(mod)$rho_1)),
+      sse = as.vector(as.vector(naturalCoef(mod)$sse))
+    )
+    mod <- addMetaData(mod, 
+                       formula = f, 
+                       nest = nest, 
+                       naturalCoeffs = naturalCoeffs,
+                       history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
+    return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
@@ -488,14 +521,14 @@ cesBoundaryModel <- function(f, data, nest, id){
 #' a time variable (\code{time}) from \code{data}.
 #' All extracted variables are time series vectors.
 #'
-#' @param data the data frame from which time series data is to be extracted
 #' @param f the CES formula for which time series data is to be extracted, 
 #' assumed to be of the form \code{y ~ x1 + x2 + x3 + x4 + time}.
+#' @param data the data frame from which time series data is to be extracted
 #' @param nest identifies the nesting of the variables in the original formula,
 #' assumed to be of the form \code{c(1,2,3)}.
 #' @return a named list of time series'. 
 #' Names are \code{y}, \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}.
-cesTimeSeries <- function(data, f, nest){
+cesTimeSeries <- function(f, data, nest){
   fNames <- cesFormulaNames(f, nest)
   # Extract variables for convenience.
   numFactors <- fNames$numFactors

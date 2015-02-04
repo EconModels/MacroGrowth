@@ -4,13 +4,13 @@
 \alias{cesTimeSeries}
 \title{Extracts y, x1, x2, x3, x4, and time data as time series for CES boundary models}
 \usage{
-cesTimeSeries(data, f, nest)
+cesTimeSeries(f, data, nest)
 }
 \arguments{
-\item{data}{the data frame from which time series data is to be extracted}
-
 \item{f}{the CES formula for which time series data is to be extracted,
 assumed to be of the form \code{y ~ x1 + x2 + x3 + x4 + time}.}
+
+\item{data}{the data frame from which time series data is to be extracted}
 
 \item{nest}{identifies the nesting of the variables in the original formula,
 assumed to be of the form \code{c(1,2,3)}.}
