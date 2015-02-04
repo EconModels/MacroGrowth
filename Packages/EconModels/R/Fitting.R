@@ -877,7 +877,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        start.gamma_coef = NA,
                        start.delta = NA,
                        start.rho = NA,
-                       history = NA,
+                       history = as.vector(paste0("boundary(", attr(model, "bmodID"), ")")),
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
     )
@@ -895,7 +895,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        start.gamma_coef = NA,
                        start.delta = NA,
                        start.rho = NA,
-                       history = NA,
+                       history = as.vector(paste0("boundary(", attr(model, "bmodID"), ")")),
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
     )
