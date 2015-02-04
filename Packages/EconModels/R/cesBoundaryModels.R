@@ -42,6 +42,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 2){
     # Constraints are delta_1 = 0 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
@@ -62,6 +63,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 3){
     # When variables x1 and x2 have the same order 
     # (e.g., x_1 < x_2 (or the other way around) at every observation in the data frame),
@@ -91,6 +93,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 4){
     # Constraints are sigma_1 = Inf and delta = 1.
     # rho and sigma are unknowable and set to NA.
@@ -125,6 +128,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 5){
     # Constraint is delta = 1.
     # The model is y = gamma_coef * A * [delta_1 * x1^(-rho_1) + (1-delta_1) * x2^(-rho_1)]^(-1/rho_1).
@@ -133,6 +137,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     # Make a data frame with the correct variables
     bmod5data <- data.frame(y, x1, x2, time)
     mod <- cesModel2(f = y ~ x1 + x2 + time, data = bmod5data, nest = c(1,2), constrained = FALSE)
+    return(mod)
   } else if (id == 6){
     # Constraints is delta = 0.
     # delta_1, rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
@@ -153,6 +158,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 7){
     # When variables x1 and x3 have the same order 
     # (e.g., x_1 < x_3 (or the other way around) at every observation in the data frame),
@@ -182,6 +188,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )    
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 8){
     # When variables x2 and x3 have the same order 
     # (e.g., x_2 < x_3 (or the other way around) at every observation in the data frame),
@@ -211,6 +218,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )    
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 9){
     # When variables x1, x2, and x3 have the same order 
     # (e.g., x_1 < x_2 < x3 (or another permutation) at every observation in the data frame),
@@ -240,6 +248,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )    
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 10){
     # Constraints are delta_1 = 1 and sigma = Inf.
     # sigma_1 is unknowable and set to NA.
@@ -274,6 +283,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 11){
     # Constraints are delta_1 = 0 and sigma = Inf.
     # sigma_1 is unknowable and set to NA.
@@ -308,6 +318,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
   } else if (id == 12){
     # Constraints are sigma_1 = 0 and sigma = Inf.
     # The model is y = gamma_coef * A * [delta * (delta_1*x_1 + (1-delta_1)*x_2) + (1-delta)*x3].
@@ -342,11 +353,88 @@ cesBoundaryModel <- function(f, data, nest, id){
     )
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(mod)
+  } else if (id == 13){
+    # When variables x1 and x2 have the same order 
+    # (e.g., x_1 < x_2 (or the other way around) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with boundary model 10 or boundary model 11.
+    if (rowsSameOrdered(data.frame(x1, x2))){
+      return(NULL)
+    }
+    # Constraints are sigma_1 = 0 and sigma = Inf.
+    # delta_1 is unknowable and set to NA.
+    # The model is y = gamma_coef * A * (delta*min(x1, x2) + (1-delta)*x3).
+    # Given a value for delta, the variable blendedX is calculated. 
+    # We fit the log transform of the equation,
+    # log(y/blendedX) ~ time
+    # with lm to obtain estimates for gamma_coef and lambda.
+    # Then, we use nlmin to find the best value of delta.
+    minx1x2 <- pmin(timeSeries$x1, timeSeries$x2)
+    sse13 <- function(params) {
+      delta <- params[[1]]
+      blendedX <- delta*minx1x2 + (1-delta)*x3
+      inner.model <- lm(log(y/blendedX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse13, p=c(delta=0.5))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse13(mod$estimate), "inner.model")
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
+      lambda = as.vector(coef(innerMod)[[2]]),
+      delta = as.vector(mod$estimate[[1]]),
+      delta_1 = NA,
+      sigma_1 = as.vector(0),
+      rho_1 = Inf,
+      sigma = Inf,
+      rho = as.vector(-1),
+      sse = mod$minimum
+    )
+    attr(mod, "bmodID") <- id
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
+    return(mod)
+  } else if (id == 14){
+    # Constraints are sigma_1 = Inf and sigma = 0.
+    # delta is unknowable and set to NA.
+    # The model is y = gamma_coef * A * min[delta_1*x1 + (1-delta_1)*x2, x3].
+    # Given a value for delta_1, the variable blendedx1x2 is calculated as delta_1*x1 + (1-delta_1)*x2.
+    # Then, blendedX is compared against x3 to find the minimum (smallest).
+    # We fit the log transform of the equation,
+    # log(y/smallest) ~ time
+    # with lm to obtain estimates for gamma_coef and lambda.
+    # Then, we use nlmin to find the best value of delta_1.
+    sse14 <- function(params) {
+      delta_1 <- params[[1]]
+      blendedx1x2 <- delta_1*x1 + (1-delta_1)*x2
+      smallest <- pmin(blendedx1x2, timeSeries$x3)
+      inner.model <- lm(log(y/smallest) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse14, p=c(delta_1=0.5))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse14(mod$estimate), "inner.model")
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[[1]])),
+      lambda = as.vector(coef(innerMod)[[2]]),
+      delta = NA,
+      delta_1 = as.vector(mod$estimate[[1]]),
+      sigma_1 = as.vector(Inf),
+      rho_1 = -1,
+      sigma = as.vector(0),
+      rho = as.vector(Inf),
+      sse = mod$minimum
+    )
+    attr(mod, "bmodID") <- id
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
+    return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
-  
-  return(mod)
 }
 
 #' Extracts y, x1, x2, x3, x4, and time data as time series for CES boundary models
