@@ -4,16 +4,42 @@ nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
 }
 
+#' Natural coefficients of a model
+#' 
+#' A convenience function that returns the \code{naturalCoeffs} attribute of a model object.
+#' @param object the model object from which you want to extract the \code{meta} attribute.
+#' @return the \code{naturalCoeffs} attribute from \code{object}.
 #' @export
 naturalCoef <- function(object) {
   if (! "naturalCoeffs" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
   return( attr(object, "naturalCoeffs") )
 }
 
+#' Model metadata
+#' 
+#' A convenience function that returns the \code{meta} attribute of a model object.
+#' @param object the model object from which you want to extract the \code{meta} attribute.
+#' @return the \code{meta} attribute from \code{object}.
 #' @export
 metaData <- function(object) {
   if (! "meta" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
   return( attr(object, "meta") )
+}
+
+#' Natural coefficients and metadata for all model attempts
+#' 
+#' A convenience function that returns a data frame containing both 
+#' \code{naturalCoeffs} and \code{meta} attributes for all model attempts 
+#' stored in the \code{model.attempts} attribute of \code{object}.
+#' @param object the model object from which you want to extract
+#' information from all model attempts.
+#' @return a data frame containing the \code{naturalCoeffs} and \code{meta} attributes from
+#' all model attempts in \code{object}.
+#' @export
+natmetaFrame <- function(object){
+  natc <- plyr::rbind.fill(lapply(attr(mod, "model.attempts"), naturalCoef))
+  meta <- plyr::rbind.fill(lapply(attr(mod, "model.attempts"), metaData))
+  return(cbind(natc, meta))
 }
 
 #' Extracts the best model (least sse) from a list of models
