@@ -46,6 +46,8 @@ are complete.
 #' Use \code{NULL} (the default value)
 if you want to skip the gradient search from a previous model.}
 
+\item{multErr}{logical, tells whether errors are to be assessed in a multiplicative manner}
+
 \item{rho,rho1}{Default values for \code{rho} and \code{rho1} are a grid upon which
 searches will be made.
 Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default
