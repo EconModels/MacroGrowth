@@ -642,7 +642,7 @@ cesBoundaryModel <- function(f, data, nest, id){
   } else if (id == 19){
     # Constraint is sigma = Inf.
     # The model is 
-    # y = gamma_coef * A * {delta * [delta_1*x_1^(-rho_1) + (1-delta_1)*x_2^(-rho_1)]^(-rho) + (1-delta)*x_3}
+    # y = gamma_coef * A * {delta * [delta_1*x_1^(-rho_1) + (1-delta_1)*x_2^(-rho_1)]^(-rho_1) + (1-delta)*x_3}
     # We use a nested fitting approach.
     # Given values for delta_1, rho_1, and delta we calculate the right side of the model.
     # Then we fit using lm for gamma_coef and lambda.
