@@ -337,7 +337,7 @@ cesBoundaryModel <- function(f, data, nest, id){
     # We fit the log transform of the equation,
     # log(y/blendedX) ~ time
     # with lm to obtain estimates for gamma_coef and lambda.
-    # Then, we use nlmin to find the best value of delta.
+    # Then, we use nlmin to find the best value of delta_1 and delta.
     sse12 <- function(params) {
       delta_1 <- params[[1]]
       delta <- params[[2]]
@@ -481,11 +481,11 @@ cesBoundaryModel <- function(f, data, nest, id){
     # This is nothing more than the CES function in two variables, x2, and x3.
     # So, fit by calling cesModel constrained.
     # Make a data frame with the correct variables
-    bmod15data <- data.frame(y, x2, x3, time)
+    bmod16data <- data.frame(y, x2, x3, time)
     # Don't fit along boundaries. 
     # Boundary fits will be addressed by other boundary models.
     mod <- cesModel2(f = y ~ x2 + x3 + time, 
-                     data = bmod15data, 
+                     data = bmod16data, 
                      nest = c(1,2), 
                      constrained = TRUE, 
                      fitBoundaries = FALSE)
@@ -507,6 +507,80 @@ cesBoundaryModel <- function(f, data, nest, id){
                        nest = nest, 
                        naturalCoeffs = naturalCoeffs,
                        history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
+    return(mod)
+#   } else if (id == 17){
+#     # Constraint is sigma_1 = Inf.
+#     # The model is 
+#     # y = gamma_coef * A * {delta * [delta_1*x_1 + (1-delta_1)*x_2]^(-rho) + (1-delta)*x_3^(-rho)}^(-1/rho).
+#     # We use a nested fitting approach.
+#     # Given the value of delta_1, blendedx1x2 is calculated.
+#     # Then, the remaining parts of the equation are simply a CES equation in blendedx1x2 and x_3.
+#     sse17 <- function(params) {
+#       delta_1 <- params[[1]]
+#       blendedx1x2 <- delta_1*x1 + (1-delta_1)*x2
+#       bmod17data <- data.frame(y, blendedx1x2, x3, time)
+#       inner.model <- cesModel2(y ~ blendedx1x2 + x3 + time, 
+#                                data = bmod17data,
+#                                nest = c(1,2), 
+#                                constrained = TRUE, 
+#                                fitBoundaries = FALSE)
+#       sse <- naturalCoef(inner.model)$sse
+#       attr(sse, "inner.model") <- inner.model
+#       return(sse)
+#     }
+#     mod <- nlmin(sse17, p=c(delta_1=0.5))
+#     class(mod) <- c("CESmodel", class(mod))
+#     innerMod <- attr(sse17(mod$estimate), "inner.model")
+#     naturalCoeffs <- data.frame(
+#       gamma_coef = as.vector(naturalCoef(innerMod)$gamma_coef),
+#       lambda = as.vector(naturalCoef(innerMod)$lambda),
+#       delta = as.vector(naturalCoef(innerMod)$delta_1),
+#       delta_1 = as.vector(mod$estimate[[1]]),
+#       sigma_1 = as.vector(Inf),
+#       rho_1 = as.vector(-1),
+#       sigma = as.vector(naturalCoef(innerMod)$sigma_1),
+#       rho = as.vector(naturalCoef(innerMod)$rho_1),
+#       sse = mod$minimum
+#     )
+#     attr(mod, "bmodID") <- id
+#     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
+#     return(mod)
+  } else if (id == 17){
+    # Constraint is sigma_1 = Inf.
+    # The model is 
+    # y = gamma_coef * A * {delta * [delta_1*x_1 + (1-delta_1)*x_2]^(-rho) + (1-delta)*x_3^(-rho)}^(-1/rho).
+    # We use a nested fitting approach.
+    # Given the value of delta_1, blendedx1x2 is calculated.
+    # Then, the remaining parts of the equation are simply a CES equation in blendedx1x2 and x_3.
+    sse17 <- function(params) {
+      delta_1 <- params[[1]]
+      delta <- params[[2]]
+      rho <- params[[3]]
+      blendedX <- ( delta * (delta_1*x1 + (1-delta_1)*x2)^(-rho) + (1-delta)*x3^(-rho) ) ^ (-1/rho)
+      inner.model <- lm(log(y/blendedX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse17, p=c(delta_1=0.5, delta=0.5, rho=0.25))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse17(mod$estimate), "inner.model")
+    delta_1 <- mod$estimate[[1]]
+    delta <- mod$estimate[[2]]
+    rho <- mod$estimate[[3]]
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[1])),
+      lambda = as.vector(coef(innerMod)[2]),
+      delta = as.vector(delta),
+      delta_1 = as.vector(delta_1),
+      sigma_1 = as.vector(Inf),
+      rho_1 = as.vector(-1),
+      sigma = as.vector(1/(1+rho)),
+      rho = as.vector(rho),
+      sse = mod$minimum
+    )
+    attr(mod, "bmodID") <- id
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
     return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
