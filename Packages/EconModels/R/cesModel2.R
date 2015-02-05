@@ -105,7 +105,7 @@ cesModel2 <- function(f, data,
     if (numFactors == 2){
       numBoundaryModels <- 5 # The first 5 boundary models involve only 2 factors of production
     } else if (numFactors == 3){
-      numBoundaryModels <- 18 # The first 20 boundary models are appropriate for 3 factors of production
+      numBoundaryModels <- 19 # The first 20 boundary models are appropriate for 3 factors of production
     }
     boundary.models <- lapply(c(1:numBoundaryModels), function(n){
       cesBoundaryModel(f=f, data=data, nest=nest, id=n)
