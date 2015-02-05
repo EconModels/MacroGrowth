@@ -595,6 +595,50 @@ cesBoundaryModel <- function(f, data, nest, id){
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
     return(mod)
+  } else if (id == 18){
+    # When variables x1 and x2 have the same order 
+    # (e.g., x_1 < x_2 (or the other way around) at every observation in the data frame),
+    # there is no need to fit this model.
+    # We'll get the same fit with a different boundary model.
+    if (rowsSameOrdered(data.frame(x1, x2))){
+      return(NULL)
+    }
+    # Constraint is sigma_1 = 0. delta_1 is unknowable and set to NA.
+    # The model is y = gamma_coef * A * [delta * min(x1,x2)^(-rho) + (1-delta) * x3^(-rho)]^(-1/rho).
+    # This is nothing more than the CES function in two variables, min(x1,x2) and x3 
+    # (after the minimum has been taken).
+    # So, fit by calling cesModel.
+    # Create the min(x1,x2) time series
+    minx1x2 <- pmin(x1, x2)
+    # Make a data frame with the correct variables
+    bmod18data <- data.frame(y, minx1x2, x3, time)
+    # Don't fit along boundaries. 
+    # Boundary fits will be addressed by other boundary models.
+    mod <- cesModel2(f = y ~ minx1x2 + x3 + time, 
+                     data = bmod18data, 
+                     nest = c(1,2), 
+                     constrained = TRUE, 
+                     fitBoundaries = FALSE)
+    # For a 2-factor model, cesModel returns "_1" coefficients.
+    # So, we need to convert delta_1 --> delta and sigma_1 --> sigma
+    # before adding naturalCoeffs to the model.
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(naturalCoef(mod)$gamma_coef),
+      lambda = as.vector(naturalCoef(mod)$lambda),
+      delta = as.vector(naturalCoef(mod)$delta_1),
+      delta_1 = NA,
+      sigma_1 = as.vector(0),
+      rho_1 = as.vector(Inf),
+      sigma = as.vector(naturalCoef(mod)$sigma_1),
+      rho = as.vector(naturalCoef(mod)$rho_1),
+      sse = as.vector(sum(resid(mod)^2))
+    )
+    mod <- addMetaData(mod, 
+                       formula = f, 
+                       nest = nest, 
+                       naturalCoeffs = naturalCoeffs,
+                       history = paste0("boundary[", id, ", ", metaData(mod)$history, "]"))
+    return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
