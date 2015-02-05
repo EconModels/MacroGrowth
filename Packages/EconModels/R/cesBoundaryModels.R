@@ -677,6 +677,43 @@ cesBoundaryModel <- function(f, data, nest, id){
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
     return(mod)
+  } else if (id == 20){
+    # Constraint is sigma = 0. delta is unknowable.
+    # The model is 
+    # y = gamma_coef * A * min {[delta_1*x_1^(-rho_1) + (1-delta_1)*x_2^(-rho_1)]^(-rho_1), x_3}
+    # We use a nested fitting approach.
+    # Given values for delta_1 and rho_1 we calculate the first term in the minimization.
+    # Then we fit using lm for gamma_coef and lambda.
+    # nlmin adjusts delta_1 and rho_1 until we have minimized sse.
+    sse20 <- function(params) {
+      delta_1 <- params[[1]]
+      rho_1 <- params[[2]]
+      blendedX <- (delta_1*x1^(-rho_1) + (1-delta_1)*x2^(-rho_1))^(-1/rho_1)
+      minX <- pmin(blendedX, x3)
+      inner.model <- lm(log(y/minX) ~ time)
+      sse <- sum(resid(inner.model)^2)
+      attr(sse, "inner.model") <- inner.model
+      return(sse)
+    }
+    mod <- nlmin(sse20, p=c(delta_1=0.5, rho_1=0.25))
+    class(mod) <- c("CESmodel", class(mod))
+    innerMod <- attr(sse20(mod$estimate), "inner.model")
+    delta_1 <- mod$estimate[[1]]
+    rho_1 <- mod$estimate[[2]]
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(innerMod)[1])),
+      lambda = as.vector(coef(innerMod)[2]),
+      delta = NA,
+      delta_1 = as.vector(delta_1),
+      sigma_1 = as.vector(1/(1+rho_1)),
+      rho_1 = as.vector(rho_1),
+      sigma = as.vector(0),
+      rho = as.vector(Inf),
+      sse = mod$minimum
+    )
+    attr(mod, "bmodID") <- id
+    mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)  
+    return(mod)
   } else {
     stop(paste0("Unknown id = ", id, " in cesBoundaryModel"))
   }
