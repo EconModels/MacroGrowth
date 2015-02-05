@@ -620,7 +620,7 @@ cesBoundaryModel <- function(f, data, nest, id){
                      constrained = TRUE, 
                      fitBoundaries = FALSE)
     # For a 2-factor model, cesModel returns "_1" coefficients.
-    # So, we need to convert delta_1 --> delta and sigma_1 --> sigma
+    # So, we need to convert delta_1 --> delta, sigma_1 --> sigma, and rho_1 --> rho
     # before adding naturalCoeffs to the model.
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(naturalCoef(mod)$gamma_coef),
