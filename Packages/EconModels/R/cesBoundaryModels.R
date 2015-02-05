@@ -288,7 +288,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       sigma_1 = NA,
       rho_1 = NA,
       sigma = Inf,
-      rho = as.vector(0),
+      rho = as.vector(-1),
       sse = mod$minimum
     )
     attr(mod, "bmodID") <- id
@@ -323,7 +323,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       sigma_1 = NA,
       rho_1 = NA,
       sigma = Inf,
-      rho = as.vector(0),
+      rho = as.vector(-1),
       sse = mod$minimum
     )
     attr(mod, "bmodID") <- id
@@ -358,7 +358,7 @@ cesBoundaryModel <- function(f, data, nest, id){
       sigma_1 = Inf,
       rho_1 = as.vector(0),
       sigma = Inf,
-      rho = as.vector(0),
+      rho = as.vector(-1),
       sse = mod$minimum
     )
     attr(mod, "bmodID") <- id
