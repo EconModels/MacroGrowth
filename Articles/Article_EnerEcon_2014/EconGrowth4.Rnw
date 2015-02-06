@@ -1415,28 +1415,37 @@ In this final gradient search, all model parameters
 ($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
 are considered free parameters.
 
-****
+\citet{Henningsen:2011td}, 
+in their detailed analysis of \citet{Kemfert:1998vd}, found that 
+%
+\begin{quote}
+\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
+are---at least in this study---most likely to find the 
+coefficients that give the best fit to the model, 
+where the \texttt{PORT} algorithm can be used to restrict the estimates 
+to the economically meaningful region.
+\end{quote}
+%
+In our testing, we found that to be mostly true. 
+\texttt{PORT} nearly always provided lower
+$sse$ than \texttt{L-BFGS-B}, despite the fact that 
+\texttt{L-BFGS-B} often reports convergence
+and \texttt{PORT} does not for the same data
+(i.e., for the same $y$, $k$, $l$, and $e$ time series).
 
 In addition to the above trials, 
 and in a manner similar to our approach to the Cobb-Douglas model,
 we fit along all possible CES boundaries.
 Boundaries are given by all combinations of the following:
 $\delta_1$~=~0~or~1, 
-$\sigma_1$~=~0~or~$\infty$,
-$\delta$~=~0~or~1, and
+$\delta$~=~0~or~1,
+$\sigma_1$~=~0~or~$\infty$, and
 $\sigma$~=~0~or~$\infty$.
-Equation~\ref{eq:ces_generic} shows the generic three-factor CES equation,
+Table~\ref{tab:CES_boundary_models} shows the set 
+of 20 degenerate equations found along parameter boundaries~(rows~1--20).
+Row~21 of Table~\ref{tab:CES_boundary_models} shows the generic three-factor CES equation,
 wherein factors of production ($x_1$,~$x_2$,~$x_3$) 
 are permutations of ($k$,~$l$,~$e$).
-%
-\begin{equation} \label{eq:ces_generic}
-  y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
-      + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
-          + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}
-\end{equation}
-%
-Table~\ref{tab:CES_boundary_models} shows the set 
-of 20 degenerate equations found along parameter boundaries.
 Each degenerate equation provides a boundary model.
 Note that many boundary parameter combinations 
 yield equivalent CES boundary models,%
@@ -1451,16 +1460,16 @@ so there are far fewer than the maximum possible number of degenerate equations~
   which gives $3^4 = 81$ possible boundary models.
   }
 Boundary models obtained when $\delta_1$ or $\delta$ is at an extreme value
-are straightforward to derive from Equation~\ref{eq:ces_generic}.
+are straightforward to derive from row~21 of Table~\ref{tab:CES_boundary_models}.
 When $\sigma_1$ or $\sigma$ is 0, 
-factors of production are complimentary,
+factors of production are perfect complements,
 and the Leontief model applies.%
   \footnote{
   E.g., when $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
   $y = \gamma A \min (x_1, x_2)$.
   }
 When $\sigma_1$ or $\sigma$ is $\infty$, 
-factors of production are subsitutible,
+factors of production are perfect substitutes,
 and the linear model applies.%
   \footnote{
   E.g., when $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
@@ -1478,7 +1487,7 @@ with $\delta~=~1$, $\sigma$~unknowable, and $x_3$~absent.
 If the fitted parameters in a boundary model violate constraints, 
 the boundary model is rejected.
 
-\begin{table} \caption{Boundary models for the CES equation.} 
+\begin{table} \caption{Boundary (rows~1--20) and generic (row~21) models for the CES equation.} 
 \label{tab:CES_boundary_models} 
   \begin{center}
     \begin{tabular}{r c c c c l} 
@@ -1541,39 +1550,30 @@ the boundary model is rejected.
      20. &            &            & ---     & 0
             & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
+\midrule
+     21. &            &            &         & 
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
+The model with lowest $sse$ of all above trials 
+is deemed the winning (i.e.,~best) model,
+and its parameters are presented in graphs herein.
+In special cases, two boundary models will be equivalent.
+For example, boundary model~3 is identical to boundary model~1~(2)
+if $x_1$ is always less than (greater than) $x_2$ for all years.
+If two or more models have the same $sse$ (to six digits), 
+the model with the lowest row number in Table~\ref{tab:CES_boundary_models} is deemed the winner,
+thereby ensuring that the simplest model is selected.
 
-
-
-
-
-
-****
-
-The fit with lowest $sse$ of all above trials 
-is deemed the winning model and presented in graphs.
-
-\citet{Henningsen:2011td}, 
-in their detailed analysis of \citet{Kemfert:1998vd}, found that 
-
-\begin{quote}
-\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms 
-are---at least in this study---most likely to find the 
-coefficients that give the best fit to the model, 
-where the \texttt{PORT} algorithm can be used to restrict the estimates 
-to the economically meaningful region.
-\end{quote}
-
-In our testing, we found that to be mostly true. 
-\texttt{PORT} nearly always provided lower
-$sse$ than \texttt{L-BFGS-B}, despite the fact that 
-\texttt{L-BFGS-B} often reports convergence
-and \texttt{PORT} does not for the same data
-(i.e., for the same $y$, $k$, $l$, and $e$ time series).
+**** Edit the next paragraphs after we finalize the appearance
+of the distribution graphs. 
+Also, add a discussion of the boundary models and how the reduce 
+the amount of data available in the bar graphs. ****
 
 Coefficients for each resampled CES model for all countries and all nests
 are shown in 
