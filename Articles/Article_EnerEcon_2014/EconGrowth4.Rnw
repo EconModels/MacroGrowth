@@ -1375,35 +1375,35 @@ The CES model without and with energy is given by
 Equations~\ref{eq:CES}--\ref{eq:CESekl}. 
 The \texttt{R} \citep{R} package \texttt{micEconCES} 
 \citep{Henningsen:2011td} was used to estimate parameters 
-$\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$. 
+$\gamma$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$. 
 The \texttt{cesEst} function of \texttt{micEconCES} provides 
 several algorithm options for parameter estimation.
 The default algorithm (Levenberg-Marquardt) does not respect
 parameter constraints (see Section~\ref{sec:CES}) and, 
 in our testing, nearly always violated them, often returning
-negative values for elasticity of substitution parameters $\sigma$ and $\sigma_1$.
+negative values for elasticity of substitution parameters $\sigma_1$ and $\sigma$.
 Thus, we used the two fitting algorithms available in \texttt{cesEst} that
 respect coefficient constraints: \texttt{PORT} and \texttt{L-BFGS-B}. 
 
 Our CES parameter estimation algorithm starts with an eleven-value grid search
-in $\rho$ and $\rho_1$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-which corresponds to $\sigma$ and $\sigma_1$ values of
+in $\rho_1$ and $\rho$ (9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+corresponding to $\sigma_1$ and $\sigma$ values of
 0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100, respectively.
-During the grid search, values of $\rho$ and $\rho_1$ are fixed,
-and values of $\lambda$, $\gamma$, $\delta$, and $\delta_1$ are estimated 
+During the grid search, values of $\rho_1$ and $\rho$ are fixed,
+and values of $\gamma$, $\lambda$, $\delta_1$, and $\delta$ are estimated 
 by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms.
-In all, 121 gradient searches in $\lambda$, $\gamma$, $\delta$, and $\delta_1$
-at grid points representing all combinations of $\rho$ and $\rho_1$ are attempted.
+In all, 121 gradient searches in $\gamma$, $\lambda$, $\delta_1$, and $\delta$
+at grid points representing all combinations of $\rho_1$ and $\rho$ are attempted.
 During the grid search portion of our algorithm, starting values for the free parameters
-are $\lambda$ = 0.015/year, $\delta$ = 0.5, $\delta_1$ = 0.5, 
-and $\gamma$ is set to a value such that the mean of the residuals is zero
-by the \texttt{cesEst} function.
+are $\lambda$ = 0.015/year, $\delta_1$ = 0.5, $\delta$ = 0.5, 
+and $\gamma$ is set by the \texttt{cesEst} function
+to a value such that the mean of the residuals is zero.
 
 Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B}) 
 is attempted wherein all fitting parameters 
-($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
-are allowed to float. 
-The start values for fitting parameters are taken from 
+($\gamma$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
+are allowed to float.
+The starting values for fitting parameters are taken from 
 the grid search point that provided the lowest $sse$ (Equation~\ref{eq:sse}).
 
 If resampled data are being fitted, a prior fit to historical data is available.
@@ -1412,7 +1412,7 @@ a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
 uses coefficients from the best 
 fit to historical data as its starting point. 
 In this final gradient search, all model parameters 
-($\lambda$, $\gamma$, $\delta$, $\delta_1$, $\rho$, and $\rho_1$)
+($\gamma$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
 are considered free parameters.
 
 \citet{Henningsen:2011td}, 
@@ -1434,8 +1434,9 @@ and \texttt{PORT} does not for the same data
 (i.e., for the same $y$, $k$, $l$, and $e$ time series).
 
 In addition to the above trials, 
-and in a manner similar to our approach to the Cobb-Douglas model,
-we fit along all possible CES boundaries.
+and in a manner similar to our approach 
+to the Cobb-Douglas model~(see section \ref{sec:CD_Parameter_Estimation}),
+we also fit along all possible CES boundaries.
 Boundaries are given by all combinations of the following:
 $\delta_1$~=~0~or~1, 
 $\delta$~=~0~or~1,
@@ -1466,14 +1467,15 @@ factors of production are perfect complements,
 and the Leontief model applies.%
   \footnote{
   E.g., when $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
-  $y = \gamma A \min (x_1, x_2)$.
+  $y = \gamma A \min (x_1, x_2)$, row 3 in Table~\ref{tab:CES_boundary_models}.
   }
 When $\sigma_1$ or $\sigma$ is $\infty$, 
 factors of production are perfect substitutes,
 and the linear model applies.%
   \footnote{
   E.g., when $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
-  $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$.
+  $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$,
+  row 4 in Table~\ref{tab:CES_boundary_models}.
   }
 In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
 ``---'' indicates that a parameter is unknowable on that boundary
@@ -1567,8 +1569,9 @@ In special cases, two boundary models will be equivalent.
 For example, boundary model~3 is identical to boundary model~1~(2)
 if $x_1$ is always less than (greater than) $x_2$ for all years.
 If two or more models have the same $sse$ (to six digits), 
-the model with the lowest row number in Table~\ref{tab:CES_boundary_models} is deemed the winner,
-thereby ensuring that the simplest model is selected.
+the model with the lowest row number in Table~\ref{tab:CES_boundary_models} 
+is deemed the winning model,
+thereby ensuring that the simpler model is selected.
 
 **** Edit the next paragraphs after we finalize the appearance
 of the distribution graphs. 
