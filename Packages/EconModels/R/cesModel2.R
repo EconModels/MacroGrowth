@@ -117,7 +117,7 @@ cesModel2 <- function(f, data,
     # In some ways this approach would be cleaner.
     # But, the current design (one big function) allows us to extract data
     # at the top of the function once, thereby minimizing some duplicated code.
-#     boundary.models <- lapply(c(1:20), function(n){
+#     boundary.models <- lapply(c(1:numBoundaryModels), function(n){
 #       eval(call(paste0("cesBmod", n), f=f, data=data, nest=nest))
 #     })
     
