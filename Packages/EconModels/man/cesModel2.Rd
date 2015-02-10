@@ -86,6 +86,8 @@ will not work.
 \examples{
 if (require(EconData, dplyr)) {
   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
+  cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
+  cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
 }
 }
 
