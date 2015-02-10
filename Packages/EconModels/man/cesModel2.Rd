@@ -83,4 +83,9 @@ For now, this function works for only 2 or 3 factors of production.
 Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 will not work.
 }
+\examples{
+if (require(EconData, dplyr)) {
+  cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
+}
+}
 

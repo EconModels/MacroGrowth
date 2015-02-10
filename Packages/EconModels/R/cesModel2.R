@@ -48,6 +48,12 @@
 #' Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 #' will not work.
 #' @return a cesEst model with additional information attached as attributes.
+#' @examples
+#' if (require(EconData, dplyr)) {
+#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
+#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
+#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
+#' }
 #' @export
 cesModel2 <- function(f, data,
                       response,
