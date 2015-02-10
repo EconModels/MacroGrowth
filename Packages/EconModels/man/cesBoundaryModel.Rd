@@ -4,10 +4,10 @@
 \alias{cesBoundaryModel}
 \title{Fits CES boundary models}
 \usage{
-cesBoundaryModel(f, data, nest, id)
+cesBoundaryModel(formula, data, nest, id)
 }
 \arguments{
-\item{f}{a CES formula in the form \code{y ~ a + b + c + d + time}}
+\item{formula}{a CES formula in the form \code{y ~ a + b + c + d + time}}
 
 \item{data}{historical time series data}
 
@@ -26,5 +26,12 @@ Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth
 \note{
 the \code{naturalCoeffs} attribute includes correct values of boundary parameters.
 \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
+}
+\examples{
+if (require(EconData)) {
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=1)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=2)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=3)
+  }
 }
 

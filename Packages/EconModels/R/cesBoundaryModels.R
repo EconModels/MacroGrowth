@@ -1,18 +1,91 @@
+#' Apply lm to (several) formula templates
+#' 
+#' This automates fitting several models that make use of the same variables and data set.
+#' 
+#' @param formula A formula containing the (common) response on the left and all variables
+#' used in any of the models on the right.
+#' @param data a data frame containing the necessary variables.
+#' @param formulaTemplates a list of formulas using response \code{y} and 
+#' predictors 
+#' \code{capital},
+#' \code{labor}, 
+#' \code{energy}, 
+#' and 
+#' \code{time}. 
+#' @param coefNames a list of names for the coefficients of the fitted model.
+#' @param save.data a logical, currently not used.
+#' @param ... additional arguments, currently not used.
+#' @examples 
+#' apply_lm( iGDP ~ iK + iL + iQp + iYear, data=Calvin, 
+#'   formulaTemplates = list( 
+#'     log(y) - log(capital) ~ time,
+#'     log(y) - log(labor) ~ time,
+#'     log(y) - log(energy) ~ time),
+#'  coefNames = list(
+#'    c("logscale", "lambda"),
+#'    c("logscale", "lambda"),
+#'    c("logscale", "lambda"))
+#'  )
+#'     
+
+ 
+apply_lm <- function( formula, data, formulaTemplates, coefNames,
+                      save.data=TRUE, ...){
+  
+  formulas <- lapply(
+    formulaTemplates, 
+    function(ft) {
+      do.call( substitute, 
+               list( ft,  list(
+                 time = formula[[3]][[3]],
+                 energy = formula[[3]][[2]][[3]],
+                 labor = formula[[3]][[2]][[2]][[3]],
+                 capital = formula[[3]][[2]][[2]][[2]],
+                 y = formula[[2]]  
+               ) )
+      ) 
+    }
+  )
+  
+  models <- 
+    lapply( formulas, 
+            function(form){
+              d <- subset(data, select = all.vars(form))
+              sdata <- data[complete.cases(d), unique(c(all.vars(form), names(data)))]
+              eval(substitute(lm(f, data=sdata), list(f=form)))  
+            }
+    )
+  
+  sse <- sapply( models, function(m) sum( resid(m)^2 ) )
+  for (i in 1:length(models)) {
+    names( models[[i]]$coefficients ) <- coefNames[[i]]
+  }
+  return(list(models=models, sse=sse))
+} 
+
 #' Fits CES boundary models
 #' 
 #' The boundary models are given in Table 2 of 
 #' Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth"
 #'
 #' @param data historical time series data
-#' @param f a CES formula in the form \code{y ~ a + b + c + d + time}
+#' @param formula a CES formula in the form \code{y ~ a + b + c + d + time}
 #' @param nest identifies the nesting of the variables in the original formula,
 #' assumed to be of the form \code{c(1,2,3)}.
 #' @param id the identification number (from Table 2) for the boundary model you want to fit.
 #' @return a model object with class \code{CESModel} and \code{naturalCoeffs} and \code{meta} attributes.
 #' @note the \code{naturalCoeffs} attribute includes correct values of boundary parameters. 
 #' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
+#' @examples 
+#' if (require(EconData)) {
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=1)
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=2)
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=3)
+#'   }
 #' @export
-cesBoundaryModel <- function(f, data, nest, id){
+cesBoundaryModel <- function(formula, data, nest, id){
+  f <- formula  # to avoid problems while renaming is happening.
+  
   timeSeries <- cesTimeSeries(f=f, data=data, nest=nest)
   y <- timeSeries$y
   x1 <- timeSeries$x1
@@ -21,6 +94,40 @@ cesBoundaryModel <- function(f, data, nest, id){
   x4 <- timeSeries$x4
   time <- timeSeries$time
   numFactors <- cesFormulaNames(f, nest)$numFactors
+
+  # trying a rewrite for model type 1. 
+  if (id == 1){
+    # Constraints are delta_1 = 1 and delta = 1.
+    # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
+    # The model is y = gamma_coef * A * x1.
+    # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
+    
+    formulaTemplates <- 
+      list( log(y) - log(capital) ~ time
+      )
+   
+    coefNames <- list( 
+      c("logscale", "lambda")
+    ) 
+    
+    res <- apply_lm(formula, data, formulaTemplates, coefNames)[["models"]][[1]]
+    class(res) <- c("CESmodel", class(res))
+    
+    naturalCoeffs <- data.frame(
+      gamma_coef = as.vector(exp(coef(res)[[1]])),
+      lambda = as.vector(coef(res)[[2]]),
+      delta_1 = as.vector(1),
+      delta = as.vector(1),
+      sigma_1 = NA,
+      rho_1 = NA, 
+      sigma = NA,
+      rho = NA,
+      sse = as.vector(sum(resid(res)^2))
+    )
+    attr(res, "bmodID") <- id
+    res <- addMetaData(model=res, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+    return(res)
+  }
   
   if (id == 1){
     # Constraints are delta_1 = 1 and delta = 1.
@@ -730,8 +837,9 @@ cesBoundaryModel <- function(f, data, nest, id){
 #' @param f the CES formula for which time series data is to be extracted, 
 #' assumed to be of the form \code{y ~ x1 + x2 + x3 + x4 + time}.
 #' @param data the data frame from which time series data is to be extracted
-#' @param nest identifies the nesting of the variables in the original formula,
-#' assumed to be of the form \code{c(1,2,3)}.
+#' @param nest identifies the nesting of the variables in the original formula
+#' and should be a vector containing a permuation of the integers 1 through k,
+#' where k is the number of non-time explanatory variables in the model formula.
 #' @return a named list of time series'. 
 #' Names are \code{y}, \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}.
 cesTimeSeries <- function(f, data, nest){

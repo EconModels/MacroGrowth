@@ -360,6 +360,8 @@ respectsConstraints <- function( model ) {
   all( cf >= 0 ) & ( sum(cf) <=1 )
 }
 
+
+
 #' Fitting Cobb-Douglas models with Energy
 #' 
 #' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
