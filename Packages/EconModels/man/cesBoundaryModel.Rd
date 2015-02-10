@@ -28,10 +28,10 @@ the \code{naturalCoeffs} attribute includes correct values of boundary parameter
 \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 }
 \examples{
-if (require(EconData)) {
-  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=1)
-  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=2)
-  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin, nest=c(1,2,3), id=3)
+if (require(EconData, dplyr)) {
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=subset(Calvin, Country=="US"), nest=c(1,2,3), id=1)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=subset(Calvin, Country=="US"), nest=c(1,2,3), id=2)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=subset(Calvin, Country=="US"), nest=c(1,2,3), id=3)
   }
 }
 
