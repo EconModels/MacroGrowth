@@ -149,19 +149,20 @@ cesBoundaryModel <- function(formula, data, nest, id){
     "20" = c(delta_1 = 0.4, rho_1=0.35, sigma = 0)
   ) 
   
-  if (id == 0) {
+  if (id == 0) {  # run all the models that use plm
     res <- apply_plm(formula, data, formulaTemplates = formulaTemplates, params = params)  # [["models"]][[1]]
     # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
     return (res)
   }
  
-  if (is.character(id) && id %in% names(formulas)) {
+  if (is.character(id) && id %in% names(formulas)) {  # just one plm() instance
     res <- eval(substitute(plm( f, data=data, params=p), list( f = formulas[[id]], p=params[[id]])))
     names(res$coefficients) [1:2] <- c("logscale", "lambda")
     # res <- addMetaData(res, formula = formulas[[id]], nest = nest, naturalCoeffs = makeNatCoef(res))
     return(res)
   }
-  
+ 
+  # older code using numerical IDs for comparison and for the CES direct stuff. 
   if (id == 1){
     # Constraints are delta_1 = 1 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
