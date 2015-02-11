@@ -24,7 +24,7 @@ makeNatCoef <- function( model ) {
      constrained =
        (is.na(delta) || (0 <= delta && delta <= 1)) &&
        (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)),
-     constrained.see =
+     constrained.sse =
        if(constrained) sse else Inf
   )
 }
