@@ -28,40 +28,6 @@
 #'  )
 #'     
 
- 
-apply_lm <- function( formula, data, formulaTemplates, coefNames,
-                      save.data=TRUE, ...){
-  
-  formulas <- lapply(
-    formulaTemplates, 
-    function(ft) {
-      do.call( substitute, 
-               list( ft,  list(
-                 time = formula[[3]][[3]],
-                 energy = formula[[3]][[2]][[3]],
-                 labor = formula[[3]][[2]][[2]][[3]],
-                 capital = formula[[3]][[2]][[2]][[2]],
-                 y = formula[[2]]  
-               ) )
-      ) 
-    }
-  )
-  
-  models <- 
-    lapply( formulas, 
-            function(form){
-              d <- subset(data, select = all.vars(form))
-              sdata <- data[complete.cases(d), unique(c(all.vars(form), names(data)))]
-              eval(substitute(lm(f, data=sdata), list(f=form)))  
-            }
-    )
-  
-  sse <- sapply( models, function(m) sum( resid(m)^2 ) )
-  for (i in 1:length(models)) {
-    names( models[[i]]$coefficients ) <- coefNames[[i]]
-  }
-  return(list(models=models, sse=sse))
-} 
 
 #' Fits CES boundary models
 #' 
@@ -78,6 +44,7 @@ apply_lm <- function( formula, data, formulaTemplates, coefNames,
 #' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 #' @examples 
 #' if (require(EconData) & require(dplyr)) {
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=0)
 #'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=1)
 #'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=2)
 #'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=3)
@@ -95,12 +62,8 @@ cesBoundaryModel <- function(formula, data, nest, id){
   time <- timeSeries$time
   numFactors <- cesFormulaNames(f, nest)$numFactors
 
-  # trying a rewrite for model type 1. 
-  if (id == 1){
-    # Constraints are delta_1 = 1 and delta = 1.
-    # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
-    # The model is y = gamma_coef * A * x1.
-    # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
+  # testing grounds 
+  if (id == 0){
     
     formulaTemplates <- 
       list( 
@@ -110,7 +73,16 @@ cesBoundaryModel <- function(formula, data, nest, id){
         log(y) - log(pmin(capital, labor)) ~ time,          #3
         log(y) - log(pmin(capital, energy)) ~ time,         #7
         log(y) - log(pmin(labor, energy)) ~ time,           #8
-        log(y) - log(pmin(capital, labor, energy)) ~ time    #9
+        log(y) - log(pmin(capital, labor, energy)) ~ time,  #9
+        log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,   #4
+        log(y) - log(delta*capital + (1-delta)*energy) ~ time,  #10
+        log(y) - log(delta*labor + (1-delta)*energy) ~ time,    #11
+        log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time, #12
+        log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,                 #13
+        log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,              #14
+        log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,  #17
+        log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,  #19
+        log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time  #20
       )
    
     coefNames <- list( 
@@ -120,10 +92,37 @@ cesBoundaryModel <- function(formula, data, nest, id){
       c("logscale", "lambda"),    #3
       c("logscale", "lambda"),    #7
       c("logscale", "lambda"),    #8
-      c("logscale", "lambda")     #9
+      c("logscale", "lambda"),    #9
+      c("logscale", "lambda"),    #4
+      c("logscale", "lambda"),    #10
+      c("logscale", "lambda"),     #11
+      c("logscale", "lambda"),     #12
+      c("logscale", "lambda"),     #13
+      c("logscale", "lambda"),     #14
+      c("logscale", "lambda"),     #17
+      c("logscale", "lambda"),     #19
+      c("logscale", "lambda")      #20
     ) 
-    
-    res <- apply_lm(formula, data, formulaTemplates, coefNames)  # [["models"]][[1]]
+   
+    params <- list(
+      c(),     #1 
+      c(),     #2
+      c(),     #6
+      c(),     #3
+      c(),     #7
+      c(),     #8
+      c(),     #9
+      c(delta_1 = 0.5), #4
+      c(delta = 0.5),   #10
+      c(delta = 0.5),   #11
+      c(delta = 0.5, delta_1 = 0.5),  #12
+      c(delta = 0.5),     # 13 
+      c(delta_1 = 0.5),   # 14
+      c(delta = 0.5, delta_1 = 0.5,   rho = 0.25),  #17
+      c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25),  #19
+      c(delta_1 = 0.5, rho_1=0.25)                  #20
+    ) 
+    res <- apply_plm(formula, data, formulaTemplates = formulaTemplates, coefNames = coefNames, params = params)  # [["models"]][[1]]
     # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
     return (res)
     

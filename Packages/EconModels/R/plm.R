@@ -73,3 +73,116 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
   }
 }
 
+
+apply_lm <- function( formula, data, formulaTemplates, coefNames,
+                      save.data=TRUE, ...){
+  
+  formulas <- lapply(
+    formulaTemplates, 
+    function(ft) {
+      do.call( substitute, 
+               list( ft,  list(
+                 time = formula[[3]][[3]],
+                 energy = formula[[3]][[2]][[3]],
+                 labor = formula[[3]][[2]][[2]][[3]],
+                 capital = formula[[3]][[2]][[2]][[2]],
+                 y = formula[[2]]  
+               ) )
+      ) 
+    }
+  )
+  
+  models <- 
+    lapply( formulas, 
+            function(form){
+              d <- subset(data, select = all.vars(form))
+              sdata <- data[complete.cases(d), unique(c(all.vars(form), names(data)))]
+              eval(substitute(lm(f, data=sdata), list(f=form)))  
+            }
+    )
+  
+  sse <- sapply( models, function(m) sum( resid(m)^2 ) )
+  for (i in 1:length(models)) {
+    names( models[[i]]$coefficients ) <- coefNames[[i]]
+  }
+  return(list(models=models, sse=sse))
+} 
+
+# require(dplyr); require(EconData)
+# 
+# formulaTemplates <- 
+#   list( 
+#     log(y) - log(capital) ~ time,     # 1
+#     log(y) - log(labor) ~ time,       # 2
+#     log(y) - log(energy) ~ time,      # 6
+#     log(y) - log(pmin(capital, labor)) ~ time,          #3
+#     log(y) - log(pmin(capital, energy)) ~ time,         #7
+#     log(y) - log(pmin(labor, energy)) ~ time,           #8
+#     log(y) - log(pmin(capital, labor, energy)) ~ time,  #9
+#     log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,   #4
+#     log(y) - log(delta*capital + (1-delta)*energy) ~ time,  #4
+#     log(y) - log(delta*labor + (1-delta)*energy) ~ time     #4
+#   )
+
+# coefNames <- list( 
+#   c("logscale", "lambda"),    #1
+#   c("logscale", "lambda"),    #2
+#   c("logscale", "lambda"),    #6
+#   c("logscale", "lambda"),    #3
+#   c("logscale", "lambda"),    #7
+#   c("logscale", "lambda"),    #8
+#   c("logscale", "lambda"),    #9
+#   c("logscale", "lambda"),    #4
+#   c("logscale", "lambda"),    #10
+#   c("logscale", "lambda")     #11
+# ) 
+
+# params <- list(
+#   c(),
+#   c(),
+#   c(),
+#   c(),
+#   c(),
+#   c(),
+#   c(),
+#   c(delta_1 = 0.5),
+#   c(delta = 0.5),
+#   c(delta = 0.5)
+# )
+#
+# apply_plm(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country == "US"), 
+#           formulaTemplates, coefNames, params=params) 
+#
+# apply_plm(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country == "US"), 
+#           formulaTemplates[8], coefNames[8], params=params[8]) 
+#
+# plm(formula = log(iGDP) - log(delta_1 * iK + (1 - delta_1) *  iL) ~ iYear, 
+#     data = Calvin %>% filter(Country == "US"), params = c("delta_1" = 0.5))
+
+apply_plm <- function( formula, data, formulaTemplates, coefNames,
+                       params,
+                       save.data=TRUE, ...){
+  fun1 <- 
+    function(formulaTemplate, cNames, params) {
+      form <- 
+        do.call(substitute, list( formulaTemplate, 
+              list(
+                time = formula[[3]][[3]],
+                energy = formula[[3]][[2]][[3]],
+                labor = formula[[3]][[2]][[2]][[3]],
+                capital = formula[[3]][[2]][[2]][[2]],
+                y = formula[[2]]  
+              ) ) )
+      
+      d <- subset(data, select = intersect(all.vars(form), names(data)))
+      sdata <- data[complete.cases(d), unique(c(intersect(all.vars(form), names(data)), names(data)))]
+      mod <- eval(substitute(plm(f, data=sdata, params=params), list(f=form)))  
+      names(mod$coefficients) <- c(cNames, names(params))
+      sse <- sum(resid(mod)^2)
+      list(model=mod, sse=sse)
+    }
+  
+  Map (fun1, 
+       formulaTemplates, coefNames, params
+  )
+} 
