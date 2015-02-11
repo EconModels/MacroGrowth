@@ -90,6 +90,35 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
   }
 }
 
+#' Apply lm to (several) formula templates
+#' 
+#' This automates fitting several models that make use of the same variables and data set.
+#' 
+#' @param formula A formula containing the (common) response on the left and all variables
+#' used in any of the models on the right.
+#' @param data a data frame containing the necessary variables.
+#' @param formulaTemplates a list of formulas using response \code{y} and 
+#' predictors 
+#' \code{capital},
+#' \code{labor}, 
+#' \code{energy}, 
+#' and 
+#' \code{time}. 
+#' @param coefNames a list of names for the coefficients of the fitted model.
+#' @param save.data a logical, currently not used.
+#' @param ... additional arguments, currently not used.
+#' @examples 
+#' apply_lm( iGDP ~ iK + iL + iQp + iYear, data=Calvin, 
+#'   formulaTemplates = list( 
+#'     log(y) - log(capital) ~ time,
+#'     log(y) - log(labor) ~ time,
+#'     log(y) - log(energy) ~ time),
+#'  coefNames = list(
+#'    c("logscale", "lambda"),
+#'    c("logscale", "lambda"),
+#'    c("logscale", "lambda"))
+#'  )
+#' 
 
 apply_lm <- function( formula, data, formulaTemplates, 
                       save.data=TRUE, ...){
