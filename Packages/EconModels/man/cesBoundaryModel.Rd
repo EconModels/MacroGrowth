@@ -2,64 +2,37 @@
 % Please edit documentation in R/cesBoundaryModels.R
 \name{cesBoundaryModel}
 \alias{cesBoundaryModel}
-\title{Apply lm to (several) formula templates}
+\title{Fits CES boundary models}
 \usage{
 cesBoundaryModel(formula, data, nest, id)
 }
 \arguments{
-\item{formula}{A formula containing the (common) response on the left and all variables
-used in any of the models on the right.}
+\item{formula}{a CES formula in the form \code{y ~ a + b + c + d + time}}
 
-\item{data}{a data frame containing the necessary variables.}
+\item{data}{historical time series data}
 
 \item{nest}{identifies the nesting of the variables in the original formula,
 assumed to be of the form \code{c(1,2,3)}.}
 
 \item{id}{the identification number (from Table 2) for the boundary model you want to fit.}
-
-\item{formulaTemplates}{a list of formulas using response \code{y} and
-predictors
-\code{capital},
-\code{labor},
-\code{energy},
-and
-\code{time}.}
-
-\item{coefNames}{a list of names for the coefficients of the fitted model.}
-
-\item{save.data}{a logical, currently not used.}
-
-\item{...}{additional arguments, currently not used.}
-
-\item{data}{historical time series data}
-
-\item{formula}{a CES formula in the form \code{y ~ a + b + c + d + time}}
 }
 \value{
 a model object with class \code{CESModel} and \code{naturalCoeffs} and \code{meta} attributes.
 }
 \description{
-This automates fitting several models that make use of the same variables and data set.
+The boundary models are given in Table 2 of
+Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth"
 }
 \note{
 the \code{naturalCoeffs} attribute includes correct values of boundary parameters.
 \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 }
 \examples{
-apply_lm( iGDP ~ iK + iL + iQp + iYear, data=Calvin,
-  formulaTemplates = list(
-    log(y) - log(capital) ~ time,
-    log(y) - log(labor) ~ time,
-    log(y) - log(energy) ~ time),
- coefNames = list(
-   c("logscale", "lambda"),
-   c("logscale", "lambda"),
-   c("logscale", "lambda"))
- )
-
-Fits CES boundary models
-
-The boundary models are given in Table 2 of
-Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth"
+if (require(EconData) & require(dplyr)) {
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=0)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=1)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=2)
+  cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=3)
+  }
 }
 

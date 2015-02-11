@@ -28,7 +28,31 @@
 #'  )
 #'     
 
+makeNatCoef <- function( model ) {
+  coefList <- as.list(coef(model))
+  gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+  lambda = tryCatch(with(coefList, lambda), error=function(e) NA)
+  delta_1 = tryCatch(with(coefList, delta_1), error=function(e) NA)
+  delta = tryCatch(with(coefList, delta), error=function(e) NA)
+  rho_1 = tryCatch(with(coefList, rho_1), error=function(e) NA)
+  sigma_1 = tryCatch(with(coefList, sigma_1), error=function(e) NA)
+  rho = tryCatch(with(coefList, rho), error=function(e) NA)
+  sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
+  sse = sum(resid(model)^2)
+  
+  data.frame( gamma_coef = gamma_coef,
+     lambda = lambda,
+     delta = delta,
+     delta_1 = delta_1,
+     sigma_1 = if (is.na(sigma_1)) 1/(1 + rho_1) else sigma_1,
+     rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
+     sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
+     rho = if (is.na(rho)) 1/sigma - 1 else rho,
+     sse = sse
+  )
+}
 
+    
 #' Fits CES boundary models
 #' 
 #' The boundary models are given in Table 2 of 
@@ -50,6 +74,7 @@
 #'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=3)
 #'   }
 #' @export
+
 cesBoundaryModel <- function(formula, data, nest, id){
   f <- formula  # to avoid problems while renaming is happening.
   
@@ -61,84 +86,79 @@ cesBoundaryModel <- function(formula, data, nest, id){
   x4 <- timeSeries$x4
   time <- timeSeries$time
   numFactors <- cesFormulaNames(f, nest)$numFactors
-
-  # testing grounds 
-  if (id == 0){
-    
-    formulaTemplates <- 
-      list( 
-        log(y) - log(capital) ~ time,     # 1
-        log(y) - log(labor) ~ time,       # 2
-        log(y) - log(energy) ~ time,      # 6
-        log(y) - log(pmin(capital, labor)) ~ time,          #3
-        log(y) - log(pmin(capital, energy)) ~ time,         #7
-        log(y) - log(pmin(labor, energy)) ~ time,           #8
-        log(y) - log(pmin(capital, labor, energy)) ~ time,  #9
-        log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,   #4
-        log(y) - log(delta*capital + (1-delta)*energy) ~ time,  #10
-        log(y) - log(delta*labor + (1-delta)*energy) ~ time,    #11
-        log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time, #12
-        log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,                 #13
-        log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,              #14
-        log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,  #17
-        log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,  #19
-        log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time  #20
-      )
-   
-    coefNames <- list( 
-      c("logscale", "lambda"),    #1
-      c("logscale", "lambda"),    #2
-      c("logscale", "lambda"),    #6
-      c("logscale", "lambda"),    #3
-      c("logscale", "lambda"),    #7
-      c("logscale", "lambda"),    #8
-      c("logscale", "lambda"),    #9
-      c("logscale", "lambda"),    #4
-      c("logscale", "lambda"),    #10
-      c("logscale", "lambda"),     #11
-      c("logscale", "lambda"),     #12
-      c("logscale", "lambda"),     #13
-      c("logscale", "lambda"),     #14
-      c("logscale", "lambda"),     #17
-      c("logscale", "lambda"),     #19
-      c("logscale", "lambda")      #20
-    ) 
-   
-    params <- list(
-      c(),     #1 
-      c(),     #2
-      c(),     #6
-      c(),     #3
-      c(),     #7
-      c(),     #8
-      c(),     #9
-      c(delta_1 = 0.5), #4
-      c(delta = 0.5),   #10
-      c(delta = 0.5),   #11
-      c(delta = 0.5, delta_1 = 0.5),  #12
-      c(delta = 0.5),     # 13 
-      c(delta_1 = 0.5),   # 14
-      c(delta = 0.5, delta_1 = 0.5,   rho = 0.25),  #17
-      c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25),  #19
-      c(delta_1 = 0.5, rho_1=0.25)                  #20
-    ) 
-    res <- apply_plm(formula, data, formulaTemplates = formulaTemplates, coefNames = coefNames, params = params)  # [["models"]][[1]]
+  
+  formulaRosetta <- list(
+    y = formula[[2]],
+    capital = formula[[3]][[2]][[2]][[2]],
+    labor = formula[[3]][[2]][[2]][[3]],
+    energy = formula[[3]][[2]][[3]],
+    time = formula[[3]][[3]]
+  ) 
+  # permute to reflect nesting
+  names(formulaRosetta)[2:4] <- c("capital", "labor", "energy")[nest]
+  
+  formulaTemplates <- 
+    list( 
+      "1" = log(y) - log(capital) ~ time,
+      "2" = log(y) - log(labor) ~ time,
+      "6" = log(y) - log(energy) ~ time,
+      "3" = log(y) - log(pmin(capital, labor)) ~ time,
+      "7" = log(y) - log(pmin(capital, energy)) ~ time,
+      "8" = log(y) - log(pmin(labor, energy)) ~ time,
+      "9" = log(y) - log(pmin(capital, labor, energy)) ~ time,
+      "4" = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
+      "10" = log(y) - log(delta*capital + (1-delta)*energy) ~ time,
+      "11" = log(y) - log(delta*labor + (1-delta)*energy) ~ time,
+      "12" = log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time,
+      "13" = log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,
+      "14" = log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,
+      "17" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
+      "19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
+      "20" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time
+    )
+  
+  formulas <- 
+    lapply(
+      formulaTemplates, 
+      function(ft)
+        do.call(substitute, list( ft, formulaRosetta) ) 
+    )
+  
+  # values that don't appear in the model can be set to their fixed values and nlmin()
+  # will leave them alone.  
+  # But nlmin() doesn't like Inf even if the pameter isn't used, so setting sigma or sigma_1
+  # to 0 instead of rho or rho_1 to Inf.  
+  # This will cost some effort down stream to recover the rho values.  See makeNatCoefs.
+  # There may be a better solution, but this will get us going for the moment.
+  params <- list(
+    "1" = c(delta_1 = 1, delta=1),
+    "2" = c(delta_1 = 0, delta=1),
+    "6" = c(delta = 0),
+    "3" = c(sigma_1 = 0, delta=1),
+    "7" = c(sigma = 0, delta_1 = 1),
+    "8" = c(sigma = 0, delta_1 = 0),
+    "9" = c(sigma = 0, sigma_1 = 0),
+    "4" = c(delta_1 = 0.5, delta = 1, rho_1 = -1),
+    "10" = c(delta = 0.5, delta_1=1, rho = -1),
+    "11" = c(delta = 0.5, delta_1 = 0, rho = -1),
+    "12" = c(delta = 0.5, delta_1 = 0.5, rho_1 = -1, rho = -1),
+    "13" = c(delta = 0.5, sigma_1 = 0,  sigma = 0),
+    "14" = c(delta_1 = 0.5, rho_1 = -1, sigma = 0),
+    "17" = c(delta = 0.5, delta_1 = 0.5, rho = 0.25, rho_1 = -1),
+    "19" = c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25, rho = -1),
+    "20" = c(delta_1 = 0.4, rho_1=0.35, sigma = 0)
+  ) 
+  
+  if (id == 0) {
+    res <- apply_plm(formula, data, formulaTemplates = formulaTemplates, params = params)  # [["models"]][[1]]
     # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
     return (res)
-    
-    naturalCoeffs <- data.frame(
-      gamma_coef = as.vector(exp(coef(res)[[1]])),
-      lambda = as.vector(coef(res)[[2]]),
-      delta_1 = as.vector(1),
-      delta = as.vector(1),
-      sigma_1 = NA,
-      rho_1 = NA, 
-      sigma = NA,
-      rho = NA,
-      sse = as.vector(sum(resid(res)^2))
-    )
-    attr(res, "bmodID") <- id
-    res <- addMetaData(model=res, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
+  }
+ 
+  if (is.character(id) && id %in% names(formulas)) {
+    res <- eval(substitute(plm( f, data=data, params=p), list( f = formulas[[id]], p=params[[id]])))
+    names(res$coefficients) [1:2] <- c("logscale", "lambda")
+    # res <- addMetaData(res, formula = formulas[[id]], nest = nest, naturalCoeffs = makeNatCoef(res))
     return(res)
   }
   
@@ -316,6 +336,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
       rho = Inf,
       sse = as.vector(sum(resid(mod)^2))
     )    
+
     attr(mod, "bmodID") <- id
     mod <- addMetaData(model=mod, formula=f, nest=nest, naturalCoeffs=naturalCoeffs)
     return(mod)
