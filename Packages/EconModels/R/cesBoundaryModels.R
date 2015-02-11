@@ -12,7 +12,7 @@ makeNatCoef <- function( model ) {
   sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
   sse = sum(resid(model)^2)
   
-  data.frame( gamma_coef = gamma_coef,
+  data_frame( gamma_coef = gamma_coef,
      lambda = lambda,
      delta = delta,
      delta_1 = delta_1,
@@ -20,7 +20,12 @@ makeNatCoef <- function( model ) {
      rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
      sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
      rho = if (is.na(rho)) 1/sigma - 1 else rho,
-     sse = sse
+     sse = sse,
+     constrained =
+       (is.na(delta) || (0 <= delta && delta <= 1)) &&
+       (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)),
+     constrained.see =
+       if(constrained) sse else Inf
   )
 }
 
