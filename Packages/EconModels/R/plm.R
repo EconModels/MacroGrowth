@@ -57,15 +57,32 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
     res
   } else {
     # find optimal params
+    if (TRUE || length(params) < 2 ) {
+      opt_params <- 
+        nlmin( 
+          function(p) {
+            names(p) <- pnames
+            mod <- plm(formula=formula, data=data, params=p, optimize=FALSE)
+            sum(resid(mod)^2)
+          },
+          p = params
+        )$estimate
+    } else {
     opt_params <- 
-      nlmin( 
+      optim( 
+        par = params,
         function(p) {
           names(p) <- pnames
           mod <- plm(formula=formula, data=data, params=p, optimize=FALSE)
           sum(resid(mod)^2)
         },
-        p = params
-      )$estimate
+        method = "L-BFGS-B",
+        lower = rep(0, length(params)),
+        upper = rep(1, length(params))
+      )$par
+    }
+    
+
     names(opt_params) <- pnames
     # return model fit with optimal params
     res <- plm(formula=formula, data=data, params=opt_params, optimize=FALSE, .ocall=.ocall)
@@ -74,7 +91,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
 }
 
 
-apply_lm <- function( formula, data, formulaTemplates, coefNames,
+apply_lm <- function( formula, data, formulaTemplates, 
                       save.data=TRUE, ...){
   
   formulas <- lapply(
@@ -102,9 +119,9 @@ apply_lm <- function( formula, data, formulaTemplates, coefNames,
     )
   
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
-  for (i in 1:length(models)) {
-    names( models[[i]]$coefficients ) <- coefNames[[i]]
-  }
+#  for (i in 1:length(models)) {
+#    names( models[[i]]$coefficients ) <- coefNames[[i]]
+#  }
   return(list(models=models, sse=sse))
 } 
 
@@ -124,6 +141,7 @@ apply_lm <- function( formula, data, formulaTemplates, coefNames,
 #     log(y) - log(delta*labor + (1-delta)*energy) ~ time     #4
 #   )
 
+# all the same, so don't bother with this.
 # coefNames <- list( 
 #   c("logscale", "lambda"),    #1
 #   c("logscale", "lambda"),    #2
@@ -151,19 +169,19 @@ apply_lm <- function( formula, data, formulaTemplates, coefNames,
 # )
 #
 # apply_plm(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country == "US"), 
-#           formulaTemplates, coefNames, params=params) 
+#           formulaTemplates, params=params) 
 #
 # apply_plm(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country == "US"), 
-#           formulaTemplates[8], coefNames[8], params=params[8]) 
+#           formulaTemplates[8], params=params[8]) 
 #
 # plm(formula = log(iGDP) - log(delta_1 * iK + (1 - delta_1) *  iL) ~ iYear, 
 #     data = Calvin %>% filter(Country == "US"), params = c("delta_1" = 0.5))
 
-apply_plm <- function( formula, data, formulaTemplates, coefNames,
+apply_plm <- function( formula, data, formulaTemplates, 
                        params,
                        save.data=TRUE, ...){
   fun1 <- 
-    function(formulaTemplate, cNames, params) {
+    function(formulaTemplate, params) {
       form <- 
         do.call(substitute, list( formulaTemplate, 
               list(
@@ -177,12 +195,12 @@ apply_plm <- function( formula, data, formulaTemplates, coefNames,
       d <- subset(data, select = intersect(all.vars(form), names(data)))
       sdata <- data[complete.cases(d), unique(c(intersect(all.vars(form), names(data)), names(data)))]
       mod <- eval(substitute(plm(f, data=sdata, params=params), list(f=form)))  
-      names(mod$coefficients) <- c(cNames, names(params))
+      # names(mod$coefficients) <- c(cNames, names(params))
       sse <- sum(resid(mod)^2)
       list(model=mod, sse=sse)
     }
   
   Map (fun1, 
-       formulaTemplates, coefNames, params
+       formulaTemplates, params
   )
 } 
