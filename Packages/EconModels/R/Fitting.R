@@ -756,7 +756,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   
   # cesEst is from the cesEst function. CESmodel comes from constrained fits to CES.
   if ( ! ( ("cesEst" %in% class(model)) || ("CESmodel" %in% class(model)) ) ){
-    stop(paste0("Unsupported model class: " + class(model) + ". model must be NULL, cesEst, or CESmodel"))
+    stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or CESmodel"))
   }
   
   if (is.null(naturalCoeffs)){
