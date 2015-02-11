@@ -77,10 +77,10 @@ apply_lm <- function( formula, data, formulaTemplates, coefNames,
 #' @note the \code{naturalCoeffs} attribute includes correct values of boundary parameters. 
 #' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
 #' @examples 
-#' if (require(EconData, dplyr)) {
-#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=filter(Calvin, Country=="US"), nest=c(1,2,3), id=1)
-#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=filter(Calvin, Country=="US"), nest=c(1,2,3), id=2)
-#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=filter(Calvin, Country=="US"), nest=c(1,2,3), id=3)
+#' if (require(EconData) & require(dplyr)) {
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=1)
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=2)
+#'   cesBoundaryModel(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3), id=3)
 #'   }
 #' @export
 cesBoundaryModel <- function(formula, data, nest, id){
@@ -103,15 +103,29 @@ cesBoundaryModel <- function(formula, data, nest, id){
     # In log transform space, ln(y/x1) = ln(gamma_coef) + lambda*time.
     
     formulaTemplates <- 
-      list( log(y) - log(capital) ~ time
+      list( 
+        log(y) - log(capital) ~ time,     # 1
+        log(y) - log(labor) ~ time,       # 2
+        log(y) - log(energy) ~ time,      # 6
+        log(y) - log(pmin(capital, labor)) ~ time,          #3
+        log(y) - log(pmin(capital, energy)) ~ time,         #7
+        log(y) - log(pmin(labor, energy)) ~ time,           #8
+        log(y) - log(pmin(capital, labor, energy)) ~ time    #9
       )
    
     coefNames <- list( 
-      c("logscale", "lambda")
+      c("logscale", "lambda"),    #1
+      c("logscale", "lambda"),    #2
+      c("logscale", "lambda"),    #6
+      c("logscale", "lambda"),    #3
+      c("logscale", "lambda"),    #7
+      c("logscale", "lambda"),    #8
+      c("logscale", "lambda")     #9
     ) 
     
-    res <- apply_lm(formula, data, formulaTemplates, coefNames)[["models"]][[1]]
-    class(res) <- c("CESmodel", class(res))
+    res <- apply_lm(formula, data, formulaTemplates, coefNames)  # [["models"]][[1]]
+    # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
+    return (res)
     
     naturalCoeffs <- data.frame(
       gamma_coef = as.vector(exp(coef(res)[[1]])),
