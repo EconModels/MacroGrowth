@@ -29,6 +29,7 @@
 #'             p=c(delta=0.5, delta_1=0.5))
 #' foo
 #' class(foo)
+#' }
 
 plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall=NULL ) {
   if(is.null(.ocall)) .ocall <- match.call()
