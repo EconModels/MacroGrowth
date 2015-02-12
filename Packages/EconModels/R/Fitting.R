@@ -63,7 +63,8 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   # attribute of the model.
   
   # o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
-  o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
+  # o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
+  o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse, digits=digits) } ) )
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
   return(out) 
