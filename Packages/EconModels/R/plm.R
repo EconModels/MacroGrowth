@@ -108,7 +108,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
 #' @param save.data a logical, currently not used.
 #' @param ... additional arguments, currently not used.
 #' @examples 
-#' apply_lm( iGDP ~ iK + iL + iQp + iYear, data=Calvin, 
+#' apply_lm( iGDP ~ iK + iL + iQp + iYear, data=filter(Calvin, Country=="US"), 
 #'   formulaTemplates = list( 
 #'     log(y) - log(capital) ~ time,
 #'     log(y) - log(labor) ~ time,
