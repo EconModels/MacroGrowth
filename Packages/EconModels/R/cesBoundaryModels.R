@@ -1,8 +1,11 @@
-    
+
+# needs a new name if we keep non-coefficient things in here.  
 
 makeNatCoef <- function( model ) {
   coefList <- as.list(coef(model))
   gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+  if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
+  if (is.null(gamma_coef)) gamma_coef <- NA
   lambda = tryCatch(with(coefList, lambda), error=function(e) NA)
   delta_1 = tryCatch(with(coefList, delta_1), error=function(e) NA)
   delta = tryCatch(with(coefList, delta), error=function(e) NA)
@@ -23,9 +26,13 @@ makeNatCoef <- function( model ) {
      sse = sse,
      constrained =
        (is.na(delta) || (0 <= delta && delta <= 1)) &&
-       (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)),
+       (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)) &&
+       (is.na(rho) || rho >= -1) &&
+       (is.na(rho_1) || rho_1 >= -1) 
+       ,
      constrained.sse =
-       if(constrained) sse else Inf
+       if(constrained) sse else Inf,
+     call = Reduce(paste, gdata::trim(deparse(model$call)))
   )
 }
 
@@ -54,8 +61,12 @@ makeNatCoef <- function( model ) {
 
 cesBoundaryModel <- function(formula, data, nest, id){
   f <- formula  # to avoid problems while renaming is happening.
+ 
+  # use same data for all models, even if some models could make use of more complete data. 
+  d <- subset(data, select = intersect(all.vars(formula), names(data)))
+  sdata <- data[complete.cases(d), unique(c(intersect(all.vars(formula), names(data)), names(data)))]
   
-  timeSeries <- cesTimeSeries(f=f, data=data, nest=nest)
+  timeSeries <- cesTimeSeries(f=f, data=sdata, nest=nest)
   y <- timeSeries$y
   x1 <- timeSeries$x1
   x2 <- timeSeries$x2
@@ -103,7 +114,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
   
   # values that don't appear in the model can be set to their fixed values and nlmin()
   # will leave them alone.  
-  # But nlmin() doesn't like Inf even if the pameter isn't used, so setting sigma or sigma_1
+  # But nlmin() doesn't like Inf even if the parameter isn't used, so setting sigma or sigma_1
   # to 0 instead of rho or rho_1 to Inf.  
   # This will cost some effort down stream to recover the rho values.  See makeNatCoefs.
   # There may be a better solution, but this will get us going for the moment.
@@ -127,13 +138,17 @@ cesBoundaryModel <- function(formula, data, nest, id){
   ) 
   
   if (id == 0) {  # run all the models that use plm
-    res <- apply_plm(formula, data, formulaTemplates = formulaTemplates, params = params)  # [["models"]][[1]]
+    return( Map( 
+      function(formula, params) { plm( formula, data=sdata, param=params)}, 
+      formulas, params 
+    ) )
+    res <- apply_plm(formula, sdata, formulaTemplates = formulaTemplates, params = params)  # [["models"]][[1]]
     # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
     return (res)
   }
  
   if (is.character(id) && id %in% names(formulas)) {  # just one plm() instance
-    res <- eval(substitute(plm( f, data=data, params=p), list( f = formulas[[id]], p=params[[id]])))
+    res <- eval(substitute(plm( f, data=sdata, params=p), list( f = formulas[[id]], p=params[[id]])))
     names(res$coefficients) [1:2] <- c("logscale", "lambda")
     # res <- addMetaData(res, formula = formulas[[id]], nest = nest, naturalCoeffs = makeNatCoef(res))
     return(res)
