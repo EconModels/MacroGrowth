@@ -141,9 +141,9 @@ apply_lm <- function( formula, data, formulaTemplates,
   models <- 
     lapply( formulas, 
             function(form){
-              d <- subset(data, select = all.vars(form))
-              sdata <- data[complete.cases(d), unique(c(all.vars(form), names(data)))]
-              eval(substitute(lm(f, data=sdata), list(f=form)))  
+#              d <- subset(data, select = all.vars(form))
+#              sdata <- data[complete.cases(d), unique(c(all.vars(form), names(data)))]
+              eval(substitute(lm(f, data=data), list(f=form)))  
             }
     )
   
@@ -221,9 +221,9 @@ apply_plm <- function( formula, data, formulaTemplates,
                 y = formula[[2]]  
               ) ) )
       
-      d <- subset(data, select = intersect(all.vars(form), names(data)))
-      sdata <- data[complete.cases(d), unique(c(intersect(all.vars(form), names(data)), names(data)))]
-      mod <- eval(substitute(plm(f, data=sdata, params=params), list(f=form)))  
+#      d <- subset(data, select = intersect(all.vars(form), names(data)))
+#      sdata <- data[complete.cases(d), unique(c(intersect(all.vars(form), names(data)), names(data)))]
+      mod <- eval(substitute(plm(f, data=data, params=p), list(f=form, p=params)))  
       # names(mod$coefficients) <- c(cNames, names(params))
       sse <- sum(resid(mod)^2)
       list(model=mod, sse=sse)
