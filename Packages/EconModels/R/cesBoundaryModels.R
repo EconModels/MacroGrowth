@@ -1,6 +1,8 @@
 
 # needs a new name if we keep non-coefficient things in here.  
-
+# might not need to export this, but it is handy for now.
+#' @export
+#' 
 makeNatCoef <- function( model ) {
   coefList <- as.list(coef(model))
   gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
@@ -30,7 +32,7 @@ makeNatCoef <- function( model ) {
        (is.na(rho) || rho >= -1) &&
        (is.na(rho_1) || rho_1 >= -1) 
        ,
-     constrained.sse =
+     sse.constrained =
        if(constrained) sse else Inf,
      call = Reduce(paste, gdata::trim(deparse(model$call)))
   )
@@ -59,7 +61,7 @@ makeNatCoef <- function( model ) {
 #'   }
 #' @export
 
-cesBoundaryModel <- function(formula, data, nest, id){
+cesBoundaryModel <- function(formula, data, nest, id = NULL){
   f <- formula  # to avoid problems while renaming is happening.
  
   # use same data for all models, even if some models could make use of more complete data. 
@@ -87,14 +89,14 @@ cesBoundaryModel <- function(formula, data, nest, id){
   
   formulaTemplates <- 
     list( 
-      "1" = log(y) - log(capital) ~ time,
-      "2" = log(y) - log(labor) ~ time,
-      "6" = log(y) - log(energy) ~ time,
-      "3" = log(y) - log(pmin(capital, labor)) ~ time,
-      "7" = log(y) - log(pmin(capital, energy)) ~ time,
-      "8" = log(y) - log(pmin(labor, energy)) ~ time,
-      "9" = log(y) - log(pmin(capital, labor, energy)) ~ time,
-      "4" = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
+      "1"  = log(y) - log(capital) ~ time,
+      "2"  = log(y) - log(labor) ~ time,
+      "6"  = log(y) - log(energy) ~ time,
+      "3"  = log(y) - log(pmin(capital, labor)) ~ time,
+      "7"  = log(y) - log(pmin(capital, energy)) ~ time,
+      "8"  = log(y) - log(pmin(labor, energy)) ~ time,
+      "9"  = log(y) - log(pmin(capital, labor, energy)) ~ time,
+      "4"  = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
       "10" = log(y) - log(delta*capital + (1-delta)*energy) ~ time,
       "11" = log(y) - log(delta*labor + (1-delta)*energy) ~ time,
       "12" = log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time,
@@ -102,22 +104,27 @@ cesBoundaryModel <- function(formula, data, nest, id){
       "14" = log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,
       "17" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
       "19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
-      "20" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time
+      "20" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time,
+      "5"  = y ~ capital + labor + time,
+      "15" = y ~ capital + energy + time,
+      "16" = y ~ labor + energy + time,
+      "20" = y ~ pmin(capital, labor) + energy + time
     )
   
   formulas <- 
     lapply(
       formulaTemplates, 
       function(ft)
-        do.call(substitute, list( ft, formulaRosetta) ) 
+        as.formula(do.call(substitute, list( ft, formulaRosetta) ) )
     )
   
-  # values that don't appear in the model can be set to their fixed values and nlmin()
+  # Values that don't appear in the model can be set to their fixed values and nlmin()
   # will leave them alone.  
-  # But nlmin() doesn't like Inf even if the parameter isn't used, so setting sigma or sigma_1
-  # to 0 instead of rho or rho_1 to Inf.  
+  # But nlmin() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
+  # set sigma or sigma_1 to 0 instead of rho or rho_1 to Inf.  
   # This will cost some effort down stream to recover the rho values.  See makeNatCoefs.
   # There may be a better solution, but this will get us going for the moment.
+  
   params <- list(
     "1" = c(delta_1 = 1, delta=1),
     "2" = c(delta_1 = 0, delta=1),
@@ -136,25 +143,50 @@ cesBoundaryModel <- function(formula, data, nest, id){
     "19" = c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25, rho = -1),
     "20" = c(delta_1 = 0.4, rho_1=0.35, sigma = 0)
   ) 
+
+  if (is.null(id)) { # fit all the models
+  plmModels <- 
+    Map( 
+      function(formula, param) { 
+        eval(substitute( plm(formula, data = sdata, param=param), list(formula=formula, param=param)))
+      }, 
+      formulas[1:16], params
+    )
+ 
+  cesModels <- 
+    Map( 
+      function(formula) {
+        eval(substitute( 
+          cesModel(formula, data = sdata,  nest = c(1,2)), 
+          list(formula=formula)
+        ))
+      },
+      formulas[17:19]
+    )
   
-  if (id == 0) {  # run all the models that use plm
-    return( Map( 
-      function(formula, params) { plm( formula, data=sdata, param=params)}, 
-      formulas, params 
-    ) )
-    res <- apply_plm(formula, sdata, formulaTemplates = formulaTemplates, params = params)  # [["models"]][[1]]
-    # res$models <- lapply( res$models, function(model) class(model) <- c("CESmodel", class(model)) )
-    return (res)
-  }
+  # Now handle the ugly case.  Since cesEst() can only work with variables, we need
+  # to compute a variable and add it to the data frame before calling cesModel.
  
-  if (is.character(id) && id %in% names(formulas)) {  # just one plm() instance
-    res <- eval(substitute(plm( f, data=sdata, params=p), list( f = formulas[[id]], p=params[[id]])))
-    names(res$coefficients) [1:2] <- c("logscale", "lambda")
-    # res <- addMetaData(res, formula = formulas[[id]], nest = nest, naturalCoeffs = makeNatCoef(res))
-    return(res)
+  tryCatch( { 
+  formulaPmin <- formulas[[20]] 
+  pminVar <- deparse(formulaPmin[[3]][[2]][[2]])
+  sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]], sdata)
+  cesModels <- 
+    c(cesModels, 
+      list( 
+        eval(substitute(
+          cesModel(f, data=sdata, nest = c(1,2)),
+          list(f = formulaPmin)
+        ))
+      )
+    )
+  }, error = function(e) print(e)
+  )
+  
+  return( c(plmModels, cesModels) )
   }
- 
-  # older code using numerical IDs for comparison and for the CES direct stuff. 
+  
+  # older code using numerical IDs for comparison -- probably can get rid of this all now.
   if (id == 1){
     # Constraints are delta_1 = 1 and delta = 1.
     # rho_1, sigma_1, rho, and sigma are unknowable and set to NA.
@@ -271,7 +303,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
     bmod5data <- data.frame(y, x1, x2, time)
     # Don't fit along boundaries. 
     # Boundary fits will be addressed by other boundary models.
-    mod <- cesModel2(f = y ~ x1 + x2 + time, 
+    mod <- cesModel(f = y ~ x1 + x2 + time, 
                      data = bmod5data, 
                      nest = c(1,2), 
                      constrained = TRUE, 
@@ -585,7 +617,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
     bmod15data <- data.frame(y, x1, x3, time)
     # Don't fit along boundaries. 
     # Boundary fits will be addressed by other boundary models.
-    mod <- cesModel2(f = y ~ x1 + x3 + time, 
+    mod <- cesModel(f = y ~ x1 + x3 + time, 
                      data = bmod15data, 
                      nest = c(1,2), 
                      constrained = TRUE, 
@@ -618,7 +650,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
     bmod16data <- data.frame(y, x2, x3, time)
     # Don't fit along boundaries. 
     # Boundary fits will be addressed by other boundary models.
-    mod <- cesModel2(f = y ~ x2 + x3 + time, 
+    mod <- cesModel(f = y ~ x2 + x3 + time, 
                      data = bmod16data, 
                      nest = c(1,2), 
                      constrained = TRUE, 
@@ -666,7 +698,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
     #       delta_1 <- params[[1]]
     #       blendedx1x2 <- delta_1*x1 + (1-delta_1)*x2
     #       bmod17data <- data.frame(y, blendedx1x2, x3, time)
-    #       inner.model <- cesModel2(y ~ blendedx1x2 + x3 + time, 
+    #       inner.model <- cesModel(y ~ blendedx1x2 + x3 + time, 
     #                                data = bmod17data,
     #                                nest = c(1,2), 
     #                                constrained = TRUE, 
@@ -748,7 +780,7 @@ cesBoundaryModel <- function(formula, data, nest, id){
     bmod18data <- data.frame(y, minx1x2, x3, time)
     # Don't fit along boundaries. 
     # Boundary fits will be addressed by other boundary models.
-    mod <- cesModel2(f = y ~ minx1x2 + x3 + time, 
+    mod <- cesModel(f = y ~ minx1x2 + x3 + time, 
                      data = bmod18data, 
                      nest = c(1,2), 
                      constrained = TRUE, 
