@@ -8,6 +8,7 @@
 #' @param optimize a logical indicating whether \code{param} should be plugged in or used as the seed
 #'   for the numerical optimization
 #' @param .ocall used for recursive calling
+#' @param ... additional arguments, currently ignored.
 #' @return On object of class \code{c("plm", "lm")} which is an enhanced \code{"lm"} object.
 #' @export
 #' @examples
@@ -31,7 +32,7 @@
 #' class(foo)
 #' }
 
-plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall=NULL ) {
+plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall=NULL, ... ) {
   if(is.null(.ocall)) .ocall <- match.call()
  
   # if no params, just plain old lm with an extra class wrapper 

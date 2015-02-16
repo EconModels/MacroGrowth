@@ -5,7 +5,7 @@
 \title{Parameterized Linear Models}
 \usage{
 plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
-  .ocall = NULL)
+  .ocall = NULL, ...)
 }
 \arguments{
 \item{formula}{a formula describing the model}
@@ -18,6 +18,8 @@ plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
 for the numerical optimization}
 
 \item{.ocall}{used for recursive calling}
+
+\item{...}{additional arguments, currently ignored.}
 }
 \value{
 On object of class \code{c("plm", "lm")} which is an enhanced \code{"lm"} object.
