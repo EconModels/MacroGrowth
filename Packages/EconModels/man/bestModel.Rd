@@ -4,7 +4,7 @@
 \alias{bestModel}
 \title{Extracts the best model (least sse) from a list of models}
 \usage{
-bestModel(models, digits = 6, orderOnly = FALSE)
+bestModel(models, digits = 6, orderOnly = FALSE, constrained = FALSE)
 }
 \arguments{
 \item{models}{the list of models}

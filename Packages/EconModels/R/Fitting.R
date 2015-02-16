@@ -54,7 +54,7 @@ natmetaFrame <- function(object){
 #' @return an integer vector representing the order of the models if \code{orderOnly} is \code{TRUE}. 
 #' A reordered list of models if \code{orderOnly} is \code{FALSE} (the default). 
 #' @export
-bestModel <- function(models, digits=6, orderOnly=FALSE) {
+bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
 
   # Our original code is commented below. 
   # After we added boundary models for CES, we get nlmin objects in the models argument.
@@ -64,7 +64,11 @@ bestModel <- function(models, digits=6, orderOnly=FALSE) {
   
   # o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   # o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
-  o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse, digits=digits) } ) )
+  if (constrained) {
+    o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse.constrained, digits=digits) } ) )
+  } else {
+    o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse, digits=digits) } ) )
+  }
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
   return(out) 
@@ -544,6 +548,7 @@ cesModel <- function(formula, data,
                      save.data=TRUE,
                      ...){
   
+  orig_call <- match.call()
   if ( missing(formula) ) { 
     substitutionList <-  list( response = substitute(response),
                                capital = substitute(a),
@@ -733,6 +738,8 @@ cesModel <- function(formula, data,
   }
   
   class(res) <- c("CESmodel", class(res))
+  res$ces_call <- res$call
+  res$call <- orig_call
   return(res)
 }
 
