@@ -4,7 +4,7 @@
 \alias{cesBoundaryModel}
 \title{Fits CES boundary models}
 \usage{
-cesBoundaryModel(formula, data, nest, id)
+cesBoundaryModel(formula, data, nest, id = NULL)
 }
 \arguments{
 \item{formula}{a CES formula in the form \code{y ~ a + b + c + d + time}}
