@@ -291,7 +291,7 @@ cesModel2 <- function(f, data,
 #' \code{response}, \code{xNames}, \code{tName}).
 #' @export
 cesFormulaNames <- function(f, nest){
-  
+ 
   # Set up *Names 
   fNames <- rownames( attr(terms(f), "factors") )
   numFactors <- length(fNames) - 2  # not response, not time
@@ -302,7 +302,7 @@ cesFormulaNames <- function(f, nest){
   )
   yName <- head(fNames, 1)
   tName <- tail(fNames, 1)
-  
+
   nest <- nest[1:numFactors]
   group1 <- paste(head(xNames, 2), collapse="+")
   group2 <- paste(tail(xNames, -2), collapse="+")
