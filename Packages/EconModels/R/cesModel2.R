@@ -1,3 +1,5 @@
+
+
 #' Fitting CES models
 #' 
 #' This function fits a CES model
@@ -103,20 +105,15 @@ cesModel2 <- function(f, data,
     stop("No valid rows of data for your model.")
   }
   # This ensures that response is the first column.  This is assumed in downstream code.
+  # Why?  Is it still necessary? ---rjp
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
   if (constrained && fitBoundaries){
     # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
     # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    if (numFactors == 2){
-      numBoundaryModels <- 5 # The first 5 boundary models involve only 2 factors of production
-    } else if (numFactors == 3){
-      numBoundaryModels <- 20 # The first 20 boundary models are appropriate for 3 factors of production
-    }
-    boundary.models <- lapply(c(1:numBoundaryModels), function(n){
-      cesBoundaryModel(f=f, data=data, nest=nest, id=n)
-    })
-
+    boundary.models <- 
+      cesBoundaryModels(f, data=data, nest=nest)
+    
     # This is another possible design for the boundary models. 
     # Each boundary model would be contained in its own function 
     # named cesBmodX where X is the number of the model.
@@ -246,15 +243,17 @@ cesModel2 <- function(f, data,
   }
   
   models <- c(boundary.models, cesEst.models)
-  if (constrained){
-    # Keep only those models that meet constraints for the economically meaningful region.
-    validModels <- models[sapply(models, withinConstraints)]
-    res <- bestModel(validModels)
-  } else {
-    # We're fitting unconstrained. Take the best of all possible models.
-    res <- bestModel(models, digits=digits)
-  }
+#   if (constrained){
+#     # Keep only those models that meet constraints for the economically meaningful region.
+#     validModels <- models[sapply(models, withinConstraints)]
+#     res <- bestModel(validModels)
+#   } else {
+#     # We're fitting unconstrained. Take the best of all possible models.
+#     res <- bestModel(models, digits=digits)
+#   }
 
+  res <- bestModel(models, digits=digits, constrained = constrained)
+  
   if ( is.null( res ) ) {
     warning("cesModel() produced a NULL model.")
   } else {
@@ -263,7 +262,6 @@ cesModel2 <- function(f, data,
     if (save.data) { attr(res, "data") <- data }
     attr(res, "response") <- eval( f[[2]], sdata, parent.frame() )
   }
-
   return(res)
 }
 
