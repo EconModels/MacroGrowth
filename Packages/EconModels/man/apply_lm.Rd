@@ -30,7 +30,7 @@ and
 This automates fitting several models that make use of the same variables and data set.
 }
 \examples{
-apply_lm( iGDP ~ iK + iL + iQp + iYear, data=Calvin,
+apply_lm( iGDP ~ iK + iL + iQp + iYear, data=filter(Calvin, Country=="US"),
   formulaTemplates = list(
     log(y) - log(capital) ~ time,
     log(y) - log(labor) ~ time,
