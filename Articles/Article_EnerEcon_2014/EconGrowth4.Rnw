@@ -1553,7 +1553,7 @@ the boundary model is rejected.
             & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
 \midrule
-     21. &            &            &         & 
+         &            &            &         & 
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
