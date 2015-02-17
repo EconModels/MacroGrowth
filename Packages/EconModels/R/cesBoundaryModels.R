@@ -77,7 +77,7 @@ cesBoundaryModels <- function(formula, data, nest){
 #   time <- timeSeries$time
   
   # could compute this differently to avoid cesTimeSeries()
-  numFactors <- cesFormulaNames(formula, nest)$numFactors
+  numFactors <- cesParseFormula(formula, nest)$numFactors
   if ( ! numFactors %in% 2:3 ) {
     stop("model must have 2 or 3 factors.")
   }
@@ -153,15 +153,15 @@ cesBoundaryModels <- function(formula, data, nest){
   ) 
   
   
-  keep <- sapply(formulaTemplates, function(ft)  numFactors >=3 | !("energy" %in% all.vars(ft)))
-  plmModel <- sapply(1:length(formulas), function(x) x <= length(params)) # params for plm() only
-  
   formulas <- 
     lapply(
       formulaTemplates, 
       function(ft)
         as.formula(do.call(substitute, list( ft, formulaRosetta) ) )
     )
+  
+  keep <- sapply(formulaTemplates, function(ft)  numFactors >=3 | !("energy" %in% all.vars(ft)))
+  plmModel <- sapply(1:length(formulaTemplates), function(x) x <= length(params)) # params for plm() only
   
 
   # fit all the models
@@ -924,7 +924,7 @@ cesBoundaryModels <- function(formula, data, nest){
 #' @return a named list of time series'. 
 #' Names are \code{y}, \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}.
 cesTimeSeries <- function(f, data, nest){
-  fNames <- cesFormulaNames(f, nest)
+  fNames <- cesParseFormula(f, nest)
   # Extract variables for convenience.
   numFactors <- fNames$numFactors
   if (numFactors < 2 || numFactors > 4){

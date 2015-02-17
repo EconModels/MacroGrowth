@@ -92,13 +92,17 @@ cesModel2 <- function(f, data,
     }
   }
     
-  fNames <- cesFormulaNames(f, nest)
+  fNames <- cesParseFormula(f, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames
   yName <- fNames$yName
   xNames <- fNames$xNames
   tName <- fNames$tName
   numFactors <- fNames$numFactors
+  
+  if ( ! numFactors %in% 2L:3L) {
+    stop("cesModel() only handles models with 2 or 3 variables.")
+  }
 
   sdata <- data[ , cesNames ]
   if ( ! any( complete.cases(sdata) ) ) {
@@ -108,27 +112,12 @@ cesModel2 <- function(f, data,
   # Why?  Is it still necessary? ---rjp
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
-  if (constrained && fitBoundaries){
-    # Estimate boundary models, bmodx where x is 1-20, corresponding to Table 2 in 
-    # Heun et al, "An Empirical Analysis of the Role of Energy in Economic Growth".
-    boundary.models <- 
+  boundary.models <- 
+    if (constrained && fitBoundaries){
       cesBoundaryModels(f, data=data, nest=nest)
-    
-    # This is another possible design for the boundary models. 
-    # Each boundary model would be contained in its own function 
-    # named cesBmodX where X is the number of the model.
-    # In some ways this approach would be cleaner.
-    # But, the current design (one big function) allows us to extract data
-    # at the top of the function once, thereby minimizing some duplicated code.
-#     boundary.models <- lapply(c(1:numBoundaryModels), function(n){
-#       eval(call(paste0("cesBmod", n), f=f, data=data, nest=nest))
-#     })
-    
-  } else {
-    # We don't need to fit the boundary models.
-    # Start with an empty list before going into the unconstrained fitting with the full function.
-    boundary.models <- list()
-  }
+    } else {
+      list()
+    }
   
   # Define lower and upper based on whether constrained fitting is desired.
   if (constrained){
@@ -243,6 +232,8 @@ cesModel2 <- function(f, data,
   }
   
   models <- c(boundary.models, cesEst.models)
+  
+# This is not needed if the new version of bestModel() works with constrained = TRUE
 #   if (constrained){
 #     # Keep only those models that meet constraints for the economically meaningful region.
 #     validModels <- models[sapply(models, withinConstraints)]
@@ -265,7 +256,7 @@ cesModel2 <- function(f, data,
   return(res)
 }
 
-#' Extract CES variable names from a CES formula
+#' Extract information from a CES formula
 #' 
 #' This function sets up names of parameters for a CES model fit in various formats.
 #' In particular, it handles nesting and returns nest strings.
@@ -288,7 +279,7 @@ cesModel2 <- function(f, data,
 #' \code{cesNames} (a list of variable names in the order they appear in \code{f}, 
 #' \code{response}, \code{xNames}, \code{tName}).
 #' @export
-cesFormulaNames <- function(f, nest){
+cesParseFormula <- function(f, nest){
  
   # Set up *Names 
   fNames <- rownames( attr(terms(f), "factors") )

@@ -873,7 +873,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
   
   # Get the nest information
-  fNames <- cesFormulaNames(formula, nest)
+  fNames <- cesParseFormula(formula, nest)
 
   ##########################################
   # There is probably a better way to do this.
