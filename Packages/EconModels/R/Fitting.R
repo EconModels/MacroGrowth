@@ -1,4 +1,4 @@
-
+#' @importFrom fastR nlmin
 
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
@@ -65,9 +65,9 @@ bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
   # o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
   # o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
   if (constrained) {
-    o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse.constrained, digits=digits) } ) )
+    o <- order(sapply( models, function(model) { round(getNatCoef(model)$sse.constrained, digits=digits) } ) )
   } else {
-    o <- order(sapply( models, function(model) { round(makeNatCoef(model)$sse, digits=digits) } ) )
+    o <- order(sapply( models, function(model) { round(getNatCoef(model)$sse, digits=digits) } ) )
   }
   if (orderOnly) return(o)
   out  <- models[[ o[1] ]] 
@@ -531,7 +531,7 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' not be other kinds of expressions.
 #' @return a cesEst model with additional information attached as attributes.
 #' @export
-cesModel <- function(formula, data,
+cesModel0 <- function(formula, data,
                      response,
                      a,
                      b,
@@ -729,7 +729,7 @@ cesModel <- function(formula, data,
   
   res <- bestModel(models, digits=digits)
   if ( is.null( res ) ) {
-    warning("cesModel() produced a NULL model.")
+    warning("cesModel0() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
     attr(res, "formula") <- formula
@@ -763,7 +763,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   }
   
   # cesEst is from the cesEst function. CESmodel comes from constrained fits to CES.
-  if ( ! ( ("cesEst" %in% class(model)) || ("CESmodel" %in% class(model)) ) ){
+  if ( ! any( c("cesEst", "CESmodel") %in% class(model) ) ){
     stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or CESmodel"))
   }
   

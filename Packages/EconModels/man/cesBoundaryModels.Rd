@@ -30,10 +30,9 @@ the \code{naturalCoeffs} attribute includes correct values of boundary parameter
 }
 \examples{
 if (require(EconData) & require(dplyr)) {
-  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=0)
-  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=1)
-  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=2)
-  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3), id=3)
+  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2,3))
+  cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(2,3,1))
+  cesBoundaryModels(iGDP ~ iK + iL + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2))
   }
 }
 

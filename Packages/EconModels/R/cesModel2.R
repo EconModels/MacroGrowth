@@ -52,12 +52,12 @@
 #' @return a cesEst model with additional information attached as attributes.
 #' @examples
 #' if (require("EconData") & require("dplyr")) {
-#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
-#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
-#'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
+#'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
+#'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
+#'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
 #' }
 #' @export
-cesModel2 <- function(f, data,
+cesModel <- function(f, data,
                       response,
                       a,
                       b,
@@ -101,7 +101,7 @@ cesModel2 <- function(f, data,
   numFactors <- fNames$numFactors
   
   if ( ! numFactors %in% 2L:3L) {
-    stop("cesModel() only handles models with 2 or 3 variables.")
+    stop("cesModel0() only handles models with 2 or 3 variables.")
   }
 
   sdata <- data[ , cesNames ]
@@ -246,7 +246,7 @@ cesModel2 <- function(f, data,
   res <- bestModel(models, digits=digits, constrained = constrained)
   
   if ( is.null( res ) ) {
-    warning("cesModel() produced a NULL model.")
+    warning("cesModel0() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
     attr(res, "formula") <- f
