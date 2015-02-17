@@ -51,7 +51,7 @@
 #' will not work.
 #' @return a cesEst model with additional information attached as attributes.
 #' @examples
-#' if (require(EconData, dplyr)) {
+#' if (require("EconData") & require("dplyr")) {
 #'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
 #'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
 #'   cesModel2(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
