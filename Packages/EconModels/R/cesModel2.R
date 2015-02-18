@@ -55,6 +55,7 @@
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(1,2,3))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
+#'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 #' }
 #' @export
 cesModel <- function(f, data,
