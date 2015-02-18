@@ -66,8 +66,17 @@ naturalCoef.default <- function(object, ...) {
 }
 
 #' @export
-naturalCoef.cesModel <- function(object, ...) {
-  coefList <- as.list(coef(model))
+naturalCoef.plm <- function(object, ...) {
+  makeNatCoef(object, ...)
+}
+
+#' @export
+naturalCoef.cesEst <- function(object, ...) {
+  makeNatCoef(object, ...)
+}
+  
+makeNatCoef <- function(object, ...) {
+  coefList <- as.list(coef(object))
   gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
   if (is.null(gamma_coef)) gamma_coef <- NA
@@ -78,7 +87,7 @@ naturalCoef.cesModel <- function(object, ...) {
   sigma_1 = tryCatch(with(coefList, sigma_1), error=function(e) NA)
   rho = tryCatch(with(coefList, rho), error=function(e) NA)
   sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
-  sse = sum(resid(model)^2)
+  sse = sum(resid(object)^2)
   
   data_frame( gamma_coef = gamma_coef,
               lambda = lambda,
@@ -97,7 +106,7 @@ naturalCoef.cesModel <- function(object, ...) {
               ,
               sse.constrained =
                 if(constrained) sse else Inf,
-              call = Reduce(paste, gdata::trim(deparse(model$call)))
+              call = Reduce(paste, gdata::trim(deparse(object$call)))
   )
 }
 
