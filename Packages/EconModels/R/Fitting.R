@@ -1,11 +1,11 @@
 
 # convert from delta_1 and delta to alpha, beta, gamma in a nest aware way.
 
-standardCoefs <- function (delta_1, delta, nest) {
+standardCoefs <- function (delta_1=NA, delta=NA, nest=1:2) {
   # Calculate some metadata, including gamma. 
   # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
   # And that the nest argument provides the actual ordering of the factors of production in the CES model.
-  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) { # (nest == "(kl)"){
+  if (is.na(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
     alpha <- delta_1
     beta <- 1.0 - delta_1
     gamma <- 0.0
