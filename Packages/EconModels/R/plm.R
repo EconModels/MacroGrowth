@@ -27,7 +27,7 @@
 #' 
 #' foo <- plm( log(iGDP / delta*(delta_1*iK + (1-delta_1)*iL) + (1-delta)*iQp) ~ iYear,
 #'             data=Calvin %>% filter(Country=="US"), 
-#'             p=c(delta=0.5, delta_1=0.5))
+#'             params=c(delta=0.5, delta_1=0.5))
 #' foo
 #' class(foo)
 #' }
