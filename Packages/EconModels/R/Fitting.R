@@ -1,4 +1,3 @@
-#' @importFrom fastR nlmin
 
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
@@ -55,23 +54,13 @@ natmetaFrame <- function(object){
 #' A reordered list of models if \code{orderOnly} is \code{FALSE} (the default). 
 #' @export
 bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
-
-  # Our original code is commented below. 
-  # After we added boundary models for CES, we get nlmin objects in the models argument.
-  # nlmin objects return NULL from resid.
-  # NULL is sorted before any number, so we have to rely upon the presence of the naturalCoeffs
-  # attribute of the model.
-  
-  # o <- order(sapply( models, function(model) { round(sum(resid(model)^2), digits=digits) } ) )
-  # o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
   if (constrained) {
     o <- order(sapply( models, function(model) { round(getNatCoef(model)$sse.constrained, digits=digits) } ) )
   } else {
     o <- order(sapply( models, function(model) { round(getNatCoef(model)$sse, digits=digits) } ) )
   }
   if (orderOnly) return(o)
-  out  <- models[[ o[1] ]] 
-  return(out) 
+  models[[ o[1] ]] 
 }
 
 #' Compute fitted values on natural scale
@@ -908,24 +897,6 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        beta = as.vector(beta),
                        gamma = as.vector(gamma),
                        start.lambda = NA,
-                       start.delta_1 = NA,
-                       start.rho_1 = NA, 
-                       start.gamma_coef = NA,
-                       start.delta = NA,
-                       start.rho = NA,
-                       history = as.vector(paste0("boundary[", attr(model, "bmodID"), "]")),
-                       nestStr = fNames$nestStr,
-                       nestStrParen = fNames$nestStrParen
-    )
-  } else if ("nlmin" %in% class(model)){
-    metaList <- list(  isConv = (model$code == 1) || (model$code == 2), # 1: gradient close to zero, 2: successive iterations within tolerance
-                       algorithm = as.vector("nlmin"),
-                       iter = as.vector(model$iterations),
-                       grid = grid,
-                       alpha = as.vector(alpha),
-                       beta = as.vector(beta),
-                       gamma = as.vector(gamma),
-                       start.lambda = NA, # None of the start values are available from a nlm object.
                        start.delta_1 = NA,
                        start.rho_1 = NA, 
                        start.gamma_coef = NA,

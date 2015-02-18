@@ -58,7 +58,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
     return(res)
   } else { # find optimal params
     opt_params <- 
-      nlmin( 
+      nlm( 
         function(p) {
           names(p) <- pnames
           mod <- tryCatch(  

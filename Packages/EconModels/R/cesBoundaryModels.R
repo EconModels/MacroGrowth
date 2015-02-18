@@ -1,6 +1,4 @@
-#' @importFrom fastR nlmin
-# needs a new name if we keep non-coefficient things in here.  
-# might not need to export this, but it is handy for now.
+
 #' @export
 #' 
 getNatCoef <- function( model ) {
@@ -125,9 +123,9 @@ cesBoundaryModels <- function(formula, data, nest){
       "16" = y ~ labor + energy + time,
       "18" = y ~ pmin(capital, labor) + energy + time
     )
-  # Values that don't appear in the model can be set to their fixed values and nlmin()
+  # Values that don't appear in the model can be set to their fixed values and nlm()
   # will leave them alone.  
-  # But nlmin() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
+  # But nlm() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
   # set sigma or sigma_1 to 0 instead of rho or rho_1 to Inf.  
   # This will cost some effort down stream to recover the rho values.  See getNatCoefs.
   # There may be a better solution, but this will get us going for the moment.
