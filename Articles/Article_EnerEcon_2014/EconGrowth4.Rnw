@@ -1489,7 +1489,7 @@ with $\delta~=~1$, $\sigma$~unknowable, and $x_3$~absent.
 If the fitted parameters in a boundary model violate constraints, 
 the boundary model is rejected.
 
-\begin{table} \caption{Boundary (rows~1--20) and generic (row~21) models for the CES equation.} 
+\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row).} 
 \label{tab:CES_boundary_models} 
   \begin{center}
     \begin{tabular}{r c c c c l} 
@@ -1553,7 +1553,7 @@ the boundary model is rejected.
             & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
 \midrule
-     21. &            &            &         & 
+         &            &            &         & 
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
