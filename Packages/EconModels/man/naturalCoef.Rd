@@ -15,6 +15,6 @@ naturalCoef(object, ...)
 the coefficients of the model on a "natural" scale.
 }
 \description{
-A convenience function that returns the \code{naturalCoeffs} attribute of a model object.
+A convenience function that returns the "natural" coefficients of a model object.
 }
 

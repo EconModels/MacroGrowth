@@ -51,7 +51,7 @@ nestMatch <- function( n1, n2 ) {
 
 #' Natural coefficients of a model
 #' 
-#' A convenience function that returns the \code{naturalCoeffs} attribute of a model object.
+#' A convenience function that returns the "natural" coefficients of a model object.
 #' @param object the model object from which you want to extract the \code{meta} attribute.
 #' @param ... additional arguments
 #' @return the coefficients of the model on a "natural" scale.
@@ -546,6 +546,8 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
     logscale= cf["logscale"],
     scale = exp( cf["logscale"] ),
     sse = sum(resid(res)^2),
+    constrained = respectsConstraints(res),
+    sse.constrained = if (respectsConstraints(res)) sse else Inf,
     isConv = TRUE, # always, because we use lm.
     winner = winner,
     lambda = cf["lambda"]
@@ -796,7 +798,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   a_0 <- coef(res)[2]
   a_1 <- coef(res)[3]
   c_t <- a_1 / a_0
-  naturalCoeffs <- data.frame(
+  naturalCoeffs <- data_frame(
     logscale = as.vector(coef(res)[1]),
     scale = exp(as.vector(coef(res)[1])),
     a_0 = as.vector(a_0),
