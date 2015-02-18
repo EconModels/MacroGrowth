@@ -12,6 +12,9 @@ cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
   fitBoundaries = TRUE, ...)
 }
 \arguments{
+\item{formula}{a formula of the form \code{response ~ a + b + c + d + time}.
+\code{c} and \code{d} are optional.}
+
 \item{data}{a data frame, in which to evaluate the formula.}
 
 \item{response}{instead of specifying a formula, expressions for
@@ -64,9 +67,6 @@ Default is \code{TRUE}.}
 
 \item{fitBoundaries}{a logical indicating whether fits should be performed along boundaries.
 Default is \code{TRUE}.}
-
-\item{f}{a formula of the form \code{response ~ a + b + c + d + time}.
-\code{c} and \code{d} are optional.}
 }
 \value{
 a cesEst model with additional information attached as attributes.

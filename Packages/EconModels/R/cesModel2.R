@@ -96,9 +96,9 @@ cesModel <- function(formula, data,
   fNames <- cesParseFormula(formula, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames
-  # yName <- fNames$yName
-  # xNames <- fNames$xNames
-  # tName <- fNames$tName
+  yName <- fNames$yName
+  xNames <- fNames$xNames
+  tName <- fNames$tName
   numFactors <- fNames$numFactors
   
   if ( ! numFactors %in% 2L:3L) {
@@ -253,6 +253,7 @@ cesModel <- function(formula, data,
     attr(res, "formula") <- formula
     if (save.data) { attr(res, "data") <- data }
     attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+    class(res) <- unique(c("cesModel", class(res)))
   }
   return(res)
 }
