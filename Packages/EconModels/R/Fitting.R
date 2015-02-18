@@ -1,4 +1,48 @@
 
+# convert from delta_1 and delta to alpha, beta, gamma in a nest aware way.
+
+standardCoefs <- function (delta_1, delta, nest) {
+  # Calculate some metadata, including gamma. 
+  # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
+  # And that the nest argument provides the actual ordering of the factors of production in the CES model.
+  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) { # (nest == "(kl)"){
+    alpha <- delta_1
+    beta <- 1.0 - delta_1
+    gamma <- 0.0
+  } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
+    alpha <- 1 - delta_1
+    beta <- delta_1
+    gamma <- 0
+  } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
+    alpha <- delta * delta_1
+    beta  <- delta * (1.0 - delta_1)
+    gamma <- 1.0 - delta
+  } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
+    beta <- delta * delta_1
+    gamma <- delta * (1.0 - delta_1)
+    alpha <- 1.0 - delta
+  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
+    alpha <- delta * delta_1
+    gamma <- delta * (1.0 - delta_1)
+    beta <- 1.0 - delta
+  } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
+    beta <- delta * delta_1
+    alpha <- delta * (1.0 - delta_1)
+    gamma <- 1.0 - delta
+  } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
+    gamma <- delta * delta_1
+    beta <- delta * (1.0 - delta_1)
+    alpha <- 1.0 - delta
+  } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
+    gamma <- delta * delta_1
+    alpha <- delta * (1.0 - delta_1)
+    beta <- 1.0 - delta
+  } else {
+    stop(paste("Unknown nest in addMetaData:", deparse(nest)))
+  }
+  return(c(alpha=alpha, beta=beta, gamma=gamma))
+}
+
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
 }
@@ -819,44 +863,10 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
     delta_1 <- naturalCoeffs$delta_1
   }
 
-  # Calculate some metadata, including gamma. 
-  # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
-  # And that the nest argument provides the actual ordering of the factors of production in the CES model.
-  if (missing(nest) || is.na(nest) || nestMatch( nest, 1:2 ) ) { # (nest == "(kl)"){
-    alpha <- delta_1
-    beta <- 1.0 - delta_1
-    gamma <- 0.0
-  } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
-    alpha <- 1 - delta_1
-    beta <- delta_1
-    gamma <- 0
-  } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
-    alpha <- delta * delta_1
-    beta  <- delta * (1.0 - delta_1)
-    gamma <- 1.0 - delta
-  } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
-    beta <- delta * delta_1
-    gamma <- delta * (1.0 - delta_1)
-    alpha <- 1.0 - delta
-  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
-    alpha <- delta * delta_1
-    gamma <- delta * (1.0 - delta_1)
-    beta <- 1.0 - delta
-  } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
-    beta <- delta * delta_1
-    alpha <- delta * (1.0 - delta_1)
-    gamma <- 1.0 - delta
-  } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
-    gamma <- delta * delta_1
-    beta <- delta * (1.0 - delta_1)
-    alpha <- 1.0 - delta
-  } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
-    gamma <- delta * delta_1
-    alpha <- delta * (1.0 - delta_1)
-    beta <- 1.0 - delta
-  } else {
-    stop(paste("Unknown nest:", nestStrParen, "in addMetaData."))
-  }
+  sc <- standardCoefs(delta_1, delta, nest=nest)
+  alpha <- sc$alpha
+  beta <- sc$beta
+  gamma <- sc$beta
   
   # Tell whether a grid search was used.
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
