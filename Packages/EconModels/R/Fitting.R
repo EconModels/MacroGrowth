@@ -54,6 +54,7 @@ nestMatch <- function( n1, n2 ) {
 #' @return the \code{naturalCoeffs} attribute from \code{object}.
 #' @export
 naturalCoef <- function(object) {
+  return(getNatCoef(object))   # trying out computation vs extraction
   if (! "naturalCoeffs" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
   return( attr(object, "naturalCoeffs") )
 }
