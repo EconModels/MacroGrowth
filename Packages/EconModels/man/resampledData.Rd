@@ -9,7 +9,7 @@ resampledData(model, method = c("residual", "resample", "wild", "parametric",
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
-\code{cesModel0}, or \code{sfModel}.  \code{model} must
+\code{cesModel}, or \code{sfModel}.  \code{model} must
 have been fit with \code{save.data = TRUE}.}
 
 \item{method}{One of
