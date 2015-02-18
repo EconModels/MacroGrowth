@@ -51,43 +51,28 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
     plist <- as.list(params) 
     names(plist) <- pnames
     f <- do.call(substitute, list(formula, plist))
-    res <- eval(substitute(lm(f, data=data), list(f=f))) 
+    res <- eval(substitute(lm(f, data=data), list(f=f)))
     res$coefficients <- c(coef(res), params)
     class(res) <- c("plm", class(res))
     res$call <- .ocall
-    res
-  } else {
-    # find optimal params
-    if (TRUE || length(params) < 2 ) {
-      opt_params <- 
-        nlmin( 
-          function(p) {
-            names(p) <- pnames
-            mod <- plm(formula=formula, data=data, params=p, optimize=FALSE)
-            sum(resid(mod)^2)
-          },
-          p = params
-        )$estimate
-    } else {
+    return(res)
+  } else { # find optimal params
     opt_params <- 
-      optim( 
-        par = params,
+      nlmin( 
         function(p) {
           names(p) <- pnames
-          mod <- plm(formula=formula, data=data, params=p, optimize=FALSE)
-          sum(resid(mod)^2)
+          mod <- tryCatch(  
+            plm(formula=formula, data=data, params=p, optimize=FALSE), 
+            error = function(e) {warning(e); return(NULL)}
+          )
+          if(is.null(mod)) Inf else sum(resid(mod)^2)
         },
-        method = "L-BFGS-B",
-        lower = rep(0, length(params)),
-        upper = rep(1, length(params))
-      )$par
-    }
-    
-
+        p = params
+      )$estimate
     names(opt_params) <- pnames
     # return model fit with optimal params
     res <- plm(formula=formula, data=data, params=opt_params, optimize=FALSE, .ocall=.ocall)
-    res
+    return(res)
   }
 }
 
