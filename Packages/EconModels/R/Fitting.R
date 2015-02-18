@@ -536,7 +536,7 @@ cesModel0 <- function(formula, data,
                      digits=6,
                      save.data=TRUE,
                      ...){
-  
+  .Deprecated("cesModel")  
   orig_call <- match.call()
   if ( missing(formula) ) { 
     substitutionList <-  list( response = substitute(response),
