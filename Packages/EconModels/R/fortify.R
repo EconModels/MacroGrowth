@@ -8,8 +8,8 @@
 #' @export
 #' 
 fortify.LINEXmodel <- function(model, data, ...) {
-  if(missing(data)) { data <- attr(model, "data") }
-  formula <- attr(model, "formula")
+  if(missing(data)) { data <- model$data }
+  formula <- model$formula
   data <- model.frame(formula, data)
   if (ncol(data) != 5) {
     stop(paste0('Expected 5 variables; I see ', ncol(data)))

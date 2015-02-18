@@ -65,7 +65,7 @@ cesModel <- function(formula, data,
                       c=NULL,
                       d=NULL,
                       time,
-                      nest=1:4,
+                      nest=1:3,        # change to 1:4 if we support 4-factor models
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 
                       multErr=TRUE,
@@ -100,9 +100,10 @@ cesModel <- function(formula, data,
   xNames <- fNames$xNames
   tName <- fNames$tName
   numFactors <- fNames$numFactors
+  nest <- head(nest, numFactors)
   
   if ( ! numFactors %in% 2L:3L) {
-    stop("cesModel0() only handles models with 2 or 3 variables.")
+    stop("cesModel() only handles models with 2 or 3 variables.")
   }
 
   sdata <- data[ , cesNames ]
@@ -250,9 +251,9 @@ cesModel <- function(formula, data,
     warning("cesModel() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
-    attr(res, "formula") <- formula
-    if (save.data) { attr(res, "data") <- data }
-    attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+    res$formula <- formula
+    if (save.data) { res$data <- data }
+    res$response <- eval( formula[[2]], sdata, parent.frame() )
     class(res) <- unique(c("cesModel", class(res)))
   }
   return(res)

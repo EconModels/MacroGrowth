@@ -128,24 +128,31 @@ yhat.default <- function(object,...) {
   fitted(object,...)
 }
 
+# Note: fitted() returns on the natural scale for cesEst objects but on the log-scale for plm objects,
+# but both return residuals on the log-scale, so this works for both of them.
+#' @export
+yhat.cesModel <- function(object, ...) {
+  object$response / exp(resid(object))
+}
+
 #' @export
 yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
   exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
 #' @export
 yhat.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
 #' @export
 yhat.sfModel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
@@ -169,7 +176,7 @@ response <- function(object, ...) {
 response.default <- function(object, ...) {
   if (inherits( object,  "LINEXmodel" ) ||
         inherits( object, "CDEmodel" ) ) {
-    return( attr(object, "response") )
+    return( object$response )
   }
   return( fitted(object) + resid(object) )
 }
@@ -177,14 +184,14 @@ response.default <- function(object, ...) {
 #' @export
 predict.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
 #' @export
 predict.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), attr(object,'data'))
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
@@ -248,9 +255,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
-  if (save.data) { attr(res, "data") <- sdata }
-  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-  attr(res, "formula") <- formula
+  if (save.data) { res$data <- sdata }
+  res$response <- eval( formula[[2]], sdata, parent.frame() )
+  res$formula <- formula
   
   class(res) <- c("SFmodel", class(res))
   return(res)
@@ -375,13 +382,13 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                               sse = sum(resid(res)^2),
                               isConv = TRUE  # always, because we use lm.
   )
-  attr(res, "naturalCoeffs") <- naturalCoeffs
+  res$formula <- naturalCoeffs
 
   if (save.data) {
-    attr(res, "data") <- sdata
+    res$data <- sdata
   }
-  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-  attr(res, "formula") <- formula
+  res$response <- eval( formula[[2]], sdata, parent.frame() )
+  res$formula <- formula
   
   class(res) <- c("CDEmodel", class(res))
   return(res)
@@ -522,9 +529,9 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   attr(res, "good") <-  sapply( models, respectsConstraints )
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
-  attr(res, "formula") <-  formula
-  if (save.data) { attr(res, "data") <- sdata }
-  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+  res$formula <-  formula
+  if (save.data) { res$data <- sdata }
+  res$response <- eval( formula[[2]], sdata, parent.frame() )
   
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
@@ -768,12 +775,12 @@ cesModel0 <- function(formula, data,
     warning("cesModel0() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
-    attr(res, "formula") <- formula
-    if (save.data) { attr(res, "data") <- data }
-    attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
+    res$formula <- formula
+    if (save.data) { res$data <- data }
+    res$response <- eval( formula[[2]], sdata, parent.frame() )
   }
   
-  class(res) <- c("CESmodel", class(res))
+  class(res) <- c("cesModel", class(res))
   res$ces_call <- res$call
   res$call <- orig_call
   return(res)
@@ -798,9 +805,9 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
     return(model) 
   }
   
-  # cesEst is from the cesEst function. CESmodel comes from constrained fits to CES.
-  if ( ! any( c("cesEst", "CESmodel") %in% class(model) ) ){
-    stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or CESmodel"))
+  # cesEst is from the cesEst function. cesModel comes from constrained fits to CES.
+  if ( ! any( c("cesEst", "cesModel") %in% class(model) ) ){
+    stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or cesModel"))
   }
   
   if (is.null(naturalCoeffs)){
@@ -915,7 +922,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        start.gamma_coef = NA,
                        start.delta = NA,
                        start.rho = NA,
-                       history = as.vector(paste0("boundary[", attr(model, "bmodID"), "]")),
+                       history = as.vector(paste0("boundary[", "]")),   # store type of bondary model?
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
     )
@@ -1005,10 +1012,10 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   if (save.data) {
-    attr(res, "data") <- sdata
+    res$data <- sdata
   }
-  attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
-  attr(res, "formula") <- formula
+  res$response <- eval( formula[[2]], sdata, parent.frame() )
+  res$formula <- formula
   
   class(res) <- c("LINEXmodel", class(res))
   return(res)

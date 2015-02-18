@@ -91,11 +91,11 @@ resampledFits <- function(model,
                    "plm"        = "cesModel"
   )
   
-  formula <- attr(model,"formula")
+  formula <- model$formula
   
   method <- match.arg(method)   # allow multiples?
   if (!missing(seed)) set.seed(seed)
-  data <- attr(model,"data")
+  data <- model$data
   
   baseFitCoeffs <- getNatCoef(model)  # extractAllMetaData(model)
   # Add a method column.
@@ -154,7 +154,7 @@ resampledFits <- function(model,
 #' @export
 resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"), 
                           reindex=FALSE){
-  data <- attr(model, "data")
+  data <- model$data
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")
   }
