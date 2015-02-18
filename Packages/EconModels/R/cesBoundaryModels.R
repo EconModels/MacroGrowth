@@ -165,7 +165,9 @@ cesBoundaryModels <- function(formula, data, nest){
   plmModels <- 
     Map( 
       function(formula, param) { 
-        eval(substitute( plm(formula, data = sdata, param=param), list(formula=formula, param=param)))
+        res <- eval(substitute( plm(formula, data = sdata, param=param), list(formula=formula, param=param)))
+        names(res$coefficients)[1] <- "logscale"
+        res
       }, 
       formulas[keep & plmModel], params[keep & plmModel]
     )
