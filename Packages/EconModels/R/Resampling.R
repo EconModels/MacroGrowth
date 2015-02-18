@@ -32,7 +32,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
     multErr <- all( response(object) / yhat(object) / exp(resid(object)) - 1 < tol )
   }
   method <- match.arg(method)
-  n <- length(fitted(object))
+  n <- length(yhat(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
                              
   if (multErr) {
