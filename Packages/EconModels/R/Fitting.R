@@ -40,7 +40,9 @@ standardCoefs <- function (delta_1=NA, delta=NA, nest=1:2) {
   } else {
     stop(paste("Unknown nest in addMetaData:", deparse(nest)))
   }
-  return(c(alpha=alpha, beta=beta, gamma=gamma))
+  
+  # should this be a list, a named vector, or a data.frame?
+  return(data.frame(alpha=alpha, beta=beta, gamma=gamma))
 }
 
 nestMatch <- function( n1, n2 ) {
