@@ -4,13 +4,15 @@
 \alias{naturalCoef}
 \title{Natural coefficients of a model}
 \usage{
-naturalCoef(object)
+naturalCoef(object, ...)
 }
 \arguments{
 \item{object}{the model object from which you want to extract the \code{meta} attribute.}
+
+\item{...}{additional arguments}
 }
 \value{
-the \code{naturalCoeffs} attribute from \code{object}.
+the coefficients of the model on a "natural" scale.
 }
 \description{
 A convenience function that returns the \code{naturalCoeffs} attribute of a model object.

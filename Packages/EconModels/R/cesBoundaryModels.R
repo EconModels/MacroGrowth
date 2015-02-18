@@ -1,42 +1,4 @@
 
-#' @export
-#' 
-getNatCoef <- function( model ) {
-  coefList <- as.list(coef(model))
-  gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
-  if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
-  if (is.null(gamma_coef)) gamma_coef <- NA
-  lambda = tryCatch(with(coefList, lambda), error=function(e) NA)
-  delta_1 = tryCatch(with(coefList, delta_1), error=function(e) NA)
-  delta = tryCatch(with(coefList, delta), error=function(e) NA)
-  rho_1 = tryCatch(with(coefList, rho_1), error=function(e) NA)
-  sigma_1 = tryCatch(with(coefList, sigma_1), error=function(e) NA)
-  rho = tryCatch(with(coefList, rho), error=function(e) NA)
-  sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
-  sse = sum(resid(model)^2)
-  
-  data_frame( gamma_coef = gamma_coef,
-     lambda = lambda,
-     delta = delta,
-     delta_1 = delta_1,
-     sigma_1 = if (is.na(sigma_1)) 1/(1 + rho_1) else sigma_1,
-     rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
-     sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
-     rho = if (is.na(rho)) 1/sigma - 1 else rho,
-     sse = sse,
-     constrained =
-       (is.na(delta) || (0 <= delta && delta <= 1)) &&
-       (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)) &&
-       (is.na(rho) || rho >= -1) &&
-       (is.na(rho_1) || rho_1 >= -1) 
-       ,
-     sse.constrained =
-       if(constrained) sse else Inf,
-     call = Reduce(paste, gdata::trim(deparse(model$call)))
-  )
-}
-
-    
 #' Fits CES boundary models
 #' 
 #' The boundary models are given in Table 2 of 

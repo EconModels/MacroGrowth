@@ -97,7 +97,7 @@ resampledFits <- function(model,
   if (!missing(seed)) set.seed(seed)
   data <- model$data
   
-  baseFitCoeffs <- getNatCoef(model)  # extractAllMetaData(model)
+  baseFitCoeffs <- naturalCoef(model)  # extractAllMetaData(model)
   # Add a method column.
   baseFitCoeffs$method <- "orig"
   coeffs <- baseFitCoeffs
@@ -110,7 +110,7 @@ resampledFits <- function(model,
     for (i in 1L:n) {
       newData <- resampledData(model, method=method, reindex=reindex)
       newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
-      resampleCoeffs <- getNatCoef(newModel) # extractAllMetaData(newModel)
+      resampleCoeffs <- naturalCoef(newModel) # extractAllMetaData(newModel)
       resampleCoeffs$method <- method
       coeffs <- plyr::rbind.fill(coeffs, resampleCoeffs)
       models[length(models)+1] <- list(newModel)
