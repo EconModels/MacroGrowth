@@ -59,7 +59,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' This function returns a list containing models and coefficients from the resample fits.
 #' 
 #' @param model a model returned from \code{linexModel}, \code{cdModel}, 
-#' \code{cesModel0}, or \code{sfModel}.  \code{model} must
+#' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, \code{"parametric"}, or \code{"debug"}
 #' @param n the number of resamples you want to perform
@@ -83,10 +83,12 @@ resampledFits <- function(model,
                           ...) {
   
   fitfun <- switch(class(model)[1],
-                   "sfModel" = "sfModel",
+                   "sfModel"    = "sfModel",
                    "LINEXmodel" = "linexModel",
-                   "CDEmodel" = "cdModel",
-                   "cesEst" = "cesModel0"
+                   "CDEmodel"   = "cdModel",
+                   "cesEst"     = "cesModel",
+                   "cesModel"   = "cesModel",
+                   "plm"        = "cesModel"
   )
   
   formula <- attr(model,"formula")
@@ -95,7 +97,7 @@ resampledFits <- function(model,
   if (!missing(seed)) set.seed(seed)
   data <- attr(model,"data")
   
-  baseFitCoeffs <- extractAllMetaData(model)
+  baseFitCoeffs <- getNatCoef(model)  # extractAllMetaData(model)
   # Add a method column.
   baseFitCoeffs$method <- "orig"
   coeffs <- baseFitCoeffs
@@ -108,7 +110,7 @@ resampledFits <- function(model,
     for (i in 1L:n) {
       newData <- resampledData(model, method=method, reindex=reindex)
       newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
-      resampleCoeffs <- extractAllMetaData(newModel)
+      resampleCoeffs <- getNatCoef(newModel) # extractAllMetaData(newModel)
       resampleCoeffs$method <- method
       coeffs <- plyr::rbind.fill(coeffs, resampleCoeffs)
       models[length(models)+1] <- list(newModel)
@@ -135,7 +137,7 @@ resampledFits <- function(model,
 #' Create resampled data
 #' 
 #' @param model a model returned from \code{linexModel}, \code{cdModel},
-#' \code{cesModel0}, or \code{sfModel}.  \code{model} must
+#' \code{cesModel}, or \code{sfModel}.  \code{model} must
 #' have been fit with \code{save.data = TRUE}.
 #' @param method One of 
 #'      resample:   resample rows from data. Can result in repeated years.

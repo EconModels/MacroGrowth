@@ -3,7 +3,7 @@
 #' Fitting CES models
 #' 
 #' This function fits a CES model
-#' @param f a formula of the form \code{response ~ a + b + c + d + time}.  
+#' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
 #' \code{c} and \code{d} are optional.
 #' @param data a data frame, in which to evaluate the formula.
 #' @param response instead of specifying a formula, expressions for
@@ -58,7 +58,7 @@
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 #' }
 #' @export
-cesModel <- function(f, data,
+cesModel <- function(formula, data,
                       response,
                       a,
                       b,
@@ -76,7 +76,7 @@ cesModel <- function(f, data,
                       constrained=TRUE,
                       fitBoundaries=TRUE,
                       ...){
-  if ( missing(f) ) { 
+  if ( missing(formula) ) { 
     substitutionList <-  list( response = substitute(response),
                                capital = substitute(a),
                                labor = substitute(b),
@@ -85,20 +85,20 @@ cesModel <- function(f, data,
                                time = substitute(time)
     )
     if (is.null(c) & is.null(d)) {
-      f <- substitute( response ~ capital + labor + time, substitutionList )
+      formula <- substitute( response ~ capital + labor + time, substitutionList )
     } else if (is.null(d)) {
-      f <- substitute( response ~ capital + labor + energy + time, substitutionList )
+      formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
     } else {
-      f <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
+      formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
     }
   }
     
-  fNames <- cesParseFormula(f, nest)
+  fNames <- cesParseFormula(formula, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames
-  yName <- fNames$yName
-  xNames <- fNames$xNames
-  tName <- fNames$tName
+  # yName <- fNames$yName
+  # xNames <- fNames$xNames
+  # tName <- fNames$tName
   numFactors <- fNames$numFactors
   
   if ( ! numFactors %in% 2L:3L) {
@@ -115,7 +115,7 @@ cesModel <- function(f, data,
   
   boundary.models <- 
     if (constrained && fitBoundaries){
-      cesBoundaryModels(f, data=data, nest=nest)
+      cesBoundaryModels(formula, data=data, nest=nest)
     } else {
       list()
     }
@@ -173,7 +173,7 @@ cesModel <- function(f, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, formula=f, nest=nest, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -200,7 +200,7 @@ cesModel <- function(f, data,
     )
     if (! is.null( model ) ) {
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, formula=f, nest=nest, history=hist)
+      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -221,7 +221,7 @@ cesModel <- function(f, data,
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, formula=f, nest=nest, history=hist)
+        model <- addMetaData(model, formula=formula, nest=nest, history=hist)
         cesEst.models[length(cesEst.models)+1] <- list(model)
       },
       error = function(e) {  
@@ -247,12 +247,12 @@ cesModel <- function(f, data,
   res <- bestModel(models, digits=digits, constrained = constrained)
   
   if ( is.null( res ) ) {
-    warning("cesModel0() produced a NULL model.")
+    warning("cesModel() produced a NULL model.")
   } else {
     attr(res, "model.attempts") <- models
-    attr(res, "formula") <- f
+    attr(res, "formula") <- formula
     if (save.data) { attr(res, "data") <- data }
-    attr(res, "response") <- eval( f[[2]], sdata, parent.frame() )
+    attr(res, "response") <- eval( formula[[2]], sdata, parent.frame() )
   }
   return(res)
 }

@@ -4,17 +4,14 @@
 \alias{cesModel}
 \title{Fitting CES models}
 \usage{
-cesModel(f, data, response, a, b, c = NULL, d = NULL, time, nest = 1:4,
-  prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"), multErr = TRUE,
-  rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-  rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
+cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
+  nest = 1:4, prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
+  multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9,
+  -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
   digits = 6, save.data = TRUE, constrained = TRUE,
   fitBoundaries = TRUE, ...)
 }
 \arguments{
-\item{f}{a formula of the form \code{response ~ a + b + c + d + time}.
-\code{c} and \code{d} are optional.}
-
 \item{data}{a data frame, in which to evaluate the formula.}
 
 \item{response}{instead of specifying a formula, expressions for
@@ -67,6 +64,9 @@ Default is \code{TRUE}.}
 
 \item{fitBoundaries}{a logical indicating whether fits should be performed along boundaries.
 Default is \code{TRUE}.}
+
+\item{f}{a formula of the form \code{response ~ a + b + c + d + time}.
+\code{c} and \code{d} are optional.}
 }
 \value{
 a cesEst model with additional information attached as attributes.
