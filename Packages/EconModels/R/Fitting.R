@@ -173,11 +173,19 @@ response <- function(object, ...) {
 }
 
 #' @export
-response.default <- function(object, ...) {
-  if (inherits( object,  "LINEXmodel" ) ||
-        inherits( object, "CDEmodel" ) ) {
+response.LINEXmodel <- function(object, ...)
     return( object$response )
-  }
+
+#' @export
+response.CDEmodel <- function(object, ...)
+    return( object$response )
+
+#' @export
+response.cesModel <- function(object, ...)
+    return( object$response )
+
+#' @export
+response.default <- function(object, ...) {
   return( fitted(object) + resid(object) )
 }
 

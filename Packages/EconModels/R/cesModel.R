@@ -110,8 +110,8 @@ cesModel <- function(formula, data,
   if ( ! any( complete.cases(sdata) ) ) {
     stop("No valid rows of data for your model.")
   }
-  # This ensures that response is the first column.  This is assumed in downstream code.
-  # Why?  Is it still necessary? ---rjp
+  # This ensures that response is the first column.  This is assumed in downstream code
+  # when we save the first column as $response.  This simplifies retrieving it later.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
   
   boundary.models <- 
@@ -253,7 +253,7 @@ cesModel <- function(formula, data,
     attr(res, "model.attempts") <- models
     res$formula <- formula
     if (save.data) { res$data <- data }
-    res$response <- eval( formula[[2]], sdata, parent.frame() )
+    res$response <- sdata[,1] # eval( formula[[2]], sdata, parent.frame() )
     class(res) <- unique(c("cesModel", class(res)))
   }
   return(res)
