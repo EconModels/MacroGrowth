@@ -4,7 +4,7 @@
 \alias{metaData}
 \title{Model metadata}
 \usage{
-metaData(object)
+metaData(object, ...)
 }
 \arguments{
 \item{object}{the model object from which you want to extract the \code{meta} attribute.}
