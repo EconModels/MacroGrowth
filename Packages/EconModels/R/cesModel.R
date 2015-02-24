@@ -255,6 +255,7 @@ cesModel <- function(formula, data,
     res$formula <- formula
     if (save.data) { res$data <- data }
     res$response <- sdata[,1] # eval( formula[[2]], sdata, parent.frame() )
+    res$nest <- nest
     class(res) <- unique(c("cesModel", class(res)))
     if (inherits(res, "plm")) {
       res <- addMetaData(res, naturalCoeffs = makeNatCoef(res, nest=nest), formula=formula, nest=nest)
