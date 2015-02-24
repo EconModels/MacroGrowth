@@ -66,7 +66,7 @@ naturalCoef.default <- function(object, ...) {
 }
 
 #' @export
-naturalCoef.plm <- function(object, ...) {
+naturalCoef.plm <- function(object, nest=nest, ...) {
   makeNatCoef(object, ...)
 }
 
@@ -75,7 +75,7 @@ naturalCoef.cesEst <- function(object, ...) {
   makeNatCoef(object, ...)
 }
   
-makeNatCoef <- function(object, ...) {
+makeNatCoef <- function(object, nest, ...) {
   coefList <- as.list(coef(object))
   gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
@@ -88,6 +88,16 @@ makeNatCoef <- function(object, ...) {
   rho = tryCatch(with(coefList, rho), error=function(e) NA)
   sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
   sse = sum(resid(object)^2)
+  if (!missing(nest)) {
+    sc <- standardCoefs(delta_1, delta, nest=nest)
+    alpha <- sc$alpha
+    beta <- sc$beta
+    gamma <- sc$beta
+  } else {
+    alpha <- NA
+    beta <- NA
+    gamma <- NA
+  }
   
   data_frame( gamma_coef = gamma_coef,
               lambda = lambda,
@@ -97,6 +107,9 @@ makeNatCoef <- function(object, ...) {
               rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
               sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
               rho = if (is.na(rho)) 1/sigma - 1 else rho,
+              alpha = alpha,
+              beta = beta,
+              gamma = gamma,
               sse = sse,
               constrained =
                 (is.na(delta) || (0 <= delta && delta <= 1)) &&
@@ -116,10 +129,21 @@ makeNatCoef <- function(object, ...) {
 #' @param object the model object from which you want to extract the \code{meta} attribute.
 #' @return the \code{meta} attribute from \code{object}.
 #' @export
-metaData <- function(object) {
-  if (! "meta" %in% names(attributes(object)) ) return(as.data.frame(matrix(nrow=1, ncol=0)))
-  return( attr(object, "meta") )
+#' 
+metaData <- function(object, ...) {
+  UseMethod("metaData")
 }
+
+#' @export
+metaData.default <- function(object, ...) {
+  as.data.frame(matrix(nrow=1, ncol=0))
+}
+
+#' @export
+metaData.cesModel <- function(object, ...) {
+  attr(object, "meta") 
+}
+
 
 #' Natural coefficients and metadata for all model attempts
 #' 
@@ -151,9 +175,11 @@ natmetaFrame <- function(object){
 #' @export
 bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
   if (constrained) {
-    o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse.constrained, digits=digits) } ) )
+    o <- order(sapply( models, function(model) { 
+      if (is.null(model)) NA else round(naturalCoef(model)$sse.constrained, digits=digits) } ) )
   } else {
-    o <- order(sapply( models, function(model) { round(naturalCoef(model)$sse, digits=digits) } ) )
+    o <- order(sapply( models, function(model) { 
+      if (is.null(model)) NA else round(naturalCoef(model)$sse, digits=digits) } ) )
   }
   if (orderOnly) return(o)
   models[[ o[1] ]] 
@@ -705,33 +731,27 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
                        iter = as.vector(ifelse(is.list(model$iter), model$iter["function"], model$iter)),
                        grid = grid,
-                       alpha = as.vector(alpha),
-                       beta = as.vector(beta),
-                       gamma = as.vector(gamma),
-                       start.lambda = as.vector(model$start["lambda"]),
-                       start.delta_1 = as.vector(model$start["delta_1"]),
-                       start.rho_1 = as.vector(model$start["rho_1"]),
-                       start.gamma_coef = as.vector(model$start["gamma"]),
-                       start.delta = as.vector(model$start["delta"]),
-                       start.rho = as.vector(model$start["rho"]),
+                       # alpha = as.vector(alpha),
+                       # beta = as.vector(beta),
+                       # gamma = as.vector(gamma),
+                       # start.lambda = as.vector(model$start["lambda"]),
+                       # start.delta_1 = as.vector(model$start["delta_1"]),
+                       # start.rho_1 = as.vector(model$start["rho_1"]),
+                       # start.gamma_coef = as.vector(model$start["gamma"]),
+                       # start.delta = as.vector(model$start["delta"]),
+                       # start.rho = as.vector(model$start["rho"]),
                        history=as.vector(history),
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
     )
-  } else if ("lm" %in% class(model)){
-    metaList <- list(  isConv = TRUE, # lm always converges.
-                       algorithm = as.vector("lm"),
-                       iter = as.vector(0), # lm doesn't iterate.
-                       grid = grid,
-                       alpha = as.vector(alpha),
-                       beta = as.vector(beta),
-                       gamma = as.vector(gamma),
-                       start.lambda = NA,
-                       start.delta_1 = NA,
-                       start.rho_1 = NA, 
-                       start.gamma_coef = NA,
-                       start.delta = NA,
-                       start.rho = NA,
+  } else if ("plm" %in% class(model)){
+    metaList <- list(  isConv = model$converged, 
+                       algorithm = paste("plm", row.names(model$optimization), sep="/", collapse=";"),
+                       iter = paste(model$optimization$niter, collapse=";"),
+                       grid = NA,
+                       # alpha = alpha,
+                       # beta = beta,
+                       # gamma = gamma,
                        history = as.vector(paste0("boundary[", "]")),   # store type of bondary model?
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
