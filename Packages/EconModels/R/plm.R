@@ -32,9 +32,10 @@
 #' class(foo)
 #' }
 
-plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall=NULL, ... ) {
+plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall=NULL, method="nlm", ..., debug=FALSE ) {
   if(is.null(.ocall)) .ocall <- match.call()
  
+  orig_params <- params
   # if no params, just plain old lm with an extra class wrapper 
   if (length(params) < 1) { 
     res <- lm(formula, data=data)
@@ -46,32 +47,62 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
   # if we get here, we have params to deal with
   
   pnames <- names(params)
+  plist <- as.list(params) 
+  names(plist) <- pnames
+  
   if (! optimize) {
     np <- length(params)
-    plist <- as.list(params) 
-    names(plist) <- pnames
-    f <- do.call(substitute, list(formula, plist))
-    res <- eval(substitute(lm(f, data=data), list(f=f)))
-    res$coefficients <- c(coef(res), params)
-    class(res) <- c("plm", class(res))
-    res$call <- .ocall
+    if (debug) print(paste(params, collapse=", "))
+    res <- tryCatch({
+      f <- do.call(substitute, list(formula, plist))
+      res <- eval(substitute(lm(f, data=data), list(f=f, data=data)))
+      res$coefficients <- c(coef(res), params)
+      class(res) <- c("plm", class(res))
+      res$call <- .ocall
+      res
+    }, error=function(e) {warning(e); NULL} 
+    )
     return(res)
   } else { # find optimal params
-    opt_params <- 
-      nlm( 
-        function(p) {
-          names(p) <- pnames
-          mod <- tryCatch(  
-            plm(formula=formula, data=data, params=p, optimize=FALSE), 
-            error = function(e) {warning(e); return(NULL)}
-          )
-          if(is.null(mod)) Inf else sum(resid(mod)^2)
-        },
-        p = params
-      )$estimate
-    names(opt_params) <- pnames
+    start.model <- plm(formula=formula, data=data, params=params, optimize=FALSE) 
+    f <- function(p, nr = nrow(model.frame(start.model))) {
+      names(p) <- pnames
+      mod <- tryCatch(  
+        plm(formula=formula, data=data, params=p, optimize=FALSE), 
+        error = function(e) {
+          warning(e); 
+          NULL
+        }
+      )
+      
+      if(is.null(mod) || nrow(model.frame(mod)) < nr) {
+        res <- 0.001 * .Machine$double.xmax 
+      } else {
+        res <- sum(resid(mod)^2)
+      }
+      
+      if (length(res) != 1L || !is.numeric(res) || !is.finite(res)) {
+        res <- 0.1 * .Machine$double.xmax
+        # print(coef(mod))
+        # cat("\n")
+      }
+      return(res)
+    }
+    opt_out <- optimx::optimx(par = params, fn = f, method = method, ... )
+    opt_params <- as.data.frame(coef(opt_out))   # opt_out$estimate
+                                                 # names(opt_params) <- pnames
+    if (debug) print(opt_params)
+    if (debug) return(opt_out)
     # return model fit with optimal params
-    res <- plm(formula=formula, data=data, params=opt_params, optimize=FALSE, .ocall=.ocall)
+    if (opt_out$convcode == 0) {
+      res <- plm(formula=formula, data=data, params=as.list(opt_params), optimize=FALSE, .ocall=.ocall)
+      res$converged <- TRUE
+    } else {
+      res <- plm(formula=formula, data=data, params=orig_params, optimize=FALSE, .ocall=.ocall)
+      res$converged <- FALSE
+    }
+    res$optimization <- opt_out
+    res$start <- orig_params
     return(res)
   }
 }

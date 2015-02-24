@@ -5,7 +5,7 @@
 \title{Parameterized Linear Models}
 \usage{
 plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
-  .ocall = NULL, ...)
+  .ocall = NULL, method = "nlm", ..., debug = FALSE)
 }
 \arguments{
 \item{formula}{a formula describing the model}
