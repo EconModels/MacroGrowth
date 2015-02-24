@@ -159,7 +159,7 @@ cesBoundaryModels <- function(formula, data, nest){
       sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]], sdata)
       cesModels <- 
         c(cesModels, 
-          list( 
+          list("18" =  
             eval(substitute(
               cesModel(f, data=sdata, nest = c(1,2), constrained=TRUE, fitBoundaries=FALSE),
               list(f = formulaPmin)
