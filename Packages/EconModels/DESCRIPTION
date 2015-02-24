@@ -22,7 +22,7 @@ Imports:
     utils,
     splines,
     mosaic,
-    fastR
+    optimx
 Suggests:
     testthat,
     MASS,
