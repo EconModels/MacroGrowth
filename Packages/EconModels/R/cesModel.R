@@ -232,7 +232,8 @@ cesModel <- function(formula, data,
       )
     }
   }
-  
+ 
+  boundary.models <- Map(function(mod, nm) {mod$bname <- nm; mod}, boundary.models, names(boundary.models)) 
   models <- c(boundary.models, cesEst.models)
   
 # This is not needed if the new version of bestModel() works with constrained = TRUE
