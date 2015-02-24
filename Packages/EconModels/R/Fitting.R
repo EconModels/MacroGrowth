@@ -752,7 +752,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        # alpha = alpha,
                        # beta = beta,
                        # gamma = gamma,
-                       history = as.vector(paste0("boundary[", "]")),   # store type of bondary model?
+                       history = as.vector(paste0("boundary[", model$bname, "]")),   # store type of bondary model?
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
     )
