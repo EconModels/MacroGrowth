@@ -5,7 +5,7 @@ standardCoefs <- function (delta_1=NA, delta=NA, nest=1:2) {
   # Calculate some metadata, including gamma. 
   # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
   # And that the nest argument provides the actual ordering of the factors of production in the CES model.
-  if (is.na(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
+  if (is.na(nest) || is.null(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
     alpha <- delta_1
     beta <- 1.0 - delta_1
     gamma <- 0.0
@@ -66,7 +66,7 @@ naturalCoef.default <- function(object, ...) {
 }
 
 #' @export
-naturalCoef.plm <- function(object, nest=nest, ...) {
+naturalCoef.plm <- function(object, ...) {
   makeNatCoef(object, ...)
 }
 
@@ -75,29 +75,24 @@ naturalCoef.cesEst <- function(object, ...) {
   makeNatCoef(object, ...)
 }
   
-makeNatCoef <- function(object, nest, ...) {
+makeNatCoef <- function(object, nest=object$nest, ...) {
   coefList <- as.list(coef(object))
-  gamma_coef = tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+  gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
   if (is.null(gamma_coef)) gamma_coef <- NA
-  lambda = tryCatch(with(coefList, lambda), error=function(e) NA)
-  delta_1 = tryCatch(with(coefList, delta_1), error=function(e) NA)
-  delta = tryCatch(with(coefList, delta), error=function(e) NA)
-  rho_1 = tryCatch(with(coefList, rho_1), error=function(e) NA)
-  sigma_1 = tryCatch(with(coefList, sigma_1), error=function(e) NA)
-  rho = tryCatch(with(coefList, rho), error=function(e) NA)
-  sigma = tryCatch(with(coefList, sigma), error=function(e) NA)
-  sse = sum(resid(object)^2)
-  if (!missing(nest)) {
-    sc <- standardCoefs(delta_1, delta, nest=nest)
-    alpha <- sc$alpha
-    beta <- sc$beta
-    gamma <- sc$beta
-  } else {
-    alpha <- NA
-    beta <- NA
-    gamma <- NA
-  }
+  lambda <-  tryCatch(with(coefList, lambda), error=function(e) NA)
+  delta_1 <-  tryCatch(with(coefList, delta_1), error=function(e) NA)
+  delta <-  tryCatch(with(coefList, delta), error=function(e) NA)
+  rho_1 <-  tryCatch(with(coefList, rho_1), error=function(e) NA)
+  sigma_1 <-  tryCatch(with(coefList, sigma_1), error=function(e) NA)
+  rho <-  tryCatch(with(coefList, rho), error=function(e) NA)
+  sigma <-  tryCatch(with(coefList, sigma), error=function(e) NA)
+  sse <-  sum(resid(object)^2)
+  if (is.null(nest)) { nest <- 1:3 }
+  sc <- standardCoefs(delta_1, delta, nest=nest)
+  alpha <- sc$alpha
+  beta <- sc$beta
+  gamma <- sc$beta
   
   data_frame( gamma_coef = gamma_coef,
               lambda = lambda,
@@ -109,17 +104,7 @@ makeNatCoef <- function(object, nest, ...) {
               rho = if (is.na(rho)) 1/sigma - 1 else rho,
               alpha = alpha,
               beta = beta,
-              gamma = gamma,
-              sse = sse,
-              constrained =
-                (is.na(delta) || (0 <= delta && delta <= 1)) &&
-                (is.na(delta_1) || (0 <= delta_1 && delta_1 <= 1)) &&
-                (is.na(rho) || rho >= -1) &&
-                (is.na(rho_1) || rho_1 >= -1) 
-              ,
-              sse.constrained =
-                if(constrained) sse else Inf,
-              call = Reduce(paste, gdata::trim(deparse(object$call)))
+              gamma = gamma
   )
 }
 
@@ -144,7 +129,21 @@ metaData.cesModel <- function(object, ...) {
   attr(object, "meta") 
 }
 
-
+sse <- function(object) {
+  sse <- sum(resid(object)^2)
+  coefs <- naturalCoef(object)
+#   call = Reduce(paste, gdata::trim(deparse(object$call))
+  data_frame(
+    sse = sse,
+    constrained =
+      (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
+      (is.na(coefs$delta_1) || (0 <= coefs$delta_1 && coefs$delta_1 <= 1)) &&
+      (is.na(coefs$rho) || coefs$rho >= -1) &&
+      (is.na(coefs$rho_1) || coefs$rho_1 >= -1) ,
+    sse.constrained =
+      if(constrained) sse else Inf
+  )
+}
 #' Natural coefficients and metadata for all model attempts
 #' 
 #' A convenience function that returns a data frame containing both 
@@ -156,9 +155,10 @@ metaData.cesModel <- function(object, ...) {
 #' all model attempts in \code{object}.
 #' @export
 natmetaFrame <- function(object){
-  natc <- plyr::rbind.fill(lapply(attr(mod, "model.attempts"), naturalCoef))
-  meta <- plyr::rbind.fill(lapply(attr(mod, "model.attempts"), metaData))
-  return(cbind(natc, meta))
+  natc <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), naturalCoef))
+  sse  <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), sse))
+  meta <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), metaData))
+  return(cbind(natc, sse, meta))
 }
 
 #' Extracts the best model (least sse) from a list of models
@@ -176,10 +176,10 @@ natmetaFrame <- function(object){
 bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
   if (constrained) {
     o <- order(sapply( models, function(model) { 
-      if (is.null(model)) NA else round(naturalCoef(model)$sse.constrained, digits=digits) } ) )
+      if (is.null(model)) NA else round(sse(model)$sse.constrained, digits=digits) } ) )
   } else {
     o <- order(sapply( models, function(model) { 
-      if (is.null(model)) NA else round(naturalCoef(model)$sse, digits=digits) } ) )
+      if (is.null(model)) NA else round(sse(model)$sse, digits=digits) } ) )
   }
   if (orderOnly) return(o)
   models[[ o[1] ]] 
