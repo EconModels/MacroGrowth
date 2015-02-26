@@ -4,7 +4,7 @@
 #' Numerical optimization is used over these parameters with \code{lm} fitting the rest.
 #' @param formula a formula describing the model
 #' @param data a data frame
-#' @param params the parameters to be fit by numerical optimation outside of \code{lm}.
+#' @param params a named vector of the parameters to be fit by numerical optimation outside of \code{lm}.
 #' @param optimize a logical indicating whether \code{param} should be plugged in or used as the seed
 #'   for the numerical optimization
 #' @param .ocall used for recursive calling
@@ -41,6 +41,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
     res <- lm(formula, data=data)
     class(res) <- c("plm", class(res))
     res$call <- .ocall
+    res$converged <- TRUE
     return(res)
   }
  
@@ -48,7 +49,6 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
   
   pnames <- names(params)
   plist <- as.list(params) 
-  names(plist) <- pnames
   
   if (! optimize) {
     np <- length(params)
@@ -89,13 +89,13 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
       return(res)
     }
     opt_out <- optimx::optimx(par = params, fn = f, method = method, ... )
-    opt_params <- as.data.frame(coef(opt_out))   # opt_out$estimate
-                                                 # names(opt_params) <- pnames
+    npar <- attr(opt_out, "npar")
+    opt_params <- unlist(opt_out[which.min(opt_out$value), seq_len(npar), drop=FALSE])
+    
     if (debug) print(opt_params)
-    if (debug) return(opt_out)
     # return model fit with optimal params
     if (opt_out$convcode == 0) {
-      res <- plm(formula=formula, data=data, params=as.list(opt_params), optimize=FALSE, .ocall=.ocall)
+      res <- plm(formula=formula, data=data, params=opt_params, optimize=FALSE, .ocall=.ocall)
       res$converged <- TRUE
     } else {
       res <- plm(formula=formula, data=data, params=orig_params, optimize=FALSE, .ocall=.ocall)
