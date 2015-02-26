@@ -12,7 +12,7 @@ plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
 
 \item{data}{a data frame}
 
-\item{params}{the parameters to be fit by numerical optimation outside of \code{lm}.}
+\item{params}{a named vector of the parameters to be fit by numerical optimation outside of \code{lm}.}
 
 \item{optimize}{a logical indicating whether \code{param} should be plugged in or used as the seed
 for the numerical optimization}
