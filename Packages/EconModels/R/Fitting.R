@@ -1,49 +1,79 @@
 
 # convert from delta_1 and delta to alpha, beta, gamma in a nest aware way.
 
-standardCoefs <- function (delta_1=NA, delta=NA, nest=1:2) {
-  # Calculate some metadata, including gamma. 
-  # This code assumes that factors of production are given in capital, labor, energy order in any formulas.
-  # And that the nest argument provides the actual ordering of the factors of production in the CES model.
-  if (is.na(nest) || is.null(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
-    alpha <- delta_1
-    beta <- 1.0 - delta_1
-    gamma <- 0.0
-  } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
-    alpha <- 1 - delta_1
-    beta <- delta_1
-    gamma <- 0
-  } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
-    alpha <- delta * delta_1
-    beta  <- delta * (1.0 - delta_1)
-    gamma <- 1.0 - delta
-  } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
-    beta <- delta * delta_1
-    gamma <- delta * (1.0 - delta_1)
-    alpha <- 1.0 - delta
-  } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
-    alpha <- delta * delta_1
-    gamma <- delta * (1.0 - delta_1)
-    beta <- 1.0 - delta
-  } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
-    beta <- delta * delta_1
-    alpha <- delta * (1.0 - delta_1)
-    gamma <- 1.0 - delta
-  } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
-    gamma <- delta * delta_1
-    beta <- delta * (1.0 - delta_1)
-    alpha <- 1.0 - delta
-  } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
-    gamma <- delta * delta_1
-    alpha <- delta * (1.0 - delta_1)
-    beta <- 1.0 - delta
-  } else {
-    stop(paste("Unknown nest in addMetaData:", deparse(nest)))
-  }
+standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=5) {
+  # convert to standard coefficents taking nest order into account
+  # basically we are just permuting things so that alpha, beta, and gamma can always
+  # refer to the same quantities, even when they show up in different parts of the model.
   
-  # should this be a list, a named vector, or a data.frame?
-  return(data.frame(alpha=alpha, beta=beta, gamma=gamma))
+  # when nest is NULL, we make nest be 1:3 
+  if (is.null(nest))  nest <- 1:3
+ 
+  # if delta is NA, set it to 1 or local calculation.  
+  # This collapses the 2-factor case to the 3-factor case and handles cases where delta can't be approximated.
+  ldelta <- if (is.na(delta)) 1 else delta
+  ldelta_1 <- if (!is.na(delta) && round(delta, digits) == 0.0) 0.5 else delta_1
+  
+  # make sure we have exactly 3 slots
+  nest <- head(c(nest,3), 3)
+  if (length(nest) < 3) stop("bad nest")
+  
+  # alternative ways to handle delta = NA
+  # second works well for 2-factor models
+ 
+  res <- 
+    switch(method,
+           "1" =  list(delta * ldelta_1,  delta * (1.0 - ldelta_1), 1.0 - delta),    # NA, NA, NA
+           "2" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - delta),   # delta_1, 1-delta_1, NA
+           "3" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - ldelta)   # delta_1, 1-delta_1, 0
+    )
+  
+  # order() is used to invert the nest permutation
+  res<- res[order(nest)]
+  names(res) <- c("alpha", "beta", "gamma")
+  return(as.data.frame(res))
 }
+   
+# Old code to be deleted once we have established that the new, shorter code does the same job. 
+#   if (is.na(nest) || is.null(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
+#     alpha <- delta_1
+#     beta <- 1.0 - delta_1
+#     gamma <- 0.0
+#   } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
+#     alpha <- 1 - delta_1
+#     beta <- delta_1
+#     gamma <- 0
+#   } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
+#     alpha <- delta * delta_1
+#     beta  <- delta * (1.0 - delta_1)
+#     gamma <- 1.0 - delta
+#   } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
+#     beta <- delta * delta_1
+#     gamma <- delta * (1.0 - delta_1)
+#     alpha <- 1.0 - delta
+#   } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
+#     alpha <- delta * delta_1
+#     gamma <- delta * (1.0 - delta_1)
+#     beta <- 1.0 - delta
+#   } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
+#     beta <- delta * delta_1
+#     alpha <- delta * (1.0 - delta_1)
+#     gamma <- 1.0 - delta
+#   } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
+#     gamma <- delta * delta_1
+#     beta <- delta * (1.0 - delta_1)
+#     alpha <- 1.0 - delta
+#   } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
+#     gamma <- delta * delta_1
+#     alpha <- delta * (1.0 - delta_1)
+#     beta <- 1.0 - delta
+#   } else {
+#     stop(paste("Unknown nest:", deparse(nest)))
+#   }
+#   
+#   # should this be a list, a named vector, or a data.frame?
+#   return(data.frame(alpha=alpha, beta=beta, gamma=gamma))
+# }
 
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
@@ -75,7 +105,7 @@ naturalCoef.cesEst <- function(object, ...) {
   makeNatCoef(object, ...)
 }
   
-makeNatCoef <- function(object, nest=object$nest, ...) {
+makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   coefList <- as.list(coef(object))
   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
@@ -89,10 +119,10 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
   sigma <-  tryCatch(with(coefList, sigma), error=function(e) NA)
   sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
-  sc <- standardCoefs(delta_1, delta, nest=nest)
+  sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest, method=method)
   alpha <- sc$alpha
   beta <- sc$beta
-  gamma <- sc$beta
+  gamma <- sc$gamma
   
   data_frame( gamma_coef = gamma_coef,
               lambda = lambda,
@@ -725,7 +755,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   # But, for now, check the class of the model and react appropriately.
   ##########################################
   # Create the list of meta information.
-  if ("cesEst" %in% class(model)){
+  if (inherits(model, "cesEst")) {
     metaList <- list(  isConv = model$convergence,
                        algorithm = as.vector(model$method),
                        # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
