@@ -30,7 +30,7 @@ standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=
   
   # order() is used to invert the nest permutation
   res<- res[order(nest)]
-  names(res) <- c("alpha", "beta", "gamma")
+  names(res) <- c("alpha_1", "alpha_2", "alpha_3")
   return(as.data.frame(res))
 }
    
@@ -107,6 +107,12 @@ naturalCoef.cesEst <- function(object, ...) {
   
 makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   coefList <- as.list(coef(object))
+  if (inherits(object, "cesEst") && length(coefList) == 4) {
+    names(coefList)[3:4] <- paste0(names(coefList)[3:4], "_1")
+    coefList[["delta"]] <- 1
+    coefList[["sigma"]] <- NA
+    coefList[["rho"]] <- NA
+  }
   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
   if (is.null(gamma_coef)) gamma_coef <- NA
@@ -120,11 +126,11 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
   sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest, method=method)
-  alpha <- sc$alpha
-  beta <- sc$beta
-  gamma <- sc$gamma
+  alpha_1 <- sc$alpha_1
+  alpha_2 <- sc$alpha_2
+  alpha_3 <- sc$alpha_3
   
-  data_frame( gamma_coef = gamma_coef,
+  data_frame( gamma = gamma_coef,
               lambda = lambda,
               delta = delta,
               delta_1 = delta_1,
@@ -132,9 +138,9 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
               rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
               sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
               rho = if (is.na(rho)) 1/sigma - 1 else rho,
-              alpha = alpha,
-              beta = beta,
-              gamma = gamma
+              alpha_1 = alpha_1,
+              alpha_2 = alpha_2,
+              alpha_3 = alpha_3
   )
 }
 
