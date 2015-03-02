@@ -108,7 +108,7 @@ cesBoundaryModels <- function(formula, data, nest){
     "14" = c(delta_1 = 0.5, rho_1 = -1, sigma = 0),
     "17" = c(delta = 0.5, delta_1 = 0.5, rho = 0.25, rho_1 = -1),
     "19" = c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25, rho = -1),
-    "20" = c(delta_1 = 0.4, rho_1=0.35, sigma = 0)
+    "20" = c(delta_1 = 0.5, rho_1=0.25, sigma = 0)
   ) 
   
   
