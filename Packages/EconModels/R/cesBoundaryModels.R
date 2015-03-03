@@ -93,22 +93,22 @@ cesBoundaryModels <- function(formula, data, nest){
   # There may be a better solution, but this will get us going for the moment.
   
   params <- list(
-    "1" = c(delta_1 = 1, delta=1),
-    "2" = c(delta_1 = 0, delta=1),
-    "6" = c(delta = 0),
-    "3" = c(sigma_1 = 0, delta=1),
-    "7" = c(sigma = 0, delta_1 = 1),
-    "8" = c(sigma = 0, delta_1 = 0),
-    "9" = c(sigma = 0, sigma_1 = 0),
-    "4" = c(delta_1 = 0.5, delta = 1, rho_1 = -1),
-    "10" = c(delta = 0.5, delta_1=1, rho = -1),
-    "11" = c(delta = 0.5, delta_1 = 0, rho = -1),
-    "12" = c(delta = 0.5, delta_1 = 0.5, rho_1 = -1, rho = -1),
-    "13" = c(delta = 0.5, sigma_1 = 0,  sigma = 0),
-    "14" = c(delta_1 = 0.5, rho_1 = -1, sigma = 0),
-    "17" = c(delta = 0.5, delta_1 = 0.5, rho = 0.25, rho_1 = -1),
-    "19" = c(delta = 0.5, delta_1 = 0.5, rho_1 = 0.25, rho = -1),
-    "20" = c(delta_1 = 0.5, rho_1=0.25, sigma = 0)
+    "1" =  c(delta_1 = 1,   delta=1),
+    "2" =  c(delta_1 = 0,   delta=1),
+    "6" =  c(delta =   0),
+    "3" =  c(sigma_1 = 0,   delta=1),
+    "7" =  c(sigma =   0,   delta_1 = 1.0),
+    "8" =  c(sigma =   0,   delta_1 = 0.0),
+    "9" =  c(sigma =   0,   sigma_1 = 0.0),
+    "4" =  c(delta_1 = 0.5, delta =   1.0,   rho_1 = -1),
+    "10" = c(delta =   0.5, delta_1=  1.0,     rho = -1),
+    "11" = c(delta =   0.5, delta_1 = 0.0,     rho = -1),
+    "12" = c(delta =   0.5, delta_1 = 0.5,   rho_1 = -1, rho = -1),
+    "13" = c(delta =   0.5, sigma_1 = 0.0,    sigma = 0),
+    "14" = c(delta_1 = 0.5, rho_1 =  -1.0,    sigma = 0),
+    "17" = c(delta =   0.5, delta_1 = 0.5,    rho =   0.25, rho_1 = -1),
+    "19" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = 0.25,   rho = -1),
+    "20" = c(delta_1 = 0.5, rho_1 =   0.25,   sigma = 0.0)
   ) 
   
   
