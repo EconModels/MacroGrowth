@@ -110,7 +110,7 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   if (inherits(object, "cesEst") && length(coefList) == 4) {
     # We disagree with the naming of the coefficients by cesEst when only two factors of production are involved.
     # cesEst calls the coefficients gamma, lambda, delta, and rho.
-    # We prefer delta_1 and rho_1, though.
+    # We prefer gamma, lambda, delta_1 and rho_1, though, because this case provides, essentially, the inner nest.
     # This code appends "_1" to the appropriate names and adds appropriate delta, rho, and sigma values.
     names(coefList)[3:4] <- paste0(names(coefList)[3:4], "_1")
     coefList[["delta"]] <- 1
