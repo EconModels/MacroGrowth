@@ -112,6 +112,10 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
     # cesEst calls the coefficients gamma, lambda, delta, and rho.
     # We prefer gamma, lambda, delta_1 and rho_1, though, because this case provides, essentially, the inner nest.
     # This code appends "_1" to the appropriate names and adds appropriate delta, rho, and sigma values.
+    # We chose to rename the coefficients based on position. 
+    # We could have renamed by name to defend against position changes in cesEst.
+    # But, cesEst could also change names in the future, so there is no clear benefit to renaming by name.
+    # So, we'll stick with renaming by position.
     names(coefList)[3:4] <- paste0(names(coefList)[3:4], "_1")
     coefList[["delta"]] <- 1
     coefList[["sigma"]] <- NA
