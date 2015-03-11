@@ -1562,6 +1562,79 @@ the boundary model is rejected.
   \end{center}
 \end{table}
 
+\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row).} 
+\label{tab:CES_boundary_models_2} 
+  \begin{center}
+    \begin{tabular}{r c c c c l} 
+      \toprule
+      & $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
+      \midrule
+      1. & 1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
+      2. & 0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
+      6. & ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
+      3. & ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
+      7. & 1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
+      8. & 0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
+      9. & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+%
+      4. &             & $\infty$   & 1          & ---        
+            & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
+%
+     10. & 1           & ---        &            & $\infty$        
+            & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
+%
+     11. & 0           & ---        &            & $\infty$        
+            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
+%
+     12. &             & $\infty$   &            & $\infty$        
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\
+%
+     13. & ---         & 0          &            & $\infty$        
+            & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
+%
+     14. &             & $\infty$   & ---        & 0
+            & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
+%
+      5. &             &            & 1          & ---
+            & $y = \gamma A \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}$ \\
+%
+     15. & 1           & ---        &         & 
+            & $y = \gamma A \left[ \delta x_1^{-\rho} 
+                    + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$ \\ 
+%
+     16. & 0           & ---        &            & 
+            & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
+%
+     19. &             &            &            & $\infty$
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}  
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\ 
+%
+     17. &             & $\infty$   &            &
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
+                    + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
+%
+     20. &            &            & ---     & 0
+            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
+%
+     18. & ---         & 0          &            & 
+            & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
+%
+\midrule
+         &            &            &         & 
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
 The model with lowest $sse$ of all above trials 
 is deemed the winning (i.e.,~best) model,
 and its parameters are presented in graphs herein.
