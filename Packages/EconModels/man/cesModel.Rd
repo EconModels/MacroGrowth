@@ -60,7 +60,7 @@ the default values.
 when comparing one fit against another.}
 
 \item{save.data}{a logical indicating whether data is to be saved with the model.
-Be sure to set \code{TRUE} if resampling is needed later.}
+Be sure to set \code{TRUE} if resampling is needed later. Default is \code{TRUE}.}
 
 \item{constrained}{a logical indicating whether the parameters should be constrained in the fitting process.
 Default is \code{TRUE}.}
