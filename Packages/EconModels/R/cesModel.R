@@ -38,7 +38,7 @@
 #' @param digits the number of sse digits that is to be considered significant 
 #' when comparing one fit against another.
 #' @param save.data a logical indicating whether data is to be saved with the model.
-#' Be sure to set \code{TRUE} if resampling is needed later.
+#' Be sure to set \code{TRUE} if resampling is needed later. Default is \code{TRUE}.
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' Default is \code{TRUE}.
 #' @param fitBoundaries a logical indicating whether fits should be performed along boundaries.
