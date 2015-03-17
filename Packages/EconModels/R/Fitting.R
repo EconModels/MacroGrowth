@@ -138,7 +138,7 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   alpha_2 <- sc$alpha_2
   alpha_3 <- sc$alpha_3
   
-  data_frame( gamma = gamma_coef,
+  dplyr::data_frame( gamma = gamma_coef,
               lambda = lambda,
               delta = delta,
               delta_1 = delta_1,
@@ -177,7 +177,7 @@ sse <- function(object) {
   sse <- sum(resid(object)^2)
   coefs <- naturalCoef(object)
 #   call = Reduce(paste, gdata::trim(deparse(object$call))
-  data_frame(
+  dplyr::data_frame(
     sse = sse,
     constrained =
       (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
@@ -874,7 +874,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   a_0 <- coef(res)[2]
   a_1 <- coef(res)[3]
   c_t <- a_1 / a_0
-  naturalCoeffs <- data_frame(
+  naturalCoeffs <- dplyr::data_frame(
     logscale = as.vector(coef(res)[1]),
     scale = exp(as.vector(coef(res)[1])),
     a_0 = as.vector(a_0),
