@@ -501,7 +501,8 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                               sse = sum(resid(res)^2),
                               isConv = TRUE  # always, because we use lm.
   )
-  res$formula <- naturalCoeffs
+  res$naturalCoefficients <- naturalCoeffs
+  attr(res, "naturalCoeffs") <- naturalCoeffs
 
   if (save.data) {
     res$data <- sdata
@@ -646,7 +647,8 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
                                  "7" = 1,
                                  0 )
   
-  attr(res, "naturalCoeffs") <- naturalCoeffs
+  attr(res, "naturalCoeffs") <- naturalCoeffs[1,]
+  res$naturalCoefficients <- naturalCoeffs[1,]
   attr(res, "good") <-  sapply( models, respectsConstraints )
   attr(res, "sse") <-  sse
   attr(res, "winner") <-  winner
@@ -809,6 +811,7 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
     }
   }
   attr(model, "naturalCoeffs") <- naturalCoeffs[1,]
+  model$naturalCoefficients <- naturalCoeffs[1,]
   attr(model, "meta") <- metaData[1,] 
   
   return(model)
@@ -873,6 +876,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
     isConv = TRUE # Always, because we're fitting with lm.
   )
   attr(res, "naturalCoeffs") <- naturalCoeffs
+  res$naturalCoefficients <- naturalCoeffs
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iK","iL","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(formula))
