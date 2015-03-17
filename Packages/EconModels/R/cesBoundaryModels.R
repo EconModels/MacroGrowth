@@ -89,7 +89,7 @@ cesBoundaryModels <- function(formula, data, nest){
   # will leave them alone.  
   # But nlm() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
   # set sigma or sigma_1 to 0 instead of rho or rho_1 to Inf.  
-  # This will cost some effort down stream to recover the rho values.  See getNatCoefs.
+  # This will cost some effort down stream to recover the rho values.  See makeNatCoef.
   # There may be a better solution, but this will get us going for the moment.
   
   params <- list(
