@@ -1489,8 +1489,7 @@ with $\delta~=~1$, $\sigma$~unknowable, and $x_3$~absent.
 If the fitted parameters in a boundary model violate constraints, 
 the boundary model is rejected.
 
-\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row).} 
-\label{tab:CES_boundary_models} 
+\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row). ORIGINAL.  **** DELETE EVENTUALLY ****} 
   \begin{center}
     \begin{tabular}{r c c c c l} 
       \toprule
@@ -1562,8 +1561,8 @@ the boundary model is rejected.
   \end{center}
 \end{table}
 
-\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row).} 
-\label{tab:CES_boundary_models_2} 
+\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row). 
+                       Re-ordered, but with original model numbers. **** DELETE EVENTUALLY ****}
   \begin{center}
     \begin{tabular}{r c c c c l} 
       \toprule
@@ -1572,10 +1571,10 @@ the boundary model is rejected.
       1. & 1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
       2. & 0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
       6. & ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
+      \midrule
       3. & ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
       7. & 1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
       8. & 0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
-      9. & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
 %
       4. &             & $\infty$   & 1          & ---        
             & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
@@ -1585,16 +1584,6 @@ the boundary model is rejected.
 %
      11. & 0           & ---        &            & $\infty$        
             & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
-%
-     12. &             & $\infty$   &            & $\infty$        
-            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
-                    + \left( 1 - \delta \right) x_3  \right\}$ \\
-%
-     13. & ---         & 0          &            & $\infty$        
-            & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
-%
-     14. &             & $\infty$   & ---        & 0
-            & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
 %
       5. &             &            & 1          & ---
             & $y = \gamma A \left[ \delta_1 x_1^{-\rho_1} 
@@ -1606,6 +1595,26 @@ the boundary model is rejected.
 %
      16. & 0           & ---        &            & 
             & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
+      \midrule
+      9. & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+%
+     13. & ---         & 0          &            & $\infty$        
+            & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
+%
+     14. &             & $\infty$   & ---        & 0
+            & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
+%
+     12. &             & $\infty$   &            & $\infty$        
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\
+%
+     18. & ---         & 0          &            & 
+            & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
+%
+     20. &            &            & ---     & 0
+            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
 %
      19. &             &            &            & $\infty$
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
@@ -1616,15 +1625,80 @@ the boundary model is rejected.
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
                     + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
+\midrule
+         &            &            &         & 
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/\rho_1}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row).} 
+\label{tab:CES_boundary_models} 
+  \begin{center}
+    \begin{tabular}{r c c c c l} 
+      \toprule
+      & $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
+      \midrule
+      1. & 1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
+      2. & 0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
+      3. & ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
+      \midrule
+      4. & ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
+      5. & 1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
+      6. & 0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
 %
-     20. &            &            & ---     & 0
-            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
-                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
+      7. &             & $\infty$   & 1          & ---        
+            & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
 %
-     18. & ---         & 0          &            & 
+      8. & 1           & ---        &            & $\infty$        
+            & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
+%
+      9. & 0           & ---        &            & $\infty$        
+            & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
+%
+     10. &             &            & 1          & ---
+            & $y = \gamma A \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}$ \\
+%
+     11. & 1           & ---        &         & 
+            & $y = \gamma A \left[ \delta x_1^{-\rho} 
+                    + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$ \\ 
+%
+     12. & 0           & ---        &            & 
+            & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
+      \midrule
+     13. & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+%
+     14. & ---         & 0          &            & $\infty$        
+            & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
+%
+     15. &             & $\infty$   & ---        & 0
+            & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
+%
+     16. &             & $\infty$   &            & $\infty$        
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\
+%
+     17. & ---         & 0          &            & 
             & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
 %
+     18. &            &            & ---     & 0
+            & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
+%
+     19. &             &            &            & $\infty$
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}  
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\ 
+%
+     20. &             & $\infty$   &            &
+            & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
+                    + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
 \midrule
          &            &            &         & 
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
