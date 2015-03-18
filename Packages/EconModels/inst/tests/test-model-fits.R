@@ -22,12 +22,12 @@ test_that("cdModel() without energy fits are correct", {
                        save.data = TRUE)
   # We should obtain scale = 1, because every data point should be fit exactly.
   # We should obtain gamma = 0, because there is no energy.
-  expect_equivalent(naturalCoef(modelFree)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, alpha, beta, gamma, lambda) )
   # Switch K and L in the formula to see if the results change appropriately
   modelFree2 <- cdModel(fitGDPnoe ~ iL + iK + iYear, data = testData, constrained = FALSE, 
                         save.data = TRUE)
-  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, beta, alpha, gamma, lambda) )
   
   # Hit the constraint of alpha < 0, beta > 1.
@@ -37,7 +37,7 @@ test_that("cdModel() without energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 0 instead of -0.1.
-  expect_equivalent(naturalCoef(modelConstrained)[, c("alpha", "beta", "gamma"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelConstrained)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], 
                     list(0, 1, gamma))
   
   # Hit the constraint of beta < 0, alpha > 1.
@@ -48,7 +48,7 @@ test_that("cdModel() without energy fits are correct", {
   
   modelConstrainedbeta <- cdModel(fitGDPnoebeta ~ iK + iL + iYear, data = testData, 
                                   constrained = TRUE, save.data = TRUE)
-  expect_equivalent(naturalCoef(modelConstrainedbeta)[, c("alpha", "beta", "gamma"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelConstrainedbeta)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], 
                     list(1, 0, gamma))
 })
 
@@ -70,7 +70,7 @@ test_that("cdModel() without energy is correct at edges", {
                        save.data = TRUE)
   # We should obtain scale = 1, because every data point should be fit exactly.
   # We should obtain gamma = 0, because there is no energy.
-  expect_equivalent(naturalCoef(modelFree_alpha1)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree_alpha1)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, alpha, beta, gamma, lambda) )
   
   # Now switch alpha and beta.
@@ -87,7 +87,7 @@ test_that("cdModel() without energy is correct at edges", {
                               save.data = TRUE)
   # We should obtain scale = 1, because every data point should be fit exactly.
   # We should obtain gamma = 0, because there is no energy.
-  expect_equivalent(naturalCoef(modelFree_beta1)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree_beta1)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, alpha, beta, gamma, lambda) )
 })
 
@@ -112,11 +112,11 @@ test_that("cdModel() with energy fits are correct", {
   modelFree3 <- cdModel(fitGDPe ~ iL + iU + iK + iYear, data = testData, 
                         constrained = FALSE, save.data = TRUE)
   # We should obtain scale = 1, because every data point should be fit exactly.
-  expect_equivalent(naturalCoef(modelFree1)[, c("scale","alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree1)[, c("scale","alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, alpha, beta, gamma, lambda) )
-  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, gamma, alpha, beta, lambda) )
-  expect_equivalent(naturalCoef(modelFree3)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+  expect_equivalent(naturalCoef(modelFree3)[, c("scale", "alpha_1", "alpha_2", "alpha_3", "lambda"), drop=TRUE], 
                     list(1, beta, gamma, alpha, lambda) )
   
   # alpha < 0
@@ -131,9 +131,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 0 instead of -0.1.
-  expect_equal(naturalCoef(modelAlpha0)[, "alpha", drop=TRUE], 0)
+  expect_equal(naturalCoef(modelAlpha0)[, "alpha_1", drop=TRUE], 0)
   # beta and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelAlpha0)[, c("beta", "gamma")]), 1)
+  expect_equal(sum(naturalCoef(modelAlpha0)[, c("alpha_2", "alpha_3")]), 1)
   
   # beta < 0
   alpha <- 0.3
@@ -147,9 +147,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # beta will be 0 instead of -0.2.
-  expect_equal(naturalCoef(modelBeta0)[, "beta", drop=TRUE], 0)
+  expect_equal(naturalCoef(modelBeta0)[, "alpha_2", drop=TRUE], 0)
   # alpha and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelBeta0)[, c("alpha", "gamma")]), 1)
+  expect_equal(sum(naturalCoef(modelBeta0)[, c("alpha_1", "alpha_3")]), 1)
   
   # gamma < 0
   alpha <- 0.3
@@ -163,9 +163,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # beta will be 0 instead of -0.2.
-  expect_equal(naturalCoef(modelGamma0)[, "gamma", drop=TRUE], 0)
+  expect_equal(naturalCoef(modelGamma0)[, "alpha_3", drop=TRUE], 0)
   # alpha and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelGamma0)[, c("alpha", "beta")]), 1)
+  expect_equal(sum(naturalCoef(modelGamma0)[, c("alpha_1", "alpha_2")]), 1)
   
   # alpha = 1
   alpha <- 1.2
@@ -180,7 +180,7 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 1 instead of 1.1.
-  expect_equivalent(naturalCoef(modelAlpha1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(1, 0, 0) )
+  expect_equivalent(naturalCoef(modelAlpha1)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], list(1, 0, 0) )
   
   # beta = 1
   alpha <- -0.1
@@ -194,7 +194,7 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 1 instead of 1.1.
-  expect_equivalent(naturalCoef(modelBeta1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(0, 1, 0) )
+  expect_equivalent(naturalCoef(modelBeta1)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], list(0, 1, 0) )
   
   # gamma = 1
   alpha <- -0.1
@@ -207,7 +207,7 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 1 instead of 1.1.
-  expect_equivalent(naturalCoef(modelGamma1)[, c("alpha", "beta", "gamma"), drop=TRUE], list(0, 0, 1) )
+  expect_equivalent(naturalCoef(modelGamma1)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], list(0, 0, 1) )
 })
 
 test_that("linexModel() fits are correct", {

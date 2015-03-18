@@ -1,9 +1,9 @@
 
-# convert from delta_1 and delta to alpha, beta, gamma in a nest aware way.
+# convert from delta_1 and delta to alpha_i in a nest aware way.
 
 standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=5) {
   # convert to standard coefficents taking nest order into account
-  # basically we are just permuting things so that alpha, beta, and gamma can always
+  # basically we are just permuting things so that alpha_i can always
   # refer to the same quantities, even when they show up in different parts of the model.
   
   # when nest is NULL, we make nest be 1:3 
@@ -33,47 +33,6 @@ standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=
   names(res) <- c("alpha_1", "alpha_2", "alpha_3")
   return(as.data.frame(res))
 }
-   
-# Old code to be deleted once we have established that the new, shorter code does the same job. 
-#   if (is.na(nest) || is.null(nest) || nestMatch(nest, 1:2) ) { # (nest == "(kl)"){
-#     alpha <- delta_1
-#     beta <- 1.0 - delta_1
-#     gamma <- 0.0
-#   } else if (nestMatch(nest, c(2, 1))){ # (nest == "(lk)"){
-#     alpha <- 1 - delta_1
-#     beta <- delta_1
-#     gamma <- 0
-#   } else if ( nestMatch(nest, 1:3) ) { # (nest == "(kl)e"){
-#     alpha <- delta * delta_1
-#     beta  <- delta * (1.0 - delta_1)
-#     gamma <- 1.0 - delta
-#   } else if ( nestMatch(nest, c(2,3,1) ) ) { # (nest == "(le)k"){
-#     beta <- delta * delta_1
-#     gamma <- delta * (1.0 - delta_1)
-#     alpha <- 1.0 - delta
-#   } else if ( nestMatch(nest, c(1,3,2) ) ) { # (nest == "(ke)l"){
-#     alpha <- delta * delta_1
-#     gamma <- delta * (1.0 - delta_1)
-#     beta <- 1.0 - delta
-#   } else if ( nestMatch(nest, c(2,1,3) ) ) { # (nest == "(lk)e"){
-#     beta <- delta * delta_1
-#     alpha <- delta * (1.0 - delta_1)
-#     gamma <- 1.0 - delta
-#   } else if ( nestMatch(nest, c(3,2,1) ) ) { # (nest == "(el)k"){
-#     gamma <- delta * delta_1
-#     beta <- delta * (1.0 - delta_1)
-#     alpha <- 1.0 - delta
-#   } else if ( nestMatch(nest, c(3,1,2) ) ) { # (nest == "(ek)l"){
-#     gamma <- delta * delta_1
-#     alpha <- delta * (1.0 - delta_1)
-#     beta <- 1.0 - delta
-#   } else {
-#     stop(paste("Unknown nest:", deparse(nest)))
-#   }
-#   
-#   # should this be a list, a named vector, or a data.frame?
-#   return(data.frame(alpha=alpha, beta=beta, gamma=gamma))
-# }
 
 nestMatch <- function( n1, n2 ) {
   (length(n1) == length(n2)) && all(n1==n2)
@@ -94,6 +53,26 @@ naturalCoef <- function(object, ...) {
 naturalCoef.default <- function(object, ...) {
   attr(object, "naturalCoeffs") 
 }
+
+#' @export
+naturalCoef.CDEmodel <- function(object, ...) {
+  
+  leftCoef <- c(3,2,3,3,1,2,3)[object$winner]
+  cf <- coef(object)[c("alpha_1", "alpha_2", "alpha_3")]
+  names(cf) <-  c("alpha_1", "alpha_2", "alpha_3")
+  cf[is.na(cf)] <- 0
+  cf[leftCoef] <- 1 - sum(cf)
+  
+  dplyr::data_frame(
+    lambda = coef(object)["lambda"],
+    logscale = coef(object)["logscale"],
+    scale = exp(logscale),
+    alpha_1 = cf["alpha_1"],
+    alpha_2 = cf["alpha_2"],
+    alpha_3 = cf["alpha_3"]
+  )
+}
+
 
 #' @export
 naturalCoef.LINEXmodel <- function( object, ...) {
@@ -414,6 +393,31 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
   }
 }
 
+CDformulas <- list( 
+  log(y) - log(energy) ~ 
+    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  
+  
+  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,
+  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,
+  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,
+  
+  log(y) - log(capital) ~ time,
+  log(y) - log(labor)  ~ time,
+  log(y) - log(energy) ~ time 
+)
+
+CDcoefNames <- list( 
+  c("logscale",  "alpha_1", "alpha_2", "lambda"),
+  
+  c("logscale", "alpha_1", "lambda"),
+  c("logscale", "alpha_1", "lambda"),
+  c("logscale", "alpha_2", "lambda"),
+  
+  c("logscale", "lambda"),
+  c("logscale", "lambda"),
+  c("logscale", "lambda")
+)
+
 #' Fitting Cobb-Douglas Models
 #' 
 #' @param formala a formual of the form \code{response ~ capital + labor + time}
@@ -443,12 +447,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   sdata <- subset(data, select=all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
-  
-  formulas <- list(
-    log(y) - log(labor) ~ I(log(capital) - log(labor)) + time,
-    log(y) - log(labor) ~ time,
-    log(y) - log(capital) ~ time  
-    )
+  formulas <- CDformulas[c(2,5,6)]  # just the ones involving 2 of the 3 factors
   
   formulas <- lapply( formulas,
                       function(x) do.call(substitute, 
@@ -461,39 +460,25 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                                           )
                       )
   )
-  # res <- lm(formulas[[1]], data=sdata)
   res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[1]])))
-  # Build the additional object to add as an atrribute to the output
-  # could try this, but it is a hack.
-  # model$coefficients <- c(m$cofficients, 1 - m$coeffcients[3]) 
-  names(res$coefficients) <- c( "logscale",  "alpha", "lambda")
-  alpha <- coef(res)["alpha"]
+  res$winner <- 2
+  names(res$coefficients) <- CDcoefNames[[2]]
+  alpha_1 <- coef(res)["alpha_1"]
   if (constrained){
-    if (alpha < 0.0 || alpha > 1.0){
-      # Need to adjust alpha, because we are beyond 0.0 or 1.0
-      if (alpha < 0.0){
-        alpha <- 0.0
+    if (alpha_1 < 0.0 || alpha_1 > 1.0){
+      # Need to adjust alpha_1, because we are beyond 0.0 or 1.0
+      if (alpha_1 < 0.0){
+        alpha_1 <- 0.0
         res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
+        res$winner <- 6
       } else {
-        alpha <- 1.0
+        alpha_1 <- 1.0
         res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
+        res$winner <- 7
       }
-      # Refit for lambda only
       names(res$coefficients) <- c("logscale", "lambda")
     }
   }
-  naturalCoeffs <- data.frame(lambda = as.vector(coef(res)["lambda"]),
-                              logscale = as.vector(coef(res)["logscale"]),
-                              scale = exp(as.vector(coef(res)["logscale"])),
-                              alpha = as.vector(alpha),
-                              beta = as.vector(1.0 - alpha),
-                              gamma = 0.0, # Energy is not a factor for this model.
-                              sse = sum(resid(res)^2),
-                              isConv = TRUE  # always, because we use lm.
-  )
-  res$naturalCoefficients <- naturalCoeffs
-  attr(res, "naturalCoeffs") <- naturalCoeffs
-
   if (save.data) {
     res$data <- sdata
   }
@@ -506,11 +491,11 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
 
 respectsConstraints <- function( model ) {
   # Tells whether we're fitting within the constraints for a Cobb-Douglas model.
-  # This assumes that the model has coefficients named alpha/beta/gamma or that 
+  # This assumes that the model has coefficients named alpha_i or that 
   # the paramters of interest are all but the first (intercept) and last (time).
   cf <- coef(model)
-  if (any(c("alpha","beta","gamma") %in% names(cf) ) ) {
-    cf <- cf[ names(cf) %in% c("alpha", "beta", "gamma") ]
+  if (any(c("alpha_1","alpha_2","alpha_3") %in% names(cf) ) ) {
+    cf <- cf[ names(cf) %in% c("alpha_1", "alpha_2", "alpha_3") ]
   } else {
     # get rid of first and last (intercept and time)
     cf <- tail(head(cf,-1), -1) 
@@ -555,20 +540,8 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
-  formulas <- list( 
-    log(y) - log(energy) ~ 
-      I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  
-    
-    log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,
-    log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,
-    log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,
-    
-    log(y) - log(capital) ~ time,
-    log(y) - log(labor)  ~ time,
-    log(y) - log(energy) ~ time 
-  )
   
-  formulas <- lapply(formulas, function(x) do.call( substitute, list( x,  list(
+  formulas <- lapply(CDformulas, function(x) do.call( substitute, list( x,  list(
     time = formula[[3]][[3]],
     energy = formula[[3]][[2]][[3]],
     labor = formula[[3]][[2]][[2]][[3]],
@@ -577,17 +550,6 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   ) 
   ) ) )
   
-  coefNames <- list( 
-    c("logscale",  "alpha", "beta", "lambda"),
-    
-    c("logscale", "alpha", "lambda"),
-    c("logscale", "beta", "lambda"),
-    c("logscale", "alpha", "lambda"),
-    
-    c("logscale", "lambda"),
-    c("logscale", "lambda"),
-    c("logscale", "lambda")
-  )
   models <- lapply( formulas, function(form)
     eval(substitute(lm(f, data=sdata), list(f=form)))  
   )
@@ -600,51 +562,12 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   }
   winner <- which.min( sse * good )
   res <- models[[winner]]
-  names( res$coefficients ) <- coefNames[[winner]]
-  
-  # Build the additional object to add as an atrribute to the output
-  cf <- coef(res)
-  naturalCoeffs <- data.frame(
-    logscale= cf["logscale"],
-    scale = exp( cf["logscale"] ),
-    sse = sum(resid(res)^2),
-    constrained = respectsConstraints(res),
-    sse.constrained = if (respectsConstraints(res)) sse else Inf,
-    isConv = TRUE, # always, because we use lm.
-    winner = winner,
-    lambda = cf["lambda"]
-  )
-  naturalCoeffs$alpha <- switch( as.character(winner), 
-                                 "1" = cf['alpha'],
-                                 "2" = cf['alpha'],
-                                 "4" = cf['alpha'],
-                                 "5" = 1,
-                                 0
-  ) 
-  
-  naturalCoeffs$beta <- switch( as.character(winner),
-                                "1" = cf['beta'],
-                                "3" = cf['beta'],
-                                "4" = 1 - cf['alpha'],
-                                "6" = 1,
-                                0 )
-  
-  
-  naturalCoeffs$gamma <- switch( as.character(winner),
-                                 "1" = 1 - cf['alpha'] - cf['beta'],
-                                 "2" = 1 - cf['alpha'],
-                                 "3" = 1 - cf['beta'],
-                                 "7" = 1,
-                                 0 )
-  
-  attr(res, "naturalCoeffs") <- naturalCoeffs[1,]
-  res$naturalCoefficients <- naturalCoeffs[1,]
-  attr(res, "good") <-  sapply( models, respectsConstraints )
-  attr(res, "sse") <-  sse
-  attr(res, "winner") <-  winner
+  names( res$coefficients ) <- CDcoefNames[[winner]]
+  res$winner <- winner
   res$formula <-  formula
-  if (save.data) { res$data <- sdata }
+  attr(res, "good") <-  sapply( models, respectsConstraints )
   res$response <- eval( formula[[2]], sdata, parent.frame() )
+  if (save.data) { res$data <- sdata }
   
   class(res) <- c( "CDEmodel", class(res) )
   return(res)
