@@ -693,72 +693,8 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
   }
   
   if (is.null(naturalCoeffs)){
-    # Need to calculate naturalCoeffs, because they weren't supplied.
-    
-    # We may be arriving here with a model that was estimated wihthout energy.
-    # If that is the case, we will have only rho and sigma parameters, not
-    # rho_1 and delta_1 parameters. 
-    # Test for the without energy model.
-    withoutEnergy <- is.na(coef(model)["rho_1"]) || is.na(coef(model)["delta_1"])
-
-    if (withoutEnergy){
-      # The coefficient representing the split between k and l 
-      # is given by delta in the model. But, in our calculations, 
-      # we're defining the split between k and l and delta_1.
-      # So, reassign here.
-      delta_1 <- coef(model)["delta"]
-      # The without-energy model has delta <- 1
-      delta <- 1
-      # The coefficient representing the substitutability between k and l
-      # is given by rho in the model argument. But, in our calculations,
-      # we're defining that substitutability as rho_1.
-      # So, reassign here.
-      rho_1 <- coef(model)["rho"]
-      # In the no-energy situation, we have no way of knowing the value of rho.
-      # So, assign the value of rho to be NA.
-      rho <- NA
-    } else {
-      # This is the with-energy situation. Things are more straightforward.
-      # delta_1 and sigma_1 are for the inner nest.
-      # delta and rho are for the outer nest.
-      delta_1 <- coef(model)["delta_1"]
-      delta <- coef(model)["delta"]
-      rho_1 <- coef(model)["rho_1"]
-      rho <- coef(model)["rho"]
-    }
-    naturalCoeffs <- data.frame(# Variable name collision alert: there is a gamma coefficient
-                                # in the CES model (gamma_coef) and a gamma calculated 
-                                # from the delta values.
-                                # gamma_coef is the coefficient in the CES model. It should be near 1.0.
-                                # gamma is calculated from the delta values in the model.
-                                # gamma is analogous to the gamma exponent on energy in the Cobb-Douglas model.
-                                # And, gamma is the required name of the variable to be plotted with the ternary 
-                                # plot function standardTriPlot.  
-                                # (standardTriPlot assumes that one variable 
-                                # is named "gamma", and it plots that variable.)  
-                                # gamma_coef is in the naturalCoeffs attribute.
-                                # gamma is in the meta attribute.
-                                gamma_coef = as.vector(coef(model)["gamma"]),
-                                lambda = as.vector(coef(model)["lambda"]),
-                                delta_1 = as.vector(delta_1),
-                                delta = as.vector(delta),
-                                sigma_1 = as.vector(1 / (1 + rho_1)),
-                                rho_1 = as.vector(rho_1),
-                                sigma = as.vector(1 / (1 + rho)),
-                                rho = as.vector(rho),
-                                sse = sum(resid(model)^2)
-    )    
-  } else{
-    # naturalCoeffs was supplied. Use it for delta and delta_1. 
-    # These values will be used below for calculating alpha, beta, and gamma.
-    delta <- naturalCoeffs$delta
-    delta_1 <- naturalCoeffs$delta_1
+    naturalCoeffs <- naturalCoef(model)
   }
-
-  sc <- standardCoefs(delta_1, delta, nest=nest)
-  alpha <- sc$alpha
-  beta <- sc$beta
-  gamma <- sc$beta
   
   # Tell whether a grid search was used.
   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
@@ -777,15 +713,6 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
                        iter = as.vector(ifelse(is.list(model$iter), model$iter["function"], model$iter)),
                        grid = grid,
-                       # alpha = as.vector(alpha),
-                       # beta = as.vector(beta),
-                       # gamma = as.vector(gamma),
-                       # start.lambda = as.vector(model$start["lambda"]),
-                       # start.delta_1 = as.vector(model$start["delta_1"]),
-                       # start.rho_1 = as.vector(model$start["rho_1"]),
-                       # start.gamma_coef = as.vector(model$start["gamma"]),
-                       # start.delta = as.vector(model$start["delta"]),
-                       # start.rho = as.vector(model$start["rho"]),
                        history=as.vector(history),
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
@@ -795,9 +722,6 @@ addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
                        algorithm = paste("plm", row.names(model$optimization), sep="/", collapse=";"),
                        iter = paste(model$optimization$niter, collapse=";"),
                        grid = NA,
-                       # alpha = alpha,
-                       # beta = beta,
-                       # gamma = gamma,
                        history = as.vector(paste0("boundary[", model$bname, "]")),   # store type of bondary model?
                        nestStr = fNames$nestStr,
                        nestStrParen = fNames$nestStrParen
