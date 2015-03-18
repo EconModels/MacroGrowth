@@ -15,6 +15,7 @@ Imports:
     scales,
     car,
     mosaic,
+    dplyr,
     xtable,
     nlmrt,
     Hmisc,
@@ -27,7 +28,8 @@ Suggests:
     testthat,
     MASS,
     EconData,
-    knitr
+    knitr,
+    magrittr
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>

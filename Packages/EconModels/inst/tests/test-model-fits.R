@@ -1,6 +1,9 @@
 
 context('Testing Model Fits')
 
+library(dplyr)
+library(magrittr)
+
 test_that("cdModel() without energy fits are correct", {
   
   # Use the US factors of production from the Calvin source
