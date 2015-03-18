@@ -1443,10 +1443,11 @@ $\delta$~=~0~or~1,
 $\sigma_1$~=~0~or~$\infty$, and
 $\sigma$~=~0~or~$\infty$.
 Table~\ref{tab:CES_boundary_models} shows the set 
-of 20 degenerate equations found along parameter boundaries~(rows~1--20).
-Row~21 of Table~\ref{tab:CES_boundary_models} shows the generic three-factor CES equation,
+of 20 degenerate equations found along parameter boundaries~(rows~1--20),
 wherein factors of production ($x_1$,~$x_2$,~$x_3$) 
 are permutations of ($k$,~$l$,~$e$).
+The bottom (unnumbered) row of Table~\ref{tab:CES_boundary_models} 
+shows the generic three-factor CES equation.
 Each degenerate equation provides a boundary model.
 Note that many boundary parameter combinations 
 yield equivalent CES boundary models,%
@@ -1461,13 +1462,13 @@ so there are far fewer than the maximum possible number of degenerate equations~
   which gives $3^4 = 81$ possible boundary models.
   }
 Boundary models obtained when $\delta_1$ or $\delta$ is at an extreme value
-are straightforward to derive from row~21 of Table~\ref{tab:CES_boundary_models}.
+are straightforward to derive from the bottom row of Table~\ref{tab:CES_boundary_models}.
 When $\sigma_1$ or $\sigma$ is 0, 
 factors of production are perfect complements,
 and the Leontief model applies.%
   \footnote{
   E.g., when $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
-  $y = \gamma A \min (x_1, x_2)$, row 3 in Table~\ref{tab:CES_boundary_models}.
+  $y = \gamma A \min (x_1, x_2)$, row 4 in Table~\ref{tab:CES_boundary_models}.
   }
 When $\sigma_1$ or $\sigma$ is $\infty$, 
 factors of production are perfect substitutes,
@@ -1475,17 +1476,13 @@ and the linear model applies.%
   \footnote{
   E.g., when $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
   $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$,
-  row 4 in Table~\ref{tab:CES_boundary_models}.
+  row 7 in Table~\ref{tab:CES_boundary_models}.
   }
 In the parameter columns of Table~\ref{tab:CES_boundary_models}, 
 ``---'' indicates that a parameter is unknowable on that boundary
 (because it does not appear in the boundary model), and
 an empty space indicates that the parameter 
 can be estimated on that boundary using the degenerate equation.
-The top portion of Table~\ref{tab:CES_boundary_models} shows 
-two-parameter CES boundary models
-(similar to the CES model without energy in Equation~\ref{eq:CES})
-with $\delta~=~1$, $\sigma$~unknowable, and $x_3$~absent.
 If the fitted parameters in a boundary model violate constraints, 
 the boundary model is rejected.
 
@@ -1713,12 +1710,11 @@ The model with lowest $sse$ of all above trials
 is deemed the winning (i.e.,~best) model,
 and its parameters are presented in graphs herein.
 In special cases, two boundary models will be equivalent.
-For example, boundary model~3 is identical to boundary model~1~(2)
+For example, boundary model~4 is identical to boundary model~1~(2)
 if $x_1$ is always less than (greater than) $x_2$ for all years.
 If two or more models have the same $sse$ (to six digits), 
 the model with the lowest row number in Table~\ref{tab:CES_boundary_models} 
-is deemed the winning model,
-thereby ensuring that the simpler model is selected.
+is deemed the winning model.
 
 **** Edit the next paragraphs after we finalize the appearance
 of the distribution graphs. 
