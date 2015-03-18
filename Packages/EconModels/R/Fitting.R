@@ -152,27 +152,14 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   )
 }
 
-#' Model metadata
+#' Compute SSE from a model object
 #' 
-#' A convenience function that returns the \code{meta} attribute of a model object.
-#' @param object the model object from which you want to extract the \code{meta} attribute.
-#' @return the \code{meta} attribute from \code{object}.
+#' Compute SSE from a model object and also check that certain constraints are met
+#' by the coefficients.
+#' 
+#' @param object a model object
+#' 
 #' @export
-#' 
-# metaData <- function(object, ...) {
-#   UseMethod("metaData")
-# }
-# 
-# #' @export
-# metaData.default <- function(object, ...) {
-#   as.data.frame(matrix(nrow=1, ncol=0))
-# }
-# 
-# #' @export
-# metaData.cesModel <- function(object, ...) {
-#   attr(object, "meta") 
-# }
-
 sse <- function(object) {
   sse <- sum(resid(object)^2)
   coefs <- naturalCoef(object)

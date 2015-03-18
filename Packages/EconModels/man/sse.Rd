@@ -2,17 +2,15 @@
 % Please edit documentation in R/Fitting.R
 \name{sse}
 \alias{sse}
-\title{Model metadata}
+\title{Compute SSE from a model object}
 \usage{
 sse(object)
 }
 \arguments{
-\item{object}{the model object from which you want to extract the \code{meta} attribute.}
-}
-\value{
-the \code{meta} attribute from \code{object}.
+\item{object}{a model object}
 }
 \description{
-A convenience function that returns the \code{meta} attribute of a model object.
+Compute SSE from a model object and also check that certain constraints are met
+by the coefficients.
 }
 
