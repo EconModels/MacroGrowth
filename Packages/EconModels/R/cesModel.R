@@ -174,7 +174,11 @@ cesModel <- function(formula, data,
     }
     if (! is.null(model) ) {
       hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+      naturalCoeffs <- naturalCoef(model)
+      model$naturalCoefficients <- naturalCoeffs
+      attr(model, "naturalCoeffs") <- naturalCoeffs
+      attr(model, "hist")  <-  hist
+#       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -200,8 +204,12 @@ cesModel <- function(formula, data,
     }
     )
     if (! is.null( model ) ) {
+#       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+      naturalCoeffs <- naturalCoef(model)
+      model$naturalCoefficients <- naturalCoeffs
+      attr(model, "naturalCoeffs") <- naturalCoeffs
+      attr(model, "hist")  <-  hist
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -222,7 +230,11 @@ cesModel <- function(formula, data,
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+        naturalCoeffs <- naturalCoef(model)
+        model$naturalCoefficients <- naturalCoeffs
+        attr(model, "naturalCoeffs") <- naturalCoeffs
+        attr(model, "hist")  <-  hist
+#         model <- addMetaData(model, formula=formula, nest=nest, history=hist)
         cesEst.models[length(cesEst.models)+1] <- list(model)
       },
       error = function(e) {  
@@ -261,7 +273,11 @@ cesModel <- function(formula, data,
 #      names(res$coefficients)[3:4] <- paste(names(res$coefficients)[3:4],"_1") 
 #    }
     if (inherits(res, "plm")) {
-      res <- addMetaData(res, naturalCoeffs = makeNatCoef(res, nest=nest), formula=formula, nest=nest)
+#       res <- addMetaData(res, naturalCoeffs = makeNatCoef(res, nest=nest), formula=formula, nest=nest)
+      naturalCoeffs <- naturalCoef(res)
+      res$naturalCoefficients <- naturalCoeffs
+      attr(model, "naturalCoeffs") <- naturalCoeffs
+      attr(model, "hist") <- hist
     }
   }
   return(res)

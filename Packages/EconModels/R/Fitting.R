@@ -159,19 +159,19 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
 #' @return the \code{meta} attribute from \code{object}.
 #' @export
 #' 
-metaData <- function(object, ...) {
-  UseMethod("metaData")
-}
-
-#' @export
-metaData.default <- function(object, ...) {
-  as.data.frame(matrix(nrow=1, ncol=0))
-}
-
-#' @export
-metaData.cesModel <- function(object, ...) {
-  attr(object, "meta") 
-}
+# metaData <- function(object, ...) {
+#   UseMethod("metaData")
+# }
+# 
+# #' @export
+# metaData.default <- function(object, ...) {
+#   as.data.frame(matrix(nrow=1, ncol=0))
+# }
+# 
+# #' @export
+# metaData.cesModel <- function(object, ...) {
+#   attr(object, "meta") 
+# }
 
 sse <- function(object) {
   sse <- sum(resid(object)^2)
@@ -187,22 +187,6 @@ sse <- function(object) {
     sse.constrained =
       if(constrained) sse else Inf
   )
-}
-#' Natural coefficients and metadata for all model attempts
-#' 
-#' A convenience function that returns a data frame containing both 
-#' \code{naturalCoeffs} and \code{meta} attributes for all model attempts 
-#' stored in the \code{model.attempts} attribute of \code{object}.
-#' @param object the model object from which you want to extract
-#' information from all model attempts.
-#' @return a data frame containing the \code{naturalCoeffs} and \code{meta} attributes from
-#' all model attempts in \code{object}.
-#' @export
-natmetaFrame <- function(object){
-  natc <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), naturalCoef))
-  sse  <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), sse))
-  meta <- plyr::rbind.fill(lapply(attr(object, "model.attempts"), metaData))
-  return(cbind(natc, sse, meta))
 }
 
 #' Extracts the best model (least sse) from a list of models
@@ -682,72 +666,72 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
 #' The calculated \code{naturalCoeffs} object will be added to the model.
 #' @return \code{model} with two additional attributes, \code{naturalCoeffs} and \code{meta}.
 #' 
-addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
-  if (is.null(model)){
-    return(model) 
-  }
-  
-  # cesEst is from the cesEst function. cesModel comes from constrained fits to CES.
-  if ( ! any( c("cesEst", "cesModel") %in% class(model) ) ){
-    stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or cesModel"))
-  }
-  
-  if (is.null(naturalCoeffs)){
-    naturalCoeffs <- naturalCoef(model)
-  }
-  
+# addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
+#   if (is.null(model)){
+#     return(model) 
+#   }
+#   
+#   # cesEst is from the cesEst function. cesModel comes from constrained fits to CES.
+#   if ( ! any( c("cesEst", "cesModel") %in% class(model) ) ){
+#     stop(paste0("Unsupported model class: " , class(model) , ". model must be NULL, cesEst, or cesModel"))
+#   }
+#   
+#   if (is.null(naturalCoeffs)){
+#     naturalCoeffs <- naturalCoef(model)
+#   }
+#   
   # Tell whether a grid search was used.
-  grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
+#   grid <- length( intersect(c("rho", "rho1"), names(model$call) ) ) > 0
   
   # Get the nest information
-  fNames <- cesParseFormula(formula, nest)
+#   fNames <- cesParseFormula(formula, nest)
 
   ##########################################
   # There is probably a better way to do this.
   # But, for now, check the class of the model and react appropriately.
   ##########################################
   # Create the list of meta information.
-  if (inherits(model, "cesEst")) {
-    metaList <- list(  isConv = model$convergence,
-                       algorithm = as.vector(model$method),
-                       # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
-                       iter = as.vector(ifelse(is.list(model$iter), model$iter["function"], model$iter)),
-                       grid = grid,
-                       history=as.vector(history),
-                       nestStr = fNames$nestStr,
-                       nestStrParen = fNames$nestStrParen
-    )
-  } else if ("plm" %in% class(model)){
-    metaList <- list(  isConv = model$converged, 
-                       algorithm = paste("plm", row.names(model$optimization), sep="/", collapse=";"),
-                       iter = paste(model$optimization$niter, collapse=";"),
-                       grid = NA,
-                       history = as.vector(paste0("boundary[", model$bname, "]")),   # store type of bondary model?
-                       nestStr = fNames$nestStr,
-                       nestStrParen = fNames$nestStrParen
-    )
-  } else {
-    stop(paste("Unknown model class", class(model), "in addMetaData."))
-  }
-  
-  # Boundary models may come in here with NULL items. Convert NULL to NA before creating the data.frame.
-  metaList <- replace(metaList, unlist(lapply(metaList, is.null)), NA)
-  metaData <- data.frame(metaList)
-  
-  if ( nrow(metaData) > 1 ) {
-    warning( paste0("\nmetaData has ", nrow(metaData), " rows: ", paste(metaList$nestStr,history, sep="|")) )
-    for (item in metaList) { 
-      if ( length(item) > 1 ) {
-        warning(paste0("\t", toString(item)))
-      }
-    }
-  }
-  attr(model, "naturalCoeffs") <- naturalCoeffs[1,]
-  model$naturalCoefficients <- naturalCoeffs[1,]
-  attr(model, "meta") <- metaData[1,] 
-  
-  return(model)
-}
+#   if (inherits(model, "cesEst")) {
+#     metaList <- list(  isConv = model$convergence,
+#                        algorithm = as.vector(model$method),
+#                        # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
+#                        iter = as.vector(ifelse(is.list(model$iter), model$iter["function"], model$iter)),
+#                        grid = grid,
+#                        history=as.vector(history),
+#                        nestStr = fNames$nestStr,
+#                        nestStrParen = fNames$nestStrParen
+#     )
+#   } else if ("plm" %in% class(model)){
+#     metaList <- list(  isConv = model$converged, 
+#                        algorithm = paste("plm", row.names(model$optimization), sep="/", collapse=";"),
+#                        iter = paste(model$optimization$niter, collapse=";"),
+#                        grid = NA,
+#                        history = as.vector(paste0("boundary[", model$bname, "]")),   # store type of bondary model?
+#                        nestStr = fNames$nestStr,
+#                        nestStrParen = fNames$nestStrParen
+#     )
+#   } else {
+#     stop(paste("Unknown model class", class(model), "in addMetaData."))
+#   }
+#   
+#   # Boundary models may come in here with NULL items. Convert NULL to NA before creating the data.frame.
+#   metaList <- replace(metaList, unlist(lapply(metaList, is.null)), NA)
+#   metaData <- data.frame(metaList)
+#   
+#   if ( nrow(metaData) > 1 ) {
+#     warning( paste0("\nmetaData has ", nrow(metaData), " rows: ", paste(metaList$nestStr,history, sep="|")) )
+#     for (item in metaList) { 
+#       if ( length(item) > 1 ) {
+#         warning(paste0("\t", toString(item)))
+#       }
+#     }
+#   }
+#   attr(model, "naturalCoeffs") <- naturalCoeffs[1,]
+#   model$naturalCoefficients <- naturalCoeffs[1,]
+# #   attr(model, "meta") <- metaData[1,] 
+#   
+#   return(model)
+# }
 
 
 #' Fitting LINEX models
