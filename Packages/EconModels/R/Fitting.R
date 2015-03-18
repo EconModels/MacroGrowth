@@ -776,14 +776,9 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   
   res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
   
-
-  #  sdata <- subset(data, 
-  #                  select= c( "iGDP","iEToFit","iK","iL","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
-  if (save.data) {
-    res$data <- sdata
-  }
+  if (save.data) { res$data <- sdata }
   res$response <- eval( formula[[2]], sdata, parent.frame() )
   res$formula <- formula
   
