@@ -90,31 +90,29 @@ test_that("cdModel() without energy is correct at edges", {
 
 test_that("cdModel() with energy fits are correct", {
   
-  # Use the US factors of production from the Calvin source
-  testData <- subset(EconData::Calvin, Country=="US")  
-  
   # Cobb-Douglas with energy
   alpha <- -0.1
   beta <- 0.8
   gamma <- 0.3
   lambda <- 0.02
-  testData <- transform(testData,
-                        fitGDPe = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma)
   
-  
-  # Fit without constraints
-  modelFree <- cdModel(fitGDPe ~ iK + iL + iU + iYear, data = testData, constrained = FALSE, 
+  testData <- 
+    EconData::Calvin %>% 
+    filter(Country=="US") %>% 
+    mutate( fitGDPe = exp(lambda * iYear) * iK^alpha * iL^beta * iU^gamma )
+      
+  # Fit without constraints with 3 permutations o inputs
+  modelFree1 <- cdModel(fitGDPe ~ iK + iL + iU + iYear, data = testData, constrained = FALSE, 
                        save.data = TRUE)
-  # We should obtain scale = 1, because every data point should be fit exactly.
-  expect_equivalent(naturalCoef(modelFree)[, c("scale","alpha", "beta", "gamma", "lambda"), drop=TRUE], 
-                    list(1, alpha, beta, gamma, lambda) )
-  # Permute K, L, and E in the formula to see if the results change appropriately
   modelFree2 <- cdModel(fitGDPe ~ iU + iK + iL + iYear, data = testData, 
                         constrained = FALSE, save.data = TRUE)
-  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
-                    list(1, gamma, alpha, beta, lambda) )
   modelFree3 <- cdModel(fitGDPe ~ iL + iU + iK + iYear, data = testData, 
                         constrained = FALSE, save.data = TRUE)
+  # We should obtain scale = 1, because every data point should be fit exactly.
+  expect_equivalent(naturalCoef(modelFree1)[, c("scale","alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+                    list(1, alpha, beta, gamma, lambda) )
+  expect_equivalent(naturalCoef(modelFree2)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
+                    list(1, gamma, alpha, beta, lambda) )
   expect_equivalent(naturalCoef(modelFree3)[, c("scale", "alpha", "beta", "gamma", "lambda"), drop=TRUE], 
                     list(1, beta, gamma, alpha, lambda) )
   
