@@ -96,6 +96,17 @@ naturalCoef.default <- function(object, ...) {
 }
 
 #' @export
+naturalCoef.LINEXmodel <- function( object, ...) {
+  dplyr::data_frame(
+    logscale = coef(object)[1],
+    scale = exp(logscale),
+    a_0 = coef(object)[2],
+    a_1 = coef(object)[3],
+    c_t = a_1 / a_0
+  )
+}
+
+#' @export
 naturalCoef.plm <- function(object, ...) {
   makeNatCoef(object, ...)
 }
@@ -765,21 +776,7 @@ linexModel <- function(formula, data, response, capital, labor, energy, time, sa
   
   res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
   
-  # Build the additional object to add as an atrribute to the output
-  a_0 <- coef(res)[2]
-  a_1 <- coef(res)[3]
-  c_t <- a_1 / a_0
-  naturalCoeffs <- dplyr::data_frame(
-    logscale = as.vector(coef(res)[1]),
-    scale = exp(as.vector(coef(res)[1])),
-    a_0 = as.vector(a_0),
-    a_1 = as.vector(a_1),
-    c_t = as.vector(c_t),
-    sse = as.vector(sum(resid(res)^2)),
-    isConv = TRUE # Always, because we're fitting with lm.
-  )
-  attr(res, "naturalCoeffs") <- naturalCoeffs
-  res$naturalCoefficients <- naturalCoeffs
+
   #  sdata <- subset(data, 
   #                  select= c( "iGDP","iEToFit","iK","iL","rho_k","rho_l"))
   sdata <- subset(data, select = all.vars(formula))
