@@ -218,3 +218,42 @@ extractEnergyType <- function(x, eTypes=energyTypes, sep="+"){
   }
   return(eType)
 }
+
+#' Natural coefficients and other metadata for all model attempts
+#' 
+#' A convenience function that returns a data frame containing 
+#' \code{naturalCoeffs} and additional metadata for all model attempts 
+#' stored in the \code{model.attempts} attribute of \code{object}.
+#' @param object the model object from which you want to extract
+#' information from all model attempts.
+#' @return a data frame containing the \code{naturalCoeffs} and other metadata from
+#' all model attempts in \code{object}.
+#' @export
+natmetaFrame <- function(object){
+  attempts <- attr(object, "model.attempts")
+  out <- plyr::rbind.fill(lapply(attempts, naturalCoef))  
+  out$sse <- lapply(attempts, function(attempt){sum(resid(object)^2)})
+  out$iter <- lapply(attempts, function(attempt){
+    # If there is no iter member, probably didn't require iteration.
+    if (is.null(attempt$iter)){
+      return(0)
+    }
+    # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
+    ifelse(is.list(attempt$iter), attempt$iter["function"], attempt$iter)
+  })
+  histList <- lapply(attempts, function(attempt){
+    hist <- attr(attempt, "hist")
+    if (is.null(hist)){
+      return(NA)
+    } else {
+      return(hist)
+    }
+  }
+  )
+  out$hist <- histList
+  out$nestStr <- parseFactorString(factorString(object$formula))$nestStr
+  out$nestStrParen <- parseFactorString(factorString(object$formula))$nestStrParen
+  # Extract formulas here. Would be nice to grab the actual formulat that was fitted for each attempt.
+#   out$formula <- Reduce(paste, deparse(object$formula))
+  return(out)
+}
