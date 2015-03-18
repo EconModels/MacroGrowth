@@ -7,7 +7,10 @@
 sse(object)
 }
 \arguments{
-\item{object}{a model object}
+\item{object}{a model object that inherits from \code{cesModel}.}
+}
+\value{
+a data frame with with variables \code{sse}, \code{constrained}, \code{sse.contrained}.
 }
 \description{
 Compute SSE from a model object and also check that certain constraints are met

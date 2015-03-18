@@ -157,9 +157,9 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
 #' Compute SSE from a model object and also check that certain constraints are met
 #' by the coefficients.
 #' 
-#' @param object a model object
+#' @param object a model object that inherits from \code{cesModel}.
+#' @return a data frame with with variables \code{sse}, \code{constrained}, \code{sse.contrained}.
 #' 
-#' @export
 sse <- function(object) {
   sse <- sum(resid(object)^2)
   coefs <- naturalCoef(object)
