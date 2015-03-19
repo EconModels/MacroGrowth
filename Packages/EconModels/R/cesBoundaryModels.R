@@ -175,7 +175,7 @@ cesBoundaryModels <- function(formula, data, nest){
     )
   }
  
-  o <-  order( substr(names(formulaTemplates), 4,5) )
+  o <-  order( substr(names(formulaTemplates[keep]), 4,5) )
   return( c(plmModels, cesModels)[o] )
 }
 
