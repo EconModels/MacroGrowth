@@ -11,11 +11,7 @@ factorsForModel <- function(modelType) {
 
 #' @export
 getHistory <- function(model) {
-  #####################
-  # Extracts history from a model
-  ##
-  out <- metaData(model)$history
-  return(out)
+  model$history
 }
 
 

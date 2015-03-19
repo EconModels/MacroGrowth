@@ -177,7 +177,7 @@ cesModel <- function(formula, data,
       naturalCoeffs <- naturalCoef(model)
       model$naturalCoefficients <- naturalCoeffs
       attr(model, "naturalCoeffs") <- naturalCoeffs
-      attr(model, "hist")  <-  hist
+      model$history <- hist
 #       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
@@ -206,10 +206,10 @@ cesModel <- function(formula, data,
     if (! is.null( model ) ) {
 #       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
       hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      naturalCoeffs <- naturalCoef(model)
-      model$naturalCoefficients <- naturalCoeffs
-      attr(model, "naturalCoeffs") <- naturalCoeffs
-      attr(model, "hist")  <-  hist
+      # naturalCoeffs <- naturalCoef(model)
+      # model$naturalCoefficients <- naturalCoeffs
+      # attr(model, "naturalCoeffs") <- naturalCoeffs
+      model$history <- hist
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -233,7 +233,7 @@ cesModel <- function(formula, data,
         naturalCoeffs <- naturalCoef(model)
         model$naturalCoefficients <- naturalCoeffs
         attr(model, "naturalCoeffs") <- naturalCoeffs
-        attr(model, "hist")  <-  hist
+        model$history <- hist
 #         model <- addMetaData(model, formula=formula, nest=nest, history=hist)
         cesEst.models[length(cesEst.models)+1] <- list(model)
       },
@@ -277,7 +277,7 @@ cesModel <- function(formula, data,
       naturalCoeffs <- naturalCoef(res)
       res$naturalCoefficients <- naturalCoeffs
       attr(model, "naturalCoeffs") <- naturalCoeffs
-      attr(model, "hist") <- hist
+      model$history <- hist
     }
   }
   return(res)
