@@ -2,13 +2,13 @@
 % Please edit documentation in R/Fitting.R
 \name{linexModel}
 \alias{linexModel}
-\title{Add meta data to model object.}
+\title{Fitting LINEX models}
 \usage{
 linexModel(formula, data, response, capital, labor, energy, time,
   save.data = TRUE)
 }
 \arguments{
-\item{formula}{the original CES formula. Assumed to be of the form \code{y ~ k + l + e + t}.}
+\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
 
 \item{data}{a data frame in which \code{formula} is evaluated}
 
@@ -26,29 +26,8 @@ the components can be specified individually.}
 
 \item{time}{instead of specifying a formula, expressions for
 the components can be specified individually.}
-
-\item{model}{the model to which metadata is to be added.}
-
-\item{nest}{the nesting for a CES model. Assumed to be of the form \code{c(1,2,3,4)}.}
-
-\item{naturalCoeffs}{the \code{naturalCoeffs} object to be added as metadata.}
-
-\item{history}{the fitting history to be attached to the meta attribute.}
-
-\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
-}
-\value{
-\code{model} with two additional attributes, \code{naturalCoeffs} and \code{meta}.
-
-Fitting LINEX models
 }
 \description{
-This function adds metadata (\code{naturalCoeffs} and \code{meta}) to a model.
-Currently this is designed to work with CES models only.
-}
-\note{
-If no \code{naturalCoeffs} argument is specified,
-an attempt will be made to calculate a \code{naturalCoeffs} object.
-The calculated \code{naturalCoeffs} object will be added to the model.
+Fitting LINEX models
 }
 
