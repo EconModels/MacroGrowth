@@ -243,9 +243,6 @@ cesModel <- function(formula, data,
     res$response <- sdata[,1] # eval( formula[[2]], sdata, parent.frame() )
     res$nest <- nest
     class(res) <- unique(c("cesModel", class(res)))
-    # if (inherits(res, "plm")) {
-    #   model$history <- hist
-    # }
   }
   return(res)
 }
