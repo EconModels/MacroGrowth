@@ -173,12 +173,7 @@ cesModel <- function(formula, data,
       )
     }
     if (! is.null(model) ) {
-      hist <- paste(algorithm, "(grid)", sep="", collapse="|")  
-      naturalCoeffs <- naturalCoef(model)
-      model$naturalCoefficients <- naturalCoeffs
-      attr(model, "naturalCoeffs") <- naturalCoeffs
-      model$history <- hist
-#       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+      model$history <- paste(algorithm, "(grid)", sep="", collapse="|")  
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -204,12 +199,7 @@ cesModel <- function(formula, data,
     }
     )
     if (! is.null( model ) ) {
-#       model <- addMetaData(model, formula=formula, nest=nest, history=hist)
-      hist <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
-      # naturalCoeffs <- naturalCoef(model)
-      # model$naturalCoefficients <- naturalCoeffs
-      # attr(model, "naturalCoeffs") <- naturalCoeffs
-      model$history <- hist
+      model$history <- paste(algorithm, "[", getHistory(bestMod), "]", collapse="|", sep="")
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -229,12 +219,7 @@ cesModel <- function(formula, data,
                   ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
           ))
         # If there's a problem during fitting, we avoid adding model to models.
-        hist <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
-        naturalCoeffs <- naturalCoef(model)
-        model$naturalCoefficients <- naturalCoeffs
-        attr(model, "naturalCoeffs") <- naturalCoeffs
-        model$history <- hist
-#         model <- addMetaData(model, formula=formula, nest=nest, history=hist)
+        model$history <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         cesEst.models[length(cesEst.models)+1] <- list(model)
       },
       error = function(e) {  
@@ -247,17 +232,6 @@ cesModel <- function(formula, data,
  
   boundary.models <- Map(function(mod, nm) {mod$bname <- nm; mod}, boundary.models, names(boundary.models)) 
   models <- c(boundary.models, cesEst.models)
-  
-# This is not needed if the new version of bestModel() works with constrained = TRUE
-#   if (constrained){
-#     # Keep only those models that meet constraints for the economically meaningful region.
-#     validModels <- models[sapply(models, withinConstraints)]
-#     res <- bestModel(validModels)
-#   } else {
-#     # We're fitting unconstrained. Take the best of all possible models.
-#     res <- bestModel(models, digits=digits)
-#   }
-
   res <- bestModel(models, digits=digits, constrained = constrained)
   
   if ( is.null( res ) ) {
@@ -269,16 +243,9 @@ cesModel <- function(formula, data,
     res$response <- sdata[,1] # eval( formula[[2]], sdata, parent.frame() )
     res$nest <- nest
     class(res) <- unique(c("cesModel", class(res)))
-#    if (inherits(res, "cesEst") && length(res$coefficients) == 4) {
-#      names(res$coefficients)[3:4] <- paste(names(res$coefficients)[3:4],"_1") 
-#    }
-    if (inherits(res, "plm")) {
-#       res <- addMetaData(res, naturalCoeffs = makeNatCoef(res, nest=nest), formula=formula, nest=nest)
-      naturalCoeffs <- naturalCoef(res)
-      res$naturalCoefficients <- naturalCoeffs
-      attr(model, "naturalCoeffs") <- naturalCoeffs
-      model$history <- hist
-    }
+    # if (inherits(res, "plm")) {
+    #   model$history <- hist
+    # }
   }
   return(res)
 }
