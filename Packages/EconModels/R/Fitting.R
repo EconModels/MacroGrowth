@@ -581,20 +581,20 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   return(res)
 }
 
-#' Add meta data to model object.
-#'
-#' This function adds metadata (\code{naturalCoeffs} and \code{meta}) to a model.  
-#' Currently this is designed to work with CES models only. 
-#' @param model the model to which metadata is to be added.
-#' @param formula the original CES formula. Assumed to be of the form \code{y ~ k + l + e + t}.
-#' @param nest the nesting for a CES model. Assumed to be of the form \code{c(1,2,3,4)}.
-#' @param naturalCoeffs the \code{naturalCoeffs} object to be added as metadata.
-#' @param history the fitting history to be attached to the meta attribute.
-#' @note If no \code{naturalCoeffs} argument is specified, 
-#' an attempt will be made to calculate a \code{naturalCoeffs} object. 
-#' The calculated \code{naturalCoeffs} object will be added to the model.
-#' @return \code{model} with two additional attributes, \code{naturalCoeffs} and \code{meta}.
-#' 
+# #' Add meta data to model object.
+# #'
+# #' This function adds metadata (\code{naturalCoeffs} and \code{meta}) to a model.  
+# #' Currently this is designed to work with CES models only. 
+# #' @param model the model to which metadata is to be added.
+# #' @param formula the original CES formula. Assumed to be of the form \code{y ~ k + l + e + t}.
+# #' @param nest the nesting for a CES model. Assumed to be of the form \code{c(1,2,3,4)}.
+# #' @param naturalCoeffs the \code{naturalCoeffs} object to be added as metadata.
+# #' @param history the fitting history to be attached to the meta attribute.
+# #' @note If no \code{naturalCoeffs} argument is specified, 
+# #' an attempt will be made to calculate a \code{naturalCoeffs} object. 
+# #' The calculated \code{naturalCoeffs} object will be added to the model.
+# #' @return \code{model} with two additional attributes, \code{naturalCoeffs} and \code{meta}.
+# #' 
 # addMetaData <- function(model, formula, nest, naturalCoeffs=NULL, history=""){
 #   if (is.null(model)){
 #     return(model) 
