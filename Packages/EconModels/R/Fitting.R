@@ -55,6 +55,18 @@ naturalCoef.default <- function(object, ...) {
 }
 
 #' @export
+naturalCoef.SFmodel <- function(object, ...) {
+  as.data.frame(
+    dplyr::data_frame(
+      logscale=coef(object)[1],
+      scale=exp(logscale),
+      lambda = if (object$winner == 2) coef(object)[2] else coef(object)[3],
+      m = if (object$winner == 2) 1.0 else coef(object)[2]
+    )
+  )
+}
+
+#' @export
 naturalCoef.CDEmodel <- function(object, ...) {
   
   leftCoef <- c(3,2,3,3,1,2,3)[object$winner]
@@ -322,32 +334,18 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
                                           )
                       )
   )
-  # Build the additional object to add as an atrribute to the output
+  
   if (constrained){
-    # res <- lm( formulas[[2]], data=data )
     res <- eval( substitute(lm(f, data=data), list(f=formulas[[2]])) )
-    
-    m <- 1.0
+    res$winner <- 2
     logscale <- coef(res)[1]
     lambda <- coef(res)[2]
   } else {
-    # res <- lm( formulas[[1]], data=data )
     res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
+    res$winner <- 1
     logscale <- coef(res)[1]
-    m <- coef(res)[2]
     lambda <- as.vector(coef(res)[3])
   }
-  naturalCoeffs <- data.frame(
-    logscale=as.vector(logscale),
-    scale=exp(as.vector(logscale)),
-    lambda = as.vector(lambda),
-    m = as.vector(m),
-    sse = sum(resid(res)^2),
-    isConv = TRUE # always, because we use lm
-  )
-  
-  attr(res, "naturalCoeffs") <- naturalCoeffs
-  
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   

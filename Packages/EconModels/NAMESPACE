@@ -3,6 +3,7 @@
 S3method(fortify,LINEXmodel)
 S3method(naturalCoef,CDEmodel)
 S3method(naturalCoef,LINEXmodel)
+S3method(naturalCoef,SFmodel)
 S3method(naturalCoef,cesEst)
 S3method(naturalCoef,default)
 S3method(naturalCoef,plm)
