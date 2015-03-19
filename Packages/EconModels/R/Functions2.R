@@ -1,18 +1,14 @@
 
-#' @export
-factorsForModel <- function(modelType) {
-  if (modelType %in% c('sf')) return(factors)
-  if (modelType %in% c('cd')) return("K")
-  return(energyTypes)
-}
+# #' @export
+# factorsForModel <- function(modelType) {
+#   if (modelType %in% c('sf')) return(factors)
+#   if (modelType %in% c('cd')) return("K")
+#   return(energyTypes)
+# }
 
 
 
 
-#' @export
-getHistory <- function(model) {
-  model$history
-}
 
 
 # #' @export
@@ -49,63 +45,48 @@ getHistory <- function(model) {
 #   return(out)
 # }
 
-#' @export
-chooseCESControl <- function(algorithm){
-  ####################
-  # This function chooses the CES control parameter
-  # based on whether we want PORT or L-BRGS-B.
-  ##
-  control <- switch(algorithm,
-                    "PORT" = list(iter.max=2000, eval.max=2000),
-                    "L-BFGS-B" = list(maxit=5000),
-                    "LM" = nls.lm.control( maxiter = 1000 ),
-                    list()
-  )
-  return(control)
-}
 
 
 
 
-
-#' @export
-getSeed <- function(){
-  ######################
-  # Returns the seed that we'll use for all resampling. I'm putting 
-  # the seed into a function so that it is accessible from 
-  # many places (including the paper, should we choose to include it there).
-  ##
-  return(123)
-}
-
-
-#' @export
-nResamples <- function(modelType=modelTypes, 
-                       countryAbbrev=countryAbbrevs, 
-                       energyType=energyTypes, 
-                       factor=factors, 
-                       archive=NULL, base=base,
-                       ...){
-  ###################
-  # Gives the number of resample fits for the 
-  # given parameters.
-  ##
-  modelType <- match.arg(modelType)
-  countryAbbrev <- match.arg(countryAbbrev)
-  energyType <- match.arg(energyType)
-  factor <- match.arg(factor)
-  data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, 
-                                     energyType=energyType, factor=factor,
-                                     archive=archive, base=base)
-  nObs <- nrow(data)
-  return(nObs)
-}
+# #' @export
+# getSeed <- function(){
+#   ######################
+#   # Returns the seed that we'll use for all resampling. I'm putting 
+#   # the seed into a function so that it is accessible from 
+#   # many places (including the paper, should we choose to include it there).
+#   ##
+#   return(123)
+# }
 
 
-#' @export
-numResamples <- function(){
-  ####################
-  # Gives the desired number of resamples to be performed.
-  ##
-  return(1000)
-}
+# #' @export
+# nResamples <- function(modelType=modelTypes, 
+#                        countryAbbrev=countryAbbrevs, 
+#                        energyType=energyTypes, 
+#                        factor=factors, 
+#                        archive=NULL, base=base,
+#                        ...){
+#   ###################
+#   # Gives the number of resample fits for the 
+#   # given parameters.
+#   ##
+#   modelType <- match.arg(modelType)
+#   countryAbbrev <- match.arg(countryAbbrev)
+#   energyType <- match.arg(energyType)
+#   factor <- match.arg(factor)
+#   data <- loadResampleDataRefitsOnly(modelType=modelType, countryAbbrev=countryAbbrev, 
+#                                      energyType=energyType, factor=factor,
+#                                      archive=archive, base=base)
+#   nObs <- nrow(data)
+#   return(nObs)
+# }
+
+# 
+# #' @export
+# numResamples <- function(){
+#   ####################
+#   # Gives the desired number of resamples to be performed.
+#   ##
+#   return(1000)
+# }

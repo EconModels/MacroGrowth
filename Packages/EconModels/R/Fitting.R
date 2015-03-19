@@ -160,6 +160,11 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   )
 }
 
+#' @export
+getHistory <- function(model) {
+  model$history
+}
+
 #' Compute SSE from a model object
 #' 
 #' Compute SSE from a model object and also check that certain constraints are met

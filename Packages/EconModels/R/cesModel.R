@@ -371,3 +371,18 @@ withinConstraints <- function(model){
   # If we get here, we meet constraints for the economically meaningful region of the model
   return(TRUE)
 }
+
+
+chooseCESControl <- function(algorithm){
+  ####################
+  # This function chooses the CES control parameter
+  # based on whether we want PORT or L-BRGS-B.
+  ##
+  control <- switch(algorithm,
+                    "PORT" = list(iter.max=2000, eval.max=2000),
+                    "L-BFGS-B" = list(maxit=5000),
+                    "LM" = nls.lm.control( maxiter = 1000 ),
+                    list()
+  )
+  return(control)
+}
