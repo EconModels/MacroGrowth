@@ -171,15 +171,16 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
 sse <- function(object) {
   sse <- sum(resid(object)^2)
   coefs <- naturalCoef(object)
-#   call = Reduce(paste, gdata::trim(deparse(object$call))
+  #   call = Reduce(paste, gdata::trim(deparse(object$call))
+  constrained <- 
+    (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
+    (is.na(coefs$delta_1) || (0 <= coefs$delta_1 && coefs$delta_1 <= 1)) &&
+    (is.na(coefs$rho) || coefs$rho >= -1) &&
+    (is.na(coefs$rho_1) || coefs$rho_1 >= -1)
   as.data.frame(
     dplyr::data_frame(
       sse = sse,
-      constrained =
-        (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
-        (is.na(coefs$delta_1) || (0 <= coefs$delta_1 && coefs$delta_1 <= 1)) &&
-        (is.na(coefs$rho) || coefs$rho >= -1) &&
-        (is.na(coefs$rho_1) || coefs$rho_1 >= -1) ,
+      constrained = constrained,
       sse.constrained =
         if(constrained) sse else Inf
     )
