@@ -36,7 +36,7 @@ test_that("cdModel() without energy fits are correct", {
   # scale is not expected to be exactly 1.0, because we will not exactly fit the data. 
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
-  # alpha will be 0 instead of -0.1.
+  # alpha_1 will be 0 instead of -0.1.
   expect_equivalent(naturalCoef(modelConstrained)[, c("alpha_1", "alpha_2", "alpha_3"), drop=TRUE], 
                     list(0, 1, gamma))
   
@@ -131,9 +131,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # alpha will be 0 instead of -0.1.
-  expect_equal(naturalCoef(modelAlpha0)[, "alpha_1", drop=TRUE], 0)
+  expect_equivalent(naturalCoef(modelAlpha0)[, "alpha_1", drop=TRUE], 0)
   # beta and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelAlpha0)[, c("alpha_2", "alpha_3")]), 1)
+  expect_equivalent(sum(naturalCoef(modelAlpha0)[, c("alpha_2", "alpha_3")]), 1)
   
   # beta < 0
   alpha <- 0.3
@@ -147,9 +147,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # beta will be 0 instead of -0.2.
-  expect_equal(naturalCoef(modelBeta0)[, "alpha_2", drop=TRUE], 0)
+  expect_equivalent(naturalCoef(modelBeta0)[, "alpha_2", drop=TRUE], 0)
   # alpha and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelBeta0)[, c("alpha_1", "alpha_3")]), 1)
+  expect_equivalent(sum(naturalCoef(modelBeta0)[, c("alpha_1", "alpha_3")]), 1)
   
   # gamma < 0
   alpha <- 0.3
@@ -163,9 +163,9 @@ test_that("cdModel() with energy fits are correct", {
   # lambda is not expected to be exactly the value we used to create testData, 
   # because we will not exactly fit the data when constrained.
   # beta will be 0 instead of -0.2.
-  expect_equal(naturalCoef(modelGamma0)[, "alpha_3", drop=TRUE], 0)
+  expect_equivalent(naturalCoef(modelGamma0)[, "alpha_3", drop=TRUE], 0)
   # alpha and gamma should sum to 1
-  expect_equal(sum(naturalCoef(modelGamma0)[, c("alpha_1", "alpha_2")]), 1)
+  expect_equivalent(sum(naturalCoef(modelGamma0)[, c("alpha_1", "alpha_2")]), 1)
   
   # alpha = 1
   alpha <- 1.2

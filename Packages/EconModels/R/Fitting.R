@@ -62,26 +62,30 @@ naturalCoef.CDEmodel <- function(object, ...) {
   names(cf) <-  c("alpha_1", "alpha_2", "alpha_3")
   cf[is.na(cf)] <- 0
   cf[leftCoef] <- 1 - sum(cf)
-  
-  dplyr::data_frame(
-    lambda = coef(object)["lambda"],
-    logscale = coef(object)["logscale"],
-    scale = exp(logscale),
-    alpha_1 = cf["alpha_1"],
-    alpha_2 = cf["alpha_2"],
-    alpha_3 = cf["alpha_3"]
+ 
+  as.data.frame( 
+    dplyr::data_frame(
+      lambda = coef(object)["lambda"],
+      logscale = coef(object)["logscale"],
+      scale = exp(logscale),
+      alpha_1 = cf["alpha_1"],
+      alpha_2 = cf["alpha_2"],
+      alpha_3 = cf["alpha_3"]
+    )
   )
 }
 
 
 #' @export
 naturalCoef.LINEXmodel <- function( object, ...) {
-  dplyr::data_frame(
-    logscale = coef(object)[1],
-    scale = exp(logscale),
-    a_0 = coef(object)[2],
-    a_1 = coef(object)[3],
-    c_t = a_1 / a_0
+  as.data.frame(
+    dplyr::data_frame(
+      logscale = coef(object)[1],
+      scale = exp(logscale),
+      a_0 = coef(object)[2],
+      a_1 = coef(object)[3],
+      c_t = a_1 / a_0
+    )
   )
 }
 
@@ -128,7 +132,8 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   alpha_2 <- sc$alpha_2
   alpha_3 <- sc$alpha_3
   
-  dplyr::data_frame( gamma = gamma_coef,
+  as.data.frame( 
+    dplyr::data_frame( gamma = gamma_coef,
               lambda = lambda,
               delta = delta,
               delta_1 = delta_1,
@@ -139,6 +144,7 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
               alpha_1 = alpha_1,
               alpha_2 = alpha_2,
               alpha_3 = alpha_3
+    )
   )
 }
 
@@ -154,15 +160,17 @@ sse <- function(object) {
   sse <- sum(resid(object)^2)
   coefs <- naturalCoef(object)
 #   call = Reduce(paste, gdata::trim(deparse(object$call))
-  dplyr::data_frame(
-    sse = sse,
-    constrained =
-      (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
-      (is.na(coefs$delta_1) || (0 <= coefs$delta_1 && coefs$delta_1 <= 1)) &&
-      (is.na(coefs$rho) || coefs$rho >= -1) &&
-      (is.na(coefs$rho_1) || coefs$rho_1 >= -1) ,
-    sse.constrained =
-      if(constrained) sse else Inf
+  as.data.frame(
+    dplyr::data_frame(
+      sse = sse,
+      constrained =
+        (is.na(coefs$delta) || (0 <= coefs$delta && coefs$delta <= 1)) &&
+        (is.na(coefs$delta_1) || (0 <= coefs$delta_1 && coefs$delta_1 <= 1)) &&
+        (is.na(coefs$rho) || coefs$rho >= -1) &&
+        (is.na(coefs$rho_1) || coefs$rho_1 >= -1) ,
+      sse.constrained =
+        if(constrained) sse else Inf
+    )
   )
 }
 
@@ -474,7 +482,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
       } else {
         alpha_1 <- 1.0
         res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
-        res$winner <- 7
+        res$winner <- 5
       }
       names(res$coefficients) <- c("logscale", "lambda")
     }
