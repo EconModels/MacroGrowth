@@ -62,28 +62,29 @@ cesBoundaryModels <- function(formula, data, nest){
     names(formulaRosetta)[2:3] <- c("capital", "labor")[nest]
   }
   
+  # old names - new names 
   formulaTemplates <- 
     list( 
-      "1"  = log(y) - log(capital) ~ time,
-      "2"  = log(y) - log(labor) ~ time,
-      "6"  = log(y) - log(energy) ~ time,
-      "3"  = log(y) - log(pmin(capital, labor)) ~ time,
-      "7"  = log(y) - log(pmin(capital, energy)) ~ time,
-      "8"  = log(y) - log(pmin(labor, energy)) ~ time,
-      "9"  = log(y) - log(pmin(capital, labor, energy)) ~ time,
-      "4"  = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
-      "10" = log(y) - log(delta*capital + (1-delta)*energy) ~ time,
-      "11" = log(y) - log(delta*labor + (1-delta)*energy) ~ time,
-      "12" = log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time,
-      "13" = log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,
-      "14" = log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,
-      "17" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
-      "19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
-      "20" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time,
-      "5"  = y ~ capital + labor + time,
-      "15" = y ~ capital + energy + time,
-      "16" = y ~ labor + energy + time,
-      "18" = y ~ pmin(capital, labor) + energy + time
+      "01-01"  = log(y) - log(capital) ~ time,
+      "02-02"  = log(y) - log(labor) ~ time,
+      "06-03"  = log(y) - log(energy) ~ time,
+      "03-04"  = log(y) - log(pmin(capital, labor)) ~ time,
+      "07-05"  = log(y) - log(pmin(capital, energy)) ~ time,
+      "08-06"  = log(y) - log(pmin(labor, energy)) ~ time,
+      "04-07"  = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
+      "10-08" = log(y) - log(delta*capital + (1-delta)*energy) ~ time,
+      "11-09" = log(y) - log(delta*labor + (1-delta)*energy) ~ time,
+      "09-13"  = log(y) - log(pmin(capital, labor, energy)) ~ time,
+      "13-14" = log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,
+      "14-15" = log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,
+      "12-16" = log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time,
+      "20-18" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time,
+      "17-20" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
+      "19-19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
+      "05-10"  = y ~ capital + labor + time,
+      "15-11" = y ~ capital + energy + time,
+      "16-12" = y ~ labor + energy + time,
+      "18-17" = y ~ pmin(capital, labor) + energy + time
     )
   # Values that don't appear in the model can be set to their fixed values and nlm()
   # will leave them alone.  
@@ -93,22 +94,26 @@ cesBoundaryModels <- function(formula, data, nest){
   # There may be a better solution, but this will get us going for the moment.
   
   params <- list(
-    "1" =  c(delta_1 = 1,   delta=1),
-    "2" =  c(delta_1 = 0,   delta=1),
-    "6" =  c(delta =   0),
-    "3" =  c(sigma_1 = 0,   delta=1),
-    "7" =  c(sigma =   0,   delta_1 = 1.0),
-    "8" =  c(sigma =   0,   delta_1 = 0.0),
-    "9" =  c(sigma =   0,   sigma_1 = 0.0),
-    "4" =  c(delta_1 = 0.5, delta =   1.0,   rho_1 = -1),
-    "10" = c(delta =   0.5, delta_1=  1.0,     rho = -1),
-    "11" = c(delta =   0.5, delta_1 = 0.0,     rho = -1),
-    "12" = c(delta =   0.5, delta_1 = 0.5,   rho_1 = -1, rho = -1),
-    "13" = c(delta =   0.5, sigma_1 = 0.0,    sigma = 0),
-    "14" = c(delta_1 = 0.5, rho_1 =  -1.0,    sigma = 0),
-    "17" = c(delta =   0.5, delta_1 = 0.5,    rho =   0.25, rho_1 = -1),
-    "19" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = 0.25,   rho = -1),
-    "20" = c(delta_1 = 0.5, rho_1 =   0.25,   sigma = 0.0)
+    "01-01" =  c(delta_1 = 1,   delta=1),
+    "02-02" =  c(delta_1 = 0,   delta=1),
+    "06-03" =  c(delta =   0),
+    "03-04" =  c(sigma_1 = 0,   delta=1),
+    "07-05" =  c(sigma =   0,   delta_1 = 1.0),
+    "08-06" =  c(sigma =   0,   delta_1 = 0.0),
+    "04-07" =  c(delta_1 = 0.5, delta =   1.0,   rho_1 = -1),
+    "10-08" = c(delta =   0.5, delta_1=  1.0,     rho = -1),
+    "11-09" = c(delta =   0.5, delta_1 = 0.0,     rho = -1),
+    # 5
+    # 15
+    # 16
+    "09-13" =  c(sigma =   0,   sigma_1 = 0.0),
+    "13-14" = c(delta =   0.5, sigma_1 = 0.0,    sigma = 0),
+    "14-15" = c(delta_1 = 0.5, rho_1 =  -1.0,    sigma = 0),
+    "12-16" = c(delta =   0.5, delta_1 = 0.5,   rho_1 = -1, rho = -1),
+    # 18
+    "20-18" = c(delta_1 = 0.5, rho_1 =   0.25,   sigma = 0.0),
+    "19-19" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = 0.25,   rho = -1),
+    "17-20" = c(delta =   0.5, delta_1 = 0.5,    rho =   0.25, rho_1 = -1)
   ) 
   
   
@@ -159,7 +164,7 @@ cesBoundaryModels <- function(formula, data, nest){
       sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]], sdata)
       cesModels <- 
         c(cesModels, 
-          list("18" =  
+          list("18-17" =  
             eval(substitute(
               cesModel(f, data=sdata, nest = c(1,2), constrained=TRUE, fitBoundaries=FALSE),
               list(f = formulaPmin)
@@ -169,8 +174,9 @@ cesBoundaryModels <- function(formula, data, nest){
     }, error = function(e) warning(e)
     )
   }
-  
-  return( c(plmModels, cesModels) )
+ 
+  o <-  order( substr(names(formulaTemplates), 4,5) )
+  return( c(plmModels, cesModels)[o] )
 }
 
 # 
