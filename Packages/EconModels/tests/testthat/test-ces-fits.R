@@ -1,8 +1,8 @@
 
 context('Testing CES Model Fits')
 
-library(dplyr)
-library(magrittr)
+library(dplyr, quietly = TRUE)
+library(magrittr, quietly = TRUE)
 
 test_that("cesModel() fits without energy give same results with either nesting.", {
   testData <- subset(EconData::Calvin, Country=="US")
