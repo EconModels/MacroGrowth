@@ -241,16 +241,14 @@ natmetaFrame <- function(object){
     # The PORT algorthm returns a number. L-BFGS-B returns a list. Need to deal with both.
     ifelse(is.list(attempt$iter), attempt$iter["function"], attempt$iter)
   })
-  histList <- lapply(attempts, function(attempt){
-    hist <- attr(attempt, "hist")
-    if (is.null(hist)){
-      return(NA)
+  out$converged <- lapply(attempts, function(attempt){
+    if (! is.null(attempt$converged)){
+      return(attempt$converged)
     } else {
-      return(hist)
+      return(attempt$convergence)
     }
-  }
-  )
-  out$hist <- histList
+  })
+  out$history <- lapply(attempts, getHistory)
   out$nestStr <- parseFactorString(factorString(object$formula))$nestStr
   out$nestStrParen <- parseFactorString(factorString(object$formula))$nestStrParen
   # Extract formulas here. Would be nice to grab the actual formulat that was fitted for each attempt.
