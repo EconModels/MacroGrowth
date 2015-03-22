@@ -8,10 +8,7 @@
 #' @param data historical time series data
 #' @param nest identifies the nesting of the variables in the original formula,
 #' assumed to be of the form \code{c(1,2,3)}.
-# #' @param id the identification number (from Table 2) for the boundary model you want to fit.
-#' @return a model object with class \code{CESModel} and \code{naturalCoeffs} and \code{meta} attributes.
-#' @note the \code{naturalCoeffs} attribute includes correct values of boundary parameters. 
-#' \code{NA} values in \code{naturalCoeffs} indicate that the parameter is unknowable at that boundary.
+#' @return a list of boundary models.
 #' @examples 
 #' if (require(EconData) & require(dplyr)) {
 #'   cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3))
