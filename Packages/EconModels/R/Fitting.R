@@ -140,9 +140,6 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
   sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest, method=method)
-  alpha_1 <- sc$alpha_1
-  alpha_2 <- sc$alpha_2
-  alpha_3 <- sc$alpha_3
   
   as.data.frame( 
     dplyr::data_frame( gamma = gamma_coef,
@@ -153,9 +150,9 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
               rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
               sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
               rho = if (is.na(rho)) 1/sigma - 1 else rho,
-              alpha_1 = alpha_1,
-              alpha_2 = alpha_2,
-              alpha_3 = alpha_3
+              alpha_1 = sc$alpha_1,
+              alpha_2 = sc$alpha_2,
+              alpha_3 = sc$alpha_3
     )
   )
 }
