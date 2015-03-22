@@ -89,7 +89,7 @@ cesBoundaryModels <- function(formula, data, nest){
   # Values that don't appear in the model can be set to their fixed values and nlm()
   # will leave them alone.  
   # But nlm() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
-  # set sigma or sigma_1 to 0 instead of rho or rho_1 to Inf.  
+  # set sigma or sigma_1, respectively, to 0 instead of setting rho or rho_1 to Inf.  
   # This will cost some effort down stream to recover the rho values.  See makeNatCoef.
   # There may be a better solution, but this will get us going for the moment.
   
@@ -116,7 +116,11 @@ cesBoundaryModels <- function(formula, data, nest){
     "17-20" = c(delta =   0.5, delta_1 = 0.5,    rho =   0.25, rho_1 = -1)
   ) 
   
-  
+
+
+
+
+
   formulas <- 
     lapply(
       formulaTemplates, 
@@ -178,106 +182,3 @@ cesBoundaryModels <- function(formula, data, nest){
   o <-  order( substr(names(formulaTemplates[keep]), 4,5) )
   return( c(plmModels, cesModels)[o] )
 }
-
-# 
-# #' Extracts y, x1, x2, x3, x4, and time data as time series for CES boundary models
-# #' 
-# #' Given formula \code{f} and nest \code{nest}, this function
-# #' extracts a response variable (\code{y}), 
-# #' factors of production (\code{x1}, \code{x2}, \code{x3}, and \code{x4}), and 
-# #' a time variable (\code{time}) from \code{data}.
-# #' All extracted variables are time series vectors.
-# #'
-# #' @param f the CES formula for which time series data is to be extracted, 
-# #' assumed to be of the form \code{y ~ x1 + x2 + x3 + x4 + time}.
-# #' @param data the data frame from which time series data is to be extracted
-# #' @param nest identifies the nesting of the variables in the original formula
-# #' and should be a vector containing a permuation of the integers 1 through k,
-# #' where k is the number of non-time explanatory variables in the model formula.
-# #' @return a named list of time series'. 
-# #' Names are \code{y}, \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}.
-# cesTimeSeries <- function(f, data, nest){
-#   fNames <- cesParseFormula(f, nest)
-#   # Extract variables for convenience.
-#   numFactors <- fNames$numFactors
-#   if (numFactors < 2 || numFactors > 4){
-#     stop(paste0("numFactors = " + numFactors + " in cesTimeSeries. Should have 2 <= numFactors <= 4."))
-#   }
-#   cesNames <- fNames$cesNames
-#   yName <- fNames$yName
-#   xNames <- fNames$xNames
-#   tName <- fNames$tName
-#   
-#   # Extract variales from data.
-#   y <- eval(substitute(data$y, list(y = yName)))
-#   time <- eval(substitute(data$time, list(time = tName)))
-#   x1 <- eval(substitute(data$colx1, list(colx1 = xNames[[1]])))
-#   x2 <- eval(substitute(data$colx2, list(colx2 = xNames[[2]])))
-#   if (numFactors == 2){
-#     return(list(y = y, x1=x1, x2=x2, x3=NA, x4=NA, time=time))
-#   }
-#   if (numFactors == 3){
-#     x3 <- eval(substitute(data$colx3, list(colx3 = xNames[[3]])))
-#     return(list(y = y, x1=x1, x2=x2, x3=x3, x4=NA, time=time))
-#   }
-#   if (numFactors == 4){
-#     x4 <- eval(substitute(data$colx4, list(colx4 = xNames[[4]])))
-#     return(list(y = y, x1=x1, x2=x2, x3=x3, x4=x4, time=time))
-#   }
-# }
-# 
-# #' Tells whether variables are always similarly ordered across all observations.
-# #' 
-# #' @param data a data frame that contains rows that are to be compared for ordering
-# #' @return \code{TRUE} if all rows are ordered the same, \code{FALSE} if they are not.
-# #' @note If all rows are comprised of equal numbers, \code{FALSE} is returned.
-# #' @export
-# rowsSameOrdered <- function(data){
-#   # Look at all the rows. 
-#   # Make a vector with length equal to the number of rows in data whose
-#   # values are TRUE if there was at least two numbers equal on the row and FALSE if all numbers were unique.
-#   somethingEqualOnRow <- apply(data, 1,
-#                                function(row){
-#                                  if (length(row) < 2){
-#                                    stop(paste("row has length", length(row), "in rowsSameOrdered. length must be >= 2"))
-#                                  }
-#                                  # row is each row of data.
-#                                  for (i in 1:(length(row)-1)){
-#                                    for (j in (i+1):length(row)){
-#                                      if (row[i] == row[j]){
-#                                        return(TRUE)
-#                                      }
-#                                    }
-#                                  }
-#                                  return(FALSE)
-#                                })
-#   # Find the index of the first row contining unique numbers (no duplicates)
-#   iCompRow <- match(FALSE, somethingEqualOnRow)
-#   if (is.na(iCompRow)){
-#     # No rows have differing data. Return false.
-#     return(FALSE)
-#   }
-#   # Use the first unique row as our comparison row.
-#   compRow <- data[iCompRow, ]
-#   # Find the order for compRow
-#   oCompRow <- order(compRow)
-#   # Now, check to see if every other row has a similar order.
-#   order <- apply(data, 1, 
-#                  function(row){
-#                    # row is each row of data.
-#                    # arrange row in least-to-greatest order of compRow.
-#                    reorderedRow <- row[oCompRow]
-#                    # If reorderedRow is itself in least-to-greatest order, it has same ordering as compRow.
-#                    for (j in 2:length(reorderedRow)){
-#                      if (reorderedRow[j-1] > reorderedRow[j]){
-#                        # Didn't have least-to-greatest order when arranged as compRow. No need to check any further.
-#                        return(FALSE)
-#                      }
-#                    }
-#                    # row has same ordering as compRow.
-#                    return(TRUE)
-#                  })
-#   # All rows are same-ordered if all items in order are TRUE.
-#   return(all(order))
-# }
-# 
