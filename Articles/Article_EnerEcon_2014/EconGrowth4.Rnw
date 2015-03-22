@@ -1559,66 +1559,66 @@ the boundary model is rejected.
 \end{table}
 
 \begin{table} \caption{CES boundary models (rows~1--20) and full model (bottom row). 
-                       Re-ordered, but with original model numbers. **** DELETE EVENTUALLY ****}
+                       Re-ordered, but with original model numbers. old-new numbering **** DELETE EVENTUALLY ****}
   \begin{center}
     \begin{tabular}{r c c c c l} 
       \toprule
       & $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
       \midrule
-      1. & 1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
-      2. & 0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
-      6. & ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
+      01-01 & 1           & ---        & 1          & ---      & $y = \gamma A x_1$ \\
+      02-02 & 0           & ---        & 1          & ---      & $y = \gamma A x_2$ \\
+      06-03 & ---         & ---        & 0          & ---      & $y = \gamma A x_3$ \\
       \midrule
-      3. & ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
-      7. & 1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
-      8. & 0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
+      03-04 & ---         & 0          & 1          & ---      & $y = \gamma A \min (x_1, \, x_2)$ \\
+      07-05 & 1           & ---        & ---        & 0        & $y = \gamma A \min (x_1, \, x_3)$ \\
+      08-06 & 0           & ---        & ---        & 0        & $y = \gamma A \min (x_2, \, x_3)$ \\
 %
-      4. &             & $\infty$   & 1          & ---        
+     04-07 &             & $\infty$   & 1          & ---        
             & $y = \gamma A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
 %
-     10. & 1           & ---        &            & $\infty$        
+     10-08 & 1           & ---        &            & $\infty$        
             & $y = \gamma A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
 %
-     11. & 0           & ---        &            & $\infty$        
+     11-09 & 0           & ---        &            & $\infty$        
             & $y = \gamma A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
 %
-      5. &             &            & 1          & ---
+     05-10 &             &            & 1          & ---
             & $y = \gamma A \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}$ \\
 %
-     15. & 1           & ---        &         & 
+     15-11 & 1           & ---        &         & 
             & $y = \gamma A \left[ \delta x_1^{-\rho} 
                     + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$ \\ 
 %
-     16. & 0           & ---        &            & 
+     16-12 & 0           & ---        &            & 
             & $y = \gamma A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) x_3^{-\rho} \right]^{-1/\rho}$ \\
       \midrule
-      9. & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
+     09-13 & ---         & 0          & ---        & 0        & $y = \gamma A \min (x_1, \, x_2, \, x_3)$ \\
 %
-     13. & ---         & 0          &            & $\infty$        
+     13-14 & ---         & 0          &            & $\infty$        
             & $y = \gamma A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta \right) x_3  \right]$ \\
 %
-     14. &             & $\infty$   & ---        & 0
+     14-15 &             & $\infty$   & ---        & 0
             & $y = \gamma A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 \right) x_2, \, x_3  \right]$ \\
 %
-     12. &             & $\infty$   &            & $\infty$        
+     12-16 &             & $\infty$   &            & $\infty$        
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - \delta_1 \right) x_2 \right] 
                     + \left( 1 - \delta \right) x_3  \right\}$ \\
 %
-     18. & ---         & 0          &            & 
+     18-17 & ---         & 0          &            & 
             & $y = \gamma A \left\{ \delta \left[ \min \left( x_1, \, x_2 \right) \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\ 
 %
-     20. &            &            & ---     & 0
+     20-18 &            &            & ---     & 0
             & $y = \gamma A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}, \, x_3 \right\}$ \\ 
 %
-     19. &             &            &            & $\infty$
+     19-19 &             &            &            & $\infty$
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/\rho_1}  
                     + \left( 1 - \delta \right) x_3  \right\}$ \\ 
 %
-     17. &             & $\infty$   &            &
+     17-20 &             & $\infty$   &            &
             & $y = \gamma A \left\{ \delta \left[ \delta_1 x_1 
                     + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ {-1/\rho}$ \\
