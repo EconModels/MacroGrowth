@@ -34,6 +34,8 @@ where \code{a}, \code{b}, \code{c}, and \code{d} are factors of production,
 \code{time} is the time variable.
 
 \code{nest} is assumed to be integers in the form of \code{c(1,2,3,4)}.
-Nest indicates the left-to-right order of parameters in the CES function.
+Nest indicates the left-to-right order of parameters in the CES function.  If the length of \code{nest} is
+less than the number of factors in the \code{formula}, some factors will omited.  If the length of \code{nest} is
+greater than the nubmer of factors in \code{formula}, it is truncated to match.
 }
 

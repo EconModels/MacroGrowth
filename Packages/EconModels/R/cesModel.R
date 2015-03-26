@@ -258,7 +258,10 @@ cesModel <- function(formula, data,
 #' \code{response} is the response variable (typically economic output), and
 #' \code{time} is the time variable.
 #' @note \code{nest} is assumed to be integers in the form of \code{c(1,2,3,4)}. 
-#' Nest indicates the left-to-right order of parameters in the CES function.
+#' Nest indicates the left-to-right order of parameters in the CES function.  If the length of \code{nest} is 
+#' less than the number of factors in the \code{formula}, some factors will omited.  If the length of \code{nest} is
+#' greater than the nubmer of factors in \code{formula}, it is truncated to match.
+#' 
 #' @return a list of information extracted from the \code{f} and \code{nest}, including
 #' \code{numFactors} (the number of factors of production), 
 #' \code{xNames} (a list containing the variable names of the factors of production, 
@@ -274,7 +277,10 @@ cesParseFormula <- function(f, nest){
  
   # Set up *Names 
   fNames <- rownames( attr(terms(f), "factors") )
-  numFactors <- length(fNames) - 2  # not response, not time
+  numFactors <- 
+    min( length(fNames) - 2,  # not response, not time
+         length(nest)         # each factor must appear in the nest.
+         )
   xNames <- switch( as.character(numFactors),
                     "2" = fNames[1 + nest[1:2]],      # add 1 here to avoid response
                     "3" = fNames[1 + nest[1:3]],

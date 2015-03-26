@@ -78,9 +78,9 @@ cesBoundaryModels <- function(formula, data, nest){
       "20-18" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time,
       "19-19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
       "17-20" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
-      "05-10" = y ~ capital + labor + time,
-      "15-11" = y ~ capital + energy + time,
-      "16-12" = y ~ labor + energy + time,
+      "05-10" = y ~ capital + labor + energy + time,
+      "15-11" = y ~ capital + labor + energy + time,
+      "16-12" = y ~ capital + labor + energy + time,
       "18-17" = y ~ pmin(capital, labor) + energy + time
     )
   # Values that don't appear in the model can be set to their fixed values and nlm()
@@ -146,13 +146,14 @@ cesBoundaryModels <- function(formula, data, nest){
  
   cesModels <- 
     Map( 
-      function(formula) {
+      function(formula, nest) {
         eval(substitute( 
-          cesModel(formula, data = sdata,  nest = c(1,2), constrained = TRUE, fitBoundaries = FALSE), 
+          cesModel(formula, data = sdata,  nest = nest, constrained = TRUE, fitBoundaries = FALSE), 
           list(formula=formula)
         ))
       },
-      formulas[keep & !plmModel & (1:20 < 20)] # remove ugly case (20)
+      formulas[keep & !plmModel & (1:20 < 20)], # remove ugly case (20)
+      list(c(1,2), c(1,3), c(2,3))              # adjust nest to leave one out
     )
   
   # Now handle the ugly case.  Since cesEst() can only work with variables, we need
