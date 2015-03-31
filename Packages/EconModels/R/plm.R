@@ -89,12 +89,13 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
       return(res)
     }
     opt_out <- optimx::optimx(par = params, fn = f, method = method, ... )
-    npar <- attr(opt_out, "npar")
-    opt_params <- unlist(opt_out[which.min(opt_out$value), seq_len(npar), drop=FALSE])
+    best_opt <- which.min(opt_out$value)
+    npar <- attr(opt_out[best_opt], "npar")
+    opt_params <- unlist(opt_out[best_opt, seq_len(npar), drop=FALSE])
     
     if (debug) print(opt_params)
     # return model fit with optimal params
-    if (opt_out$convcode == 0) {
+    if (opt_out$convcode[best_opt] == 0) {
       res <- plm(formula=formula, data=data, params=opt_params, optimize=FALSE, .ocall=.ocall)
       res$converged <- TRUE
     } else {

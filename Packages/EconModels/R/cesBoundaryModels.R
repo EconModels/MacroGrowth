@@ -81,7 +81,7 @@ cesBoundaryModels <- function(formula, data, nest){
       "05-10" = y ~ capital + labor + energy + time,
       "15-11" = y ~ capital + labor + energy + time,
       "16-12" = y ~ capital + labor + energy + time,
-      "18-17" = y ~ pmin(capital, labor) + energy + time
+      "18-17" = y ~ pmin(capital, labor) + placeholder + energy + time
     )
   # Values that don't appear in the model can be set to their fixed values and nlm()
   # will leave them alone.  
@@ -91,26 +91,26 @@ cesBoundaryModels <- function(formula, data, nest){
   # There may be a better solution, but this will get us going for the moment.
   
   params <- list(
-    "01-01" =  c(delta_1 = 1,   delta=1),
-    "02-02" =  c(delta_1 = 0,   delta=1),
-    "06-03" =  c(delta =   0),
-    "03-04" =  c(sigma_1 = 0,   delta=1),
-    "07-05" =  c(sigma =   0,   delta_1 = 1.0),
-    "08-06" =  c(sigma =   0,   delta_1 = 0.0),
-    "04-07" =  c(delta_1 = 0.5, delta =   1.0,   rho_1 = -1),
+    "01-01" = c(delta_1 = 1,   delta=1),
+    "02-02" = c(delta_1 = 0,   delta=1),
+    "06-03" = c(delta =   0),
+    "03-04" = c(sigma_1 = 0,   delta=1),
+    "07-05" = c(sigma =   0,   delta_1 = 1.0),
+    "08-06" = c(sigma =   0,   delta_1 = 0.0),
+    "04-07" = c(delta_1 = 0.5, delta =   1.0,  rho_1 = -1),
     "10-08" = c(delta =   0.5, delta_1=  1.0,     rho = -1),
     "11-09" = c(delta =   0.5, delta_1 = 0.0,     rho = -1),
     # 5
     # 15
     # 16
-    "09-13" =  c(sigma =   0,   sigma_1 = 0.0),
+    "09-13" = c(sigma =   0,   sigma_1 = 0.0),
     "13-14" = c(delta =   0.5, sigma_1 = 0.0,      rho = -1),
-    "14-15" = c(delta_1 = 0.5, rho_1 =  -1.0,    sigma = 0),
-    "12-16" = c(delta =   0.5, delta_1 = 0.5,   rho_1 = -1, rho = -1),
+    "14-15" = c(delta_1 = 0.5, rho_1 =  -1.0,    sigma =  0),
+    "12-16" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = -1, rho = -1),
     # 18
     "20-18" = c(delta_1 = 0.5, rho_1 =   0.25,   sigma = 0.0),
     "19-19" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = 0.25,   rho = -1),
-    "17-20" = c(delta =   0.5, delta_1 = 0.5,    rho =   0.25, rho_1 = -1)
+    "17-20" = c(delta =   0.5, delta_1 = 0.5,      rho = 0.25, rho_1 = -1)
   ) 
   
 
@@ -133,7 +133,8 @@ cesBoundaryModels <- function(formula, data, nest){
   plmModels <- 
     Map( 
       function(formula, param) { 
-        res <- eval(substitute( plm(formula, data = sdata, param=param), list(formula=formula, param=param)))
+        res <- eval(substitute( plm(formula, data = sdata, param = param, method = method), 
+                                list(formula=formula, param=param, method=c("nlm", "spg"))))
         # for all of our models, log(gamma) and lambda are first two coefficients
         if (! is.null(res)) {
           names(res$coefficients)[1] <- "logscale"
@@ -162,13 +163,13 @@ cesBoundaryModels <- function(formula, data, nest){
   if(keep[20]) {
     tryCatch( { 
       formulaPmin <- formulas[[20]] 
-      pminVar <- deparse(formulaPmin[[3]][[2]][[2]])
-      sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]], sdata)
+      pminVar <- deparse(formulaPmin[[3]][[2]][[2]][[2]])
+      sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]][[2]], sdata)
       cesModels <- 
         c(cesModels, 
           list("18-17" =  
             eval(substitute(
-              cesModel(f, data=sdata, nest = c(1,2), constrained=TRUE, fitBoundaries=FALSE),
+              cesModel(f, data=sdata, nest = c(1,3), constrained=TRUE, fitBoundaries=FALSE),
               list(f = formulaPmin)
             ))
           )

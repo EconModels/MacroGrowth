@@ -123,15 +123,21 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
     # We could have renamed by name to defend against position changes in cesEst.
     # But, cesEst could also change names in the future, so there is no clear benefit to renaming by name.
     # So, we'll stick with renaming by position.
-    if (all(nest <= 2)) {
+    if (all(nest <= 2)) { # nest = 1 2 or 2 1
       names(coefList)[3:4] <- paste0(names(coefList)[3:4], "_1")
       coefList[["delta"]] <- 1
       coefList[["sigma"]] <- NA
       coefList[["rho"]] <- NA
     } else {
-      coefList[["delta_1"]] <- 1
-      coefList[["sigma_1"]] <- NA
-      coefList[["rho_1"]] <- NA
+      if (any(nest == 1)) { # nest = 1 3 or 3 1
+        coefList[["delta_1"]] <- 1
+        coefList[["sigma_1"]] <- NA
+        coefList[["rho_1"]] <- NA
+      } else { # nest = 2 3 or 3 2
+        coefList[["delta_1"]] <- 0
+        coefList[["sigma_1"]] <- NA
+        coefList[["rho_1"]] <- NA
+      }
     }
   }
   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
