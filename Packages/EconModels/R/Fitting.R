@@ -1,5 +1,5 @@
 
-# convert from delta_1 and delta to alpha_i in a nest aware way.
+# convert from delta_1 and delta to alpha_i in a nest-aware way.
 
 standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=5) {
   # convert to standard coefficents taking nest order into account
