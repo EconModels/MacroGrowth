@@ -419,27 +419,27 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
 # Also, these formulas all assume constant returns to scale.
 CDformulas <- list( 
   log(y) - log(energy) ~ 
-    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  # Full model
+    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  # [[1]] Full model
   
-  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,            # With energy exponent = 0
-  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,           # With labor exponent = 0
-  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,            # With capital exponent = 0
+  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,            # [[2]] With energy exponent = 0
+  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,           # [[3]] With labor exponent = 0
+  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,            # [[4]] With capital exponent = 0
   
-  log(y) - log(capital) ~ time, # With capital exponent = 1
-  log(y) - log(labor)  ~ time,  # With labor exponent = 1
-  log(y) - log(energy) ~ time   # With energy exponent = 1
+  log(y) - log(capital) ~ time, # [[5]] With capital exponent = 1, labor and energy exponents = 0
+  log(y) - log(labor)  ~ time,  # [[6]] With labor exponent = 1, capital and energy exponents = 0
+  log(y) - log(energy) ~ time   # [[7]] With energy exponent = 1, capital and labor exponents = 0
 )
 
 CDcoefNames <- list( 
-  c("logscale",  "alpha_1", "alpha_2", "lambda"),
+  c("logscale",  "alpha_1", "alpha_2", "lambda"), # [[1]] Full model
   
-  c("logscale", "alpha_1", "lambda"),
-  c("logscale", "alpha_1", "lambda"),
-  c("logscale", "alpha_2", "lambda"),
+  c("logscale", "alpha_1", "lambda"), # [[2]] With energy exponent = 0
+  c("logscale", "alpha_1", "lambda"), # [[3]] With labor exponent = 0
+  c("logscale", "alpha_2", "lambda"), # [[4]] With capital exponent = 0
   
-  c("logscale", "lambda"),
-  c("logscale", "lambda"),
-  c("logscale", "lambda")
+  c("logscale", "lambda"), # [[5]] With capital exponent = 1, labor and energy exponents = 0
+  c("logscale", "lambda"), # [[6]] With labor exponent = 1, capital and energy exponents = 0
+  c("logscale", "lambda")  # [[7]] With energy exponent = 1, capital and labor exponents = 0
 )
 
 #' Fitting Cobb-Douglas Models
@@ -457,7 +457,7 @@ CDcoefNames <- list(
 #' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 cdwoeModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
-                    save.data=TRUE, ...) {
+                       save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ capital + labor + time,
                            list( response = substitute(response),
@@ -471,7 +471,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   sdata <- subset(data, select=all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
-  formulas <- CDformulas[c(2,5,6)]  # just the ones involving 2 of the 3 factors
+  formulas <- CDformulas[c(2,5,6)]  # just the ones involving the first two of the 3 factors
   
   formulas <- lapply( formulas,
                       function(x) do.call(substitute, 
@@ -489,18 +489,17 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   names(res$coefficients) <- CDcoefNames[[2]]
   alpha_1 <- coef(res)["alpha_1"]
   if (constrained){
-    if (alpha_1 < 0.0 || alpha_1 > 1.0){
-      # Need to adjust alpha_1, because we are beyond 0.0 or 1.0
-      if (alpha_1 < 0.0){
-        alpha_1 <- 0.0
-        res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
-        res$winner <- 6
-      } else {
-        alpha_1 <- 1.0
-        res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
-        res$winner <- 5
-      }
-      names(res$coefficients) <- c("logscale", "lambda")
+    # Adjust alpha_1 if we are outside the range 0 <= alpha_1 <= 1
+    if (alpha_1 < 0.0){
+      alpha_1 <- 0.0
+      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
+      res$winner <- 6
+      names(res$coefficients) <- CDcoefNames[[6]]
+    } else if (alpha_1 > 1) {
+      alpha_1 <- 1.0
+      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
+      res$winner <- 5
+      names(res$coefficients) <- CDcoefNames[[5]]
     }
   }
   if (save.data) {
