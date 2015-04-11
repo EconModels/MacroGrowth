@@ -1,0 +1,62 @@
+---
+title: "Effect of quality-adjusted production function inputs"
+author: "Paul Brockway, João dos Santos, Matthew Kuperus Heun"
+date: "10 April 2015"
+output: pdf_document
+---
+
+```{r Setup, message=FALSE, warning=FALSE}
+require(EconData)
+require(EconModels)
+require(dplyr)
+historicalData <- filter(rbind(IST, Leeds, REXS1960), Country %in% c("UK", "PT"))
+dataPT <- filter(historicalData, Country == "PT")
+dataPTIST <- filter(dataPT, Source == "IST")
+```
+
+This is a study of the effects of quality-adjusted production function inputs
+on the importance of energy in the production function.
+
+# Historical Data
+
+We use the following time series for the production functions:
+
+## Unadjusted variables
+
+Variable | PT       | UK    
+-------- | -------- | -----------
+Output   | iGDP     | iGDP
+Capital  | iKstkS.L | iKstkO.WwithRD
+Labor    | iL       | iL
+Energy   | iXpMP    | iXp
+
+## Quality-adjusted variables
+
+Variable | PT         | UK    
+-------- | ---------- | ---------------
+Output   | iGDP       | iGDP
+Capital  | iKservS.L  | iKservO.WwithRD
+Labor    | ihLest     | ihLest
+Energy   | iUMP       | iU
+
+# Portugal (PT) results
+
+## Cobb-Douglas, unadjusted inputs
+
+```{r PT-unadj}
+naturalCoef(cdModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+                    data = dataPTIST, constrained = TRUE))
+
+naturalCoef(cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                    data = dataPTIST, constrained = TRUE))
+```
+
+## Cobb-Douglas, quality-adjusted inputs
+
+```{r PT-qadj}
+naturalCoef(cdModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+                    data = dataPTIST, constrained = TRUE))
+
+naturalCoef(cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                    data = dataPTIST, constrained = TRUE))
+```
