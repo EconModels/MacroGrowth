@@ -23,7 +23,7 @@ standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 1L, digits=
  
   res <- 
     switch(method,
-           "1" =  list(delta * ldelta_1,  delta * (1.0 - ldelta_1), 1.0 - delta),    # NA, NA, NA
+           "1" = list(delta * ldelta_1,  delta * (1.0 - ldelta_1), 1.0 - delta),    # NA, NA, NA
            "2" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - delta),   # delta_1, 1-delta_1, NA
            "3" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - ldelta)   # delta_1, 1-delta_1, 0
     )
