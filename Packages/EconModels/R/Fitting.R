@@ -415,17 +415,19 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
   }
 }
 
+# These formulas provide C-D models at all boundaries.
+# Also, these formulas all assume constant returns to scale.
 CDformulas <- list( 
   log(y) - log(energy) ~ 
-    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  
+    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  # Full model
   
-  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,
-  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,
-  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,
+  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,            # With energy exponent = 0
+  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,           # With labor exponent = 0
+  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,            # With capital exponent = 0
   
-  log(y) - log(capital) ~ time,
-  log(y) - log(labor)  ~ time,
-  log(y) - log(energy) ~ time 
+  log(y) - log(capital) ~ time, # With capital exponent = 1
+  log(y) - log(labor)  ~ time,  # With labor exponent = 1
+  log(y) - log(energy) ~ time   # With energy exponent = 1
 )
 
 CDcoefNames <- list( 
