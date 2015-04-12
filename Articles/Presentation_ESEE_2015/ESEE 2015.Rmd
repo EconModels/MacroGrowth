@@ -74,11 +74,12 @@ $$
 $$
 
 Note that 
-`scale`   $= \theta$, 
+`scale`  $= \theta$, 
 $\alpha_1 = \alpha$,
 $\alpha_2 = \beta$, and
 $\alpha_3 = \gamma$,
 when the `formula` is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.
+$\theta$ is expected to be near unity.
 
 The CES model is given as
 
@@ -89,7 +90,7 @@ $$
       A = \mathrm{e}^{\lambda (t-t_0)}.
 $$
 
-Note that `scale` $= \gamma$. 
+Note that `scale` $= \gamma$ and is expected to be close to unity. 
 Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab:CES_abg_equations}.
 
 \begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings, 
@@ -98,7 +99,7 @@ Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab
   \begin{center}
     \begin{tabular}{c c c c c} 
       \toprule
-      Nesting    & Nest        & $\alpha_1$ ($\alpha$)                & $\alpha_2$ ($\beta$)     & $\alpha_3$ ($\gamma$)       \\
+      Nesting         & Nest              & $\alpha_1$ ($\alpha$)   & $\alpha_2$ ($\beta$)    & $\alpha_3$ ($\gamma$)       \\
       \midrule
       ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
       ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
@@ -109,6 +110,10 @@ Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab
   \end{center}
 \end{table}
 
+# Questions
+
+List of questions here.
+Then, answer the questions with the results.
 
 # Cobb-Douglas results
 
