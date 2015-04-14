@@ -51,7 +51,7 @@ Energy   | iUMP       | iU
 
 # Fitting
 
-Fitting is accomplished with \emph{formulas} of the form
+Fitting is accomplished with `formula`s of the form
 
 $$
 y \sim x_1 + x_2 + x_3 + time,
@@ -112,29 +112,111 @@ Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab
 
 # Questions
 
-List of questions here.
-Then, answer the questions with the results.
+## What effect does including energy and quality-adjustment have on the Solow residual in the Cobb-Douglas model?
 
-# Cobb-Douglas results
+First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
 
-
-## Unadjusted inputs
-
-```{r CD unadjusted}
-naturalCoef(cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
-                    data = dataPT, constrained = TRUE))
-naturalCoef(cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iXp + iYear, 
-                    data = dataUK, constrained = TRUE))
+```{r reduce Solow residual PT unadjusted}
+ptCDunadjNoE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+                        data = dataPT, constrained = TRUE)
+ptCDunadjWithE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                          data = dataPT, constrained = TRUE)
+naturalCoef(ptCDunadjNoE)
+naturalCoef(ptCDunadjWithE)
 ```
 
-## Quality-adjusted inputs
+The Solow residual (`lambda`) decreased from 
+`r naturalCoef(ptCDunadjNoE)$lambda` to 
+`r naturalCoef(ptCDunadjWithE)$lambda`,
+so it appears that for Portugal, 
+using unadjusted inputs and including energy as a factor of production
+reduces the Solow residual significantly.
 
-```{r CD quality adjusted}
-naturalCoef(cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
-                    data = dataPT, constrained = TRUE))
-naturalCoef(cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, 
-                    data = dataUK, constrained = TRUE))
+What about for quality-adjusted data and Portugal?
+
+``` {r reduce Solow residual PT adjusted}
+ptCDadjNoE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+                        data = dataPT, constrained = TRUE)
+ptCDadjWithE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                          data = dataPT, constrained = TRUE)
+naturalCoef(ptCDadjNoE)
+naturalCoef(ptCDadjWithE)
 ```
+
+Using quality-adjusted inputs, the Solow residual (`lambda`) moves from 
+`r naturalCoef(ptCDadjNoE)$lambda` to
+`r naturalCoef(ptCDadjWithE)$lambda`.
+
+When we look at the effect of both quality-corrected factors of production and energy,
+we see that both including energy and quality-adjusting the factors of production 
+reduce the Solow residual (`lambda`). 
+Quality-adjustment gets part of the way toward eliminating the Solow residual.
+Including energy (whether or not the factors of production are quality-adjusted)
+reduces the Solow residual significantly.
+
+Energy/Adjusted | Unadjusted                             | Quality-adjusted
+--------------- | -------------------------------------- | -----------------------------------
+Without energy  | `r naturalCoef(ptCDunadjNoE)$lambda`   | `r naturalCoef(ptCDadjNoE)$lambda`
+With energy     | `r naturalCoef(ptCDunadjWithE)$lambda` | `r naturalCoef(ptCDadjWithE)$lambda`
+
+Note that the contribution of capital (`alpha_1`)
+always decreases as energy (`alpha_3`) is allowed to play a role.
+
+What about for the UK?
+
+```{r reduce Solow residual UK}
+ukCDunadjNoE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iYear, 
+                        data = dataUK, constrained = TRUE)
+ukCDunadjWithE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iXp + iYear, 
+                          data = dataUK, constrained = TRUE)
+ukCDadjNoE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iYear, 
+                        data = dataUK, constrained = TRUE)
+ukCDadjWithE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, 
+                          data = dataUK, constrained = TRUE)
+```
+
+Energy/Adjusted | Unadjusted                             | Quality-adjusted
+--------------- | -------------------------------------- | -----------------------------------
+Without energy  | `r naturalCoef(ukCDunadjNoE)$lambda`   | `r naturalCoef(ukCDadjNoE)$lambda`
+With energy     | `r naturalCoef(ukCDunadjWithE)$lambda` | `r naturalCoef(ukCDadjWithE)$lambda`
+
+For the UK, the quality-adjusted, with energy Solow residual is 
+`r naturalCoef(ukCDadjWithE)$lambda * 100`%,
+a very small number indeed.
+For the UK, it appears that both quality-adjustment and addition of energy as a factor of production
+can effectively eliminate the Solow residual,
+reducing it to `r naturalCoef(ukCDadjWithE)$lambda`.
+
+Interestingly, the Solow residual acutally increases from 
+`r naturalCoef(ukCDunadjNoE)$lambda` to
+`r naturalCoef(ukCDunadjWithE)$lambda`
+for unadjusted factors of production when energy is added.
+To find out why, let's look at all the coefficients.
+
+``` {r}
+naturalCoef(ukCDunadjNoE)
+naturalCoef(ukCDunadjWithE)
+```
+
+When energy is included, much of the effect of capital (`alpha_1`) is 
+attributed to energy (`alpha_3`), 
+as `alpha_1` moves from 
+`r naturalCoef(ukCDunadjNoE)$alpha_1` to
+`r naturalCoef(ukCDunadjWithE)$alpha_1`.
+
+When we look at quality-adjusted inputs, we find similar results.
+
+``` {r}
+naturalCoef(ukCDadjNoE)
+naturalCoef(ukCDadjWithE)
+```
+
+`alpha_1` moves from 
+`r naturalCoef(ukCDadjNoE)$alpha_1` to
+`r naturalCoef(ukCDadjWithE)$alpha_1`.
+
+
+
 
 
 # CES results
