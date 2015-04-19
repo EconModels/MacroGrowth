@@ -471,9 +471,9 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   sdata <- subset(data, select=all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]
   
-  formulas <- CDformulas[c(2,5,6)]  # just the ones involving the first two of the 3 factors
+# we will only look at formulas[[c(2, 5, 6)]] below; but keep all for indexing convenience
   
-  formulas <- lapply( formulas,
+  formulas <- lapply( CDformulas, 
                       function(x) do.call(substitute, 
                                           list(x,
                                                list( y = formula[[2]],
@@ -484,22 +484,22 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                                           )
                       )
   )
-  res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[1]])))
-  res$winner <- 2
+  res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
+  winner <- 2
   names(res$coefficients) <- CDcoefNames[[2]]
   alpha_1 <- coef(res)["alpha_1"]
   if (constrained){
     # Adjust alpha_1 if we are outside the range 0 <= alpha_1 <= 1
     if (alpha_1 < 0.0){
       alpha_1 <- 0.0
-      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
-      res$winner <- 6
-      names(res$coefficients) <- CDcoefNames[[6]]
+      winner <- 6
     } else if (alpha_1 > 1) {
       alpha_1 <- 1.0
-      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
-      res$winner <- 5
-      names(res$coefficients) <- CDcoefNames[[5]]
+      winner <- 5
+    }
+    if (winner > 2) {  
+      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[winner]])))
+      names(res$coefficients) <- CDcoefNames[[winner]]
     }
   }
   if (save.data) {
@@ -507,6 +507,7 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
   }
   res$response <- eval( formula[[2]], sdata, parent.frame() )
   res$formula <- formula
+  res$winner <- winner
   
   class(res) <- c("CDEmodel", class(res))
   return(res)
