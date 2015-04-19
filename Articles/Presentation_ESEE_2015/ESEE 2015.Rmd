@@ -112,7 +112,13 @@ Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab
 
 # Questions
 
+For now, I've organized the analysis by questions that we would like to answer.
+
 ## What effect does including energy and quality-adjustment have on the Solow residual in the Cobb-Douglas model?
+
+We'll first look at Portugal.
+
+### Portugal
 
 First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
 
@@ -160,9 +166,11 @@ Without energy  | `r naturalCoef(ptCDunadjNoE)$lambda`   | `r naturalCoef(ptCDad
 With energy     | `r naturalCoef(ptCDunadjWithE)$lambda` | `r naturalCoef(ptCDadjWithE)$lambda`
 
 Note that the contribution of capital (`alpha_1`)
-always decreases as energy (`alpha_3`) is allowed to play a role.
+always decreases when energy (`alpha_3`) is included as a factor of production.
 
 What about for the UK?
+
+### United Kingdom
 
 ```{r reduce Solow residual UK}
 ukCDunadjNoE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iYear, 
