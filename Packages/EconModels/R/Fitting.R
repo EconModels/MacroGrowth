@@ -492,12 +492,12 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
     # Adjust alpha_1 if we are outside the range 0 <= alpha_1 <= 1
     if (alpha_1 < 0.0){
       alpha_1 <- 0.0
-      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
+      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
       res$winner <- 6
       names(res$coefficients) <- CDcoefNames[[6]]
     } else if (alpha_1 > 1) {
       alpha_1 <- 1.0
-      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[3]])))
+      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
       res$winner <- 5
       names(res$coefficients) <- CDcoefNames[[5]]
     }
