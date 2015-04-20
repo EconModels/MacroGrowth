@@ -139,6 +139,14 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
         coefList[["rho_1"]] <- NA
       }
     }
+    
+    # special treatment for boundary model problem child
+    # in this case alpha_1 and alpha_2 don't make sense because we are creating
+    # a new first factor as pmin(x1, x2)
+    if (!is.null(object$boundary) && object$boundary == "18-17") {
+      coefList[["delta_1"]] <- NA
+      coefList[["sigma_1"]] <- 0
+    }
   }
   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
@@ -152,6 +160,9 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
   sigma <-  tryCatch(with(coefList, sigma), error=function(e) NA)
   sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
+
+    
+
   sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest, method=method)
   
   as.data.frame( 
