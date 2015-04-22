@@ -957,7 +957,7 @@ m_histData <- melt(select(m_histData, Year, iGDP, iK, iL, iXp, iXf, iU, none, Co
                    value.name = "iE")
 # Calculate finite difference approximations of time derivatives for output and all factors of production
 lag <- 5       # Desired lag for calculations. Set to n for differences across n years.
-pad <- "tail"  # Desired padding for NA valuse
+pad <- "tail"  # Desired padding for NA values
 fd <- m_histData %>% group_by(Source, Country, energyType) %>% arrange(Year) %>% 
   mutate(dydt = ediff(iGDP, pad=pad, lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
   mutate(dkdt = ediff(iK, pad=pad,   lag=lag) / ediff(Year, pad=pad, lag=lag)) %>%
