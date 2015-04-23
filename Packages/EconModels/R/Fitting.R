@@ -416,10 +416,10 @@ cdModel <- function(formula, data, response, capital, labor, energy, time,
                              constrained=FALSE, save.data=TRUE, ...) {
   if (missing(formula)) {
     if (missing(energy)) {
-      return( cdwoeModel( data=data, responses=response, capital=capital, labor=labor,
+      return( cdwoeModel( data=data, response=response, capital=capital, labor=labor,
                         time=time, constrained = constrained, save.data=save.data, ...) )
     } else {
-      return( cdeModel( data=data, responses=response, capital=capital, labor=labor,
+      return( cdeModel( data=data, response=response, capital=capital, labor=labor,
                         energy=energy,
                         time=time, constrained = constrained, save.data=save.data, ...) )
     }
