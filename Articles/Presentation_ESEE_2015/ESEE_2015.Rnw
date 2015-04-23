@@ -1,0 +1,1119 @@
+% This article has been prepared for publication in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2014-08-01
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+\usepackage{booktabs}   % for beautiful tables
+
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\journal{Ecological Economics}
+
+\begin{document}
+
+<<setup, echo=FALSE, message=FALSE, eval=TRUE>>=
+require(EconData)
+require(EconModels)
+require(dplyr)
+
+#####################################################
+evalCES=TRUE
+#####################################################
+@
+
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Effect of quality-adjusted production function inputs}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[Leeds]{Paul Brockway}
+\author[IST]{Tiago Domingos}
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+
+% \address[IST]{IST, Lisbon, Portugal}
+% \address[Leeds]{Leeds University, Leeds, UK}
+% \cortext[cor1]{Corresponding author}
+% \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+
+\begin{abstract}
+%% Text of abstract
+**** Add abstract ****
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep exergy \sep energy \sep Cobb-Douglas \sep CES
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This is a study of the effects of quality-adjusted production function inputs
+on the importance of energy in the production function.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coordinates of Analysis} 
+\label{sec:Coordinates}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section describes the coordinates of analysis and briefly reviews 
+literature related to each.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Mathematical Forms of the Energy-augmented Production Function} 
+\label{sec:Prod_Func_Forms}
+%++++++++++++++++++++++++++++++
+
+In this paper, we assess two prominent energy-augmented production functions 
+that appear in the literature: 
+Cobb-Douglas (CD) and
+Constant Elasticity of Substitution (CES).
+The following subsections describe each.
+
+
+%------------------------------
+\subsubsection{Cobb-Douglas Production Function} 
+\label{sec:CDe}
+%------------------------------
+
+The Cobb-Douglas production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta A k^\alpha l^\beta \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ (time) is measured in years,
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ (economic output) is represented by GDP, 
+$K$ (capital) is expressed in currency units, 
+$L$ (labor) is expressed in workers or work-hours/year, and
+the 0 subscript indicates values at an initial year.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+  Model parameters are represented by Greek letters
+  ($\alpha$, $\beta$, $\lambda$, $\theta$).
+  }
+Constant returns to scale are represented by the constraint
+$\alpha + \beta = 1$.
+
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta A k^\alpha l^\beta e^\gamma \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha + \beta + \gamma = 1$.
+The term $A$ is known as total factor productivity,
+and $\lambda$ is the Solow residual. 
+
+
+%..............................
+\paragraph{Estimating the Solow residual} 
+\label{sec:estimating_the_solow_residual}
+%..............................
+
+Assuming that parameters $\theta$, $\alpha$, and $\beta$
+in Equation~\ref{eq:CDe} are known from parameter estimation,
+we can estimate the value of $\lambda$ as follows.
+First, assume constant returns to scale such that 
+$\alpha + \beta + \gamma = 1$, 
+and calculate $\gamma = 1 - \alpha - \beta$.
+Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
+%
+\begin{equation} \label{eq:lnCD}
+  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
+\end{equation}
+%
+By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
+and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
+constant with respect to time, we obtain
+%
+\begin{equation} \label{eq:ddtlnCD}
+  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
+\end{equation}
+%
+Solving for the total factor productivity term gives
+%
+\begin{equation} \label{eq:solow_resid}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+        \right] \;.
+\end{equation}
+%
+Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
+%
+\begin{equation}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
+    = \lambda \; ,
+\end{equation}
+%
+which can be substituted into Equation~\ref{eq:solow_resid} to find
+%
+\begin{equation} \label{eq:lambda}
+  \lambda 
+    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+    - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+      \right] \;.
+\end{equation}
+%
+Equation~\ref{eq:lambda} applies for any instant in time.
+
+If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
+between times $i$ and $j$, we find
+%
+\begin{equation} \label{eq:lambdaij}
+  \lambda_{i,j}
+    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
+    - \left[
+            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
+      \right] \;,
+\end{equation}
+% 
+where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
+from Equation~\ref{eq:lambda} between times $i$ and $j$.
+
+Interestingly, 
+%
+\begin{equation}
+  \lambda_{1,n}
+    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
+\end{equation}
+% 
+Rather,
+%
+\begin{equation} \label{eq:lambda1n}
+  \lambda_{1,n}
+    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
+      - \left[ 
+            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
+            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
+            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
+      \right] \; ,
+\end{equation}
+% 
+which will become increasingly inaccurate over large time spans,
+because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
+of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
+This suggests that an averaging approach such as
+%
+\begin{equation}
+  \lambda_{1,n}
+    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
+\end{equation}
+%
+is a better approximation of Equation~\ref{eq:lambda1n},
+which is, itself, an approximation of the true value of $\lambda$ 
+given by Equation~\ref{eq:lambda}.
+
+
+%..............................
+\paragraph{Fraction of growth explained by the Solow residual} 
+\label{sec:fraction_of_growth_solow}
+%..............................
+
+The fraction~($f$) of GDP growth explained by the Solow residual
+can be given as
+%
+\begin{equation} \label{eq:frac_growth_explained_by_solow}
+  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
+            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
+                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
+\end{equation}
+%
+Using forward differences to estimate $f$ yields
+%
+\begin{equation} \label{eq:f_finite_diff_1}
+  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
+       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
+\end{equation}
+%
+Cancelling $t_j - t_i$ terms and simplifying gives
+%
+\begin{equation} \label{eq:f_finite_diff_2}
+  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
+                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
+                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
+            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
+\end{equation}
+%
+which is an estimate of the instantaneous value of $f$ 
+given by Equation~\ref{eq:frac_growth_explained_by_solow}.
+
+
+%------------------------------
+\subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
+\label{sec:CES}
+%------------------------------
+
+Other energy economists use an energy-augmented 
+Constant Elasticity of Substitution (CES) production function to 
+describe economic growth. The \texttt{R} 
+% \citep{R} 
+package \texttt{micEconCES} 
+% \citep{Henningsen:2011td} 
+estimates CES production 
+functions of the following forms (among others):
+%
+\begin{equation} \label{eq:CESkl}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}  
+\end{equation}
+%
+\begin{equation} \label{eq:CESkle}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+%
+Equation~\ref{eq:CESkl} is a CES production function with 
+capital stock ($k$) and labor ($l$) factors of production. 
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
+where $\delta \rightarrow 1$. 
+
+$\gamma$ is a fitting parameter that represents productivity. 
+The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
+of substitution ($\sigma_1$ and $\sigma$).
+The elasticity of substitution 
+between capital ($k$) and labor ($l$) is given by 
+$\sigma_1 = \frac{1}{1+\rho_1}$, and
+the elasticity of substitution between ($kl$) and ($e$) is given by 
+$\sigma = \frac{1}{1+\rho}$. 
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. Similarly, 
+as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
+$\delta_1$ describes the relative importance of capital ($k$)
+and labor ($l$), and
+$\delta$ describes the importance of ($kl$) relative to ($e$).
+
+Constraints on the fitting parameters include 
+$\delta_1 \in [0,1]$,
+$\delta \in [0,1]$,
+$\rho_1 \in [-1,0) \cup (0,\infty)$, and
+$\rho \in [-1,0) \cup (0,\infty)$. 
+
+Two other nestings of the factors of production ($k$, $l$, and $e$)
+are possible with the CES model.
+%
+\begin{equation} \label{eq:CESlek}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+%
+\begin{equation} \label{eq:CESekl}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+% 
+Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
+meanings that depend upon the nesting of the factors of production.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Economies} 
+\label{sec:Economies}
+%++++++++++++++++++++++++++++++
+
+Discuss economies here.
+
+UK and Portugal.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sources of Data}
+\label{sec:Sources_of_Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Discuss data sources here.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Historical Data} 
+\label{sec:Historical_Data}
+%++++++++++++++++++++++++++++++
+
+Historical data are stored in the \texttt{IST} and \texttt{Leeds} data sets.
+
+<<Data, eval=TRUE>>=
+dataPT <- filter(IST, Country == "PT")
+dataUK <- filter(Leeds, Country == "UK")
+historicalData <- plyr::rbind.fill(dataPT, dataUK)
+@
+
+
+<<Time Series Variables>>=
+# This block of code sets up the time-series variables 
+# to be used for each country.
+# Adding this level of abstraction makes it easier 
+# for us to change variables later.
+# It also makes it easier to see what is going on 
+# in each formula throughout the document.
+# Economic output
+y_PT <- "iGDP"
+y_UK <- "iGDP"
+# Portugal undajusted inputs
+y_PT <- "iGDP"
+K_PT_unadj <- "iKstkS.L"
+L_PT_unadj <- "iL"
+E_PT_unadj <- "iXpMP"
+# Partugal quality-adjusted inputs
+K_PT_adj <- "iKservS.L"
+L_PT_adj <- "ihLest"
+E_PT_adj <- "iUMP"
+# UK unadjusted inputs
+K_UK_unadj <- "iKstkO.WwithRD"
+L_UK_unadj <- "iL"
+E_UK_unadj <- "iXp"
+# UK quality-adjusted inputs
+K_UK_adj <- "iKservO.WwithRD"
+L_UK_adj <- "ihLest"
+E_UK_adj <- "iU"
+# Time variables
+time_PT <- "iYear"
+time_UK <- "iYear"
+@
+
+<<Formulas, echo=FALSE>>=
+# Set up the formulas for each type of analysis.
+# To do this, use the substitute function.
+
+# response <- "iGDP"
+# # Portugal undajusted inputs
+# capital <- "iKstkS.L"
+# labor <- "iL"
+# time <- "iYear"
+# 
+# formula <- substitute( response ~ capital + labor + time,
+#                        list( response = substitute(response),
+#                              capital = substitute(capital),
+#                              labor = substitute(labor),
+#                              time = substitute(time)
+#                        )
+# )
+# formula
+# 
+# 
+# 
+# f_PT_unadj_woe <- substitute(y ~ k + l + t, list(y = y_PT,
+#                                                  k = K_PT_unadj,
+#                                                  l = L_PT_unadj,
+#                                                  t = time_PT))
+# y_PT
+# substitute(y_PT)
+# eval(y_PT)
+# f_PT_unadj_woe
+@
+
+For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
+
+\begin{table} \caption{Unadjusted variables.} 
+\label{tab:unadjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal           & UK                 \\
+      \midrule
+      Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
+      Capital     & \Sexpr{K_PT_unadj} & \Sexpr{K_UK_unadj} \\
+      Labor       & \Sexpr{L_PT_unadj} & \Sexpr{L_UK_unadj} \\
+      Energy      & \Sexpr{E_PT_unadj} & \Sexpr{E_UK_unadj} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+For quality-adjusted variables, we use the time series shown in Table~\ref{tab:quality_adjusted_variables}.
+
+\begin{table} \caption{Unadjusted variables.} 
+\label{tab:quality_adjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal         & UK               \\
+      \midrule
+      Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
+      Capital     & \Sexpr{K_PT_adj} & \Sexpr{K_UK_adj} \\
+      Labor       & \Sexpr{L_PT_adj} & \Sexpr{L_UK_adj} \\
+      Energy      & \Sexpr{E_PT_adj} & \Sexpr{E_UK_adj} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation}
+\label{sec:parameter_estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Parameter estimation is accomplished with \texttt{formula}s of the form
+%
+\begin{equation} \label{eq:formulas}
+  y \sim x_1 + x_2 + x_3 + time,
+\end{equation}
+%
+where $y$ is economic output and 
+$x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of
+capital ($k$), labor ($l$), and energy ($e$).
+(The factors of production may be quality-adjusted.)
+$time$ is the time variable, usually \texttt{iYear}. 
+The \texttt{formula}s are used in a fitting function such as 
+\texttt{cdModel} to create a \texttt{model} object.
+The function \texttt{naturalCoef} extracts reasonable
+coefficients from \texttt{model} objects.
+
+Note that in the fitting process for the Cobb-Douglas equation,
+$\texttt{scale} = \theta$, 
+$\alpha_1 = \alpha$,
+$\alpha_2 = \beta$, and
+$\alpha_3 = \gamma$,
+when the \texttt{formula} is specified as 
+%
+\begin{equation} \label{eq:formula_kle}
+  \texttt{y} \sim \texttt{k + l + e + time}.
+\end{equation}
+%
+$\theta$ is expected to be near unity.
+
+Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
+Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab:CES_abg_equations}.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings, 
+                        provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      \toprule
+      Nesting         & \texttt{nest}     & $\alpha_1$ ($\alpha$)   & $\alpha_2$ ($\beta$)    & $\alpha_3$ ($\gamma$)       \\
+      \midrule
+      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
+      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For now, I've organized the analysis around questions that we would like to answer.
+
+%++++++++++++++++++++++++++++++
+\subsection{What effect does including energy and quality-adjustment have 
+            on the Solow residual in the Cobb-Douglas model?} 
+\label{sec:quality_adj_energy_and_solow_residual}
+%++++++++++++++++++++++++++++++
+
+We'll first look at Portugal.
+
+%------------------------------
+\subsubsection{Portugal} 
+%------------------------------
+
+First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
+
+<<Portugal C-D undadjusted without energy>>=
+ptCDunadjNoE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+                        data = dataPT, constrained = TRUE)
+naturalCoef(ptCDunadjNoE)
+@
+
+<<Portugal C-D undadjusted with energy>>=
+ptCDunadjWithE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                          data = dataPT, constrained = TRUE)
+naturalCoef(ptCDunadjWithE)
+@
+
+The Solow residual (\texttt{lambda}) is always negative. 
+However, the absolute value of \texttt{lambda} decreases from 
+\Sexpr{naturalCoef(ptCDunadjNoE)$lambda} to 
+\Sexpr{naturalCoef(ptCDunadjWithE)$lambda}
+when adding energy.
+So it appears that for Portugal, 
+using unadjusted inputs and including energy as a factor of production
+reduces the absolute value of the Solow residual somewhat.
+
+What about for quality-adjusted data and Portugal?
+
+<<Portugal C-D adjusted without energy>>=
+ptCDadjNoE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+                      data = dataPT, constrained = TRUE)
+naturalCoef(ptCDadjNoE)
+@
+
+<<Portugal C-D adjusted with energy>>=
+ptCDadjWithE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                          data = dataPT, constrained = TRUE)
+naturalCoef(ptCDadjWithE)
+@
+
+Using quality-adjusted inputs, the Solow residual (\texttt{lambda}) moves from 
+\Sexpr{naturalCoef(ptCDadjNoE)$lambda} to
+\Sexpr{naturalCoef(ptCDadjWithE)$lambda} when including energy.
+The absolute value of the Solow residual again decreases when adding energy.
+But, with quality-adjusted inputs, the effect is much stronger.
+
+Table~\ref{tab:lambda_CD_PT} shows
+the effect of both quality-corrected factors of production and energy.
+We find that both including energy and quality-adjusting the factors of production 
+reduce the Solow residual (\texttt{lambda}). 
+Quality-adjustment gets part of the way toward eliminating the Solow residual.
+Including energy (whether or not the factors of production are quality-adjusted)
+reduces the Solow residual significantly.
+
+\begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
+\label{tab:lambda_CD_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{naturalCoef(ptCDunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCDadjNoE)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(ptCDunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCDadjWithE)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Note that the contribution of capital (\texttt{alpha\_1})
+always shifts to energy (\texttt{alpha\_3}) when energy is included 
+as a factor of production.
+
+What about for the UK?
+
+%------------------------------
+\subsubsection{United Kingdom} 
+%------------------------------
+
+<<UK C-D>>=
+ukCDunadjNoE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iYear, 
+                        data = dataUK, constrained = TRUE)
+ukCDunadjWithE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iXp + iYear, 
+                          data = dataUK, constrained = TRUE)
+ukCDadjNoE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iYear, 
+                        data = dataUK, constrained = TRUE)
+ukCDadjWithE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, 
+                          data = dataUK, constrained = TRUE)
+@
+
+\begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
+\label{tab:lambda_CD_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{naturalCoef(ukCDunadjNoE)$lambda}      & \Sexpr{naturalCoef(ukCDadjNoE)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(ukCDunadjWithE)$lambda}    & \Sexpr{naturalCoef(ukCDadjWithE)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+For the UK, the quality-adjusted, with energy Solow residual is 
+\Sexpr{naturalCoef(ukCDadjWithE)$lambda * 100}%,
+a very small number indeed.
+For the UK, it appears that both quality-adjustment and addition of energy as a factor of production
+can effectively eliminate the Solow residual,
+reducing it to \Sexpr{naturalCoef(ukCDadjWithE)$lambda}.
+
+Interestingly, the Solow residual acutally increases from 
+\Sexpr{naturalCoef(ukCDunadjNoE)$lambda} to
+\Sexpr{naturalCoef(ukCDunadjWithE)$lambda}
+for unadjusted factors of production when energy is added.
+To find out why, let's look at all the coefficients.
+
+<<UK CD Unadjusted Coefficients>>=
+naturalCoef(ukCDunadjNoE)
+naturalCoef(ukCDunadjWithE)
+@
+
+When energy is included, much of the effect of capital (\texttt{alpha\_1}) is 
+attributed to energy (\texttt{alpha\_3}), 
+as \texttt{alpha\_1} moves from 
+\Sexpr{naturalCoef(ukCDunadjNoE)$alpha_1} to
+\Sexpr{naturalCoef(ukCDunadjWithE)$alpha_1}.
+
+When we look at quality-adjusted inputs, we find similar results.
+
+<<UK CD Quality-adjusted Coefficients>>=
+naturalCoef(ukCDadjNoE)
+naturalCoef(ukCDadjWithE)
+@
+
+\texttt{alpha\_1} moves from 
+\Sexpr{naturalCoef(ukCDadjNoE)$alpha_1} to
+\Sexpr{naturalCoef(ukCDadjWithE)$alpha_1}.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Do we obtain a negative Solow residual for Portugal with the CES model?} 
+\label{sec:Solow_negative_for_PT_in_CES?}
+%++++++++++++++++++++++++++++++
+
+%------------------------------
+\subsubsection{($kl$)$e$ nesting} 
+%------------------------------
+
+First, look at unadjusted inputs using the ($kl$)$e$ nesting.
+
+<<PT CES-kle unadjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESkleunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+#                nest = c(1,2,3), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESkleunadjNoE)
+ptCESkleunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                            nest = c(1,2,3), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESkleunadjWithE)
+@
+
+Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+
+<<PT CES-kle quality-adjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESkleadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+#                         nest = c(1,2,3), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESkleadjNoE)
+ptCESkleadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                          nest = c(1,2,3), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESkleadjWithE)
+@
+
+Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results with CES and the ($kl$)$e$ nesting.
+
+\begin{table} \caption{Portugal Solow residual results with CES and ($kl$)$e$ nesting.} 
+\label{tab:lambda_CES-kle_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+%      Without energy  & \Sexpr{naturalCoef(ptCESkleunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESkleadjNoE)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(ptCESkleunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESkleadjWithE)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+The Solow residual is positive, and 
+quality-adjusting the inputs 
+reduces the Solow residual (\texttt{lambda}).
+
+%------------------------------
+\subsubsection{($le$)$k$ nesting} 
+%------------------------------
+
+Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+
+<<PT CES-lek unadjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESlekunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+#                nest = c(2,3,1), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESlekunadjNoE)
+ptCESlekunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                            nest = c(2,3,1), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESlekunadjWithE)
+@
+
+Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+
+<<PT CES-lek quality-adjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESlekadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+#                         nest = c(2,3,1), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESlekadjNoE)
+ptCESlekadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                          nest = c(2,3,1), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESlekadjWithE)
+@
+
+Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results with CES and the ($le$)$k$ nesting.
+
+\begin{table} \caption{Portugal Solow residual results with CES and ($le$)$k$ nesting.} 
+\label{tab:lambda_CES-lek_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+%      Without energy  & \Sexpr{naturalCoef(ptCESlekunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESlekadjNoE)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(ptCESlekunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESlekadjWithE)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+The Solow residual is positive, and 
+quality-adjusting the inputs 
+reduces the Solow residual (\texttt{lambda}).
+
+
+%------------------------------
+\subsubsection{($ek$)$k$ nesting} 
+%------------------------------
+
+Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
+
+<<PT CES-ekl unadjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESeklunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+#                nest = c(3,1,2), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESeklunadjNoE)
+ptCESeklunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+                            nest = c(3,1,2), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESeklunadjWithE)
+@
+
+Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+
+<<PT CES-ekl quality-adjusted, warning=FALSE, eval=evalCES>>=
+# Not working at this time.
+# ptCESekladjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+#                         nest = c(3,1,2), data = dataPT, constrained = TRUE)
+# naturalCoef(ptCESekladjNoE)
+ptCESekladjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+                          nest = c(3,1,2), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESekladjWithE)
+@
+
+Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results with CES and the ($ek$)$l$ nesting.
+
+\begin{table} \caption{Portugal Solow residual results with CES and ($ek$)$l$ nesting.} 
+\label{tab:lambda_CES-ekl_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+%      Without energy  & \Sexpr{naturalCoef(ptCESeklunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESekladjNoE)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(ptCESeklunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESekladjWithE)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+The Solow residual is positive, and 
+quality-adjusting the inputs 
+reduces the Solow residual (\texttt{lambda}).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
+% all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
+% associated with this paper can be found at\\*
+% \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+% \bibliography{Paper2.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix}
+
+Include data tables here?
+
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
