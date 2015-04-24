@@ -1,7 +1,7 @@
 
 # convert from delta_1 and delta to alpha_i in a nest-aware way.
 
-standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 4L, digits=5) {
+standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, digits=5) {
   # convert to standard coefficents taking nest order into account
   # basically we are just permuting things so that alpha_i can always
   # refer to the same quantities, even when they show up in different parts of the model.
@@ -26,15 +26,18 @@ standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, method = 4L, digits=
     a * b
   }
   
-  res <-  switch(method,
-           "1" = list(delta * ldelta_1,  delta * (1.0 - ldelta_1), 1.0 - delta),   # NA, NA, NA
-           "2" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - delta),   # delta_1, 1-delta_1, NA
-           "3" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - ldelta),  # delta_1, 1-delta_1, 0
-           "4" = list(
-             modprod(delta, delta_1), 
-             modprod(delta, (1.0 - delta_1)), 
-             1.0 - delta)  
-    )
+#  res <-  switch(method,
+#           "1" = list(delta * ldelta_1,  delta * (1.0 - ldelta_1), 1.0 - delta),   # NA, NA, NA
+#           "2" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - delta),   # delta_1, 1-delta_1, NA
+#           "3" = list(ldelta * delta_1,  ldelta * (1.0 - delta_1), 1.0 - ldelta),  # delta_1, 1-delta_1, 0
+#           "4" = list(
+#             modprod(delta, delta_1), 
+#             modprod(delta, (1.0 - delta_1)), 
+#             1.0 - delta)  
+#    )
+  res <- = list( modprod(delta, delta_1), 
+                 modprod(delta, (1.0 - delta_1)), 
+                 1.0 - delta)  
   
   # invert the nest permutation
   res<- res[order(nest)]
@@ -119,7 +122,7 @@ naturalCoef.cesEst <- function(object, ...) {
   makeNatCoef(object, ...)
 }
   
-makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
+makeNatCoef <- function(object, nest=object$nest, ...) {
   coefList <- as.list(coef(object))
   if (inherits(object, "cesEst") && length(coefList) == 4) {
     # We disagree with the naming of the coefficients by cesEst when only two factors of production are involved.
@@ -171,7 +174,7 @@ makeNatCoef <- function(object, nest=object$nest, method = 1, ...) {
 
     
 
-  sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest, method=method)
+  sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest)
   
   as.data.frame( 
     dplyr::data_frame( gamma = gamma_coef,
