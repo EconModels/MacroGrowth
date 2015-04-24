@@ -528,60 +528,66 @@ historicalData <- plyr::rbind.fill(dataPT, dataUK)
 # for us to change variables later.
 # It also makes it easier to see what is going on 
 # in each formula throughout the document.
+# Use of substitute establishes an R "name"
+# that can be a component of a formula.
 # Economic output
-y_PT <- "iGDP"
-y_UK <- "iGDP"
+y_PT <- substitute(iGDP)
+y_UK <- substitute(iGDP)
 # Portugal undajusted inputs
-y_PT <- "iGDP"
-K_PT_unadj <- "iKstkS.L"
-L_PT_unadj <- "iL"
-E_PT_unadj <- "iXpMP"
-# Partugal quality-adjusted inputs
-K_PT_adj <- "iKservS.L"
-L_PT_adj <- "ihLest"
-E_PT_adj <- "iUMP"
+k_PT_unadj <- substitute(iKstkS.L)
+l_PT_unadj <- substitute(iL)
+e_PT_unadj <- substitute(iXpMP)
+# Portugal quality-adjusted inputs
+k_PT_adj <- substitute(iKservS.L)
+l_PT_adj <- substitute(ihLest)
+e_PT_adj <- substitute(iUMP)
 # UK unadjusted inputs
-K_UK_unadj <- "iKstkO.WwithRD"
-L_UK_unadj <- "iL"
-E_UK_unadj <- "iXp"
+k_UK_unadj <- substitute(iKstkO.WwithRD)
+l_UK_unadj <- substitute(iL)
+e_UK_unadj <- substitute(iXp)
 # UK quality-adjusted inputs
-K_UK_adj <- "iKservO.WwithRD"
-L_UK_adj <- "ihLest"
-E_UK_adj <- "iU"
+k_UK_adj <- substitute(iKservO.WwithRD)
+l_UK_adj <- substitute(ihLest)
+e_UK_adj <- substitute(iU)
 # Time variables
-time_PT <- "iYear"
-time_UK <- "iYear"
+t_PT <- substitute(iYear)
+t_UK <- substitute(iYear)
 @
 
-<<Formulas, echo=FALSE>>=
+<<Formulas>>=
 # Set up the formulas for each type of analysis.
-# To do this, use the substitute function.
-
-# response <- "iGDP"
-# # Portugal undajusted inputs
-# capital <- "iKstkS.L"
-# labor <- "iL"
-# time <- "iYear"
-# 
-# formula <- substitute( response ~ capital + labor + time,
-#                        list( response = substitute(response),
-#                              capital = substitute(capital),
-#                              labor = substitute(labor),
-#                              time = substitute(time)
-#                        )
-# )
-# formula
-# 
-# 
-# 
-# f_PT_unadj_woe <- substitute(y ~ k + l + t, list(y = y_PT,
-#                                                  k = K_PT_unadj,
-#                                                  l = L_PT_unadj,
-#                                                  t = time_PT))
-# y_PT
-# substitute(y_PT)
-# eval(y_PT)
-# f_PT_unadj_woe
+f_PT_unadj_noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_PT, k = k_PT_unadj, 
+                    l = l_PT_unadj, t = t_PT)))
+f_PT_unadj_withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_PT, k = k_PT_unadj,
+                    l = l_PT_unadj, e = e_PT_unadj, t = t_PT)))
+f_PT_adj_noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_PT, k = k_PT_adj,
+                    l = l_PT_adj, t = t_PT)))
+f_PT_adj_withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_PT, k = k_PT_adj,
+                    l = l_PT_adj, e = e_PT_adj, t = t_PT)))
+f_UK_unadj_noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_UK, k = k_UK_unadj,
+                    l = l_UK_unadj, t = t_UK)))
+f_UK_unadj_withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_UK, k = k_UK_unadj,
+                    l = l_UK_unadj, e = e_UK_unadj, t = t_UK)))
+f_UK_adj_noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_UK, k = k_UK_adj,
+                    l = l_UK_adj, t = t_UK)))
+f_UK_adj_withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_UK, k = k_UK_adj,
+                    l = l_UK_adj, e = e_UK_adj, t = t_UK)))
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -594,9 +600,9 @@ For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjus
       Variable    & Portugal           & UK                 \\
       \midrule
       Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
-      Capital     & \Sexpr{K_PT_unadj} & \Sexpr{K_UK_unadj} \\
-      Labor       & \Sexpr{L_PT_unadj} & \Sexpr{L_UK_unadj} \\
-      Energy      & \Sexpr{E_PT_unadj} & \Sexpr{E_UK_unadj} \\
+      Capital     & \Sexpr{k_PT_unadj} & \Sexpr{k_UK_unadj} \\
+      Labor       & \Sexpr{l_PT_unadj} & \Sexpr{l_UK_unadj} \\
+      Energy      & \Sexpr{e_PT_unadj} & \Sexpr{e_UK_unadj} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -612,9 +618,9 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
       Variable    & Portugal         & UK               \\
       \midrule
       Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
-      Capital     & \Sexpr{K_PT_adj} & \Sexpr{K_UK_adj} \\
-      Labor       & \Sexpr{L_PT_adj} & \Sexpr{L_UK_adj} \\
-      Energy      & \Sexpr{E_PT_adj} & \Sexpr{E_UK_adj} \\
+      Capital     & \Sexpr{k_PT_adj} & \Sexpr{k_UK_adj} \\
+      Labor       & \Sexpr{l_PT_adj} & \Sexpr{l_UK_adj} \\
+      Energy      & \Sexpr{e_PT_adj} & \Sexpr{e_UK_adj} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -699,13 +705,13 @@ We'll first look at Portugal.
 First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
 
 <<Portugal C-D undadjusted without energy>>=
-ptCDunadjNoE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
+ptCDunadjNoE <- cdModel(formula = f_PT_unadj_noE, 
                         data = dataPT, constrained = TRUE)
 naturalCoef(ptCDunadjNoE)
 @
 
 <<Portugal C-D undadjusted with energy>>=
-ptCDunadjWithE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+ptCDunadjWithE <- cdModel(formula = f_PT_unadj_withE, 
                           data = dataPT, constrained = TRUE)
 naturalCoef(ptCDunadjWithE)
 @
@@ -722,13 +728,13 @@ reduces the absolute value of the Solow residual somewhat.
 What about for quality-adjusted data and Portugal?
 
 <<Portugal C-D adjusted without energy>>=
-ptCDadjNoE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
+ptCDadjNoE <- cdModel(formula = f_PT_adj_noE, 
                       data = dataPT, constrained = TRUE)
 naturalCoef(ptCDadjNoE)
 @
 
 <<Portugal C-D adjusted with energy>>=
-ptCDadjWithE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+ptCDadjWithE <- cdModel(formula = f_PT_adj_withE, 
                           data = dataPT, constrained = TRUE)
 naturalCoef(ptCDadjWithE)
 @
@@ -772,13 +778,13 @@ What about for the UK?
 %------------------------------
 
 <<UK C-D>>=
-ukCDunadjNoE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iYear, 
+ukCDunadjNoE <- cdModel(formula = f_UK_unadj_noE, 
                         data = dataUK, constrained = TRUE)
-ukCDunadjWithE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iXp + iYear, 
+ukCDunadjWithE <- cdModel(formula = f_UK_unadj_withE, 
                           data = dataUK, constrained = TRUE)
-ukCDadjNoE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iYear, 
+ukCDadjNoE <- cdModel(formula = f_UK_adj_noE, 
                         data = dataUK, constrained = TRUE)
-ukCDadjWithE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, 
+ukCDadjWithE <- cdModel(formula = f_UK_adj_withE, 
                           data = dataUK, constrained = TRUE)
 @
 
@@ -837,6 +843,20 @@ naturalCoef(ukCDadjWithE)
 \label{sec:Solow_negative_for_PT_in_CES?}
 %++++++++++++++++++++++++++++++
 
+First, look at the CES model without energy.
+Nesting is unabmiguous, so this fit does not need to be repeated
+for each nesting option. 
+
+<<PT CES-kl, warning=FALSE, eval=evalCES>>=
+ptCESklunadjNoE <- cesModel(formula = f_PT_unadj_noE, 
+                            nest = c(1,2), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESklunadjNoE)
+ptCESkladjNoE <- cesModel(formula = f_PT_adj_noE, 
+                          nest = c(1,2), data = dataPT, constrained = TRUE)
+naturalCoef(ptCESkladjNoE)
+@
+
+
 %------------------------------
 \subsubsection{($kl$)$e$ nesting} 
 %------------------------------
@@ -844,11 +864,7 @@ naturalCoef(ukCDadjWithE)
 First, look at unadjusted inputs using the ($kl$)$e$ nesting.
 
 <<PT CES-kle unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESkleunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(1,2,3), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESkleunadjNoE)
-ptCESkleunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+ptCESkleunadjWithE <- cesModel(formula = f_PT_unadj_withE, 
                             nest = c(1,2,3), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESkleunadjWithE)
 @
@@ -856,11 +872,7 @@ naturalCoef(ptCESkleunadjWithE)
 Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
 
 <<PT CES-kle quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESkleadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(1,2,3), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESkleadjNoE)
-ptCESkleadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+ptCESkleadjWithE <- cesModel(formula = f_PT_adj_withE, 
                           nest = c(1,2,3), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESkleadjWithE)
 @
@@ -874,7 +886,7 @@ Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESkleunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESkleadjNoE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(ptCESklunadjNoE)$lambda}       & \Sexpr{naturalCoef(ptCESkladjNoE)$lambda} \\
       With energy     & \Sexpr{naturalCoef(ptCESkleunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESkleadjWithE)$lambda} \\
       \bottomrule
     \end{tabular}
@@ -892,11 +904,7 @@ reduces the Solow residual (\texttt{lambda}).
 Next, look at unadjusted inputs using the ($le$)$k$ nesting.
 
 <<PT CES-lek unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESlekunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(2,3,1), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESlekunadjNoE)
-ptCESlekunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+ptCESlekunadjWithE <- cesModel(formula = f_PT_unadj_withE, 
                             nest = c(2,3,1), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESlekunadjWithE)
 @
@@ -904,11 +912,7 @@ naturalCoef(ptCESlekunadjWithE)
 Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
 
 <<PT CES-lek quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESlekadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(2,3,1), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESlekadjNoE)
-ptCESlekadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+ptCESlekadjWithE <- cesModel(formula = f_PT_adj_withE, 
                           nest = c(2,3,1), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESlekadjWithE)
 @
@@ -922,7 +926,7 @@ Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESlekunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESlekadjNoE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(ptCESklunadjNoE)$lambda}       & \Sexpr{naturalCoef(ptCESkladjNoE)$lambda} \\
       With energy     & \Sexpr{naturalCoef(ptCESlekunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESlekadjWithE)$lambda} \\
       \bottomrule
     \end{tabular}
@@ -941,11 +945,7 @@ reduces the Solow residual (\texttt{lambda}).
 Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
 
 <<PT CES-ekl unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESeklunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(3,1,2), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESeklunadjNoE)
-ptCESeklunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
+ptCESeklunadjWithE <- cesModel(formula = f_PT_unadj_withE, 
                             nest = c(3,1,2), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESeklunadjWithE)
 @
@@ -953,11 +953,7 @@ naturalCoef(ptCESeklunadjWithE)
 Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
 
 <<PT CES-ekl quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESekladjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(3,1,2), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESekladjNoE)
-ptCESekladjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
+ptCESekladjWithE <- cesModel(formula = f_PT_adj_withE, 
                           nest = c(3,1,2), data = dataPT, constrained = TRUE)
 naturalCoef(ptCESekladjWithE)
 @
@@ -971,7 +967,7 @@ Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESeklunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESekladjNoE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(ptCESklunadjNoE)$lambda}       & \Sexpr{naturalCoef(ptCESkladjNoE)$lambda} \\
       With energy     & \Sexpr{naturalCoef(ptCESeklunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESekladjWithE)$lambda} \\
       \bottomrule
     \end{tabular}
