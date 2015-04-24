@@ -35,7 +35,7 @@ standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, digits=5) {
 #             modprod(delta, (1.0 - delta_1)), 
 #             1.0 - delta)  
 #    )
-  res <- = list( modprod(delta, delta_1), 
+  res <- list( modprod(delta, delta_1), 
                  modprod(delta, (1.0 - delta_1)), 
                  1.0 - delta)  
   
