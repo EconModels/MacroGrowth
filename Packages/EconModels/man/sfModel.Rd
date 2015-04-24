@@ -20,4 +20,9 @@ an lm object with some additional attributes
 \description{
 Fitting single factor models
 }
+\examples{
+US <- subset(Calvin, Country=="US")
+sfModel(response = iGDP, factor=iK, time = iYear, data=US)
+sfModel(iGDP ~ iK + iYear, data=US)
+}
 

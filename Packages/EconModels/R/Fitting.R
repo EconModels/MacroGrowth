@@ -345,6 +345,11 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param data a data frame in which \code{formula} is evaluated
 #' @param constrained a logical indicating whether the model parameters are constrained
 #' @return an lm object with some additional attributes
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' sfModel(response = iGDP, factor=iK, time = iYear, data=US)
+#' sfModel(iGDP ~ iK + iYear, data=US)
+#' 
 #' @export
 sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
                               save.data=TRUE) {
@@ -411,17 +416,32 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' the components can be specified individually.
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' cdModel(response = iGDP, capital = iK, labor = iL, time = iYear, data=US)
+#' cdModel(iGDP ~ iK + iL + iYear, data=US)
+#' cdModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
+#' cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' 
 #' @export
 cdModel <- function(formula, data, response, capital, labor, energy, time, 
                              constrained=FALSE, save.data=TRUE, ...) {
   if (missing(formula)) {
     if (missing(energy)) {
-      return( cdwoeModel( data=data, responses=response, capital=capital, labor=labor,
-                        time=time, constrained = constrained, save.data=save.data, ...) )
+      return( cdwoeModel( data=data, 
+                          response=response, 
+                          capital=capital, 
+                          labor=labor, 
+                          time=time, 
+                          constrained = constrained, save.data=save.data, ...) )
     } else {
-      return( cdeModel( data=data, responses=response, capital=capital, labor=labor,
+      return( cdeModel( data=data, 
+                        response=response, 
+                        capital=capital, 
+                        labor=labor,
                         energy=energy,
-                        time=time, constrained = constrained, save.data=save.data, ...) )
+                        time=time, 
+                        constrained = constrained, save.data=save.data, ...) )
     }
   }
   
@@ -475,6 +495,11 @@ CDcoefNames <- list(
 #' the components can be specified individually.
 #' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' cdwoeModel(response = iGDP, capital = iK, labor = iL, time = iYear, data=US)
+#' cdwoeModel(iGDP ~ iK + iL + iYear, data=US)
+#' 
 cdwoeModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
                        save.data=TRUE, ...) {
   if ( missing(formula) ) {
@@ -565,6 +590,10 @@ respectsConstraints <- function( model ) {
 #' @param constrained a logical indicated whether the coefficents are constrained. See details
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' cdeModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
+#' cdeModel(iGDP ~ iK + iL + iQp + iYear, data=US)
 
 # y ~ capital + labor + energy + time
 cdeModel <- function( formula, data, response, capital, labor, energy, time, 

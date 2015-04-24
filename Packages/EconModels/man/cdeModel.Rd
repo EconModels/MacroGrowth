@@ -37,4 +37,9 @@ Fitting Cobb-Douglas models with Energy
 \details{
 More about contranints TBA.
 }
+\examples{
+US <- subset(Calvin, Country=="US")
+cdeModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
+cdeModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+}
 
