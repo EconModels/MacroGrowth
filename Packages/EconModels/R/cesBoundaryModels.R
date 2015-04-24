@@ -154,7 +154,7 @@ cesBoundaryModels <- function(formula, data, nest){
         ))
       },
       formulas[keep & !plmModel & (1:20 < 20)], # remove ugly case (20)
-      list(c(1,2), c(1,3), c(2,3))              # adjust nest to leave one out
+      list(c(1,2), c(1,3), c(2,3))[any(keep & !plmModel & (1:20 < 20))]  # adjust nest to leave one out
     )
   
   # Now handle the ugly case.  Since cesEst() can only work with variables, we need
