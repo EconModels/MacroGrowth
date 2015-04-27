@@ -108,6 +108,14 @@ require(EconData)
 require(EconModels)
 require(dplyr)
 
+# Tell whether to re-run the analysis to create the models.
+# This file will use previously-saved models to generate
+# the paper if set to FALSE, greatly reducing time.
+# If something changes in the data or in the code that
+# performs the analysis, set 
+# rerunModels = TRUE
+# once to re-generate the information needed to 
+# create the paper.
 #####################################################
 rerunModels=FALSE
 #####################################################
