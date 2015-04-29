@@ -15,6 +15,12 @@ test_that("cesModel() fits without energy give same results with either nesting.
   model21 <- cesModel(iGDP ~ iL + iK + iYear, data = testData, nest = c(2, 1), digits=30)
   
   expect_equivalent( coef(model12), coef(model21) )
+  
+  # Check that naturalCoef works correctly
+  ################ This test fails. Should it? If we correctly accounted for nest when calculating alphas, it should fail.
+  expect_equivalent(naturalCoef(model12), naturalCoef(model21))
+  ################ This test passes. Should it? If we correctly accounted for nest, it would fail.
+  expect_equivalent(naturalCoef(model12)["alpha_1", "alpha_2"], naturalCoef(model21)["alpha_2", "alpha_1"])
 })
 
 
@@ -45,6 +51,11 @@ test_that("cesModel() fits without energy are correct", {
   expect_equivalent(coef(modelces)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, delta, rho))
   
+  # Check the values of alpha_1, alpha_2, and alpha_3 calculated by naturalCoef.
+  expect_equivalent(naturalCoef(modelces)[c("alpha_1", "alpha_2", "alpha_3")],
+                    list(delta, 1-delta, 0))
+  
+  
   # Try data near a boundary, delta = 0.95
   # When exploring a bug, I noted that cesEst (and cesModel) have 
   # difficulty very near the boundary (delta = 0.99). 
@@ -70,7 +81,7 @@ test_that("cesModel() fits without energy are correct", {
                            tName = "iYear", method = "PORT", multErr = TRUE)
   expect_equivalent(coef(model_manual_3)[c("gamma", "lambda", "delta", "rho")], 
                     list(scale, lambda, delta, rho))
-
+  # Use cesModel
   modelces3 <- cesModel(fitGDP3 ~ iK + iL + iYear, data = testData, nest = c(1, 2), digits=30)
   expect_equivalent(coef(modelces3)[c("gamma", "lambda", "delta", "rho"), drop=TRUE], 
                     list(scale, lambda, delta, rho))
