@@ -508,7 +508,7 @@ are possible with the CES model.
       A \equiv \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 % 
-Note that $\rho$ ($\sigma$), $\delta$, and $\delta_1$ have different
+Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
 meanings that depend upon the nesting of the factors of production.
 
 
