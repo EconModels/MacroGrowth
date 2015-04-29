@@ -152,15 +152,18 @@ rerunModels=FALSE
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
+\author[IST]{João dos Santos}
 \author[Leeds]{Paul Brockway}
-\author[IST]{Tiago Domingos}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu}
+\author[Leeds]{Marco Sekai}
+\author[IST]{Tiago Domingos}
+\author[Leeds]{Julia Steinberger}
 
-% \address[IST]{IST, Lisbon, Portugal}
-% \address[Leeds]{Leeds University, Leeds, UK}
-% \cortext[cor1]{Corresponding author}
-% \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[IST]{IST, Lisbon, Portugal}
+\address[Leeds]{Leeds University, Leeds, UK}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\cortext[cor1]{Corresponding author}
 
 \begin{abstract}
 %% Text of abstract
@@ -747,18 +750,29 @@ when the \texttt{formula} is specified as
   \texttt{y} \sim \texttt{k + l + e + time}.
 \end{equation}
 %
-$\theta$ is expected to be near unity.
-
 Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
-Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab:CES_abg_equations}.
 
-\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings, 
+For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
+$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
+for the CES model with two factors of production
+and by 
+$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
+for the CES model with three factors of production.
+The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
+$\alpha$, $\beta$, and $\gamma$ (coefficients for capital, labor, and energy, respectively)
+as shown in Table \ref{tab:CES_abg_equations}, 
+assuming factors of production are specified in the fitting \texttt{formula} as
+\texttt{y~$\sim$~k~+~l~+~e~+~time}.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ 
+                        (importance of capital, labor, and energy, respectively)
+                        for the various CES nestings, 
                         provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
 \label{tab:CES_abg_equations} 
   \begin{center}
     \begin{tabular}{c c c c c} 
       \toprule
-      Nesting         & \texttt{nest}     & $\alpha_1$ ($\alpha$)   & $\alpha_2$ ($\beta$)    & $\alpha_3$ ($\gamma$)       \\
+      Nesting         & \texttt{nest}     & $\alpha$                & $\beta$                 & $\gamma$       \\
       \midrule
       ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
       ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
@@ -826,11 +840,10 @@ But, with quality-adjusted inputs, the effect is much stronger.
 
 Table~\ref{tab:lambda_CD_PT} shows
 the effect of both quality-corrected factors of production and energy.
-We find that both including energy and quality-adjusting the factors of production 
-reduce the Solow residual (\texttt{lambda}). 
+We find that including energy as a factor of production 
+reduces the absolute value of the Solow residual (\texttt{lambda})
+whether or not the factors of production are quality-adjusted. 
 Quality-adjustment gets part of the way toward eliminating the Solow residual.
-Including energy (whether or not the factors of production are quality-adjusted)
-reduces the Solow residual significantly.
 
 \begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
 \label{tab:lambda_CD_PT} 
@@ -846,7 +859,7 @@ reduces the Solow residual significantly.
   \end{center}
 \end{table}
 
-Note that the contribution of capital (\texttt{alpha\_1})
+Note that for Portugal the contribution of capital (\texttt{alpha\_1})
 always shifts to energy (\texttt{alpha\_3}) when energy is included 
 as a factor of production.
 
@@ -856,8 +869,7 @@ What about for the UK?
 \subsubsection{United Kingdom} 
 %------------------------------
 
-<<UK C-D>>=
-@
+Table~\ref{tab:lambda_CD_UK} shows fitted Cobb-Douglas coefficients for the UK. 
 
 \begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
 \label{tab:lambda_CD_UK} 
@@ -866,25 +878,26 @@ What about for the UK?
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CD)$lambda}   & \Sexpr{naturalCoef(models$UK$adj$noE$CD)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda} & \Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CD)$lambda}   
+                                                & \Sexpr{naturalCoef(models$UK$adj$noE$CD)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda} 
+                                                & \Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
 For the UK, the quality-adjusted, with energy Solow residual is 
-\Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda * 100}%,
+\Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda * 100}\%,
 a very small number indeed.
-For the UK, it appears that both quality-adjustment and addition of energy as a factor of production
-can effectively eliminate the Solow residual,
+For the UK, it appears that \emph{both} quality-adjustment and addition of energy as a factor of production
+are required to effectively eliminate the Solow residual,
 reducing it to \Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda}.
 
-Interestingly, the Solow residual acutally increases from 
+Adding energy alone actually \emph{in}creases the Solow residual from 
 \Sexpr{naturalCoef(models$UK$unadj$noE$CD)$lambda} to
-\Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda}
-for unadjusted factors of production when energy is added.
-To find out why, let's look at all the coefficients.
+\Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda}.
+The details for each model with unadjusted factors of production are shown below.
 
 <<UK CD Unadjusted Coefficients>>=
 naturalCoef(models$UK$unadj$noE$CD)
@@ -917,6 +930,8 @@ naturalCoef(models$UK$adj$withE$CD)
 First, look at the CES model without energy.
 Nesting is unabmiguous, so this fit does not need to be repeated
 for each nesting option. 
+(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_PT}--\ref{tab:lambda_CES-ekl_PT}
+are identical.)
 
 <<PT CES-kl, warning=FALSE>>=
 naturalCoef(models$PT$unadj$noE$CESkl)
@@ -1065,6 +1080,8 @@ when quality-adjusted inputs are used.
 First, look at the CES model without energy.
 Nesting is unabmiguous, so this fit does not need to be repeated
 for each nesting option. 
+(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_UK}--\ref{tab:lambda_CES-ekl_UK}
+are identical.)
 
 <<UK CES-kl, warning=FALSE>>=
 naturalCoef(models$UK$unadj$noE$CESkl)
