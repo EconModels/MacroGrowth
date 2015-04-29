@@ -426,29 +426,41 @@ describe economic growth. The \texttt{R}
 package \texttt{micEconCES} 
 % \citep{Henningsen:2011td} 
 estimates CES production 
-functions of the following forms (among others):
+functions of the following form
+%
+\begin{equation} \label{eq:CESgeneric}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
+      + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)},
+\end{equation}
+%
+where $x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of capital~($k$), labor~($l$), and energy~($e$).
+
+The CES model without energy is given in Equation~\ref{eq:CESkl}.
 %
 \begin{equation} \label{eq:CESkl}
   y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
       + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)}  
+      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
 \end{equation}
+%
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
+where $\delta \rightarrow 1$. 
 %
 \begin{equation} \label{eq:CESkle}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
       + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
       + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}.
 \end{equation}
 %
-Equation~\ref{eq:CESkl} is a CES production function with 
-capital stock ($k$) and labor ($l$) factors of production. 
-Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
-using a ($kl$)($e$) nesting structure, as is typical in the literature. 
-Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
-where $\delta \rightarrow 1$. 
 
-$\gamma$ is a fitting parameter that represents productivity. 
+In the CES production function, 
+$\gamma$ is a fitting parameter that accounts for an atypical first year. 
 The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
 of substitution ($\sigma_1$ and $\sigma$).
 The elasticity of substitution 
@@ -496,7 +508,7 @@ are possible with the CES model.
       A \equiv \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 % 
-Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
+Note that $\rho$ ($\sigma$), $\delta$, and $\delta_1$ have different
 meanings that depend upon the nesting of the factors of production.
 
 
