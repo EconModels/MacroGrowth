@@ -509,7 +509,7 @@ are possible with the CES model.
 \end{equation}
 % 
 Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
-meanings that depend upon the nesting of the factors of production.
+meanings depending upon the nesting of the factors of production.
 
 
 %++++++++++++++++++++++++++++++
