@@ -4,24 +4,23 @@
 \alias{linexModel}
 \title{Fitting LINEX models}
 \usage{
-linexModel(formula, data, response, capital, labor, energy, time,
-  save.data = TRUE)
+linexModel(formula, data, response, x1, x2, x3, time, save.data = TRUE)
 }
 \arguments{
-\item{formula}{a formula of the form \code{response ~ capital + labor + energy + time}}
+\item{formula}{a formula of the form \code{response ~ x1 + x2 + x3 + time}}
 
 \item{data}{a data frame in which \code{formula} is evaluated}
 
 \item{response}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{capital}{instead of specifying a formula, expressions for
+\item{x1}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{labor}{instead of specifying a formula, expressions for
+\item{x2}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{energy}{instead of specifying a formula, expressions for
+\item{x3}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
 \item{time}{instead of specifying a formula, expressions for
