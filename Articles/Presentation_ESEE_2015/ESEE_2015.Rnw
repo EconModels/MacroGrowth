@@ -108,8 +108,16 @@ require(EconData)
 require(EconModels)
 require(dplyr)
 
+# Tell whether to re-run the analysis to create the models.
+# This file will use previously-saved models to generate
+# the paper if set to FALSE, greatly reducing time.
+# If something changes in the data or in the code that
+# performs the analysis, set 
+# rerunModels = TRUE
+# once to re-generate the information needed to 
+# create the paper.
 #####################################################
-evalCES=TRUE
+rerunModels=FALSE
 #####################################################
 @
 
@@ -144,15 +152,18 @@ evalCES=TRUE
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
+\author[IST]{João dos Santos}
 \author[Leeds]{Paul Brockway}
-\author[IST]{Tiago Domingos}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu}
+\author[Leeds]{Marco Sekai}
+\author[IST]{Tiago Domingos}
+\author[Leeds]{Julia Steinberger}
 
-% \address[IST]{IST, Lisbon, Portugal}
-% \address[Leeds]{Leeds University, Leeds, UK}
-% \cortext[cor1]{Corresponding author}
-% \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[IST]{IST, Lisbon, Portugal}
+\address[Leeds]{Leeds University, Leeds, UK}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\cortext[cor1]{Corresponding author}
 
 \begin{abstract}
 %% Text of abstract
@@ -415,29 +426,41 @@ describe economic growth. The \texttt{R}
 package \texttt{micEconCES} 
 % \citep{Henningsen:2011td} 
 estimates CES production 
-functions of the following forms (among others):
+functions of the following form
+%
+\begin{equation} \label{eq:CESgeneric}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
+      + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)},
+\end{equation}
+%
+where $x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of capital~($k$), labor~($l$), and energy~($e$).
+
+The CES model without energy is given in Equation~\ref{eq:CESkl}.
 %
 \begin{equation} \label{eq:CESkl}
   y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
       + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)}  
+      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
 \end{equation}
+%
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
+where $\delta \rightarrow 1$. 
 %
 \begin{equation} \label{eq:CESkle}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
       + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
       + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}.
 \end{equation}
 %
-Equation~\ref{eq:CESkl} is a CES production function with 
-capital stock ($k$) and labor ($l$) factors of production. 
-Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
-using a ($kl$)($e$) nesting structure, as is typical in the literature. 
-Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
-where $\delta \rightarrow 1$. 
 
-$\gamma$ is a fitting parameter that represents productivity. 
+In the CES production function, 
+$\gamma$ is a fitting parameter that accounts for an atypical first year. 
 The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
 of substitution ($\sigma_1$ and $\sigma$).
 The elasticity of substitution 
@@ -485,8 +508,8 @@ are possible with the CES model.
       A \equiv \mathrm{e}^{\lambda (t-t_0)}
 \end{equation}
 % 
-Note that the $\rho$ ($\sigma$) and $\delta$ parameters have different
-meanings that depend upon the nesting of the factors of production.
+Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
+meanings depending upon the nesting of the factors of production.
 
 
 %++++++++++++++++++++++++++++++
@@ -528,60 +551,145 @@ historicalData <- plyr::rbind.fill(dataPT, dataUK)
 # for us to change variables later.
 # It also makes it easier to see what is going on 
 # in each formula throughout the document.
+# Use of substitute establishes an R "name"
+# that can be a component of a formula.
 # Economic output
-y_PT <- "iGDP"
-y_UK <- "iGDP"
+y_PT <- substitute(iGDP)
+y_UK <- substitute(iGDP)
 # Portugal undajusted inputs
-y_PT <- "iGDP"
-K_PT_unadj <- "iKstkS.L"
-L_PT_unadj <- "iL"
-E_PT_unadj <- "iXpMP"
-# Partugal quality-adjusted inputs
-K_PT_adj <- "iKservS.L"
-L_PT_adj <- "ihLest"
-E_PT_adj <- "iUMP"
+k_PT_unadj <- substitute(iKstkS.L)
+l_PT_unadj <- substitute(iL)
+e_PT_unadj <- substitute(iXpMP)
+# Portugal quality-adjusted inputs
+k_PT_adj <- substitute(iKservS.L)
+l_PT_adj <- substitute(ihLest)
+e_PT_adj <- substitute(iUMP)
 # UK unadjusted inputs
-K_UK_unadj <- "iKstkO.WwithRD"
-L_UK_unadj <- "iL"
-E_UK_unadj <- "iXp"
+k_UK_unadj <- substitute(iKstkO.WwithRD)
+l_UK_unadj <- substitute(iL)
+e_UK_unadj <- substitute(iXp)
 # UK quality-adjusted inputs
-K_UK_adj <- "iKservO.WwithRD"
-L_UK_adj <- "ihLest"
-E_UK_adj <- "iU"
+k_UK_adj <- substitute(iKservO.WwithRD)
+l_UK_adj <- substitute(ihLest)
+e_UK_adj <- substitute(iU)
 # Time variables
-time_PT <- "iYear"
-time_UK <- "iYear"
+t_PT <- substitute(iYear)
+t_UK <- substitute(iYear)
 @
 
-<<Formulas, echo=FALSE>>=
+<<Formulas>>=
 # Set up the formulas for each type of analysis.
-# To do this, use the substitute function.
+f <- NULL
+f$PT$unadj$noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_PT, k = k_PT_unadj, 
+                    l = l_PT_unadj, t = t_PT)))
+f$PT$unadj$withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_PT, k = k_PT_unadj,
+                    l = l_PT_unadj, e = e_PT_unadj, t = t_PT)))
+f$PT$adj$noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_PT, k = k_PT_adj,
+                    l = l_PT_adj, t = t_PT)))
+f$PT$adj$withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_PT, k = k_PT_adj,
+                    l = l_PT_adj, e = e_PT_adj, t = t_PT)))
+f$UK$unadj$noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_UK, k = k_UK_unadj,
+                    l = l_UK_unadj, t = t_UK)))
+f$UK$unadj$withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_UK, k = k_UK_unadj,
+                    l = l_UK_unadj, e = e_UK_unadj, t = t_UK)))
+f$UK$adj$noE <- as.formula(
+  substitute( y ~ k + l + t,
+              list( y = y_UK, k = k_UK_adj,
+                    l = l_UK_adj, t = t_UK)))
+f$UK$adj$withE <- as.formula(
+  substitute( y ~ k + l + e + t,
+              list( y = y_UK, k = k_UK_adj,
+                    l = l_UK_adj, e = e_UK_adj, t = t_UK)))
+@
 
-# response <- "iGDP"
-# # Portugal undajusted inputs
-# capital <- "iKstkS.L"
-# labor <- "iL"
-# time <- "iYear"
-# 
-# formula <- substitute( response ~ capital + labor + time,
-#                        list( response = substitute(response),
-#                              capital = substitute(capital),
-#                              labor = substitute(labor),
-#                              time = substitute(time)
-#                        )
-# )
-# formula
-# 
-# 
-# 
-# f_PT_unadj_woe <- substitute(y ~ k + l + t, list(y = y_PT,
-#                                                  k = K_PT_unadj,
-#                                                  l = L_PT_unadj,
-#                                                  t = time_PT))
-# y_PT
-# substitute(y_PT)
-# eval(y_PT)
-# f_PT_unadj_woe
+<<Models>>=
+fileName <- "ESEE2015Models.Rdata"
+if (!rerunModels){
+  # load from the file on disk
+  load(fileName)
+} else {
+  # re-run the models and save to disk.
+  # In RStudio, be sure to set the working directory to the source file directory.
+  nest <- NULL
+  nest$kl <- c(1,2)
+  nest$kle <- c(1,2,3)
+  nest$lek <- c(2,3,1)
+  nest$ekl <- c(3,1,2)
+  models <- NULL
+  # Portugal, CD
+  models$PT$unadj$noE$CD <- cdModel(formula = f$PT$unadj$noE, 
+                                    data = dataPT, constrained = TRUE)
+  models$PT$unadj$withE$CD <- cdModel(formula = f$PT$unadj$withE, 
+                                      data = dataPT, constrained = TRUE)
+  models$PT$adj$noE$CD <- cdModel(formula = f$PT$adj$noE, 
+                        data = dataPT, constrained = TRUE)
+  models$PT$adj$withE$CD <- cdModel(formula = f$PT$adj$withE, 
+                          data = dataPT, constrained = TRUE)
+  # UK, CD
+  models$UK$unadj$noE$CD <- cdModel(formula = f$UK$unadj$noE, 
+                          data = dataUK, constrained = TRUE)
+  models$UK$unadj$withE$CD <- cdModel(formula = f$UK$unadj$withE, 
+                            data = dataUK, constrained = TRUE)
+  models$UK$adj$noE$CD <- cdModel(formula = f$UK$adj$noE, 
+                        data = dataUK, constrained = TRUE)
+  models$UK$adj$withE$CD <- cdModel(formula = f$UK$adj$withE, 
+                          data = dataUK, constrained = TRUE)
+  # PT, CESkl
+  models$PT$unadj$noE$CESkl <- cesModel(formula = f$PT$unadj$noE, 
+                              nest = nest$kl, data = dataPT, constrained = TRUE)
+  models$PT$adj$noE$CESkl <- cesModel(formula = f$PT$adj$noE, 
+                            nest = nest$kl, data = dataPT, constrained = TRUE)
+  # PT, CESkle
+  models$PT$unadj$withE$CESkle <- cesModel(formula = f$PT$unadj$withE, 
+                                 nest = nest$kle, data = dataPT, constrained = TRUE)
+  models$PT$adj$withE$CESkle <- cesModel(formula = f$PT$adj$withE, 
+                               nest = nest$kle, data = dataPT, constrained = TRUE)
+  # PT, CESlek
+  models$PT$unadj$withE$CESlek <- cesModel(formula = f$PT$unadj$withE, 
+                                 nest = nest$lek, data = dataPT, constrained = TRUE)
+  models$PT$adj$withE$CESlek <- cesModel(formula = f$PT$adj$withE, 
+                               nest = nest$lek, data = dataPT, constrained = TRUE)
+  # PT, CESekl
+  models$PT$unadj$withE$CESekl <- cesModel(formula = f$PT$unadj$withE, 
+                                 nest = nest$ekl, data = dataPT, constrained = TRUE)
+  models$PT$adj$withE$CESekl <- cesModel(formula = f$PT$adj$withE, 
+                               nest = nest$ekl, data = dataPT, constrained = TRUE)
+  # UK, CESkl
+  models$UK$unadj$noE$CESkl <- cesModel(formula = f$UK$unadj$noE, 
+                              nest = nest$kl, data = dataUK, constrained = TRUE)
+  models$UK$adj$noE$CESkl <- cesModel(formula = f$UK$adj$noE, 
+                            nest = nest$kl, data = dataUK, constrained = TRUE)
+  # UK, CESkle
+  models$UK$unadj$withE$CESkle <- cesModel(formula = f$UK$unadj$withE, 
+                                 nest = nest$kle, data = dataUK, constrained = TRUE)
+  models$UK$adj$withE$CESkle <- cesModel(formula = f$UK$adj$withE, 
+                               nest = nest$kle, data = dataUK, constrained = TRUE)
+  # UK, CESlek
+  models$UK$unadj$withE$CESlek <- cesModel(formula = f$UK$unadj$withE, 
+                                 nest = nest$lek, data = dataUK, constrained = TRUE)
+  models$UK$adj$withE$CESlek <- cesModel(formula = f$UK$adj$withE, 
+                               nest = nest$lek, data = dataUK, constrained = TRUE)
+  # UK, CESekl
+  models$UK$unadj$withE$CESekl <- cesModel(formula = f$UK$unadj$withE, 
+                                 nest = nest$ekl, data = dataUK, constrained = TRUE)
+  models$UK$adj$withE$CESekl <- cesModel(formula = f$UK$adj$withE, 
+                               nest = nest$ekl, data = dataUK, constrained = TRUE)
+  # Save models to disk.
+  save(models, file=fileName)
+}
+
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -594,9 +702,9 @@ For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjus
       Variable    & Portugal           & UK                 \\
       \midrule
       Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
-      Capital     & \Sexpr{K_PT_unadj} & \Sexpr{K_UK_unadj} \\
-      Labor       & \Sexpr{L_PT_unadj} & \Sexpr{L_UK_unadj} \\
-      Energy      & \Sexpr{E_PT_unadj} & \Sexpr{E_UK_unadj} \\
+      Capital     & \Sexpr{k_PT_unadj} & \Sexpr{k_UK_unadj} \\
+      Labor       & \Sexpr{l_PT_unadj} & \Sexpr{l_UK_unadj} \\
+      Energy      & \Sexpr{e_PT_unadj} & \Sexpr{e_UK_unadj} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -612,9 +720,9 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
       Variable    & Portugal         & UK               \\
       \midrule
       Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
-      Capital     & \Sexpr{K_PT_adj} & \Sexpr{K_UK_adj} \\
-      Labor       & \Sexpr{L_PT_adj} & \Sexpr{L_UK_adj} \\
-      Energy      & \Sexpr{E_PT_adj} & \Sexpr{E_UK_adj} \\
+      Capital     & \Sexpr{k_PT_adj} & \Sexpr{k_UK_adj} \\
+      Labor       & \Sexpr{l_PT_adj} & \Sexpr{l_UK_adj} \\
+      Energy      & \Sexpr{e_PT_adj} & \Sexpr{e_UK_adj} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -654,18 +762,29 @@ when the \texttt{formula} is specified as
   \texttt{y} \sim \texttt{k + l + e + time}.
 \end{equation}
 %
-$\theta$ is expected to be near unity.
-
 Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
-Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ are given in Table \ref{tab:CES_abg_equations}.
 
-\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ for the various CES nestings, 
+For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
+$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
+for the CES model with two factors of production
+and by 
+$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
+for the CES model with three factors of production.
+The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
+$\alpha$, $\beta$, and $\gamma$ (coefficients for capital, labor, and energy, respectively)
+as shown in Table \ref{tab:CES_abg_equations}, 
+assuming factors of production are specified in the fitting \texttt{formula} as
+\texttt{y~$\sim$~k~+~l~+~e~+~time}.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ 
+                        (importance of capital, labor, and energy, respectively)
+                        for the various CES nestings, 
                         provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
 \label{tab:CES_abg_equations} 
   \begin{center}
     \begin{tabular}{c c c c c} 
       \toprule
-      Nesting         & \texttt{nest}     & $\alpha_1$ ($\alpha$)   & $\alpha_2$ ($\beta$)    & $\alpha_3$ ($\gamma$)       \\
+      Nesting         & \texttt{nest}     & $\alpha$                & $\beta$                 & $\gamma$       \\
       \midrule
       ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
       ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
@@ -699,21 +818,17 @@ We'll first look at Portugal.
 First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
 
 <<Portugal C-D undadjusted without energy>>=
-ptCDunadjNoE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-                        data = dataPT, constrained = TRUE)
-naturalCoef(ptCDunadjNoE)
+naturalCoef(models$PT$unadj$noE$CD)
 @
 
 <<Portugal C-D undadjusted with energy>>=
-ptCDunadjWithE <- cdModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
-                          data = dataPT, constrained = TRUE)
-naturalCoef(ptCDunadjWithE)
+naturalCoef(models$PT$unadj$withE$CD)
 @
 
 The Solow residual (\texttt{lambda}) is always negative. 
 However, the absolute value of \texttt{lambda} decreases from 
-\Sexpr{naturalCoef(ptCDunadjNoE)$lambda} to 
-\Sexpr{naturalCoef(ptCDunadjWithE)$lambda}
+\Sexpr{naturalCoef(models$PT$unadj$noE$CD)$lambda} to 
+\Sexpr{naturalCoef(models$PT$unadj$withE$CD)$lambda}
 when adding energy.
 So it appears that for Portugal, 
 using unadjusted inputs and including energy as a factor of production
@@ -722,30 +837,25 @@ reduces the absolute value of the Solow residual somewhat.
 What about for quality-adjusted data and Portugal?
 
 <<Portugal C-D adjusted without energy>>=
-ptCDadjNoE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-                      data = dataPT, constrained = TRUE)
-naturalCoef(ptCDadjNoE)
+naturalCoef(models$PT$adj$noE$CD)
 @
 
 <<Portugal C-D adjusted with energy>>=
-ptCDadjWithE <- cdModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
-                          data = dataPT, constrained = TRUE)
-naturalCoef(ptCDadjWithE)
+naturalCoef(models$PT$adj$withE$CD)
 @
 
 Using quality-adjusted inputs, the Solow residual (\texttt{lambda}) moves from 
-\Sexpr{naturalCoef(ptCDadjNoE)$lambda} to
-\Sexpr{naturalCoef(ptCDadjWithE)$lambda} when including energy.
+\Sexpr{naturalCoef(models$PT$adj$noE$CD)$lambda} to
+\Sexpr{naturalCoef(models$PT$adj$withE$CD)$lambda} when including energy.
 The absolute value of the Solow residual again decreases when adding energy.
 But, with quality-adjusted inputs, the effect is much stronger.
 
 Table~\ref{tab:lambda_CD_PT} shows
 the effect of both quality-corrected factors of production and energy.
-We find that both including energy and quality-adjusting the factors of production 
-reduce the Solow residual (\texttt{lambda}). 
+We find that including energy as a factor of production 
+reduces the absolute value of the Solow residual (\texttt{lambda})
+whether or not the factors of production are quality-adjusted. 
 Quality-adjustment gets part of the way toward eliminating the Solow residual.
-Including energy (whether or not the factors of production are quality-adjusted)
-reduces the Solow residual significantly.
 
 \begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
 \label{tab:lambda_CD_PT} 
@@ -754,14 +864,14 @@ reduces the Solow residual significantly.
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-      Without energy  & \Sexpr{naturalCoef(ptCDunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCDadjNoE)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(ptCDunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCDadjWithE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CD)$lambda}    & \Sexpr{naturalCoef(models$PT$adj$noE$CD)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CD)$lambda}  & \Sexpr{naturalCoef(models$PT$adj$withE$CD)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
-Note that the contribution of capital (\texttt{alpha\_1})
+Note that for Portugal the contribution of capital (\texttt{alpha\_1})
 always shifts to energy (\texttt{alpha\_3}) when energy is included 
 as a factor of production.
 
@@ -771,16 +881,7 @@ What about for the UK?
 \subsubsection{United Kingdom} 
 %------------------------------
 
-<<UK C-D>>=
-ukCDunadjNoE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iYear, 
-                        data = dataUK, constrained = TRUE)
-ukCDunadjWithE <- cdModel(formula = iGDP ~ iKstkO.WwithRD + iL + iXp + iYear, 
-                          data = dataUK, constrained = TRUE)
-ukCDadjNoE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iYear, 
-                        data = dataUK, constrained = TRUE)
-ukCDadjWithE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, 
-                          data = dataUK, constrained = TRUE)
-@
+Table~\ref{tab:lambda_CD_UK} shows fitted Cobb-Douglas coefficients for the UK. 
 
 \begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
 \label{tab:lambda_CD_UK} 
@@ -789,47 +890,48 @@ ukCDadjWithE <- cdModel(formula = iGDP ~ iKservO.WwithRD + ihLest + iU + iYear,
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-      Without energy  & \Sexpr{naturalCoef(ukCDunadjNoE)$lambda}      & \Sexpr{naturalCoef(ukCDadjNoE)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(ukCDunadjWithE)$lambda}    & \Sexpr{naturalCoef(ukCDadjWithE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CD)$lambda}   
+                                                & \Sexpr{naturalCoef(models$UK$adj$noE$CD)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda} 
+                                                & \Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
 For the UK, the quality-adjusted, with energy Solow residual is 
-\Sexpr{naturalCoef(ukCDadjWithE)$lambda * 100}%,
+\Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda * 100}\%,
 a very small number indeed.
-For the UK, it appears that both quality-adjustment and addition of energy as a factor of production
-can effectively eliminate the Solow residual,
-reducing it to \Sexpr{naturalCoef(ukCDadjWithE)$lambda}.
+For the UK, it appears that \emph{both} quality-adjustment and addition of energy as a factor of production
+are required to effectively eliminate the Solow residual,
+reducing it to \Sexpr{naturalCoef(models$UK$adj$withE$CD)$lambda}.
 
-Interestingly, the Solow residual acutally increases from 
-\Sexpr{naturalCoef(ukCDunadjNoE)$lambda} to
-\Sexpr{naturalCoef(ukCDunadjWithE)$lambda}
-for unadjusted factors of production when energy is added.
-To find out why, let's look at all the coefficients.
+Adding energy alone actually \emph{in}creases the Solow residual from 
+\Sexpr{naturalCoef(models$UK$unadj$noE$CD)$lambda} to
+\Sexpr{naturalCoef(models$UK$unadj$withE$CD)$lambda}.
+The details for each model with unadjusted factors of production are shown below.
 
 <<UK CD Unadjusted Coefficients>>=
-naturalCoef(ukCDunadjNoE)
-naturalCoef(ukCDunadjWithE)
+naturalCoef(models$UK$unadj$noE$CD)
+naturalCoef(models$UK$unadj$withE$CD)
 @
 
 When energy is included, much of the effect of capital (\texttt{alpha\_1}) is 
 attributed to energy (\texttt{alpha\_3}), 
 as \texttt{alpha\_1} moves from 
-\Sexpr{naturalCoef(ukCDunadjNoE)$alpha_1} to
-\Sexpr{naturalCoef(ukCDunadjWithE)$alpha_1}.
+\Sexpr{naturalCoef(models$UK$unadj$noE$CD)$alpha_1} to
+\Sexpr{naturalCoef(models$UK$unadj$withE$CD)$alpha_1}.
 
 When we look at quality-adjusted inputs, we find similar results.
 
 <<UK CD Quality-adjusted Coefficients>>=
-naturalCoef(ukCDadjNoE)
-naturalCoef(ukCDadjWithE)
+naturalCoef(models$UK$adj$noE$CD)
+naturalCoef(models$UK$adj$withE$CD)
 @
 
 \texttt{alpha\_1} moves from 
-\Sexpr{naturalCoef(ukCDadjNoE)$alpha_1} to
-\Sexpr{naturalCoef(ukCDadjWithE)$alpha_1}.
+\Sexpr{naturalCoef(models$UK$adj$noE$CD)$alpha_1} to
+\Sexpr{naturalCoef(models$UK$adj$withE$CD)$alpha_1}.
 
 
 %++++++++++++++++++++++++++++++
@@ -837,32 +939,36 @@ naturalCoef(ukCDadjWithE)
 \label{sec:Solow_negative_for_PT_in_CES?}
 %++++++++++++++++++++++++++++++
 
+First, look at the CES model without energy.
+Nesting is unabmiguous, so this fit does not need to be repeated
+for each nesting option. 
+(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_PT}--\ref{tab:lambda_CES-ekl_PT}
+are identical.)
+
+<<PT CES-kl, warning=FALSE>>=
+naturalCoef(models$PT$unadj$noE$CESkl)
+naturalCoef(models$PT$adj$noE$CESkl)
+@
+
+Both unadjusted and quality-adjusted variables give positive Solow residuals,
+\Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} for unadjusted inputs and
+\Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} for quality-adjusted inputs.
+Furthermore, quality-adjustment reduces the magnitude of the Solow residual.
+
 %------------------------------
 \subsubsection{($kl$)$e$ nesting} 
 %------------------------------
 
-First, look at unadjusted inputs using the ($kl$)$e$ nesting.
+Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
 
-<<PT CES-kle unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESkleunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(1,2,3), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESkleunadjNoE)
-ptCESkleunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
-                            nest = c(1,2,3), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESkleunadjWithE)
+<<PT CES-kle unadjusted, warning=FALSE>>=
+naturalCoef(models$PT$unadj$withE$CESkle)
 @
 
 Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
 
-<<PT CES-kle quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESkleadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(1,2,3), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESkleadjNoE)
-ptCESkleadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
-                          nest = c(1,2,3), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESkleadjWithE)
+<<PT CES-kle quality-adjusted, warning=FALSE>>=
+naturalCoef(models$PT$adj$withE$CESkle)
 @
 
 Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results with CES and the ($kl$)$e$ nesting.
@@ -874,16 +980,21 @@ Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESkleunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESkleadjNoE)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(ptCESkleunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESkleadjWithE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CESkle)$lambda} 
+                                                                    & \Sexpr{naturalCoef(models$PT$adj$withE$CESkle)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
-The Solow residual is positive, and 
-quality-adjusting the inputs 
-reduces the Solow residual (\texttt{lambda}).
+In contrast to the Cobb-Douglas model,
+the CES model with ($kl$)$e$ nesting
+produces positive Solow residuals in all cases. 
+We also see that both 
+quality-adjusting the inputs and
+including energy
+reduce the Solow residual (\texttt{lambda}).
 
 %------------------------------
 \subsubsection{($le$)$k$ nesting} 
@@ -891,26 +1002,14 @@ reduces the Solow residual (\texttt{lambda}).
 
 Next, look at unadjusted inputs using the ($le$)$k$ nesting.
 
-<<PT CES-lek unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESlekunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(2,3,1), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESlekunadjNoE)
-ptCESlekunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
-                            nest = c(2,3,1), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESlekunadjWithE)
+<<PT CES-lek unadjusted, warning=FALSE>>=
+naturalCoef(models$PT$unadj$withE$CESlek)
 @
 
 Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
 
-<<PT CES-lek quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESlekadjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(2,3,1), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESlekadjNoE)
-ptCESlekadjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
-                          nest = c(2,3,1), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESlekadjWithE)
+<<PT CES-lek quality-adjusted, warning=FALSE>>=
+naturalCoef(models$PT$adj$withE$CESlek)
 @
 
 Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results with CES and the ($le$)$k$ nesting.
@@ -922,44 +1021,37 @@ Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESlekunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESlekadjNoE)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(ptCESlekunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESlekadjWithE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CESlek)$lambda} & \Sexpr{naturalCoef(models$PT$adj$withE$CESle)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
-The Solow residual is positive, and 
-quality-adjusting the inputs 
-reduces the Solow residual (\texttt{lambda}).
+Similar to the CES model with ($kl$)$e$ nesting,
+the CES model with ($le$)$k$ nesting
+produces positive Solow residuals in all cases. 
+After energy has been added, quality-adjustment 
+has very little effect on the Solow residual,
+creating a slight increase from 
+\Sexpr{naturalCoef(models$PT$unadj$withE$CESlek)$lambda} to
+\Sexpr{naturalCoef(models$PT$adj$withE$CESlek)$lambda}.
 
 
 %------------------------------
-\subsubsection{($ek$)$k$ nesting} 
+\subsubsection{($ek$)$l$ nesting} 
 %------------------------------
 
 Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
 
-<<PT CES-ekl unadjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESeklunadjNoE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iYear, 
-#                nest = c(3,1,2), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESeklunadjNoE)
-ptCESeklunadjWithE <- cesModel(formula = iGDP ~ iKstkS.L + iL + iXpMP + iYear, 
-                            nest = c(3,1,2), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESeklunadjWithE)
+<<PT CES-ekl unadjusted, warning=FALSE>>=
+naturalCoef(models$PT$unadj$withE$CESekl)
 @
 
 Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
 
-<<PT CES-ekl quality-adjusted, warning=FALSE, eval=evalCES>>=
-# Not working at this time.
-# ptCESekladjNoE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iYear, 
-#                         nest = c(3,1,2), data = dataPT, constrained = TRUE)
-# naturalCoef(ptCESekladjNoE)
-ptCESekladjWithE <- cesModel(formula = iGDP ~ iKservS.L + ihLest + iUMP + iYear, 
-                          nest = c(3,1,2), data = dataPT, constrained = TRUE)
-naturalCoef(ptCESekladjWithE)
+<<PT CES-ekl quality-adjusted, warning=FALSE>>=
+naturalCoef(models$PT$adj$withE$CESekl)
 @
 
 Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results with CES and the ($ek$)$l$ nesting.
@@ -971,16 +1063,167 @@ Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results
       \toprule
                       & Unadjusted     & Quality-adjusted   \\
       \midrule
-%      Without energy  & \Sexpr{naturalCoef(ptCESeklunadjNoE)$lambda}      & \Sexpr{naturalCoef(ptCESekladjNoE)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(ptCESeklunadjWithE)$lambda}    & \Sexpr{naturalCoef(ptCESekladjWithE)$lambda} \\
+      Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CESekl)$lambda} 
+                                                                          & \Sexpr{naturalCoef(models$PT$adj$withE$CESekl)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
 \end{table}
 
-The Solow residual is positive, and 
+For the ($ek$)$l$ nesting, 
+the Solow residual is positive, and 
 quality-adjusting the inputs 
 reduces the Solow residual (\texttt{lambda}).
+Adding energy decreases the Solow residual 
+(from \Sexpr{naturalCoef(models$PT$unadj$withE$CESekl)$lambda} to 
+\Sexpr{naturalCoef(models$PT$adj$withE$CESekl)$lambda})
+when enegy is included in the model.
+But, adding energy slightly increases the Solow residual
+(from \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} to \Sexpr{naturalCoef(models$PT$adj$withE$CESekl)$lambda})
+when quality-adjusted inputs are used.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Do we obtain a positive Solow residual for the UK with the CES model?} 
+\label{sec:Solow_positive_for_UK_in_CES?}
+%++++++++++++++++++++++++++++++
+
+First, look at the CES model without energy.
+Nesting is unabmiguous, so this fit does not need to be repeated
+for each nesting option. 
+(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_UK}--\ref{tab:lambda_CES-ekl_UK}
+are identical.)
+
+<<UK CES-kl, warning=FALSE>>=
+naturalCoef(models$UK$unadj$noE$CESkl)
+naturalCoef(models$UK$adj$noE$CESkl)
+@
+
+Both unadjusted and quality-adjusted variables give positive Solow residuals for the UK,
+\Sexpr{naturalCoef(models$UK$unadj$noE$CESkl)$lambda} for unadjusted inputs and
+\Sexpr{naturalCoef(models$UK$adj$noE$CESkl)$lambda} for quality-adjusted inputs.
+Furthermore, quality-adjustment reduces the magnitude of the UK Solow residual.
+
+%------------------------------
+\subsubsection{($kl$)$e$ nesting} 
+%------------------------------
+
+Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
+
+<<UK CES-kle unadjusted>>=
+naturalCoef(models$UK$unadj$withE$CESkle)
+@
+
+Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+
+<<UK CES-kle quality-adjusted>>=
+naturalCoef(models$UK$adj$withE$CESkle)
+@
+
+Table~\ref{tab:lambda_CES-kle_UK} summarizes the UK Solow residual results with CES and the ($kl$)$e$ nesting.
+
+\begin{table} \caption{UK Solow residual results with CES and ($kl$)$e$ nesting.} 
+\label{tab:lambda_CES-kle_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$UK$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CESkle)$lambda} 
+                                                                & \Sexpr{naturalCoef(models$UK$adj$withE$CESkle)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Like the Cobb-Douglas model, the CES model produces positive Solow residuals
+with the ($kl$)$e$ nesting.
+We also see that both 
+quality-adjusting the inputs and
+including energy
+reduce the Solow residual (\texttt{lambda}).
+
+%------------------------------
+\subsubsection{($le$)$k$ nesting}
+%------------------------------
+
+Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+
+<<UK CES-lek unadjusted>>=
+naturalCoef(models$UK$unadj$withE$CESlek)
+@
+
+Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+
+<<UK CES-lek quality-adjusted>>=
+naturalCoef(models$UK$adj$withE$CESlek)
+@
+
+Table~\ref{tab:lambda_CES-lek_UK} summarizes the UK Solow residual results with CES and the ($le$)$k$ nesting.
+
+\begin{table} \caption{UK Solow residual results with CES and ($le$)$k$ nesting.} 
+\label{tab:lambda_CES-lek_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$UK$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CESlek)$lambda} 
+                                                            & \Sexpr{naturalCoef(models$UK$adj$withE$CESlek)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Similar to the CES model with ($kl$)$e$ nesting,
+the CES model with ($le$)$k$ nesting
+produces positive Solow residuals in all cases. 
+Both quality-adjustment and inclusion of energy 
+decrease the magnitude of the Solow residual.
+
+%------------------------------
+\subsubsection{($ek$)$l$ nesting}
+%------------------------------
+
+Next, look at unadjusted inputs using the ($el$)$l$ nesting.
+
+<<UK CES-ekl unadjusted>>=
+naturalCoef(models$UK$unadj$withE$CESekl)
+@
+
+Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+
+<<UK CES-ekl quality-adjusted>>=
+naturalCoef(models$UK$adj$withE$CESekl)
+@
+
+Table~\ref{tab:lambda_CES-ekl_UK} summarizes the UK Solow residual results with CES and the ($ek$)$l$ nesting.
+
+\begin{table} \caption{UK Solow residual results with CES and ($ek$)$l$ nesting.} 
+\label{tab:lambda_CES-ekl_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{naturalCoef(models$UK$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$UK$adj$noE$CESkl)$lambda} \\
+      With energy     & \Sexpr{naturalCoef(models$UK$unadj$withE$CESekl)$lambda} 
+                                                            & \Sexpr{naturalCoef(models$UK$adj$withE$CESekl)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Similar to the CES model with ($ek$)$l$ nesting,
+the CES model with ($ek$)$l$ nesting
+produces positive Solow residuals in all cases. 
+Both quality-adjustment and inclusion of energy 
+decrease the magnitude of the Solow residual.
+
+
 
 
 
