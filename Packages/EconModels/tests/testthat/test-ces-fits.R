@@ -15,12 +15,11 @@ test_that("cesModel() fits without energy give same results with either nesting.
   model21 <- cesModel(iGDP ~ iL + iK + iYear, data = testData, nest = c(2, 1), digits=30)
   
   expect_equivalent( coef(model12), coef(model21) )
-  
-  # Check that naturalCoef works correctly
-  ################ This test fails. Should it? If we correctly accounted for nest when calculating alphas, it should fail.
-  expect_equivalent(naturalCoef(model12), naturalCoef(model21))
-  ################ This test passes. Should it? If we correctly accounted for nest, it would fail.
+ 
+  # since the models are the same except for the the order fo the factors, the roles of 
+  # alpha_1 and alpha_2 are reversed.
   expect_equivalent(naturalCoef(model12)["alpha_1", "alpha_2"], naturalCoef(model21)["alpha_2", "alpha_1"])
+  expect_equivalent(sort(naturalCoef(model12)), sort(naturalCoef(model21)))
 })
 
 
