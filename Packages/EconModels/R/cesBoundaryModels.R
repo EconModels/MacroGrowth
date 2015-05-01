@@ -17,7 +17,7 @@
 #'   }
 #' @export
 
-cesBoundaryModels <- function(formula, data, nest){
+cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
   # f <- formula  # to avoid problems while renaming is happening.
  
   # use same data for all models, even if some models could make use of more complete data. 
@@ -134,7 +134,7 @@ cesBoundaryModels <- function(formula, data, nest){
     Map( 
       function(formula, param) { 
         res <- eval(substitute( plm(formula, data = sdata, param = param, method = method), 
-                                list(formula=formula, param=param, method=c("nlm", "spg"))))
+                                list(formula=formula, param=param, method=method)))
         # for all of our models, log(gamma) and lambda are first two coefficients
         if (! is.null(res)) {
           names(res$coefficients)[1] <- "logscale"
@@ -142,7 +142,7 @@ cesBoundaryModels <- function(formula, data, nest){
         }
         res
       }, 
-      formulas[keep & plmModel], params[keep & plmModel]
+      formulas[keep & plmModel & subset], params[keep & plmModel & subset]
     )
  
   cesModels <- 
@@ -153,8 +153,8 @@ cesBoundaryModels <- function(formula, data, nest){
           list(formula=formula)
         ))
       },
-      formulas[keep & !plmModel & (1:20 < 20)], # remove ugly case (20)
-      list(c(1,2), c(1,3), c(2,3))[any(keep & !plmModel & (1:20 < 20))]  # adjust nest to leave one out
+      formulas[keep & !plmModel & (1:20 < 20) & subset], # remove ugly case (20)
+      list(c(1,2), c(1,3), c(2,3))[any(keep & !plmModel & (1:20 < 20) & subset)]  # adjust nest to leave one out
     )
   
   # Now handle the ugly case.  Since cesEst() can only work with variables, we need
