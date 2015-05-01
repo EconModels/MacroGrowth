@@ -577,8 +577,6 @@ respectsConstraints <- function( model ) {
   all( cf >= 0 ) & ( sum(cf) <=1 )
 }
 
-
-
 #' Fitting Cobb-Douglas models with 3 Factors
 #' 
 #' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
@@ -653,7 +651,6 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
   return(res)
 }
 
-
 #' Fitting LINEX models
 #' 
 #' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
@@ -668,6 +665,12 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param data a data frame in which \code{formula} is evaluated
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+#' naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
+#' 
 #' @export
 #' 
 linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE) {

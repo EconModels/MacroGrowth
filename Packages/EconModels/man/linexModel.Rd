@@ -29,4 +29,10 @@ the components can be specified individually.}
 \description{
 Fitting LINEX models
 }
+\examples{
+US <- subset(Calvin, Country=="US")
+linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
+}
 
