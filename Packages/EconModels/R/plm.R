@@ -40,19 +40,27 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
   if(is.null(.ocall)) .ocall <- match.call()
  
   orig_params <- params
+  
+  used_params_names <- intersect( names(params), all.vars(formula))
+  unused_params_names <- setdiff( names(params), all.vars(formula))
+  used_params <- params[used_params_names]
+  unused_params <- params[unused_params_names]
+  # print(list(used = used_params, unused=unused_params))
+  
   # if no params, just plain old lm with an extra class wrapper 
-  if (length(params) < 1) { 
+  if (length(used_params) < 1) { 
     res <- lm(formula, data=data)
     class(res) <- c("plm", class(res))
     res$call <- .ocall
     res$converged <- TRUE
+    res$coefficients <- c(coef(res), unused_params)
     return(res)
   }
  
   # if we get here, we have params to deal with
   
-  pnames <- names(params)
-  plist <- as.list(params) 
+  pnames <- names(used_params)
+  plist <- as.list(used_params) 
   
   if (! optimize) {
     np <- length(params)
@@ -68,7 +76,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
     )
     return(res)
   } else { # find optimal params
-    start.model <- plm(formula=formula, data=data, params=params, optimize=FALSE) 
+    start.model <- plm(formula=formula, data=data, params=used_params, optimize=FALSE) 
     f <- function(p, nr = nrow(model.frame(start.model))) {
       names(p) <- pnames
       mod <- tryCatch(  
@@ -106,6 +114,7 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
       res <- plm(formula=formula, data=data, params=orig_params, optimize=FALSE, .ocall=.ocall)
       res$converged <- FALSE
     }
+    res$coefficients <- c(coef(res), unused_params)
     res$optimization <- opt_out
     res$start <- orig_params
     return(res)
