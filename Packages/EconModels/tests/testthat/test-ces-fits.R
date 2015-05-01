@@ -16,12 +16,17 @@ test_that("cesModel() fits without energy give same results with either nesting.
   # Because both the order of the factors of production and the nest change, 
   # the coef values from the model should be identical
   expect_equivalent( coef(model12), coef(model21) )
-
-  modelkl21 <- cesModel(iGDP ~ iK + iL + iYear, data = testData, nest = c(2, 1), digits=30)
+  
+  # Because the models are the same except for the order of the factors, the roles of 
+  # alpha_1 and alpha_2 are reversed.
+  expect_equivalent(naturalCoef(model12)["alpha_1", "alpha_2"], naturalCoef(model21)["alpha_2", "alpha_1"])
+  expect_equivalent(sort(naturalCoef(model12)), sort(naturalCoef(model21)))
+  
   # In this case, we have maintained the order of the factors of production,
   # but we have a new nest.  However, naturalCoef should associate alpha_1, alpha_2, and alpha_3
   # with the variables in the order they appear in the production function. 
   # Thus, we expect the following test to pass.
+  modelkl21 <- cesModel(iGDP ~ iK + iL + iYear, data = testData, nest = c(2, 1), digits=30)
   expect_equivalent( naturalCoef(model12)[c("alpha_1", "alpha_2", "alpha_3")], 
                      naturalCoef(modelkl21)[c("alpha_1", "alpha_2", "alpha_3")])
 })
