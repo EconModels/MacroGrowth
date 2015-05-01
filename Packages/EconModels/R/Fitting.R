@@ -352,6 +352,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' US <- subset(Calvin, Country=="US")
 #' sfModel(response = iGDP, factor=iK, time = iYear, data=US)
 #' sfModel(iGDP ~ iK + iYear, data=US)
+#' sfModel(response="iGDP", factor="iK", time="iYear", data=US)
 #' 
 #' @export
 sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
@@ -425,6 +426,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' cdModel(iGDP ~ iK + iL + iYear, data=US)
 #' cdModel(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 #' cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 #' 
 #' @export
 cdModel <- function(formula, data, response, x1, x2, x3, time, 
@@ -502,6 +504,7 @@ CDcoefNames <- list(
 #' US <- subset(Calvin, Country=="US")
 #' cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
 #' cd2Model(iGDP ~ iK + iL + iYear, data=US)
+#' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
 #' 
 cd2Model <- function(formula, data, response, x1, x2, time, constrained=FALSE, 
                        save.data=TRUE, ...) {
@@ -597,6 +600,8 @@ respectsConstraints <- function( model ) {
 #' US <- subset(Calvin, Country=="US")
 #' cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 #' cd3Model(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+
 
 # y ~ x1 + x2 + x3 + time
 cd3Model <- function( formula, data, response, x1, x2, x3, time, 

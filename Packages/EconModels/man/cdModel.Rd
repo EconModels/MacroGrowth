@@ -43,5 +43,6 @@ cdModel(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
 cdModel(iGDP ~ iK + iL + iYear, data=US)
 cdModel(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 }
 
