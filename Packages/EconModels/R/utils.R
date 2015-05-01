@@ -52,3 +52,6 @@ safeDF <- function(object, nrow=1, ncol=0){
   return(as.data.frame(object))
 }
 
+as_name_or_null <- function(x) {
+  tryCatch( as.name(x), error = function(e) NULL )
+}

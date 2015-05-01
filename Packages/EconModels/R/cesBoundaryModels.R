@@ -41,47 +41,47 @@ cesBoundaryModels <- function(formula, data, nest){
   if (numFactors >=3) { 
     formulaRosetta <- list(
       y = formula[[2]],
-      capital = formula[[3]][[2]][[2]][[2]],
-      labor = formula[[3]][[2]][[2]][[3]],
-      energy = formula[[3]][[2]][[3]],
+      x1 = formula[[3]][[2]][[2]][[2]],
+      x2 = formula[[3]][[2]][[2]][[3]],
+      x3 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
     ) 
     # permute to reflect nesting
-    names(formulaRosetta)[2:4] <- c("capital", "labor", "energy")[nest]
+    names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[nest]
   } else {
     formulaRosetta <- list(
       y = formula[[2]],
-      capital = formula[[3]][[2]][[2]],
-      labor = formula[[3]][[2]][[3]],
+      x1 = formula[[3]][[2]][[2]],
+      x2 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
     ) 
     # permute to reflect nesting
-    names(formulaRosetta)[2:3] <- c("capital", "labor")[nest]
+    names(formulaRosetta)[2:3] <- c("x1", "x2")[nest]
   }
   
   # old names - new names 
   formulaTemplates <- 
     list( 
-      "01-01" = log(y) - log(capital) ~ time,
-      "02-02" = log(y) - log(labor) ~ time,
-      "06-03" = log(y) - log(energy) ~ time,
-      "03-04" = log(y) - log(pmin(capital, labor)) ~ time,
-      "07-05" = log(y) - log(pmin(capital, energy)) ~ time,
-      "08-06" = log(y) - log(pmin(labor, energy)) ~ time,
-      "04-07" = log(y) - log(delta_1*capital + (1-delta_1)*labor) ~ time,
-      "10-08" = log(y) - log(delta*capital + (1-delta)*energy) ~ time,
-      "11-09" = log(y) - log(delta*labor + (1-delta)*energy) ~ time,
-      "09-13" = log(y) - log(pmin(capital, labor, energy)) ~ time,
-      "13-14" = log(y) - log( delta*pmin(capital, labor) + (1-delta)*energy ) ~ time,
-      "14-15" = log(y) - log( pmin(delta_1*capital + (1-delta_1)*labor, energy)) ~ time,
-      "12-16" = log(y) - log( delta*(delta_1*capital + (1-delta_1)*labor) + (1-delta)*energy) ~ time,
-      "20-18" = log(y) - log( pmin((delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1), energy) ) ~ time,
-      "19-19" = log(y) - log( (delta * (delta_1*capital^(-rho_1) + (1-delta_1)*labor^(-rho_1))^(-1/rho_1) + (1-delta)*energy ) ) ~ time,
-      "17-20" = log(y) - log( (delta * (delta_1*capital + (1-delta_1)*labor)^(-rho) + (1-delta)*energy^(-rho) ) ^ (-1/rho)) ~ time,
-      "05-10" = y ~ capital + labor + energy + time,
-      "15-11" = y ~ capital + labor + energy + time,
-      "16-12" = y ~ capital + labor + energy + time,
-      "18-17" = y ~ pmin(capital, labor) + placeholder + energy + time
+      "01-01" = log(y) - log(x1) ~ time,
+      "02-02" = log(y) - log(x2) ~ time,
+      "06-03" = log(y) - log(x3) ~ time,
+      "03-04" = log(y) - log(pmin(x1, x2)) ~ time,
+      "07-05" = log(y) - log(pmin(x1, x3)) ~ time,
+      "08-06" = log(y) - log(pmin(x2, x3)) ~ time,
+      "04-07" = log(y) - log(delta_1*x1 + (1-delta_1)*x2) ~ time,
+      "10-08" = log(y) - log(delta*x1 + (1-delta)*x3) ~ time,
+      "11-09" = log(y) - log(delta*x2 + (1-delta)*x3) ~ time,
+      "09-13" = log(y) - log(pmin(x1, x2, x3)) ~ time,
+      "13-14" = log(y) - log( delta*pmin(x1, x2) + (1-delta)*x3 ) ~ time,
+      "14-15" = log(y) - log( pmin(delta_1*x1 + (1-delta_1)*x2, x3)) ~ time,
+      "12-16" = log(y) - log( delta*(delta_1*x1 + (1-delta_1)*x2) + (1-delta)*x3) ~ time,
+      "20-18" = log(y) - log( pmin((delta_1*x1^(-rho_1) + (1-delta_1)*x2^(-rho_1))^(-1/rho_1), x3) ) ~ time,
+      "19-19" = log(y) - log( (delta * (delta_1*x1^(-rho_1) + (1-delta_1)*x2^(-rho_1))^(-1/rho_1) + (1-delta)*x3 ) ) ~ time,
+      "17-20" = log(y) - log( (delta * (delta_1*x1 + (1-delta_1)*x2)^(-rho) + (1-delta)*x3^(-rho) ) ^ (-1/rho)) ~ time,
+      "05-10" = y ~ x1 + x2 + x3 + time,
+      "15-11" = y ~ x1 + x2 + x3 + time,
+      "16-12" = y ~ x1 + x2 + x3 + time,
+      "18-17" = y ~ pmin(x1, x2) + placeholder + x3 + time
     )
   # Values that don't appear in the model can be set to their fixed values and nlm()
   # will leave them alone.  
@@ -125,7 +125,7 @@ cesBoundaryModels <- function(formula, data, nest){
         as.formula(do.call(substitute, list( ft, formulaRosetta) ) )
     )
   
-  keep <- sapply(formulaTemplates, function(ft)  numFactors >=3 | !("energy" %in% all.vars(ft)))
+  keep <- sapply(formulaTemplates, function(ft)  numFactors >=3 | !("x3" %in% all.vars(ft)))
   plmModel <- sapply(1:length(formulaTemplates), function(x) x <= length(params)) # params for plm() only
   
 

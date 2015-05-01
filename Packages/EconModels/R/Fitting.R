@@ -359,9 +359,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ factor + time,
-                           list( response = substitute(response),
-                                 factor = substitute(factor),
-                                 time = substitute(time)
+                           list( response = as_name_or_null(response),
+                                 factor = as_name_or_null(factor),
+                                 time = as_name_or_null(time)
                            )
     ) 
   }
@@ -507,10 +507,10 @@ cd2Model <- function(formula, data, response, x1, x2, time, constrained=FALSE,
                        save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + time,
-                           list( response = as.name(response),
-                                 x1 = as.name(x1),
-                                 x2 = as.name(x2),
-                                 time = as.name(time)
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 time = as_name_or_null(time)
                            )
     )
   }
@@ -604,11 +604,11 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + x3 + time,
-                           list( response = as.name(response),
-                                 x1 = as.name(x1),
-                                 x2 = as.name(x2),
-                                 x3 = as.name(x3),
-                                 time = as.name(time)
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 x3 = as_name_or_null(x3),
+                                 time = as_name_or_null(time)
                            )
     )
   }
@@ -668,11 +668,11 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + x3 + time,
-                           list( response = substitute(response),
-                                 x1 = substitute(x1),
-                                 x2 = substitute(x2),
-                                 x3 = substitute(x3),
-                                 time = substitute(time)
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 x3 = as_name_or_null(x3),
+                                 time = as_name_or_null(time)
                            )
     )
   }
