@@ -24,15 +24,7 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
   d <- subset(data, select = intersect(all.vars(formula), names(data)))
   sdata <- data[complete.cases(d), unique(c(intersect(all.vars(formula), names(data)), names(data)))]
   
-#   timeSeries <- cesTimeSeries(f=f, data=sdata, nest=nest)
-#   y <- timeSeries$y
-#   x1 <- timeSeries$x1
-#   x2 <- timeSeries$x2
-#   x3 <- timeSeries$x3
-#   x4 <- timeSeries$x4
-#   time <- timeSeries$time
-  
-  # could compute this differently to avoid cesTimeSeries()
+
   numFactors <- cesParseFormula(formula, nest)$numFactors
   if ( ! numFactors %in% 2:3 ) {
     stop("model must have 2 or 3 factors.")
