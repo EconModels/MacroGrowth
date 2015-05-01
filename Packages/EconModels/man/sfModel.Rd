@@ -24,5 +24,6 @@ Fitting single factor models
 US <- subset(Calvin, Country=="US")
 sfModel(response = iGDP, factor=iK, time = iYear, data=US)
 sfModel(iGDP ~ iK + iYear, data=US)
+sfModel(response="iGDP", factor="iK", time="iYear", data=US)
 }
 

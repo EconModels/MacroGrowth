@@ -8,19 +8,19 @@
 #' @param data a data frame, in which to evaluate the formula.
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param a instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param b instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param c instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param d instead of specifying a formula, expressions for
-#' the components can be specified individually.
+#' @param x1 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x2 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x3 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x4 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
 #' @param time instead of specifying a formula, expressions for
-#' the components can be specified individually
+#' the components can be specified individually as character strings.
 #' @param nest a permutation (a,b,c,d) of the integers 1 through 4.
 #' For models with 3 factors, the nesting
-#' is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)
+#' is (xa + xb) + xc.  For 4 factors, the nesting is (xa + xb) + (xc + xd)
 #' @param prevModel a model used to start a gradient search.
 #' \code{prevModel} will be used as a starting point for a gradient search after
 #' (a) grid search in \code{rho} and \code{rho1} and 
@@ -44,10 +44,10 @@
 #' @param fitBoundaries a logical indicating whether fits should be performed along boundaries.
 #' Default is \code{TRUE}.
 #' @note For now the components in \code{f} (or the arguments \code{response}, 
-#' \code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
+#' \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}) must correspond to variables in \code{data} and may
 #' not be other kinds of expressions.
 #' @note For now, this function works for only 2 or 3 factors of production.
-#' Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
+#' Setting the value of \code{x4} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 #' will not work.
 #' @return a cesEst model with additional information attached as attributes.
 #' @examples
@@ -56,14 +56,16 @@
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
+#'   cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", 
+#'            data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 #' }
 #' @export
 cesModel <- function(formula, data,
                       response,
-                      a,
-                      b,
-                      c=NULL,
-                      d=NULL,
+                      x1=NULL,
+                      x2=NULL,
+                      x3=NULL,
+                      x4=NULL,
                       time,
                       nest=1:3,        # change to 1:4 if we support 4-factor models
                       prevModel=NULL,
@@ -77,22 +79,23 @@ cesModel <- function(formula, data,
                       fitBoundaries=TRUE,
                       ...){
   if ( missing(formula) ) { 
-    substitutionList <-  list( response = substitute(response),
-                               capital = substitute(a),
-                               labor = substitute(b),
-                               energy = substitute(c),
-                               other = substitute(d),
-                               time = substitute(time)
+    substitutionList <-  list( response = as_name_or_null(response),
+                               x1 = if (is.null(x1)) NULL else as_name_or_null(x1),
+                               x2 = if (is.null(x2)) NULL else as_name_or_null(x2),
+                               x3 = if (is.null(x3)) NULL else as_name_or_null(x3),
+                               x4 = if (is.null(x4)) NULL else as_name_or_null(x4),
+                               time = as_name_or_null(time)
     )
-    if (is.null(c) & is.null(d)) {
-      formula <- substitute( response ~ capital + labor + time, substitutionList )
-    } else if (is.null(d)) {
-      formula <- substitute( response ~ capital + labor + energy + time, substitutionList )
+    if (is.null(x3) & is.null(x4)) {
+      formula <- substitute( response ~ x1 + x2 + time, substitutionList )
+    } else if (is.null(x4)) {
+      formula <- substitute( response ~ x1 + x2 + x3 + time, substitutionList )
     } else {
-      formula <- substitute( response ~ capital + labor + energy + other + time, substitutionList )
+      formula <- substitute( response ~ x1 + x2 + x3 + x4 + time, substitutionList )
     }
   }
-    
+  
+  formula <- as.formula(formula)  
   fNames <- cesParseFormula(formula, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames

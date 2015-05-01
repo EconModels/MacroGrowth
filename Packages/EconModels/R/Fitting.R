@@ -352,6 +352,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' US <- subset(Calvin, Country=="US")
 #' sfModel(response = iGDP, factor=iK, time = iYear, data=US)
 #' sfModel(iGDP ~ iK + iYear, data=US)
+#' sfModel(response="iGDP", factor="iK", time="iYear", data=US)
 #' 
 #' @export
 sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
@@ -359,9 +360,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ factor + time,
-                           list( response = substitute(response),
-                                 factor = substitute(factor),
-                                 time = substitute(time)
+                           list( response = as_name_or_null(response),
+                                 factor = as_name_or_null(factor),
+                                 time = as_name_or_null(time)
                            )
     ) 
   }
@@ -404,16 +405,16 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' Fitting Cobb-Douglas models
 #' 
 #' @param formala a formula of the form 
-#' \code{response ~ capital + labor + time} or 
-#' \code{response ~ capital + labor + energy + time}
+#' \code{response ~ x1 + x2 + time} or 
+#' \code{response ~ x1 + x2 + x3 + time}
 #' @param data a data frame in which \code{formula} is evaluated
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param capital instead of specifying a formula, expressions for
+#' @param x1 instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param labor instead of specifying a formula, expressions for
+#' @param x2 instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param energy instead of specifying a formula, expressions for
+#' @param x3 instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
@@ -421,96 +422,98 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
-#' cdModel(response = iGDP, capital = iK, labor = iL, time = iYear, data=US)
+#' cdModel(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
 #' cdModel(iGDP ~ iK + iL + iYear, data=US)
-#' cdModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
+#' cdModel(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 #' cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 #' 
 #' @export
-cdModel <- function(formula, data, response, capital, labor, energy, time, 
+cdModel <- function(formula, data, response, x1, x2, x3, time, 
                              constrained=FALSE, save.data=TRUE, ...) {
   if (missing(formula)) {
-    if (missing(energy)) {
-      return( cdwoeModel( data=data, 
+    if (missing(x3)) {
+      return( cd2Model( data=data, 
                           response=response, 
-                          capital=capital, 
-                          labor=labor, 
+                          x1=x1, 
+                          x2=x2, 
                           time=time, 
                           constrained = constrained, save.data=save.data, ...) )
     } else {
-      return( cdeModel( data=data, 
+      return( cd3Model( data=data, 
                         response=response, 
-                        capital=capital, 
-                        labor=labor,
-                        energy=energy,
+                        x1=x1, 
+                        x2=x2,
+                        x3=x3,
                         time=time, 
                         constrained = constrained, save.data=save.data, ...) )
     }
   }
   
   if (ncol( attr(terms(formula),"factors") ) == 3 ) {
-    # formula contains response, capital, and labor
-    cdwoeModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
+    # formula contains response, x1, and x2
+    cd2Model( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
   } else {
-    # formula contains response, capital, labor, and energy
-    cdeModel( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
+    # formula contains response, x1, x2, and x3
+    cd3Model( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
   }
 }
 
 # These formulas provide C-D models at all boundaries.
 # Also, these formulas all assume constant returns to scale.
 CDformulas <- list( 
-  log(y) - log(energy) ~ 
-    I(log(capital) - log(energy)) + I(log(labor) - log(energy)) + time,  # [[1]] Full model
+  log(y) - log(x3) ~ 
+    I(log(x1) - log(x3)) + I(log(x2) - log(x3)) + time,  # [[1]] Full model
   
-  log(y) - log(labor)  ~ I(log(capital) - log(labor)) + time,            # [[2]] With energy exponent = 0
-  log(y) - log(energy) ~ I(log(capital) - log(energy)) + time,           # [[3]] With labor exponent = 0
-  log(y) - log(energy) ~ I(log(labor)  - log(energy)) + time,            # [[4]] With capital exponent = 0
+  log(y) - log(x2)  ~ I(log(x1) - log(x2)) + time,            # [[2]] With x3 exponent = 0
+  log(y) - log(x3) ~ I(log(x1) - log(x3)) + time,           # [[3]] With x2 exponent = 0
+  log(y) - log(x3) ~ I(log(x2)  - log(x3)) + time,            # [[4]] With x1 exponent = 0
   
-  log(y) - log(capital) ~ time, # [[5]] With capital exponent = 1, labor and energy exponents = 0
-  log(y) - log(labor)  ~ time,  # [[6]] With labor exponent = 1, capital and energy exponents = 0
-  log(y) - log(energy) ~ time   # [[7]] With energy exponent = 1, capital and labor exponents = 0
+  log(y) - log(x1) ~ time, # [[5]] With x1 exponent = 1, x2 and x3 exponents = 0
+  log(y) - log(x2)  ~ time,  # [[6]] With x2 exponent = 1, x1 and x3 exponents = 0
+  log(y) - log(x3) ~ time   # [[7]] With x3 exponent = 1, x1 and x2 exponents = 0
 )
 
 CDcoefNames <- list( 
   c("logscale",  "alpha_1", "alpha_2", "lambda"), # [[1]] Full model
   
-  c("logscale", "alpha_1", "lambda"), # [[2]] With energy exponent = 0
-  c("logscale", "alpha_1", "lambda"), # [[3]] With labor exponent = 0
-  c("logscale", "alpha_2", "lambda"), # [[4]] With capital exponent = 0
+  c("logscale", "alpha_1", "lambda"), # [[2]] With x3 exponent = 0
+  c("logscale", "alpha_1", "lambda"), # [[3]] With x2 exponent = 0
+  c("logscale", "alpha_2", "lambda"), # [[4]] With x1 exponent = 0
   
-  c("logscale", "lambda"), # [[5]] With capital exponent = 1, labor and energy exponents = 0
-  c("logscale", "lambda"), # [[6]] With labor exponent = 1, capital and energy exponents = 0
-  c("logscale", "lambda")  # [[7]] With energy exponent = 1, capital and labor exponents = 0
+  c("logscale", "lambda"), # [[5]] With x1 exponent = 1, x2 and x3 exponents = 0
+  c("logscale", "lambda"), # [[6]] With x2 exponent = 1, x1 and x3 exponents = 0
+  c("logscale", "lambda")  # [[7]] With x3 exponent = 1, x1 and x2 exponents = 0
 )
 
-#' Fitting Cobb-Douglas Models
+#' Fitting Cobb-Douglas Models 
 #' 
-#' @param formala a formual of the form \code{response ~ capital + labor + time}
+#' @param formala a formual of the form \code{response ~ x1 + x2 + time}
 #' @param data a data fram in which \code{formula} is evaluated
 #' @param response instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param capital instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param labor instead of specifying a formula, expressions for
-#' the components can be specified individually.
+#' the components can be specified individually as character strings.
+#' @param x1 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x2 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
 #' @param time instead of specifying a formula, expressions for
-#' the components can be specified individually.
+#' the components can be specified individually as character strings.
 #' @param constrained a logical indicating whether the parameters are constrained
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
-#' cdwoeModel(response = iGDP, capital = iK, labor = iL, time = iYear, data=US)
-#' cdwoeModel(iGDP ~ iK + iL + iYear, data=US)
+#' cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
+#' cd2Model(iGDP ~ iK + iL + iYear, data=US)
+#' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
 #' 
-cdwoeModel <- function(formula, data, response, capital, labor, time, constrained=FALSE, 
+cd2Model <- function(formula, data, response, x1, x2, time, constrained=FALSE, 
                        save.data=TRUE, ...) {
   if ( missing(formula) ) {
-    formula <- substitute( response ~ capital + labor + time,
-                           list( response = substitute(response),
-                                 capital = substitute(capital),
-                                 labor = substitute(labor),
-                                 time = substitute(time)
+    formula <- substitute( response ~ x1 + x2 + time,
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 time = as_name_or_null(time)
                            )
     )
   }
@@ -524,8 +527,8 @@ cdwoeModel <- function(formula, data, response, capital, labor, time, constraine
                       function(x) do.call(substitute, 
                                           list(x,
                                                list( y = formula[[2]],
-                                                     capital = formula[[3]][[2]][[2]],
-                                                     labor = formula[[3]][[2]][[3]],
+                                                     x1 = formula[[3]][[2]][[2]],
+                                                     x2 = formula[[3]][[2]][[3]],
                                                      time = formula[[3]][[3]]
                                                )
                                           )
@@ -574,41 +577,41 @@ respectsConstraints <- function( model ) {
   all( cf >= 0 ) & ( sum(cf) <=1 )
 }
 
-
-
-#' Fitting Cobb-Douglas models with Energy
+#' Fitting Cobb-Douglas models with 3 Factors
 #' 
-#' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
+#' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
 #' @param data a data frame in which \code{formala} is evaluated
 #' @param response instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param capital instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param labor instead of specifying a formula, expressions for
-#' the components can be specified individually.
-#' @param energy instead of specifying a formula, expressions for
-#' the components can be specified individually.
+#' the components can be specified individually as character strings.
+#' @param x1 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x2 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
+#' @param x3 instead of specifying a formula, expressions for
+#' the components can be specified individually as character strings.
 #' @param time instead of specifying a formula, expressions for
-#' the components can be specified individually.
+#' the components can be specified individually as character strings.
 #' @param constrained a logical indicated whether the coefficents are constrained. See details
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
-#' cdeModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
-#' cdeModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
+#' cd3Model(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 
-# y ~ capital + labor + energy + time
-cdeModel <- function( formula, data, response, capital, labor, energy, time, 
+
+# y ~ x1 + x2 + x3 + time
+cd3Model <- function( formula, data, response, x1, x2, x3, time, 
                       constrained=FALSE, save.data=TRUE, ...){
   
   if ( missing(formula) ) {
-    formula <- substitute( response ~ capital + labor + energy + time,
-                           list( response = substitute(response),
-                                 capital = substitute(capital),
-                                 labor = substitute(labor),
-                                 energy = substitute(energy),
-                                 time = substitute(time)
+    formula <- substitute( response ~ x1 + x2 + x3 + time,
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 x3 = as_name_or_null(x3),
+                                 time = as_name_or_null(time)
                            )
     )
   }
@@ -618,9 +621,9 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   
   formulas <- lapply(CDformulas, function(x) do.call( substitute, list( x,  list(
     time = formula[[3]][[3]],
-    energy = formula[[3]][[2]][[3]],
-    labor = formula[[3]][[2]][[2]][[3]],
-    capital = formula[[3]][[2]][[2]][[2]],
+    x3 = formula[[3]][[2]][[3]],
+    x2 = formula[[3]][[2]][[2]][[3]],
+    x1 = formula[[3]][[2]][[2]][[2]],
     y = formula[[2]]  
   ) 
   ) ) )
@@ -648,45 +651,50 @@ cdeModel <- function( formula, data, response, capital, labor, energy, time,
   return(res)
 }
 
-
 #' Fitting LINEX models
 #' 
-#' @param formula a formula of the form \code{response ~ capital + labor + energy + time}
+#' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param capital instead of specifying a formula, expressions for
+#' @param x1 instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param labor instead of specifying a formula, expressions for
+#' @param x2 instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param energy instead of specifying a formula, expressions for
+#' @param x3 instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param data a data frame in which \code{formula} is evaluated
+#' @examples
+#' US <- subset(Calvin, Country=="US")
+#' linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+#' linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+#' naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
+#' 
 #' @export
 #' 
-linexModel <- function(formula, data, response, capital, labor, energy, time, save.data=TRUE) {
+linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE) {
   if ( missing(formula) ) {
-    formula <- substitute( response ~ capital + labor + energy + time,
-                           list( response = substitute(response),
-                                 capital = substitute(capital),
-                                 labor = substitute(labor),
-                                 energy = substitute(energy),
-                                 time = substitute(time)
+    formula <- substitute( response ~ x1 + x2 + x3 + time,
+                           list( response = as_name_or_null(response),
+                                 x1 = as_name_or_null(x1),
+                                 x2 = as_name_or_null(x2),
+                                 x3 = as_name_or_null(x3),
+                                 time = as_name_or_null(time)
                            )
     )
   }
-  formulas <- list( log(y) - log(energy) ~  
-                      I(2 * (1 - 1/(capital / ( .5 * (energy + labor) ) )) )  + 
-                      I( labor/energy - 1 )
+  formulas <- list( log(y) - log(x3) ~  
+                      I(2 * (1 - 1/(x1 / ( .5 * (x3 + x2) ) )) )  + 
+                      I( x2/x3 - 1 )
   )
   
   
   formulas <- lapply(formulas, function(x) do.call( substitute, list( x,  list(
     time = formula[[3]][[3]],
-    energy = formula[[3]][[2]][[3]],
-    labor = formula[[3]][[2]][[2]][[3]],
-    capital = formula[[3]][[2]][[2]][[2]],
+    x3 = formula[[3]][[2]][[3]],
+    x2 = formula[[3]][[2]][[2]][[3]],
+    x1 = formula[[3]][[2]][[2]][[2]],
     y = formula[[2]]  
   ) 
   ) ) )

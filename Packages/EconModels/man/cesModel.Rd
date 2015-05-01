@@ -4,11 +4,11 @@
 \alias{cesModel}
 \title{Fitting CES models}
 \usage{
-cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
-  nest = 1:3, prevModel = NULL, algorithms = c("PORT", "L-BFGS-B"),
-  multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9,
-  -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-  digits = 6, save.data = TRUE, constrained = TRUE,
+cesModel(formula, data, response, x1 = NULL, x2 = NULL, x3 = NULL,
+  x4 = NULL, time, nest = 1:3, prevModel = NULL, algorithms = c("PORT",
+  "L-BFGS-B"), multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5,
+  -0.75, -0.9, -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75,
+  -0.9, -0.99), digits = 6, save.data = TRUE, constrained = TRUE,
   fitBoundaries = TRUE, ...)
 }
 \arguments{
@@ -20,24 +20,24 @@ cesModel(formula, data, response, a, b, c = NULL, d = NULL, time,
 \item{response}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{a}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+\item{x1}{instead of specifying a formula, expressions for
+the components can be specified individually as character strings.}
 
-\item{b}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+\item{x2}{instead of specifying a formula, expressions for
+the components can be specified individually as character strings.}
 
-\item{c}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+\item{x3}{instead of specifying a formula, expressions for
+the components can be specified individually as character strings.}
 
-\item{d}{instead of specifying a formula, expressions for
-the components can be specified individually.}
+\item{x4}{instead of specifying a formula, expressions for
+the components can be specified individually as character strings.}
 
 \item{time}{instead of specifying a formula, expressions for
-the components can be specified individually}
+the components can be specified individually as character strings.}
 
 \item{nest}{a permutation (a,b,c,d) of the integers 1 through 4.
 For models with 3 factors, the nesting
-is (a + b) + c.  For 4 factors, the nesting is (a + b) + (c + d)}
+is (xa + xb) + xc.  For 4 factors, the nesting is (xa + xb) + (xc + xd)}
 
 \item{prevModel}{a model used to start a gradient search.
 \code{prevModel} will be used as a starting point for a gradient search after
@@ -76,11 +76,11 @@ This function fits a CES model
 }
 \note{
 For now the components in \code{f} (or the arguments \code{response},
-\code{a}, \code{b}, \code{c}, \code{d}, and \code{time}) must correspond to variables in \code{data} and may
+\code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}) must correspond to variables in \code{data} and may
 not be other kinds of expressions.
 
 For now, this function works for only 2 or 3 factors of production.
-Setting the value of \code{d} or using \code{f} of the form \code{y ~ a + b + c + d + time}
+Setting the value of \code{x4} or using \code{f} of the form \code{y ~ a + b + c + d + time}
 will not work.
 }
 \examples{
@@ -89,6 +89,8 @@ if (require("EconData") & require("dplyr")) {
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
+  cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear",
+           data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 }
 }
 

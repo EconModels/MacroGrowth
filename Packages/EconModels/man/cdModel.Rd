@@ -4,8 +4,8 @@
 \alias{cdModel}
 \title{Fitting Cobb-Douglas models}
 \usage{
-cdModel(formula, data, response, capital, labor, energy, time,
-  constrained = FALSE, save.data = TRUE, ...)
+cdModel(formula, data, response, x1, x2, x3, time, constrained = FALSE,
+  save.data = TRUE, ...)
 }
 \arguments{
 \item{data}{a data frame in which \code{formula} is evaluated}
@@ -13,13 +13,13 @@ cdModel(formula, data, response, capital, labor, energy, time,
 \item{response}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{capital}{instead of specifying a formula, expressions for
+\item{x1}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{labor}{instead of specifying a formula, expressions for
+\item{x2}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
-\item{energy}{instead of specifying a formula, expressions for
+\item{x3}{instead of specifying a formula, expressions for
 the components can be specified individually.}
 
 \item{time}{instead of specifying a formula, expressions for
@@ -28,8 +28,8 @@ the components can be specified individually.}
 \item{constrained}{a logical indicating whether the parameters should be constrained in the fitting process.}
 
 \item{formala}{a formula of the form
-\code{response ~ capital + labor + time} or
-\code{response ~ capital + labor + energy + time}}
+\code{response ~ x1 + x2 + time} or
+\code{response ~ x1 + x2 + x3 + time}}
 }
 \value{
 a CDEmodel object, which is an lm object with some additioanl attributes.
@@ -39,9 +39,10 @@ Fitting Cobb-Douglas models
 }
 \examples{
 US <- subset(Calvin, Country=="US")
-cdModel(response = iGDP, capital = iK, labor = iL, time = iYear, data=US)
+cdModel(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
 cdModel(iGDP ~ iK + iL + iYear, data=US)
-cdModel(response = iGDP, capital = iK, labor = iL, energy = iQp, time = iYear, data=US)
+cdModel(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
+cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 }
 
