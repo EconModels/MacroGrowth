@@ -107,6 +107,8 @@
 require(EconData)
 require(EconModels)
 require(dplyr)
+require(reshape2)
+require(ggplot2)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -543,7 +545,6 @@ dataUK <- filter(Leeds, Country == "UK")
 historicalData <- plyr::rbind.fill(dataPT, dataUK)
 @
 
-
 <<Time Series Variables>>=
 # This block of code sets up the time-series variables 
 # to be used for each country.
@@ -613,6 +614,137 @@ f$UK$adj$withE <- as.formula(
               list( y = y_UK, k = k_UK_adj,
                     l = l_UK_adj, e = e_UK_adj, t = t_UK)))
 @
+
+For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
+
+\begin{table} \caption{Unadjusted time-series variables.} 
+\label{tab:unadjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal           & UK                 \\
+      \midrule
+      Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
+      Capital     & \Sexpr{k_PT_unadj} & \Sexpr{k_UK_unadj} \\
+      Labor       & \Sexpr{l_PT_unadj} & \Sexpr{l_UK_unadj} \\
+      Energy      & \Sexpr{e_PT_unadj} & \Sexpr{e_UK_unadj} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+For quality-adjusted variables, we use the time series shown in Table~\ref{tab:quality_adjusted_variables}.
+
+\begin{table} \caption{Quality-adjusted time series variables.} 
+\label{tab:quality_adjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal         & UK               \\
+      \midrule
+      Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
+      Capital     & \Sexpr{k_PT_adj} & \Sexpr{k_UK_adj} \\
+      Labor       & \Sexpr{l_PT_adj} & \Sexpr{l_UK_adj} \\
+      Energy      & \Sexpr{e_PT_adj} & \Sexpr{e_UK_adj} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+<<Historical Data, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=7, fig.cap="Historical data.">>=
+mdata <- melt(historicalData, 
+              measure.vars = c(as.character(y_PT), 
+                               as.character(k_PT_unadj), as.character(l_PT_unadj), as.character(e_PT_unadj),
+                               as.character(k_PT_adj), as.character(l_PT_adj), as.character(e_PT_adj),
+                               as.character(y_UK), 
+                               as.character(k_UK_unadj), as.character(l_UK_unadj), as.character(e_UK_unadj),
+                               as.character(k_UK_adj), as.character(l_UK_adj), as.character(e_UK_adj)), 
+              variable.name = "variable",
+              value.name = "value")
+historicalPlot(mdata, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = Country ~ Source, 
+               line_types = c(1,5,2,6,4,3)) + 
+  xlab("") + 
+  ylab("Indexed (1960=1 or 1970=1)")
+
+
+
+ggplot(mdata, mapping=aes(x=Year, y=value, group=variable) + 
+  geom_line(mapping) +
+  facet_grid( facet_formula, scales="free_y" ) + 
+  scale_linetype_manual(name="", values=line_types) + 
+  xy_theme()
+
+@
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation}
+\label{sec:parameter_estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Parameter estimation is accomplished with \texttt{formula}s of the form
+%
+\begin{equation} \label{eq:formulas}
+  y \sim x_1 + x_2 + x_3 + time,
+\end{equation}
+%
+where $y$ is economic output and 
+$x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of
+capital ($k$), labor ($l$), and energy ($e$).
+(The factors of production may be quality-adjusted.)
+$time$ is the time variable, usually \texttt{iYear}. 
+The \texttt{formula}s are used in a fitting function such as 
+\texttt{cdModel} to create a \texttt{model} object.
+The function \texttt{naturalCoef} extracts reasonable
+coefficients from \texttt{model} objects.
+
+Note that in the fitting process for the Cobb-Douglas equation,
+$\texttt{scale} = \theta$, 
+$\alpha_1 = \alpha$,
+$\alpha_2 = \beta$, and
+$\alpha_3 = \gamma$,
+when the \texttt{formula} is specified as 
+%
+\begin{equation} \label{eq:formula_kle}
+  \texttt{y} \sim \texttt{k + l + e + time}.
+\end{equation}
+%
+Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
+
+For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
+$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
+for the CES model with two factors of production
+and by 
+$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
+for the CES model with three factors of production.
+The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
+$\alpha$, $\beta$, and $\gamma$ (coefficients for capital, labor, and energy, respectively)
+as shown in Table \ref{tab:CES_abg_equations}, 
+assuming factors of production are specified in the fitting \texttt{formula} as
+\texttt{y~$\sim$~k~+~l~+~e~+~time}.
+
+\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ 
+                        (importance of capital, labor, and energy, respectively)
+                        for the various CES nestings, 
+                        provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      \toprule
+      Nesting         & \texttt{nest}     & $\alpha$                & $\beta$                 & $\gamma$       \\
+      \midrule
+      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
+      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
 
 <<Models>>=
 fileName <- "ESEE2015Models.Rdata"
@@ -691,109 +823,6 @@ if (!rerunModels){
 }
 
 @
-
-For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
-
-\begin{table} \caption{Unadjusted variables.} 
-\label{tab:unadjusted_variables} 
-  \begin{center}
-    \begin{tabular}{r l l} 
-      \toprule
-      Variable    & Portugal           & UK                 \\
-      \midrule
-      Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
-      Capital     & \Sexpr{k_PT_unadj} & \Sexpr{k_UK_unadj} \\
-      Labor       & \Sexpr{l_PT_unadj} & \Sexpr{l_UK_unadj} \\
-      Energy      & \Sexpr{e_PT_unadj} & \Sexpr{e_UK_unadj} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-For quality-adjusted variables, we use the time series shown in Table~\ref{tab:quality_adjusted_variables}.
-
-\begin{table} \caption{Unadjusted variables.} 
-\label{tab:quality_adjusted_variables} 
-  \begin{center}
-    \begin{tabular}{r l l} 
-      \toprule
-      Variable    & Portugal         & UK               \\
-      \midrule
-      Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
-      Capital     & \Sexpr{k_PT_adj} & \Sexpr{k_UK_adj} \\
-      Labor       & \Sexpr{l_PT_adj} & \Sexpr{l_UK_adj} \\
-      Energy      & \Sexpr{e_PT_adj} & \Sexpr{e_UK_adj} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Parameter Estimation}
-\label{sec:parameter_estimation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Parameter estimation is accomplished with \texttt{formula}s of the form
-%
-\begin{equation} \label{eq:formulas}
-  y \sim x_1 + x_2 + x_3 + time,
-\end{equation}
-%
-where $y$ is economic output and 
-$x_1$, $x_2$, and $x_3$ are factors of production
-and permutations of
-capital ($k$), labor ($l$), and energy ($e$).
-(The factors of production may be quality-adjusted.)
-$time$ is the time variable, usually \texttt{iYear}. 
-The \texttt{formula}s are used in a fitting function such as 
-\texttt{cdModel} to create a \texttt{model} object.
-The function \texttt{naturalCoef} extracts reasonable
-coefficients from \texttt{model} objects.
-
-Note that in the fitting process for the Cobb-Douglas equation,
-$\texttt{scale} = \theta$, 
-$\alpha_1 = \alpha$,
-$\alpha_2 = \beta$, and
-$\alpha_3 = \gamma$,
-when the \texttt{formula} is specified as 
-%
-\begin{equation} \label{eq:formula_kle}
-  \texttt{y} \sim \texttt{k + l + e + time}.
-\end{equation}
-%
-Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
-
-For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
-$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
-for the CES model with two factors of production
-and by 
-$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
-for the CES model with three factors of production.
-The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
-$\alpha$, $\beta$, and $\gamma$ (coefficients for capital, labor, and energy, respectively)
-as shown in Table \ref{tab:CES_abg_equations}, 
-assuming factors of production are specified in the fitting \texttt{formula} as
-\texttt{y~$\sim$~k~+~l~+~e~+~time}.
-
-\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ 
-                        (importance of capital, labor, and energy, respectively)
-                        for the various CES nestings, 
-                        provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
-\label{tab:CES_abg_equations} 
-  \begin{center}
-    \begin{tabular}{c c c c c} 
-      \toprule
-      Nesting         & \texttt{nest}     & $\alpha$                & $\beta$                 & $\gamma$       \\
-      \midrule
-      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
-      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
-      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
