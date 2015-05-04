@@ -651,24 +651,48 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
   \end{center}
 \end{table}
 
-<<Historical Data, fig.pos="H", fig.align='center', fig.width=6.6, fig.height=7, fig.cap="Historical data.">>=
-mdata <- melt(historicalData, 
-              measure.vars = c(as.character(y_PT), 
-                               as.character(k_PT_unadj), as.character(l_PT_unadj), as.character(e_PT_unadj),
-                               as.character(k_PT_adj), as.character(l_PT_adj), as.character(e_PT_adj),
-                               as.character(y_UK), 
-                               as.character(k_UK_unadj), as.character(l_UK_unadj), as.character(e_UK_unadj),
-                               as.character(k_UK_adj), as.character(l_UK_adj), as.character(e_UK_adj)), 
+Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
+are shown in Figure~\ref{fig:Historical Data}.
+
+<<Historical Data, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+unadjVars_PT <- c(y_PT, k_PT_unadj, l_PT_unadj, e_PT_unadj)
+unadjVars_UK <- c(y_UK, k_UK_unadj, l_UK_unadj, e_UK_unadj)
+commonVars <- c("Year", "iYear", "Country")
+unadjData_PT <- historicalData[ , as.character(unique(c(unadjVars_PT, commonVars)))] %>% filter(Country=="PT")
+unadjData_UK <- historicalData[ , as.character(unique(c(unadjVars_UK, commonVars)))] %>% filter(Country=="UK")
+unadjData <- plyr::rbind.fill(unadjData_PT, unadjData_UK)
+unadjData$adjusted <- "Unadjusted"
+
+adjVars_PT <- c(y_PT, k_PT_adj, l_PT_adj, e_PT_adj)
+adjVars_UK <- c(y_UK, k_UK_adj, l_UK_adj, e_UK_adj)
+adjData_PT <- historicalData[ , as.character(unique(c(adjVars_PT, commonVars)))] %>% filter(Country=="PT")
+adjData_UK <- historicalData[ , as.character(unique(c(adjVars_UK, commonVars)))] %>% filter(Country=="UK")
+adjData <- plyr::rbind.fill(adjData_PT, adjData_UK)
+adjData$adjusted <- "Quality-adjusted"
+
+trimmedData <- plyr::rbind.fill(unadjData, adjData)
+
+mdata <- melt(trimmedData, 
+              measure.vars = unique(as.character(c(unadjVars_PT, unadjVars_UK, adjVars_PT, adjVars_UK))), 
               variable.name = "variable",
               value.name = "value")
+
+# Relevel factors before plotting
+mdata$Country <- relevelFactor(as.factor(mdata$Country), c("PT", "UK"))
+mdata$adjusted <- relevelFactor(as.factor(mdata$adjusted), c("Unadjusted", "Quality-adjusted"))
+mdata$variable <- relevelFactor(as.factor(mdata$variable), unique(as.character(
+  c(y_PT, k_PT_unadj, l_PT_unadj, e_PT_unadj, k_PT_adj, l_PT_adj, e_PT_adj,
+    y_UK, k_UK_unadj, l_UK_unadj, e_UK_unadj, k_UK_adj, l_UK_adj, e_UK_adj))))
+
 historicalPlot(mdata, 
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ Source, 
-               line_types = c(1:11)) + 
+               facet_formula = Country ~ adjusted, 
+               line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
+  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
+  coord_cartesian(ylim=c(0.5, 13)) +
   xlab("") + 
   ylab("Indexed (1960=1)")
 @
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
