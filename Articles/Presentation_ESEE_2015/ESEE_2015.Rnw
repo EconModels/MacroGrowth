@@ -664,18 +664,9 @@ mdata <- melt(historicalData,
 historicalPlot(mdata, 
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
                facet_formula = Country ~ Source, 
-               line_types = c(1,5,2,6,4,3)) + 
+               line_types = c(1:11)) + 
   xlab("") + 
-  ylab("Indexed (1960=1 or 1970=1)")
-
-
-
-ggplot(mdata, mapping=aes(x=Year, y=value, group=variable) + 
-  geom_line(mapping) +
-  facet_grid( facet_formula, scales="free_y" ) + 
-  scale_linetype_manual(name="", values=line_types) + 
-  xy_theme()
-
+  ylab("Indexed (1960=1)")
 @
 
 
