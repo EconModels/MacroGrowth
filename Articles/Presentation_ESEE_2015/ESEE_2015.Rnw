@@ -781,62 +781,89 @@ if (!rerunModels){
   models$PT$unadj$withE$CD <- cdModel(formula = f$PT$unadj$withE, 
                                       data = dataPT, constrained = TRUE)
   models$PT$adj$noE$CD <- cdModel(formula = f$PT$adj$noE, 
-                        data = dataPT, constrained = TRUE)
+                                  data = dataPT, constrained = TRUE)
   models$PT$adj$withE$CD <- cdModel(formula = f$PT$adj$withE, 
-                          data = dataPT, constrained = TRUE)
+                                    data = dataPT, constrained = TRUE)
   # UK, CD
   models$UK$unadj$noE$CD <- cdModel(formula = f$UK$unadj$noE, 
-                          data = dataUK, constrained = TRUE)
+                                    data = dataUK, constrained = TRUE)
   models$UK$unadj$withE$CD <- cdModel(formula = f$UK$unadj$withE, 
-                            data = dataUK, constrained = TRUE)
+                                      data = dataUK, constrained = TRUE)
   models$UK$adj$noE$CD <- cdModel(formula = f$UK$adj$noE, 
-                        data = dataUK, constrained = TRUE)
+                                  data = dataUK, constrained = TRUE)
   models$UK$adj$withE$CD <- cdModel(formula = f$UK$adj$withE, 
-                          data = dataUK, constrained = TRUE)
+                                    data = dataUK, constrained = TRUE)
   # PT, CESkl
   models$PT$unadj$noE$CESkl <- cesModel(formula = f$PT$unadj$noE, 
-                              nest = nest$kl, data = dataPT, constrained = TRUE)
+                                        nest = nest$kl, data = dataPT, constrained = TRUE)
   models$PT$adj$noE$CESkl <- cesModel(formula = f$PT$adj$noE, 
-                            nest = nest$kl, data = dataPT, constrained = TRUE)
+                                      nest = nest$kl, data = dataPT, constrained = TRUE)
   # PT, CESkle
   models$PT$unadj$withE$CESkle <- cesModel(formula = f$PT$unadj$withE, 
-                                 nest = nest$kle, data = dataPT, constrained = TRUE)
+                                           nest = nest$kle, data = dataPT, constrained = TRUE)
   models$PT$adj$withE$CESkle <- cesModel(formula = f$PT$adj$withE, 
-                               nest = nest$kle, data = dataPT, constrained = TRUE)
+                                         nest = nest$kle, data = dataPT, constrained = TRUE)
   # PT, CESlek
   models$PT$unadj$withE$CESlek <- cesModel(formula = f$PT$unadj$withE, 
-                                 nest = nest$lek, data = dataPT, constrained = TRUE)
+                                           nest = nest$lek, data = dataPT, constrained = TRUE)
   models$PT$adj$withE$CESlek <- cesModel(formula = f$PT$adj$withE, 
-                               nest = nest$lek, data = dataPT, constrained = TRUE)
+                                         nest = nest$lek, data = dataPT, constrained = TRUE)
   # PT, CESekl
   models$PT$unadj$withE$CESekl <- cesModel(formula = f$PT$unadj$withE, 
-                                 nest = nest$ekl, data = dataPT, constrained = TRUE)
+                                           nest = nest$ekl, data = dataPT, constrained = TRUE)
   models$PT$adj$withE$CESekl <- cesModel(formula = f$PT$adj$withE, 
-                               nest = nest$ekl, data = dataPT, constrained = TRUE)
+                                         nest = nest$ekl, data = dataPT, constrained = TRUE)
   # UK, CESkl
   models$UK$unadj$noE$CESkl <- cesModel(formula = f$UK$unadj$noE, 
-                              nest = nest$kl, data = dataUK, constrained = TRUE)
+                                        nest = nest$kl, data = dataUK, constrained = TRUE)
   models$UK$adj$noE$CESkl <- cesModel(formula = f$UK$adj$noE, 
-                            nest = nest$kl, data = dataUK, constrained = TRUE)
+                                      nest = nest$kl, data = dataUK, constrained = TRUE)
   # UK, CESkle
   models$UK$unadj$withE$CESkle <- cesModel(formula = f$UK$unadj$withE, 
-                                 nest = nest$kle, data = dataUK, constrained = TRUE)
+                                           nest = nest$kle, data = dataUK, constrained = TRUE)
   models$UK$adj$withE$CESkle <- cesModel(formula = f$UK$adj$withE, 
-                               nest = nest$kle, data = dataUK, constrained = TRUE)
+                                         nest = nest$kle, data = dataUK, constrained = TRUE)
   # UK, CESlek
   models$UK$unadj$withE$CESlek <- cesModel(formula = f$UK$unadj$withE, 
-                                 nest = nest$lek, data = dataUK, constrained = TRUE)
+                                           nest = nest$lek, data = dataUK, constrained = TRUE)
   models$UK$adj$withE$CESlek <- cesModel(formula = f$UK$adj$withE, 
-                               nest = nest$lek, data = dataUK, constrained = TRUE)
+                                         nest = nest$lek, data = dataUK, constrained = TRUE)
   # UK, CESekl
   models$UK$unadj$withE$CESekl <- cesModel(formula = f$UK$unadj$withE, 
-                                 nest = nest$ekl, data = dataUK, constrained = TRUE)
+                                           nest = nest$ekl, data = dataUK, constrained = TRUE)
   models$UK$adj$withE$CESekl <- cesModel(formula = f$UK$adj$withE, 
-                               nest = nest$ekl, data = dataUK, constrained = TRUE)
+                                         nest = nest$ekl, data = dataUK, constrained = TRUE)
   # Save models to disk.
   save(models, file=fileName)
 }
+@
 
+<<Fitted_Data>>=
+  extract_fitted_comparison <- function(mod, id){
+    df <- mod$data[ , c("Year", "iGDP", "Country")]
+    # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
+    df$fitted <- yhat(mod)[c(1:length(df$Year))]
+    # Parse the id to find out whether this is quality-adjusted data
+    id_list <- strsplit(id, split = "[.]")[[1]]
+    if (id_list[[2]] == "unadj"){
+      df$adjusted <- "Unadjusted"
+    } else if (id_list[[2]] == "adj"){
+      df$adjusted <- "Quality-adjusted"
+    } else {
+      stop("Unknown adjustment.")
+    }
+    if (id_list[[3]] == "noE"){
+      df$energy <- "Without energy"
+    } else if (id_list[[3]] == "withE"){
+      df$energy <- "With energy"
+    } else {
+      stop("Unknown energy.")
+    }
+    df$model <- id_list[[4]]    
+    return(df)
+  }
+  fitted_data <- leaf_apply(models, extract_fitted_comparison, class=c("CDEmodel", "cesEst", "LINEXmodel"))
+  fitted_data <- do.call(rbind, fitted_data)
 @
 
 
@@ -976,6 +1003,9 @@ naturalCoef(models$UK$adj$withE$CD)
 \texttt{alpha\_1} moves from 
 \Sexpr{naturalCoef(models$UK$adj$noE$CD)$alpha_1} to
 \Sexpr{naturalCoef(models$UK$adj$withE$CD)$alpha_1}.
+
+Now, let's compare the fits to historical data.
+
 
 
 %++++++++++++++++++++++++++++++
