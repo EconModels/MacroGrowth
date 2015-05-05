@@ -24,4 +24,10 @@ a flat, named list of the results of applying \code{f} to the leaves of \code{l}
 This function applies a function to leaves of a nested list (depth-first) if and only if the
 class of the leaf matches one of the names in \code{class}.
 }
+\details{
+\code{f} must be of the form \code{f(item, item_name)} where
+\code{item} is a member of \code{l} and
+\code{item_name} is the concatenated name of \code{item} created
+by applying \code{sep} between node names in the list.
+}
 
