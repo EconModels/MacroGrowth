@@ -9,6 +9,10 @@
 #' @param name a prefix for the names in the resulting list
 #' @param sep the separator to be used when creating the names of the leaves from the list nesting.
 #' @return a flat, named list of the results of applying \code{f} to the leaves of \code{l}.
+#' @details \code{f} must be of the form \code{f(item, item_name)} where 
+#' \code{item} is a member of \code{l} and 
+#' \code{item_name} is the concatenated name of \code{item} created 
+#' by applying \code{sep} between node names in the list.
 #' @export
 leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
   res <- list()
