@@ -839,37 +839,82 @@ if (!rerunModels){
 @
 
 <<Fitted_Data>>=
-  extract_fitted_comparison <- function(mod, id){
-    df <- mod$data[ , c("Year", "iGDP", "Country")]
-    # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
-    df$fitted <- yhat(mod)[c(1:length(df$Year))]
-    # Parse the id to find out whether this is quality-adjusted data
-    id_list <- strsplit(id, split = "[.]")[[1]]
-    if (id_list[[2]] == "unadj"){
-      df$adjusted <- "Unadjusted"
-    } else if (id_list[[2]] == "adj"){
-      df$adjusted <- "Quality-adjusted"
-    } else {
-      stop("Unknown adjustment.")
-    }
-    if (id_list[[3]] == "noE"){
-      df$energy <- "Without energy"
-    } else if (id_list[[3]] == "withE"){
-      df$energy <- "With energy"
-    } else {
-      stop("Unknown energy.")
-    }
-    df$model <- id_list[[4]]    
-    return(df)
+extract_fitted_comparison <- function(mod, id){
+  df <- mod$data[ , c("Year", "iGDP", "Country")]
+  # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
+  df$fitted <- yhat(mod)[c(1:length(df$Year))]
+  # Parse the id to find out whether this is quality-adjusted data
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  if (id_list[[2]] == "unadj"){
+    df$adjusted <- "Unadjusted"
+  } else if (id_list[[2]] == "adj"){
+    df$adjusted <- "Quality-adjusted"
+  } else {
+    stop("Unknown adjustment.")
   }
-  fitted_data <- leaf_apply(models, extract_fitted_comparison, class=c("CDEmodel", "cesEst", "LINEXmodel"))
-  fitted_data <- do.call(rbind, fitted_data)
+  if (id_list[[3]] == "noE"){
+    df$energy <- "Without energy"
+  } else if (id_list[[3]] == "withE"){
+    df$energy <- "With energy"
+  } else {
+    stop("Unknown energy.")
+  }
+  df$model <- id_list[[4]]    
+  return(df)
+}
+fitted_data <- leaf_apply(models, extract_fitted_comparison, class=c("CDEmodel", "cesEst", "LINEXmodel"))
+fitted_data <- do.call(rbind, fitted_data)
+# Melt fitted_data so it can be used for plotting
+# Relevel factors before plotting
+fitted_data$Country <- relevelFactor(as.factor(fitted_data$Country), c("PT", "UK"))
+fitted_data$adjusted <- relevelFactor(as.factor(fitted_data$adjusted), c("Unadjusted", "Quality-adjusted"))
+fitted_data$energy <- relevelFactor(as.factor(fitted_data$energy), c("Without energy", "With Energy"))
 @
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 \label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%++++++++++++++++++++++++++++++
+\subsection{Fits to historical data} 
+\label{sec:fits_to_historical_data}
+%++++++++++++++++++++++++++++++
+
+This section shows graphs of fits to historical data.
+
+<<Fitted Graph>>=
+fittedGraph <- function(data){
+  ggplot() +
+    geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
+    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=energy)) +
+    scale_linetype_manual(values=c(2,3), name="") +
+    facet_grid(Country ~ adjusted) +
+    xy_theme()
+}
+@
+
+
+<<Graphs CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_data, model=="CD"))
+@
+
+<<Graphs CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_data, model=="CESkle" | model=="CESkl"))
+@
+
+<<Graphs CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_data, model=="CESlek" | model=="CESkl"))
+@
+
+<<Graphs CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_data, model=="CESekl" | model=="CESkl"))
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analysis}
+\label{sec:analysis}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 For now, I've organized the analysis around questions that we would like to answer.
