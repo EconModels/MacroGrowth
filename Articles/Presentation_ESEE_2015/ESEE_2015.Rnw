@@ -542,7 +542,6 @@ Historical data are stored in the \texttt{IST} and \texttt{Leeds} data sets.
 <<Data, eval=TRUE>>=
 dataPT <- filter(IST, Country == "PT")
 dataUK <- filter(Leeds, Country == "UK")
-historicalData <- plyr::rbind.fill(dataPT, dataUK)
 @
 
 <<Time Series Variables>>=
@@ -576,6 +575,25 @@ e_UK_adj <- substitute(iU)
 # Time variables
 t_PT <- substitute(iYear)
 t_UK <- substitute(iYear)
+
+# Create some pre-econometric ratios
+# Unadjusted variables
+dataPT <- transform(dataPT, kPerGDP_unadj = eval(k_PT_unadj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP_unadj = eval(k_PT_unadj)/iGDP)
+dataPT <- transform(dataPT, ePerGDP_unadj = eval(e_PT_unadj)/iGDP)
+dataUK <- transform(dataUK, kPerGDP_unadj = eval(k_UK_unadj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP_unadj = eval(k_UK_unadj)/iGDP)
+dataUK <- transform(dataUK, ePerGDP_unadj = eval(e_UK_unadj)/iGDP)
+# Quality-adjusted variables
+dataPT <- transform(dataPT, kPerGDP_adj = eval(k_PT_adj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP_adj = eval(k_PT_adj)/iGDP)
+dataPT <- transform(dataPT, ePerGDP_adj = eval(e_PT_adj)/iGDP)
+dataUK <- transform(dataUK, kPerGDP_adj = eval(k_UK_adj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP_adj = eval(k_UK_adj)/iGDP)
+dataUK <- transform(dataUK, ePerGDP_adj = eval(e_UK_adj)/iGDP)
+
+# Now create the historicalData data frame
+historicalData <- plyr::rbind.fill(dataPT, dataUK)
 @
 
 <<Formulas>>=
@@ -694,6 +712,10 @@ historicalPlot(mdata,
   ylab("Indexed (1960=1)")
 @
 
+<<Pre-econometric graph>>=
+
+
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation}
@@ -863,6 +885,7 @@ extract_fitted_comparison <- function(mod, id){
   return(df)
 }
 fitted_data <- leaf_apply(models, extract_fitted_comparison, class=c("CDEmodel", "cesEst", "LINEXmodel"))
+# Create a data frame.
 fitted_data <- do.call(rbind, fitted_data)
 # Melt fitted_data so it can be used for plotting
 # Relevel factors before plotting
