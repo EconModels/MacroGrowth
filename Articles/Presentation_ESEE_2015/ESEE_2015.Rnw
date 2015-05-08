@@ -579,17 +579,17 @@ t_UK <- substitute(iYear)
 # Create some pre-econometric ratios
 # Unadjusted variables
 dataPT <- transform(dataPT, kPerGDP_unadj = eval(k_PT_unadj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP_unadj = eval(k_PT_unadj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP_unadj = eval(l_PT_unadj)/iGDP)
 dataPT <- transform(dataPT, ePerGDP_unadj = eval(e_PT_unadj)/iGDP)
 dataUK <- transform(dataUK, kPerGDP_unadj = eval(k_UK_unadj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP_unadj = eval(k_UK_unadj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP_unadj = eval(l_UK_unadj)/iGDP)
 dataUK <- transform(dataUK, ePerGDP_unadj = eval(e_UK_unadj)/iGDP)
 # Quality-adjusted variables
 dataPT <- transform(dataPT, kPerGDP_adj = eval(k_PT_adj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP_adj = eval(k_PT_adj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP_adj = eval(l_PT_adj)/iGDP)
 dataPT <- transform(dataPT, ePerGDP_adj = eval(e_PT_adj)/iGDP)
 dataUK <- transform(dataUK, kPerGDP_adj = eval(k_UK_adj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP_adj = eval(k_UK_adj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP_adj = eval(l_UK_adj)/iGDP)
 dataUK <- transform(dataUK, ePerGDP_adj = eval(e_UK_adj)/iGDP)
 
 # Now create the historicalData data frame
@@ -712,9 +712,36 @@ historicalPlot(mdata,
   ylab("Indexed (1960=1)")
 @
 
-<<Pre-econometric graph>>=
-
-
+<<Pre-econometric graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
+# Melt the data
+mdata_preeconometric <- melt(historicalData, 
+                             measure.vars = c("kPerGDP_unadj", "lPerGDP_unadj", "ePerGDP_unadj",
+                                              "kPerGDP_adj", "lPerGDP_adj", "ePerGDP_adj"),
+                             variable.name = "variable",
+                             value.name = "value")
+# Add a column to say whether the variable is Unadjusted or Quality-adjusted based on variable name
+mdata_preeconometric$adjusted <- lapply(mdata_preeconometric$variable, function(x) {
+  suffix <- unlist(strsplit(as.character(x), split="[_]")) [2]
+  if (suffix == "unadj"){
+    return("Unadjusted")
+  } else if (suffix == "adj"){
+    return("Quality-adjusted")
+  } else {
+    stop(paste("Unknown suffix:", suffix))
+  }
+})
+# Fix levels
+mdata_preeconometric$adjusted <- relevelFactor(as.factor(as.character(mdata_preeconometric$adjusted)), 
+                                               c("Unadjusted", "Quality-adjusted"))
+mdata_preeconometric$Country <- relevelFactor(as.factor(mdata_preeconometric$Country), 
+                                              c("PT", "UK"))
+# Now make the plot
+historicalPlot(mdata_preeconometric, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = Country ~ adjusted, 
+               line_types = c(2,4,3, 2,4,3)) + 
+  xlab("") + 
+  ylab("Indexed (1960=1)")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -860,11 +887,12 @@ if (!rerunModels){
 }
 @
 
-<<Fitted_Data>>=
-extract_fitted_comparison <- function(mod, id){
+<<Fitted_and_Residuals>>=
+extract_fitted_and_resid <- function(mod, id){
   df <- mod$data[ , c("Year", "iGDP", "Country")]
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(mod)[c(1:length(df$Year))]
+  df$Residuals <- resid(mod)[c(1:length(df$Year))]
   # Parse the id to find out whether this is quality-adjusted data
   id_list <- strsplit(id, split = "[.]")[[1]]
   if (id_list[[2]] == "unadj"){
@@ -884,14 +912,14 @@ extract_fitted_comparison <- function(mod, id){
   df$model <- id_list[[4]]    
   return(df)
 }
-fitted_data <- leaf_apply(models, extract_fitted_comparison, class=c("CDEmodel", "cesEst", "LINEXmodel"))
+fitted_and_resid_data <- leaf_apply(models, extract_fitted_and_resid, class=c("CDEmodel", "cesEst", "LINEXmodel"))
 # Create a data frame.
-fitted_data <- do.call(rbind, fitted_data)
-# Melt fitted_data so it can be used for plotting
+fitted_and_resid_data <- do.call(rbind, fitted_and_resid_data)
+
 # Relevel factors before plotting
-fitted_data$Country <- relevelFactor(as.factor(fitted_data$Country), c("PT", "UK"))
-fitted_data$adjusted <- relevelFactor(as.factor(fitted_data$adjusted), c("Unadjusted", "Quality-adjusted"))
-fitted_data$energy <- relevelFactor(as.factor(fitted_data$energy), c("Without energy", "With Energy"))
+fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
+fitted_and_resid_data$adjusted <- relevelFactor(as.factor(fitted_and_resid_data$adjusted), c("Unadjusted", "Quality-adjusted"))
+fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$energy), c("Without energy", "With Energy"))
 @
 
 
@@ -905,9 +933,9 @@ fitted_data$energy <- relevelFactor(as.factor(fitted_data$energy), c("Without en
 \label{sec:fits_to_historical_data}
 %++++++++++++++++++++++++++++++
 
-This section shows graphs of fits to historical data.
+This section shows graphs of fits to historical data and residuals.
 
-<<Fitted Graph>>=
+<<Fitted and Residual Graphs>>=
 fittedGraph <- function(data){
   ggplot() +
     geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
@@ -916,23 +944,46 @@ fittedGraph <- function(data){
     facet_grid(Country ~ adjusted) +
     xy_theme()
 }
+
+residualPlot <- function(data){
+  ggplot() +
+    geom_line(data=data, mapping=aes(x=Year, y=Residuals, linetype=energy)) +
+    scale_linetype_manual(values=c(2,3), name="") +
+    facet_grid(Country ~ adjusted) +
+    xy_theme()
+}
 @
 
-
-<<Graphs CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_data, model=="CD"))
+<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CD"))
 @
 
-<<Graphs CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_data, model=="CESkle" | model=="CESkl"))
+<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for Cobb-Douglas models.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CD"))
 @
 
-<<Graphs CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_data, model=="CESlek" | model=="CESkl"))
+<<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CESkle" | model=="CESkl"))
 @
 
-<<Graphs CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_data, model=="CESekl" | model=="CESkl"))
+<<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(kl$)$e$ nesting.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CESkle" | model=="CESkl"))
+@
+
+<<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CESlek" | model=="CESkl"))
+@
+
+<<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(le$)$k$ nesting.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CESlek" | model=="CESkl"))
+@
+
+<<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CESekl" | model=="CESkl"))
+@
+
+<<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(ek$)$l$ nesting.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CESekl" | model=="CESkl"))
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1130,6 +1181,23 @@ Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results
   \end{center}
 \end{table}
 
+Table~\ref{tab:sse_CES-kle_PT} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{PT $sse$ with CES and ($kl$)$e$ nesting.} 
+\label{tab:sse_CES-kle_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$PT$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$PT$unadj$withE$CESkle)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$PT$adj$withE$CESkle)$sse} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
 In contrast to the Cobb-Douglas model,
 the CES model with ($kl$)$e$ nesting
 produces positive Solow residuals in all cases. 
@@ -1165,6 +1233,23 @@ Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results
       \midrule
       Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} \\
       With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CESlek)$lambda} & \Sexpr{naturalCoef(models$PT$adj$withE$CESle)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Table~\ref{tab:sse_CES-lek_PT} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{PT $sse$ with CES and ($le$)$k$ nesting.} 
+\label{tab:sse_CES-lek_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$PT$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$PT$unadj$withE$CESlek)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$PT$adj$withE$CESlek)$sse} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -1208,6 +1293,23 @@ Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results
       Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CESkl)$lambda} & \Sexpr{naturalCoef(models$PT$adj$noE$CESkl)$lambda} \\
       With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CESekl)$lambda} 
                                                                           & \Sexpr{naturalCoef(models$PT$adj$withE$CESekl)$lambda} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Table~\ref{tab:sse_CES-ekl_PT} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{PT $sse$ with CES and ($ek$)$l$ nesting.} 
+\label{tab:sse_CES-ekl_PT} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$PT$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$PT$unadj$withE$CESekl)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$PT$adj$withE$CESekl)$sse} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -1280,6 +1382,23 @@ Table~\ref{tab:lambda_CES-kle_UK} summarizes the UK Solow residual results with 
   \end{center}
 \end{table}
 
+Table~\ref{tab:sse_CES-kle_UK} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{UK $sse$ with CES and ($kl$)$e$ nesting.} 
+\label{tab:sse_CES-kle_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$UK$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$UK$unadj$withE$CESkle)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$UK$adj$withE$CESkle)$sse} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
 Like the Cobb-Douglas model, the CES model produces positive Solow residuals
 with the ($kl$)$e$ nesting.
 We also see that both 
@@ -1320,6 +1439,24 @@ Table~\ref{tab:lambda_CES-lek_UK} summarizes the UK Solow residual results with 
   \end{center}
 \end{table}
 
+Table~\ref{tab:sse_CES-ekl_UK} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{UK $sse$ with CES and ($le$)$k$ nesting.} 
+\label{tab:sse_CES-lek_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$UK$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$UK$unadj$withE$CESlek)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$UK$adj$withE$CESlek)$sse} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
 Similar to the CES model with ($kl$)$e$ nesting,
 the CES model with ($le$)$k$ nesting
 produces positive Solow residuals in all cases. 
@@ -1358,6 +1495,24 @@ Table~\ref{tab:lambda_CES-ekl_UK} summarizes the UK Solow residual results with 
     \end{tabular}
   \end{center}
 \end{table}
+
+Table~\ref{tab:sse_CES-ekl_UK} shows the $sse$ values for each of these models.
+
+\begin{table} \caption{UK $sse$ with CES and ($ek$)$l$ nesting.} 
+\label{tab:sse_CES-ekl_UK} 
+  \begin{center}
+    \begin{tabular}{r c c} 
+      \toprule
+                      & Unadjusted     & Quality-adjusted   \\
+      \midrule
+      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadj$noE$CESkl)$sse} & \Sexpr{EconModels:::sse(models$UK$adj$noE$CESkl)$sse} \\
+      With energy     & \Sexpr{EconModels:::sse(models$UK$unadj$withE$CESekl)$sse} 
+                                                            & \Sexpr{EconModels:::sse(models$UK$adj$withE$CESekl)$sse} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
 
 Similar to the CES model with ($ek$)$l$ nesting,
 the CES model with ($ek$)$l$ nesting
