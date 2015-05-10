@@ -154,7 +154,7 @@ rerunModels=FALSE
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[IST]{João dos Santos}
+\author[IST]{Jo\~{a}o dos Santos}
 \author[Leeds]{Paul Brockway}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
 \ead{mkh2@calvin.edu}
@@ -575,6 +575,51 @@ e_UK_adj <- substitute(iU)
 # Time variables
 t_PT <- substitute(iYear)
 t_UK <- substitute(iYear)
+
+# Lists
+y <- NULL
+k <- NULL
+l <- NULL
+e <- NULL
+t <- NULL
+f <- NULL
+# Economic output
+y$PT <- substitute(iGDP)
+y$UK <- substitute(iGDP)
+# Portugal undajusted inputs
+k$PT$unadj <- substitute(iKstkS.L)
+l$PT$unadj <- substitute(iL)
+e$PT$unadj <- substitute(iXpMP)
+# Portugal quality-adjusted inputs
+k$PT$adj <- substitute(iKservS.L)
+l$PT$adj <- substitute(ihLest)
+e$PT$adj <- substitute(iUMP)
+# UK unadjusted inputs
+k$UK$unadj <- substitute(iKstkO.WwithRD)
+l$UK$unadj <- substitute(iL)
+e$UK$unadj <- substitute(iXp)
+# UK quality-adjusted inputs
+k$UK$adj <- substitute(iKservO.WwithRD)
+l$UK$adj <- substitute(ihLest)
+e$UK$adj <- substitute(iU)
+# Time variables
+t$PT <- substitute(iYear)
+t$UK <- substitute(iYear)
+
+# countries <- c(substitute(PT), substitute(UK))
+# adjusteds <- c(substitute(unadj), substitute(adj))
+# energies <- c(substitute(noE), substitute(withE))
+# 
+# for (country in countries){
+#   for (adjusted in adjusteds){
+#     for (energy in energies){
+#       substitute(f$country$adjusted$energy, 
+#                  list(country=country, adjusted=adjusted, energy=energy)) <- "a"
+#     }
+#   }
+# }
+
+
 
 # Create some pre-econometric ratios
 # Unadjusted variables
