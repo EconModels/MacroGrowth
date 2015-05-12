@@ -553,36 +553,58 @@ dataUK <- filter(Leeds, Country == "UK")
 # in each formula throughout the document.
 # Use of substitute establishes an R "name"
 # that can be a component of a formula.
-# Economic output
-y_PT <- substitute(iGDP)
-y_UK <- substitute(iGDP)
-# Portugal undajusted inputs
-k_PT_unadj <- substitute(iKstkS.L)
-l_PT_unadj <- substitute(iL)
-e_PT_unadj <- substitute(iXpMP)
-# Portugal quality-adjusted inputs
-k_PT_adj <- substitute(iKservS.L)
-l_PT_adj <- substitute(ihLest)
-e_PT_adj <- substitute(iUMP)
-# UK unadjusted inputs
-k_UK_unadj <- substitute(iKstkO.WwithRD)
-l_UK_unadj <- substitute(iL)
-e_UK_unadj <- substitute(iXp)
-# UK quality-adjusted inputs
-k_UK_adj <- substitute(iKservO.WwithRD)
-l_UK_adj <- substitute(ihLest)
-e_UK_adj <- substitute(iU)
-# Time variables
-t_PT <- substitute(iYear)
-t_UK <- substitute(iYear)
+# # Economic output
+# y_PT <- substitute(iGDP)
+# y_UK <- substitute(iGDP)
+# # Portugal undajusted inputs
+# k_PT_unadj <- substitute(iKstkS.L)
+# l_PT_unadj <- substitute(iL)
+# e_PT_unadj <- substitute(iXpMP)
+# # Portugal quality-adjusted inputs
+# k_PT_adj <- substitute(iKservS.L)
+# l_PT_adj <- substitute(ihLest)
+# e_PT_adj <- substitute(iUMP)
+# # UK unadjusted inputs
+# k_UK_unadj <- substitute(iKstkO.WwithRD)
+# l_UK_unadj <- substitute(iL)
+# e_UK_unadj <- substitute(iXp)
+# # UK quality-adjusted inputs
+# k_UK_adj <- substitute(iKservO.WwithRD)
+# l_UK_adj <- substitute(ihLest)
+# e_UK_adj <- substitute(iU)
+# # Time variables
+# t_PT <- substitute(iYear)
+# t_UK <- substitute(iYear)
 
-# Lists
-y <- NULL
-k <- NULL
-l <- NULL
-e <- NULL
-t <- NULL
-f <- NULL
+# vars <- list()
+# # Economic output
+# vars$y.PT <- substitute(iGDP)
+# vars$y.UK <- substitute(iGDP)
+# # Portugal undajusted inputs
+# vars$k.PT.unadj <- substitute(iKstkS.L)
+# vars$l.PT.unadj <- substitute(iL)
+# vars$e.PT.unadj <- substitute(iXpMP)
+# # Portugal quality-adjusted inputs
+# vars$k.PT.adj <- substitute(iKservS.L)
+# vars$l.PT.adj <- substitute(ihLest)
+# vars$e.PT.adj <- substitute(iUMP)
+# # UK unadjusted inputs
+# vars$k.UK.unadj <- substitute(iKstkO.WwithRD)
+# vars$l.UK.unadj <- substitute(iL)
+# vars$e.UK.unadj <- substitute(iXp)
+# # UK quality-adjusted inputs
+# vars$k.UK.adj <- substitute(iKservO.WwithRD)
+# vars$l.UK.adj <- substitute(ihLest)
+# vars$e.UK.adj <- substitute(iU)
+# # Time variables
+# vars$t.PT <- substitute(iYear)
+# vars$t.UK <- substitute(iYear)
+
+y <- list()
+k <- list()
+l <- list()
+e <- list()
+t <- list()
 # Economic output
 y$PT <- substitute(iGDP)
 y$UK <- substitute(iGDP)
@@ -606,20 +628,25 @@ e$UK$adj <- substitute(iU)
 t$PT <- substitute(iYear)
 t$UK <- substitute(iYear)
 
-# countries <- c(substitute(PT), substitute(UK))
-# adjusteds <- c(substitute(unadj), substitute(adj))
-# energies <- c(substitute(noE), substitute(withE))
-# 
-# for (country in countries){
-#   for (adjusted in adjusteds){
-#     for (energy in energies){
-#       substitute(f$country$adjusted$energy, 
-#                  list(country=country, adjusted=adjusted, energy=energy)) <- "a"
-#     }
-#   }
-# }
-
-
+countries <- c(substitute(PT), substitute(UK))
+adjusteds <- c(substitute(unadj), substitute(adj))
+energies <- c(substitute(noE), substitute(withE))
+f <- list()
+for (country in c(substitute(PT), substitute(UK))){
+  for (adjusted in adjusteds){
+    for (energy in energies){
+      if (energy == substitute(noE)){
+        eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + t$ctry, 
+                        list(ctry=country, adjst=adjusted, ener=energy)))
+      } else if (energy == substitute(withE)){
+        eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + e$ctry$adjst + t$ctry, 
+                        list(ctry=country, adjst=adjusted, ener=energy)))
+      } else {
+        stop(paste("Unknown energy", energy, "in loop for f"))
+      }
+    }
+  }
+}
 
 # Create some pre-econometric ratios
 # Unadjusted variables
