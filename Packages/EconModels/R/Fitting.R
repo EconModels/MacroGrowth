@@ -154,7 +154,7 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
     # special treatment for boundary model problem child
     # in this case alpha_1 and alpha_2 don't make sense because we are creating
     # a new first factor as pmin(x1, x2)
-    if (!is.null(object$boundary) && object$boundary == "18-17") {
+    if (!is.null(object$boundary) && grepl("^17:", object$boundary)) {
       coefList[["delta_1"]] <- NA
       coefList[["sigma_1"]] <- 0
     }
