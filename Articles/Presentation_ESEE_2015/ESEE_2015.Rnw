@@ -540,6 +540,7 @@ Discuss data sources here.
 Historical data are stored in the \texttt{IST} and \texttt{Leeds} data sets.
 
 <<Data, eval=TRUE>>=
+countries <- c("PT", "UK")
 dataPT <- filter(IST, Country == "PT")
 dataUK <- filter(Leeds, Country == "UK")
 @
@@ -553,6 +554,25 @@ dataUK <- filter(Leeds, Country == "UK")
 # in each formula throughout the document.
 # Use of substitute establishes an R "name"
 # that can be a component of a formula.
+
+vars <-   
+  list( 
+    PT = list(
+      response = list(unadjusted = "iGDP", adjusted = "iGDP"),
+      capital = list(unadjusted ="iKstkS.L", adjusted = "iKservS.L"),
+      labor = list(unadjusted = "iL", adjusted = "ihLest"),
+      energy = list(unadjusted = "iXpMP", adjusted = "iUMP"),
+      time = list(unadjusted = "iYear", adjusted = "iYear")
+    ), 
+    UK = list(
+      response = list(unadjusted = "iGDP", adjusted = "iGDP"),
+      capital = list(unadjusted = "iKstkO.WwithRD", adjusted = "iKservO.WwithRD"), 
+      labor = list(unadjusted = "iL", adjusted = "ihLest"),
+      energy = list(unadjusted = "iXp", adjusted = "iU"),
+      time = list(unadjusted = "iYear", adjusted = "iYear")
+    )
+  )
+
 # # Economic output
 # y_PT <- substitute(iGDP)
 # y_UK <- substitute(iGDP)
@@ -600,69 +620,100 @@ dataUK <- filter(Leeds, Country == "UK")
 # vars$t.PT <- substitute(iYear)
 # vars$t.UK <- substitute(iYear)
 
-y <- list()
-k <- list()
-l <- list()
-e <- list()
-t <- list()
-# Economic output
-y$PT <- substitute(iGDP)
-y$UK <- substitute(iGDP)
-# Portugal undajusted inputs
-k$PT$unadj <- substitute(iKstkS.L)
-l$PT$unadj <- substitute(iL)
-e$PT$unadj <- substitute(iXpMP)
-# Portugal quality-adjusted inputs
-k$PT$adj <- substitute(iKservS.L)
-l$PT$adj <- substitute(ihLest)
-e$PT$adj <- substitute(iUMP)
-# UK unadjusted inputs
-k$UK$unadj <- substitute(iKstkO.WwithRD)
-l$UK$unadj <- substitute(iL)
-e$UK$unadj <- substitute(iXp)
-# UK quality-adjusted inputs
-k$UK$adj <- substitute(iKservO.WwithRD)
-l$UK$adj <- substitute(ihLest)
-e$UK$adj <- substitute(iU)
-# Time variables
-t$PT <- substitute(iYear)
-t$UK <- substitute(iYear)
+# y <- list()
+# k <- list()
+# l <- list()
+# e <- list()
+# t <- list()
+# # Economic output
+# y$PT <- substitute(iGDP)
+# y$UK <- substitute(iGDP)
+# # Portugal undajusted inputs
+# k$PT$unadj <- substitute(iKstkS.L)
+# l$PT$unadj <- substitute(iL)
+# e$PT$unadj <- substitute(iXpMP)
+# # Portugal quality-adjusted inputs
+# k$PT$adj <- substitute(iKservS.L)
+# l$PT$adj <- substitute(ihLest)
+# e$PT$adj <- substitute(iUMP)
+# # UK unadjusted inputs
+# k$UK$unadj <- substitute(iKstkO.WwithRD)
+# l$UK$unadj <- substitute(iL)
+# e$UK$unadj <- substitute(iXp)
+# # UK quality-adjusted inputs
+# k$UK$adj <- substitute(iKservO.WwithRD)
+# l$UK$adj <- substitute(ihLest)
+# e$UK$adj <- substitute(iU)
+# # Time variables
+# t$PT <- substitute(iYear)
+# t$UK <- substitute(iYear)
+# 
+# foo <- function(country = c("UK", "PT"), adjusted=TRUE, energy=TRUE, envir=parent.frame()) {
+#   country <- match.arg(country)
+#   type <- if (adjusted) "adj" else "unadj"
+#   res <- as.formula(
+#       paste(y[[country]], 
+#             paste(k[[country]][[type]], l[[country]][[type]], if (energy) e[[country]][[type]] else NULL, t[[country]], sep="+"), 
+#             sep="~")
+#     )
+#   environment(res) <- envir
+#   res
+# }
+# 
+# 
+# for (country in c("PT", "UK")) {
+#   for (adjusted in c(TRUE, FALSE)) {
+#     for (energy in c(TRUE, FALSE)) {
+#       print(foo(country = country, adjusted = adjusted, energy=energy))
+#     }
+#   }
+# }
+# 
 
-countries <- c(substitute(PT), substitute(UK))
-adjusteds <- c(substitute(unadj), substitute(adj))
-energies <- c(substitute(noE), substitute(withE))
-f <- list()
-for (country in c(substitute(PT), substitute(UK))){
-  for (adjusted in adjusteds){
-    for (energy in energies){
-      if (energy == substitute(noE)){
-        eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + t$ctry, 
-                        list(ctry=country, adjst=adjusted, ener=energy)))
-      } else if (energy == substitute(withE)){
-        eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + e$ctry$adjst + t$ctry, 
-                        list(ctry=country, adjst=adjusted, ener=energy)))
-      } else {
-        stop(paste("Unknown energy", energy, "in loop for f"))
-      }
-    }
-  }
-}
+
+
+# 
+# countries <- c(substitute(PT), substitute(UK))
+# adjusteds <- c(substitute(unadj), substitute(adj))
+# energies <- c(substitute(noE), substitute(withE))
+# f <- list()
+# for (country in c(substitute(PT), substitute(UK))){
+#   for (adjusted in adjusteds){
+#     for (energy in energies){
+#       if (energy == substitute(noE)){
+#         eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + t$ctry, 
+#                         list(ctry=country, adjst=adjusted, ener=energy)))
+#       } else if (energy == substitute(withE)){
+#         eval(substitute(f$ctry$adjst$ener <- y$ctry ~ k$ctry$adjst + l$ctry$adjst + e$ctry$adjst + t$ctry, 
+#                         list(ctry=country, adjst=adjusted, ener=energy)))
+#       } else {
+#         stop(paste("Unknown energy", energy, "in loop for f"))
+#       }
+#     }
+#   }
+# }
 
 # Create some pre-econometric ratios
 # Unadjusted variables
-dataPT <- transform(dataPT, kPerGDP_unadj = eval(k_PT_unadj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP_unadj = eval(l_PT_unadj)/iGDP)
-dataPT <- transform(dataPT, ePerGDP_unadj = eval(e_PT_unadj)/iGDP)
-dataUK <- transform(dataUK, kPerGDP_unadj = eval(k_UK_unadj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP_unadj = eval(l_UK_unadj)/iGDP)
-dataUK <- transform(dataUK, ePerGDP_unadj = eval(e_UK_unadj)/iGDP)
+dataPT <- transform(dataPT, kPerGDP.unadj = dataPT[[vars$PT$capital$unadjusted]]/dataPT[[vars$PT$response$unadjusted]])
+dataPT <- transform(dataPT, kPerGDP.unadj = iKstkS.L/iGDP)
+dataPT <- transform(dataPT, kPerGDP.unadj = as.name(vars$PT$capital$unadjusted)/iGDP)
+dataPT <- transform(dataPT, kPerGDP.unadj = eval(substitute(as.name(vars$PT$capital$unadjusted)))/iGDP)
+dataPT <- transform(dataPT, kPerGDP.unadj = eval(quote(as.name(vars$PT$capital$unadjusted)))/iGDP)
+
+dataPT <- transform(dataPT, lPerGDP.unadj = eval(k_PT_unadj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP.unadj = eval(l_PT_unadj)/iGDP)
+dataPT <- transform(dataPT, ePerGDP.unadj = eval(e_PT_unadj)/iGDP)
+dataUK <- transform(dataUK, kPerGDP.unadj = eval(k_UK_unadj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP.unadj = eval(l_UK_unadj)/iGDP)
+dataUK <- transform(dataUK, ePerGDP.unadj = eval(e_UK_unadj)/iGDP)
 # Quality-adjusted variables
-dataPT <- transform(dataPT, kPerGDP_adj = eval(k_PT_adj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP_adj = eval(l_PT_adj)/iGDP)
-dataPT <- transform(dataPT, ePerGDP_adj = eval(e_PT_adj)/iGDP)
-dataUK <- transform(dataUK, kPerGDP_adj = eval(k_UK_adj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP_adj = eval(l_UK_adj)/iGDP)
-dataUK <- transform(dataUK, ePerGDP_adj = eval(e_UK_adj)/iGDP)
+dataPT <- transform(dataPT, kPerGDP.adj = eval(k_PT_adj)/iGDP)
+dataPT <- transform(dataPT, lPerGDP.adj = eval(l_PT_adj)/iGDP)
+dataPT <- transform(dataPT, ePerGDP.adj = eval(e_PT_adj)/iGDP)
+dataUK <- transform(dataUK, kPerGDP.adj = eval(k_UK_adj)/iGDP)
+dataUK <- transform(dataUK, lPerGDP.adj = eval(l_UK_adj)/iGDP)
+dataUK <- transform(dataUK, ePerGDP.adj = eval(e_UK_adj)/iGDP)
 
 # Now create the historicalData data frame
 historicalData <- plyr::rbind.fill(dataPT, dataUK)
@@ -670,39 +721,79 @@ historicalData <- plyr::rbind.fill(dataPT, dataUK)
 
 <<Formulas>>=
 # Set up the formulas for each type of analysis.
-f <- NULL
-f$PT$unadj$noE <- as.formula(
-  substitute( y ~ k + l + t,
-              list( y = y_PT, k = k_PT_unadj, 
-                    l = l_PT_unadj, t = t_PT)))
-f$PT$unadj$withE <- as.formula(
-  substitute( y ~ k + l + e + t,
-              list( y = y_PT, k = k_PT_unadj,
-                    l = l_PT_unadj, e = e_PT_unadj, t = t_PT)))
-f$PT$adj$noE <- as.formula(
-  substitute( y ~ k + l + t,
-              list( y = y_PT, k = k_PT_adj,
-                    l = l_PT_adj, t = t_PT)))
-f$PT$adj$withE <- as.formula(
-  substitute( y ~ k + l + e + t,
-              list( y = y_PT, k = k_PT_adj,
-                    l = l_PT_adj, e = e_PT_adj, t = t_PT)))
-f$UK$unadj$noE <- as.formula(
-  substitute( y ~ k + l + t,
-              list( y = y_UK, k = k_UK_unadj,
-                    l = l_UK_unadj, t = t_UK)))
-f$UK$unadj$withE <- as.formula(
-  substitute( y ~ k + l + e + t,
-              list( y = y_UK, k = k_UK_unadj,
-                    l = l_UK_unadj, e = e_UK_unadj, t = t_UK)))
-f$UK$adj$noE <- as.formula(
-  substitute( y ~ k + l + t,
-              list( y = y_UK, k = k_UK_adj,
-                    l = l_UK_adj, t = t_UK)))
-f$UK$adj$withE <- as.formula(
-  substitute( y ~ k + l + e + t,
-              list( y = y_UK, k = k_UK_adj,
-                    l = l_UK_adj, e = e_UK_adj, t = t_UK)))
+# f <- NULL
+# f$PT$unadj$noE <- as.formula(
+#   substitute( y ~ k + l + t,
+#               list( y = y_PT, k = k_PT_unadj, 
+#                     l = l_PT_unadj, t = t_PT)))
+# f$PT$unadj$withE <- as.formula(
+#   substitute( y ~ k + l + e + t,
+#               list( y = y_PT, k = k_PT_unadj,
+#                     l = l_PT_unadj, e = e_PT_unadj, t = t_PT)))
+# f$PT$adj$noE <- as.formula(
+#   substitute( y ~ k + l + t,
+#               list( y = y_PT, k = k_PT_adj,
+#                     l = l_PT_adj, t = t_PT)))
+# f$PT$adj$withE <- as.formula(
+#   substitute( y ~ k + l + e + t,
+#               list( y = y_PT, k = k_PT_adj,
+#                     l = l_PT_adj, e = e_PT_adj, t = t_PT)))
+# f$UK$unadj$noE <- as.formula(
+#   substitute( y ~ k + l + t,
+#               list( y = y_UK, k = k_UK_unadj,
+#                     l = l_UK_unadj, t = t_UK)))
+# f$UK$unadj$withE <- as.formula(
+#   substitute( y ~ k + l + e + t,
+#               list( y = y_UK, k = k_UK_unadj,
+#                     l = l_UK_unadj, e = e_UK_unadj, t = t_UK)))
+# f$UK$adj$noE <- as.formula(
+#   substitute( y ~ k + l + t,
+#               list( y = y_UK, k = k_UK_adj,
+#                     l = l_UK_adj, t = t_UK)))
+# f$UK$adj$withE <- as.formula(
+#   substitute( y ~ k + l + e + t,
+#               list( y = y_UK, k = k_UK_adj,
+#                     l = l_UK_adj, e = e_UK_adj, t = t_UK)))
+
+makeFormula <- function(time.series, country, adjusted, energy, envir=parent.frame()) {
+  country <- match.arg(country, names(time.series))
+  if (! adjusted %in% c(FALSE, TRUE)){
+    stop("adjusted must be a boolean")
+  }
+  if (! energy %in% c(FALSE, TRUE)){
+    stop("energy must be a boolean")
+  }
+  type <- if (adjusted) "adjusted" else "unadjusted"
+  res <- as.formula( 
+    gsub( "\\+ *\\+", "+ ", 
+          paste(time.series[[country]][["response"]][[type]], 
+                paste(time.series[[country]][["capital"]][[type]], 
+                      time.series[[country]][["labor"]][[type]], 
+                      if (energy) {
+                        time.series[[country]][["energy"]][[type]]
+                      } else {
+                        NULL
+                      }, 
+                      time.series[[country]][["time"]][[type]], sep="+"), 
+                sep="~")
+    )
+  )
+  environment(res) <- envir
+  return(res)
+}
+
+f <- list()
+for (country in countries) {
+  for (adjusted in c(FALSE, TRUE)) {
+    for (energy in c(FALSE, TRUE)) {
+      newf <- makeFormula(vars, country = country, adjusted = adjusted, energy=energy)
+      namef <- paste(country, if(adjusted) "adj" else "unadj", if(energy) "withE" else "noE", sep=".")
+      newnames <- c(names(f), namef)
+      f <- c(f, newf)
+      names(f) <- newnames
+    }
+  }
+}
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -714,10 +805,10 @@ For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjus
       \toprule
       Variable    & Portugal           & UK                 \\
       \midrule
-      Output      & \Sexpr{y_PT}       & \Sexpr{y_UK}       \\
-      Capital     & \Sexpr{k_PT_unadj} & \Sexpr{k_UK_unadj} \\
-      Labor       & \Sexpr{l_PT_unadj} & \Sexpr{l_UK_unadj} \\
-      Energy      & \Sexpr{e_PT_unadj} & \Sexpr{e_UK_unadj} \\
+      Output      & \Sexpr{vars$PT$response$unadjusted}       & \Sexpr{vars$UK$response$unadjusted}       \\
+      Capital     & \Sexpr{vars$PT$capital$unadjusted} & \Sexpr{vars$UK$capital$unadjusted} \\
+      Labor       & \Sexpr{vars$PT$labor$unadjusted} & \Sexpr{vars$UK$labor$unadjusted} \\
+      Energy      & \Sexpr{vars$PT$energy$unadjusted} & \Sexpr{vars$UK$energy$unadjusted} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -732,10 +823,10 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
       \toprule
       Variable    & Portugal         & UK               \\
       \midrule
-      Output      & \Sexpr{y_PT}     & \Sexpr{y_UK}     \\
-      Capital     & \Sexpr{k_PT_adj} & \Sexpr{k_UK_adj} \\
-      Labor       & \Sexpr{l_PT_adj} & \Sexpr{l_UK_adj} \\
-      Energy      & \Sexpr{e_PT_adj} & \Sexpr{e_UK_adj} \\
+      Output      & \Sexpr{vars$PT$response$adjusted}       & \Sexpr{vars$UK$response$adjusted}       \\
+      Capital     & \Sexpr{vars$PT$capital$adjusted} & \Sexpr{vars$UK$capital$adjusted} \\
+      Labor       & \Sexpr{vars$PT$labor$adjusted} & \Sexpr{vars$UK$labor$adjusted} \\
+      Energy      & \Sexpr{vars$PT$energy$adjusted} & \Sexpr{vars$UK$energy$adjusted} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -745,38 +836,50 @@ Unadjusted and quality-adjusted data for both Portugal and the United Kingdom
 are shown in Figure~\ref{fig:Historical Data}.
 
 <<Historical Data, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
-unadjVars_PT <- c(y_PT, k_PT_unadj, l_PT_unadj, e_PT_unadj)
-unadjVars_UK <- c(y_UK, k_UK_unadj, l_UK_unadj, e_UK_unadj)
+unadjVars_PT <- c(vars$PT$response$unadjusted, 
+                  vars$PT$capital$unadjusted, 
+                  vars$PT$labor$unadjusted, 
+                  vars$PT$energy$unadjusted)
+unadjVars_UK <- c(vars$UK$response$unadjusted, 
+                  vars$UK$capital$unadjusted, 
+                  vars$UK$labor$unadjusted, 
+                  vars$UK$energy$unadjusted)
 commonVars <- c("Year", "iYear", "Country")
-unadjData_PT <- historicalData[ , as.character(unique(c(unadjVars_PT, commonVars)))] %>% filter(Country=="PT")
-unadjData_UK <- historicalData[ , as.character(unique(c(unadjVars_UK, commonVars)))] %>% filter(Country=="UK")
+unadjData_PT <- historicalData[ , unique(c(unadjVars_PT, commonVars))] %>% filter(Country=="PT")
+unadjData_UK <- historicalData[ , unique(c(unadjVars_UK, commonVars))] %>% filter(Country=="UK")
 unadjData <- plyr::rbind.fill(unadjData_PT, unadjData_UK)
-unadjData$adjusted <- "Unadjusted"
-
-adjVars_PT <- c(y_PT, k_PT_adj, l_PT_adj, e_PT_adj)
-adjVars_UK <- c(y_UK, k_UK_adj, l_UK_adj, e_UK_adj)
-adjData_PT <- historicalData[ , as.character(unique(c(adjVars_PT, commonVars)))] %>% filter(Country=="PT")
-adjData_UK <- historicalData[ , as.character(unique(c(adjVars_UK, commonVars)))] %>% filter(Country=="UK")
+unadjData$type <- "Unadjusted"
+adjVars_PT <- c(vars$PT$response$adjusted, 
+                vars$PT$capital$adjusted, 
+                vars$PT$labor$adjusted, 
+                vars$PT$energy$adjusted)
+adjVars_UK <- c(vars$UK$response$adjusted, 
+                vars$UK$capital$adjusted, 
+                vars$UK$labor$adjusted, 
+                vars$UK$energy$adjusted)
+adjData_PT <- historicalData[ , unique(c(adjVars_PT, commonVars))] %>% filter(Country=="PT")
+adjData_UK <- historicalData[ , unique(c(adjVars_UK, commonVars))] %>% filter(Country=="UK")
 adjData <- plyr::rbind.fill(adjData_PT, adjData_UK)
-adjData$adjusted <- "Quality-adjusted"
+adjData$type <- "Quality-adjusted"
 
 trimmedData <- plyr::rbind.fill(unadjData, adjData)
 
 mdata <- melt(trimmedData, 
-              measure.vars = unique(as.character(c(unadjVars_PT, unadjVars_UK, adjVars_PT, adjVars_UK))), 
+              measure.vars = unique(c(unadjVars_PT, unadjVars_UK, adjVars_PT, adjVars_UK)), 
               variable.name = "variable",
               value.name = "value")
 
 # Relevel factors before plotting
 mdata$Country <- relevelFactor(as.factor(mdata$Country), c("PT", "UK"))
-mdata$adjusted <- relevelFactor(as.factor(mdata$adjusted), c("Unadjusted", "Quality-adjusted"))
-mdata$variable <- relevelFactor(as.factor(mdata$variable), unique(as.character(
-  c(y_PT, k_PT_unadj, l_PT_unadj, e_PT_unadj, k_PT_adj, l_PT_adj, e_PT_adj,
-    y_UK, k_UK_unadj, l_UK_unadj, e_UK_unadj, k_UK_adj, l_UK_adj, e_UK_adj))))
-
+mdata$type <- relevelFactor(as.factor(mdata$type), c("Unadjusted", "Quality-adjusted"))
+mdata$variable <- relevelFactor(as.factor(mdata$variable), unique(
+  c(vars$PT$response$unadjusted, vars$PT$capital$unadjusted, vars$PT$labor$unadjusted, vars$PT$energy$unadjusted, 
+    vars$PT$response$adjusted,   vars$PT$capital$adjusted,   vars$PT$labor$adjusted,   vars$PT$energy$adjusted, 
+    vars$UK$response$unadjusted, vars$UK$capital$unadjusted, vars$UK$labor$unadjusted, vars$UK$energy$unadjusted, 
+    vars$UK$response$adjusted,   vars$UK$capital$adjusted,   vars$UK$labor$adjusted,   vars$UK$energy$adjusted)))
 historicalPlot(mdata, 
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ adjusted, 
+               facet_formula = Country ~ type, 
                line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
   coord_cartesian(ylim=c(0.5, 13)) +
@@ -895,65 +998,70 @@ if (!rerunModels){
   nest$kle <- c(1,2,3)
   nest$lek <- c(2,3,1)
   nest$ekl <- c(3,1,2)
-  models <- NULL
-  # Portugal, CD
-  models$PT$unadj$noE$CD <- cdModel(formula = f$PT$unadj$noE, 
-                                    data = dataPT, constrained = TRUE)
-  models$PT$unadj$withE$CD <- cdModel(formula = f$PT$unadj$withE, 
-                                      data = dataPT, constrained = TRUE)
-  models$PT$adj$noE$CD <- cdModel(formula = f$PT$adj$noE, 
-                                  data = dataPT, constrained = TRUE)
-  models$PT$adj$withE$CD <- cdModel(formula = f$PT$adj$withE, 
-                                    data = dataPT, constrained = TRUE)
-  # UK, CD
-  models$UK$unadj$noE$CD <- cdModel(formula = f$UK$unadj$noE, 
-                                    data = dataUK, constrained = TRUE)
-  models$UK$unadj$withE$CD <- cdModel(formula = f$UK$unadj$withE, 
-                                      data = dataUK, constrained = TRUE)
-  models$UK$adj$noE$CD <- cdModel(formula = f$UK$adj$noE, 
-                                  data = dataUK, constrained = TRUE)
-  models$UK$adj$withE$CD <- cdModel(formula = f$UK$adj$withE, 
-                                    data = dataUK, constrained = TRUE)
-  # PT, CESkl
-  models$PT$unadj$noE$CESkl <- cesModel(formula = f$PT$unadj$noE, 
-                                        nest = nest$kl, data = dataPT, constrained = TRUE)
-  models$PT$adj$noE$CESkl <- cesModel(formula = f$PT$adj$noE, 
-                                      nest = nest$kl, data = dataPT, constrained = TRUE)
-  # PT, CESkle
-  models$PT$unadj$withE$CESkle <- cesModel(formula = f$PT$unadj$withE, 
-                                           nest = nest$kle, data = dataPT, constrained = TRUE)
-  models$PT$adj$withE$CESkle <- cesModel(formula = f$PT$adj$withE, 
-                                         nest = nest$kle, data = dataPT, constrained = TRUE)
-  # PT, CESlek
-  models$PT$unadj$withE$CESlek <- cesModel(formula = f$PT$unadj$withE, 
-                                           nest = nest$lek, data = dataPT, constrained = TRUE)
-  models$PT$adj$withE$CESlek <- cesModel(formula = f$PT$adj$withE, 
-                                         nest = nest$lek, data = dataPT, constrained = TRUE)
-  # PT, CESekl
-  models$PT$unadj$withE$CESekl <- cesModel(formula = f$PT$unadj$withE, 
-                                           nest = nest$ekl, data = dataPT, constrained = TRUE)
-  models$PT$adj$withE$CESekl <- cesModel(formula = f$PT$adj$withE, 
-                                         nest = nest$ekl, data = dataPT, constrained = TRUE)
-  # UK, CESkl
-  models$UK$unadj$noE$CESkl <- cesModel(formula = f$UK$unadj$noE, 
-                                        nest = nest$kl, data = dataUK, constrained = TRUE)
-  models$UK$adj$noE$CESkl <- cesModel(formula = f$UK$adj$noE, 
-                                      nest = nest$kl, data = dataUK, constrained = TRUE)
-  # UK, CESkle
-  models$UK$unadj$withE$CESkle <- cesModel(formula = f$UK$unadj$withE, 
-                                           nest = nest$kle, data = dataUK, constrained = TRUE)
-  models$UK$adj$withE$CESkle <- cesModel(formula = f$UK$adj$withE, 
-                                         nest = nest$kle, data = dataUK, constrained = TRUE)
-  # UK, CESlek
-  models$UK$unadj$withE$CESlek <- cesModel(formula = f$UK$unadj$withE, 
-                                           nest = nest$lek, data = dataUK, constrained = TRUE)
-  models$UK$adj$withE$CESlek <- cesModel(formula = f$UK$adj$withE, 
-                                         nest = nest$lek, data = dataUK, constrained = TRUE)
-  # UK, CESekl
-  models$UK$unadj$withE$CESekl <- cesModel(formula = f$UK$unadj$withE, 
-                                           nest = nest$ekl, data = dataUK, constrained = TRUE)
-  models$UK$adj$withE$CESekl <- cesModel(formula = f$UK$adj$withE, 
-                                         nest = nest$ekl, data = dataUK, constrained = TRUE)
+  
+  models <- list()
+  for ()
+
+  
+#   models <- NULL
+#   # Portugal, CD
+#   models$PT$unadj$noE$CD <- cdModel(formula = f$PT$unadj$noE, 
+#                                     data = dataPT, constrained = TRUE)
+#   models$PT$unadj$withE$CD <- cdModel(formula = f$PT$unadj$withE, 
+#                                       data = dataPT, constrained = TRUE)
+#   models$PT$adj$noE$CD <- cdModel(formula = f$PT$adj$noE, 
+#                                   data = dataPT, constrained = TRUE)
+#   models$PT$adj$withE$CD <- cdModel(formula = f$PT$adj$withE, 
+#                                     data = dataPT, constrained = TRUE)
+#   # UK, CD
+#   models$UK$unadj$noE$CD <- cdModel(formula = f$UK$unadj$noE, 
+#                                     data = dataUK, constrained = TRUE)
+#   models$UK$unadj$withE$CD <- cdModel(formula = f$UK$unadj$withE, 
+#                                       data = dataUK, constrained = TRUE)
+#   models$UK$adj$noE$CD <- cdModel(formula = f$UK$adj$noE, 
+#                                   data = dataUK, constrained = TRUE)
+#   models$UK$adj$withE$CD <- cdModel(formula = f$UK$adj$withE, 
+#                                     data = dataUK, constrained = TRUE)
+#   # PT, CESkl
+#   models$PT$unadj$noE$CESkl <- cesModel(formula = f$PT$unadj$noE, 
+#                                         nest = nest$kl, data = dataPT, constrained = TRUE)
+#   models$PT$adj$noE$CESkl <- cesModel(formula = f$PT$adj$noE, 
+#                                       nest = nest$kl, data = dataPT, constrained = TRUE)
+#   # PT, CESkle
+#   models$PT$unadj$withE$CESkle <- cesModel(formula = f$PT$unadj$withE, 
+#                                            nest = nest$kle, data = dataPT, constrained = TRUE)
+#   models$PT$adj$withE$CESkle <- cesModel(formula = f$PT$adj$withE, 
+#                                          nest = nest$kle, data = dataPT, constrained = TRUE)
+#   # PT, CESlek
+#   models$PT$unadj$withE$CESlek <- cesModel(formula = f$PT$unadj$withE, 
+#                                            nest = nest$lek, data = dataPT, constrained = TRUE)
+#   models$PT$adj$withE$CESlek <- cesModel(formula = f$PT$adj$withE, 
+#                                          nest = nest$lek, data = dataPT, constrained = TRUE)
+#   # PT, CESekl
+#   models$PT$unadj$withE$CESekl <- cesModel(formula = f$PT$unadj$withE, 
+#                                            nest = nest$ekl, data = dataPT, constrained = TRUE)
+#   models$PT$adj$withE$CESekl <- cesModel(formula = f$PT$adj$withE, 
+#                                          nest = nest$ekl, data = dataPT, constrained = TRUE)
+#   # UK, CESkl
+#   models$UK$unadj$noE$CESkl <- cesModel(formula = f$UK$unadj$noE, 
+#                                         nest = nest$kl, data = dataUK, constrained = TRUE)
+#   models$UK$adj$noE$CESkl <- cesModel(formula = f$UK$adj$noE, 
+#                                       nest = nest$kl, data = dataUK, constrained = TRUE)
+#   # UK, CESkle
+#   models$UK$unadj$withE$CESkle <- cesModel(formula = f$UK$unadj$withE, 
+#                                            nest = nest$kle, data = dataUK, constrained = TRUE)
+#   models$UK$adj$withE$CESkle <- cesModel(formula = f$UK$adj$withE, 
+#                                          nest = nest$kle, data = dataUK, constrained = TRUE)
+#   # UK, CESlek
+#   models$UK$unadj$withE$CESlek <- cesModel(formula = f$UK$unadj$withE, 
+#                                            nest = nest$lek, data = dataUK, constrained = TRUE)
+#   models$UK$adj$withE$CESlek <- cesModel(formula = f$UK$adj$withE, 
+#                                          nest = nest$lek, data = dataUK, constrained = TRUE)
+#   # UK, CESekl
+#   models$UK$unadj$withE$CESekl <- cesModel(formula = f$UK$unadj$withE, 
+#                                            nest = nest$ekl, data = dataUK, constrained = TRUE)
+#   models$UK$adj$withE$CESekl <- cesModel(formula = f$UK$adj$withE, 
+#                                          nest = nest$ekl, data = dataUK, constrained = TRUE)
   # Save models to disk.
   save(models, file=fileName)
 }
