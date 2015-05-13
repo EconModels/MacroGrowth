@@ -890,13 +890,13 @@ historicalPlot(mdata,
 <<Pre-econometric graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
 # Melt the data
 mdata_preeconometric <- melt(historicalData, 
-                             measure.vars = c("kPerGDP_unadj", "lPerGDP_unadj", "ePerGDP_unadj",
-                                              "kPerGDP_adj", "lPerGDP_adj", "ePerGDP_adj"),
+                             measure.vars = c("kPerGDP.unadj", "lPerGDP.unadj", "ePerGDP.unadj",
+                                              "kPerGDP.adj", "lPerGDP.adj", "ePerGDP.adj"),
                              variable.name = "variable",
                              value.name = "value")
 # Add a column to say whether the variable is Unadjusted or Quality-adjusted based on variable name
 mdata_preeconometric$adjusted <- lapply(mdata_preeconometric$variable, function(x) {
-  suffix <- unlist(strsplit(as.character(x), split="[_]")) [2]
+  suffix <- unlist(strsplit(as.character(x), split="[.]")) [2]
   if (suffix == "unadj"){
     return("Unadjusted")
   } else if (suffix == "adj"){
