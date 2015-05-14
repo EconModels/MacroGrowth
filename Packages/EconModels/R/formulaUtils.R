@@ -48,15 +48,15 @@ replace_rhs <- function(formula, n, term, env=parent.frame()) {
   build_formula( l, r, env=env)
 }
 
-# examples
-
-f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
-g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
-identical(f,g)
-# use negative indices to drop
-keep_rhs(f, -3)
-keep_rhs(f, 2:4)
-keep_rhs(f, -(2:4))
+# # examples
+# 
+# f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
+# g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
+# identical(f,g)
+# # use negative indices to drop
+# keep_rhs(f, -3)
+# keep_rhs(f, 2:4)
+# keep_rhs(f, -(2:4))
 
 
 CDformulas <- 
@@ -89,14 +89,14 @@ foo3 <- function(country=NULL,
   res
 }
 
-foo3(country=1, include.energy=FALSE, flavor="adjusted")
-
-foo3()
-
-f <- iGDP ~ iK + iL + iQp + iYear
-g <- replace_rhs( f, 3, paste(extract_rhs(f, 3), lhs(g), sep="/")); g
-cdModel(g, data=subset(Calvin, Country="UK"))
-
-
-
-  
+# foo3(country=1, include.energy=FALSE, flavor="adjusted")
+# 
+# foo3()
+# 
+# f <- iGDP ~ iK + iL + iQp + iYear
+# g <- replace_rhs( f, 3, paste(extract_rhs(f, 3), lhs(g), sep="/")); g
+# cdModel(g, data=subset(Calvin, Country="UK"))
+# 
+# 
+# 
+#   
