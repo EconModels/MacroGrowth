@@ -38,7 +38,7 @@ rhs_summands <- function(formula, n) {
   strsplit( formulaSplit[2], " \\+ ")[[1]][n]
   }
 
-extract_lhs <- function(formula, n) {
+lhs_summands <- function(formula, n) {
   formulaString <- deparse(formula)
   formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
   strsplit( formulaSplit[1], " \\+ ")[[1]][n]
