@@ -65,9 +65,9 @@ foo3 <- function(country=NULL,
   for (c in names(country)) { 
     for (f in flavor) {
       for (ie in include.energy) {
-        frmla <- formulas[[c]][[f]]
-        if (!ie) frmla <- keep_rhs(frmla, -4)
-        res[[paste(c,f, if (ie) "energy" else "noenergy", sep=":")]] <- frmla
+        new <- formulas[[c]][[f]]
+        if (!ie) new <- keep_rhs(new, -4)
+        res[[paste(c,f, if (ie) "energy" else "noenergy", sep=":")]] <- new
       }
     }
   }
