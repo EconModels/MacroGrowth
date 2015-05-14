@@ -15,12 +15,13 @@
 #' @export
 #' @examples
 #' a <- build_formula(c("a", "b"), c("x", "y", "log(x*y)")); a
-#' b <- build_formula("response", list("x", "y", NULL, "log(x*y)")); b
+#' b <- build_formula("response", list("x", "y", NULL, "log(x)"), op="*"); b
 #' f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
 #' g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
 #' identical(f,g)
 #' summands(a)
-#' summands(a, right=TRUE)
+#' summands(a, right=FALSE)
+#' summands(b, op="*")
 #' keep_summands(f, 3)
 #' keep_summands(f, -3)
 #' keep_summands(f, 2:4)
