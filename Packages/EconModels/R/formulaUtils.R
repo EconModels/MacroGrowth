@@ -31,7 +31,22 @@ keep_rhs <- function(formula, n, env=parent.frame()) {
   r <- strsplit( formulaSplit[2], " \\+ ")[[1]]
   build_formula( l, r[n], env=env)
 }
-  
+
+extract_rhs <- function(formula, n) {
+  formulaString <- as.character(formula)
+  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
+  strsplit( formulaSplit[2], " \\+ ")[[1]][n]
+  }
+
+
+replace_rhs <- function(formula, n, term, env=parent.frame()) {
+  formulaString <- as.character(formula)
+  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
+  l <- formulaSplit[1]
+  r <- strsplit( formulaSplit[2], " \\+ ")[[1]]
+  r[n] <- term
+  build_formula( l, r, env=env)
+}
 
 # examples
 
@@ -77,6 +92,11 @@ foo3 <- function(country=NULL,
 foo3(country=1, include.energy=FALSE, flavor="adjusted")
 
 foo3()
+
+f <- iGDP ~ iK + iL + iQp + iYear
+g <- replace_rhs( f, 3, paste(extract_rhs(f, 3), lhs(g), sep="/")); g
+cdModel(g, data=subset(Calvin, Country="UK"))
+
 
 
   
