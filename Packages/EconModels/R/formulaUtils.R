@@ -1,22 +1,40 @@
-# some formula utilities
+#' Utilities for working with formulas
+#' 
+#' Some functions to make it easier to build and minipulate formulas
 
-numeric_choices <- function(names_or_numbers, choices) {
-  if (is.null(names_or_numbers)) { names_or_numbers <- choices }
-  if (is.numeric(names_or_numbers)) {
-    res <- names_or_numbers[names_or_numbers <= length(choices)]
-  } else {
-    res <- which(choices %in% names_or_numbers)
-  }
-  names(res) <- choices[res]
-  res
-}
-
-build_formula <- function( left, right, env=parent.frame() ) {
+#' @rdname formula.utils
+#' @param left,right list or vector of character strings containing summands for left and right hand sides
+#'   of a formula.  \code{NULL}'s are ignored.
+#' @param formula a formula
+#' @param n a vector of integer indices.  Negatives can be used to deselect.
+#' @param env an environment to attach to the formula
+#' @param term a character string containing a new term
+#' @param op The operator to use for splitting into terms.
+#' @param right a logical indicating whether to operate on the right side (else the left) of 
+#'   the formula.
+#' @export
+#' @examples
+#' a <- build_formula(c("a", "b"), c("x", "y", "log(x*y)")); a
+#' b <- build_formula("response", list("x", "y", NULL, "log(x*y)")); b
+#' f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
+#' g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
+#' identical(f,g)
+#' summands(a)
+#' summands(a, right=TRUE)
+#' keep_summands(f, 3)
+#' keep_summands(f, -3)
+#' keep_summands(f, 2:4)
+#' h <- replace_summand( f, 3, paste(summands(f, 3), lhs(f), sep="/")); h
+ 
+build_formula <- function( left, right, env=parent.frame(), op="+" ) {
+  left <- left[sapply(left, function(x) !is.null(x))]
+  right <- right[sapply(right, function(x) !is.null(x))]
   res <- as.formula(
-    gsub( "\\+ *\\+", "+", 
-          paste(left, paste(right, collapse = "+"), sep="~")
+          paste(
+            paste(left,  collapse = op), 
+            paste(right, collapse = op), 
+            sep="~")
     )
-  )
   environment(res) <- env
   res
 }
@@ -24,46 +42,47 @@ build_formula <- function( left, right, env=parent.frame() ) {
 # drop term n from the RHS of a formula
 # this isn't very robust if "terms" have + in them.  But for simple things it will work.
 
-keep_rhs <- function(formula, n, env=parent.frame()) {
+#' @rdname formula.utils
+#' @export
+#' 
+keep_summands <- function(formula, n, right=TRUE, env=environment(formula), op="+") {
   formulaString <- deparse(formula)
   formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
-  l <- formulaSplit[1]
-  r <- strsplit( formulaSplit[2], " \\+ ")[[1]]
-  build_formula( l, r[n], env=env)
-}
-
-rhs_summands <- function(formula, n) {
-  formulaString <- deparse(formula)
-  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
-  strsplit( formulaSplit[2], " \\+ ")[[1]][n]
+  l <- strsplit( formulaSplit[1], paste0(" ", op, " "), fixed=TRUE)[[1]]
+  r <- strsplit( formulaSplit[2], paste0(" ", op, " "), fixed=TRUE)[[1]]
+  if (right) {
+    r <- r[n] 
+  } else { 
+    l <- l[n]
   }
-
-lhs_summands <- function(formula, n) {
-  formulaString <- deparse(formula)
-  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
-  strsplit( formulaSplit[1], " \\+ ")[[1]][n]
-}
-
-
-
-
-replace_rhs_summand <- function(formula, n, term, env=parent.frame()) {
-  formulaString <- deparse(formula)
-  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
-  l <- formulaSplit[1]
-  r <- strsplit( formulaSplit[2], " \\+ ")[[1]]
-  r[n] <- term
   build_formula( l, r, env=env)
 }
 
-# @examples
-# f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
-# g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
-# identical(f,g)
-# # use negative indices to drop
-# keep_rhs(f, -3)
-# keep_rhs(f, 2:4)
-# keep_rhs(f, -(2:4))
+#' @rdname formula.utils
+#' @export
+#' 
+summands <- function(formula, n, right=TRUE, op="+") {
+  formulaString <- deparse(formula)
+  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
+  strsplit( formulaSplit[1 + as.numeric(right)], paste0(" ", op, " "), fixed=TRUE)[[1]][n]
+  }
+
+#' @rdname formula.utils
+#' @export
+#' 
+replace_summand <- function(formula, n, term, right=TRUE, op="+", env=environment(formula)) {
+  formulaString <- deparse(formula)
+  formulaSplit <- strsplit(formulaString, " ~ ")[[1]]
+  l <- strsplit( formulaSplit[1], paste0(" ", op, " "), fixed=TRUE)[[1]]
+  r <- strsplit( formulaSplit[2], paste0(" ", op, " "), fixed=TRUE)[[1]]
+  if (right) {
+    r[n] <- term
+  } else {
+    l[n] <- term
+  }
+  build_formula( l, r, env=env)
+}
+
 
 
 # CDformulas <- 
@@ -103,3 +122,14 @@ replace_rhs_summand <- function(formula, n, term, env=parent.frame()) {
 # cdModel(g, data=subset(Calvin, Country=="UK"))
 # 
 # 
+
+numeric_choices <- function(names_or_numbers, choices) {
+  if (is.null(names_or_numbers)) { names_or_numbers <- choices }
+  if (is.numeric(names_or_numbers)) {
+    res <- names_or_numbers[names_or_numbers <= length(choices)]
+  } else {
+    res <- which(choices %in% names_or_numbers)
+  }
+  names(res) <- choices[res]
+  res
+}
