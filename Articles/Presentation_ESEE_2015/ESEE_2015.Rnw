@@ -109,6 +109,7 @@ require(EconModels)
 require(dplyr)
 require(reshape2)
 require(ggplot2)
+require(mosaic)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -539,52 +540,26 @@ Discuss data sources here.
 
 Historical data are stored in the \texttt{IST} and \texttt{Leeds} data sets.
 
-<<Data>>=
-countries <- c("PT", "UK")
-dataPT <- filter(IST, Country == "PT")
-dataUK <- filter(Leeds, Country == "UK")
-
-# Create some pre-econometric ratios
-# Unadjusted variables
-dataPT <- transform(dataPT, kPerGDP.unadj = dataPT[[vars$PT$capital$unadjusted]]/dataPT[[vars$PT$response$unadjusted]])
-dataPT <- transform(dataPT, kPerGDP.unadj = iKstkS.L/iGDP)
-dataPT <- transform(dataPT, kPerGDP.unadj = as.name(vars$PT$capital$unadjusted)/iGDP)
-dataPT <- transform(dataPT, kPerGDP.unadj = eval(substitute(as.name(vars$PT$capital$unadjusted)))/iGDP)
-dataPT <- transform(dataPT, kPerGDP.unadj = eval(quote(as.name(vars$PT$capital$unadjusted)))/iGDP)
-
-dataPT <- within(filter(IST, Country == "PT"), {
-  kPerGDP.unadj <- iKstkS.L / iGDP # Works
-#   kPerGDP.unadj <- as.name(extract_rhs(forms$PT$unadjusted, 1)) / as.name(extract_lhs(forms$PT$unadjusted, 1)) # Fails
-})
-
-dataPT <- transform(dataPT, kPerGDP.unadj = eval(k_PT_unadj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP.unadj = eval(l_PT_unadj)/iGDP)
-dataPT <- transform(dataPT, ePerGDP.unadj = eval(e_PT_unadj)/iGDP)
-dataUK <- transform(dataUK, kPerGDP.unadj = eval(k_UK_unadj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP.unadj = eval(l_UK_unadj)/iGDP)
-dataUK <- transform(dataUK, ePerGDP.unadj = eval(e_UK_unadj)/iGDP)
-# Quality-adjusted variables
-dataPT <- transform(dataPT, kPerGDP.adj = eval(k_PT_adj)/iGDP)
-dataPT <- transform(dataPT, lPerGDP.adj = eval(l_PT_adj)/iGDP)
-dataPT <- transform(dataPT, ePerGDP.adj = eval(e_PT_adj)/iGDP)
-dataUK <- transform(dataUK, kPerGDP.adj = eval(k_UK_adj)/iGDP)
-dataUK <- transform(dataUK, lPerGDP.adj = eval(l_UK_adj)/iGDP)
-dataUK <- transform(dataUK, ePerGDP.adj = eval(e_UK_adj)/iGDP)
-
-# Now create the historicalData data frame
-historicalData <- plyr::rbind.fill(dataPT, dataUK)
-@
-
 <<Formulas>>=
 # Set up the formulas for each type of analysis.
-forms <- 
+# These formulas contain energy. 
+# We can use keep_summands to drop the energy term (3rd summand on the rhs)
+# later if needed.
+formulas <- 
   list( 
     PT = c(unadjusted = build_formula("iGDP", list("iKstkS.L", "iL", "iXpMP", "iYear")),
              adjusted = build_formula("iGDP", list("iKservS.L", "ihLest", "iUMP", "iYear"))),
     UK = c(unadjusted = build_formula("iGDP", list("iKservO.WwithRD", "iL", "iXp", "iYear")),
              adjusted = build_formula("iGDP", list("iKservO.WwithRD", "ihLest", "iU", "iYear")))
   )
+@
 
+<<Data>>=
+# Create the historicalData data frames
+historicalData <- list()
+historicalData$PT <- filter(IST, Country == "PT")
+historicalData$UK <- filter(Leeds, Country == "UK")
+allHistoricalData <- do.call(plyr::rbind.fill, historicalData)
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -596,10 +571,11 @@ For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjus
       \toprule
       Variable    & Portugal           & UK                 \\
       \midrule
-      Output      & \Sexpr{deparse(lhs(forms$PT$unadjusted))}   & \Sexpr{deparse(lhs(forms$UK$unadjusted))}   \\
-      Capital     & \Sexpr{extract_rhs(forms$PT$unadjusted, 1)} & \Sexpr{extract_rhs(forms$UK$unadjusted, 1)} \\
-      Labor       & \Sexpr{extract_rhs(forms$PT$unadjusted, 2)} & \Sexpr{extract_rhs(forms$UK$unadjusted, 2)} \\
-      Energy      & \Sexpr{extract_rhs(forms$PT$unadjusted, 3)} & \Sexpr{extract_rhs(forms$UK$unadjusted, 3)} \\
+      Output      & \Sexpr{summands(formulas$PT$unadjusted, n=1, right=FALSE)}   
+                                                             & \Sexpr{summands(formulas$UK$unadjusted, n=1, right=FALSE)}\\
+      Capital     & \Sexpr{summands(formulas$PT$unadjusted, 1)} & \Sexpr{summands(formulas$UK$unadjusted, 1)} \\
+      Labor       & \Sexpr{summands(formulas$PT$unadjusted, 2)} & \Sexpr{summands(formulas$UK$unadjusted, 2)} \\
+      Energy      & \Sexpr{summands(formulas$PT$unadjusted, 3)} & \Sexpr{summands(formulas$UK$unadjusted, 3)} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -614,10 +590,11 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
       \toprule
       Variable    & Portugal         & UK               \\
       \midrule
-      Output      & \Sexpr{deparse(lhs(forms$PT$adjusted))}   & \Sexpr{deparse(lhs(forms$UK$adjusted))}   \\
-      Capital     & \Sexpr{extract_rhs(forms$PT$adjusted, 1)} & \Sexpr{extract_rhs(forms$UK$adjusted, 1)} \\
-      Labor       & \Sexpr{extract_rhs(forms$PT$adjusted, 2)} & \Sexpr{extract_rhs(forms$UK$adjusted, 2)} \\
-      Energy      & \Sexpr{extract_rhs(forms$PT$adjusted, 3)} & \Sexpr{extract_rhs(forms$UK$adjusted, 3)} \\
+      Output      & \Sexpr{summands(formulas$PT$adjusted, n=1, right=FALSE)}   
+                                                           & \Sexpr{summands(formulas$UK$adjusted, n=1, right=FALSE)} \\
+      Capital     & \Sexpr{summands(formulas$PT$adjusted, 1)} & \Sexpr{summands(formulas$UK$adjusted, 1)} \\
+      Labor       & \Sexpr{summands(formulas$PT$adjusted, 2)} & \Sexpr{summands(formulas$UK$adjusted, 2)} \\
+      Energy      & \Sexpr{summands(formulas$PT$adjusted, 3)} & \Sexpr{summands(formulas$UK$adjusted, 3)} \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -627,35 +604,34 @@ Unadjusted and quality-adjusted data for both Portugal and the United Kingdom
 are shown in Figure~\ref{fig:Historical Data}.
 
 <<Historical Data, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
-unadjVars_PT <- all.vars(forms$PT$unadjusted)[1:4]
-unadjVars_UK <- all.vars(forms$UK$unadjusted)[1:4]
-commonVars <- c("Year", "iYear", "Country")
-unadjData_PT <- historicalData[ , unique(c(unadjVars_PT, commonVars))] %>% filter(Country=="PT")
-unadjData_UK <- historicalData[ , unique(c(unadjVars_UK, commonVars))] %>% filter(Country=="UK")
-unadjData <- plyr::rbind.fill(unadjData_PT, unadjData_UK)
-unadjData$type <- "Unadjusted"
-adjVars_PT <- all.vars(forms$PT$adjusted)[1:4]
-adjVars_UK <- all.vars(forms$UK$adjusted)[1:4]
-adjData_PT <- historicalData[ , unique(c(adjVars_PT, commonVars))] %>% filter(Country=="PT")
-adjData_UK <- historicalData[ , unique(c(adjVars_UK, commonVars))] %>% filter(Country=="UK")
-adjData <- plyr::rbind.fill(adjData_PT, adjData_UK)
-adjData$type <- "Quality-adjusted"
-trimmedData <- plyr::rbind.fill(unadjData, adjData)
-
-mdata <- melt(trimmedData, 
-              measure.vars = unique(c(unadjVars_PT, unadjVars_UK, adjVars_PT, adjVars_UK)), 
-              variable.name = "variable",
-              value.name = "value")
+histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, name){
+  meta <- strsplit(name, split="[.]") %>% unlist
+  Country <- meta[1]
+  flavor <- meta[2]
+  measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
+  trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
+  mtrimmed_historical_data <- melt(trimmed_historical_data, measure.vars = measure.vars, 
+                                   value.name = "value", variable.name = "variable")
+  mtrimmed_historical_data$Country <- Country
+  if (flavor == "unadjusted"){
+    mtrimmed_historical_data$flavor <- "Unadjusted"
+  } else if (flavor == "adjusted") {
+    mtrimmed_historical_data$flavor <- "Quality-adjusted"
+  } else {
+    stop(paste("Unknown flavor", flavor, "in histDataForGraph."))
+  }
+  return(mtrimmed_historical_data)
+}) %>% do.call(rbind, .)
 
 # Relevel factors before plotting
-mdata$Country <- relevelFactor(as.factor(mdata$Country), c("PT", "UK"))
-mdata$type <- relevelFactor(as.factor(mdata$type), c("Unadjusted", "Quality-adjusted"))
-mdata$variable <- relevelFactor(as.factor(mdata$variable), unique(c(unadjVars_PT, adjVars_PT, unadjVars_UK, adjVars_UK)))
+histDataForGraph$Country <- relevelFactor(as.factor(histDataForGraph$Country), c("PT", "UK"))
+histDataForGraph$flavor <- relevelFactor(as.factor(histDataForGraph$flavor), c("Unadjusted", "Quality-adjusted"))
+histDataForGraph$variable <- relevelFactor(as.factor(histDataForGraph$variable), unique(histDataForGraph$variable))
 
-historicalPlot(mdata, 
+historicalPlot(histDataForGraph, 
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ type, 
-               line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
+               facet_formula = Country ~ flavor, 
+               line_types = c(1,2,4,3,2,4,3,2,3,3)) + 
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
   coord_cartesian(ylim=c(0.5, 13)) +
   xlab("") + 
@@ -663,33 +639,56 @@ historicalPlot(mdata,
 @
 
 <<Pre-econometric graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
-# Melt the data
-mdata_preeconometric <- melt(historicalData, 
-                             measure.vars = c("kPerGDP.unadj", "lPerGDP.unadj", "ePerGDP.unadj",
-                                              "kPerGDP.adj", "lPerGDP.adj", "ePerGDP.adj"),
-                             variable.name = "variable",
-                             value.name = "value")
-# Add a column to say whether the variable is Unadjusted or Quality-adjusted based on variable name
-mdata_preeconometric$adjusted <- lapply(mdata_preeconometric$variable, function(x) {
-  suffix <- unlist(strsplit(as.character(x), split="[.]")) [2]
-  if (suffix == "unadj"){
-    return("Unadjusted")
-  } else if (suffix == "adj"){
-    return("Quality-adjusted")
-  } else {
-    stop(paste("Unknown suffix:", suffix))
-  }
-})
+
+# Create some pre-econometric ratios
+
+# # Melt the data
+# mdata_preeconometric <- melt(historicalData, 
+#                              measure.vars = c("kPerGDP.unadj", "lPerGDP.unadj", "ePerGDP.unadj",
+#                                               "kPerGDP.adj", "lPerGDP.adj", "ePerGDP.adj"),
+#                              variable.name = "variable",
+#                              value.name = "value")
+# # Add a column to say whether the variable is Unadjusted or Quality-adjusted based on variable name
+# mdata_preeconometric$adjusted <- lapply(mdata_preeconometric$variable, function(x) {
+#   suffix <- unlist(strsplit(as.character(x), split="[.]")) [2]
+#   if (suffix == "unadj"){
+#     return("Unadjusted")
+#   } else if (suffix == "adj"){
+#     return("Quality-adjusted")
+#   } else {
+#     stop(paste("Unknown suffix:", suffix))
+#   }
+# })
+
+
+pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form, name){
+  meta <- strsplit(name, split="[.]") %>% unlist
+  Country <- meta[1]
+  flavor <- meta[2]
+  nums <- summands(form, n=1:3)
+  denom <- summands(form, n=1, right=FALSE)
+  ratios <- lapply(nums, function(num) {paste(num, denom, sep="/")}) %>% unlist
+  coltemplate <- build_formula(NULL, c("Year", ratios))
+  trimmed_historical_data <- historicalData[[Country]][all.vars(coltemplate)]
+  ratio_data <- evalFormula(coltemplate, data=trimmed_historical_data)$right
+  mratio_data <- melt(ratio_data, measure.vars = ratios, value.name = "ratio", variable.name = "variable")
+  mratio_data$Country <- Country
+  mratio_data$flavor <- flavor
+  return(mratio_data)
+}) %>% do.call(rbind, .)
+
 # Fix levels
-mdata_preeconometric$adjusted <- relevelFactor(as.factor(as.character(mdata_preeconometric$adjusted)), 
+pre_econometric_data$flavor <- relevelFactor(as.factor(as.character(pre_econometric_data$flavor)), 
                                                c("Unadjusted", "Quality-adjusted"))
-mdata_preeconometric$Country <- relevelFactor(as.factor(mdata_preeconometric$Country), 
+pre_econometric_data$Country <- relevelFactor(as.factor(pre_econometric_data$Country), 
                                               c("PT", "UK"))
+pre_econometric_data$variable <- relevelFactor(as.factor(pre_econometric_data$variable),
+                                               unique(pre_econometric_data$variable))
 # Now make the plot
-historicalPlot(mdata_preeconometric, 
-               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ adjusted, 
-               line_types = c(2,4,3, 2,4,3)) + 
+historicalPlot(pre_econometric_data, 
+               mapping=aes(x=Year, y=ratio, group=variable, linetype=variable), 
+               facet_formula = Country ~ flavor, 
+               line_types = c(2,4,3, 2,4,3, 2,3,3)) + 
   xlab("") + 
   ylab("Indexed (1960=1)")
 @
@@ -774,8 +773,8 @@ if (!rerunModels){
   nest$lek <- c(2,3,1)
   nest$ekl <- c(3,1,2)
   
-  models <- list()
-  for ()
+#   models <- list()
+#   for ()
 
   
 #   models <- NULL
