@@ -7,7 +7,7 @@
 \alias{summands}
 \title{Utilities for working with formulas}
 \usage{
-build_formula(left, right, env = parent.frame(), op = "+")
+build_formula(lhs, rhs, env = parent.frame(), op = "+")
 
 keep_summands(formula, n, right = TRUE, env = environment(formula),
   op = "+")
@@ -18,11 +18,8 @@ replace_summand(formula, n, term, right = TRUE, op = "+",
   env = environment(formula))
 }
 \arguments{
-\item{left,right}{list or vector of character strings containing summands for left and right hand sides
+\item{lhs,rhs}{list or vector of character strings containing summands for left and right hand sides
 of a formula.  \code{NULL}'s are ignored.}
-
-\item{right}{a logical indicating whether to operate on the right side (else the left) of
-the formula.}
 
 \item{env}{an environment to attach to the formula}
 
@@ -31,6 +28,9 @@ the formula.}
 \item{formula}{a formula}
 
 \item{n}{a vector of integer indices.  Negatives can be used to deselect.}
+
+\item{right}{a logical indicating whether to operate on the right side (else the left) of
+the formula.}
 
 \item{term}{a character string containing a new term}
 }
