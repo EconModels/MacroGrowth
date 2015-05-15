@@ -549,7 +549,7 @@ formulas <-
   list( 
     PT = c(unadjusted = build_formula("iGDP", list("iKstkS.L", "iL", "iXpMP", "iYear")),
              adjusted = build_formula("iGDP", list("iKservS.L", "ihLest", "iUMP", "iYear"))),
-    UK = c(unadjusted = build_formula("iGDP", list("iKservO.WwithRD", "iL", "iXp", "iYear")),
+    UK = c(unadjusted = build_formula("iGDP", list("iKstkO.WwithRD", "iL", "iXp", "iYear")),
              adjusted = build_formula("iGDP", list("iKservO.WwithRD", "ihLest", "iU", "iYear")))
   )
 countries <- names(formulas)
@@ -795,7 +795,7 @@ fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesEst", "LINEX
 
 # Relevel factors before plotting
 fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
-fitted_and_resid_data$adjusted <- relevelFactor(as.factor(fitted_and_resid_data$flavor), c("Unadjusted", "Quality-adjusted"))
+fitted_and_resid_data$flavor <- relevelFactor(as.factor(fitted_and_resid_data$flavor), c("Unadjusted", "Quality-adjusted"))
 fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$energy), c("Without energy", "With Energy"))
 @
 
@@ -819,6 +819,7 @@ fittedGraph <- function(data){
     geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=energy)) +
     scale_linetype_manual(values=c(2,3), name="") +
     facet_grid(Country ~ flavor) +
+    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     xy_theme()
 }
 
@@ -827,6 +828,7 @@ residualPlot <- function(data){
     geom_line(data=data, mapping=aes(x=Year, y=Residuals, linetype=energy)) +
     scale_linetype_manual(values=c(2,3), name="") +
     facet_grid(Country ~ flavor) +
+    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     xy_theme()
 }
 @
@@ -1113,7 +1115,7 @@ Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results
       Without energy  & \Sexpr{naturalCoef(models$PT$unadj$noE$CES$kl)$lambda} 
                                         & \Sexpr{naturalCoef(models$PT$adj$noE$CES$kl)$lambda} \\
       With energy     & \Sexpr{naturalCoef(models$PT$unadj$withE$CES$lek)$lambda} 
-                                        & \Sexpr{naturalCoef(models$PT$adj$withE$CESle)$lambda} \\
+                                        & \Sexpr{naturalCoef(models$PT$adj$withE$CES$lek)$lambda} \\
       \bottomrule
     \end{tabular}
   \end{center}
