@@ -552,6 +552,7 @@ formulas <-
     UK = c(unadjusted = build_formula("iGDP", list("iKservO.WwithRD", "iL", "iXp", "iYear")),
              adjusted = build_formula("iGDP", list("iKservO.WwithRD", "ihLest", "iU", "iYear")))
   )
+countries <- names(formulas)
 @
 
 <<Data>>=
@@ -613,13 +614,7 @@ histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, nam
   mtrimmed_historical_data <- melt(trimmed_historical_data, measure.vars = measure.vars, 
                                    value.name = "value", variable.name = "variable")
   mtrimmed_historical_data$Country <- Country
-  if (flavor == "unadjusted"){
-    mtrimmed_historical_data$flavor <- "Unadjusted"
-  } else if (flavor == "adjusted") {
-    mtrimmed_historical_data$flavor <- "Quality-adjusted"
-  } else {
-    stop(paste("Unknown flavor", flavor, "in histDataForGraph."))
-  }
+  mtrimmed_historical_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
   return(mtrimmed_historical_data)
 }) %>% do.call(rbind, .)
 
@@ -639,28 +634,6 @@ historicalPlot(histDataForGraph,
 @
 
 <<Pre-econometric graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
-
-# Create some pre-econometric ratios
-
-# # Melt the data
-# mdata_preeconometric <- melt(historicalData, 
-#                              measure.vars = c("kPerGDP.unadj", "lPerGDP.unadj", "ePerGDP.unadj",
-#                                               "kPerGDP.adj", "lPerGDP.adj", "ePerGDP.adj"),
-#                              variable.name = "variable",
-#                              value.name = "value")
-# # Add a column to say whether the variable is Unadjusted or Quality-adjusted based on variable name
-# mdata_preeconometric$adjusted <- lapply(mdata_preeconometric$variable, function(x) {
-#   suffix <- unlist(strsplit(as.character(x), split="[.]")) [2]
-#   if (suffix == "unadj"){
-#     return("Unadjusted")
-#   } else if (suffix == "adj"){
-#     return("Quality-adjusted")
-#   } else {
-#     stop(paste("Unknown suffix:", suffix))
-#   }
-# })
-
-
 pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form, name){
   meta <- strsplit(name, split="[.]") %>% unlist
   Country <- meta[1]
@@ -673,7 +646,7 @@ pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form,
   ratio_data <- evalFormula(coltemplate, data=trimmed_historical_data)$right
   mratio_data <- melt(ratio_data, measure.vars = ratios, value.name = "ratio", variable.name = "variable")
   mratio_data$Country <- Country
-  mratio_data$flavor <- flavor
+  mratio_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
   return(mratio_data)
 }) %>% do.call(rbind, .)
 
@@ -767,75 +740,28 @@ if (!rerunModels){
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
-  nest <- NULL
-  nest$kl <- c(1,2)
-  nest$kle <- c(1,2,3)
-  nest$lek <- c(2,3,1)
-  nest$ekl <- c(3,1,2)
+  flavors <- c("unadjusted", "adjusted")
+  nests <- NULL
+  nests$kle <- c(1,2,3); nests$lek <- c(2,3,1); nests$ekl <- c(3,1,2)
+  energies <- c(FALSE, TRUE)
   
-#   models <- list()
-#   for ()
-
-  
-#   models <- NULL
-#   # Portugal, CD
-#   models$PT$unadj$noE$CD <- cdModel(formula = f$PT$unadj$noE, 
-#                                     data = dataPT, constrained = TRUE)
-#   models$PT$unadj$withE$CD <- cdModel(formula = f$PT$unadj$withE, 
-#                                       data = dataPT, constrained = TRUE)
-#   models$PT$adj$noE$CD <- cdModel(formula = f$PT$adj$noE, 
-#                                   data = dataPT, constrained = TRUE)
-#   models$PT$adj$withE$CD <- cdModel(formula = f$PT$adj$withE, 
-#                                     data = dataPT, constrained = TRUE)
-#   # UK, CD
-#   models$UK$unadj$noE$CD <- cdModel(formula = f$UK$unadj$noE, 
-#                                     data = dataUK, constrained = TRUE)
-#   models$UK$unadj$withE$CD <- cdModel(formula = f$UK$unadj$withE, 
-#                                       data = dataUK, constrained = TRUE)
-#   models$UK$adj$noE$CD <- cdModel(formula = f$UK$adj$noE, 
-#                                   data = dataUK, constrained = TRUE)
-#   models$UK$adj$withE$CD <- cdModel(formula = f$UK$adj$withE, 
-#                                     data = dataUK, constrained = TRUE)
-#   # PT, CESkl
-#   models$PT$unadj$noE$CESkl <- cesModel(formula = f$PT$unadj$noE, 
-#                                         nest = nest$kl, data = dataPT, constrained = TRUE)
-#   models$PT$adj$noE$CESkl <- cesModel(formula = f$PT$adj$noE, 
-#                                       nest = nest$kl, data = dataPT, constrained = TRUE)
-#   # PT, CESkle
-#   models$PT$unadj$withE$CESkle <- cesModel(formula = f$PT$unadj$withE, 
-#                                            nest = nest$kle, data = dataPT, constrained = TRUE)
-#   models$PT$adj$withE$CESkle <- cesModel(formula = f$PT$adj$withE, 
-#                                          nest = nest$kle, data = dataPT, constrained = TRUE)
-#   # PT, CESlek
-#   models$PT$unadj$withE$CESlek <- cesModel(formula = f$PT$unadj$withE, 
-#                                            nest = nest$lek, data = dataPT, constrained = TRUE)
-#   models$PT$adj$withE$CESlek <- cesModel(formula = f$PT$adj$withE, 
-#                                          nest = nest$lek, data = dataPT, constrained = TRUE)
-#   # PT, CESekl
-#   models$PT$unadj$withE$CESekl <- cesModel(formula = f$PT$unadj$withE, 
-#                                            nest = nest$ekl, data = dataPT, constrained = TRUE)
-#   models$PT$adj$withE$CESekl <- cesModel(formula = f$PT$adj$withE, 
-#                                          nest = nest$ekl, data = dataPT, constrained = TRUE)
-#   # UK, CESkl
-#   models$UK$unadj$noE$CESkl <- cesModel(formula = f$UK$unadj$noE, 
-#                                         nest = nest$kl, data = dataUK, constrained = TRUE)
-#   models$UK$adj$noE$CESkl <- cesModel(formula = f$UK$adj$noE, 
-#                                       nest = nest$kl, data = dataUK, constrained = TRUE)
-#   # UK, CESkle
-#   models$UK$unadj$withE$CESkle <- cesModel(formula = f$UK$unadj$withE, 
-#                                            nest = nest$kle, data = dataUK, constrained = TRUE)
-#   models$UK$adj$withE$CESkle <- cesModel(formula = f$UK$adj$withE, 
-#                                          nest = nest$kle, data = dataUK, constrained = TRUE)
-#   # UK, CESlek
-#   models$UK$unadj$withE$CESlek <- cesModel(formula = f$UK$unadj$withE, 
-#                                            nest = nest$lek, data = dataUK, constrained = TRUE)
-#   models$UK$adj$withE$CESlek <- cesModel(formula = f$UK$adj$withE, 
-#                                          nest = nest$lek, data = dataUK, constrained = TRUE)
-#   # UK, CESekl
-#   models$UK$unadj$withE$CESekl <- cesModel(formula = f$UK$unadj$withE, 
-#                                            nest = nest$ekl, data = dataUK, constrained = TRUE)
-#   models$UK$adj$withE$CESekl <- cesModel(formula = f$UK$adj$withE, 
-#                                          nest = nest$ekl, data = dataUK, constrained = TRUE)
+  models <- list()
+  for(country in countries){
+    for (flavor in flavors){
+      fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term
+      fwithE <- formulas[[country]][[flavor]]
+      # CD models
+      models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = historicalData[[country]])
+      models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = historicalData[[country]])
+      # CES models
+      models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, data = historicalData[[country]], nest=c(1,2))
+      models[[country]][[flavor]][["withE"]][["CES"]] <- 
+        lapply(nests, function(nest){
+          cesModel(formula=fwithE, data=historicalData[[country]], nest=nest)
+        })
+    }      
+  }
+}
   # Save models to disk.
   save(models, file=fileName)
 }
