@@ -28,8 +28,8 @@
 #' h <- replace_summand( f, 3, paste(summands(f, 3), lhs(f), sep="/")); h
  
 build_formula <- function( lhs, rhs, env=parent.frame(), op="+" ) {
-  lhs <- left[sapply(lhs, function(x) !is.null(x))]
-  rhs <- right[sapply(rhs, function(x) !is.null(x))]
+  lhs <- lhs[sapply(lhs, function(x) !is.null(x))]
+  rhs <- rhs[sapply(rhs, function(x) !is.null(x))]
   res <- as.formula(
           paste(
             paste(lhs,  collapse = op), 
