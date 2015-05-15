@@ -788,7 +788,7 @@ if (!rerunModels){
 @
 
 <<Fitted_and_Residuals>>=
-fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesEst", "LINEXmodel"), function(mod, id){
+fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), function(mod, id){
   df <- mod$data[ , c("Year", "iGDP", "Country")]
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(mod)[c(1:length(df$Year))]
