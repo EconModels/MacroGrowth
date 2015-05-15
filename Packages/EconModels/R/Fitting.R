@@ -430,7 +430,7 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' 
 #' @export
 cdModel <- function(formula, data, response, x1, x2, x3, time, 
-                             constrained=FALSE, save.data=TRUE, ...) {
+                             constrained=TRUE, save.data=TRUE, ...) {
   if (missing(formula)) {
     if (missing(x3)) {
       return( cd2Model( data=data, 
