@@ -849,6 +849,8 @@ fittedGraph <- function(data){
     scale_linetype_manual(values=c(2,3), name="") +
     facet_grid(Country ~ flavor) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+    scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
+    ylab("Indexed GDP (1960=1)") +
     xy_theme()
 }
 
