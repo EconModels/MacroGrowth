@@ -579,9 +579,16 @@ countries <- names(formulas)
 <<Data>>=
 # Create the historicalData data frames
 historicalData <- list()
-historicalData$PT <- filter(IST, Country == "PT")
+commonVars <- c("Year", "Country", "Source")
+historicalData$PT <- filter(IST, Country == "PT") 
+historicalData$PT <- historicalData$PT[ , unique(c(commonVars,
+                                                   all.vars(formulas$PT$unadjusted), 
+                                                   all.vars(formulas$PT$adjusted)))]
 historicalData$UK <- filter(Leeds, Country == "UK")
-allHistoricalData <- do.call(plyr::rbind.fill, historicalData)
+historicalData$UK <- historicalData$UK[ , unique(c(commonVars,
+                                                   all.vars(formulas$UK$unadjusted), 
+                                                   all.vars(formulas$UK$adjusted)))]
+# allHistoricalData <- do.call(plyr::rbind.fill, historicalData)
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -623,9 +630,10 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
 \end{table}
 
 Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
-are shown in Figure~\ref{fig:Historical Data}.
+are shown in Figure~\ref{fig:Historical Data Graph}.
 
-<<Historical Data, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+<<Historical Data Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+# Melt the data into a form that is useful in a couple places
 histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, name){
   meta <- strsplit(name, split="[.]") %>% unlist
   Country <- meta[1]
@@ -895,6 +903,86 @@ fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="k
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
 @
+
+%++++++++++++++++++++++++++++++
+\subsection{Dynamic Solow Residual} 
+\label{sec:dynamic_solow_residual}
+%++++++++++++++++++++++++++++++
+
+This section presents results of dynamic Solow Residual analyses.
+
+<<Dynamic Solow Residual>>=
+# Calculate finite difference approximations of time derivatives for output and all factors of production
+lag <- 1       # Desired lag for calculations. Set to n for differences across n years.
+pad <- "tail"  # Desired padding for NA values
+
+fd <- leaf_apply(formulas, class = "formula", f = function(form, name){
+  meta <- strsplit(name, split="[.]") %>% unlist
+  Country <- meta[1]
+  flavor <- meta[2]
+  
+  denom <- summands(form, n=length(summands(form))) # time variable
+  nums <- c(summands(form, n=1, right = FALSE), summands(form, n=1:3)) # y, k, l, and e
+  trimmedData <- historicalData[[Country]][c(denom, nums)] # columns are: iYear, y, k, l, and e
+  df <- list()
+  df <- historicalData[[Country]][ , c("Year", "Country")]
+  df$dydt <- ediff(trimmedData[[2]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+  df$dkdt <- ediff(trimmedData[[3]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+  df$dldt <- ediff(trimmedData[[4]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+  df$dedt <- ediff(trimmedData[[5]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+  
+  df$flavor <- flavor
+  return(df)
+}) %>% do.call(rbind, .)
+
+
+
+
+# origCDKLCoeffs <- filter(AllCoeffs, method=="orig", model=="cd")
+# origCDKLCoeffs <- origCDKLCoeffs %>% select(method, country, Source, nestStr, energy, lambda, alpha, beta, gamma)
+# # Change name of Source REXS to REXS1960 and relevel to conform to information in fdlambda.
+# origCDKLCoeffs$Source <- as.character(origCDKLCoeffs$Source)
+# origCDKLCoeffs$Source <- replace(origCDKLCoeffs$Source, which(origCDKLCoeffs$Source=="REXS"), "REXS1960")
+# origCDKLCoeffs$Source <- as.factor(origCDKLCoeffs$Source)
+# origCDKLCoeffs$Source <- relevelFactor(origCDKLCoeffs$Source, levs = c("REXS1960", "IST", "Leeds"))
+# 
+# # Fill new columns in the fd data frame with 
+# # lambda, alpha, beta, and gamma values from the parameter estimation process.
+# # lambda, alpha, beta, and gamma values for the orig fits are in the origCDKLCoeffs data frame.
+# # Using the hint at 
+# # http://stackoverflow.com/questions/15059076/
+# # r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
+# labg <- apply(fd[ , c('Country', 'Source', 'energyType')], 1, function(x){
+#     row <- as.data.frame(filter(origCDKLCoeffs, 
+#                                 country==x["Country"], Source==x["Source"], energy==x["energyType"]))
+#     abg <- subset(row, select=c(lambda, alpha, beta, gamma))
+#     if (nrow(abg) < 1){ abg[1, ] <- NA }
+#     return(abg)
+#   })
+# cols <- do.call(rbind, labg)
+# fd <- cbind(fd, cols)
+# 
+# # Now calculate lambda by finite difference for every year to make a time series
+# fdlambda <- mutate(fd, lambda_diff = dydt/iGDP - (alpha/iK*dkdt + beta/iL*dldt + gamma/iE*dedt))
+# 
+# # Calculate the fraction of GDP growth in each year that is explained by the solow residual
+# fdlambda <- mutate(fdlambda, solowFrac = lambda_diff / (dydt/iGDP))
+# 
+# # Calculate average values for lambda and solowFrac
+# avgs <- fdlambda %>% 
+#   group_by(Source, Country, energyType) %>% 
+#   summarise(
+#     avg.lambda_diff = mean(lambda_diff, na.rm=TRUE),
+#     avg.solowFrac = mean(solowFrac, na.rm=TRUE)
+#     )
+
+@
+
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis}
