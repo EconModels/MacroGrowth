@@ -832,6 +832,14 @@ fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$en
 %++++++++++++++++++++++++++++++
 
 This section shows graphs of fits to historical data and residuals.
+Because we fit in log-space, the residuals ($r_i$) are defined as
+%
+\begin{equation} \label{eq:log-residuals}
+  r_i \equiv \ln(y_i) - \ln(\hat{y}_i) =\ln\left( \frac{y_i}{\hat{y}_i} \right), 
+\end{equation}
+%
+where $r_i$ will be zero when there is agreement between 
+historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
 
 <<Fitted and Residual Graphs>>=
 fittedGraph <- function(data){
