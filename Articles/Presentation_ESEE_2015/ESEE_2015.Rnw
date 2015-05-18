@@ -793,10 +793,24 @@ if (!rerunModels){
   # Save models to disk.
   save(models, file=fileName)
 }
+# Put all the coefficients into a data frame
+AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
+  # Parse the id to find out whether this is quality-adjusted data, etc.
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  Country <- id_list[[1]]
+  flavor <- id_list[[2]]
+  energy <- id_list[[3]]
+  model <- id_list[[4]]
+  nest <- if(length(id_list) > 4) id_list[[5]] else NA
+  coeffs <- naturalCoef(mod)
+  res <- rbind(list(Country=Country, flavor=flavor, energy=energy, model=model, nest=nest))
+  res <- cbind(res, coeffs)
+  return(res)
+}) %>% do.call(plyr::rbind.fill, .)
 @
 
 <<Fitted_and_Residuals>>=
-fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), function(mod, id){
+fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
   df <- select(mod$data, Year, iGDP, Country)
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(mod)[c(1:length(df$Year))]
