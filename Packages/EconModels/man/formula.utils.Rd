@@ -40,8 +40,8 @@ Some functions to make it easier to build and minipulate formulas
 \examples{
 a <- build_formula(c("a", "b"), c("x", "y", "log(x*y)")); a
 b <- build_formula("response", list("x", "y", NULL, "log(x)"), op="*"); b
-f <- build_formula( "iGDP", list("iK", "iL", "iQP", "iYear")); f
-g <- build_formula( "iGDP", c("iK", "iL", "iQP", "iYear")); g
+f <- build_formula( "iGDP", list("iK", "iL", "iQp", "iYear")); f
+g <- build_formula( "iGDP", c("iK", "iL", "iQp", "iYear")); g
 identical(f,g)
 summands(a)
 summands(a, right=FALSE)
