@@ -3,7 +3,7 @@
 #' Some functions to make it easier to build and minipulate formulas
 
 #' @rdname formula.utils
-#' @param left,right list or vector of character strings containing summands for left and right hand sides
+#' @param lhs,rhs list or vector of character strings containing summands for left and right hand sides
 #'   of a formula.  \code{NULL}'s are ignored.
 #' @param formula a formula
 #' @param n a vector of integer indices.  Negatives can be used to deselect.
@@ -27,13 +27,13 @@
 #' keep_summands(f, 2:4)
 #' h <- replace_summand( f, 3, paste(summands(f, 3), lhs(f), sep="/")); h
  
-build_formula <- function( left, right, env=parent.frame(), op="+" ) {
-  left <- left[sapply(left, function(x) !is.null(x))]
-  right <- right[sapply(right, function(x) !is.null(x))]
+build_formula <- function( lhs, rhs, env=parent.frame(), op="+" ) {
+  lhs <- lhs[sapply(lhs, function(x) !is.null(x))]
+  rhs <- rhs[sapply(rhs, function(x) !is.null(x))]
   res <- as.formula(
           paste(
-            paste(left,  collapse = op), 
-            paste(right, collapse = op), 
+            paste(lhs,  collapse = op), 
+            paste(rhs, collapse = op), 
             sep="~")
     )
   environment(res) <- env

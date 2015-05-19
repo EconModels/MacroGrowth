@@ -4,7 +4,7 @@
 \alias{cdModel}
 \title{Fitting Cobb-Douglas models}
 \usage{
-cdModel(formula, data, response, x1, x2, x3, time, constrained = FALSE,
+cdModel(formula, data, response, x1, x2, x3, time, constrained = TRUE,
   save.data = TRUE, ...)
 }
 \arguments{
