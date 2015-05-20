@@ -588,7 +588,6 @@ historicalData$UK <- filter(Leeds, Country == "UK")
 historicalData$UK <- historicalData$UK[ , unique(c(commonVars,
                                                    all.vars(formulas$UK$unadjusted), 
                                                    all.vars(formulas$UK$adjusted)))]
-# allHistoricalData <- do.call(plyr::rbind.fill, historicalData)
 @
 
 For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
@@ -686,7 +685,7 @@ pre_econometric_data$Country <- relevelFactor(as.factor(pre_econometric_data$Cou
                                               c("PT", "UK"))
 pre_econometric_data$variable <- relevelFactor(as.factor(pre_econometric_data$variable),
                                                unique(pre_econometric_data$variable))
-# Now make the plot
+# Now make the plot of pre-econometric data
 historicalPlot(pre_econometric_data, 
                mapping=aes(x=Year, y=ratio, group=variable, linetype=variable), 
                facet_formula = Country ~ flavor, 
@@ -772,7 +771,6 @@ if (!rerunModels){
   flavors <- c("unadjusted", "adjusted")
   nests <- NULL
   nests$kle <- c(1,2,3); nests$lek <- c(2,3,1); nests$ekl <- c(3,1,2)
-  energies <- c(FALSE, TRUE)
   
   models <- list()
   for(country in countries){
@@ -783,7 +781,9 @@ if (!rerunModels){
       models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = historicalData[[country]])
       models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = historicalData[[country]])
       # CES models
-      models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, data = historicalData[[country]], nest=c(1,2))
+      models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, 
+                                                                        data = historicalData[[country]], 
+                                                                        nest=c(1,2))
       models[[country]][[flavor]][["withE"]][["CES"]] <- 
         lapply(nests, function(nest){
           cesModel(formula=fwithE, data=historicalData[[country]], nest=nest)
@@ -807,6 +807,12 @@ AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"),
   res <- cbind(res, coeffs)
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
+# Relevel factors
+AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
+AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("unadjusted", "adjusted"))
+AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("noE", "withE"))
+AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("CD", "CES"))
+AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
 @
 
 <<Fitted_and_Residuals>>=
@@ -925,78 +931,90 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="
 
 This section presents results of dynamic Solow Residual analyses.
 
-<<Dynamic Solow Residual>>=
+<<Dynamic Solow Residuals>>=
 # Calculate finite difference approximations of time derivatives for output and all factors of production
-lag <- 1       # Desired lag for calculations. Set to n for differences across n years.
+lag <- 2       # Desired lag for calculations. Set to n for differences across n years.
 pad <- "tail"  # Desired padding for NA values
 
-fd <- leaf_apply(formulas, class = "formula", f = function(form, name){
-  meta <- strsplit(name, split="[.]") %>% unlist
-  Country <- meta[1]
-  flavor <- meta[2]
-  
-  denom <- summands(form, n=length(summands(form))) # time variable
-  nums <- c(summands(form, n=1, right = FALSE), summands(form, n=1:3)) # y, k, l, and e
-  trimmedData <- historicalData[[Country]][c(denom, nums)] # columns are: iYear, y, k, l, and e
-  df <- list()
-  df <- historicalData[[Country]][ , c("Year", "Country")]
-  df$dydt <- ediff(trimmedData[[2]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
-  df$dkdt <- ediff(trimmedData[[3]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
-  df$dldt <- ediff(trimmedData[[4]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
-  df$dedt <- ediff(trimmedData[[5]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
-  
-  df$flavor <- flavor
-  return(df)
-}) %>% do.call(rbind, .)
+flavors <- c("unadjusted", "adjusted")
+# model.types <- c("CD", "CES")
+model.types <- c("CD")
+nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
 
-
-
-
-# origCDKLCoeffs <- filter(AllCoeffs, method=="orig", model=="cd")
-# origCDKLCoeffs <- origCDKLCoeffs %>% select(method, country, Source, nestStr, energy, lambda, alpha, beta, gamma)
-# # Change name of Source REXS to REXS1960 and relevel to conform to information in fdlambda.
-# origCDKLCoeffs$Source <- as.character(origCDKLCoeffs$Source)
-# origCDKLCoeffs$Source <- replace(origCDKLCoeffs$Source, which(origCDKLCoeffs$Source=="REXS"), "REXS1960")
-# origCDKLCoeffs$Source <- as.factor(origCDKLCoeffs$Source)
-# origCDKLCoeffs$Source <- relevelFactor(origCDKLCoeffs$Source, levs = c("REXS1960", "IST", "Leeds"))
-# 
-# # Fill new columns in the fd data frame with 
-# # lambda, alpha, beta, and gamma values from the parameter estimation process.
-# # lambda, alpha, beta, and gamma values for the orig fits are in the origCDKLCoeffs data frame.
-# # Using the hint at 
-# # http://stackoverflow.com/questions/15059076/
-# # r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
-# labg <- apply(fd[ , c('Country', 'Source', 'energyType')], 1, function(x){
-#     row <- as.data.frame(filter(origCDKLCoeffs, 
-#                                 country==x["Country"], Source==x["Source"], energy==x["energyType"]))
-#     abg <- subset(row, select=c(lambda, alpha, beta, gamma))
-#     if (nrow(abg) < 1){ abg[1, ] <- NA }
-#     return(abg)
-#   })
-# cols <- do.call(rbind, labg)
-# fd <- cbind(fd, cols)
-# 
-# # Now calculate lambda by finite difference for every year to make a time series
-# fdlambda <- mutate(fd, lambda_diff = dydt/iGDP - (alpha/iK*dkdt + beta/iL*dldt + gamma/iE*dedt))
-# 
-# # Calculate the fraction of GDP growth in each year that is explained by the solow residual
-# fdlambda <- mutate(fdlambda, solowFrac = lambda_diff / (dydt/iGDP))
-# 
-# # Calculate average values for lambda and solowFrac
-# avgs <- fdlambda %>% 
-#   group_by(Source, Country, energyType) %>% 
-#   summarise(
-#     avg.lambda_diff = mean(lambda_diff, na.rm=TRUE),
-#     avg.solowFrac = mean(solowFrac, na.rm=TRUE)
-#     )
-
+dframes <- list()
+for (Coun in countries){
+  for (flav in flavors){
+    forms <- list(noE = keep_summands(formulas[[Coun]][[flav]], -3), withE = formulas[[Coun]][[flav]])
+    for (form in forms){
+      denom <- summands(form, n=length(summands(form))) # time variable
+      nums <- all.vars(form) [1:(length(all.vars(form))-1)] # y, k, l, and e (if present)
+      trimmedData <- historicalData[[Coun]][c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
+      df <- historicalData[[Coun]][ , c(nums, "Year")]
+      # Calculate names for the columns of finite difference derivatives
+      derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], "/", "dt")}) %>% unlist
+      derivCols <- lapply(1:length(nums), function(i){
+        # Calculate finite difference derivative columns
+        ediff(trimmedData[[i+1]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+      }) %>% do.call(cbind, .) %>% as.data.frame
+      names(derivCols) <- derivNames
+      df <- cbind(derivCols, df)
+      e <- if (length(summands(form))==4) "withE" else "noE"
+      for (m in model.types){
+        origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
+        df <- cbind(df, origCoeffs)
+        if (m == "CD"){
+          lambda <- lapply(1:length(derivNames), function(i){
+            # derivative term divided by its numerator.
+            # derivative term is in the ith column of df
+            # numerator is in i + length(derivNames) th column of df
+            out <- df[[i]] / df[[i+length(derivNames)]]
+            if (i > 1){
+              # Need to make it negative and multiply by the corresponding alpha term.
+              # Typical setup is that columns 2 is capital, and we need alpha_1 for capital.
+              # So, subtract 1 from i.
+              out <- - out * df[[paste0("alpha_", i-1)]]
+            }
+            return(out)
+          }) %>% as.data.frame %>% rowSums
+          df$lambda_fd <- lambda
+          avg.lambda_fd <- mean(df$lambda_fd, na.rm = TRUE)
+          # Fraction of growth explained by Solow Residual
+          df$solowFrac <- df$lambda_fd / (df[[1]] / df[[length(derivNames) + 1]])
+          avg.solowFrac <- mean(df$solowFrac, na.rm = TRUE)
+        } else if (m == "CES"){
+          
+        } else {
+          stop(paste("Unknown model", model))
+        }
+        df$flavor <- if (flav == "adjusted") "Quality-adjusted" else "Unadjusted"
+        df$flavor <- relevelFactor(as.factor(df$flavor), c("Unadjusted", "Quality-adjusted"))
+        df$energy <- if (e == "noE") "Without energy" else "With energy"
+        df$energy <- relevelFactor(as.factor(df$energy), c("Without energy", "With energy"))
+        dframes[[length(dframes)+1]] <- df
+      }
+    }
+  }      
+}
+solowResiduals <- do.call(plyr::rbind.fill, dframes)
 @
 
+Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
+of the Solow Residual~($\lambda$) over time
+as calculated by Equation~\ref{eq:lambdaij} 
+with timespan for finite differences set to 
+\Sexpr{lag}~\Sexpr{if (lag == 1) "year" else "years"}.
 
-
-
-
-
+<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model.">>=
+data <- filter(solowResiduals, model=="CD")
+ggplot(data=data) +
+  geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
+  scale_linetype_manual(values=c(2,3), name="") +
+  facet_grid(Country ~ flavor) +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+  xlab("") + 
+  ylab(expression(lambda)) +
+  xy_theme()
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis}
