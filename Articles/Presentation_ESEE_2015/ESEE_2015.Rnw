@@ -286,158 +286,6 @@ The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 
 
-%..............................
-\paragraph{Estimating the Solow residual} 
-\label{sec:estimating_the_solow_residual}
-%..............................
-
-Assuming that parameters $\theta$, $\alpha$, and $\beta$
-in Equation~\ref{eq:CDe} are known from parameter estimation,
-we can estimate the value of $\lambda$ as follows.
-First, assume constant returns to scale such that 
-$\alpha + \beta + \gamma = 1$, 
-and calculate $\gamma = 1 - \alpha - \beta$.
-Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
-%
-\begin{equation} \label{eq:lnCD}
-  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
-\end{equation}
-%
-By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
-and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
-constant with respect to time, we obtain
-%
-\begin{equation} \label{eq:ddtlnCD}
-  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
-\end{equation}
-%
-Solving for the total factor productivity term gives
-%
-\begin{equation} \label{eq:solow_resid}
-  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-      - \left[
-              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
-        \right] \;.
-\end{equation}
-%
-Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
-%
-\begin{equation}
-  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
-    = \lambda \; ,
-\end{equation}
-%
-which can be substituted into Equation~\ref{eq:solow_resid} to find
-%
-\begin{equation} \label{eq:lambda}
-  \lambda 
-    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-    - \left[
-              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
-      \right] \;.
-\end{equation}
-%
-Equation~\ref{eq:lambda} applies for any instant in time.
-
-If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
-between times $i$ and $j$, we find
-%
-\begin{equation} \label{eq:lambdaij}
-  \lambda_{i,j}
-    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
-    - \left[
-            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
-            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
-            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
-      \right] \;,
-\end{equation}
-% 
-where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
-from Equation~\ref{eq:lambda} between times $i$ and $j$.
-
-Interestingly, 
-%
-\begin{equation}
-  \lambda_{1,n}
-    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
-\end{equation}
-% 
-Rather,
-%
-\begin{equation} \label{eq:lambda1n}
-  \lambda_{1,n}
-    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
-      - \left[ 
-            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
-            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
-            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
-      \right] \; ,
-\end{equation}
-% 
-which will become increasingly inaccurate over large time spans,
-because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
-of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
-This suggests that an averaging approach such as
-%
-\begin{equation}
-  \lambda_{1,n}
-    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
-\end{equation}
-%
-is a better approximation of Equation~\ref{eq:lambda1n},
-which is, itself, an approximation of the true value of $\lambda$ 
-given by Equation~\ref{eq:lambda}.
-
-
-%..............................
-\paragraph{Fraction of growth explained by the Solow residual} 
-\label{sec:fraction_of_growth_solow}
-%..............................
-
-The fraction~($f$) of GDP growth explained by the Solow residual
-can be given as
-%
-\begin{equation} \label{eq:frac_growth_explained_by_solow}
-  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
-            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
-                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
-\end{equation}
-%
-Using forward differences to estimate $f$ yields
-%
-\begin{equation} \label{eq:f_finite_diff_1}
-  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
-       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
-            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
-            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
-            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
-\end{equation}
-%
-Cancelling $t_j - t_i$ terms and simplifying gives
-%
-\begin{equation} \label{eq:f_finite_diff_2}
-  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
-                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
-                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
-            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
-\end{equation}
-%
-which is an estimate of the instantaneous value of $f$ 
-given by Equation~\ref{eq:frac_growth_explained_by_solow}.
-
-
 %------------------------------
 \subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
 \label{sec:CES}
@@ -761,6 +609,10 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 \end{table}
 
 <<Models>>=
+flavors <- c("unadjusted", "adjusted")
+nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
+model.types <- c("CD", "CES")
+
 fileName <- "ESEE2015Models.Rdata"
 if (!rerunModels){
   # load from the file on disk
@@ -768,9 +620,6 @@ if (!rerunModels){
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
-  flavors <- c("unadjusted", "adjusted")
-  nests <- NULL
-  nests$kle <- c(1,2,3); nests$lek <- c(2,3,1); nests$ekl <- c(3,1,2)
   
   models <- list()
   for(country in countries){
@@ -943,11 +792,6 @@ For now, I've organized the analysis around questions that we would like to answ
 lag <- 3       # Desired lag for calculations. Set to n for differences across n years.
 pad <- "tail"  # Desired padding for NA values
 
-flavors <- c("unadjusted", "adjusted")
-# model.types <- c("CD", "CES")
-model.types <- c("CD")
-nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
-
 dframes <- list()
 for (Coun in countries){
   for (flav in flavors){
@@ -955,16 +799,15 @@ for (Coun in countries){
     for (form in forms){
       denom <- summands(form, n=length(summands(form))) # time variable
       nums <- all.vars(form) [1:(length(all.vars(form))-1)] # y, k, l, and e (if present)
-      trimmedData <- historicalData[[Coun]][c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
-      df <- historicalData[[Coun]][ , c(nums, "Year")]
+      df <- historicalData[[Coun]][c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
       # Calculate names for the columns of finite difference derivatives
       derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], "/", "dt")}) %>% unlist
       derivCols <- lapply(1:length(nums), function(i){
         # Calculate finite difference derivative columns
-        ediff(trimmedData[[i+1]], pad=pad, lag=lag) / ediff(trimmedData[[1]], pad=pad, lag=lag)
+        ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
       }) %>% do.call(cbind, .) %>% as.data.frame
       names(derivCols) <- derivNames
-      df <- cbind(derivCols, df)
+      df <- cbind(derivCols, historicalData[[Coun]][ , c(nums, "Year")])
       e <- if (length(summands(form))==4) "withE" else "noE"
       for (m in model.types){
         origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
@@ -989,6 +832,14 @@ for (Coun in countries){
           df$solowFrac <- df$lambda_fd / (df[[1]] / df[[length(derivNames) + 1]])
           avg.solowFrac <- mean(df$solowFrac, na.rm = TRUE)
         } else if (m == "CES"){
+          if (e == "noE"){
+            # kl nesting
+#             df$lambda_fd <- df[[1]] / 
+          } else if (e == "withE"){
+            
+          } else {
+            stop (paste("Unknown e:", e))
+          }
           
         } else {
           stop(paste("Unknown model", model))
@@ -1011,7 +862,9 @@ as calculated by Equation~\ref{eq:lambdaij}
 with the timespan for finite differences ($t_j - t_i$) set to 
 \Sexpr{lag}~\Sexpr{if (lag == 1) "year" else "years"}.
 It appears that quality-adjusting the factors of production
-decreases the Solow residual~($\lambda$).
+\emph{and} adding augmenting the production function with energy
+decreases the Solow residual~($\lambda$),
+i.e., brings the Solow residual closer to zero.
 
 <<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model.">>=
 data <- filter(solowResiduals, model=="CD")
@@ -1688,10 +1541,227 @@ decrease the magnitude of the Solow residual.
 \appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Appendix}
 
-Include data tables here?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CD equation}
+\label{sec:dynamic_sr_CD}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Assuming that parameters $\theta$, $\alpha$, and $\beta$
+in Equation~\ref{eq:CDe} are known from parameter estimation,
+we can estimate the value of $\lambda$ as follows.
+First, assume constant returns to scale such that 
+$\alpha + \beta + \gamma = 1$, 
+and calculate $\gamma = 1 - \alpha - \beta$.
+Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
+%
+\begin{equation} \label{eq:lnCD}
+  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
+\end{equation}
+%
+By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
+and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
+constant with respect to time, we obtain
+%
+\begin{equation} \label{eq:ddtlnCD}
+  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
+\end{equation}
+%
+Solving for the total factor productivity term gives
+%
+\begin{equation} \label{eq:solow_resid}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+        \right] \;.
+\end{equation}
+%
+Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
+%
+\begin{equation} \label{eq:lambda_calc}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
+    = \lambda \; ,
+\end{equation}
+%
+which can be substituted into Equation~\ref{eq:solow_resid} to find
+%
+\begin{equation} \label{eq:lambda}
+  \lambda 
+    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+    - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+      \right] \;.
+\end{equation}
+%
+Equation~\ref{eq:lambda} applies for any instant in time.
+
+If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
+between times $i$ and $j$, we find
+%
+\begin{equation} \label{eq:lambdaij}
+  \lambda_{i,j}
+    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
+    - \left[
+            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
+      \right] \;,
+\end{equation}
+% 
+where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
+from Equation~\ref{eq:lambda} between times $i$ and $j$.
+
+Interestingly, 
+%
+\begin{equation}
+  \lambda_{1,n}
+    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
+\end{equation}
+% 
+Rather,
+%
+\begin{equation} \label{eq:lambda1n}
+  \lambda_{1,n}
+    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
+      - \left[ 
+            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
+            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
+            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
+      \right] \; ,
+\end{equation}
+% 
+which will become increasingly inaccurate over large time spans,
+because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
+of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
+This suggests that an averaging approach such as
+%
+\begin{equation}
+  \lambda_{1,n}
+    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
+\end{equation}
+%
+is a better approximation of Equation~\ref{eq:lambda1n},
+which is, itself, an approximation of the true value of $\lambda$ 
+given by Equation~\ref{eq:lambda}.
+
+The fraction~($f$) of GDP growth explained by the Solow residual
+for the CD model
+can be given as
+%
+\begin{equation} \label{eq:frac_growth_explained_by_solow}
+  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
+            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
+                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
+\end{equation}
+%
+Using forward differences to estimate $f$ yields
+%
+\begin{equation} \label{eq:f_finite_diff_1}
+  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
+       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
+\end{equation}
+%
+Cancelling $t_j - t_i$ terms and simplifying gives
+%
+\begin{equation} \label{eq:f_finite_diff_2}
+  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
+                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
+                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
+            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
+\end{equation}
+%
+which is an estimate of the instantaneous value of $f$ 
+given by Equation~\ref{eq:frac_growth_explained_by_solow}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CES equation}
+\label{sec:dynamic_sr_CES}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section, we derive the dynamic Solow residual ($\lambda$) 
+for the CES equation with three generic factors of production, namely
+$x_1$, $x_2$, and $x_3$.
+
+We can define
+%
+\begin{equation} \label{eq:a_def}
+  a \equiv \delta b^{\rho/\rho_1} + (1-\delta) x_3^{-\rho}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:b_def}
+  b \equiv \delta_1 x_1^{-\rho_1} + (1 - \delta_1) x_2^{-\rho_1} \; ,
+\end{equation}
+%
+such that Equation~\ref{eq:CESgeneric} can be restated as
+%
+\begin{equation} \label{eq:simple_y} 
+  y = \gamma A a^{-1/\rho} \; .
+\end{equation}
+%
+Taking the natural logarithm of Equation~\ref{eq:simple_y}
+and realizing that $\gamma$ is not a function of time, we find
+%
+\begin{equation}
+  \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} = \frac{1}{A} \frac{\mathrm{d} A}{\mathrm{d} t} 
+                      + \left( - \frac{1}{\rho} \right) \frac{1}{a} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+By Equation~\ref{eq:lambda_calc}, and after rearranging, 
+the dynamic Solow residual for the CES equation can be stated as
+%
+\begin{equation} \label{eq:lambda_for_CES}
+  \lambda = \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} + \frac{1}{a} \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+To find $\frac{\mathrm{d} a}{\mathrm{d} t}$ and $\frac{\mathrm{d} b}{\mathrm{d} t}$, 
+we take the time derivatives 
+of Equations~\ref{eq:a_def} and~\ref{eq:b_def}
+and rearrange slightly to obtain
+%
+\begin{equation} \label{eq:da_dt}
+  \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} = \delta b^{(\rho/\rho_1 - 1)} \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t}
+                                      - (1-\delta) x_3^{-(\rho + 1)} \frac{\mathrm{d} x_3}{\mathrm{d} t}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:db_dt}
+  \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t} = - \delta_1 x_1^{-(\rho_1 + 1)} \frac{\mathrm{d} x_1}{\mathrm{d} t}
+                                      - (1 - \delta_1) x_2^{-(\rho_1 + 1)} \frac{\mathrm{d} x_2}{\mathrm{d} t} \; .
+\end{equation}
+%
+Equations~\ref{eq:lambda_for_CES}--\ref{eq:db_dt} can be used to 
+calculate a dynamic time series for $\lambda$ given 
+fitted parameters from the CES model
+($\rho, \rho_1, \delta, \, \mathrm{and} \; \delta_1$)
+and time series for economic output~($y$) and
+factors of production 
+($x_1, x_2, \, \mathrm{and} \; x_3$).
+The time derivatives $\left( 
+\frac{\mathrm{d} y}{\mathrm{d} t}, 
+\frac{\mathrm{d} x_1}{\mathrm{d} t},
+\frac{\mathrm{d} x_2}{\mathrm{d} t}, \, \mathrm{and} \;
+\frac{\mathrm{d} x_3}{\mathrm{d} t} \right)$
+can be approximated from historical data
+by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
 
 \end{document}
 
