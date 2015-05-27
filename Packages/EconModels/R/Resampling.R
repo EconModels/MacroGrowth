@@ -70,6 +70,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' added to the output.  This is convenient
 #' for marking data internally if you are doing resampling on many different models.
 #' @param reindex a boolean that indicates whether to reindex the resampled fits.
+#' @param mc.cores number of cores to use in main loop.
 #' @param ... additional arguments passed to \code{fitfun}
 #' @return a list of length two containting a data frame of coefficients and a list of models
 #' @export
@@ -80,6 +81,7 @@ resampledFits <- function(model,
                           seed,
                           id,
                           reindex = FALSE,
+                          mc.cores = max(parallel::detectCores() - 1, 1),
                           ...) {
   
   fitfun <- switch(class(model)[1],
@@ -109,7 +111,7 @@ resampledFits <- function(model,
   if (n > 0L) {
     many_refits <-
       parallel::mclapply(
-        1L:n, mc.cores = max(parallel::detectCores() - 2, 1),
+        1L:n, mc.cores = mc.cores,
         function(...) {
           newData <- resampledData(model, method=method, reindex=reindex)
           newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))

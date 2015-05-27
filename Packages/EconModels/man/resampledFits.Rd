@@ -5,7 +5,8 @@
 \title{Perform resample fits for a model}
 \usage{
 resampledFits(model, method = c("residual", "resample", "wild", "parametric",
-  "debug"), n, save.data = FALSE, seed, id, reindex = FALSE, ...)
+  "debug"), n, save.data = FALSE, seed, id, reindex = FALSE,
+  mc.cores = max(parallel::detectCores() - 1, 1), ...)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
@@ -26,6 +27,8 @@ added to the output.  This is convenient
 for marking data internally if you are doing resampling on many different models.}
 
 \item{reindex}{a boolean that indicates whether to reindex the resampled fits.}
+
+\item{mc.cores}{number of cores to use in main loop.}
 
 \item{...}{additional arguments passed to \code{fitfun}}
 }
