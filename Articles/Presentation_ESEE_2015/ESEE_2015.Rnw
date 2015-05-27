@@ -924,33 +924,66 @@ traj.data.means <- traj.data %>%
 residualsTrajGraph <- function(data){
   plot <- ggplot(data=data) + 
     geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
+#     geom_path(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
     facet_grid(Country ~ flavor) +
     xlab(expression(Delta*r)) +
     ylab(expression(Delta*lambda)) +
-    xy_theme()
+    xy_theme() + 
+    theme(legend.title=element_blank())
   return(plot)
 }
 @
 
 We can test our hypothesis that quality-adjusting the factors of production
-and including energy will reduce the Solow residual ($\lambda$)
-and the fitting residuals ($r$) by plotting
-$\Delta\lambda$ vs. $\Delta r$, where
+and including energy will reduce the Solow residuals~($\lambda$)
+and the fitting residuals~($r$) by plotting
+$\Delta \lambda_i$ vs. $\Delta r_i$, where
 %
 \begin{equation} \label{eq:delta_lambda}
-  \Delta \lambda \equiv \lambda - \lambda_{Unadjusted, \, Without \, energy}
+  \Delta \lambda_i \equiv \left| \lambda_i \right| - \left| \lambda_{i, \, Unadjusted, \, Without \, energy} \right|
 \end{equation}
 %
 and
 %
 \begin{equation} \label{eq:delta_r}
-  \Delta r \equiv r - r_{Unadjusted, \, Without \, energy}.
+  \Delta r_i \equiv \left| r_i \right| - \left| r_{i, \,Unadjusted, \, Without \, energy} \right|.
 \end{equation}
 %
+If most of the points fall in the lower-left quadrant of a graph, 
+we can conclude that both Solow residual~($\lambda$) and
+fitting residual~($r$) have decreased due to either 
+quality-adjustment of the factors of production or 
+including energy.
 
-<<Solow_residual_trajectories, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual trajectories for the Cobb-Douglas model.">>=
+Figure~\ref{fig:Solow_residual_trajectories_CD} indicates that
+for the Cobb-Douglas model, 
+neither 
+quality-adjusting the factors of production
+nor including energy 
+consistently reduces
+the Solow residual or the fitting residual.
+
+<<Solow_residual_trajectories_CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the Cobb-Douglas model.">>=
 residualsTrajGraph(filter(traj.data, model=="CD"))
 @
+
+We can also calculate the average values for $\Delta \lambda$ and $\Delta r$ 
+as shown in Table~\ref{tab:traj.means.CD}.
+%
+<<Trajectory_Means_CD, results="asis">>=
+xtable::xtable(filter(traj.data.means, model=="CD") %>% select(-nest),
+               caption="Average $\\Delta\\lambda$ and $\\lambda r$ for Cobb-Douglas models.",
+               label="tab:traj.means.CD", 
+               digits=6) %>% 
+  print(., 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+@
+%
+These results for the Cobb-Douglas model indicate that 
+we should perform the same analysis for the CES model.
 
 
 %++++++++++++++++++++++++++++++
