@@ -611,7 +611,8 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 <<Models>>=
 flavors <- c("unadjusted", "adjusted")
 nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
-model.types <- c("CD", "CES")
+model.types <- c("CD")
+# model.types <- c("CD", "CES")
 
 fileName <- "ESEE2015Models.Rdata"
 if (!rerunModels){
@@ -672,29 +673,27 @@ fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LIN
   df$Residuals <- resid(mod)[c(1:length(df$Year))]
   # Parse the id to find out whether this is quality-adjusted data
   id_list <- strsplit(id, split = "[.]")[[1]]
-  if (id_list[[2]] == "unadjusted"){
-    df$flavor <- "Unadjusted"
-  } else if (id_list[[2]] == "adjusted"){
-    df$flavor <- "Quality-adjusted"
-  } else {
-    stop("Unknown adjustment.")
-  }
-  if (id_list[[3]] == "noE"){
-    df$energy <- "Without energy"
-  } else if (id_list[[3]] == "withE"){
-    df$energy <- "With energy"
-  } else {
-    stop("Unknown energy.")
-  }
+  df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
+  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
   df$model <- id_list[[4]]
   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
   return(df)  
 }) %>% do.call(rbind, .)
 
+# Get the unadjusted, without-energy residuals and store them in a data frame
+r_unadj_noE <- filter(fitted_and_resid_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
+               select(Year, Country, Residuals, model)
+colnames(r_unadj_noE)[colnames(r_unadj_noE)=="Residuals"] <- "r_unadj_noE"
+# Merge to get the unadjusted, without-energy values next to each country, year, and model
+fitted_and_resid_data <- merge(fitted_and_resid_data, r_unadj_noE)
+# Create a column containing ∆r, the difference between a residual value
+# and the residual value in the same year for the unadjusted, no-energy case
+fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
+
 # Relevel factors before plotting
 fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
 fitted_and_resid_data$flavor <- relevelFactor(as.factor(fitted_and_resid_data$flavor), c("Unadjusted", "Quality-adjusted"))
-fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$energy), c("Without energy", "With Energy"))
+fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$energy), c("Without energy", "With energy"))
 @
 
 
@@ -718,7 +717,7 @@ Because we fit in log-space, the residuals ($r_i$) are defined as
 where $r_i$ will be zero when there is agreement between 
 historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
 
-<<Fitted and Residual Graphs>>=
+<<Fitted and Residual Graph Functions>>=
 fittedGraph <- function(data){
   ggplot() +
     geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
@@ -789,7 +788,7 @@ For now, I've organized the analysis around questions that we would like to answ
 
 <<Dynamic Solow Residuals>>=
 # Calculate finite difference approximations of time derivatives for output and all factors of production
-lag <- 3       # Desired lag for calculations. Set to n for differences across n years.
+lag <- 1       # Desired lag for calculations. Set to n for differences across n years.
 pad <- "tail"  # Desired padding for NA values
 
 dframes <- list()
@@ -809,11 +808,16 @@ for (Coun in countries){
       names(derivCols) <- derivNames
       df <- cbind(derivCols, historicalData[[Coun]][ , c(nums, "Year")])
       e <- if (length(summands(form))==4) "withE" else "noE"
+      df$flavor <- if (flav == "unadjusted") "Unadjusted" else "Quality-adjusted"
+      df$energy <- if (e == "noE") "Without energy" else "With energy"
+      # Add a column for 1/y * dy/dt
+#       growth.col.name <- paste0("1/", nums[[1]], "*", derivNames[[1]])
+      df[["dydtOvery"]] <- 1 / df[[nums[[1]]]] * df[[derivNames[[1]]]]
       for (m in model.types){
         origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
         df <- cbind(df, origCoeffs)
         if (m == "CD"){
-          lambda <- lapply(1:length(derivNames), function(i){
+          lambda_fd <- lapply(1:length(derivNames), function(i){
             # derivative term divided by its numerator.
             # derivative term is in the ith column of df
             # numerator is in i + length(derivNames) th column of df
@@ -826,12 +830,13 @@ for (Coun in countries){
             }
             return(out)
           }) %>% as.data.frame %>% rowSums
-          df$lambda_fd <- lambda
+          df$lambda_fd <- lambda_fd
           avg.lambda_fd <- mean(df$lambda_fd, na.rm = TRUE)
           # Fraction of growth explained by Solow Residual
           df$solowFrac <- df$lambda_fd / (df[[1]] / df[[length(derivNames) + 1]])
           avg.solowFrac <- mean(df$solowFrac, na.rm = TRUE)
         } else if (m == "CES"){
+          df <- data.frame()
           if (e == "noE"){
             # kl nesting
 #             df$lambda_fd <- df[[1]] / 
@@ -844,16 +849,32 @@ for (Coun in countries){
         } else {
           stop(paste("Unknown model", model))
         }
-        df$flavor <- if (flav == "adjusted") "Quality-adjusted" else "Unadjusted"
-        df$flavor <- relevelFactor(as.factor(df$flavor), c("Unadjusted", "Quality-adjusted"))
-        df$energy <- if (e == "noE") "Without energy" else "With energy"
-        df$energy <- relevelFactor(as.factor(df$energy), c("Without energy", "With energy"))
+        # Add to the list of data frames
         dframes[[length(dframes)+1]] <- df
       }
     }
   }      
 }
 solowResiduals <- do.call(plyr::rbind.fill, dframes)
+
+# Grab the unadjusted, no-energy Solow residuals and create a column in solowResiduals with them. 
+# Using the hint at 
+# http://stackoverflow.com/questions/15059076/
+# r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
+sr_unadj_noE_col <- apply(solowResiduals[ , c("Country", "model", "energy", "Year", "flavor")], 1, function(x){
+    row <- as.data.frame(filter(solowResiduals, 
+                                Country==x["Country"], model==x["model"], energy=="Without energy",
+                                Year==x["Year"], flavor=="Unadjusted"))
+    return(row[["lambda_fd"]])
+  })
+solowResiduals[["sr_unadj_noE"]] <- do.call(rbind, as.list(sr_unadj_noE_col))
+# Create a column containing ∆lambda_df, the difference between a lambda_df value
+# and the lambda_df value in the same year for the unadjusted, no-energy case
+solowResiduals[["Dlambda_fd"]] <- abs(solowResiduals[["lambda_fd"]]) - abs(solowResiduals[["sr_unadj_noE"]])
+
+# Adjust levels before creating graphs.
+solowResiduals$flavor <- relevelFactor(as.factor(solowResiduals$flavor), c("Unadjusted", "Quality-adjusted"))
+solowResiduals$energy <- relevelFactor(as.factor(solowResiduals$energy), c("Without energy", "With energy"))
 @
 
 Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
@@ -866,9 +887,10 @@ It appears that quality-adjusting the factors of production
 decreases the Solow residual~($\lambda$),
 i.e., brings the Solow residual closer to zero.
 
-<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model.">>=
+<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
 data <- filter(solowResiduals, model=="CD")
 ggplot(data=data) +
+  geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=dydtOvery)) +
   geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
   scale_linetype_manual(values=c(2,3), name="") +
   facet_grid(Country ~ flavor) +
@@ -876,6 +898,48 @@ ggplot(data=data) +
   xlab("") + 
   ylab(expression(lambda[ij])) +
   xy_theme()
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{How does quality-adjusting and including energy affect the dynamic Solow residual?} 
+\label{sec:trajectory_graphs}
+%++++++++++++++++++++++++++++++
+
+<<SR and R trajectory graph functions>>=
+residualsGraph <- function(data){
+  plot <- ggplot(data=data) + 
+    geom_point(mapping=aes(x=Dr, y=Dlambda_fd)) + 
+    xlab(expression(Delta*r)) +
+    ylab(expression(Delta*lambda)) +
+    xy_theme()
+  return(plot)
+}
+traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
+                   fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")])
+traj.data.means <- traj.data %>% 
+  group_by(model, Country, flavor, energy, nest) %>%
+  summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
+@
+
+We can test our hypothesis that quality-adjusting the factors of production
+and including energy will reduce the Solow residual ($\lambda$)
+and the fitting residuals ($r$) by plotting
+$\Delta\lambda$ vs. $\Delta r$, where
+%
+\begin{equation} \label{eq:delta_lambda}
+  \Delta \lambda \equiv \lambda - \lambda_{Unadjusted, \, Without \, energy}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_r}
+  \Delta r \equiv r - r_{Unadjusted, \, Without \, energy}.
+\end{equation}
+%
+
+<<Solow_residual_trajectories, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual trajectories for the Cobb-Douglas model.">>=
+residualsGraph(subset(traj.data, model=="CD" & Country=="UK" & energy=="With energy" & flavor=="Unadjusted"))
 @
 
 
