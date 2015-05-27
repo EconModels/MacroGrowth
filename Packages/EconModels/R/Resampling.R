@@ -107,15 +107,23 @@ resampledFits <- function(model,
   
   # Now do the resample fits.
   if (n > 0L) {
-    for (i in 1L:n) {
-      newData <- resampledData(model, method=method, reindex=reindex)
-      newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
-      resampleCoeffs <- naturalCoef(newModel) # extractAllMetaData(newModel)
-      resampleCoeffs$method <- method
-      coeffs <- plyr::rbind.fill(coeffs, resampleCoeffs)
-      models[length(models)+1] <- list(newModel)
-      names(models)[length(models)] <- paste(method, ".", i, sep="")
-    }
+    many_refits <-
+      parallel::mclapply(
+        1L:n, mc.cores = max(parallel::detectCores() - 2, 1),
+        function(...) {
+          newData <- resampledData(model, method=method, reindex=reindex)
+          newModel <- do.call(fitfun, c(list(formula=formula, data=newData), list(...) ))
+          resampleCoeffs <- naturalCoef(newModel) # extractAllMetaData(newModel)
+          resampleCoeffs$method <- method
+          # coeffs <- plyr::rbind.fill(coeffs, resampleCoeffs)
+          # models[length(models)+1] <- list(newModel)
+          list(model = newModel, coeffs = resampleCoeffs)
+        }
+      )
+    models <- lapply(many_refits, function(x) x$model)
+    coeffs <- do.call(plyr::rbind.fill, lapply(many_refits, function(x) x$coeffs))
+    models <- lapply(many_refits, function(x) x$model)
+    names(models) <- paste0(method, ".", 1L:n)
   }
   # At this point, both coeffs (which contains the coefficients) and 
   # models (which contains the models)
