@@ -16,20 +16,6 @@
 
 # Scripts/Calvin_batch.bash "-n 1000 -C"
 
-###############################
-# Basic job submission: 1 Nodes, and use 4 Cores.  Maximum runtime: 12hr
-#PBS -l nodes=1:ppn=4,walltime=12:00:00
-
-# Set the notification of your processes:
-#    -m  accepts up to all three control flags 'a','b','e', where:
-#        a = mail is sent when the job is aborted
-#        b = mail is sent when the job begins execution
-#        e = mail is sent when the job finishes execution
-#PBS -m a -M rpruim@gmail.com
-
-# Set the name of job
-#PBS -N Calvin-Torque-Test
-
 
 LOC_PATH=$PWD # Assuming that we're running from the top directory of the repository for this script
 echo $LOC_PATH
@@ -60,7 +46,7 @@ qsub -N Job-fast  $EXEC -F "-c all -e all -f all -m fast -S $SRC $1 "
 
 for country in US UK JP CN ZA SA IR TZ ZM
 do
-  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(kl\\\)e
+  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(le\\\)k
   do
     for energy in iQp iXp
     do
@@ -74,7 +60,7 @@ done
 
 for country in US UK JP 
 do
-  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(kl\\\)e
+  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(le\\\)k
   do
     for energy in iU
     do
