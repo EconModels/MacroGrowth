@@ -21,6 +21,20 @@
 #     1000 resamples, clobber previous results, wild resampling:
 # Scripts/batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample/Calvin
 
+###############################
+# Basic job submission: 1 Nodes, and use 4 Cores.  Maximum runtime: 12hr
+#PBS -l nodes=1:ppn=4,walltime=12:00:00
+
+# Set the notification of your processes:
+#    -m  accepts up to all three control flags 'a','b','e', where:
+#        a = mail is sent when the job is aborted
+#        b = mail is sent when the job begins execution
+#        e = mail is sent when the job finishes execution
+#PBS -m a -M rpruim@gmail.com
+
+# Set the name of job
+#PBS -N batchEcon
+
 require(EconData)
 require(EconModels)
 suppressPackageStartupMessages(library("optparse"))
@@ -244,6 +258,7 @@ for (m in ModelInfos) {
             # Now save the files.
             saveRDS(rCoeffs, file=coeffsPath)
             saveRDS(rModels, file=modelsPath)
+	  
           } else {
             if (opts$verbose || opts$vverbose){
               cat(paste("  *** Skipping", id, "because files already exist.\n"))
