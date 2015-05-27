@@ -17,8 +17,8 @@
 # Scripts/Calvin_batch.bash "-n 1000 -C"
 
 ###############################
-# Basic job submission: 1 Nodes, and use 1 Cores.  Maximum runtime: 1hr
-#PBS -l nodes=1:ppn=4,walltime=1:00:00
+# Basic job submission: 1 Nodes, and use 4 Cores.  Maximum runtime: 12hr
+#PBS -l nodes=1:ppn=4,walltime=12:00:00
 
 # Set the notification of your processes:
 #    -m  accepts up to all three control flags 'a','b','e', where:
@@ -44,9 +44,11 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 # The next line runs all countires, all energy types, and all factors
 # for all models except CES with energy.
 
-cd $LOC_PATH
+# cd $LOC_PATH
 
-qsub -N Job-fast  $EXEC -F "-c all -e all -f all -m fast -S $SRC $1 
+echo "$EXEC -c all -e all -f all -m fast -S $SRC $1 "
+
+qsub -N Job-fast  $EXEC -F "-c all -e all -f all -m fast -S $SRC $1 "
 
 # The various "cese" models take a long time. Spread them out across many nodes.
 # dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
@@ -56,38 +58,32 @@ qsub -N Job-fast  $EXEC -F "-c all -e all -f all -m fast -S $SRC $1
 #
 # This first batch of cese models uses only primary thermal energy (iQp).
 
-qsub -N Job1  $EXEC -F "-c US,UK,JP -e iQp -m cese-\(kl\)e -S $SRC $1 "
-qsub -N Job2  $EXEC -F "-c CN,ZA,SA -e iQp -m cese-\(kl\)e -S $SRC $1 "
-qsub -N Job3  $EXEC -F "-c IR,TZ,ZM -e iQp -m cese-\(kl\)e -S $SRC $1 "
+for country in US UK JP CN ZA SA IR TZ ZM
+do
+  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(kl\\\)e
+  do
+    for energy in iQp iXp
+    do
+      qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+    done
+  done
+done
 
-qsub -N Job4  $EXEC -F "-c US,UK,JP -e iQp -m cese-\(le\)k -S $SRC $1 "
-qsub -N Job5  $EXEC -F "-c CN,ZA,SA -e iQp -m cese-\(le\)k -S $SRC $1 "
-qsub -N Job6 $EXEC -F "-c IR,TZ,ZM -e iQp -m cese-\(le\)k -S $SRC $1 "
-
-qsub -N Job7  $EXEC -F "-c US,UK,JP -e iQp -m cese-\(ek\)l -S $SRC $1 "
-qsub -N Job8  $EXEC -F "-c CN,ZA,SA -e iQp -m cese-\(ek\)l -S $SRC $1 "
-qsub -N Job9 $EXEC -F "-c IR,TZ,ZM -e iQp -m cese-\(ek\)l -S $SRC $1 "
-
-# The next lines run the cese analyses for primary exergy (iXp)
-
-qsub -N Job10  $EXEC -F "-c US,UK,JP -e iXp -m cese-\(kl\)e -S $SRC $1 "
-qsub -N Job11  $EXEC -F "-c CN,ZA,SA -e iXp -m cese-\(kl\)e -S $SRC $1 "
-qsub -N Job12  $EXEC -F "-c IR,TZ,ZM -e iXp -m cese-\(kl\)e -S $SRC $1 "
-
-qsub -N Job13  $EXEC -F "-c US,UK,JP -e iXp -m cese-\(le\)k -S $SRC $1 "
-qsub -N Job14  $EXEC -F "-c CN,ZA,SA -e iXp -m cese-\(le\)k -S $SRC $1 "
-qsub -N Job15  $EXEC -F "-c IR,TZ,ZM -e iXp -m cese-\(le\)k -S $SRC $1 "
-
-qsub -N Job16  $EXEC -F "-c US,UK,JP -e iXp -m cese-\(ek\)l -S $SRC $1 "
-qsub -N Job17  $EXEC -F "-c CN,ZA,SA -e iXp -m cese-\(ek\)l -S $SRC $1 "
-qsub -N Job18  $EXEC -F "-c IR,TZ,ZM -e iXp -m cese-\(ek\)l -S $SRC $1 "
 
 # We have useful work (iU) data for US, UK, and JP only.
 
-qsub -N Job19  $EXEC -F "-c US,UK,JP -e iU -m cese-\(kl\)e -S $SRC $1 "
-qsub -N Job20  $EXEC -F "-c US,UK,JP -e iU -m cese-\(le\)k -S $SRC $1 "
-qsub -N Job21  $EXEC -F "-c US,UK,JP -e iU -m cese-\(ek\)l -S $SRC $1 "
+for country in US UK JP 
+do
+  for model in cese-\\\(kl\\\)e cese-\\\(ek\\\)l cese-\\\(kl\\\)e
+  do
+    for energy in iU
+    do
+      qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+    done
+  done
+done
 
 # Run the script to generate all orig fits and models on a node.  
 
-qsub -N Job22  Scripts/OrigModels.R -F "-S $SRC $1 "
+qsub -N Job-orig  Scripts/OrigModels.R -F "-S $SRC $1 "
+
