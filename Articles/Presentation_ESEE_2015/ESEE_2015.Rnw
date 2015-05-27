@@ -666,7 +666,7 @@ AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle"
 @
 
 <<Fitted_and_Residuals>>=
-fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
+temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
   df <- select(mod$data, Year, iGDP, Country)
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(mod)[c(1:length(df$Year))]
@@ -681,11 +681,11 @@ fitted_and_resid_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LIN
 }) %>% do.call(rbind, .)
 
 # Get the unadjusted, without-energy residuals and store them in a data frame
-r_unadj_noE <- filter(fitted_and_resid_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
+r_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
                select(Year, Country, Residuals, model)
 colnames(r_unadj_noE)[colnames(r_unadj_noE)=="Residuals"] <- "r_unadj_noE"
 # Merge to get the unadjusted, without-energy values next to each country, year, and model
-fitted_and_resid_data <- merge(fitted_and_resid_data, r_unadj_noE)
+fitted_and_resid_data <- merge(temp_data, r_unadj_noE)
 # Create a column containing ∆r, the difference between a residual value
 # and the residual value in the same year for the unadjusted, no-energy case
 fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
@@ -694,6 +694,10 @@ fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs
 fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
 fitted_and_resid_data$flavor <- relevelFactor(as.factor(fitted_and_resid_data$flavor), c("Unadjusted", "Quality-adjusted"))
 fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$energy), c("Without energy", "With energy"))
+fitted_and_resid_data$nest <- relevelFactor(as.factor(fitted_and_resid_data$nest), c("kl", "kle", "lek", "ekl"))
+
+# Make data viewing easier
+fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, energy, nest)
 @
 
 
@@ -855,26 +859,27 @@ for (Coun in countries){
     }
   }      
 }
-solowResiduals <- do.call(plyr::rbind.fill, dframes)
+temp_data <- do.call(plyr::rbind.fill, dframes)
 
-# Grab the unadjusted, no-energy Solow residuals and create a column in solowResiduals with them. 
-# Using the hint at 
-# http://stackoverflow.com/questions/15059076/
-# r-how-to-call-apply-like-function-on-each-row-of-dataframe-with-multiple-argum
-sr_unadj_noE_col <- apply(solowResiduals[ , c("Country", "model", "energy", "Year", "flavor")], 1, function(x){
-    row <- as.data.frame(filter(solowResiduals, 
-                                Country==x["Country"], model==x["model"], energy=="Without energy",
-                                Year==x["Year"], flavor=="Unadjusted"))
-    return(row[["lambda_fd"]])
-  })
-solowResiduals[["sr_unadj_noE"]] <- do.call(rbind, as.list(sr_unadj_noE_col))
+# Get the unadjusted, without-energy Solow residuals and store them in a data frame
+sr_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
+                select(Year, Country, lambda_fd, model)
+colnames(sr_unadj_noE)[colnames(sr_unadj_noE)=="lambda_fd"] <- "sr_unadj_noE"
+# Merge to get the unadjusted, without-energy values next to each country, year, and model
+solowResiduals <- merge(temp_data, sr_unadj_noE)
+
 # Create a column containing ∆lambda_df, the difference between a lambda_df value
 # and the lambda_df value in the same year for the unadjusted, no-energy case
 solowResiduals[["Dlambda_fd"]] <- abs(solowResiduals[["lambda_fd"]]) - abs(solowResiduals[["sr_unadj_noE"]])
 
-# Adjust levels before creating graphs.
+# Relevel factors before plotting
+solowResiduals$Country <- relevelFactor(as.factor(solowResiduals$Country), c("PT", "UK"))
 solowResiduals$flavor <- relevelFactor(as.factor(solowResiduals$flavor), c("Unadjusted", "Quality-adjusted"))
 solowResiduals$energy <- relevelFactor(as.factor(solowResiduals$energy), c("Without energy", "With energy"))
+solowResiduals$nest <- relevelFactor(as.factor(solowResiduals$nest), c("kl", "kle", "lek", "ekl"))
+
+# Make data viewing easier
+solowResiduals <- arrange(solowResiduals, Country, model, flavor, energy, nest)
 @
 
 Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
@@ -906,20 +911,25 @@ ggplot(data=data) +
 \label{sec:trajectory_graphs}
 %++++++++++++++++++++++++++++++
 
-<<SR and R trajectory graph functions>>=
-residualsGraph <- function(data){
+<<SR and R trajectory data>>=
+traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
+                   fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")]) %>%
+                   arrange(Country, model, flavor, energy, nest)
+traj.data.means <- traj.data %>% 
+  group_by(model, Country, flavor, energy, nest) %>%
+  summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
+@
+
+<<SR and R trajectory plot function>>=
+residualsTrajGraph <- function(data){
   plot <- ggplot(data=data) + 
-    geom_point(mapping=aes(x=Dr, y=Dlambda_fd)) + 
+    geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
+    facet_grid(Country ~ flavor) +
     xlab(expression(Delta*r)) +
     ylab(expression(Delta*lambda)) +
     xy_theme()
   return(plot)
 }
-traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
-                   fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")])
-traj.data.means <- traj.data %>% 
-  group_by(model, Country, flavor, energy, nest) %>%
-  summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
 @
 
 We can test our hypothesis that quality-adjusting the factors of production
@@ -939,7 +949,7 @@ and
 %
 
 <<Solow_residual_trajectories, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual trajectories for the Cobb-Douglas model.">>=
-residualsGraph(subset(traj.data, model=="CD" & Country=="UK" & energy=="With energy" & flavor=="Unadjusted"))
+residualsTrajGraph(filter(traj.data, model=="CD"))
 @
 
 
