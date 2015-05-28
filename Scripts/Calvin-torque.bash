@@ -31,7 +31,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 echo "$EXEC -c all -e all -f all -m fast -S $SRC $1 "
 
 # generate all orig fits and models 
-qsub -N Job-orig  Scripts/OrigModels.R -F "-S $SRC $1 "
+qsub -N Job-orig  Scripts/OrigModels2.R -F "-S $SRC $1 "
 
 
 # slow models
