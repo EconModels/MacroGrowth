@@ -84,6 +84,7 @@ if (opts$veryfast){
 
 source_list <- list()
 country_list <- list()
+formulaStr_list <- list()
 countryData_list <- list()
 model_info_list <- list()
 energy_list <- list()
