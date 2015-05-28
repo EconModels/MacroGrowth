@@ -26,23 +26,15 @@ SRC="Calvin"
 
 OUTDIR="$LOC_PATH/data_resample/$SRC"
 
-# These models take hardly any time, so we'll run them all on their own node. 
-# The next line runs all countires, all energy types, and all factors
-# for all models except CES with energy.
-
 # cd $LOC_PATH
 
 echo "$EXEC -c all -e all -f all -m fast -S $SRC $1 "
 
-qsub -N Job-fast  $EXEC -F "-c all -e all -f all -m fast -S $SRC $1 "
+# generate all orig fits and models 
+qsub -N Job-orig  Scripts/OrigModels.R -F "-S $SRC $1 "
 
-# The various "cese" models take a long time. Spread them out across many nodes.
-# dahl's 42 "compute nodes" each has 2 4-core processors. However, the R code that we're using
-# can, apparently, access only one of those processors. So, at most, we can run only
-# 4 analyses in parallel. Our code is parallelized on countries. We have 9 countries to 
-# analyze for each model, so we'll put 3 countries on each compute node.
-#
-# This first batch of cese models uses only primary thermal energy (iQp).
+
+# slow models
 
 for country in US UK JP CN ZA SA IR TZ ZM
 do
@@ -55,7 +47,7 @@ do
   done
 done
 
-
+# More slow models
 # We have useful work (iU) data for US, UK, and JP only.
 
 for country in US UK JP 
@@ -64,12 +56,18 @@ do
   do
     for energy in iU
     do
-      qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+      qsub -N JobS-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
     done
   done
 done
 
-# Run the script to generate all orig fits and models on a node.  
+# Fast models
 
-qsub -N Job-orig  Scripts/OrigModels.R -F "-S $SRC $1 "
-
+for country in US UK JP CN ZA SA IR TZ ZM
+do
+  for energy in iQp iXp iU
+  do
+#    qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+    qsub -N JobF-$country-$energy  $EXEC -F "-c $country -e $energy -f all -m fast -S $SRC $1 "
+  done
+done
