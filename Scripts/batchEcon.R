@@ -22,8 +22,8 @@
 # Scripts/batchEcon.R -c all -e all -m all -n 1000 -C -M wild -R data_resample/Calvin
 
 ###############################
-# Basic job submission: 1 Nodes, and use 4 Cores.  Maximum runtime: 12hr
-#PBS -l nodes=1:ppn=4,walltime=12:00:00
+# Basic job submission:  Nodes, Cores, Maximum runtime
+#PBS -l nodes=1:ppn=8,walltime=12:00:00
 
 # Set the notification of your processes:
 #    -m  accepts up to all three control flags 'a','b','e', where:

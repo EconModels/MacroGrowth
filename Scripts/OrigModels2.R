@@ -82,12 +82,18 @@ if (opts$veryfast){
 }
 # ModelInfos <- tail( ModelInfos,2)
 
+source_list <- list()
+country_list <- list()
+countryData_list <- list()
+model_info_list <- list()
+formula_list <- list()
+energy_list <- list()
+
 for (src in Sources){
   historicalData <- eval(parse(text=src))
   Countries <- countryAbbrevs[countryAbbrevs %in% levels(historicalData$Country)]
   Energies <- energyTypes[energyTypes %in% names(historicalData)]
   
-  oModels <- list()
   for (country in Countries) {
     countryData <- subset(historicalData, subset=Country==country)
     for (m in ModelInfos) {
@@ -95,29 +101,48 @@ for (src in Sources){
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
           formula <- eval( parse( text= formulaStr ) )
-          # formula <- substitute( iGDP ~ iK + iL + e + iYear, list(e = energy))
-          # tryCatch to skip over country/energy combos that don't exist.
           cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
-          cat ("\n")
-          
+          source_list <- c(source_list, src)
+	  country_list <- c(country_list, country)
+          countryData_list <- c(countryData_list, countryData)
+          model_info_list[[length(model_info_list) + 1]] <- m
+	  formula_list <- c(formula_list, formula)
+	  energy_list <- c(energy_list, energy)
+        } # energy
+      } # f
+    } # m
+  } # country
+} # src
+
+Process <- 
+  function( 
+    formula,
+    countryData,
+    m,
+    debug = opts$debug,
+         
+  )
+{ 
           if (! opts$debug){
             # If we're not in debug mode, do the calculations.
             tryCatch({
               oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
               mod <- sub(pattern="Model", replacement="", x=m$fun)
               fs <- factorString(formula=formula, nest=m$dots$nest)
-              oModels[[src]][[country]][[mod]][[fs]] <- oModel
+              attr(oModel, "id") <- 
+                list(src = src, country=country, mod=mod, fs=fs)
+              oModel
             }, 
             error=function(e) {
               cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
               print(e)
+              NULL
             }
             )
-          }
-        }
-      }
-    }
-  }
+}
+
+oModels[[src]][[country]][[mod]][[fs]] <- oModel
+
   #
   # Save object to data_resample for inclusion in a future zipped version of all of the results.
   #
