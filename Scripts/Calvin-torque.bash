@@ -31,7 +31,7 @@ OUTDIR="$LOC_PATH/data_resample/$SRC"
 echo "$EXEC -c all -e all -f all -m fast -S $SRC $1 "
 
 # generate all orig fits and models 
-qsub -N Job-orig  Scripts/OrigModels2.R -F "-S $SRC $1 "
+qsub -N Job-Orig2  Scripts/OrigModels2.R -F "-S $SRC $1 "
 
 
 # slow models
@@ -42,7 +42,7 @@ do
   do
     for energy in iQp iXp
     do
-      qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+      qsub -N JobS-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
     done
   done
 done
@@ -56,7 +56,7 @@ do
   do
     for energy in iU
     do
-      qsub -N JobS-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+      qsub -N JobU-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
     done
   done
 done
