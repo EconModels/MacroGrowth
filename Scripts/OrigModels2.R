@@ -86,7 +86,6 @@ source_list <- list()
 country_list <- list()
 countryData_list <- list()
 model_info_list <- list()
-formula_list <- list()
 energy_list <- list()
 
 for (src in Sources){
@@ -100,68 +99,88 @@ for (src in Sources){
       for (f in m$formulaStr) {
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
-          formula <- eval( parse( text= formulaStr ) )
           cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
           source_list <- c(source_list, src)
-	  country_list <- c(country_list, country)
+          country_list <- c(country_list, country)
+          formulaStr_list <- c(formulaStr_list, formulaStr)
           countryData_list <- c(countryData_list, countryData)
           model_info_list[[length(model_info_list) + 1]] <- m
-	  formula_list <- c(formula_list, formula)
-	  energy_list <- c(energy_list, energy)
+          energy_list <- c(energy_list, energy)
         } # energy
       } # f
     } # m
   } # country
 } # src
 
+
 Process <- 
   function( 
-    formula,
-    countryData,
+    src,
+    country,
     m,
+    formulaStr,
+    countryData,
     debug = opts$debug,
-         
+    ...
   )
-{ 
-          if (! opts$debug){
-            # If we're not in debug mode, do the calculations.
-            tryCatch({
-              oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
-              mod <- sub(pattern="Model", replacement="", x=m$fun)
-              fs <- factorString(formula=formula, nest=m$dots$nest)
-              attr(oModel, "id") <- 
-                list(src = src, country=country, mod=mod, fs=fs)
-              oModel
-            }, 
-            error=function(e) {
-              cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-              print(e)
-              NULL
-            }
-            )
+  { 
+    formula <- eval( parse( text= formulaStr ) )
+    cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+    if (! opts$debug){
+      # If we're not in debug mode, do the calculations.
+      res <- tryCatch({
+        oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
+        mod <- sub(pattern="Model", replacement="", x=m$fun)
+        fs <- factorString(formula=formula, nest=m$dots$nest)
+        attr(oModel, "id") <- 
+          list(src = src, country=country, mod=mod, fs=fs)
+        oModel
+      }, 
+      error=function(e) {
+        cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
+        print(e)
+        NULL
+      }
+      )
+    } else { 
+      res <- NULL 
+    }
+    res
+  }
+
+models <- 
+  mcMap(Process, 
+        src = source_list,
+        country = country_list,
+        m = model_info_list,
+        formula = formula_list,
+        countryData = countryData_list,
+        mc.cores = parallel::detectCores() - 1
+  )
+
+# Change from flat list to a tree
+for( i in 1:length(models) ) {
+  id <- attr(models[[i]], "id")
+  oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
 }
 
-oModels[[src]][[country]][[mod]][[fs]] <- oModel
-
-  #
-  # Save object to data_resample for inclusion in a future zipped version of all of the results.
-  #
-  data_resample_dir <- file.path("data_resample", src)
-  filename_Rdata <- "Models.Rdata"
-  data_resample_path <- file.path(data_resample_dir, filename_Rdata)
-  data_postprocessed_path <- file.path("data_postprocessed", paste0(src, "_", filename_Rdata))
-  if (opts$debug){
-    cat(paste("Would have saved", data_resample_path)); cat("\n")
-    cat(paste("Would have saved", data_postprocessed_path)); cat("\n")
-  } else {
-    cat(paste("Saving", data_resample_path, "...")); cat("\n")
-    dir.create(data_resample_dir, showWarnings=FALSE)
-    saveRDS(oModels, file=data_resample_path)  
-    # Save object so that it is available in the data_postprocessed directory
-    cat(paste("Saving", data_postprocessed_path, "...")); cat("\n")
-    saveRDS(oModels, file=data_postprocessed_path)
-  } 
-}
-
+#
+# Save object to data_resample for inclusion in a future zipped version of all of the results.
+#
+data_resample_dir <- file.path("data_resample", src)
+filename_Rdata <- "Models.Rdata"
+data_resample_path <- file.path(data_resample_dir, filename_Rdata)
+data_postprocessed_path <- file.path("data_postprocessed", paste0(src, "_", filename_Rdata))
+if (opts$debug){
+  cat(paste("Would have saved", data_resample_path)); cat("\n")
+  cat(paste("Would have saved", data_postprocessed_path)); cat("\n")
+} else {
+  cat(paste("Saving", data_resample_path, "...")); cat("\n")
+  dir.create(data_resample_dir, showWarnings=FALSE)
+  saveRDS(oModels, file=data_resample_path)  
+  # Save object so that it is available in the data_postprocessed directory
+  cat(paste("Saving", data_postprocessed_path, "...")); cat("\n")
+  saveRDS(oModels, file=data_postprocessed_path)
+} 
 
 cat("\n\nDone!\n")
