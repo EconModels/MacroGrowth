@@ -924,8 +924,8 @@ It appears that quality-adjusting the factors of production
 decreases the Solow residual~($\lambda$),
 i.e., brings the Solow residual closer to zero.
 
-<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
-data <- filter(solowResiduals, model=="CD")
+<<DynamicSR_Graph>>=
+dynamicSRGraph <- function(data){
 ggplot(data=data) +
   geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=dydtOvery)) +
   geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
@@ -934,9 +934,25 @@ ggplot(data=data) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   xlab("") + 
   ylab(expression(lambda[ij])) +
-  xy_theme()
+  xy_theme()  
+}
 @
 
+<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+dynamicSRGraph(filter(solowResiduals, model=="CD"))
+@
+
+<<DynamicSR_CESkle_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($kl$)$e$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="kle" | nest=="kl")))
+@
+
+<<DynamicSR_CESlek_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($le$)$k$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="lek" | nest=="kl")))
+@
+
+<<DynamicSR_CESekl_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($ek$)$l$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl")))
+@
 
 %++++++++++++++++++++++++++++++
 \subsection{How does quality-adjusting and including energy affect the dynamic Solow residual?} 
@@ -1016,6 +1032,18 @@ xtable::xtable(filter(traj.data.means, model=="CD") %>% select(-nest),
 %
 These results for the Cobb-Douglas model indicate that 
 we should perform the same analysis for the CES model.
+
+<<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
+residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
+@
+
+<<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
+residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
+@
+
+<<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
+residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
+@
 
 
 %++++++++++++++++++++++++++++++
