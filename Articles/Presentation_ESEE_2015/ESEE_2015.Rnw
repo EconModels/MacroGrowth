@@ -422,6 +422,7 @@ formulas <-
              adjusted = build_formula("iGDP", list("iKservO.WwithRD", "ihLest", "iU", "iYear")))
   )
 countries <- names(formulas)
+flavors <- names(formulas$PT)
 @
 
 <<Data>>=
@@ -609,11 +610,6 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 \end{table}
 
 <<Models>>=
-flavors <- c("unadjusted", "adjusted")
-nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
-model.types <- c("CD")
-# model.types <- c("CD", "CES")
-
 fileName <- "ESEE2015Models.Rdata"
 if (!rerunModels){
   # load from the file on disk
@@ -795,9 +791,10 @@ For now, I've organized the analysis around questions that we would like to answ
 lag <- 1       # Desired lag for calculations. Set to n for differences across n years.
 pad <- "tail"  # Desired padding for NA values
 
-dframes <- list()
+dframes <- list() # Fill with data frames for each combination of country, flavor, energy, model, and nest
 for (Coun in countries){
   for (flav in flavors){
+    
     forms <- list(noE = keep_summands(formulas[[Coun]][[flav]], -3), withE = formulas[[Coun]][[flav]])
     for (form in forms){
       denom <- summands(form, n=length(summands(form))) # time variable
@@ -815,46 +812,81 @@ for (Coun in countries){
       df$flavor <- if (flav == "unadjusted") "Unadjusted" else "Quality-adjusted"
       df$energy <- if (e == "noE") "Without energy" else "With energy"
       # Add a column for 1/y * dy/dt
-#       growth.col.name <- paste0("1/", nums[[1]], "*", derivNames[[1]])
       df[["dydtOvery"]] <- 1 / df[[nums[[1]]]] * df[[derivNames[[1]]]]
+      
+#       model.types <- c(CD="CD")
+      model.types <- c(CD="CD", CES="CES")
       for (m in model.types){
-        origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
-        df <- cbind(df, origCoeffs)
         if (m == "CD"){
-          lambda_fd <- lapply(1:length(derivNames), function(i){
-            # derivative term divided by its numerator.
-            # derivative term is in the ith column of df
-            # numerator is in i + length(derivNames) th column of df
-            out <- df[[i]] / df[[i+length(derivNames)]]
-            if (i > 1){
-              # Need to make it negative and multiply by the corresponding alpha term.
-              # Typical setup is that columns 2 is capital, and we need alpha_1 for capital.
-              # So, subtract 1 from i.
-              out <- - out * df[[paste0("alpha_", i-1)]]
-            }
-            return(out)
-          }) %>% as.data.frame %>% rowSums
-          df$lambda_fd <- lambda_fd
-          avg.lambda_fd <- mean(df$lambda_fd, na.rm = TRUE)
+          origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
+          df.CD <- cbind(df, origCoeffs)
+          df.CD$nest <- NA
+          lambda_fd <- 
+            df.CD[["dydtOvery"]] - 
+            df.CD[["alpha_1"]] / df.CD[[nums[[2]]]] * df.CD[[derivNames[[2]]]] - 
+            df.CD[["alpha_2"]] / df.CD[[nums[[3]]]] * df.CD[[derivNames[[3]]]]
+          if (e == "withE"){
+            # Subtract the energy term also
+            lambda_fd <- lambda_fd - 
+              df.CD[["alpha_3"]] / df.CD[[nums[[4]]]] * df.CD[[derivNames[[4]]]]
+          }
           # Fraction of growth explained by Solow Residual
-          df$solowFrac <- df$lambda_fd / (df[[1]] / df[[length(derivNames) + 1]])
-          avg.solowFrac <- mean(df$solowFrac, na.rm = TRUE)
+          solowFrac <- lambda_fd / df.CD[["dydtOvery"]]
+          # Add to data frame
+          df.CD$lambda_fd <- lambda_fd
+          df.CD$solowFrac <- solowFrac
+          # Add to the list of data frames
+          dframes[[length(dframes)+1]] <- df.CD
         } else if (m == "CES"){
-          df <- data.frame()
           if (e == "noE"){
-            # kl nesting
-#             df$lambda_fd <- df[[1]] / 
+            origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
+            df.kl <- cbind(df, select(origCoeffs, -nest, -flavor, -energy))
+            df.kl$nest <- "kl"
+            n <- c(1,2)
+            # Get the values for x1 and x2
+            df.kl$x1 <- df.kl[[ nums[ unlist(n)[1]+1 ] ]] # GDP is first column, add 1 to get to the factors of production
+            df.kl$x2 <- df.kl[[ nums[ unlist(n)[2]+1 ] ]]
+            df.kl$dx1dt <- df.kl[[ derivNames[ unlist(n)[1]+1 ] ]]
+            df.kl$dx2dt <- df.kl[[ derivNames[ unlist(n)[2]+1 ] ]]
+            # Calculate derivative terms
+            df.kl <- df.kl %>% 
+              transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+              transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+              transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
+              transform(solowFrac = lambda_fd / dydtOvery)
+            # Add to the list of data frames
+            dframes[[length(dframes)+1]] <- df.kl
           } else if (e == "withE"){
-            
+            nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
+            for (i in 1:3){
+              n <- nests[i] # preserves name
+              origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav & nest==names(n)[[1]])
+              df.CESe <- cbind(df, select(origCoeffs, -nest, -flavor, -energy))
+              df.CESe$nest <- names(n)[[1]]
+              # Unpack names so that the formulae below are readable.
+              df.CESe$x1 <- df.CESe[[ nums[ unlist(n)[1]+1 ] ]] # GDP is 1st column, add 1 to get factors of production
+              df.CESe$x2 <- df.CESe[[ nums[ unlist(n)[2]+1 ] ]]
+              df.CESe$x3 <- df.CESe[[ nums[ unlist(n)[3]+1 ] ]]
+              df.CESe$dx1dt <- df.CESe[[ derivNames[ unlist(n)[1]+1 ] ]]
+              df.CESe$dx2dt <- df.CESe[[ derivNames[ unlist(n)[2]+1 ] ]]
+              df.CESe$dx3dt <- df.CESe[[ derivNames[ unlist(n)[3]+1 ] ]]
+              # Calculate derivative terms
+              df.CESe <- df.CESe %>% 
+                transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+                transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
+                transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+                transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
+                transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
+                transform(solowFrac = lambda_fd / dydtOvery)
+              # Add to the list of data frames
+              dframes[[length(dframes)+1]] <- df.CESe
+            }
           } else {
             stop (paste("Unknown e:", e))
           }
-          
         } else {
           stop(paste("Unknown model", model))
         }
-        # Add to the list of data frames
-        dframes[[length(dframes)+1]] <- df
       }
     }
   }      
