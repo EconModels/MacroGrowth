@@ -662,13 +662,21 @@ AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle"
 @
 
 <<Fitted_and_Residuals>>=
-temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
-  df <- select(mod$data, Year, iGDP, Country)
+fittedAndResidData <- function(model){
+  df <- data.frame(select(model$data, Year))
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
-  df$fitted <- yhat(mod)[c(1:length(df$Year))]
-  df$Residuals <- resid(mod)[c(1:length(df$Year))]
-  # Parse the id to find out whether this is quality-adjusted data
+  df$fitted <- yhat(model)[c(1:length(df$Year))]
+  df$Residuals <- resid(model)[c(1:length(df$Year))]
+  return(df)  
+}
+
+temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
+  df <- fittedAndResidData(model)
+  f <- model$formula
+  response <- summands(f, right = FALSE)
+  df[[response]] <- model$data[[response]] # Add iGDP to the data frame
   id_list <- strsplit(id, split = "[.]")[[1]]
+  df$Country <- id_list[[1]]
   df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
   df$model <- id_list[[4]]
@@ -1018,16 +1026,30 @@ residualsTrajGraph(filter(traj.data, model=="CD"))
 We can also calculate the average values for $\Delta \lambda$ and $\Delta r$ 
 as shown in Table~\ref{tab:traj.means.CD}.
 %
-<<Trajectory_Means_CD, results="asis">>=
-xtable::xtable(filter(traj.data.means, model=="CD") %>% select(-nest),
-               caption="Average $\\Delta\\lambda$ and $\\lambda r$ for Cobb-Douglas models.",
-               label="tab:traj.means.CD", 
-               digits=6) %>% 
-  print(., 
+<<TrajMeansTableFunction>>=
+trajMeansTable <- function(data, caption, label){
+  table <- xtable::xtable(data, caption=caption, label=label, digits=6)
+  print(table, 
         caption.placement="top", 
         size="\\tiny", 
         include.rownames=FALSE, 
         math.style.negative=TRUE)
+}
+@
+
+<<Trajectory_Means_CD, results="asis">>=
+trajMeansTable(data = filter(traj.data.means, model=="CD") %>% select(-nest), 
+               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
+               label="tab:traj.means.CD")
+# xtable::xtable(filter(traj.data.means, model=="CD") %>% select(-nest),
+#                caption="Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
+#                label="tab:traj.means.CD", 
+#                digits=6) %>% 
+#   print(., 
+#         caption.placement="top", 
+#         size="\\tiny", 
+#         include.rownames=FALSE, 
+#         math.style.negative=TRUE)
 @
 %
 These results for the Cobb-Douglas model indicate that 
