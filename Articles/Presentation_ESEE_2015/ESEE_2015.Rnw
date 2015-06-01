@@ -796,110 +796,89 @@ For now, I've organized the analysis around questions that we would like to answ
 
 <<Dynamic Solow Residuals>>=
 # Calculate finite difference approximations of time derivatives for output and all factors of production
-lag <- 1       # Desired lag for calculations. Set to n for differences across n years.
-pad <- "tail"  # Desired padding for NA values
-
-dframes <- list() # Fill with data frames for each combination of country, flavor, energy, model, and nest
-for (Coun in countries){
-  for (flav in flavors){
-    
-    forms <- list(noE = keep_summands(formulas[[Coun]][[flav]], -3), withE = formulas[[Coun]][[flav]])
-    for (form in forms){
-      denom <- summands(form, n=length(summands(form))) # time variable
-      nums <- all.vars(form) [1:(length(all.vars(form))-1)] # y, k, l, and e (if present)
-      df <- historicalData[[Coun]][c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
-      # Calculate names for the columns of finite difference derivatives
-      derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], "/", "dt")}) %>% unlist
-      derivCols <- lapply(1:length(nums), function(i){
-        # Calculate finite difference derivative columns
-        ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
-      }) %>% do.call(cbind, .) %>% as.data.frame
-      names(derivCols) <- derivNames
-      df <- cbind(derivCols, historicalData[[Coun]][ , c(nums, "Year")])
-      e <- if (length(summands(form))==4) "withE" else "noE"
-      df$flavor <- if (flav == "unadjusted") "Unadjusted" else "Quality-adjusted"
-      df$energy <- if (e == "noE") "Without energy" else "With energy"
-      # Add a column for 1/y * dy/dt
-      df[["dydtOvery"]] <- 1 / df[[nums[[1]]]] * df[[derivNames[[1]]]]
-      
-#       model.types <- c(CD="CD")
-      model.types <- c(CD="CD", CES="CES")
-      for (m in model.types){
-        if (m == "CD"){
-          origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
-          df.CD <- cbind(df, origCoeffs)
-          df.CD$nest <- NA
-          lambda_fd <- 
-            df.CD[["dydtOvery"]] - 
-            df.CD[["alpha_1"]] / df.CD[[nums[[2]]]] * df.CD[[derivNames[[2]]]] - 
-            df.CD[["alpha_2"]] / df.CD[[nums[[3]]]] * df.CD[[derivNames[[3]]]]
-          if (e == "withE"){
-            # Subtract the energy term also
-            lambda_fd <- lambda_fd - 
-              df.CD[["alpha_3"]] / df.CD[[nums[[4]]]] * df.CD[[derivNames[[4]]]]
-          }
-          # Fraction of growth explained by Solow Residual
-          solowFrac <- lambda_fd / df.CD[["dydtOvery"]]
-          # Add to data frame
-          df.CD$lambda_fd <- lambda_fd
-          df.CD$solowFrac <- solowFrac
-          # Add to the list of data frames
-          dframes[[length(dframes)+1]] <- df.CD
-        } else if (m == "CES"){
-          if (e == "noE"){
-            origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav)
-            df.kl <- cbind(df, select(origCoeffs, -nest, -flavor, -energy))
-            df.kl$nest <- "kl"
-            n <- c(1,2)
-            # Get the values for x1 and x2
-            df.kl$x1 <- df.kl[[ nums[ unlist(n)[1]+1 ] ]] # GDP is first column, add 1 to get to the factors of production
-            df.kl$x2 <- df.kl[[ nums[ unlist(n)[2]+1 ] ]]
-            df.kl$dx1dt <- df.kl[[ derivNames[ unlist(n)[1]+1 ] ]]
-            df.kl$dx2dt <- df.kl[[ derivNames[ unlist(n)[2]+1 ] ]]
-            # Calculate derivative terms
-            df.kl <- df.kl %>% 
-              transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
-              transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
-              transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
-              transform(solowFrac = lambda_fd / dydtOvery)
-            # Add to the list of data frames
-            dframes[[length(dframes)+1]] <- df.kl
-          } else if (e == "withE"){
-            nests <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
-            for (i in 1:3){
-              n <- nests[i] # preserves name
-              origCoeffs <- filter(AllCoeffs, model==m & energy==e & Country==Coun & flavor==flav & nest==names(n)[[1]])
-              df.CESe <- cbind(df, select(origCoeffs, -nest, -flavor, -energy))
-              df.CESe$nest <- names(n)[[1]]
-              # Unpack names so that the formulae below are readable.
-              df.CESe$x1 <- df.CESe[[ nums[ unlist(n)[1]+1 ] ]] # GDP is 1st column, add 1 to get factors of production
-              df.CESe$x2 <- df.CESe[[ nums[ unlist(n)[2]+1 ] ]]
-              df.CESe$x3 <- df.CESe[[ nums[ unlist(n)[3]+1 ] ]]
-              df.CESe$dx1dt <- df.CESe[[ derivNames[ unlist(n)[1]+1 ] ]]
-              df.CESe$dx2dt <- df.CESe[[ derivNames[ unlist(n)[2]+1 ] ]]
-              df.CESe$dx3dt <- df.CESe[[ derivNames[ unlist(n)[3]+1 ] ]]
-              # Calculate derivative terms
-              df.CESe <- df.CESe %>% 
-                transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
-                transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
-                transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
-                transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
-                transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
-                transform(solowFrac = lambda_fd / dydtOvery)
-              # Add to the list of data frames
-              dframes[[length(dframes)+1]] <- df.CESe
-            }
-          } else {
-            stop (paste("Unknown e:", e))
-          }
-        } else {
-          stop(paste("Unknown model", model))
-        }
-      }
+dynamicSR <- function(model, id, lag=1, pad="tail"){
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  energy <- id_list[[3]]
+  modelStr <- id_list[[4]]
+  
+  f <- model$formula
+  denom <- summands(f, n=length(summands(f))) # time variable
+  nums <- all.vars(f) [1:(length(all.vars(f))-1)] # y, k, l, and e (if present)
+  df <- model$data[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
+  
+  # Calculate names for the columns of finite difference derivatives
+  derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], ".d", denom)}) %>% unlist
+  derivCols <- lapply(1:length(nums), function(i){
+    # Calculate finite difference derivative columns
+    ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
+  }) %>% do.call(cbind, .) %>% as.data.frame
+  names(derivCols) <- derivNames  
+  df <- cbind(derivCols, df[ , c(nums, denom)]) # puts derivatives first, then raw numbers, then time
+  df[["dydtOvery"]] <- 1 / df[[ nums[[1]] ]] * df[[ derivNames[[1]] ]]
+  coeffs <- naturalCoef(model)
+  df <- cbind(df, coeffs)
+  
+  if (modelStr == "CD"){
+    lambda_fd <- 
+      df[["dydtOvery"]] - 
+      df[["alpha_1"]] / df[[nums[[2]]]] * df[[derivNames[[2]]]] - 
+      df[["alpha_2"]] / df[[nums[[3]]]] * df[[derivNames[[3]]]]
+    if (energy == "withE"){
+      # Subtract the energy term also
+      lambda_fd <- lambda_fd - 
+        df[["alpha_3"]] / df[[nums[[4]]]] * df[[derivNames[[4]]]]
     }
-  }      
+    # Fraction of growth explained by Solow Residual
+    solowFrac <- lambda_fd / df[["dydtOvery"]]
+    # Add to data frame
+    df$lambda_fd <- lambda_fd
+    df$solowFrac <- solowFrac
+    return(df)
+  } else if (modelStr == "CES"){
+    # Assign nice variable names so that the equations below are easier to read (and debug, and maintain)
+    # This code is nest-aware.
+    n <- model$nest
+    for (i in 1:length(model$nest)){
+      df[[paste0("x", i)]] <- df[[ nums[ model$nest[i]+1 ] ]] # GDP is 1st col, add 1 to get to the factors of production
+      df[[paste0("dx", i, "dt")]] <- df[[ derivNames[ model$nest[i]+1 ] ]]
+    }
+    if (energy == "noE"){
+      # Calculate terms for the finite-difference Solow residual (lambda_fd)
+      df <- df %>% 
+        transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+        transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+        transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
+        transform(solowFrac = lambda_fd / dydtOvery)
+      return(df)
+    } else if (energy == "withE"){
+      df <- df %>% 
+        transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+        transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
+        transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+        transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
+        transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
+        transform(solowFrac = lambda_fd / dydtOvery)
+      return(df)
+    } else {
+      stop (paste("Unknown energy:", energy))
+    }
+  } else {
+    stop(paste("Unknown modelStr", modelStr))
+  }
 }
-temp_data <- do.call(plyr::rbind.fill, dframes)
+
+lag <- 1 # year
+temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id, lag=1, pad="tail"){
+  df <- dynamicSR(model, id=id, lag=lag, pad=pad)
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  df$Country <- id_list[[1]]
+  df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
+  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
+  df$model <- id_list[[4]]
+  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
+  df$Year <- model$data[["Year"]]
+  return(df)  
+}) %>% do.call(plyr::rbind.fill, .)
 
 # Get the unadjusted, without-energy Solow residuals and store them in a data frame
 sr_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
@@ -1041,15 +1020,6 @@ trajMeansTable <- function(data, caption, label){
 trajMeansTable(data = filter(traj.data.means, model=="CD") %>% select(-nest), 
                caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
                label="tab:traj.means.CD")
-# xtable::xtable(filter(traj.data.means, model=="CD") %>% select(-nest),
-#                caption="Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
-#                label="tab:traj.means.CD", 
-#                digits=6) %>% 
-#   print(., 
-#         caption.placement="top", 
-#         size="\\tiny", 
-#         include.rownames=FALSE, 
-#         math.style.negative=TRUE)
 @
 %
 These results for the Cobb-Douglas model indicate that 
@@ -1059,13 +1029,33 @@ we should perform the same analysis for the CES model.
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
 @
 
+<<Trajectory_Means_CESkle, results="asis">>=
+trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="kle")), 
+               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
+               label="tab:traj.means.CESkle")
+@
+
+
 <<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
+@
+
+<<Trajectory_Means_CESlek, results="asis">>=
+trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="lek")), 
+               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
+               label="tab:traj.means.CESlek")
 @
 
 <<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
 @
+
+<<Trajectory_Means_CESekl, results="asis">>=
+trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="ekl")), 
+               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
+               label="tab:traj.means.CESekl")
+@
+
 
 
 %++++++++++++++++++++++++++++++
