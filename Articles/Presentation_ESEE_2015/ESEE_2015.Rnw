@@ -648,17 +648,32 @@ AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"),
   energy <- id_list[[3]]
   model <- id_list[[4]]
   nest <- if(length(id_list) > 4) id_list[[5]] else NA
-  coeffs <- naturalCoef(mod)
   res <- rbind(list(Country=Country, flavor=flavor, energy=energy, model=model, nest=nest))
+  coeffs <- naturalCoef(mod)
   res <- cbind(res, coeffs)
+  # Now calculate the mean squared error (mse) for each model.
+  sqResids <- resid(mod)^2
+  mse <- sum(sqResids)/(length(sqResids))
+  res <- cbind(res, list(mse=mse))
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
+# Get the unadjusted, no-energy values for mse and lambda and place them on each appropriate row
+AllCoeffs_unadj_noE <- filter(AllCoeffs, flavor=="unadjusted", energy=="noE") %>% 
+                              select(Country, flavor, energy, model, nest, mse, lambda)
+colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="mse"] <- "mse_unadj_noE"
+colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="lambda"] <- "lambda_unadj_noE"
+AllCoeffs <- merge(AllCoeffs, AllCoeffs_unadj_noE[c("Country", "model", "mse_unadj_noE", "lambda_unadj_noE")])
+# Calculate differences relative to the unadjusted, no-energy condition
+AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), Dmse = mse - mse_unadj_noE)
+
 # Relevel factors
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
 AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("unadjusted", "adjusted"))
 AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("noE", "withE"))
 AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("CD", "CES"))
 AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
+# Rearrange for easier viewing
+AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest)
 @
 
 <<Fitted_and_Residuals>>=
@@ -867,8 +882,10 @@ dynamicSR <- function(model, id, lag=1, pad="tail"){
   }
 }
 
-lag <- 1 # year
-temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id, lag=1, pad="tail"){
+lag.to.use <- 1 # years
+temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), 
+                        f = function(model, id, lag=lag.to.use, pad="tail"){
+print(lag)
   df <- dynamicSR(model, id=id, lag=lag, pad=pad)
   id_list <- strsplit(id, split = "[.]")[[1]]
   df$Country <- id_list[[1]]
@@ -905,7 +922,7 @@ Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution
 of the Solow residual~($\lambda$) over time
 as calculated by Equation~\ref{eq:lambdaij} 
 with the timespan for finite differences ($t_j - t_i$) set to 
-\Sexpr{lag}~\Sexpr{if (lag == 1) "year" else "years"}.
+\Sexpr{lag.to.use}~\Sexpr{if (lag.to.use == 1) "year" else "years"}.
 It appears that quality-adjusting the factors of production
 \emph{and} adding augmenting the production function with energy
 decreases the Solow residual~($\lambda$),
