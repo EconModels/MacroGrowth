@@ -110,6 +110,7 @@ require(dplyr)
 require(reshape2)
 require(ggplot2)
 require(mosaic)
+require(xtable)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -141,7 +142,9 @@ opts_chunk$set(
   message=FALSE, 
   # Tells whether to echo code for all chunks. 
   # Set TRUE on an individual chunk to see its code.
-  echo=FALSE     
+  echo=FALSE,
+  # Sets all table captions to the top.
+  xtable.caption.placement="top"
 )
 @
 
@@ -805,6 +808,83 @@ For now, I've organized the analysis around questions that we would like to answ
 
 %++++++++++++++++++++++++++++++
 \subsection{Does quality-adjusting the factors of production 
+            decrease the fitting residual and dynamic Solow residual?} 
+\label{sec:quality_adj_energy_and_dynamic_solow_residual}
+%++++++++++++++++++++++++++++++
+
+We can test our hypothesis that quality-adjusting the factors of production
+and including energy will both reduce the Solow residuals~($\lambda$)
+and improve the fit to historical data
+(thereby, reducing the fitting residuals, $r$)
+by calculating 
+$\Delta \lambda$ and $\Delta mse$, where
+%
+\begin{equation} \label{eq:delta_lambda}
+  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy} \right|
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_mse}
+  \Delta mse \equiv \frac{1}{N} \sum_i{r_i^2} - mse_{Unadjusted, \, Without \, energy}.
+\end{equation}
+%
+where~$N$ is the number of years of data.
+When $\Delta \lambda$ and $\Delta mse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) and
+the fitting residuals ($r$).
+
+Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
+%
+<<MyXTableFunction>>=
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+}
+@
+%
+<<DSRmse_CD, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:CSRmse_CESekl} show results for the various CES nestings.
+%
+<<DSRmse_CESkle, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($kl$)$e$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<DSRmse_CESlek, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($le$)$k$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<DSRmse_CESekk, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($ek$)$l$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does quality-adjusting the factors of production 
             decrease the dynamic Solow residual?} 
 \label{sec:quality_adj_energy_and_dynamic_solow_residual}
 %++++++++++++++++++++++++++++++
@@ -885,7 +965,6 @@ dynamicSR <- function(model, id, lag=1, pad="tail"){
 lag.to.use <- 1 # years
 temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), 
                         f = function(model, id, lag=lag.to.use, pad="tail"){
-print(lag)
   df <- dynamicSR(model, id=id, lag=lag, pad=pad)
   id_list <- strsplit(id, split = "[.]")[[1]]
   df$Country <- id_list[[1]]
@@ -991,7 +1070,7 @@ and including energy will reduce the Solow residuals~($\lambda$)
 and the fitting residuals~($r$) by plotting
 $\Delta \lambda_i$ vs. $\Delta r_i$, where
 %
-\begin{equation} \label{eq:delta_lambda}
+\begin{equation} \label{eq:delta_lambda_i}
   \Delta \lambda_i \equiv \left| \lambda_i \right| - \left| \lambda_{i, \, Unadjusted, \, Without \, energy} \right|
 \end{equation}
 %
@@ -1022,36 +1101,26 @@ residualsTrajGraph(filter(traj.data, model=="CD"))
 We can also calculate the average values for $\Delta \lambda$ and $\Delta r$ 
 as shown in Table~\ref{tab:traj.means.CD}.
 %
-<<TrajMeansTableFunction>>=
-trajMeansTable <- function(data, caption, label){
-  table <- xtable::xtable(data, caption=caption, label=label, digits=6)
-  print(table, 
-        caption.placement="top", 
-        size="\\tiny", 
-        include.rownames=FALSE, 
-        math.style.negative=TRUE)
-}
-@
-
 <<Trajectory_Means_CD, results="asis">>=
-trajMeansTable(data = filter(traj.data.means, model=="CD") %>% select(-nest), 
-               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
-               label="tab:traj.means.CD")
+myXTable(data = filter(traj.data.means, model=="CD") %>% select(-nest), 
+         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
+         label="tab:traj.means.CD",
+         digits=6)
 @
 %
 These results for the Cobb-Douglas model indicate that 
 we should perform the same analysis for the CES model.
-
+%
 <<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
 @
-
+%
 <<Trajectory_Means_CESkle, results="asis">>=
-trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="kle")), 
-               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
-               label="tab:traj.means.CESkle")
+myXTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="kle")), 
+         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
+         label="tab:traj.means.CESkle",
+         digits=6)
 @
-
 
 <<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
@@ -1060,7 +1129,8 @@ residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
 <<Trajectory_Means_CESlek, results="asis">>=
 trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="lek")), 
                caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
-               label="tab:traj.means.CESlek")
+               label="tab:traj.means.CESlek",
+               digits=6)
 @
 
 <<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
@@ -1068,9 +1138,10 @@ residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
 @
 
 <<Trajectory_Means_CESekl, results="asis">>=
-trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="ekl")), 
-               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
-               label="tab:traj.means.CESekl")
+myXTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="ekl")), 
+         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
+         label="tab:traj.means.CESekl",
+         digits=6)
 @
 
 
