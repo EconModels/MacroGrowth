@@ -651,7 +651,11 @@ AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"),
   energy <- id_list[[3]]
   model <- id_list[[4]]
   nest <- if(length(id_list) > 4) id_list[[5]] else NA
-  res <- rbind(list(Country=Country, flavor=flavor, energy=energy, model=model, nest=nest))
+  res <- rbind(list(Country = Country, 
+                    flavor = if (flavor=="unadjusted") "Unadjusted" else "Quality-adjusted",
+                    energy = if (energy=="noE") "Without energy" else "With energy",
+                    model=model, 
+                    nest=nest))
   coeffs <- naturalCoef(mod)
   res <- cbind(res, coeffs)
   # Now calculate the mean squared error (mse) for each model.
@@ -661,7 +665,7 @@ AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"),
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
 # Get the unadjusted, no-energy values for mse and lambda and place them on each appropriate row
-AllCoeffs_unadj_noE <- filter(AllCoeffs, flavor=="unadjusted", energy=="noE") %>% 
+AllCoeffs_unadj_noE <- filter(AllCoeffs, flavor=="Unadjusted", energy=="Without energy") %>% 
                               select(Country, flavor, energy, model, nest, mse, lambda)
 colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="mse"] <- "mse_unadj_noE"
 colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="lambda"] <- "lambda_unadj_noE"
@@ -671,8 +675,8 @@ AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), Dm
 
 # Relevel factors
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
-AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("unadjusted", "adjusted"))
-AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("noE", "withE"))
+AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("Unadjusted", "Quality-adjusted"))
+AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("Without energy", "With energy"))
 AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("CD", "CES"))
 AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
 # Rearrange for easier viewing
@@ -733,16 +737,6 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, 
 \label{sec:fits_to_historical_data}
 %++++++++++++++++++++++++++++++
 
-This section shows graphs of fits to historical data and residuals.
-Because we fit in log-space, the residuals ($r_i$) are defined as
-%
-\begin{equation} \label{eq:log-residuals}
-  r_i \equiv \ln(y_i) - \ln(\hat{y}_i) =\ln\left( \frac{y_i}{\hat{y}_i} \right), 
-\end{equation}
-%
-where $r_i$ will be zero when there is agreement between 
-historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
-
 <<Fitted and Residual Graph Functions>>=
 fittedGraph <- function(data){
   ggplot() +
@@ -752,141 +746,88 @@ fittedGraph <- function(data){
     facet_grid(Country ~ flavor) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
+    xlab("") +
     ylab("Indexed GDP (1960=1)") +
     xy_theme()
 }
+@
 
+Both historical GDP and fitted GDP are shown in 
+Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
+%
+<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CD"))
+@
+%
+<<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="kle" | nest=="kl")))
+@
+%
+<<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="lek" | nest=="kl")))
+@
+%
+<<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Fitting residuals} 
+\label{sec:fitting_residuals}
+%++++++++++++++++++++++++++++++
+
+<<ResidualPlotFunction>>=
 residualPlot <- function(data){
   ggplot() +
     geom_line(data=data, mapping=aes(x=Year, y=Residuals, linetype=energy)) +
     scale_linetype_manual(values=c(2,3), name="") +
     facet_grid(Country ~ flavor) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+    xlab("") +
+    ylab("r") + 
     xy_theme()
 }
 @
 
-<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CD"))
-@
+Because we fit in log-space, fitting residuals ($r_i$) are defined as
+%
+\begin{equation} \label{eq:log-residuals}
+  r_i \equiv \ln(y_i) - \ln(\hat{y}_i) =\ln\left( \frac{y_i}{\hat{y}_i} \right), 
+\end{equation}
+%
+where $r_i$ will be zero when there is agreement between 
+historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
 
-<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for Cobb-Douglas models.">>=
+The mean squared error~($mse$) for any fitted model can be calculated by
+%
+\begin{equation} \label{eq:mse}
+  mse \equiv \frac{1}{N} \sum_{i=1}^N{r_i^2} .
+\end{equation}
+
+Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
+show fitting residuals for all models.
+%
+<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CD"))
 @
-
-<<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="kle" | nest=="kl")))
-@
-
-<<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(kl$)$e$ nesting.">>=
+%
+<<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="kle" | nest=="kl")))
 @
-
-<<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="lek" | nest=="kl")))
-@
-
-<<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with ($le$)$k$ nesting.">>=
+%
+<<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest == "lek" | nest=="kl")))
 @
-
-<<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
-@
-
-<<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Residuals for CES models with $(ek$)$l$ nesting.">>=
+%
+<<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
 @
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Analysis}
-\label{sec:analysis}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-For now, I've organized the analysis around questions that we would like to answer.
-
 %++++++++++++++++++++++++++++++
-\subsection{Does quality-adjusting the factors of production 
-            decrease the fitting residual and dynamic Solow residual?} 
-\label{sec:quality_adj_energy_and_dynamic_solow_residual}
-%++++++++++++++++++++++++++++++
-
-We can test our hypothesis that quality-adjusting the factors of production
-and including energy will both reduce the Solow residuals~($\lambda$)
-and improve the fit to historical data
-(thereby, reducing the fitting residuals, $r$)
-by calculating 
-$\Delta \lambda$ and $\Delta mse$, where
-%
-\begin{equation} \label{eq:delta_lambda}
-  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy} \right|
-\end{equation}
-%
-and
-%
-\begin{equation} \label{eq:delta_mse}
-  \Delta mse \equiv \frac{1}{N} \sum_i{r_i^2} - mse_{Unadjusted, \, Without \, energy}.
-\end{equation}
-%
-where~$N$ is the number of years of data.
-When $\Delta \lambda$ and $\Delta mse$ are negative, 
-we observe reduction in the Solow residual ($\lambda$) and
-the fitting residuals ($r$).
-
-Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
-%
-<<MyXTableFunction>>=
-myXTable <- function(data, caption, label, digits=2){
-  table <- xtable(data, caption=caption, label=label, digits=digits)
-  print(table, 
-        caption.placement="top", 
-        size="\\tiny", 
-        include.rownames=FALSE, 
-        math.style.negative=TRUE)
-}
-@
-%
-<<DSRmse_CD, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
-         caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:CSRmse_CESekl} show results for the various CES nestings.
-%
-<<DSRmse_CESkle, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
-         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($kl$)$e$ nesting.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-<<DSRmse_CESlek, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
-         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($le$)$k$ nesting.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-<<DSRmse_CESekk, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
-         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($ek$)$l$ nesting.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Does quality-adjusting the factors of production 
-            decrease the dynamic Solow residual?} 
-\label{sec:quality_adj_energy_and_dynamic_solow_residual}
+\subsection{Dynamic Solow residuals} 
+\label{sec:dynamic_solow_residuals}
 %++++++++++++++++++++++++++++++
 
 <<Dynamic Solow Residuals>>=
@@ -997,16 +938,6 @@ solowResiduals$nest <- relevelFactor(as.factor(solowResiduals$nest), c("kl", "kl
 solowResiduals <- arrange(solowResiduals, Country, model, flavor, energy, nest)
 @
 
-Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
-of the Solow residual~($\lambda$) over time
-as calculated by Equation~\ref{eq:lambdaij} 
-with the timespan for finite differences ($t_j - t_i$) set to 
-\Sexpr{lag.to.use}~\Sexpr{if (lag.to.use == 1) "year" else "years"}.
-It appears that quality-adjusting the factors of production
-\emph{and} adding augmenting the production function with energy
-decreases the Solow residual~($\lambda$),
-i.e., brings the Solow residual closer to zero.
-
 <<DynamicSR_Graph>>=
 dynamicSRGraph <- function(data){
 ggplot(data=data) +
@@ -1021,44 +952,171 @@ ggplot(data=data) +
 }
 @
 
+``Dynamic'' Solow residuals~($\lambda_{i,j}$) can be calculated 
+for the Cobb-Douglas and CES models
+as shown in Appendices~\ref{sec:dynamic_sr_CD} and~\ref{sec:dynamic_sr_CES},
+respectively.
+
+Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
+of the Solow residual~($\lambda_{i,j}$) over time
+as calculated by Equation~\ref{eq:lambdaij} 
+with the timespan for finite differences ($t_j - t_i$) set to 
+\Sexpr{lag.to.use}~\Sexpr{if (lag.to.use == 1) "year" else "years"}.
+%
 <<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
 dynamicSRGraph(filter(solowResiduals, model=="CD"))
 @
-
+%
 <<DynamicSR_CESkle_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($kl$)$e$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
 dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="kle" | nest=="kl")))
 @
-
+%
 <<DynamicSR_CESlek_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($le$)$k$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
 dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="lek" | nest=="kl")))
 @
-
+%
 <<DynamicSR_CESekl_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($ek$)$l$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
 dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl")))
 @
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analysis}
+\label{sec:analysis}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For now, I've organized the analysis around questions that we would like to answer.
+
 %++++++++++++++++++++++++++++++
-\subsection{How does quality-adjusting and including energy affect the dynamic Solow residual?} 
-\label{sec:trajectory_graphs}
+\subsection{Does quality-adjusting the factors of production 
+            decrease the mean squared error and/or the Solow residual?} 
+\label{sec:quality_adj_energy_and_solow_residual}
+%++++++++++++++++++++++++++++++
+
+We can test our hypothesis that quality-adjusting the factors of production
+and including energy will both reduce the Solow residuals~($\lambda$)
+and improve the fit to historical data
+(thereby, reducing the fitting residuals, $r_i$)
+by calculating 
+$\Delta \lambda$ and $\Delta mse$, where
+%
+\begin{equation} \label{eq:delta_lambda}
+  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy} \right|
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_mse}
+  \Delta mse \equiv mse - mse_{Unadjusted, \, Without \, energy}.
+\end{equation}
+%
+where~$N$ is the number of years of data.
+When $\Delta \lambda$ and $\Delta mse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) and
+the fitting residuals ($mse$)
+relative to the unadjusted, no-energy condition.
+
+Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
+%
+<<MyXTableFunction>>=
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+}
+@
+%
+<<DSRmse_CD, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+% 
+Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show results 
+for CES models with various nestings.
+%
+<<DSRmse_CESkle, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($kl$)$e$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<DSRmse_CESlek, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($le$)$k$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<DSRmse_CESekl, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>% 
+           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($ek$)$l$ nesting.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+Figure~\ref{fig:DSRmse_CD_graph} summarizes the data for the Cobb-Douglas model.
+%
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CD")) +
+  geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(Delta * lambda)) +
+  xy_theme() + 
+  theme(legend.title=element_blank())
+@
+%
+Figure~\ref{fig:DSRmse_CES_graph} summarizes the data for the CES models.
+%
+<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CES")) +
+  geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy, shape=nest)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(Delta * lambda)) +
+  xy_theme() +
+  theme(legend.title=element_blank())
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does quality-adjusting the factors of production 
+            decrease fitting residuals and/or the dynamic Solow residual?} 
+\label{sec:quality_adj_energy_and_dynamic_solow_residual}
 %++++++++++++++++++++++++++++++
 
 <<SR and R trajectory data>>=
 traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
                    fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")]) %>%
                    arrange(Country, model, flavor, energy, nest)
-traj.data.means <- traj.data %>% 
+traj.data.stats <- traj.data %>% 
   group_by(model, Country, flavor, energy, nest) %>%
   summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
+
+############################################
+# Dlambda_fd.p <- traj.data %>% 
+#   group_by(model, Country, flavor, energy, nest) %>% 
+#   select(Dlambda_fd) %>%
+#   t.test(., alternative="less")[["p.value"]]
+############################################  
 @
 
 <<SR and R trajectory plot function>>=
 residualsTrajGraph <- function(data){
   plot <- ggplot(data=data) + 
     geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
-#     geom_path(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
     facet_grid(Country ~ flavor) +
-    xlab(expression(Delta*r)) +
-    ylab(expression(Delta*lambda)) +
+    xlab(expression(Delta*r[i])) +
+    ylab(expression(Delta*lambda[ij])) +
     xy_theme() + 
     theme(legend.title=element_blank())
   return(plot)
@@ -1098,27 +1156,26 @@ the Solow residual or the fitting residual.
 residualsTrajGraph(filter(traj.data, model=="CD"))
 @
 
-We can also calculate the average values for $\Delta \lambda$ and $\Delta r$ 
-as shown in Table~\ref{tab:traj.means.CD}.
+We can also calculate the average values for $\Delta \lambda_{i,j}$ and $\Delta r_{i}$ 
+as shown in Table~\ref{tab:Trajectory_Means_CD}.
 %
 <<Trajectory_Means_CD, results="asis">>=
-myXTable(data = filter(traj.data.means, model=="CD") %>% select(-nest), 
+myXTable(data = filter(traj.data.stats, model=="CD") %>% select(-nest), 
          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
-         label="tab:traj.means.CD",
+         label=paste0("tab:", opts_current$get("label")),
          digits=6)
 @
 %
-These results for the Cobb-Douglas model indicate that 
-we should perform the same analysis for the CES model.
+The following tables and figures show the same analysis for the CES model.
 %
 <<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
 residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
 @
 %
 <<Trajectory_Means_CESkle, results="asis">>=
-myXTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="kle")), 
+myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="kle")), 
          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
-         label="tab:traj.means.CESkle",
+         label=paste0("tab:", opts_current$get("label")),
          digits=6)
 @
 
@@ -1127,10 +1184,10 @@ residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
 @
 
 <<Trajectory_Means_CESlek, results="asis">>=
-trajMeansTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="lek")), 
-               caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
-               label="tab:traj.means.CESlek",
-               digits=6)
+myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="lek")), 
+         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
+         label=paste0("tab:", opts_current$get("label")),
+         digits=6)
 @
 
 <<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
@@ -1138,551 +1195,547 @@ residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
 @
 
 <<Trajectory_Means_CESekl, results="asis">>=
-myXTable(data = filter(traj.data.means, model=="CES" & (nest=="kl" | nest=="ekl")), 
+myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="ekl")), 
          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
-         label="tab:traj.means.CESekl",
+         label=paste0("tab:", opts_current$get("label")),
          digits=6)
 @
 
 
 
-%++++++++++++++++++++++++++++++
-\subsection{What effect does including energy and quality-adjustment have 
-            on the Solow residual in the Cobb-Douglas model?} 
-\label{sec:quality_adj_energy_and_solow_residual}
-%++++++++++++++++++++++++++++++
-
-We'll first look at Portugal.
-
-%------------------------------
-\subsubsection{Portugal} 
-%------------------------------
-
-First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
-
-<<Portugal C-D undadjusted without energy>>=
-naturalCoef(models$PT$unadjusted$noE$CD)
-@
-
-<<Portugal C-D undadjusted with energy>>=
-naturalCoef(models$PT$unadjusted$withE$CD)
-@
-
-The Solow residual (\texttt{lambda}) is always negative. 
-However, the absolute value of \texttt{lambda} decreases from 
-\Sexpr{naturalCoef(models$PT$unadjusted$noE$CD)$lambda} to 
-\Sexpr{naturalCoef(models$PT$unadjusted$withE$CD)$lambda}
-when adding energy.
-So it appears that for Portugal, 
-using unadjusted inputs and including energy as a factor of production
-reduces the absolute value of the Solow residual somewhat.
-
-What about for quality-adjusted data and Portugal?
-
-<<Portugal C-D adjusted without energy>>=
-naturalCoef(models$PT$adjusted$noE$CD)
-@
-
-<<Portugal C-D adjusted with energy>>=
-naturalCoef(models$PT$adjusted$withE$CD)
-@
-
-Using quality-adjusted inputs, the Solow residual (\texttt{lambda}) moves from 
-\Sexpr{naturalCoef(models$PT$adjusted$noE$CD)$lambda} to
-\Sexpr{naturalCoef(models$PT$adjusted$withE$CD)$lambda} when including energy.
-The absolute value of the Solow residual again decreases when adding energy.
-But, with quality-adjusted inputs, the effect is much stronger.
-
-Table~\ref{tab:lambda_CD_PT} shows
-the effect of both quality-corrected factors of production and energy.
-We find that including energy as a factor of production 
-reduces the absolute value of the Solow residual (\texttt{lambda})
-whether or not the factors of production are quality-adjusted. 
-Quality-adjustment gets part of the way toward eliminating the Solow residual.
-
-\begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
-\label{tab:lambda_CD_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CD)$lambda}    & \Sexpr{naturalCoef(models$PT$adjusted$noE$CD)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CD)$lambda}  & \Sexpr{naturalCoef(models$PT$adjusted$withE$CD)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Note that for Portugal the contribution of capital (\texttt{alpha\_1})
-always shifts to energy (\texttt{alpha\_3}) when energy is included 
-as a factor of production.
-
-What about for the UK?
-
-%------------------------------
-\subsubsection{United Kingdom} 
-%------------------------------
-
-Table~\ref{tab:lambda_CD_UK} shows fitted Cobb-Douglas coefficients for the UK. 
-
-\begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
-\label{tab:lambda_CD_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$lambda}   
-                                                & \Sexpr{naturalCoef(models$UK$adjusted$noE$CD)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$lambda} 
-                                                & \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-For the UK, the quality-adjusted, with energy Solow residual is 
-\Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda * 100}\%,
-a very small number indeed.
-For the UK, it appears that \emph{both} quality-adjustment and addition of energy as a factor of production
-are required to effectively eliminate the Solow residual,
-reducing it to \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda}.
-
-Adding energy alone actually \emph{in}creases the Solow residual from 
-\Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$lambda} to
-\Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$lambda}.
-The details for each model with unadjusted factors of production are shown below.
-
-<<UK CD Unadjusted Coefficients>>=
-naturalCoef(models$UK$unadjusted$noE$CD)
-naturalCoef(models$UK$unadjusted$withE$CD)
-@
-
-When energy is included, much of the effect of capital (\texttt{alpha\_1}) is 
-attributed to energy (\texttt{alpha\_3}), 
-as \texttt{alpha\_1} moves from 
-\Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$alpha_1} to
-\Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$alpha_1}.
-
-When we look at quality-adjusted inputs, we find similar results.
-
-<<UK CD Quality-adjusted Coefficients>>=
-naturalCoef(models$UK$adjusted$noE$CD)
-naturalCoef(models$UK$adjusted$withE$CD)
-@
-
-\texttt{alpha\_1} moves from 
-\Sexpr{naturalCoef(models$UK$adjusted$noE$CD)$alpha_1} to
-\Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$alpha_1}.
-
-Now, let's compare the fits to historical data.
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Do we obtain a negative Solow residual for Portugal with the CES model?} 
-\label{sec:Solow_negative_for_PT_in_CES?}
-%++++++++++++++++++++++++++++++
-
-First, look at the CES model without energy.
-Nesting is unabmiguous, so this fit does not need to be repeated
-for each nesting option. 
-(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_PT}--\ref{tab:lambda_CES-ekl_PT}
-are identical.)
-
-<<PT CES-kl, warning=FALSE>>=
-naturalCoef(models$PT$unadjusted$noE$CES$kl)
-naturalCoef(models$PT$adjusted$noE$CES$kl)
-@
-
-Both unadjusted and quality-adjusted variables give positive Solow residuals,
-\Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} for unadjusted inputs and
-\Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} for quality-adjusted inputs.
-Furthermore, quality-adjustment reduces the magnitude of the Solow residual.
-
-%------------------------------
-\subsubsection{($kl$)$e$ nesting} 
-%------------------------------
-
-Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
-
-<<PT CES-kle unadjusted, warning=FALSE>>=
-naturalCoef(models$PT$unadjusted$withE$CES$kle)
-@
-
-Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
-
-<<PT CES-kle quality-adjusted, warning=FALSE>>=
-naturalCoef(models$PT$adjusted$withE$CES$kle)
-@
-
-Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results with CES and the ($kl$)$e$ nesting.
-
-\begin{table} \caption{Portugal Solow residual results with CES and ($kl$)$e$ nesting.} 
-\label{tab:lambda_CES-kle_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
-                                                            & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$kle)$lambda} 
-                                                            & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$kle)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-kle_PT} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{PT $sse$ with CES and ($kl$)$e$ nesting.} 
-\label{tab:sse_CES-kle_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
-                                                            & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$kle)$sse} 
-                                                            & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$kle)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-In contrast to the Cobb-Douglas model,
-the CES model with ($kl$)$e$ nesting
-produces positive Solow residuals in all cases. 
-We also see that both 
-quality-adjusting the inputs and
-including energy
-reduce the Solow residual (\texttt{lambda}).
-
-%------------------------------
-\subsubsection{($le$)$k$ nesting} 
-%------------------------------
-
-Next, look at unadjusted inputs using the ($le$)$k$ nesting.
-
-<<PT CES-lek unadjusted, warning=FALSE>>=
-naturalCoef(models$PT$unadjusted$withE$CES$lek)
-@
-
-Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
-
-<<PT CES-lek quality-adjusted, warning=FALSE>>=
-naturalCoef(models$PT$adjusted$withE$CES$lek)
-@
-
-Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results with CES and the ($le$)$k$ nesting.
-
-\begin{table} \caption{Portugal Solow residual results with CES and ($le$)$k$ nesting.} 
-\label{tab:lambda_CES-lek_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
-                                        & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda} 
-                                        & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-lek_PT} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{PT $sse$ with CES and ($le$)$k$ nesting.} 
-\label{tab:sse_CES-lek_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
-                                        & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$lek)$sse} 
-                                        & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$lek)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Similar to the CES model with ($kl$)$e$ nesting,
-the CES model with ($le$)$k$ nesting
-produces positive Solow residuals in all cases. 
-After energy has been added, quality-adjustment 
-has very little effect on the Solow residual,
-creating a slight increase from 
-\Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda} to
-\Sexpr{naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda}.
-
-
-%------------------------------
-\subsubsection{($ek$)$l$ nesting} 
-%------------------------------
-
-Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
-
-<<PT CES-ekl unadjusted, warning=FALSE>>=
-naturalCoef(models$PT$unadjusted$withE$CES$ekl)
-@
-
-Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
-
-<<PT CES-ekl quality-adjusted, warning=FALSE>>=
-naturalCoef(models$PT$adjusted$withE$CES$ekl)
-@
-
-Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results with CES and the ($ek$)$l$ nesting.
-
-\begin{table} \caption{Portugal Solow residual results with CES and ($ek$)$l$ nesting.} 
-\label{tab:lambda_CES-ekl_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
-                                        & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda} 
-                                        & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-ekl_PT} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{PT $sse$ with CES and ($ek$)$l$ nesting.} 
-\label{tab:sse_CES-ekl_PT} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
-                                        & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$ekl)$sse} 
-                                        & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$ekl)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-For the ($ek$)$l$ nesting, 
-the Solow residual is positive, and 
-quality-adjusting the inputs 
-reduces the Solow residual (\texttt{lambda}).
-Adding energy decreases the Solow residual 
-(from \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda} to 
-\Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda})
-when enegy is included in the model.
-But, adding energy slightly increases the Solow residual
-(from \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} to \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda})
-when quality-adjusted inputs are used.
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Do we obtain a positive Solow residual for the UK with the CES model?} 
-\label{sec:Solow_positive_for_UK_in_CES?}
-%++++++++++++++++++++++++++++++
-
-First, look at the CES model without energy.
-Nesting is unabmiguous, so this fit does not need to be repeated
-for each nesting option. 
-(This means that the top rows of Tables~\ref{tab:lambda_CES-kle_UK}--\ref{tab:lambda_CES-ekl_UK}
-are identical.)
-
-<<UK CES-kl, warning=FALSE>>=
-naturalCoef(models$UK$unadjusted$noE$CES$kl)
-naturalCoef(models$UK$adjusted$noE$CES$kl)
-@
-
-Both unadjusted and quality-adjusted variables give positive Solow residuals for the UK,
-\Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} for unadjusted inputs and
-\Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} for quality-adjusted inputs.
-Furthermore, quality-adjustment reduces the magnitude of the UK Solow residual.
-
-%------------------------------
-\subsubsection{($kl$)$e$ nesting} 
-%------------------------------
-
-Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
-
-<<UK CES-kle unadjusted>>=
-naturalCoef(models$UK$unadjusted$withE$CES$kle)
-@
-
-Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
-
-<<UK CES-kle quality-adjusted>>=
-naturalCoef(models$UK$adjusted$withE$CES$kle)
-@
-
-Table~\ref{tab:lambda_CES-kle_UK} summarizes the UK Solow residual results with CES and the ($kl$)$e$ nesting.
-
-\begin{table} \caption{UK Solow residual results with CES and ($kl$)$e$ nesting.} 
-\label{tab:lambda_CES-kle_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$kle)$lambda} 
-                                                                & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$kle)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-kle_UK} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{UK $sse$ with CES and ($kl$)$e$ nesting.} 
-\label{tab:sse_CES-kle_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$kle)$sse} 
-                                                            & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$kle)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Like the Cobb-Douglas model, the CES model produces positive Solow residuals
-with the ($kl$)$e$ nesting.
-We also see that both 
-quality-adjusting the inputs and
-including energy
-reduce the Solow residual (\texttt{lambda}).
-
-%------------------------------
-\subsubsection{($le$)$k$ nesting}
-%------------------------------
-
-Next, look at unadjusted inputs using the ($le$)$k$ nesting.
-
-<<UK CES-lek unadjusted>>=
-naturalCoef(models$UK$unadjusted$withE$CES$lek)
-@
-
-Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
-
-<<UK CES-lek quality-adjusted>>=
-naturalCoef(models$UK$adjusted$withE$CES$lek)
-@
-
-Table~\ref{tab:lambda_CES-lek_UK} summarizes the UK Solow residual results with CES and the ($le$)$k$ nesting.
-
-\begin{table} \caption{UK Solow residual results with CES and ($le$)$k$ nesting.} 
-\label{tab:lambda_CES-lek_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$lek)$lambda} 
-                                                            & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$lek)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-lek_UK} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{UK $sse$ with CES and ($le$)$k$ nesting.} 
-\label{tab:sse_CES-lek_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$lek)$sse} 
-                                                            & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$lek)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-
-Similar to the CES model with ($kl$)$e$ nesting,
-the CES model with ($le$)$k$ nesting
-produces positive Solow residuals in all cases. 
-Both quality-adjustment and inclusion of energy 
-decrease the magnitude of the Solow residual.
-
-%------------------------------
-\subsubsection{($ek$)$l$ nesting}
-%------------------------------
-
-Next, look at unadjusted inputs using the ($el$)$l$ nesting.
-
-<<UK CES-ekl unadjusted>>=
-naturalCoef(models$UK$unadjusted$withE$CES$ekl)
-@
-
-Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
-
-<<UK CES-ekl quality-adjusted>>=
-naturalCoef(models$UK$adjusted$withE$CES$ekl)
-@
-
-Table~\ref{tab:lambda_CES-ekl_UK} summarizes the UK Solow residual results with CES and the ($ek$)$l$ nesting.
-
-\begin{table} \caption{UK Solow residual results with CES and ($ek$)$l$ nesting.} 
-\label{tab:lambda_CES-ekl_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
-      With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$ekl)$lambda} 
-                                                            & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$ekl)$lambda} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Table~\ref{tab:sse_CES-ekl_UK} shows the $sse$ values for each of these models.
-
-\begin{table} \caption{UK $sse$ with CES and ($ek$)$l$ nesting.} 
-\label{tab:sse_CES-ekl_UK} 
-  \begin{center}
-    \begin{tabular}{r c c} 
-      \toprule
-                      & Unadjusted     & Quality-adjusted   \\
-      \midrule
-      Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
-      With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$ekl)$sse} 
-                                                            & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$ekl)$sse} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
-
-Similar to the CES model with ($ek$)$l$ nesting,
-the CES model with ($ek$)$l$ nesting
-produces positive Solow residuals in all cases. 
-Both quality-adjustment and inclusion of energy 
-decrease the magnitude of the Solow residual.
-
-
-
-
+% %++++++++++++++++++++++++++++++
+% \subsection{What effect does including energy and quality-adjustment have 
+%             on the Solow residual in the Cobb-Douglas model?} 
+% \label{sec:quality_adj_energy_and_solow_residual}
+% %++++++++++++++++++++++++++++++
+% 
+% We'll first look at Portugal.
+% 
+% %------------------------------
+% \subsubsection{Portugal} 
+% %------------------------------
+% 
+% First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
+% 
+% <<Portugal C-D undadjusted without energy>>=
+% naturalCoef(models$PT$unadjusted$noE$CD)
+% @
+% 
+% <<Portugal C-D undadjusted with energy>>=
+% naturalCoef(models$PT$unadjusted$withE$CD)
+% @
+% 
+% The Solow residual (\texttt{lambda}) is always negative. 
+% However, the absolute value of \texttt{lambda} decreases from 
+% \Sexpr{naturalCoef(models$PT$unadjusted$noE$CD)$lambda} to 
+% \Sexpr{naturalCoef(models$PT$unadjusted$withE$CD)$lambda}
+% when adding energy.
+% So it appears that for Portugal, 
+% using unadjusted inputs and including energy as a factor of production
+% reduces the absolute value of the Solow residual somewhat.
+% 
+% What about for quality-adjusted data and Portugal?
+% 
+% <<Portugal C-D adjusted without energy>>=
+% naturalCoef(models$PT$adjusted$noE$CD)
+% @
+% 
+% <<Portugal C-D adjusted with energy>>=
+% naturalCoef(models$PT$adjusted$withE$CD)
+% @
+% 
+% Using quality-adjusted inputs, the Solow residual (\texttt{lambda}) moves from 
+% \Sexpr{naturalCoef(models$PT$adjusted$noE$CD)$lambda} to
+% \Sexpr{naturalCoef(models$PT$adjusted$withE$CD)$lambda} when including energy.
+% The absolute value of the Solow residual again decreases when adding energy.
+% But, with quality-adjusted inputs, the effect is much stronger.
+% 
+% Table~\ref{tab:lambda_CD_PT} shows
+% the effect of both quality-corrected factors of production and energy.
+% We find that including energy as a factor of production 
+% reduces the absolute value of the Solow residual (\texttt{lambda})
+% whether or not the factors of production are quality-adjusted. 
+% Quality-adjustment gets part of the way toward eliminating the Solow residual.
+% 
+% \begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
+% \label{tab:lambda_CD_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CD)$lambda}    & \Sexpr{naturalCoef(models$PT$adjusted$noE$CD)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CD)$lambda}  & \Sexpr{naturalCoef(models$PT$adjusted$withE$CD)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Note that for Portugal the contribution of capital (\texttt{alpha\_1})
+% always shifts to energy (\texttt{alpha\_3}) when energy is included 
+% as a factor of production.
+% 
+% What about for the UK?
+% 
+% %------------------------------
+% \subsubsection{United Kingdom} 
+% %------------------------------
+% 
+% Table~\ref{tab:lambda_CD_UK} shows fitted Cobb-Douglas coefficients for the UK. 
+% 
+% \begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
+% \label{tab:lambda_CD_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$lambda}   
+%                                                 & \Sexpr{naturalCoef(models$UK$adjusted$noE$CD)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$lambda} 
+%                                                 & \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% For the UK, the quality-adjusted, with energy Solow residual is 
+% \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda * 100}\%,
+% a very small number indeed.
+% For the UK, it appears that \emph{both} quality-adjustment and addition of energy as a factor of production
+% are required to effectively eliminate the Solow residual,
+% reducing it to \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$lambda}.
+% 
+% Adding energy alone actually \emph{in}creases the Solow residual from 
+% \Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$lambda} to
+% \Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$lambda}.
+% The details for each model with unadjusted factors of production are shown below.
+% 
+% <<UK CD Unadjusted Coefficients>>=
+% naturalCoef(models$UK$unadjusted$noE$CD)
+% naturalCoef(models$UK$unadjusted$withE$CD)
+% @
+% 
+% When energy is included, much of the effect of capital (\texttt{alpha\_1}) is 
+% attributed to energy (\texttt{alpha\_3}), 
+% as \texttt{alpha\_1} moves from 
+% \Sexpr{naturalCoef(models$UK$unadjusted$noE$CD)$alpha_1} to
+% \Sexpr{naturalCoef(models$UK$unadjusted$withE$CD)$alpha_1}.
+% 
+% When we look at quality-adjusted inputs, we find similar results.
+% 
+% <<UK CD Quality-adjusted Coefficients>>=
+% naturalCoef(models$UK$adjusted$noE$CD)
+% naturalCoef(models$UK$adjusted$withE$CD)
+% @
+% 
+% \texttt{alpha\_1} moves from 
+% \Sexpr{naturalCoef(models$UK$adjusted$noE$CD)$alpha_1} to
+% \Sexpr{naturalCoef(models$UK$adjusted$withE$CD)$alpha_1}.
+% 
+% Now, let's compare the fits to historical data.
+% 
+% 
+% 
+% %++++++++++++++++++++++++++++++
+% \subsection{Do we obtain a negative Solow residual for Portugal with the CES model?} 
+% \label{sec:Solow_negative_for_PT_in_CES?}
+% %++++++++++++++++++++++++++++++
+% 
+% First, look at the CES model without energy.
+% Nesting is unabmiguous, so this fit does not need to be repeated
+% for each nesting option. 
+% (This means that the top rows of Tables~\ref{tab:lambda_CES-kle_PT}--\ref{tab:lambda_CES-ekl_PT}
+% are identical.)
+% 
+% <<PT CES-kl, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$noE$CES$kl)
+% naturalCoef(models$PT$adjusted$noE$CES$kl)
+% @
+% 
+% Both unadjusted and quality-adjusted variables give positive Solow residuals,
+% \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} for unadjusted inputs and
+% \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} for quality-adjusted inputs.
+% Furthermore, quality-adjustment reduces the magnitude of the Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($kl$)$e$ nesting} 
+% %------------------------------
+% 
+% Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<PT CES-kle unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$kle)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<PT CES-kle quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$kle)
+% @
+% 
+% Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results with CES and the ($kl$)$e$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($kl$)$e$ nesting.} 
+% \label{tab:lambda_CES-kle_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
+%                                                             & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$kle)$lambda} 
+%                                                             & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$kle)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-kle_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($kl$)$e$ nesting.} 
+% \label{tab:sse_CES-kle_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
+%                                                             & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$kle)$sse} 
+%                                                             & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$kle)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% In contrast to the Cobb-Douglas model,
+% the CES model with ($kl$)$e$ nesting
+% produces positive Solow residuals in all cases. 
+% We also see that both 
+% quality-adjusting the inputs and
+% including energy
+% reduce the Solow residual (\texttt{lambda}).
+% 
+% %------------------------------
+% \subsubsection{($le$)$k$ nesting} 
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<PT CES-lek unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$lek)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<PT CES-lek quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$lek)
+% @
+% 
+% Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results with CES and the ($le$)$k$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($le$)$k$ nesting.} 
+% \label{tab:lambda_CES-lek_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
+%                                         & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda} 
+%                                         & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-lek_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($le$)$k$ nesting.} 
+% \label{tab:sse_CES-lek_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
+%                                         & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$lek)$sse} 
+%                                         & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$lek)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Similar to the CES model with ($kl$)$e$ nesting,
+% the CES model with ($le$)$k$ nesting
+% produces positive Solow residuals in all cases. 
+% After energy has been added, quality-adjustment 
+% has very little effect on the Solow residual,
+% creating a slight increase from 
+% \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda} to
+% \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda}.
+% 
+% 
+% %------------------------------
+% \subsubsection{($ek$)$l$ nesting} 
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<PT CES-ekl unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$ekl)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<PT CES-ekl quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$ekl)
+% @
+% 
+% Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results with CES and the ($ek$)$l$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($ek$)$l$ nesting.} 
+% \label{tab:lambda_CES-ekl_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda} 
+%                                         & \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda} 
+%                                         & \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-ekl_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($ek$)$l$ nesting.} 
+% \label{tab:sse_CES-ekl_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse} 
+%                                         & \Sexpr{EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$PT$unadjusted$withE$CES$ekl)$sse} 
+%                                         & \Sexpr{EconModels:::sse(models$PT$adjusted$withE$CES$ekl)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% For the ($ek$)$l$ nesting, 
+% the Solow residual is positive, and 
+% quality-adjusting the inputs 
+% reduces the Solow residual (\texttt{lambda}).
+% Adding energy decreases the Solow residual 
+% (from \Sexpr{naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda} to 
+% \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda})
+% when enegy is included in the model.
+% But, adding energy slightly increases the Solow residual
+% (from \Sexpr{naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda} to \Sexpr{naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda})
+% when quality-adjusted inputs are used.
+% 
+% 
+% %++++++++++++++++++++++++++++++
+% \subsection{Do we obtain a positive Solow residual for the UK with the CES model?} 
+% \label{sec:Solow_positive_for_UK_in_CES?}
+% %++++++++++++++++++++++++++++++
+% 
+% First, look at the CES model without energy.
+% Nesting is unabmiguous, so this fit does not need to be repeated
+% for each nesting option. 
+% (This means that the top rows of Tables~\ref{tab:lambda_CES-kle_UK}--\ref{tab:lambda_CES-ekl_UK}
+% are identical.)
+% 
+% <<UK CES-kl, warning=FALSE>>=
+% naturalCoef(models$UK$unadjusted$noE$CES$kl)
+% naturalCoef(models$UK$adjusted$noE$CES$kl)
+% @
+% 
+% Both unadjusted and quality-adjusted variables give positive Solow residuals for the UK,
+% \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} for unadjusted inputs and
+% \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} for quality-adjusted inputs.
+% Furthermore, quality-adjustment reduces the magnitude of the UK Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($kl$)$e$ nesting} 
+% %------------------------------
+% 
+% Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<UK CES-kle unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$kle)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<UK CES-kle quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$kle)
+% @
+% 
+% Table~\ref{tab:lambda_CES-kle_UK} summarizes the UK Solow residual results with CES and the ($kl$)$e$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($kl$)$e$ nesting.} 
+% \label{tab:lambda_CES-kle_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$kle)$lambda} 
+%                                                                 & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$kle)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-kle_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($kl$)$e$ nesting.} 
+% \label{tab:sse_CES-kle_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$kle)$sse} 
+%                                                             & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$kle)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Like the Cobb-Douglas model, the CES model produces positive Solow residuals
+% with the ($kl$)$e$ nesting.
+% We also see that both 
+% quality-adjusting the inputs and
+% including energy
+% reduce the Solow residual (\texttt{lambda}).
+% 
+% %------------------------------
+% \subsubsection{($le$)$k$ nesting}
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<UK CES-lek unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$lek)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<UK CES-lek quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$lek)
+% @
+% 
+% Table~\ref{tab:lambda_CES-lek_UK} summarizes the UK Solow residual results with CES and the ($le$)$k$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($le$)$k$ nesting.} 
+% \label{tab:lambda_CES-lek_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$lek)$lambda} 
+%                                                             & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$lek)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-lek_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($le$)$k$ nesting.} 
+% \label{tab:sse_CES-lek_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$lek)$sse} 
+%                                                             & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$lek)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% 
+% Similar to the CES model with ($kl$)$e$ nesting,
+% the CES model with ($le$)$k$ nesting
+% produces positive Solow residuals in all cases. 
+% Both quality-adjustment and inclusion of energy 
+% decrease the magnitude of the Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($ek$)$l$ nesting}
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($el$)$l$ nesting.
+% 
+% <<UK CES-ekl unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$ekl)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<UK CES-ekl quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$ekl)
+% @
+% 
+% Table~\ref{tab:lambda_CES-ekl_UK} summarizes the UK Solow residual results with CES and the ($ek$)$l$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($ek$)$l$ nesting.} 
+% \label{tab:lambda_CES-ekl_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda} & \Sexpr{naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda} \\
+%       With energy     & \Sexpr{naturalCoef(models$UK$unadjusted$withE$CES$ekl)$lambda} 
+%                                                             & \Sexpr{naturalCoef(models$UK$adjusted$withE$CES$ekl)$lambda} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-ekl_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($ek$)$l$ nesting.} 
+% \label{tab:sse_CES-ekl_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & \Sexpr{EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse} & \Sexpr{EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse} \\
+%       With energy     & \Sexpr{EconModels:::sse(models$UK$unadjusted$withE$CES$ekl)$sse} 
+%                                                             & \Sexpr{EconModels:::sse(models$UK$adjusted$withE$CES$ekl)$sse} \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% 
+% Similar to the CES model with ($ek$)$l$ nesting,
+% the CES model with ($ek$)$l$ nesting
+% produces positive Solow residuals in all cases. 
+% Both quality-adjustment and inclusion of energy 
+% decrease the magnitude of the Solow residual.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
