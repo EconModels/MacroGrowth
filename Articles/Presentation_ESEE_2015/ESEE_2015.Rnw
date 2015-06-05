@@ -551,35 +551,61 @@ historicalPlot(pre_econometric_data,
 \label{sec:parameter_estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Parameter estimation is accomplished with \texttt{formula}s of the form
-%
-\begin{equation} \label{eq:formulas}
-  y \sim x_1 + x_2 + x_3 + time,
-\end{equation}
-%
-where $y$ is economic output and 
-$x_1$, $x_2$, and $x_3$ are factors of production
-and permutations of
-capital ($k$), labor ($l$), and energy ($e$).
-(The factors of production may be quality-adjusted.)
-$time$ is the time variable, usually \texttt{iYear}. 
-The \texttt{formula}s are used in a fitting function such as 
-\texttt{cdModel} to create a \texttt{model} object.
-The function \texttt{naturalCoef} extracts reasonable
-coefficients from \texttt{model} objects.
+% Parameter estimation is accomplished with \texttt{formula}s of the form
+% %
+% \begin{equation} \label{eq:formulas}
+%   y \sim x_1 + x_2 + x_3 + time,
+% \end{equation}
+% %
+% where $y$ is economic output and 
+% $x_1$, $x_2$, and $x_3$ are factors of production
+% and permutations of
+% capital ($k$), labor ($l$), and energy ($e$).
+% (The factors of production may be quality-adjusted.)
+% $time$ is the time variable, usually \texttt{iYear}. 
+% The \texttt{formula}s are used in a fitting function such as 
+% \texttt{cdModel} to create a \texttt{model} object.
+% The function \texttt{naturalCoef} extracts reasonable
+% coefficients from \texttt{model} objects.
+% 
+% Note that in the fitting process for the Cobb-Douglas equation,
+% $\texttt{scale} = \theta$, 
+% $\alpha_1 = \alpha$,
+% $\alpha_2 = \beta$, and
+% $\alpha_3 = \gamma$,
+% when the \texttt{formula} is specified as 
+% %
+% \begin{equation} \label{eq:formula_kle}
+%   \texttt{y} \sim \texttt{k + l + e + time}.
+% \end{equation}
+% %
+% Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
 
-Note that in the fitting process for the Cobb-Douglas equation,
-$\texttt{scale} = \theta$, 
-$\alpha_1 = \alpha$,
-$\alpha_2 = \beta$, and
-$\alpha_3 = \gamma$,
-when the \texttt{formula} is specified as 
+The models being fit can be described by the algebraic form of the model 
+(Cobb-Douglas, CES, etc.) and a formula that enumerates 
+which data variables are being used in which roles to fit the model.  
+A formula of the form
 %
-\begin{equation} \label{eq:formula_kle}
-  \texttt{y} \sim \texttt{k + l + e + time}.
+\begin{equation} \label{eq:formulas-3-factor}
+y \sim x_1 + x_2 + x_3 + t,
 \end{equation}
 %
-Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
+or 
+%
+\begin{equation} \label{eq:formulas-2-factor}
+y \sim x_1 + x_2 + t,
+\end{equation}
+%
+describes the economic output variable ($y$, usually \texttt{iGDP},
+                                        indexed GDP) 
+and the factors of production ($x_1$, $x_2$, and $x_3$,
+                               which will be some measure of capital, labor, and energy, 
+                               but perhaps not in that order), 
+and a time variable ($t$, usually \texttt{iYear}, 
+                     the number of years since the beginning of data collection).  
+All of the models assume an error term that is additive on the 
+logarithmic scale and are fit by the method of least squares.  
+Model fitting provides estimates for all parameters in the model.
 
 For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
 $\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
