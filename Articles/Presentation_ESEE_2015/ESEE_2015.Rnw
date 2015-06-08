@@ -711,7 +711,7 @@ AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest)
 
 <<Fitted_and_Residuals>>=
 fittedAndResidData <- function(model){
-  df <- data.frame(select(model$data, Year))
+  df <- data.frame(select(getData(model), Year))
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(model)[c(1:length(df$Year))]
   df$Residuals <- resid(model)[c(1:length(df$Year))]
@@ -722,7 +722,7 @@ temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f
   df <- fittedAndResidData(model)
   f <- model$formula
   response <- summands(f, right = FALSE)
-  df[[response]] <- model$data[[response]] # Add iGDP to the data frame
+  df[[response]] <- getData(model)[[response]] # Add iGDP to the data frame
   id_list <- strsplit(id, split = "[.]")[[1]]
   df$Country <- id_list[[1]]
   df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
@@ -866,7 +866,7 @@ dynamicSR <- function(model, id, lag=1, pad="tail"){
   f <- model$formula
   denom <- summands(f, n=length(summands(f))) # time variable
   nums <- all.vars(f) [1:(length(all.vars(f))-1)] # y, k, l, and e (if present)
-  df <- model$data[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
+  df <- getData(model)[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
   
   # Calculate names for the columns of finite difference derivatives
   derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], ".d", denom)}) %>% unlist
@@ -939,7 +939,7 @@ temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"),
   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
   df$model <- id_list[[4]]
   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-  df$Year <- model$data[["Year"]]
+  df$Year <- getData(model)[["Year"]]
   return(df)  
 }) %>% do.call(plyr::rbind.fill, .)
 

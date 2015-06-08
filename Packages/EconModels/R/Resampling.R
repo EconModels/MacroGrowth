@@ -97,7 +97,7 @@ resampledFits <- function(model,
   
   method <- match.arg(method)   # allow multiples?
   if (!missing(seed)) set.seed(seed)
-  data <- model$data
+  data <- getData(model)
   
   baseFitCoeffs <- naturalCoef(model)  # extractAllMetaData(model)
   # Add a method column.
@@ -164,7 +164,7 @@ resampledFits <- function(model,
 #' @export
 resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"), 
                           reindex=FALSE){
-  data <- model$data
+  data <- getData(model)
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")
   }

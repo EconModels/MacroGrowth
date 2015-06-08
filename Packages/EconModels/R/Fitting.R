@@ -291,21 +291,21 @@ yhat.cesModel <- function(object, ...) {
 #' @export
 yhat.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
 #' @export
 yhat.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
 #' @export
 yhat.sfModel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )
 }
 
@@ -345,14 +345,14 @@ response.default <- function(object, ...) {
 #' @export
 predict.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
 #' @export
 predict.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), object$data)
+  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 

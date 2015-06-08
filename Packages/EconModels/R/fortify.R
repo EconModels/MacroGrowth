@@ -8,7 +8,7 @@
 #' @export
 #' 
 fortify.LINEXmodel <- function(model, data, ...) {
-  if(missing(data)) { data <- model$data }
+  if(missing(data)) { data <- getData(model) }
   formula <- model$formula
   data <- model.frame(formula, data)
   if (ncol(data) != 5) {
