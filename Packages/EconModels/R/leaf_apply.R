@@ -5,7 +5,12 @@
 #' 
 #' @param l the list to be traversed.
 #' @param f the function to be applied to the leaves of the list. 
-#' @param class a list of classes to be matched.
+#' @param class a vector of class names.  All and only objects inheriting from any of 
+#' these will be considered a leaf, even if they are also lists.   
+#' Any objects that are neither lists nor inherit from \code{class} will be ignored.
+#' @param strict.lists a logical.  If \code{TRUE}, an item will only be considered a list
+#' if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be 
+#' simpler than enumeratin all of the possible leaf classes using \code{class}.
 #' @param name a prefix for the names in the resulting list
 #' @param sep the separator to be used when creating the names of the leaves from the list nesting.
 #' @return a flat, named list of the results of applying \code{f} to the leaves of \code{l}.
@@ -14,7 +19,8 @@
 #' \code{item_name} is the concatenated name of \code{item} created 
 #' by applying \code{sep} between node names in the list.
 #' @export
-leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
+leaf_apply <- function ( l, f, class=NULL, name="", sep=".", 
+                         strict.lists = FALSE ) {
   res <- list()
   list_names <- names(l)
   if (is.null(list_names)) {
@@ -31,14 +37,14 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep="." ) {
     }
     
     if (is.null(class)) {
-      if (is.list(item)) {
+      if ( is.list(item) && (!strict.lists) || class(item)[1] == "list") {
         res <- c(res, leaf_apply(item, f, class=NULL, name=item_name))
       } else {
         res <- c(res, list(f(item, item_name)))
         names(res)[length(res)] <- item_name
       }
     } else {
-      if ( length(intersect(class(item) , class)) > 0L ) {
+      if (inherits(item, class)) {
         res <- c(res, list(f(item, item_name)))
         names(res)[length(res)] <- item_name
       } else {
