@@ -20,43 +20,53 @@ cat(date())
 cat('\n')
 
 # Directory from which resampled data should be read.
-defaultDir <- "data_resample"
-# Directory into which objects should be saved for the EconData pacakge
-outputdir <- file.path("data_postprocessed")
+defaultInputDir <- "data_resample"
+# Directory into which post-processed data objects should be saved for the EconData pacakge
+defaultOutputDir <- file.path("data_postprocessed")
 
 # Provide a way to specify directory of resampled data
 option_list <- list(
   make_option(c("-S", "--Sources"), default="Calvin", 
               help="comma-separated data sources [default=%default]"),
-  make_option(c("-R", "--resamplePaths"),
+  make_option(c("-R", "--inputDir"),
               help=paste0("relative (comma-separated) paths to directory ",
                           "in which resampled data are stored. [default=",
-                          defaultDir,
-                          "/<Source>]"))
+                          defaultInputDir,
+                          "/<Source>]")),
+  make_option(c("-O", "--outputDir"),
+              help=paste0("relative path to directory ",
+                          "in which post-processed data are saved [default=",
+                          defaultOutputDir))
 )
 # Parse the option list
 opts <- parse_args(OptionParser(option_list=option_list))
 print(opts)
 
-# If resamplePaths was specified, split the resamplePaths at the commas.
-if (!is.null(opts$resamplePaths)){
-  opts$resamplePaths <- strsplit(opts$resamplePaths, ",")[[1]]
+# If inputDir was specified, split the inputDir at the commas.
+if (!is.null(opts$inputDir)){
+  opts$inputDir <- strsplit(opts$inputDir, ",")[[1]]
 }
 
-if (is.null(opts$resamplePaths)){
-  # Didn't specify a resample path. 
-  # Construct resamplePaths based on <Source>s given
+if (is.null(opts$inputDir)){
+  # Didn't specify an input directory for resample files.
+  # Construct opts$inputDir based on <Source>s given
   # Deal with multiple, comma-separated <Source>s
   srcs <- strsplit(opts$Source,",")[[1]]
   pathBuilderFunc <- function(src, pathPrefix){
     return(file.path(pathPrefix, src))
   }
-  opts$resamplePaths <- unlist(lapply(srcs, pathBuilderFunc, pathPrefix="data_resample"))
+  opts$inputDir <- unlist(lapply(srcs, pathBuilderFunc, pathPrefix="data_resample"))
 }
 
-for (resamplePath in opts$resamplePaths){
-  # Get the data Source from resamplePath that we're working on.
-  Source <- basename(resamplePath)
+if (is.null(opts$outputDir)){
+  # Didn't specify an output directory. 
+  # Use defaultOutputDir
+  opts$outputDir <- defaultOutputDir
+}
+
+for (inputPath in opts$inputDir){
+  # Get the data Source from inputPath that we're working on.
+  Source <- basename(inputPath)
   
   #
   # Load all coefficients. Do this task in parallel for a (minor) speed gain.
@@ -64,11 +74,11 @@ for (resamplePath in opts$resamplePaths){
   cat(paste("Loading and saving", Source, "coefficients...")); cat("\n")
   # .errorhandling="remove" skips missing countries.
   Coeffs <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
-    loadResampledData(path=resamplePath, country=country, kind="coeffs")
+    loadResampledData(path=inputPath, country=country, kind="coeffs")
   }
   # This next code can be used to ensure that the results are identical. 
   # But, you should change countryAbbrevs to sort(countryAbbrevs) above
-  # coeffs2 <- loadResampledData(path=opts$resamplePath, kind="coeffs")
+  # coeffs2 <- loadResampledData(path=opts$inputPath, kind="coeffs")
   # print(identical(coeffs, coeffs2))
   
   # Add the Source to the data frame.
@@ -81,11 +91,7 @@ for (resamplePath in opts$resamplePaths){
   Coeffs$energy <- relevelFactor(as.factor(Coeffs$energy), levs=energyLevels)
   
   # Save all coefficients in one data frame
-  # objectname <- paste0(Source, "_Coeffs")
-  # outpath <- file.path(outputdir, paste0(objectname, ".rda"))
-  # assign(objectname, Coeffs)
-  # save(list=objectname, file=outpath, compress="gzip")
-  outpath <- file.path(outputdir, paste0(Source, "_Coeffs.Rdata"))
+  outpath <- file.path(opts$outputDir, paste0(Source, "_Coeffs.Rdata"))
   saveRDS(Coeffs, file = outpath, compress = TRUE)
   
   #
@@ -94,7 +100,7 @@ for (resamplePath in opts$resamplePaths){
   cat(paste("Loading and saving", Source, "fitted models...")); cat("\n")
   # .errorhandling="remove" skips missing countries.
   Fitted <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
-    loadResampledData(path=resamplePath, country=country, kind="fitted")
+    loadResampledData(path=inputPath, country=country, kind="fitted")
   }
   # Relevel the country abbreviations, nestStr, nestStrParen, and energy in Fitted
   Fitted$Country <- relevelFactor(as.factor(Fitted$Country), levs=countryAbbrevs)
@@ -104,7 +110,7 @@ for (resamplePath in opts$resamplePaths){
   Fitted$energy <- relevelFactor(as.factor(Fitted$energy), levs=energyLevels)
   
   # Save all fitted models in one data frame
-  outpath <- file.path(outputdir, paste0(Source, "_Fitted.Rdata"))
+  outpath <- file.path(opts$outputDir, paste0(Source, "_Fitted.Rdata"))
   saveRDS(Fitted, file = outpath, compress = TRUE)
   
   # Create an archive of the results
