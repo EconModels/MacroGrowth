@@ -42,7 +42,7 @@ option_list <- list(
                           "in which original models are saved ",
                           "(one level above the <Source> directories) [default=",
                           defaultOutputDir)),
-  make_option(c("-M", "--maxRuns"), default=Inf, type = "integer", 
+  make_option(c("-M", "--maxRuns"), default=Inf, type="double", 
               help="Maximum number of models to fit [default=%default]"),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="Debug mode. No work is performed. Reports what would have been done. [default=%default]")
@@ -162,15 +162,14 @@ Process <-
     res
   }
 
-max_runs <- min( opts$maxRuns, length(source_list) )
 
 models <- 
   mcMap(Process, 
-        src = source_list[1:max_runs],
-        country = country_list[1:max_runs],
-        m = model_info_list[1:max_runs],
-        formula = formulaStr_list[1:max_runs],
-        countryData = countryData_list[1:max_runs],
+        src = head(source_list, opts$maxRuns),
+        country = head(country_list, opts$maxRuns),
+        m = head(model_info_list, opts$maxRuns),
+        formula = head(formulaStr_list, opts$maxRuns),
+        countryData = head(countryData_list, opts$maxRuns),
         mc.cores = parallel::detectCores() # based on minimal testing, -1 seems to slow this down.
   )
 
