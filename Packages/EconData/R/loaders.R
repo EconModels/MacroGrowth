@@ -209,17 +209,17 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
 #' 
 #' @param Source the data source to be loaded
 #' @param kind one of \code{coeffs} (to load file named <Source>_Coeffs), 
-#' \code{models} (to load file named <Source>_Models), or 
+#' \code{omodels} (to load file named <Source>_oModels), or 
 #' \code{fitted} (to load file named <Source>_Fitted).
 #' @param dir specifies the directory from which to load the files.
 #' Default is \code{data_postprocessed}.
 #' @export
-loadPostProcessedData <- function(Source, kind=c("coeffs","models","fitted"), dir=file.path("data_postprocessed")){
+loadPostProcessedData <- function(Source, kind=c("coeffs","omodels","fitted"), dir=file.path("data_postprocessed")){
   kind <- match.arg(kind)
   if (kind == "coeffs"){
     path <- file.path(dir, paste0(Source, "_Coeffs.Rdata"))
-  } else if (kind == "models"){
-    path <- file.path(dir, paste0(Source, "_Models.Rdata"))
+  } else if (kind == "omodels"){
+    path <- file.path(dir, paste0(Source, "_oModels.Rdata"))
   } else {
     if (kind != "fitted"){
       # This should never happen
