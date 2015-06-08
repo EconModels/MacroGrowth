@@ -24,6 +24,7 @@ core
 *_Fitted.Rdata
 *_Models.rda
 *_Models.Rdata
+*_oModels.Rdata
 #
 # Files related to running the batch.bash script
 #
