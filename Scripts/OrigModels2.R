@@ -153,15 +153,19 @@ Process <-
       error=function(e) {
         cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
         print(e)
-        NULL
+        oModel <- list() 
+        attr(oModel, "id") <- 
+          list(src = src, country=country, mod=mod, fs=fs)
+        oModel
       }
       )
     } else { 
-      res <- NULL 
+      res <- list()
+      attr(res, "id") <- 
+        list(src = src, country=country, mod=mod, fs=fs)
     }
     res
   }
-
 
 models <- 
   mcMap(Process, 
@@ -177,8 +181,15 @@ if (! opts$debug){
   # Change from flat list to a tree
   oModels <- list()
   for( i in 1:length(models) ) {
-    id <- attr(models[[i]], "id")
-    oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
+    if (!is.null(attr(models[[i]], "id"))) {
+      id <- attr(models[[i]], "id")
+      oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- 
+        if (isTRUE(all.equal(models[[i]], list(), check.attributes = FALSE)) ){
+          NULL
+        } else {
+          models[[i]]
+        }
+    }
   }
 }
 
