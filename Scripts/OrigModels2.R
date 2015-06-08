@@ -168,8 +168,8 @@ models <-
   )
 
 if (! opts$debug){
-  oModels <- list()
   # Change from flat list to a tree
+  oModels <- list()
   for( i in 1:length(models) ) {
     id <- attr(models[[i]], "id")
     oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
