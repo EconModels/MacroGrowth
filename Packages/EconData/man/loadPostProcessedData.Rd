@@ -4,15 +4,15 @@
 \alias{loadPostProcessedData}
 \title{Loads post-processed data files}
 \usage{
-loadPostProcessedData(Source, kind = c("coeffs", "models", "fitted"),
+loadPostProcessedData(Source, kind = c("coeffs", "omodels", "fitted"),
   dir = file.path("data_postprocessed"))
 }
 \arguments{
 \item{Source}{the data source to be loaded}
 
-\item{kind}{one of \code{coeffs} (to load file named <Source>_Coeffs),
-\code{models} (to load file named <Source>_Models), or
-\code{fitted} (to load file named <Source>_Fitted).}
+\item{kind}{one of \code{coeffs} (to load coefficients from a file named <Source>_Coeffs),
+\code{omodels} (to load original models from a file named <Source>_oModels), or
+\code{fitted} (to load fitted data to all resamples from a file named <Source>_Fitted).}
 
 \item{dir}{specifies the directory from which to load the files.
 Default is \code{data_postprocessed}.}
