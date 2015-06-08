@@ -162,34 +162,31 @@ models <-
         src = source_list,
         country = country_list,
         m = model_info_list,
-        formula = formula_list,
+        formula = formulaStr_list,
         countryData = countryData_list,
         mc.cores = parallel::detectCores() - 1
   )
 
-# Change from flat list to a tree
-for( i in 1:length(models) ) {
-  id <- attr(models[[i]], "id")
-  oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
+if (! opts$debug){
+  oModels <- list()
+  # Change from flat list to a tree
+  for( i in 1:length(models) ) {
+    id <- attr(models[[i]], "id")
+    oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
+  }
 }
 
 #
-# Save object to data_resample for inclusion in a future zipped version of all of the results.
+# Save oModels object to outputDir.
 #
-data_resample_dir <- file.path("data_resample", src)
-filename_Rdata <- "Models.Rdata"
-data_resample_path <- file.path(data_resample_dir, filename_Rdata)
-data_postprocessed_path <- file.path("data_postprocessed", paste0(src, "_", filename_Rdata))
+output_dir <- file.path(opts$outputDir, src)
+output_path <- file.path(output_dir, filename_Rdata)
 if (opts$debug){
-  cat(paste("Would have saved", data_resample_path)); cat("\n")
-  cat(paste("Would have saved", data_postprocessed_path)); cat("\n")
+  cat(paste("Would have saved", output_path)); cat("\n")
 } else {
-  cat(paste("Saving", data_resample_path, "...")); cat("\n")
-  dir.create(data_resample_dir, showWarnings=FALSE)
-  saveRDS(oModels, file=data_resample_path)  
-  # Save object so that it is available in the data_postprocessed directory
-  cat(paste("Saving", data_postprocessed_path, "...")); cat("\n")
-  saveRDS(oModels, file=data_postprocessed_path)
+  cat(paste("Saving", output_path, "...")); cat("\n")
+  dir.create(output_dir, showWarnings=FALSE)
+  saveRDS(oModels, file=output_path)  
 } 
 
 cat("\n\nDone!\n")
