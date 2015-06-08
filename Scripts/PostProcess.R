@@ -67,6 +67,13 @@ if (is.null(opts$outputDir)){
 for (inputPath in opts$inputDir){
   # Get the data Source from inputPath that we're working on.
   Source <- basename(inputPath)
+
+  #
+  # Copy the Models.Rdata file to the data_postprocessed directory with a different name
+  #
+  fromPath <- file.path(opts$inputDir, Source, "oModels.Rdata")
+  toPath <- file.path(opts$outputDir, paste0(Source, "_oModels.Rdata"))
+  file.copy(from = fromPath, to = toPath, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE, recursive = FALSE)
   
   #
   # Load all coefficients. Do this task in parallel for a (minor) speed gain.
@@ -95,7 +102,7 @@ for (inputPath in opts$inputDir){
   saveRDS(Coeffs, file = outpath, compress = TRUE)
   
   #
-  # Load all fitted models
+  # Load all fitted data
   #
   cat(paste("Loading and saving", Source, "fitted models...")); cat("\n")
   # .errorhandling="remove" skips missing countries.
