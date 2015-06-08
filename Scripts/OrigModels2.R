@@ -25,6 +25,9 @@ nestStr <- function(nest){
   paste(nest, collapse="")
 }
 
+defaultOutputDir <- "data_resample"
+filename_Rdata <- "oModels.Rdata"
+
 # Provide a way to specify data sources in a comma-separated list
 option_list <- list(
   make_option(c("-S", "--Sources"), default="Calvin",
@@ -33,6 +36,11 @@ option_list <- list(
               help="Runs fast models (skips CES with energy) [default=%default]"),
   make_option(c("-v", "--veryfast"), default=FALSE, action="store_true",
               help="Runs very fast models (skips CES altogether). Overrides -f. [default=%default]"),
+  make_option(c("-O", "--outputDir"), default=defaultOutputDir,
+              help=paste0("relative path to directory ",
+                          "in which original models are saved ",
+                          "(one level above the <Source> directories) [default=",
+                          defaultOutputDir)),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="Debug mode. No work is performed. Reports what would have been done. [default=%default]")
 )
@@ -100,7 +108,7 @@ for (src in Sources){
       for (f in m$formulaStr) {
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
-          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) ; cat ("\n")
           source_list <- c(source_list, src)
           country_list <- c(country_list, country)
           formulaStr_list <- c(formulaStr_list, formulaStr)
