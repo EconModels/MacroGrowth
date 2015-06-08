@@ -7,7 +7,7 @@
 naturalCoef(object, ...)
 }
 \arguments{
-\item{object}{the model object from which you want to extract the \code{meta} attribute.}
+\item{object}{the model object from which you want to extract the natural coefficients.}
 
 \item{...}{additional arguments}
 }
