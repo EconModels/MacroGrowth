@@ -18,6 +18,7 @@
 require(EconModels)
 require(EconData)
 require(optparse)
+require(parallel)
 
 nestStr <- function(nest){
   paste(nest, collapse="")
@@ -110,7 +111,7 @@ for (src in Sources){
           source_list <- c(source_list, src)
           country_list <- c(country_list, country)
           formulaStr_list <- c(formulaStr_list, formulaStr)
-          countryData_list <- c(countryData_list, countryData)
+          countryData_list[[length(countryData_list) + 1]] <- countryData
           model_info_list[[length(model_info_list) + 1]] <- m
           energy_list <- c(energy_list, energy)
         } # energy
@@ -137,7 +138,7 @@ Process <-
       # If we're not in debug mode, do the calculations.
       res <- tryCatch({
         oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
-        mod <- sub(pattern="Model", replacement="", x=m$fun)
+        mod <- sub("Model", "", x=m$fun)
         fs <- factorString(formula=formula, nest=m$dots$nest)
         attr(oModel, "id") <- 
           list(src = src, country=country, mod=mod, fs=fs)
