@@ -133,7 +133,7 @@ require(knitr)
 
 opts_chunk$set(
   # ********************************************************
-  eval=FALSE,
+  eval=TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
