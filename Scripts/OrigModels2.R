@@ -195,4 +195,5 @@ if (opts$debug){
   saveRDS(oModels, file=output_path)  
 } 
 
+cat(paste("Working Directory:", getwd()))
 cat("\n\nDone!\n")
