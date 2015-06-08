@@ -163,7 +163,7 @@ models <-
         m = model_info_list,
         formula = formulaStr_list,
         countryData = countryData_list,
-        mc.cores = parallel::detectCores() - 1
+        mc.cores = parallel::detectCores() # based on minimal testing, -1 seems to slow this down.
   )
 
 if (! opts$debug){
