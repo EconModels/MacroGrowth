@@ -7,15 +7,13 @@
 # "Scripts/OrigModels.R -S <Sources>"
 #
 
-# Results are stored in the file "data_resample/<Source>/Models.Rdata"
+# Results are stored in the file "outputDir/<Source>/Models.Rdata"
 # To load this data back in, do 
 # 
-# oModels <- readRDS(file="data_resample/<Source>/Models.Rdata")
+# oModels <- readRDS(file="outputDir/<Source>/Models.Rdata")
 #
 # To extract a model, do, for example
 # mod <- oModels$REXS$US$cd$`iK+iL+iQ`
-# 
-# Note, too, that <Source>_Models is an object in the EconData package.
 
 require(EconModels)
 require(EconData)
