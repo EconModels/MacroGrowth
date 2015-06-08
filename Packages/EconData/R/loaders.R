@@ -208,9 +208,9 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
 #' Loads post-processed data files
 #' 
 #' @param Source the data source to be loaded
-#' @param kind one of \code{coeffs} (to load file named <Source>_Coeffs), 
-#' \code{omodels} (to load file named <Source>_oModels), or 
-#' \code{fitted} (to load file named <Source>_Fitted).
+#' @param kind one of \code{coeffs} (to load coefficients from a file named <Source>_Coeffs), 
+#' \code{omodels} (to load original models from a file named <Source>_oModels), or 
+#' \code{fitted} (to load fitted data to all resamples from a file named <Source>_Fitted).
 #' @param dir specifies the directory from which to load the files.
 #' Default is \code{data_postprocessed}.
 #' @export
