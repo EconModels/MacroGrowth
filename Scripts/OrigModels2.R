@@ -167,6 +167,9 @@ models <-
         mc.cores = parallel::detectCores() - 1
   )
 
+print("models[[1]]:")
+print(models[[1]])
+
 if (! opts$debug){
   # Change from flat list to a tree
   oModels <- list()
