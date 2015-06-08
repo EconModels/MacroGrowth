@@ -52,7 +52,7 @@ nestMatch <- function( n1, n2 ) {
 #' Natural coefficients of a model
 #' 
 #' A convenience function that returns the "natural" coefficients of a model object.
-#' @param object the model object from which you want to extract the \code{meta} attribute.
+#' @param object the model object from which you want to extract the natural coefficients.
 #' @param ... additional arguments
 #' @return the coefficients of the model on a "natural" scale.
 #' @export
@@ -192,9 +192,24 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
   )
 }
 
+#' Fitting history of a model
+#' 
+#' An convenience function that returns the fitting history for a model.
+#' @param model the model object from which you want to extract the \code{history}.
+#' @return the fitting history for a model.
 #' @export
 getHistory <- function(model) {
   model$history
+}
+
+#' Data used to fit a model
+#' 
+#' An convenience function that returns the data that was used to fit a model.
+#' @param model the model object from which you want to extract the \code{data}.
+#' @return the data used to fit the model.
+#' @export
+getData <- function(model) {
+  model$data
 }
 
 #' Compute SSE from a model object

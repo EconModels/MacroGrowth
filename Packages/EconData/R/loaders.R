@@ -144,7 +144,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # if the model was created with save.data=TRUE.
     origModel <- modelsList[[1]]
     # Extract the data frame containing the actual (historical) data
-    actual <- subset( attr(origModel, "data"), select=c("Year", "iGDP", "Country") )
+    actual <- subset( getData(origModel), select=c("Year", "iGDP", "Country") )
     
     row.names(actual) <- NULL # Eliminates row names if they are present.
     
