@@ -15,10 +15,10 @@
 # To extract a model, do, for example
 # mod <- oModels$REXS$US$cd$`iK+iL+iQ`
 
-require(EconModels)
-require(EconData)
-require(optparse)
-require(parallel)
+suppressPackageStartupMessages( require(EconModels) )
+suppressPackageStartupMessages( require(EconData) )
+suppressPackageStartupMessages( require(optparse) )
+suppressPackageStartupMessages( require(parallel) )
 
 nestStr <- function(nest){
   paste(nest, collapse="")
@@ -35,11 +35,15 @@ option_list <- list(
               help="Runs fast models (skips CES with energy) [default=%default]"),
   make_option(c("-v", "--veryfast"), default=FALSE, action="store_true",
               help="Runs very fast models (skips CES altogether). Overrides -f. [default=%default]"),
+  make_option(c("-V", "--verbose"), default=FALSE, action="store_true",
+              help="More verbose output [default=%default]"),
   make_option(c("-O", "--outputDir"), default=defaultOutputDir,
               help=paste0("relative path to directory ",
                           "in which original models are saved ",
                           "(one level above the <Source> directories) [default=",
                           defaultOutputDir)),
+  make_option(c("-M", "--maxRuns"), default=Inf, type = "integer", 
+              help="Maximum number of models to fit [default=%default]"),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="Debug mode. No work is performed. Reports what would have been done. [default=%default]")
 )
@@ -107,7 +111,8 @@ for (src in Sources){
       for (f in m$formulaStr) {
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
-          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) ; cat ("\n")
+          if (opts$verbose)
+            cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) ; cat ("\n")
           source_list <- c(source_list, src)
           country_list <- c(country_list, country)
           formulaStr_list <- c(formulaStr_list, formulaStr)
@@ -133,7 +138,8 @@ Process <-
   )
   { 
     formula <- eval( parse( text= formulaStr ) )
-    cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+    if (opts$verbose)
+      cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
     if (! opts$debug){
       # If we're not in debug mode, do the calculations.
       res <- tryCatch({
@@ -156,13 +162,15 @@ Process <-
     res
   }
 
+max_runs <- min( opts$maxRuns, length(source_list) )
+
 models <- 
   mcMap(Process, 
-        src = source_list,
-        country = country_list,
-        m = model_info_list,
-        formula = formulaStr_list,
-        countryData = countryData_list,
+        src = source_list[1:max_runs],
+        country = country_list[1:max_runs],
+        m = model_info_list[1:max_runs],
+        formula = formulaStr_list[1:max_runs],
+        countryData = countryData_list[1:max_runs],
         mc.cores = parallel::detectCores() # based on minimal testing, -1 seems to slow this down.
   )
 
