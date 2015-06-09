@@ -3,7 +3,7 @@
 # This script rsyncs post-processed resampling results files 
 # from the directory specified by -p on dahl (or the default)
 # to the Packages/EconData/tmp_big_data directory on a local machine.
-# Files that are rsync-ed match the pattern "<SOURCE>_*.rda"
+# Files that are rsync-ed match the pattern "<SOURCE>_*"
 # 
 # IMPORTANT:
 # If you want to include the files in the EconData package for an analysis, 
@@ -40,7 +40,7 @@ option_list <- list(
 opts <- parse_args(OptionParser(
   description = paste0("Copies post-processed resampling results from dahl to a local machine. \n",
                        "Uses rsync over ssh, so running this script will require a password for login to dahl. \n",
-                       "Files that are rsync-ed match the pattern <SOURCE>_*.rda \n",
+                       "Files that are rsync-ed match the pattern <SOURCE>_* \n",
                        "Run this script from the Econ-Growth-R-Analysis directory on a local machine."),
   option_list=option_list))
 
