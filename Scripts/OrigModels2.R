@@ -7,10 +7,10 @@
 # "Scripts/OrigModels.R -S <Sources>"
 #
 
-# Results are stored in the file "outputDir/<Source>/Models.Rdata"
+# Results are stored in the file "outputDir/<Source>/oModels.rds"
 # To load this data back in, do 
 # 
-# oModels <- readRDS(file="outputDir/<Source>/Models.Rdata")
+# oModels <- readRDS(file="outputDir/<Source>/oModels.rds")
 #
 # To extract a model, do, for example
 # mod <- oModels$REXS$US$cd$`iK+iL+iQ`
@@ -198,24 +198,20 @@ if (! opts$debug){
 #
 output_dir <- file.path(opts$outputDir, src)
 oModels_path <- file.path(output_dir, filename_oModels)
-models_path <- file.path(output_dir, filename_models)
 if (opts$debug){
   cat(paste("Would have saved", oModels_path)) 
   cat("\n")
 } else {
   dir.create(output_dir, showWarnings=FALSE)
-  cat(paste("Saving", oModels_path, "...")) 
-  cat("\n")
+  cat(paste("Saving", oModels_path, "...")) ; cat("\n")
   saveRDS(oModels, file=oModels_path)
-  cat(paste("Saving", models_path, "...")) 
+  
+  cat(paste("Working Directory:", getwd()))
   cat("\n")
-  saveRDS( models, file=models_path)
+  cat(paste("Number of Models Attempted:", length(models)))
+  cat("\n")
+  cat(paste("Number of Models Saved:", 
+            length(leaf_apply(oModels, f=function(...) 1, strict.lists=TRUE))))
 } 
 
-cat(paste("Working Directory:", getwd()))
-cat("\n")
-cat(paste("Number of Models Attempted:", length(models)))
-cat("\n")
-cat(paste("Number of Models Saved:", 
-          length(leaf_apply(oModels, f=function(...) 1, strict.lists=TRUE))))
 cat("\n\nDone!\n")

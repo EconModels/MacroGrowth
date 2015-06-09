@@ -219,7 +219,7 @@ loadPostProcessedData <- function(Source, kind=c("coeffs","omodels","fitted"), d
   if (kind == "coeffs"){
     path <- file.path(dir, paste0(Source, "_Coeffs.Rdata"))
   } else if (kind == "omodels"){
-    path <- file.path(dir, paste0(Source, "_oModels.Rdata"))
+    path <- file.path(dir, paste0(Source, "_oModels.rds"))
   } else {
     if (kind != "fitted"){
       # This should never happen

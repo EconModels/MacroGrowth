@@ -10,7 +10,7 @@
 #' Any objects that are neither lists nor inherit from \code{class} will be ignored.
 #' @param strict.lists a logical.  If \code{TRUE}, an item will only be considered a list
 #' if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be 
-#' simpler than enumeratin all of the possible leaf classes using \code{class}.
+#' simpler than enumerating all of the possible leaf classes using \code{class}.
 #' @param is.parent a function of an item and item name that returns a logical
 #' indicating whether a node is a leaf.  See the default vaule for examples.
 #' @param name a prefix for the names in the resulting list
