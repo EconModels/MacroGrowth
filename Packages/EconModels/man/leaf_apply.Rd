@@ -4,18 +4,30 @@
 \alias{leaf_apply}
 \title{Applies a function to leaves of a list.}
 \usage{
-leaf_apply(l, f, class = NULL, name = "", sep = ".")
+leaf_apply(l, f, class = NULL, name = "", sep = ".",
+  strict.lists = FALSE, is.parent = if (strict.lists) function(x, n, ...) { 
+     class(x)[1] == "list" } else function(x, n, ...) {     is.list(x) &&
+  (is.null(class) || !inherits(x, as.character(class))) })
 }
 \arguments{
 \item{l}{the list to be traversed.}
 
 \item{f}{the function to be applied to the leaves of the list.}
 
-\item{class}{a list of classes to be matched.}
+\item{class}{a vector of class names.  All and only objects inheriting from any of
+these will be considered a leaf, even if they are also lists.
+Any objects that are neither lists nor inherit from \code{class} will be ignored.}
 
 \item{name}{a prefix for the names in the resulting list}
 
 \item{sep}{the separator to be used when creating the names of the leaves from the list nesting.}
+
+\item{strict.lists}{a logical.  If \code{TRUE}, an item will only be considered a list
+if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be
+simpler than enumeratin all of the possible leaf classes using \code{class}.}
+
+\item{is.parent}{a function of an item and item name that returns a logical
+indicating whether a node is a leaf.  See the default vaule for examples.}
 }
 \value{
 a flat, named list of the results of applying \code{f} to the leaves of \code{l}.

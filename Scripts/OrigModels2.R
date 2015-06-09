@@ -15,16 +15,18 @@
 # To extract a model, do, for example
 # mod <- oModels$REXS$US$cd$`iK+iL+iQ`
 
-require(EconModels)
-require(EconData)
-require(optparse)
+suppressPackageStartupMessages( require(EconModels) )
+suppressPackageStartupMessages( require(EconData) )
+suppressPackageStartupMessages( require(optparse) )
+suppressPackageStartupMessages( require(parallel) )
 
 nestStr <- function(nest){
   paste(nest, collapse="")
 }
 
 defaultOutputDir <- "data_resample"
-filename_Rdata <- "oModels.Rdata"
+filename_oModels <- "oModels.rds"
+filename_models <- "models.rds"
 
 # Provide a way to specify data sources in a comma-separated list
 option_list <- list(
@@ -34,11 +36,15 @@ option_list <- list(
               help="Runs fast models (skips CES with energy) [default=%default]"),
   make_option(c("-v", "--veryfast"), default=FALSE, action="store_true",
               help="Runs very fast models (skips CES altogether). Overrides -f. [default=%default]"),
+  make_option(c("-V", "--verbose"), default=FALSE, action="store_true",
+              help="More verbose output [default=%default]"),
   make_option(c("-O", "--outputDir"), default=defaultOutputDir,
               help=paste0("relative path to directory ",
                           "in which original models are saved ",
                           "(one level above the <Source> directories) [default=",
                           defaultOutputDir)),
+  make_option(c("-M", "--maxRuns"), default=Inf, type="double", 
+              help="Maximum number of models to fit [default=%default]"),
   make_option(c("-d", "--debug"), default=FALSE, action="store_true",
               help="Debug mode. No work is performed. Reports what would have been done. [default=%default]")
 )
@@ -106,11 +112,14 @@ for (src in Sources){
       for (f in m$formulaStr) {
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
-          cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) ; cat ("\n")
+          if (opts$verbose) {
+            cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) 
+            cat ("\n")
+          }
           source_list <- c(source_list, src)
           country_list <- c(country_list, country)
           formulaStr_list <- c(formulaStr_list, formulaStr)
-          countryData_list <- c(countryData_list, countryData)
+          countryData_list[[length(countryData_list) + 1]] <- countryData
           model_info_list[[length(model_info_list) + 1]] <- m
           energy_list <- c(energy_list, energy)
         } # energy
@@ -132,48 +141,55 @@ Process <-
   )
   { 
     formula <- eval( parse( text= formulaStr ) )
-    cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+    mod <- sub("Model", "", x=m$fun)
+    if (opts$verbose)
+      cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
     if (! opts$debug){
       # If we're not in debug mode, do the calculations.
-      res <- tryCatch({
-        oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
-        mod <- sub(pattern="Model", replacement="", x=m$fun)
-        fs <- factorString(formula=formula, nest=m$dots$nest)
-        attr(oModel, "id") <- 
-          list(src = src, country=country, mod=mod, fs=fs)
-        oModel
-      }, 
-      error=function(e) {
-        cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-        print(e)
-        NULL
-      }
+      fs <- factorString(formula=formula, nest=m$dots$nest)
+      res <- tryCatch(
+        do.call( m$fun, c( list( formula, data=countryData ), m$dots) ),
+        error=function(e) {
+          cat(paste("  *** Skipping", src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+          print(e)
+          oM <- list() 
+          attr(oM, "error") <- e
+          oM
+        }
       )
-    } else { 
-      res <- NULL 
+      attr(res, "id") <- 
+        list(src = src, country=country, mod=mod, fs=fs)
+    } else {  # debugging mode -- dont actually do the model fitting
+      res <- list()
+      attr(res, "id") <- 
+        list(src = src, country=country, mod=mod, fs=fs)
     }
     res
   }
 
 models <- 
   mcMap(Process, 
-        src = source_list,
-        country = country_list,
-        m = model_info_list,
-        formula = formulaStr_list,
-        countryData = countryData_list,
-        mc.cores = parallel::detectCores() - 1
+        src = head(source_list, opts$maxRuns),
+        country = head(country_list, opts$maxRuns),
+        m = head(model_info_list, opts$maxRuns),
+        formula = head(formulaStr_list, opts$maxRuns),
+        countryData = head(countryData_list, opts$maxRuns),
+        mc.cores = parallel::detectCores() # based on minimal testing, -1 seems to slow this down.
   )
-
-print("models[[1]]:")
-print(models[[1]])
 
 if (! opts$debug){
   # Change from flat list to a tree
   oModels <- list()
   for( i in 1:length(models) ) {
-    id <- attr(models[[i]], "id")
-    oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- models[[i]]
+    if (!is.null(attr(models[[i]], "id"))) {
+      id <- attr(models[[i]], "id")
+      oModels[[id$src]][[id$country]][[id$mod]][id$fs] <- 
+        if (isTRUE(all.equal(models[[i]], list(), check.attributes = FALSE)) ){
+          list(NULL)
+        } else {
+          list(models[[i]])
+        }
+    } 
   }
 }
 
@@ -181,13 +197,25 @@ if (! opts$debug){
 # Save oModels object to outputDir.
 #
 output_dir <- file.path(opts$outputDir, src)
-output_path <- file.path(output_dir, filename_Rdata)
+oModels_path <- file.path(output_dir, filename_oModels)
+models_path <- file.path(output_dir, filename_models)
 if (opts$debug){
-  cat(paste("Would have saved", output_path)); cat("\n")
+  cat(paste("Would have saved", oModels_path)) 
+  cat("\n")
 } else {
-  cat(paste("Saving", output_path, "...")); cat("\n")
   dir.create(output_dir, showWarnings=FALSE)
-  saveRDS(oModels, file=output_path)  
+  cat(paste("Saving", oModels_path, "...")) 
+  cat("\n")
+  saveRDS(oModels, file=oModels_path)
+  cat(paste("Saving", models_path, "...")) 
+  cat("\n")
+  saveRDS( models, file=models_path)
 } 
 
+cat(paste("Working Directory:", getwd()))
+cat("\n")
+cat(paste("Number of Models Attempted:", length(models)))
+cat("\n")
+cat(paste("Number of Models Saved:", 
+          length(leaf_apply(oModels, f=function(...) 1, strict.lists=TRUE))))
 cat("\n\nDone!\n")
