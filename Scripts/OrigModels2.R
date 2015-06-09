@@ -211,4 +211,6 @@ if (opts$debug){
 } 
 
 cat(paste("Working Directory:", getwd()))
+cat(paste("Number of Models Created:", length(models)))
+cat(paste("Number of Models Saved:", length(leaf_apply(oModels, strinct.lists=TRUE))))
 cat("\n\nDone!\n")
