@@ -204,13 +204,15 @@ output_dir <- file.path(opts$outputDir, src)
 oModels_path <- file.path(output_dir, filename_oModels)
 models_path <- file.path(output_dir, filename_models)
 if (opts$debug){
-  cat(paste("Would have saved", output_path)) 
+  cat(paste("Would have saved", oModels_path)) 
   cat("\n")
 } else {
-  cat(paste("Saving", output_path, "...")) 
-  cat("\n")
   dir.create(output_dir, showWarnings=FALSE)
+  cat(paste("Saving", oModels_path, "...")) 
+  cat("\n")
   saveRDS(oModels, file=oModels_path)
+  cat(paste("Saving", models_path, "...")) 
+  cat("\n")
   saveRDS( models, file=models_path)
 } 
 
