@@ -5,7 +5,9 @@
 \title{Applies a function to leaves of a list.}
 \usage{
 leaf_apply(l, f, class = NULL, name = "", sep = ".",
-  strict.lists = FALSE)
+  strict.lists = FALSE, is.parent = if (strict.lists) function(x, n, ...) { 
+     class(x)[1] == "list" } else function(x, n, ...) {     is.list(x) &&
+  (is.null(class) || !inherits(x, as.character(class))) })
 }
 \arguments{
 \item{l}{the list to be traversed.}
@@ -23,6 +25,9 @@ Any objects that are neither lists nor inherit from \code{class} will be ignored
 \item{strict.lists}{a logical.  If \code{TRUE}, an item will only be considered a list
 if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be
 simpler than enumeratin all of the possible leaf classes using \code{class}.}
+
+\item{is.parent}{a function of an item and item name that returns a logical
+indicating whether a node is a leaf.  See the default vaule for examples.}
 }
 \value{
 a flat, named list of the results of applying \code{f} to the leaves of \code{l}.

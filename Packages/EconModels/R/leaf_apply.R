@@ -11,6 +11,8 @@
 #' @param strict.lists a logical.  If \code{TRUE}, an item will only be considered a list
 #' if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be 
 #' simpler than enumeratin all of the possible leaf classes using \code{class}.
+#' @param is.parent a function of an item and item name that returns a logical
+#' indicating whether a node is a leaf.  See the default vaule for examples.
 #' @param name a prefix for the names in the resulting list
 #' @param sep the separator to be used when creating the names of the leaves from the list nesting.
 #' @return a flat, named list of the results of applying \code{f} to the leaves of \code{l}.
@@ -19,8 +21,15 @@
 #' \code{item_name} is the concatenated name of \code{item} created 
 #' by applying \code{sep} between node names in the list.
 #' @export
-leaf_apply <- function ( l, f, class=NULL, name="", sep=".", 
-                         strict.lists = FALSE ) {
+leaf_apply <- 
+  function ( 
+    l, f, class=NULL, name="", sep=".", 
+    strict.lists = FALSE, 
+    is.parent = if (strict.lists) 
+      function(x, n, ...) { class(x)[1] == "list" }
+    else 
+      function(x, n, ...) { is.list(x) && (is.null(class) || !inherits(x, as.character(class))) }
+  ){                      
   res <- list()
   list_names <- names(l)
   if (is.null(list_names)) {
@@ -36,21 +45,14 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep=".",
       item_name <- list_names[idx]
     }
     
-    if (is.null(class)) {
-      if ( is.list(item) && (!strict.lists || class(item)[1] == "list")) {
-        res <- c(res, leaf_apply(item, f, class=NULL, name=item_name))
-      } else {
-        res <- c(res, list(f(item, item_name)))
-        names(res)[length(res)] <- item_name
-      }
+    if (is.parent(item, item_name)) {
+      # descend
+      res <- c(res, leaf_apply(item, f, class=class, name=item_name))
     } else {
-      if (inherits(item, class)) {
+      if (is.null(class) || inherits(item, as.character(class))) {
+        # process leaf
         res <- c(res, list(f(item, item_name)))
         names(res)[length(res)] <- item_name
-      } else {
-        if ( is.list(item) && (!strict.lists || class(item)[1] == "list") ) {
-          res <- c(res, leaf_apply(item, f, class=class, name=item_name)) 
-        }
       }
     }
   }
