@@ -141,28 +141,22 @@ Process <-
   )
   { 
     formula <- eval( parse( text= formulaStr ) )
+    mod <- sub("Model", "", x=m$fun)
     if (opts$verbose)
       cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
     if (! opts$debug){
       # If we're not in debug mode, do the calculations.
       fs <- factorString(formula=formula, nest=m$dots$nest)
-      res <- tryCatch({
-        oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
-        mod <- sub("Model", "", x=m$fun)
-        attr(oModel, "id") <- 
-          list(src = src, country=country, mod=mod, fs=fs)
-        oModel
-      }, 
-      error=function(e) {
-        cat(paste0("  *** Skipping ", energy, " for ", country, "\n"))
-        print(e)
-        oModel <- list() 
-        attr(oModel, "id") <- 
-          list(src = src, country=country, mod=mod, fs=fs)
-        attr(oModel, "error") <- e
-        oModel
-      }
+      res <- tryCatch(
+        do.call( m$fun, c( list( formula, data=countryData ), m$dots) ),
+        error=function(e) {
+          cat(paste("  *** Skipping", src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+          print(e)
+          list() 
+        }
       )
+      attr(res, "id") <- 
+        list(src = src, country=country, mod=mod, fs=fs)
     } else {  # debugging mode -- dont actually do the model fitting
       res <- list()
       attr(res, "id") <- 
