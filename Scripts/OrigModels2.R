@@ -7,10 +7,10 @@
 # "Scripts/OrigModels.R -S <Sources>"
 #
 
-# Results are stored in the file "outputDir/<Source>/oModels.Rdata"
+# Results are stored in the file "outputDir/<Source>/oModels.rds"
 # To load this data back in, do 
 # 
-# oModels <- readRDS(file="outputDir/<Source>/oModels.Rdata")
+# oModels <- readRDS(file="outputDir/<Source>/oModels.rds")
 #
 # To extract a model, do, for example
 # mod <- oModels$REXS$US$cd$`iK+iL+iQ`

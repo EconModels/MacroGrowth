@@ -25,6 +25,7 @@ core
 *_Models.rda
 *_Models.Rdata
 *_oModels.Rdata
+*_oModels.rds
 #
 # Files related to running the batch.bash script
 #
