@@ -210,12 +210,13 @@ if (opts$debug){
   cat(paste("Saving", models_path, "...")) 
   cat("\n")
   saveRDS( models, file=models_path)
+  
+  cat(paste("Working Directory:", getwd()))
+  cat("\n")
+  cat(paste("Number of Models Attempted:", length(models)))
+  cat("\n")
+  cat(paste("Number of Models Saved:", 
+            length(leaf_apply(oModels, f=function(...) 1, strict.lists=TRUE))))
 } 
 
-cat(paste("Working Directory:", getwd()))
-cat("\n")
-cat(paste("Number of Models Attempted:", length(models)))
-cat("\n")
-cat(paste("Number of Models Saved:", 
-          length(leaf_apply(oModels, f=function(...) 1, strict.lists=TRUE))))
 cat("\n\nDone!\n")
