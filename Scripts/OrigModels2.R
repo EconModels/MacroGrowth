@@ -144,9 +144,9 @@ Process <-
     mod <- sub("Model", "", x=m$fun)
     if (opts$verbose)
       cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
+    fs <- factorString(formula=formula, nest=m$dots$nest)
     if (! opts$debug){
       # If we're not in debug mode, do the calculations.
-      fs <- factorString(formula=formula, nest=m$dots$nest)
       res <- tryCatch(
         do.call( m$fun, c( list( formula, data=countryData ), m$dots) ),
         error=function(e) {
