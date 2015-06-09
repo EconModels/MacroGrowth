@@ -69,7 +69,7 @@ opts$lpath <- file.path(getwd(), opts$lpath)
 # -v gives verbose rsync output so that status can be monitored. Use -vv or -vvv for more verbosity.
 # -t preserves time stamps on files.
 # -e ssh indicates ssh protocol should be used.
-rsync_opts <- "-v -t -e ssh"
+rsync_opts <- '-v -t -e "ssh -p 22122"'
 
 if (opts$debug){
   # Add a -n option to the rsync command.
