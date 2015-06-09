@@ -80,7 +80,7 @@ print(toPath)
   #
   # Load all coefficients. Do this task in parallel for a (minor) speed gain.
   #
-  cat(paste("Loading and saving", Source, "coefficients...")); cat("\n")
+  cat(paste("Loading", Source, "coefficients...")); cat("\n")
   # .errorhandling="remove" skips missing countries.
   Coeffs <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
     loadResampledData(path=inputPath, country=country, kind="coeffs")
@@ -101,12 +101,13 @@ print(toPath)
   
   # Save all coefficients in one data frame
   outpath <- file.path(opts$outputDir, paste0(Source, "_Coeffs.Rdata"))
+  cat(paste("Saving", Source, "coefficients to", outpath))
   saveRDS(Coeffs, file = outpath, compress = TRUE)
   
   #
   # Load all fitted data
   #
-  cat(paste("Loading and saving", Source, "fitted models...")); cat("\n")
+  cat(paste("Loading", Source, "fitted models...")); cat("\n")
   # .errorhandling="remove" skips missing countries.
   Fitted <- foreach(country=countryAbbrevs, .combine=rbind, .errorhandling="remove") %dopar% {
     loadResampledData(path=inputPath, country=country, kind="fitted")
@@ -120,6 +121,7 @@ print(toPath)
   
   # Save all fitted models in one data frame
   outpath <- file.path(opts$outputDir, paste0(Source, "_Fitted.Rdata"))
+  cat(paste("Saving", Source, "fitted to", outpath))
   saveRDS(Fitted, file = outpath, compress = TRUE)
   
   # Create an archive of the results
