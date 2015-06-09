@@ -111,8 +111,10 @@ for (src in Sources){
       for (f in m$formulaStr) {
         for (energy in if (grepl("energy", f))  Energies else 'noEnergy') {
           formulaStr <- sub( "energy", energy, f ) 
-          if (opts$verbose)
-            cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) ; cat ("\n")
+          if (opts$verbose) {
+            cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") ) 
+            cat ("\n")
+          }
           source_list <- c(source_list, src)
           country_list <- c(country_list, country)
           formulaStr_list <- c(formulaStr_list, formulaStr)
@@ -199,9 +201,11 @@ if (! opts$debug){
 output_dir <- file.path(opts$outputDir, src)
 output_path <- file.path(output_dir, filename_Rdata)
 if (opts$debug){
-  cat(paste("Would have saved", output_path)); cat("\n")
+  cat(paste("Would have saved", output_path)) 
+  cat("\n")
 } else {
-  cat(paste("Saving", output_path, "...")); cat("\n")
+  cat(paste("Saving", output_path, "...")) 
+  cat("\n")
   dir.create(output_dir, showWarnings=FALSE)
   saveRDS(oModels, file=output_path)  
 } 
