@@ -25,7 +25,8 @@ nestStr <- function(nest){
 }
 
 defaultOutputDir <- "data_resample"
-filename_Rdata <- "oModels.Rdata"
+filename_oModels <- "oModels.rds"
+filename_models <- "models.rds"
 
 # Provide a way to specify data sources in a comma-separated list
 option_list <- list(
@@ -144,10 +145,10 @@ Process <-
       cat ( paste(src, country, m$fun, formulaStr, m$dots, sep=" : ") )
     if (! opts$debug){
       # If we're not in debug mode, do the calculations.
+      fs <- factorString(formula=formula, nest=m$dots$nest)
       res <- tryCatch({
         oModel <- do.call( m$fun, c( list( formula, data=countryData ), m$dots) )
         mod <- sub("Model", "", x=m$fun)
-        fs <- factorString(formula=formula, nest=m$dots$nest)
         attr(oModel, "id") <- 
           list(src = src, country=country, mod=mod, fs=fs)
         oModel
@@ -158,10 +159,11 @@ Process <-
         oModel <- list() 
         attr(oModel, "id") <- 
           list(src = src, country=country, mod=mod, fs=fs)
+        attr(oModel, "error") <- e
         oModel
       }
       )
-    } else { 
+    } else {  # debugging mode -- dont actually do the model fitting
       res <- list()
       attr(res, "id") <- 
         list(src = src, country=country, mod=mod, fs=fs)
@@ -191,7 +193,7 @@ if (! opts$debug){
         } else {
           list(models[[i]])
         }
-    }
+    } 
   }
 }
 
@@ -199,7 +201,8 @@ if (! opts$debug){
 # Save oModels object to outputDir.
 #
 output_dir <- file.path(opts$outputDir, src)
-output_path <- file.path(output_dir, filename_Rdata)
+oModels_path <- file.path(output_dir, filename_oModels)
+models_path <- file.path(output_dir, filename_models)
 if (opts$debug){
   cat(paste("Would have saved", output_path)) 
   cat("\n")
@@ -207,7 +210,8 @@ if (opts$debug){
   cat(paste("Saving", output_path, "...")) 
   cat("\n")
   dir.create(output_dir, showWarnings=FALSE)
-  saveRDS(oModels, file=output_path)  
+  saveRDS(oModels, file=oModels_path)
+  saveRDS( models, file=models_path)
 } 
 
 cat(paste("Working Directory:", getwd()))
