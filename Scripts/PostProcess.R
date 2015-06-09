@@ -36,7 +36,7 @@ option_list <- list(
   make_option(c("-O", "--outputDir"),
               help=paste0("relative path to directory ",
                           "in which post-processed data are saved [default=",
-                          defaultOutputDir))
+                          defaultOutputDir,"]"))
 )
 # Parse the option list
 opts <- parse_args(OptionParser(option_list=option_list))
