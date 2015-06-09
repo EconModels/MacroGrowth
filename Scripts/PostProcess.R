@@ -69,7 +69,8 @@ for (inputPath in opts$inputDir){
   Source <- basename(inputPath)
 
   #
-  # Copy the Models.Rdata file to the data_postprocessed directory with a different name
+  # Copy the oModels.Rdata file to the data_postprocessed directory with the 
+  # <Source> prepended.
   #
   fromPath <- file.path(opts$inputDir, Source, "oModels.Rdata")
   toPath <- file.path(opts$outputDir, paste0(Source, "_oModels.Rdata"))
