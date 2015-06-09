@@ -152,7 +152,9 @@ Process <-
         error=function(e) {
           cat(paste("  *** Skipping", src, country, m$fun, formulaStr, m$dots, sep=" : ") )
           print(e)
-          list() 
+          oM <- list() 
+          attr(oM, "error") <- e
+          oM
         }
       )
       attr(res, "id") <- 
