@@ -37,7 +37,7 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep=".",
     }
     
     if (is.null(class)) {
-      if ( is.list(item) && (!strict.lists) || class(item)[1] == "list") {
+      if ( is.list(item) && (!strict.lists || class(item)[1] == "list")) {
         res <- c(res, leaf_apply(item, f, class=NULL, name=item_name))
       } else {
         res <- c(res, list(f(item, item_name)))
@@ -48,7 +48,9 @@ leaf_apply <- function ( l, f, class=NULL, name="", sep=".",
         res <- c(res, list(f(item, item_name)))
         names(res)[length(res)] <- item_name
       } else {
-        if (is.list(item)) { res <- c(res, leaf_apply(item, f, class=class, name=item_name)) }
+        if ( is.list(item) && (!strict.lists || class(item)[1] == "list") ) {
+          res <- c(res, leaf_apply(item, f, class=class, name=item_name)) 
+        }
       }
     }
   }
