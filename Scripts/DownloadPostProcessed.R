@@ -57,7 +57,7 @@ print(opts)
 # Build paths for remote files to be trasnferred to the local machine.
 remote_files <- unlist(lapply(opts$Source, 
                               function(Source, dir) {
-                                file.path(dir, paste0(Source, "_*.Rdata"))
+                                file.path(dir, paste0(Source, "_*"))
                                 }, 
                               dir=opts$path))
 remote_files <- paste(remote_files, collapse = " ")
