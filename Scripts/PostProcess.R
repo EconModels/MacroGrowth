@@ -72,10 +72,12 @@ for (inputPath in opts$inputDir){
   # Copy the oModels.rds file to the data_postprocessed directory with the 
   # <Source> prepended.
   #
-  fromPath <- file.path(opts$inputDir, Source, "oModels.rds")
+  fromPath <- file.path(inputPath, "oModels.rds")
+print(fromPath)
   toPath <- file.path(opts$outputDir, paste0(Source, "_oModels.rds"))
+print(toPath)
   file.copy(from = fromPath, to = toPath, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE, recursive = FALSE)
-  
+stop()
   #
   # Load all coefficients. Do this task in parallel for a (minor) speed gain.
   #
