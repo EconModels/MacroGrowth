@@ -101,7 +101,7 @@ print(toPath)
   
   # Save all coefficients in one data frame
   outpath <- file.path(opts$outputDir, paste0(Source, "_Coeffs.Rdata"))
-  cat(paste("Saving", Source, "coefficients to", outpath))
+  cat(paste("Saving", Source, "coefficients to", outpath)); cat("\r")
   saveRDS(Coeffs, file = outpath, compress = TRUE)
   
   #
@@ -121,7 +121,7 @@ print(toPath)
   
   # Save all fitted models in one data frame
   outpath <- file.path(opts$outputDir, paste0(Source, "_Fitted.Rdata"))
-  cat(paste("Saving", Source, "fitted to", outpath))
+  cat(paste("Saving", Source, "fitted to", outpath)) ; cat("\r")
   saveRDS(Fitted, file = outpath, compress = TRUE)
   
   # Create an archive of the results
