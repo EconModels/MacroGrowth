@@ -185,11 +185,11 @@ if (! opts$debug){
   for( i in 1:length(models) ) {
     if (!is.null(attr(models[[i]], "id"))) {
       id <- attr(models[[i]], "id")
-      oModels[[id$src]][[id$country]][[id$mod]][[id$fs]] <- 
+      oModels[[id$src]][[id$country]][[id$mod]][id$fs] <- 
         if (isTRUE(all.equal(models[[i]], list(), check.attributes = FALSE)) ){
-          NULL
+          list(NULL)
         } else {
-          models[[i]]
+          list(models[[i]])
         }
     }
   }
