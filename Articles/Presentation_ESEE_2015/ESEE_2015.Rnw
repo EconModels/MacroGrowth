@@ -111,6 +111,7 @@ require(reshape2)
 require(ggplot2)
 require(mosaic)
 require(xtable)
+require(knitr)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -123,7 +124,6 @@ require(xtable)
 # ********************************************************
 rerunModels=FALSE
 # ********************************************************
-require(knitr)
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
@@ -750,12 +750,6 @@ fitted_and_resid_data$nest <- relevelFactor(as.factor(fitted_and_resid_data$nest
 
 # Make data viewing easier
 fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, energy, nest)
-
-# Calculate p values for groups of Dr values.
-Dr.t.values <- fitted_and_resid_data %>% 
-  group_by(Country, model, flavor, energy, nest) %>% 
-  summarize(Dr.mean = mean(Dr), Dr.p.value = stats::t.test(Dr, alternative = "less")[["p.value"]])
-Dr.t.values <- arrange(ungroup(Dr.t.values), Country, model, flavor, energy, nest)
 @
 
 
@@ -854,40 +848,6 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest == "lek" | nest=
 %
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
-@
-
-The set of $\Delta r$ values for each combination of 
-country~(PT or UK), 
-model~(Cobb-Douglas or CES),
-flavor~(Unadjusted or Quality-adjusted), and
-nest~[($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
-forms a set of numbers (one for each year) 
-that can be assessed for statistical significance
-compared to zero by a t-test.
-The null hypothesis of the t-test is that the mean of each group is
-equal to zero. 
-The alternative hypothesis is that the mean is less than zero.
-Smaller p-values indicate increasing confidence that the 
-mean is actually less than zero.
-Table~\ref{tab:Dr_p_values} summarizes the mean values for $\Delta r$
-and the associated p-values.
-%
-<<MyXTableFunction>>=
-myXTable <- function(data, caption, label, digits=2){
-  table <- xtable(data, caption=caption, label=label, digits=digits)
-  print(table, 
-        caption.placement="top", 
-        size="\\tiny", 
-        include.rownames=FALSE, 
-        math.style.negative=TRUE)
-}
-@
-%
-<<Dr_p_values, results="asis">>=
-myXTable(Dr.t.values,
-         caption="Means and p values for $\\Delta r$.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
 @
 
 
@@ -1053,6 +1013,7 @@ dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl"))
 
 For now, I've organized the analysis around questions that we would like to answer.
 
+
 %++++++++++++++++++++++++++++++
 \subsection{Does quality-adjusting the factors of production 
             decrease the mean squared error and/or the Solow residual?} 
@@ -1083,6 +1044,17 @@ the fitting residuals ($mse$)
 relative to the unadjusted, no-energy condition.
 
 Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
+%
+<<MyXTableFunction>>=
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+}
+@
 %
 <<DSRmse_CD, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
@@ -1140,6 +1112,83 @@ ggplot(data=filter(AllCoeffs, model=="CES")) +
   ylab(expression(Delta * lambda)) +
   xy_theme() +
   theme(legend.title=element_blank())
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Are the means of the fitting residuals 
+            significantly different from zero?} 
+\label{sec:fitting_residuals_different_from_zero}
+%++++++++++++++++++++++++++++++
+
+The set of fitting residual values~($r_i$)
+for each combination of 
+country~(PT or UK), 
+model~(Cobb-Douglas or CES),
+flavor~(Unadjusted or Quality-adjusted), 
+energy~(with or without), and
+nest~[($kl$), ($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
+can be assessed for statistical significance
+compared to zero by a t-test.
+The null hypothesis for the t-test is that the mean of each group is
+equal to zero, and 
+the alternative hypothesis is that the mean is not equal to zero.
+Smaller p-values indicate increasing confidence that the 
+mean is different from zero. 
+We expect that p-values will be large (close to unity), 
+because residuals are expected to be small (close to zero).
+Indeed, that is the case.
+Table~\ref{tab:r_p_values} summarizes the mean 
+and associated p-values values for the fitting residuals~($r_i$).
+%
+<<r_p_values, results="asis">>=
+# Calculate p values for groups of fitting residuals.
+r.t.values <- fitted_and_resid_data %>% 
+  group_by(Country, model, flavor, energy, nest) %>% 
+  summarize(Residuals.mean = mean(Residuals), Residuals.p.value = stats::t.test(Residuals)[["p.value"]])
+r.t.values <- arrange(ungroup(r.t.values), Country, model, flavor, energy, nest)
+# Display the values in a table
+myXTable(r.t.values,
+         caption="Means and p-values for fitting residuals~($r_i$).",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does quality-adjusting the factors of production or including energy
+            decrease the fitting residuals in a statistically-significant manner?} 
+\label{sec:quality_adj_energy_and_fitting_residual}
+%++++++++++++++++++++++++++++++
+
+The set of annual $\Delta r$ values for each combination of 
+country~(PT or UK), 
+model~(Cobb-Douglas or CES),
+flavor~(Unadjusted or Quality-adjusted), 
+energy~(with or without), and
+nest~[($kl$), ($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
+can be assessed for statistical significance
+compared to zero by a t-test.
+The null hypothesis for the t-test is that the mean of each group is
+equal to zero, and 
+the alternative hypothesis is that the mean is less than zero.
+Smaller p-values indicate increasing confidence that the 
+mean is actually less than zero.
+Table~\ref{tab:Dr_p_values} summarizes the mean 
+and associated p-values values for $\Delta r$.
+%
+<<Dr_p_values, results="asis">>=
+# Calculate p values for groups of Dr values.
+Dr.t.values <- fitted_and_resid_data %>% 
+  group_by(Country, model, flavor, energy, nest) %>% 
+  summarize(Dr.mean = mean(Dr), Dr.p.value = stats::t.test(Dr, alternative = "less")[["p.value"]])
+Dr.t.values <- arrange(ungroup(Dr.t.values), Country, model, flavor, energy, nest)
+# Display the values in a table
+myXTable(Dr.t.values,
+         caption="Means and p-values for $\\Delta r$.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
 @
 
 
@@ -2137,6 +2186,161 @@ The time derivatives $\left(
 \frac{\mathrm{d} x_3}{\mathrm{d} t} \right)$
 can be approximated from historical data
 by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Thoughts on the ``dynamic'' Solow residual}
+\label{sec:thoughts_dynamic_sr}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
+for a ``dynamic'' Solow residual 
+for Cobb-Douglas and CES production functions.
+However, these approaches conflate 
+stochastic error terms and the time-dependent contribution of ``technology'' 
+to economic growth
+in one variable~($\lambda_{i,j}$).
+In this appendix, we let the Solow residual 
+(expressed as time-independent $\lambda$)
+stand on its own and try to separate the stochastic and time-dependent
+aspects of the fitting residuals~($r_i$).
+Note: this section is speculative, and we need feedback from Marco and Randy 
+before moving ahead with a presentation or publication based on this work.
+
+We can re-state the models (in general) as
+%
+\begin{equation} \label{eq:general_y}
+  y_i = \hat{y}_i \epsilon_i
+\end{equation}
+%
+where $\epsilon_i$ is a multiplicative error term, 
+$\hat{y}_i$ is the predicted economic output, and
+$\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
+(For the Cobb-Douglas model, $f = \theta A k^\alpha l^\beta e^\gamma$.)
+
+Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
+%
+\begin{equation} \label{eq:ln_y}
+  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i
+\end{equation}
+%
+which can be rearranged to show
+%
+\begin{equation} \label{eq:lny_prep_for_r}
+  \ln y_i - \ln \hat{y}_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Using Equation~\ref{eq:log-residuals}, we can write
+%
+\begin{equation} \label{eq:r_epsilon}
+  r_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Our concern is that the residuals may have a time-dependent component 
+and a stochastic component.
+To decompose, we can define
+%
+\begin{equation} \label{eq:epsilon_definition}
+  \epsilon_i = \mathrm{e}^{m(t_i - t_0)} \mathrm{e}^{\varepsilon_i^*} \; .
+\end{equation}
+%
+Substituting Equation~\ref{eq:epsilon_definition} into \ref{eq:r_epsilon} yields
+%
+\begin{equation} \label{eq:r_for_correlation}
+  r_i = m (t_i - t_0) + \varepsilon_i^* \; .
+\end{equation}
+%
+where
+$m$ is a slope and captures the linear (in natural logarithmic space), 
+time-dependent component of $r_i$. 
+$\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
+Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$).
+%
+\begin{equation} \label{eq:r_regression_eqn}
+  r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
+\end{equation}
+%
+In Equation~\ref{eq:r_regression_eqn},
+$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$,
+(Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
+by Equation~\ref{eq:r_epsilon}.
+Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
+is equivalent to estimating the time-dependent, time-independent, and stochastic
+components, respectively, of the multiplicative errors~($\epsilon_i$).)
+This regression is equivalent to performing a linear fit to data in 
+Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
+
+For PT, Cobb-Douglas, unadjusted, without energy, we obtain the following:
+%
+<<residual_correlation, echo=TRUE>>=
+mod <- models$PT$unadjusted$noE$CD
+r_regression <- lm(formula = resid(mod) ~ mod$data$iYear)
+print(summary(r_regression))
+@
+%
+Note that the estimate for the coefficient in front of \texttt{mod\$data\$iYear}
+($m$ in Equation~\ref{eq:r_for_correlation})
+is incredibly small relative to the scale of the residuals~($r_i$),
+\Sexpr{coef(r_regression)[[2]]}, 
+indicating that there is little 
+linear time-dependent information in the residuals~($r_i$).
+This result is the same as saying that 
+the slope of a line fitted through the 
+PT, Unadjusted, Without energy data 
+in Figure~\ref{fig:Graphs CD-resid}
+is (effectively) zero.
+There is (effectively) no linear time trend in the residuals.
+
+Furthermore, the intercept ($b$ in Equation~\ref{eq:r_for_correlation})
+is very small relative to the scale of the residuals~($r_i$),
+\Sexpr{coef(r_regression)[[1]]}, 
+indicating that there is little time-independent information in the residuals~($r_i$).
+This result is the same as saying that the line fitted to the
+PT, Unadjusted, Without energy 
+data in Figure~\ref{fig:Graphs CD-resid}
+is nearly coincident with the $x$-axis.
+
+Almost all of the information in the residuals~($r_i$)
+is stochastic and captured by the $\varepsilon_i^*$ term.
+
+Perhaps Marco can help us interpret the rest of the
+output here (\texttt{F-statistic}, \texttt{p-value}, etc.).
+(An aside: what about fitting a quadratic curve,
+instead of a line, 
+through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
+
+We can compare $r_i$ and $\varepsilon_i^*$, graphically,
+but the result is uninteresting. 
+We would expect $r_i$ and $\varepsilon_i^*$
+to be equal to each other, because
+(a) $m (t_i - t_0) \ll \max(r_i)$
+for any value of $t_i$
+and
+(b) $b \ll \max(r_i)$.
+Indeed, Figure~\ref{fig:Residuals_comparison}
+shows this is the case.
+%
+<<Residuals_comparison, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Comparison between $\\varepsilon_i^*$ and $r_i$">>=
+resids_comparison_df <- data.frame(list(iYear=mod$data$iYear, r=resid(mod), epsistar = resid(r_regression)))
+# resids_comparison_df <- melt(resids_comparison_df, measure.vars=c(r, epsistar), value.name="value", 
+#                              variable.name="name")
+ggplot(resids_comparison_df) + 
+  geom_point(mapping=aes(x=r, y=epsistar)) + 
+  xlab(expression(r[i])) +
+  ylab(expression(epsilon[i]^"*")) +
+  xy_theme()
+@
+%
+I'm not sure where this leaves us.
+Marco and I agreed that I would re-derive the ``dynamic'' Solow residual
+equation while properly including the multiplicative error term~($\epsilon_i$).
+I think I have done that, but the results aren't terribly interesting.
+There is little (linear) time-dependent~($m$) or 
+time-independent~($b$) 
+information in the residuals~($r_i$),
+as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
+
+Perhaps there is another direction in which I should go with this analysis?
 
 \end{document}
 
