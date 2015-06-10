@@ -217,6 +217,16 @@ getData.default <- function(object, ...) {
   object$data
 }
 
+#' @export
+getData.lm <- function(object, full = TRUE, ...) {
+  if (full) {
+    eval(object$call[["data"]], environment(object$call[["formula"]]))
+  } else {
+    model.frame(object, ...)
+  }
+}
+
+
 #' Compute SSE from a model object
 #' 
 #' Compute SSE from a model object and also check that certain constraints are met
