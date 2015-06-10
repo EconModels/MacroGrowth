@@ -750,6 +750,12 @@ fitted_and_resid_data$nest <- relevelFactor(as.factor(fitted_and_resid_data$nest
 
 # Make data viewing easier
 fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, energy, nest)
+
+# Calculate p values for groups of Dr values.
+Dr.t.values <- fitted_and_resid_data %>% 
+  group_by(Country, model, flavor, energy, nest) %>% 
+  summarize(Dr.mean = mean(Dr), Dr.p.value = stats::t.test(Dr, alternative = "less")[["p.value"]])
+Dr.t.values <- arrange(ungroup(Dr.t.values), Country, model, flavor, energy, nest)
 @
 
 
@@ -848,6 +854,40 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest == "lek" | nest=
 %
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
+@
+
+The set of $\Delta r$ values for each combination of 
+country~(PT or UK), 
+model~(Cobb-Douglas or CES),
+flavor~(Unadjusted or Quality-adjusted), and
+nest~[($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
+forms a set of numbers (one for each year) 
+that can be assessed for statistical significance
+compared to zero by a t-test.
+The null hypothesis of the t-test is that the mean of each group is
+equal to zero. 
+The alternative hypothesis is that the mean is less than zero.
+Smaller p-values indicate increasing confidence that the 
+mean is actually less than zero.
+Table~\ref{tab:Dr_p_values} summarizes the mean values for $\Delta r$
+and the associated p-values.
+%
+<<MyXTableFunction>>=
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+}
+@
+%
+<<Dr_p_values, results="asis">>=
+myXTable(Dr.t.values,
+         caption="Means and p values for $\\Delta r$.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
 @
 
 
@@ -1043,17 +1083,6 @@ the fitting residuals ($mse$)
 relative to the unadjusted, no-energy condition.
 
 Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
-%
-<<MyXTableFunction>>=
-myXTable <- function(data, caption, label, digits=2){
-  table <- xtable(data, caption=caption, label=label, digits=digits)
-  print(table, 
-        caption.placement="top", 
-        size="\\tiny", 
-        include.rownames=FALSE, 
-        math.style.negative=TRUE)
-}
-@
 %
 <<DSRmse_CD, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
