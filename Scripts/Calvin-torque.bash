@@ -17,21 +17,22 @@
 # Scripts/Calvin_batch.bash "-n 1000 -C"
 
 
-LOC_PATH=$PWD # Assuming that we're running from the top directory of the repository for this script
-echo $LOC_PATH
+## This local path stuff wasn't being used anywhere
+#
+# LOC_PATH=$PWD # Assuming that we're running from the top directory of the repository for this script
+# echo $LOC_PATH
+# OUTDIR="$LOC_PATH/data_resample/$SRC"
+# cd $LOC_PATH
+
 
 EXEC="Scripts/batchEcon.R"
 
 SRC="Calvin"
 
-OUTDIR="$LOC_PATH/data_resample/$SRC"
-
-# cd $LOC_PATH
-
 echo "$EXEC -c all -e all -f all -m fast -S $SRC $1 "
 
 # generate all orig fits and models 
-qsub -N Job-Orig2  Scripts/OrigModels2.R -F "-S $SRC $1 "
+qsub -N Job-Orig2  -d `pwd` Scripts/OrigModels2.R -F "-S $SRC $1 "
 
 
 # slow models
@@ -42,7 +43,7 @@ do
   do
     for energy in iQp iXp
     do
-      qsub -N JobS-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+      qsub -N JobS-$country-$energy  -d `pwd` $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
     done
   done
 done
@@ -56,7 +57,7 @@ do
   do
     for energy in iU
     do
-      qsub -N JobU-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+      qsub -N JobU-$country-$energy -d `pwd` $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
     done
   done
 done
@@ -67,7 +68,7 @@ for country in US UK JP CN ZA SA IR TZ ZM
 do
   for energy in iQp iXp iU
   do
-#    qsub -N Job-$country-$energy  $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
-    qsub -N JobF-$country-$energy  $EXEC -F "-c $country -e $energy -f all -m fast -S $SRC $1 "
+#    qsub -N Job-$country-$energy -d `pwd` $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
+    qsub -N JobF-$country-$energy -d `pwd` $EXEC -F "-c $country -e $energy -f all -m fast -S $SRC $1 "
   done
 done
