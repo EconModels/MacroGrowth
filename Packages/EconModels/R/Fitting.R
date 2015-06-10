@@ -303,7 +303,7 @@ yhat.LINEXmodel <- function( object, ... ) {
 }
 
 #' @export
-yhat.sfModel <- function( object, ... ) {
+yhat.SFmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
   lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   exp( fitted(object, ...) + lx0[!is.na(lx0)] )

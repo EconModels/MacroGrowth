@@ -85,7 +85,7 @@ resampledFits <- function(model,
                           ...) {
   
   fitfun <- switch(class(model)[1],
-                   "sfModel"    = "sfModel",
+                   "SFmodel"    = "sfModel",
                    "LINEXmodel" = "linexModel",
                    "CDEmodel"   = "cdModel",
                    "cesEst"     = "cesModel",
