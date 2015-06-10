@@ -5,8 +5,8 @@
 \title{Perform resample fits for a model}
 \usage{
 resampledFits(model, method = c("residual", "resample", "wild", "parametric",
-  "debug"), n, save.data = FALSE, seed, id, reindex = FALSE,
-  mc.cores = parallel::detectCores(), ...)
+  "debug"), n, save.data = FALSE, seed, id, include.original = TRUE,
+  reindex = FALSE, mc.cores = parallel::detectCores(), ...)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
@@ -26,6 +26,9 @@ with each model.}
 added to the output.  This is convenient
 for marking data internally if you are doing resampling on many different models.}
 
+\item{include.original}{a logical indicating whether the original model and
+coefficients should be included in the returned value.}
+
 \item{reindex}{a boolean that indicates whether to reindex the resampled fits.}
 
 \item{mc.cores}{number of cores to use in main loop.}
@@ -33,7 +36,7 @@ for marking data internally if you are doing resampling on many different models
 \item{...}{additional arguments passed to \code{fitfun}}
 }
 \value{
-a list of length two containting a data frame of coefficients and a list of models
+a list of length two containing a data frame of coefficients and a list of models
 }
 \description{
 This function returns a list containing models and coefficients from the resample fits.

@@ -69,10 +69,12 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 #' @param id a character vector of length 1 used as an identifier that will be 
 #' added to the output.  This is convenient
 #' for marking data internally if you are doing resampling on many different models.
+#' @param include.original a logical indicating whether the original model and 
+#'   coefficients should be included in the returned value.
 #' @param reindex a boolean that indicates whether to reindex the resampled fits.
 #' @param mc.cores number of cores to use in main loop.
 #' @param ... additional arguments passed to \code{fitfun}
-#' @return a list of length two containting a data frame of coefficients and a list of models
+#' @return a list of length two containing a data frame of coefficients and a list of models
 #' @export
 resampledFits <- function(model,
                           method=c("residual", "resample", "wild", "parametric", "debug"),
@@ -80,6 +82,7 @@ resampledFits <- function(model,
                           save.data=FALSE,
                           seed,
                           id,
+                          include.original = TRUE,
                           reindex = FALSE,
                           mc.cores = parallel::detectCores(),
                           ...) {
@@ -105,7 +108,7 @@ resampledFits <- function(model,
   coeffs <- baseFitCoeffs
   
   # Begin accumulating a list of the models. The original model is in the first slot of the list.
-  models <- list(model)
+  models <- list(orig = model)
   
   # Now do the resample fits.
   if (n > 0L) {
@@ -122,10 +125,13 @@ resampledFits <- function(model,
           list(model = newModel, coeffs = resampleCoeffs)
         }
       )
-    models <- lapply(many_refits, function(x) x$model)
-    coeffs <- do.call(plyr::rbind.fill, lapply(many_refits, function(x) x$coeffs))
-    models <- lapply(many_refits, function(x) x$model)
-    names(models) <- paste0(method, ".", 1L:n)
+    coeffs <- do.call(plyr::rbind.fill, 
+                      c(if (include.original) list(orig = coeffs) else list(), 
+                        lapply(many_refits, function(x) x$coeffs)))
+    coeffs <- coeffs %>% group_by(method) %>% mutate(index = 1:n()) %>% ungroup()
+    many_models <- lapply(many_refits, function(x) x$model)
+    names(many_models) <- paste0(method, ".", 1L:length(many_models))
+    models <- c(if (include.original) models else list(), many_models)
   }
   # At this point, both coeffs (which contains the coefficients) and 
   # models (which contains the models)
