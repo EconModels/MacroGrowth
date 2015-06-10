@@ -81,7 +81,7 @@ resampledFits <- function(model,
                           seed,
                           id,
                           reindex = FALSE,
-                          mc.cores = max(parallel::detectCores() - 1, 1),
+                          mc.cores = parallel::detectCores(),
                           ...) {
   
   fitfun <- switch(class(model)[1],

@@ -6,7 +6,7 @@
 \usage{
 resampledFits(model, method = c("residual", "resample", "wild", "parametric",
   "debug"), n, save.data = FALSE, seed, id, reindex = FALSE,
-  mc.cores = max(parallel::detectCores() - 1, 1), ...)
+  mc.cores = parallel::detectCores(), ...)
 }
 \arguments{
 \item{model}{a model returned from \code{linexModel}, \code{cdModel},
