@@ -24,7 +24,7 @@ Any objects that are neither lists nor inherit from \code{class} will be ignored
 
 \item{strict.lists}{a logical.  If \code{TRUE}, an item will only be considered a list
 if \code{"list"} is the first among its classes.  Setting this to \code{TRUE} may be
-simpler than enumeratin all of the possible leaf classes using \code{class}.}
+simpler than enumerating all of the possible leaf classes using \code{class}.}
 
 \item{is.parent}{a function of an item and item name that returns a logical
 indicating whether a node is a leaf.  See the default vaule for examples.}
