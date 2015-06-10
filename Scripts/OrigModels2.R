@@ -26,7 +26,7 @@ nestStr <- function(nest){
 
 defaultOutputDir <- "data_resample"
 filename_oModels <- "oModels.rds"
-filename_models <- "models.rds"
+filename_models <- "oModels_flat.rds"
 
 # Provide a way to specify data sources in a comma-separated list
 option_list <- list(
@@ -178,7 +178,7 @@ models <-
   )
 
 if (! opts$debug){
-  # Change from flat list to a tree
+  # Change from flat list (models) to a tree (oModels)
   oModels <- list()
   for( i in 1:length(models) ) {
     if (!is.null(attr(models[[i]], "id"))) {
@@ -194,17 +194,20 @@ if (! opts$debug){
 }
 
 #
-# Save oModels object to outputDir.
+# Save models and oModels to outputDir.
 #
 output_dir <- file.path(opts$outputDir, src)
 oModels_path <- file.path(output_dir, filename_oModels)
+models_path <- file.path(output_dir, filename_models)
 if (opts$debug){
   cat(paste("Would have saved", oModels_path)) 
+  cat(paste("Would have saved", models_path)) 
   cat("\n")
 } else {
   dir.create(output_dir, showWarnings=FALSE)
   cat(paste("Saving", oModels_path, "...")) ; cat("\n")
   saveRDS(oModels, file=oModels_path)
+  saveRDS(models, file=models_path)
   
   cat(paste("Working Directory:", getwd()))
   cat("\n")
