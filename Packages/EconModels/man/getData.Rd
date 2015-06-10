@@ -2,17 +2,17 @@
 % Please edit documentation in R/Fitting.R
 \name{getData}
 \alias{getData}
-\title{Data used to fit a model}
+\title{Extract data associated with an object}
 \usage{
-getData(model)
+getData(object, ...)
 }
 \arguments{
-\item{model}{the model object from which you want to extract the \code{data}.}
+\item{object}{an object from which you want to extract data.}
 }
 \value{
-the data used to fit the model.
+data associated with \code{object}.
 }
 \description{
-An convenience function that returns the data that was used to fit a model.
+Extract data associated with an object
 }
 

@@ -202,14 +202,19 @@ getHistory <- function(model) {
   model$history
 }
 
-#' Data used to fit a model
+#' Extract data associated with an object
 #' 
-#' An convenience function that returns the data that was used to fit a model.
-#' @param model the model object from which you want to extract the \code{data}.
-#' @return the data used to fit the model.
+#' Extract data associated with an object
+#' @param object an object from which you want to extract data.
+#' @return data associated with \code{object}.
 #' @export
-getData <- function(model) {
-  model$data
+getData <- function(object, ...) {
+  UseMethod("getData")
+}
+
+#' @export
+getData.default <- function(object, ...) {
+  object$data
 }
 
 #' Compute SSE from a model object
