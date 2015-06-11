@@ -142,7 +142,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     # The first model is the fit to historical data. 
     # The model object also contains the original data as an attribute
     # if the model was created with save.data=TRUE.
-    origModel <- modelsList[[1]]
+    origModel <- modelsList[["orig"]]
     # Extract the data frame containing the actual (historical) data
     actual <- subset( getData(origModel), select=c("Year", "iGDP", "Country") )
     
