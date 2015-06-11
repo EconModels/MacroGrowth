@@ -1155,7 +1155,6 @@ myXTable(r.t.values,
 @
 
 
-
 %++++++++++++++++++++++++++++++
 \subsection{Does quality-adjusting the factors of production or including energy
             decrease the fitting residuals in a statistically-significant manner?} 
