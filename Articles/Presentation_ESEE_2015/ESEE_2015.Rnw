@@ -1136,7 +1136,7 @@ the alternative hypothesis is that the mean is not equal to zero.
 Smaller p-values indicate increasing confidence that the 
 mean is different from zero. 
 We expect that p-values will be large (close to unity), 
-because residuals are expected to be small (close to zero).
+because the mean of the residuals is expected to be small (close to zero).
 Indeed, that is the case.
 Table~\ref{tab:r_p_values} summarizes the mean 
 and associated p-values values for the fitting residuals~($r_i$).
@@ -2194,7 +2194,7 @@ by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
 
 \ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
 for a ``dynamic'' Solow residual 
-for Cobb-Douglas and CES production functions.
+for Cobb-Douglas and CES production functions, respectively.
 However, these approaches conflate 
 stochastic error terms and the time-dependent contribution of ``technology'' 
 to economic growth
@@ -2220,7 +2220,7 @@ $\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
 Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
 %
 \begin{equation} \label{eq:ln_y}
-  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i
+  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i \; ,
 \end{equation}
 %
 which can be rearranged to show
@@ -2235,8 +2235,8 @@ Using Equation~\ref{eq:log-residuals}, we can write
   r_i = \ln \epsilon_i \; .
 \end{equation}
 %
-Our concern is that the residuals may have a time-dependent component 
-and a stochastic component.
+Our concern is that the residuals~($r_i$) may have a time-dependent component 
+in addition to a stochastic component.
 To decompose, we can define
 %
 \begin{equation} \label{eq:epsilon_definition}
@@ -2253,19 +2253,19 @@ where
 $m$ is a slope and captures the linear (in natural logarithmic space), 
 time-dependent component of $r_i$. 
 $\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
-Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$).
+Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$) as
 %
 \begin{equation} \label{eq:r_regression_eqn}
   r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
 \end{equation}
 %
 In Equation~\ref{eq:r_regression_eqn},
-$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$,
-(Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
+$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$.
+Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
 by Equation~\ref{eq:r_epsilon}.
 Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
 is equivalent to estimating the time-dependent, time-independent, and stochastic
-components, respectively, of the multiplicative errors~($\epsilon_i$).)
+components, respectively, of the multiplicative errors~($\epsilon_i$).
 This regression is equivalent to performing a linear fit to data in 
 Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
 
@@ -2311,7 +2311,8 @@ through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
 We can compare $r_i$ and $\varepsilon_i^*$, graphically,
 but the result is uninteresting. 
 We would expect $r_i$ and $\varepsilon_i^*$
-to be equal to each other, because
+to be equal to each other by Equation~\ref{eq:r_regression_eqn}, 
+because
 (a) $m (t_i - t_0) \ll \max(r_i)$
 for any value of $t_i$
 and
