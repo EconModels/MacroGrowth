@@ -8,17 +8,7 @@
 # Run this script after you have done all analyses, 
 # probably by executing a <Source>_batch.bash script.
 
-require(EconData)
-require(EconModels)
-require(optparse)
-require(doParallel)
-registerDoParallel()
-
-startTime <- proc.time()
-cat("\n\nStart @ ")
-cat(date())
-cat('\n')
-
+suppressPackageStartupMessages(require(optparse))
 # Directory from which resampled data should be read.
 defaultInputDir <- "data_resample"
 # Directory into which post-processed data objects should be saved for the EconData pacakge
@@ -40,7 +30,18 @@ option_list <- list(
 )
 # Parse the option list
 opts <- parse_args(OptionParser(option_list=option_list))
+
+
+suppressPackageStartupMessages(require(EconData))
+suppressPackageStartupMessages(require(EconModels))
+suppressPackageStartupMessages(require(doParallel))
+registerDoParallel()
+
+cat("Options\n")
+cat("=======\n")
 print(opts)
+startTime <- proc.time()
+startDate <- date()
 
 # If inputDir was specified, split the inputDir at the commas.
 if (!is.null(opts$inputDir)){
@@ -129,7 +130,10 @@ print(toPath)
   zip(zipfile=file.path("data_resample", paste0(Source, "_data_resample.zip")), files=paste0("data_resample/", Source), flags="-r9Xj")  
 }
 
-cat("\n\nDone @ ")
+cat("\n\nStart @ ")
+cat(startDate)
+cat('\n')
+cat("\n\n Done @ ")
 cat(date())
 cat('\n\n')
 cat("duration:\n")
