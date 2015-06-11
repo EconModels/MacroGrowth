@@ -147,9 +147,10 @@ cesModel <- function(formula, data,
       model <- tryCatch( {
         eval(substitute(
           cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho,
-                 control = CONTROL, multErr = multErr, 
-                 lower = lower, upper = upper, ...), # Always fit unconstrained. Constraints applied later.
+                 control = CONTROL, multErr = MULTERR, 
+                 lower = LOWER, upper = UPPER, ...), # Always fit unconstrained. Constraints applied later.
           list( yNAME = yName, xNAMES=xNames, tNAME = tName, 
+                MULTERR = multErr, LOWER = lower, UPPER = upper, 
                 ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
         ))
       },
@@ -163,9 +164,10 @@ cesModel <- function(formula, data,
       model <- tryCatch( {
         eval(substitute(
           cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho, rho1=rho1, 
-                 control=CONTROL, multErr=multErr, 
-                 lower = lower, upper = upper, ...),
+                 control=CONTROL, multErr=MULTERR, 
+                 lower = LOWER, upper = UPPER, ...),
           list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+                MULTERR = multErr, LOWER = lower, UPPER = upper,
                 ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )   
         ))
       },
@@ -190,9 +192,10 @@ cesModel <- function(formula, data,
     model <- tryCatch( {
       eval(substitute(
         cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-               control=CONTROL, start=start, multErr=multErr, 
-               lower = lower, upper = upper, ...),
+               control=CONTROL, start=START, multErr=MULTERR, 
+               lower = LOWER, upper = UPPER, ...),
         list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+              START = start, MULTERR = multErr, LOWER = lower, UPPER = upper, 
               ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
       ))
     },
@@ -216,9 +219,10 @@ cesModel <- function(formula, data,
         model <- 
           eval(substitute(
             cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-                   control=CONTROL, start=start, multErr=multErr, 
-                   lower = lower, upper = upper, ...), 
+                   control=CONTROL, start=START, multErr=MULTERR, 
+                   lower = LOWER, upper = UPPER, ...), 
             list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+                  START = start, MULTERR = multErr, LOWER = lower, UPPER = upper,
                   ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
           ))
         # If there's a problem during fitting, we avoid adding model to models.
