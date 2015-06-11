@@ -243,7 +243,7 @@ cesModel <- function(formula, data,
     attr(res, "model.attempts") <- models
     res$formula <- formula
     if (save.data) { res$data <- data }
-    res$response <- sdata[,1] # eval( formula[[2]], sdata, parent.frame() )
+    res$response <- data[,1] # eval( formula[[2]], sdata, parent.frame() )
     res$nest <- nest
     class(res) <- unique(c("cesModel", class(res)))
   }
