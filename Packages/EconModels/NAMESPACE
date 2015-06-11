@@ -2,7 +2,6 @@
 
 S3method(fortify,LINEXmodel)
 S3method(getData,default)
-S3method(getData,lm)
 S3method(naturalCoef,CDEmodel)
 S3method(naturalCoef,LINEXmodel)
 S3method(naturalCoef,SFmodel)
