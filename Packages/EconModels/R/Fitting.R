@@ -217,6 +217,35 @@ getData.default <- function(object, ...) {
   object$data
 }
 
+#' @export
+getData.SFmodel <- function(object, ...) {
+  object$data
+}
+
+#' @export
+getData.CDEmodel <- function(object, ...) {
+  object$data
+}
+
+#' @export
+getData.LINEXmodel <- function(object, ...) {
+  object$data
+}
+
+#' @export
+getData.cesModel <- function(object, ...) {
+  object$data
+}
+
+#' @export
+getData.lm <- function(object, full = TRUE, ...) {
+  if (full) {
+    eval(object$call[["data"]], environment(object$call[["formula"]]))
+  } else {
+    model.frame(object, ...)
+  }
+}
+
 
 #' Compute SSE from a model object
 #' 
