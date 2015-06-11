@@ -190,7 +190,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     dfList <- lapply( modelsList[-1], function(m) {
       j <<- j+1
       return(transform(actual,
-                       iGDP = attr(m,"response"),
+                       iGDP = response(m),
                        iGDP.hat = yhat(m),
                        resampleNumber = j,
                        resampled=TRUE
