@@ -697,7 +697,9 @@ colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="mse"] <- "mse_unad
 colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="lambda"] <- "lambda_unadj_noE"
 AllCoeffs <- merge(AllCoeffs, AllCoeffs_unadj_noE[c("Country", "model", "mse_unadj_noE", "lambda_unadj_noE")])
 # Calculate differences relative to the unadjusted, no-energy condition
-AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), Dmse = mse - mse_unadj_noE)
+AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), 
+                    Dmse = mse - mse_unadj_noE,
+                    percDlambda = Dlambda / abs(lambda_unadj_noE) * 100)
 
 # Relevel factors
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
@@ -1038,8 +1040,15 @@ and
 \end{equation}
 %
 where~$N$ is the number of years of data.
-When $\Delta \lambda$ and $\Delta mse$ are negative, 
-we observe reduction in the Solow residual ($\lambda$) and
+On a percentage basis,
+%
+\begin{equation} \label{eq:delta_lambda_perc}
+  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} 
+            = \frac{100 \, \left| \lambda \right|}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} - 1
+\end{equation}
+%
+When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta mse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) or
 the fitting residuals ($mse$)
 relative to the unadjusted, no-energy condition.
 
@@ -1092,7 +1101,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>%
 %
 Figure~\ref{fig:DSRmse_CD_graph} summarizes the data for the Cobb-Douglas model.
 %
-<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
 ggplot(data=filter(AllCoeffs, model=="CD")) +
   geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy)) +
   facet_grid(Country ~ flavor) +
@@ -1102,14 +1111,36 @@ ggplot(data=filter(AllCoeffs, model=="CD")) +
   theme(legend.title=element_blank())
 @
 %
+<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CD")) +
+  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(paste(Delta * lambda, " [%]"))) +
+  scale_y_continuous(breaks=c(-50, 0, 50, 100)) +
+  xy_theme() + 
+  theme(legend.title=element_blank())
+@
+%
 Figure~\ref{fig:DSRmse_CES_graph} summarizes the data for the CES models.
 %
-<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
 ggplot(data=filter(AllCoeffs, model=="CES")) +
   geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy, shape=nest)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   ylab(expression(Delta * lambda)) +
+  xy_theme() +
+  theme(legend.title=element_blank())
+@
+%
+<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CES")) +
+  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy, shape=nest)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(paste(Delta * lambda, " [%]"))) +
+  scale_y_continuous(breaks=c(-50, -25, 0, 25)) +  
   xy_theme() +
   theme(legend.title=element_blank())
 @
