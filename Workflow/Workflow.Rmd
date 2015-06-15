@@ -73,3 +73,7 @@ file system prior to the download request.
 The data files are saved with `saveRDS` by `PostProcess.R`, so `loadPostProcessedData` uses `readRDS` to 
 load the data into memory. 
 As a consequence, `loadPostProcessedData` returns an object which must be assigned to a variable in `R`.
+
+### 
+* If Randy has run the analysis, results can be placed in `/home/rpruim/Share`. 
+* To download to his laptop, Matt can say, for example, `scp -P 22122 mkh2@dahl.calvin.edu:/home/rpruim/Share/2015-06-11-run/data_resample/Calvin/* ~/github/Econ-Growth-R-Analysis/data_resample/Calvin`
