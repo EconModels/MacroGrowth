@@ -697,7 +697,9 @@ colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="mse"] <- "mse_unad
 colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="lambda"] <- "lambda_unadj_noE"
 AllCoeffs <- merge(AllCoeffs, AllCoeffs_unadj_noE[c("Country", "model", "mse_unadj_noE", "lambda_unadj_noE")])
 # Calculate differences relative to the unadjusted, no-energy condition
-AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), Dmse = mse - mse_unadj_noE)
+AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), 
+                    Dmse = mse - mse_unadj_noE,
+                    percDlambda = Dlambda / abs(lambda_unadj_noE) * 100)
 
 # Relevel factors
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
@@ -1038,8 +1040,15 @@ and
 \end{equation}
 %
 where~$N$ is the number of years of data.
-When $\Delta \lambda$ and $\Delta mse$ are negative, 
-we observe reduction in the Solow residual ($\lambda$) and
+On a percentage basis,
+%
+\begin{equation} \label{eq:delta_lambda_perc}
+  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} 
+            = \frac{100 \, \left| \lambda \right|}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} - 1
+\end{equation}
+%
+When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta mse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) or
 the fitting residuals ($mse$)
 relative to the unadjusted, no-energy condition.
 
@@ -1092,7 +1101,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>%
 %
 Figure~\ref{fig:DSRmse_CD_graph} summarizes the data for the Cobb-Douglas model.
 %
-<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
 ggplot(data=filter(AllCoeffs, model=="CD")) +
   geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy)) +
   facet_grid(Country ~ flavor) +
@@ -1102,14 +1111,36 @@ ggplot(data=filter(AllCoeffs, model=="CD")) +
   theme(legend.title=element_blank())
 @
 %
+<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CD")) +
+  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(paste(Delta * lambda, " [%]"))) +
+  scale_y_continuous(breaks=c(-50, 0, 50, 100)) +
+  xy_theme() + 
+  theme(legend.title=element_blank())
+@
+%
 Figure~\ref{fig:DSRmse_CES_graph} summarizes the data for the CES models.
 %
-<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the unadjusted, no-energy condition.">>=
+<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
 ggplot(data=filter(AllCoeffs, model=="CES")) +
   geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy, shape=nest)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   ylab(expression(Delta * lambda)) +
+  xy_theme() +
+  theme(legend.title=element_blank())
+@
+%
+<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
+ggplot(data=filter(AllCoeffs, model=="CES")) +
+  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy, shape=nest)) +
+  facet_grid(Country ~ flavor) +
+  xlab(expression(Delta * mse)) + 
+  ylab(expression(paste(Delta * lambda, " [%]"))) +
+  scale_y_continuous(breaks=c(-50, -25, 0, 25)) +  
   xy_theme() +
   theme(legend.title=element_blank())
 @
@@ -1136,7 +1167,7 @@ the alternative hypothesis is that the mean is not equal to zero.
 Smaller p-values indicate increasing confidence that the 
 mean is different from zero. 
 We expect that p-values will be large (close to unity), 
-because residuals are expected to be small (close to zero).
+because the mean of the residuals is expected to be small (close to zero).
 Indeed, that is the case.
 Table~\ref{tab:r_p_values} summarizes the mean 
 and associated p-values values for the fitting residuals~($r_i$).
@@ -2194,7 +2225,7 @@ by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
 
 \ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
 for a ``dynamic'' Solow residual 
-for Cobb-Douglas and CES production functions.
+for Cobb-Douglas and CES production functions, respectively.
 However, these approaches conflate 
 stochastic error terms and the time-dependent contribution of ``technology'' 
 to economic growth
@@ -2220,7 +2251,7 @@ $\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
 Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
 %
 \begin{equation} \label{eq:ln_y}
-  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i
+  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i \; ,
 \end{equation}
 %
 which can be rearranged to show
@@ -2235,8 +2266,8 @@ Using Equation~\ref{eq:log-residuals}, we can write
   r_i = \ln \epsilon_i \; .
 \end{equation}
 %
-Our concern is that the residuals may have a time-dependent component 
-and a stochastic component.
+Our concern is that the residuals~($r_i$) may have a time-dependent component 
+in addition to a stochastic component.
 To decompose, we can define
 %
 \begin{equation} \label{eq:epsilon_definition}
@@ -2253,19 +2284,19 @@ where
 $m$ is a slope and captures the linear (in natural logarithmic space), 
 time-dependent component of $r_i$. 
 $\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
-Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$).
+Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$) as
 %
 \begin{equation} \label{eq:r_regression_eqn}
   r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
 \end{equation}
 %
 In Equation~\ref{eq:r_regression_eqn},
-$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$,
-(Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
+$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$.
+Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
 by Equation~\ref{eq:r_epsilon}.
 Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
 is equivalent to estimating the time-dependent, time-independent, and stochastic
-components, respectively, of the multiplicative errors~($\epsilon_i$).)
+components, respectively, of the multiplicative errors~($\epsilon_i$).
 This regression is equivalent to performing a linear fit to data in 
 Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
 
@@ -2311,7 +2342,8 @@ through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
 We can compare $r_i$ and $\varepsilon_i^*$, graphically,
 but the result is uninteresting. 
 We would expect $r_i$ and $\varepsilon_i^*$
-to be equal to each other, because
+to be equal to each other by Equation~\ref{eq:r_regression_eqn}, 
+because
 (a) $m (t_i - t_0) \ll \max(r_i)$
 for any value of $t_i$
 and

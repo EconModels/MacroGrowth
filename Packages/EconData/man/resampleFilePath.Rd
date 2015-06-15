@@ -5,7 +5,7 @@
 \title{Path to resample coefficients for the given parameters}
 \usage{
 resampleFilePath(prefix, countryAbbrev, fitfun, formula, nest = NULL,
-  sep = "_", resamplePath)
+  sep = "_", resamplePath, extension = "rds")
 }
 \arguments{
 \item{prefix}{a prefix for the file name. Should not include the separator.}
@@ -21,7 +21,9 @@ resampleFilePath(prefix, countryAbbrev, fitfun, formula, nest = NULL,
 \item{sep}{the separator used to create the id string. Default is "_".}
 
 \item{resamplePath}{the path to the directory containing the resample data.
-This is likely to be something like "base_resample/Calvin"}
+This is likely to be something like "data_resample/Calvin"}
+
+\item{extension}{the filename extension (leading "." will be supplied if not present).}
 }
 \value{
 a string representing the file name for these resample coefficients.

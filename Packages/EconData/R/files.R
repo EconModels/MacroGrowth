@@ -162,12 +162,14 @@ fittingID <- function(Source, countryAbbrev, fitfun, formula, nest=NULL, n, sep=
 #' @param formula the formula used for the fitting
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
+#' @param extension the filename extension (leading "." will be supplied if not present).
 #' @return a string representing the file name for these resample coefficients.
-resampleFileName <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_"){
+resampleFileName <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_", extension="rds"){
   # Strip "Model" out of fun, if present
   modelType <- sub(pattern="Model", replacement="", x=fitfun)
   f <- paste(prefix, countryAbbrev, modelType, factorString(formula=formula, nest=nest), sep=sep)
-  f <- paste0(f, ".Rdata")
+  ext <- if (substring(extension, 1, 1) == ".") extension else paste0(".", extension)
+  f <- paste0(f, ext)
   return(f)
 }
 
@@ -180,11 +182,13 @@ resampleFileName <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, 
 #' @param nest if used, the nest employed for this fit. A vector of 2 or 3 integers.
 #' @param sep the separator used to create the id string. Default is "_".
 #' @param resamplePath the path to the directory containing the resample data.
-#' This is likely to be something like "base_resample/Calvin"
+#' This is likely to be something like "data_resample/Calvin"
+#' @param extension the filename extension (leading "." will be supplied if not present).
 #' @return a string representing the file name for these resample coefficients.
 #' @export
-resampleFilePath <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_", resamplePath){
-  f <- resampleFileName(prefix=prefix, fitfun=fitfun, countryAbbrev=countryAbbrev, formula=formula, nest=nest, sep=sep)
+resampleFilePath <- function(prefix, countryAbbrev, fitfun, formula, nest=NULL, sep="_", resamplePath, extension="rds"){
+  f <- resampleFileName(prefix=prefix, fitfun=fitfun, countryAbbrev=countryAbbrev, 
+                        formula=formula, nest=nest, sep=sep, extension=extension)
   path <- file.path(resamplePath, f)
   return(path)
 }

@@ -208,9 +208,9 @@ for (m in ModelInfos) {
           # we only print the id above.
           # Get the paths for the coefficients and models files.
           coeffsPath <- resampleFilePath(prefix="coeffs", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots$nest, resamplePath=opts$resamplePath)
+                                         nest=m$dots$nest, resamplePath=opts$resamplePath, extension="rds")
           modelsPath <- resampleFilePath(prefix="models", fitfun=m$fitfun, countryAbbrev=country, formula=f, 
-                                         nest=m$dots$nest, resamplePath=opts$resamplePath)
+                                         nest=m$dots$nest, resamplePath=opts$resamplePath, extension="rds")
           filesExist <- file.exists(coeffsPath, modelsPath)
           # Decide if we need to run the analysis based on whether clobbering is desired and whether the files exist.
           if (opts$clobber || ! all(filesExist)){

@@ -5,7 +5,7 @@
 \title{File name for resample coefficients for the given parameters}
 \usage{
 resampleFileName(prefix, countryAbbrev, fitfun, formula, nest = NULL,
-  sep = "_")
+  sep = "_", extension = "rds")
 }
 \arguments{
 \item{prefix}{a prefix for the file name}
@@ -19,6 +19,8 @@ resampleFileName(prefix, countryAbbrev, fitfun, formula, nest = NULL,
 \item{nest}{if used, the nest employed for this fit. A vector of 2 or 3 integers.}
 
 \item{sep}{the separator used to create the id string. Default is "_".}
+
+\item{extension}{the filename extension (leading "." will be supplied if not present).}
 }
 \value{
 a string representing the file name for these resample coefficients.
