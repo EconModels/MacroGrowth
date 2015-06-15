@@ -66,9 +66,6 @@ done
 
 for country in US UK JP CN ZA SA IR TZ ZM
 do
-  for energy in iQp iXp iU
-  do
 #    qsub -N Job-$country-$energy -d `pwd` $EXEC -F "-c $country -e $energy -m $model -S $SRC $1 "
-    qsub -N JobF-$country-$energy -d `pwd` $EXEC -F "-c $country -e $energy -f all -m fast -S $SRC $1 "
-  done
+    qsub -N JobF-$country-$energy -d `pwd` $EXEC -F "-c $country -e all -f all -m fast -S $SRC $1 "
 done
