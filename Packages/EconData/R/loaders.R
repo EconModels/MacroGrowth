@@ -44,8 +44,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     filesDF <- unzip(zipfile=archive, list=TRUE)
     files <- filesDF[["Name"]]
   }
-  # Keep only those files with the ".Rdata" extension
-  files <- files[grepl(pattern="\\>.Rdata", x=files)]
+  # Keep only those files with the ".rds" extension
+  files <- files[grepl(pattern="\\>.rds", x=files)]
   # Keep only files with desired prefix
   files <- files[grepl(pattern=prefix, x=files)]
   # Remove the path from the file names, if present
@@ -54,8 +54,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   names <- sub(pattern=paste0("\\<", .Platform$file.sep), replacement="", x=names)
   # Remove the prefix from the file names, if present
   names <- sub(pattern=paste0("\\<", prefix, sep), replacement="", x=names)
-  # Remove the .Rdata suffix from the file names.
-  names <- sub(pattern="\\>.Rdata", replacement="", x=names)
+  # Remove the .rds suffix from the file names.
+  names <- sub(pattern="\\>.rds", replacement="", x=names)
   pieces <- strsplit( x=names, split=sep )
   keep <- sapply( pieces, 
                   function(x) { is.in(x[1],country) && is.in(x[2],model) &&  
@@ -127,11 +127,11 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   if( kind != "fitted" ){
     stop("This should never happen") 
   }
-  
-  outgoing <- data.frame()
+
   for (i in 1:nFiles){
     # Get the models associated with this file.
     if (is.null(archive)){
+print(file.path(path, files[i]))
       modelsList <- readRDS( file.path(path, files[i]) ) # Read files from the directory on disk
     } else {
       connection <- gzcon(unz(archive, files[i])) 
@@ -199,6 +199,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     } 
     )
     temp <- do.call("rbind", c(list(actual), dfList))
+    outgoing <- data.frame()
     outgoing <- do.call("rbind", c(list(outgoing, temp)) )
   }
   return(outgoing)
@@ -217,7 +218,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
 loadPostProcessedData <- function(Source, kind=c("coeffs","omodels","fitted"), dir=file.path("data_postprocessed")){
   kind <- match.arg(kind)
   if (kind == "coeffs"){
-    path <- file.path(dir, paste0(Source, "_Coeffs.Rdata"))
+    path <- file.path(dir, paste0(Source, "_Coeffs.rds"))
   } else if (kind == "omodels"){
     path <- file.path(dir, paste0(Source, "_oModels.rds"))
   } else {
@@ -225,7 +226,7 @@ loadPostProcessedData <- function(Source, kind=c("coeffs","omodels","fitted"), d
       # This should never happen
       stop(paste("Unknown kind:", kind))
     }
-    path <- file.path(dir, paste0(Source, "_Fitted.Rdata"))
+    path <- file.path(dir, paste0(Source, "_Fitted.rds"))
   }
   return(readRDS(path))
 }
