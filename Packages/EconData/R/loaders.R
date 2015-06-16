@@ -66,6 +66,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   nFiles <- length(files)
   
 print(keep)
+
 print(files)
 stop()
   
