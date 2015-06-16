@@ -19,10 +19,13 @@ core
 # Data files
 # 
 *_Coeffs.rda
+*_Coeffs.rds
 *_Coeffs.Rdata
 *_Fitted.rda
+*_Fitted.rds
 *_Fitted.Rdata
 *_Models.rda
+*_Models.rds
 *_Models.Rdata
 *_oModels.Rdata
 *_oModels.rds
