@@ -2373,6 +2373,61 @@ as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
 
 Perhaps there is another direction in which I should go with this analysis?
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Marco/Matt coefficient comparison}
+\label{sec:marco_matt_coeff_comp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<Comparison, echo=TRUE>>=
+# Marco's coefficients for PT, CES, unadjusted, without energy
+gamma_marco <- 1.0306
+lambda_marco <- 0.0055
+delta_1_marco <- 0.9844
+rho_1_marco <- 3.4647
+
+# Generate a predicted GDP from a CES model with the above parameters
+form <- formulas$PT$unadjusted
+form <- keep_summands(form, n = -3) # Remove energy
+form
+y_hat_marco <- cesCalc(xNames = c(summands(form, n=1), summands(form, n=2)), 
+                       data = historicalData$PT, 
+                       coef = c(gamma=gamma_marco,
+                                lambda=lambda_marco,
+                                delta=delta_1_marco,
+                                rho=rho_1_marco),
+                       tName = summands(form, n=3))
+sse_marco <- sum((historicalData$PT$iGDP - y_hat_marco)^2, na.rm=TRUE)
+sse_marco # Marco reported 0.6625
+
+# Now do the same thing with Matt's parameters
+y <- historicalData$PT$iGDP
+coeffs_matt <- naturalCoef(models$PT$unadjusted$noE$CES$kl) 
+coeffs_matt
+y_hat_matt <- cesCalc(xNames = c(summands(form, n=1), summands(form, n=2)), 
+                      data = historicalData$PT, 
+                      coef = c(gamma=coeffs_matt$gamma,
+                               lambda=coeffs_matt$lambda,
+                               delta=coeffs_matt$delta_1,
+                               rho=coeffs_matt$rho_1),
+                      tName = summands(form, n=3))
+sse_matt <- sum((y - y_hat_matt)^2, na.rm=TRUE)
+sse_matt
+
+# Get the SSE from the model itself. This is in log space.
+r <- resid(models$PT$unadjusted$noE$CES$kl)
+sse_matt_log <- sum(r^2)
+sse_matt_log # Isn't what we want.
+
+# Convert to linear space
+y <- y[!is.na(y)] # removes NA values at end of time series
+y_hat <- y / exp(resid(models$PT$unadjusted$noE$CES$kl))
+sse_matt_lin <- sum((y - y_hat)^2)
+sse_matt_lin
+@
+
+
 \end{document}
 
 %%
