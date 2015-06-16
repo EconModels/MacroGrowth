@@ -74,9 +74,7 @@ for (inputPath in opts$inputDir){
   # <Source> prepended.
   #
   fromPath <- file.path(inputPath, "oModels.rds")
-print(fromPath)
   toPath <- file.path(opts$outputDir, paste0(Source, "_oModels.rds"))
-print(toPath)
   file.copy(from = fromPath, to = toPath, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE, recursive = FALSE)
   #
   # Load all coefficients. Do this task in parallel for a (minor) speed gain.
@@ -101,7 +99,7 @@ print(toPath)
   Coeffs$energy <- relevelFactor(as.factor(Coeffs$energy), levs=energyLevels)
   
   # Save all coefficients in one data frame
-  outpath <- file.path(opts$outputDir, paste0(Source, "_Coeffs.Rdata"))
+  outpath <- file.path(opts$outputDir, paste0(Source, "_Coeffs.rds"))
   cat(paste("Saving", Source, "coefficients to", outpath)); cat("\n")
   saveRDS(Coeffs, file = outpath, compress = TRUE)
   
@@ -121,7 +119,7 @@ print(toPath)
   Fitted$energy <- relevelFactor(as.factor(Fitted$energy), levs=energyLevels)
   
   # Save all fitted models in one data frame
-  outpath <- file.path(opts$outputDir, paste0(Source, "_Fitted.Rdata"))
+  outpath <- file.path(opts$outputDir, paste0(Source, "_Fitted.rds"))
   cat(paste("Saving", Source, "fitted to", outpath)) ; cat("\n")
   saveRDS(Fitted, file = outpath, compress = TRUE)
   
