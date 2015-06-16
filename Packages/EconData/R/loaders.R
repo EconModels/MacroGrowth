@@ -65,6 +65,10 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   dflist <- list()
   nFiles <- length(files)
   
+print(files)
+stop()
+  
+  
   if (length(pieces) != nFiles){
     stop("Unequal length for files and names in loadResampledData.")
   }
@@ -109,7 +113,6 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   }
   
   if (kind == "models"){
-print(files)
     # A list of models is desired.
     modelsList <- list()
     for (i in 1:nFiles){
@@ -129,12 +132,9 @@ print(files)
     stop("This should never happen") 
   }
 
-print(files)
-
   for (i in 1:nFiles){
     # Get the models associated with this file.
     if (is.null(archive)){
-print(file.path(path, files[i]))
       modelsList <- readRDS( file.path(path, files[i]) ) # Read files from the directory on disk
     } else {
       connection <- gzcon(unz(archive, files[i])) 
