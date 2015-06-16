@@ -109,6 +109,7 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
   }
   
   if (kind == "models"){
+print(files)
     # A list of models is desired.
     modelsList <- list()
     for (i in 1:nFiles){
