@@ -128,6 +128,8 @@ loadResampledData <- function( path="", archive=NULL, country=NULL, model=NULL,
     stop("This should never happen") 
   }
 
+print(files)
+
   for (i in 1:nFiles){
     # Get the models associated with this file.
     if (is.null(archive)){
