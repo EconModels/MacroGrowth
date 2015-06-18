@@ -546,9 +546,10 @@ historicalPlot(pre_econometric_data,
   ylab("Indexed (1960=1)")
 @
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Parameter Estimation}
-\label{sec:parameter_estimation}
+\section{Parameter Estimation (Without Cost-share Theorem)}
+\label{sec:parameter_estimation_noCST}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parameter estimation is accomplished with \texttt{formula}s of the form
@@ -639,13 +640,48 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 \end{table}
 
 <<Models>>=
-fileName <- "ESEE2015Models.Rdata"
+fileName <- "ESEE2015Models.rds"
+fileNameCST <- "EESE2015ModelsCST.rds"
 if (!rerunModels){
   # load from the file on disk
-  load(fileName)
+  models <- readRDS(fileName)
+  modelsCST <- readRDS(fileNameCST)
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
+  
+  #
+  # Models that adhere to the cost-share theorem
+  # 
+  
+  modelsCST <- list()
+  # Output elasticities based on cost share theorem
+  alphaCST <- 0.3 # Fraction of national accounts spent on capital
+  betaCST <- 0.7 # Fraction of national accounts spent on labor
+  for (country in countries){
+    form <- formulas[[country]][["unadjusted"]]
+    form <- keep_summands(form, n=-3) # Remove energy
+    yVar <- as.name(summands(form, n=1, right=FALSE))
+    kVar <- as.name(summands(form, n=1))
+    lVar <- as.name(summands(form, n=2))
+    tVar <- as.name(summands(form, n=3))
+    mod <- lm(log(eval(yVar)) - alpha_CST*log(eval(kVar)) - beta_CST*log(eval(lVar)) ~ eval(tVar), 
+              data = historicalData[[country]])
+    attr(mod, "naturalCoeffs") <- c(lambda=coef(mod)[[2]],
+                                    logscale=coef(mod)[[1]], 
+                                    scale=exp(coef(mod)[[1]]),
+                                    alpha_1=alphaCST,
+                                    alpha_2=betaCST, 
+                                    alpha_3=0)
+    modelsCST[[country]][["unadjusted"]][["noE"]][["CD"]] <- mod
+  }
+  
+  # Save cost-share theorem models to disk.
+  saveRDS(modelsCST, file=fileNameCST)
+
+  #
+  # Models where all parameters are estimated
+  # 
   
   models <- list()
   for(country in countries){
@@ -659,14 +695,15 @@ if (!rerunModels){
       models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, 
                                                                         data = historicalData[[country]], 
                                                                         nest=c(1,2))
+      nestsWithE <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
       models[[country]][[flavor]][["withE"]][["CES"]] <- 
-        lapply(nests, function(nest){
+        lapply(nestsWithE, function(nest){
           cesModel(formula=fwithE, data=historicalData[[country]], nest=nest)
         })
     }      
   }
   # Save models to disk.
-  save(models, file=fileName)
+  saveRDS(models, file=fileName)
 }
 # Put all the coefficients into a data frame
 AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
