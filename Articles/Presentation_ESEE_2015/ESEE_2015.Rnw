@@ -659,28 +659,36 @@ if (!rerunModels){
   alphaCST <- 0.3 # Fraction of national accounts spent on capital
   betaCST <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
-    form <- formulas[[country]][["unadjusted"]]
-    form <- keep_summands(form, n=-3) # Remove energy
+    form <- keep_summands(formulas[[country]][["unadjusted"]], n=-3) # Remove energy
     yVar <- as.name(summands(form, n=1, right=FALSE))
     kVar <- as.name(summands(form, n=1))
     lVar <- as.name(summands(form, n=2))
     tVar <- as.name(summands(form, n=3))
-    mod <- lm(log(eval(yVar)) - alpha_CST*log(eval(kVar)) - beta_CST*log(eval(lVar)) ~ eval(tVar), 
-              data = historicalData[[country]])
-    attr(mod, "naturalCoeffs") <- c(lambda=coef(mod)[[2]],
-                                    logscale=coef(mod)[[1]], 
-                                    scale=exp(coef(mod)[[1]]),
-                                    alpha_1=alphaCST,
-                                    alpha_2=betaCST, 
-                                    alpha_3=0)
-    modelsCST[[country]][["unadjusted"]][["noE"]][["CD"]] <- mod
+    # Cobb-Douglas
+    cdModCST <- lm(log(eval(yVar)) - alphaCST*log(eval(kVar)) - betaCST*log(eval(lVar)) ~ eval(tVar), 
+                   data = historicalData[[country]])
+    attr(cdModCST, "naturalCoeffs") <- data.frame(lambda=coef(cdModCST)[[2]],
+                                                  logscale=coef(cdModCST)[[1]], 
+                                                  scale=exp(coef(cdModCST)[[1]]),
+                                                  alpha_1=alphaCST,
+                                                  alpha_2=betaCST, 
+                                                  alpha_3=0)
+    modelsCST[[country]][["unadjusted"]][["noE"]][["CD"]] <- cdModCST
+    # CES
+    cesModCST <- plm(log(eval(yVar) / (alphaCST*eval(kVar)^(-rho_1) + betaCST*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
+                     data = historicalData[[country]],
+                     params=c(rho_1=0.8))
+    names(cesModCST$coefficients) <- c("logscale", "lambda", "rho_1")
+    cesModCST$coefficients <- c(coef(cesModCST), c(delta_1=alphaCST, delta=1))
+    attr(cesModCST, "naturalCoeffs") <- EconModels:::makeNatCoef(cesModCST)
+    modelsCST[[country]][["unadjusted"]][["noE"]][["CES"]][["kl"]] <- cesModCST
   }
   
   # Save cost-share theorem models to disk.
   saveRDS(modelsCST, file=fileNameCST)
 
   #
-  # Models where all parameters are estimated
+  # Models where all parameters are estimated (models don't adhere to the cost share theorem)
   # 
   
   models <- list()
@@ -705,38 +713,52 @@ if (!rerunModels){
   # Save models to disk.
   saveRDS(models, file=fileName)
 }
-# Put all the coefficients into a data frame
-AllCoeffs <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
+# Put all the cost-share theorem (CST) coefficients into a data frame
+AllCoeffsCST <- leaf_apply(modelsCST, class = c("lm"), f = function(modCST, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_list <- strsplit(id, split = "[.]")[[1]]
-  Country <- id_list[[1]]
-  flavor <- id_list[[2]]
-  energy <- id_list[[3]]
-  model <- id_list[[4]]
-  nest <- if(length(id_list) > 4) id_list[[5]] else NA
-  res <- rbind(list(Country = Country, 
-                    flavor = if (flavor=="unadjusted") "Unadjusted" else "Quality-adjusted",
-                    energy = if (energy=="noE") "Without energy" else "With energy",
-                    model=model, 
-                    nest=nest))
-  coeffs <- naturalCoef(mod)
-  res <- cbind(res, coeffs)
+  res <- rbind(list(Country = id_list[[1]], 
+                    flavor = if (id_list[[2]]=="unadjusted") "Unadjusted" else "Quality-adjusted",
+                    energy = if (id_list[[3]]=="noE") "Without energy" else "With energy",
+                    model=id_list[[4]], 
+                    nest=if(length(id_list) > 4) id_list[[5]] else NA,
+                    cst=TRUE))
+  res <- cbind(res, naturalCoef(modCST))
+  # Now calculate the mean squared error (mse) for each model.
+  sqResids <- resid(modCST)^2
+  mse <- sum(sqResids)/(length(sqResids))
+  res <- cbind(res, list(mse=mse))
+  return(res)
+}) %>% do.call(plyr::rbind.fill, .)
+
+AllCoeffsNoCST <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
+  # Parse the id to find out whether this is quality-adjusted data, etc.
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  res <- rbind(list(Country = id_list[[1]], 
+                    flavor = if (id_list[[2]]=="unadjusted") "Unadjusted" else "Quality-adjusted",
+                    energy = if (id_list[[3]]=="noE") "Without energy" else "With energy",
+                    model=id_list[[4]], 
+                    nest=if(length(id_list) > 4) id_list[[5]] else NA,
+                    cst=FALSE))
+  res <- cbind(res, naturalCoef(mod))
   # Now calculate the mean squared error (mse) for each model.
   sqResids <- resid(mod)^2
   mse <- sum(sqResids)/(length(sqResids))
   res <- cbind(res, list(mse=mse))
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
-# Get the unadjusted, no-energy values for mse and lambda and place them on each appropriate row
-AllCoeffs_unadj_noE <- filter(AllCoeffs, flavor=="Unadjusted", energy=="Without energy") %>% 
-                              select(Country, flavor, energy, model, nest, mse, lambda)
-colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="mse"] <- "mse_unadj_noE"
-colnames(AllCoeffs_unadj_noE)[colnames(AllCoeffs_unadj_noE)=="lambda"] <- "lambda_unadj_noE"
-AllCoeffs <- merge(AllCoeffs, AllCoeffs_unadj_noE[c("Country", "model", "mse_unadj_noE", "lambda_unadj_noE")])
+AllCoeffs <- plyr::rbind.fill(AllCoeffsCST, AllCoeffsNoCST)
+# Get reference values for lambda and sse.
+ref <- filter(AllCoeffs, cst==TRUE & flavor=="Unadjusted" & energy=="Without energy") %>% 
+              select(Country, flavor, energy, model, nest, mse, lambda)
+
+colnames(ref)[colnames(ref)=="mse"] <- "mse_ref"
+colnames(ref)[colnames(ref)=="lambda"] <- "lambda_ref"
+AllCoeffs <- merge(AllCoeffs, ref[c("Country", "model", "mse_ref", "lambda_ref")])
 # Calculate differences relative to the unadjusted, no-energy condition
-AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_unadj_noE), 
-                    Dmse = mse - mse_unadj_noE,
-                    percDlambda = Dlambda / abs(lambda_unadj_noE) * 100)
+AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_ref), 
+                    Dmse = mse - mse_ref,
+                    percDlambda = Dlambda / abs(lambda_ref) * 100)
 
 # Relevel factors
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
@@ -744,8 +766,9 @@ AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("Unadju
 AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("Without energy", "With energy"))
 AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("CD", "CES"))
 AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
+AllCoeffs$cst <- relevelFactor(as.factor(unlist(AllCoeffs$cst)), c("TRUE", "FALSE"))
 # Rearrange for easier viewing
-AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest)
+AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 @
 
 <<Fitted_and_Residuals>>=
