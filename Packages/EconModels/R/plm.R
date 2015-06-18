@@ -5,7 +5,7 @@
 #' @param formula a formula describing the model
 #' @param data a data frame
 #' @param params a named vector of the parameters to be fit by numerical optimation outside of \code{lm}.
-#' @param optimize a logical indicating whether \code{param} should be plugged in or used as the seed
+#' @param optimize a logical indicating whether \code{params} should be plugged in or used as the seed
 #'   for the numerical optimization
 #' @param .ocall used for recursive calling
 #' @param ... additional arguments, currently ignored.
