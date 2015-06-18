@@ -1,6 +1,6 @@
 #' Parameterized Linear Models
 #' 
-#' The optimal model is fit in a case where asside from some parameters, the model is linear.  
+#' The optimal model is fit in a case where aside from some parameters, the model is linear.  
 #' Numerical optimization is used over these parameters with \code{lm} fitting the rest.
 #' @param formula a formula describing the model
 #' @param data a data frame
