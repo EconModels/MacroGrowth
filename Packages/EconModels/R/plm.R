@@ -18,15 +18,15 @@
 #'      
 #' plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, 
 #'      data=Calvin %>% filter(Country=="US"), 
-#'      p=c(delta=0.4), 
+#'      params=c(delta=0.4), 
 #'      optimize=FALSE ) 
 #' 
 #' plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin %>% filter(Country=="US"), 
-#'      p=c(delta=0.4), 
+#'      params=c(delta=0.4), 
 #'      optimize=TRUE ) 
 #'      
 #' plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin %>% filter(Country=="US"), 
-#'      p=c(delta=0.4), method=c("nlm", "spg"),
+#'      params=c(delta=0.4), method=c("nlm", "spg"),
 #'      optimize=TRUE ) 
 #' 
 #' foo <- plm( log(iGDP / delta*(delta_1*iK + (1-delta_1)*iL) + (1-delta)*iQp) ~ iYear,
