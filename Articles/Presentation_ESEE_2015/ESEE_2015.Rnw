@@ -1192,9 +1192,40 @@ On a percentage basis,
 When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta mse$ are negative, 
 we observe reduction in the Solow residual ($\lambda$) or
 the fitting residuals ($mse$)
-relative to the unadjusted, no-energy condition.
+relative to the unadjusted, no-energy, CST case.
 
-Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
+To calculate $\Delta \lambda$ and $\Delta mse$, we need to fit all combinations of 
+country, model, flavor, energy, nest, and CST.
+Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models.
+%
+<<CD_coeffs, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD") %>% 
+           select(Country, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, mse),
+         caption="Model parameters for all Cobb-Douglas models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+Tables~\ref{tab:CES_coeffs} and~\ref{tab:CES_coeffs_sigmas} show 
+coefficients for all fitted CES models.
+%
+<<CES_coeffs, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES") %>% 
+           select(Country, flavor, energy, nest, cst, gamma, lambda, alpha_1, alpha_2, alpha_3),
+         caption="Model parameters for all CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<CES_coeffs_sigmas, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES") %>% 
+           select(Country, flavor, energy, nest, cst, sigma_1, sigma, mse),
+         caption="Model parameters for all CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
 %
 <<DSRmse_CD, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, cst, Dlambda, Dmse),
@@ -1203,8 +1234,8 @@ myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energ
          digits=6)
 @
 % 
-Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show results 
-for CES models with various nestings.
+Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show $\Delta \lambda$ and $\Delta mse$ 
+results for CES models with various nestings.
 %
 <<DSRmse_CESkle, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
@@ -1230,7 +1261,9 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>%
          digits=6)
 @
 %
-Figure~\ref{fig:DSRmse_CD_graph} summarizes the data for the Cobb-Douglas model.
+Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for the Cobb-Douglas model.
 %
 <<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
 ggplot() +
@@ -1261,7 +1294,9 @@ ggplot() +
   theme(legend.title=element_blank())
 @
 %
-Figure~\ref{fig:DSRmse_CES_graph} summarizes the data for the CES models.
+Figures~\ref{fig:DSRmse_CES_graph} and~\ref{fig:percDSRmse_CES_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for CES models.
 %
 <<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
 ggplot(data=filter(AllCoeffs, model=="CES")) +
