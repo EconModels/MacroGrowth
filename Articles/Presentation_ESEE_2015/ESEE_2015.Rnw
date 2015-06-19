@@ -146,6 +146,16 @@ opts_chunk$set(
   # Sets all table captions to the top.
   xtable.caption.placement="top"
 )
+
+# This function is used in many places below.
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE)
+}
 @
 
 
@@ -1077,34 +1087,106 @@ For now, I've organized the analysis around questions that we would like to answ
 
 
 %++++++++++++++++++++++++++++++
+\subsection{Does rejecting the cost-share theorem 
+            decrease the mean squared error and/or the Solow residual?} 
+\label{sec:cst_and_solow_residual}
+%++++++++++++++++++++++++++++++
+
+Our hypothesis is that rejecting the cost-share theorem~(CST) will decrease
+both mean squared error~($mse$) and
+the Solow residual~($\lambda$).
+The mean squared error~($mse$) is expected to decrease 
+because rejecting the CST adds one or more fitting parameters
+to the model.
+The Solow residual~($\lambda$) is expected to decrease 
+because the factor shares for capital~($\alpha_1$) and labor~($\alpha_2 = 1 - \alpha_1$)
+are free to float, 
+allowing each factor of production 
+to contribute optimally toward production and
+bringing the model's prediction for economic output closer to 
+historical output. 
+In so doing, we expect less ``unexplained'' economic growth 
+and a decreased Solow residual~($\lambda$).
+
+Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
+on fitted parameters for the Cobb-Douglas model.
+%
+<<Effect_of_CST_CD, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD" & flavor=="Unadjusted" & energy=="Without energy") %>% 
+           select(Country, cst, scale, lambda, alpha_1, alpha_2, mse),
+         caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+Table~\ref{tab:Effect_of_CST_CES} shows the effect of the CST 
+on fitted parameters for the CES model.
+%
+<<Effect_of_CST_CES, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES" & flavor=="Unadjusted" & energy=="Without energy") %>% 
+           select(Country, cst, gamma, lambda, alpha_1, alpha_2, sigma_1, mse),
+         caption="Model parameters for CES models with unadjusted factors of production, without energy.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+For both Cobb-Douglas and CES, rejecting the Cost Share Theorem yields
+decreased mean squared error~($mse$) and
+smaller Solow residual ($\lambda$, on an absolute-value basis),
+as expected.
+
+***************
+
+Note that in Table~\ref{tab:Effect_of_CST_CES}, we see $\sigma_1 = 0.5$ 
+for UK when the cost share theorem is rejected. 
+This even-numbered result is coming from the grid search in $\rho_1$. 
+For an unknown reason, the gradient search from the best grid search point
+fails.
+I will investigate.
+
+This result means that we have found a set of fitting coefficients
+for this situation 
+that is \emph{close} to providing the minimum possible $mse$,
+but it may not be the \emph{exact} minimum.
+Regardless, the point above (that $mse$ and $\lambda$ always decrease 
+when rejecting the cost share theorem) remains valid.
+Investigating and fixing this problem
+will only serve to \emph{further} reduce $mse$ and $\lambda$ 
+from the values reported in Table~\ref{tab:Effect_of_CST_CES}.
+
+************
+
+
+%++++++++++++++++++++++++++++++
 \subsection{Does quality-adjusting the factors of production 
             decrease the mean squared error and/or the Solow residual?} 
 \label{sec:quality_adj_energy_and_solow_residual}
 %++++++++++++++++++++++++++++++
 
-We can test our hypothesis that quality-adjusting the factors of production
+We can test our hypothesis that 
+quality-adjusting the factors of production
 and including energy will both reduce the Solow residuals~($\lambda$)
 and improve the fit to historical data
-(thereby, reducing the fitting residuals, $r_i$)
+(thereby reducing the fitting residuals, $r_i$, and mean squared error, $mse$)
 by calculating 
 $\Delta \lambda$ and $\Delta mse$, where
 %
 \begin{equation} \label{eq:delta_lambda}
-  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy} \right|
+  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|
 \end{equation}
 %
 and
 %
 \begin{equation} \label{eq:delta_mse}
-  \Delta mse \equiv mse - mse_{Unadjusted, \, Without \, energy}.
+  \Delta mse \equiv mse - mse_{Unadjusted, \, Without \, energy, \, CST}.
 \end{equation}
 %
 where~$N$ is the number of years of data.
 On a percentage basis,
 %
 \begin{equation} \label{eq:delta_lambda_perc}
-  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} 
-            = \frac{100 \, \left| \lambda \right|}{\left| \lambda_{Unadjusted, \, Without \, energy} \right|} - 1
+  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|} 
+            = \frac{100 \, \left| \lambda \right|}{\left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|} - 1
 \end{equation}
 %
 When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta mse$ are negative, 
@@ -1114,19 +1196,8 @@ relative to the unadjusted, no-energy condition.
 
 Table~\ref{tab:DSRmse_CD} shows the results for the Cobb-Douglas models.
 %
-<<MyXTableFunction>>=
-myXTable <- function(data, caption, label, digits=2){
-  table <- xtable(data, caption=caption, label=label, digits=digits)
-  print(table, 
-        caption.placement="top", 
-        size="\\tiny", 
-        include.rownames=FALSE, 
-        math.style.negative=TRUE)
-}
-@
-%
 <<DSRmse_CD, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, Dlambda, Dmse),
+myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1137,7 +1208,7 @@ for CES models with various nestings.
 %
 <<DSRmse_CESkle, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+           select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($kl$)$e$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1145,7 +1216,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>%
 %
 <<DSRmse_CESlek, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+           select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($le$)$k$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1153,7 +1224,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>%
 %
 <<DSRmse_CESekl, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>% 
-           select(Country, model, flavor, energy, nest, Dlambda, Dmse),
+           select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($ek$)$l$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1161,46 +1232,56 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>%
 %
 Figure~\ref{fig:DSRmse_CD_graph} summarizes the data for the Cobb-Douglas model.
 %
-<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
-ggplot(data=filter(AllCoeffs, model=="CD")) +
-  geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy)) +
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
+ggplot() +
+  geom_point(data=filter(AllCoeffs, cst==FALSE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy)) +
+  scale_shape(solid=FALSE) +
+  guides(shape=FALSE) +
+  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=cst)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
+  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
   ylab(expression(Delta * lambda)) +
   xy_theme() + 
   theme(legend.title=element_blank())
 @
 %
-<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy condition.">>=
-ggplot(data=filter(AllCoeffs, model=="CD")) +
-  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy)) +
+<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
+ggplot() +
+  geom_point(data=filter(AllCoeffs, cst==FALSE & model=="CD"), mapping=aes(x=Dmse, y=percDlambda, color=energy)) +
+  scale_shape(solid=FALSE) +
+  guides(shape=FALSE) +
+  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=cst)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
+  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
   ylab(expression(paste(Delta * lambda, " [%]"))) +
-  scale_y_continuous(breaks=c(-50, 0, 50, 100)) +
+  scale_y_continuous(breaks=seq(-75, 25, 25)) +  
   xy_theme() + 
   theme(legend.title=element_blank())
 @
 %
 Figure~\ref{fig:DSRmse_CES_graph} summarizes the data for the CES models.
 %
-<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
+<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
 ggplot(data=filter(AllCoeffs, model=="CES")) +
-  geom_point(mapping=aes(x=Dmse, y=Dlambda, color = energy, shape=nest)) +
+  geom_point(mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=nest)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
+  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
   ylab(expression(Delta * lambda)) +
   xy_theme() +
   theme(legend.title=element_blank())
 @
 %
-<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy condition.">>=
+<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
 ggplot(data=filter(AllCoeffs, model=="CES")) +
-  geom_point(mapping=aes(x=Dmse, y=percDlambda, color = energy, shape=nest)) +
+  geom_point(mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=nest)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
+  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
   ylab(expression(paste(Delta * lambda, " [%]"))) +
-  scale_y_continuous(breaks=c(-50, -25, 0, 25)) +  
+  scale_y_continuous(breaks=seq(-75, 25, 25)) +  
   xy_theme() +
   theme(legend.title=element_blank())
 @
