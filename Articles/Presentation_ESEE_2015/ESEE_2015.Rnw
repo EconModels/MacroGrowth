@@ -782,19 +782,15 @@ AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 @
 
 <<Fitted_and_Residuals>>=
-fittedAndResidData <- function(model){
+fittedAndResidData <- function(model, id){
   df <- data.frame(select(getData(model), Year))
   # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
   df$fitted <- yhat(model)[c(1:length(df$Year))]
   df$Residuals <- resid(model)[c(1:length(df$Year))]
-  return(df)  
-}
-
-temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
-  df <- fittedAndResidData(model)
-  f <- model$formula
-  response <- summands(f, right = FALSE)
-  df[[response]] <- getData(model)[[response]] # Add iGDP to the data frame
+  df <- na.omit(df)
+  # Now add the response, using the original variable name.
+  df[[summands(model$formula, right = FALSE)]] <- response(model)
+  # Now add meta information
   id_list <- strsplit(id, split = "[.]")[[1]]
   df$Country <- id_list[[1]]
   df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
@@ -802,7 +798,17 @@ temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f
   df$model <- id_list[[4]]
   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
   return(df)  
+}
+
+temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
+  return(fittedAndResidData(model, id))  
 }) %>% do.call(rbind, .)
+temp_data$cst <- FALSE
+
+# temp_data_CST <- leaf_apply(modelsCST,class=c("plm", "lm"), f = function(model, id){
+#   return(fittedAndResidData(model, id))
+# }) %>% do.call(rbind, .)
+# temp_data_CST$cst <- TRUE
 
 # Get the unadjusted, without-energy residuals and store them in a data frame
 r_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
