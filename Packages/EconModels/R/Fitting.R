@@ -556,7 +556,7 @@ CDcoefNames <- list(
 #' cd2Model(iGDP ~ iK + iL + iYear, data=US)
 #' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
 #' 
-cd2Model <- function(formula, data, response, x1, x2, time, constrained=FALSE, 
+cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE, 
                        save.data=TRUE, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + time,
@@ -653,7 +653,7 @@ respectsConstraints <- function( model ) {
 
 # y ~ x1 + x2 + x3 + time
 cd3Model <- function( formula, data, response, x1, x2, x3, time, 
-                      constrained=FALSE, save.data=TRUE, ...){
+                      constrained=TRUE, save.data=TRUE, ...){
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + x3 + time,
