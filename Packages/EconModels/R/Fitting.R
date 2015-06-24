@@ -515,12 +515,12 @@ CDformulas <- list(
   log(y) - log(x3) ~ 
     I(log(x1) - log(x3)) + I(log(x2) - log(x3)) + time,  # [[1]] Full model
   
-  log(y) - log(x2)  ~ I(log(x1) - log(x2)) + time,            # [[2]] With x3 exponent = 0
-  log(y) - log(x3) ~ I(log(x1) - log(x3)) + time,           # [[3]] With x2 exponent = 0
-  log(y) - log(x3) ~ I(log(x2)  - log(x3)) + time,            # [[4]] With x1 exponent = 0
+  log(y) - log(x2) ~ I(log(x1) - log(x2)) + time,            # [[2]] With x3 exponent = 0
+  log(y) - log(x3) ~ I(log(x1) - log(x3)) + time,            # [[3]] With x2 exponent = 0
+  log(y) - log(x3) ~ I(log(x2) - log(x3)) + time,            # [[4]] With x1 exponent = 0
   
-  log(y) - log(x1) ~ time, # [[5]] With x1 exponent = 1, x2 and x3 exponents = 0
-  log(y) - log(x2)  ~ time,  # [[6]] With x2 exponent = 1, x1 and x3 exponents = 0
+  log(y) - log(x1) ~ time,  # [[5]] With x1 exponent = 1, x2 and x3 exponents = 0
+  log(y) - log(x2) ~ time,  # [[6]] With x2 exponent = 1, x1 and x3 exponents = 0
   log(y) - log(x3) ~ time   # [[7]] With x3 exponent = 1, x1 and x2 exponents = 0
 )
 
