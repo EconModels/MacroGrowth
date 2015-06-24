@@ -687,6 +687,7 @@ if (!rerunModels){
     sdata <- subset(data, select=all.vars(form))
     sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
     cdModCST$data <- sdata
+    cdModCST$response <- sdata$iGDP 
     modelsCST[[country]][["unadjusted"]][["noE"]][["CD"]] <- cdModCST
     # CES
     cesModCST <- plm(log(eval(yVar) / (alphaCST*eval(kVar)^(-rho_1) + betaCST*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
@@ -699,7 +700,6 @@ if (!rerunModels){
     cesModCST$data <- sdata
     modelsCST[[country]][["unadjusted"]][["noE"]][["CES"]][["kl"]] <- cesModCST
   }
-  
   # Save cost-share theorem models to disk.
   saveRDS(modelsCST, file=fileNameCST)
 
@@ -789,7 +789,12 @@ AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 
 <<Fitted_and_Residuals>>=
 fittedAndResidData <- function(model, id){
-  df <- data.frame(select(model$data, Year)) # getData doesn't work for lm models that are created for CST=TRUE.
+  # ******************************************
+  # getData doesn't work for lm models that are created for CST=TRUE.
+  # After we implement fixed values for alpha_1 and alpha_2 in our fitting functions, 
+  # getData(model) will probably work.
+  # At that time, change model$data to getData(model)
+  df <- data.frame(select(model$data, Year)) 
   # By including [c(1:length(df$Year))] on the end, we 
   # add NAs (as appropriate) to the end of these columns
   # if data do not exist.
@@ -806,16 +811,22 @@ fittedAndResidData <- function(model, id){
   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
   return(df)  
 }
-
-temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
-  return(fittedAndResidData(model, id))
-}) %>% do.call(rbind, .)
-temp_data_CST$cst <- TRUE
-
 temp_data_noCST <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
   return(fittedAndResidData(model, id))  
 }) %>% do.call(rbind, .)
 temp_data_noCST$cst <- FALSE
+
+temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
+  # ****************************************************
+  # Not all of the results from this code are not correct at this time.
+  # The residuals are OK.
+  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CST models.
+  # This is because modelsCST was not created with our typical functions.
+  # To correct this problem, we need to add arguments to cdModel and cesModel such that 
+  # the models produced by those functions will be in the correct form for yhat() function.
+  return(fittedAndResidData(model, id))
+}) %>% do.call(rbind, .)
+temp_data_CST$cst <- TRUE
 
 temp_data <- plyr::rbind.fill( temp_data_CST, temp_data_noCST )
 
@@ -852,7 +863,18 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, 
 %++++++++++++++++++++++++++++++
 
 <<Fitted and Residual Graph Functions>>=
-fittedGraph <- function(data){
+fittedGraphCST <- function(data){
+  ggplot() +
+    geom_line(data=filter(data, cst==TRUE), mapping=aes(x=Year, y=iGDP)) +
+    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=cst)) +
+    scale_linetype_manual(values=c(2,3), name="") +
+    facet_grid(Country ~ flavor) + 
+    xlab("") +
+    ylab("Indexed GDP (1960=1)") +
+    xy_theme()
+}
+
+fittedGraphNoCST <- function(data){
   ggplot() +
     geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
     geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=energy)) +
@@ -869,20 +891,20 @@ fittedGraph <- function(data){
 Both historical GDP and fitted GDP are shown in 
 Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
 %
-<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CD" & cst==FALSE))
+<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
+fittedGraphNoCST(filter(fitted_and_resid_data, model=="CD" & cst==FALSE))
 @
 %
 <<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="kle" | nest=="kl")))
+fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="kle" | nest=="kl")))
 @
 %
 <<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="lek" | nest=="kl")))
+fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="lek" | nest=="kl")))
 @
 %
 <<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="ekl" | nest=="kl")))
+fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="ekl" | nest=="kl")))
 @
 
 
