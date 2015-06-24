@@ -789,13 +789,14 @@ AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 
 <<Fitted_and_Residuals>>=
 fittedAndResidData <- function(model, id){
-  df <- data.frame(select(getData(model), Year))
-  # Trim fitted to be same length as df to eliminate problems with possible NAs at end of fitted
+  df <- data.frame(select(model$data, Year)) # getData doesn't work for lm models that are created for CST=TRUE.
+  # By including [c(1:length(df$Year))] on the end, we 
+  # add NAs (as appropriate) to the end of these columns
+  # if data do not exist.
   df$fitted <- yhat(model)[c(1:length(df$Year))]
   df$Residuals <- resid(model)[c(1:length(df$Year))]
-  df <- na.omit(df)
   # Now add the response, using the original variable name.
-  df[[summands(model$formula, right = FALSE)]] <- response(model)
+  df[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(df$Year))]
   # Now add meta information
   id_list <- strsplit(id, split = "[.]")[[1]]
   df$Country <- id_list[[1]]
@@ -806,22 +807,25 @@ fittedAndResidData <- function(model, id){
   return(df)  
 }
 
-temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
+temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
+  return(fittedAndResidData(model, id))
+}) %>% do.call(rbind, .)
+temp_data_CST$cst <- TRUE
+
+temp_data_noCST <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
   return(fittedAndResidData(model, id))  
 }) %>% do.call(rbind, .)
-temp_data$cst <- FALSE
+temp_data_noCST$cst <- FALSE
 
-# temp_data_CST <- leaf_apply(modelsCST,class=c("plm", "lm"), f = function(model, id){
-#   return(fittedAndResidData(model, id))
-# }) %>% do.call(rbind, .)
-# temp_data_CST$cst <- TRUE
+temp_data <- plyr::rbind.fill( temp_data_CST, temp_data_noCST )
 
-# Get the unadjusted, without-energy residuals and store them in a data frame
-r_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
-               select(Year, Country, Residuals, model)
-colnames(r_unadj_noE)[colnames(r_unadj_noE)=="Residuals"] <- "r_unadj_noE"
+# Get the unadjusted, without-energy residuals from models that obey the CST
+# and store them in a data frame
+r_unadj_noE_CST <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & cst==TRUE) %>% 
+  select(Year, Country, Residuals, model)
+colnames(r_unadj_noE_CST)[colnames(r_unadj_noE_CST)=="Residuals"] <- "r_unadj_noE"
 # Merge to get the unadjusted, without-energy values next to each country, year, and model
-fitted_and_resid_data <- merge(temp_data, r_unadj_noE)
+fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CST)
 # Create a column containing ∆r, the difference between a residual value
 # and the residual value in the same year for the unadjusted, no-energy case
 fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
@@ -866,19 +870,19 @@ Both historical GDP and fitted GDP are shown in
 Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
 %
 <<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CD"))
+fittedGraph(filter(fitted_and_resid_data, model=="CD" & cst==FALSE))
 @
 %
 <<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="kle" | nest=="kl")))
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="kle" | nest=="kl")))
 @
 %
 <<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="lek" | nest=="kl")))
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="lek" | nest=="kl")))
 @
 %
 <<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraph(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
+fittedGraph(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="ekl" | nest=="kl")))
 @
 
 
@@ -919,175 +923,23 @@ Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
 show fitting residuals for all models.
 %
 <<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CD"))
+residualPlot(filter(fitted_and_resid_data, model=="CD" & cst==FALSE))
 @
 %
 <<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="kle" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="kle" | nest=="kl")))
 @
 %
 <<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest == "lek" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest == "lek" | nest=="kl")))
 @
 %
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & (nest=="ekl" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst==FALSE & (nest=="ekl" | nest=="kl")))
 @
 
 
-%++++++++++++++++++++++++++++++
-\subsection{Dynamic Solow residuals} 
-\label{sec:dynamic_solow_residuals}
-%++++++++++++++++++++++++++++++
 
-<<Dynamic Solow Residuals>>=
-# Calculate finite difference approximations of time derivatives for output and all factors of production
-dynamicSR <- function(model, id, lag=1, pad="tail"){
-  id_list <- strsplit(id, split = "[.]")[[1]]
-  energy <- id_list[[3]]
-  modelStr <- id_list[[4]]
-  
-  f <- model$formula
-  denom <- summands(f, n=length(summands(f))) # time variable
-  nums <- all.vars(f) [1:(length(all.vars(f))-1)] # y, k, l, and e (if present)
-  df <- getData(model)[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
-  
-  # Calculate names for the columns of finite difference derivatives
-  derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], ".d", denom)}) %>% unlist
-  derivCols <- lapply(1:length(nums), function(i){
-    # Calculate finite difference derivative columns
-    ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
-  }) %>% do.call(cbind, .) %>% as.data.frame
-  names(derivCols) <- derivNames  
-  df <- cbind(derivCols, df[ , c(nums, denom)]) # puts derivatives first, then raw numbers, then time
-  df[["dydtOvery"]] <- 1 / df[[ nums[[1]] ]] * df[[ derivNames[[1]] ]]
-  coeffs <- naturalCoef(model)
-  df <- cbind(df, coeffs)
-  
-  if (modelStr == "CD"){
-    lambda_fd <- 
-      df[["dydtOvery"]] - 
-      df[["alpha_1"]] / df[[nums[[2]]]] * df[[derivNames[[2]]]] - 
-      df[["alpha_2"]] / df[[nums[[3]]]] * df[[derivNames[[3]]]]
-    if (energy == "withE"){
-      # Subtract the energy term also
-      lambda_fd <- lambda_fd - 
-        df[["alpha_3"]] / df[[nums[[4]]]] * df[[derivNames[[4]]]]
-    }
-    # Fraction of growth explained by Solow Residual
-    solowFrac <- lambda_fd / df[["dydtOvery"]]
-    # Add to data frame
-    df$lambda_fd <- lambda_fd
-    df$solowFrac <- solowFrac
-    return(df)
-  } else if (modelStr == "CES"){
-    # Assign nice variable names so that the equations below are easier to read (and debug, and maintain)
-    # This code is nest-aware.
-    n <- model$nest
-    for (i in 1:length(model$nest)){
-      df[[paste0("x", i)]] <- df[[ nums[ model$nest[i]+1 ] ]] # GDP is 1st col, add 1 to get to the factors of production
-      df[[paste0("dx", i, "dt")]] <- df[[ derivNames[ model$nest[i]+1 ] ]]
-    }
-    if (energy == "noE"){
-      # Calculate terms for the finite-difference Solow residual (lambda_fd)
-      df <- df %>% 
-        transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
-        transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
-        transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
-        transform(solowFrac = lambda_fd / dydtOvery)
-      return(df)
-    } else if (energy == "withE"){
-      df <- df %>% 
-        transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
-        transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
-        transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
-        transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
-        transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
-        transform(solowFrac = lambda_fd / dydtOvery)
-      return(df)
-    } else {
-      stop (paste("Unknown energy:", energy))
-    }
-  } else {
-    stop(paste("Unknown modelStr", modelStr))
-  }
-}
-
-lag.to.use <- 1 # years
-temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), 
-                        f = function(model, id, lag=lag.to.use, pad="tail"){
-  df <- dynamicSR(model, id=id, lag=lag, pad=pad)
-  id_list <- strsplit(id, split = "[.]")[[1]]
-  df$Country <- id_list[[1]]
-  df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
-  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-  df$model <- id_list[[4]]
-  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-  df$Year <- getData(model)[["Year"]]
-  return(df)  
-}) %>% do.call(plyr::rbind.fill, .)
-
-# Get the unadjusted, without-energy Solow residuals and store them in a data frame
-sr_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
-                select(Year, Country, lambda_fd, model)
-colnames(sr_unadj_noE)[colnames(sr_unadj_noE)=="lambda_fd"] <- "sr_unadj_noE"
-# Merge to get the unadjusted, without-energy values next to each country, year, and model
-solowResiduals <- merge(temp_data, sr_unadj_noE)
-
-# Create a column containing ∆lambda_df, the difference between a lambda_df value
-# and the lambda_df value in the same year for the unadjusted, no-energy case
-solowResiduals[["Dlambda_fd"]] <- abs(solowResiduals[["lambda_fd"]]) - abs(solowResiduals[["sr_unadj_noE"]])
-
-# Relevel factors before plotting
-solowResiduals$Country <- relevelFactor(as.factor(solowResiduals$Country), c("PT", "UK"))
-solowResiduals$flavor <- relevelFactor(as.factor(solowResiduals$flavor), c("Unadjusted", "Quality-adjusted"))
-solowResiduals$energy <- relevelFactor(as.factor(solowResiduals$energy), c("Without energy", "With energy"))
-solowResiduals$nest <- relevelFactor(as.factor(solowResiduals$nest), c("kl", "kle", "lek", "ekl"))
-
-# Make data viewing easier
-solowResiduals <- arrange(solowResiduals, Country, model, flavor, energy, nest)
-@
-
-<<DynamicSR_Graph>>=
-dynamicSRGraph <- function(data){
-ggplot(data=data) +
-  geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=dydtOvery)) +
-  geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
-  scale_linetype_manual(values=c(2,3), name="") +
-  facet_grid(Country ~ flavor) +
-  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-  xlab("") + 
-  ylab(expression(lambda[ij])) +
-  xy_theme()  
-}
-@
-
-``Dynamic'' Solow residuals~($\lambda_{i,j}$) can be calculated 
-for the Cobb-Douglas and CES models
-as shown in Appendices~\ref{sec:dynamic_sr_CD} and~\ref{sec:dynamic_sr_CES},
-respectively.
-
-Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
-of the Solow residual~($\lambda_{i,j}$) over time
-as calculated by Equation~\ref{eq:lambdaij} 
-with the timespan for finite differences ($t_j - t_i$) set to 
-\Sexpr{lag.to.use}~\Sexpr{if (lag.to.use == 1) "year" else "years"}.
-%
-<<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
-dynamicSRGraph(filter(solowResiduals, model=="CD"))
-@
-%
-<<DynamicSR_CESkle_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($kl$)$e$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
-dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="kle" | nest=="kl")))
-@
-%
-<<DynamicSR_CESlek_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($le$)$k$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
-dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="lek" | nest=="kl")))
-@
-%
-<<DynamicSR_CESekl_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($ek$)$l$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
-dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl")))
-@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1280,9 +1132,7 @@ results for the Cobb-Douglas model.
 <<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
 ggplot() +
   geom_point(data=filter(AllCoeffs, cst==FALSE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy)) +
-  scale_shape(solid=FALSE) +
-  guides(shape=FALSE) +
-  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=cst)) +
+  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy), shape=1) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
@@ -1294,9 +1144,7 @@ ggplot() +
 <<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
 ggplot() +
   geom_point(data=filter(AllCoeffs, cst==FALSE & model=="CD"), mapping=aes(x=Dmse, y=percDlambda, color=energy)) +
-  scale_shape(solid=FALSE) +
-  guides(shape=FALSE) +
-  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=cst)) +
+  geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=percDlambda, color=energy), shape=1) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
@@ -1311,8 +1159,9 @@ $\Delta \lambda$ and $\Delta mse$
 results for CES models.
 %
 <<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
-ggplot(data=filter(AllCoeffs, model=="CES")) +
-  geom_point(mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=nest)) +
+ggplot() +
+  geom_point(data=filter(AllCoeffs, model=="CES" & cst==FALSE), mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=nest)) +
+  geom_point(data=filter(AllCoeffs, model=="CES" & cst==TRUE), mapping=aes(x=Dmse, y=Dlambda, color=energy), shape=1) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
@@ -1322,8 +1171,9 @@ ggplot(data=filter(AllCoeffs, model=="CES")) +
 @
 %
 <<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
-ggplot(data=filter(AllCoeffs, model=="CES")) +
-  geom_point(mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=nest)) +
+ggplot() +
+  geom_point(data=filter(AllCoeffs, model=="CES" & cst==FALSE), mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=nest)) +
+  geom_point(data=filter(AllCoeffs, model=="CES" & cst==TRUE), mapping=aes(x=Dmse, y=percDlambda, color=energy), shape=1) + 
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
@@ -1410,118 +1260,511 @@ myXTable(Dr.t.values,
 @
 
 
-%++++++++++++++++++++++++++++++
-\subsection{Does quality-adjusting the factors of production 
-            decrease fitting residuals and/or the dynamic Solow residual?} 
-\label{sec:quality_adj_energy_and_dynamic_solow_residual}
-%++++++++++++++++++++++++++++++
 
-<<SR and R trajectory data>>=
-traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
-                   fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")]) %>%
-                   arrange(Country, model, flavor, energy, nest)
-traj.data.stats <- traj.data %>% 
-  group_by(model, Country, flavor, energy, nest) %>%
-  summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
 
-############################################
-# Dlambda_fd.p <- traj.data %>% 
-#   group_by(model, Country, flavor, energy, nest) %>% 
-#   select(Dlambda_fd) %>%
-#   t.test(., alternative="less")[["p.value"]]
-############################################  
-@
 
-<<SR and R trajectory plot function>>=
-residualsTrajGraph <- function(data){
-  plot <- ggplot(data=data) + 
-    geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
-    facet_grid(Country ~ flavor) +
-    xlab(expression(Delta*r[i])) +
-    ylab(expression(Delta*lambda[ij])) +
-    xy_theme() + 
-    theme(legend.title=element_blank())
-  return(plot)
-}
-@
 
-We can test our hypothesis that quality-adjusting the factors of production
-and including energy will reduce the Solow residuals~($\lambda$)
-and the fitting residuals~($r$) by plotting
-$\Delta \lambda_i$ vs. $\Delta r_i$, where
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
+% all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
+% associated with this paper can be found at\\*
+% \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+% \bibliography{Paper2.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CD equation}
+\label{sec:dynamic_sr_CD}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Assuming that parameters $\theta$, $\alpha$, and $\beta$
+in Equation~\ref{eq:CDe} are known from parameter estimation,
+we can estimate the value of $\lambda$ as follows.
+First, assume constant returns to scale such that 
+$\alpha + \beta + \gamma = 1$, 
+and calculate $\gamma = 1 - \alpha - \beta$.
+Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
 %
-\begin{equation} \label{eq:delta_lambda_i}
-  \Delta \lambda_i \equiv \left| \lambda_i \right| - \left| \lambda_{i, \, Unadjusted, \, Without \, energy} \right|
+\begin{equation} \label{eq:lnCD}
+  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
+\end{equation}
+%
+By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
+and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
+constant with respect to time, we obtain
+%
+\begin{equation} \label{eq:ddtlnCD}
+  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
+\end{equation}
+%
+Solving for the total factor productivity term gives
+%
+\begin{equation} \label{eq:solow_resid}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+        \right] \;.
+\end{equation}
+%
+Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
+%
+\begin{equation} \label{eq:lambda_calc}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
+    = \lambda \; ,
+\end{equation}
+%
+which can be substituted into Equation~\ref{eq:solow_resid} to find
+%
+\begin{equation} \label{eq:lambda}
+  \lambda 
+    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+    - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+      \right] \;.
+\end{equation}
+%
+Equation~\ref{eq:lambda} applies for any instant in time.
+
+If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
+between times $i$ and $j$, we find
+%
+\begin{equation} \label{eq:lambdaij}
+  \lambda_{i,j}
+    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
+    - \left[
+            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
+      \right] \;,
+\end{equation}
+% 
+where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
+from Equation~\ref{eq:lambda} between times $i$ and $j$.
+
+Interestingly, 
+%
+\begin{equation}
+  \lambda_{1,n}
+    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
+\end{equation}
+% 
+Rather,
+%
+\begin{equation} \label{eq:lambda1n}
+  \lambda_{1,n}
+    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
+      - \left[ 
+            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
+            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
+            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
+      \right] \; ,
+\end{equation}
+% 
+which will become increasingly inaccurate over large time spans,
+because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
+of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
+This suggests that an averaging approach such as
+%
+\begin{equation}
+  \lambda_{1,n}
+    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
+\end{equation}
+%
+is a better approximation of Equation~\ref{eq:lambda1n},
+which is, itself, an approximation of the true value of $\lambda$ 
+given by Equation~\ref{eq:lambda}.
+
+The fraction~($f$) of GDP growth explained by the Solow residual
+for the CD model
+can be given as
+%
+\begin{equation} \label{eq:frac_growth_explained_by_solow}
+  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
+            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
+                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
+\end{equation}
+%
+Using forward differences to estimate $f$ yields
+%
+\begin{equation} \label{eq:f_finite_diff_1}
+  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
+       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
+\end{equation}
+%
+Cancelling $t_j - t_i$ terms and simplifying gives
+%
+\begin{equation} \label{eq:f_finite_diff_2}
+  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
+                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
+                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
+            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
+\end{equation}
+%
+which is an estimate of the instantaneous value of $f$ 
+given by Equation~\ref{eq:frac_growth_explained_by_solow}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CES equation}
+\label{sec:dynamic_sr_CES}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section, we derive the dynamic Solow residual ($\lambda$) 
+for the CES equation with three generic factors of production, namely
+$x_1$, $x_2$, and $x_3$.
+
+We can define
+%
+\begin{equation} \label{eq:a_def}
+  a \equiv \delta b^{\rho/\rho_1} + (1-\delta) x_3^{-\rho}
 \end{equation}
 %
 and
 %
-\begin{equation} \label{eq:delta_r}
-  \Delta r_i \equiv \left| r_i \right| - \left| r_{i, \,Unadjusted, \, Without \, energy} \right|.
+\begin{equation} \label{eq:b_def}
+  b \equiv \delta_1 x_1^{-\rho_1} + (1 - \delta_1) x_2^{-\rho_1} \; ,
 \end{equation}
 %
-If most of the points fall in the lower-left quadrant of a graph, 
-we can conclude that both Solow residual~($\lambda$) and
-fitting residual~($r$) have decreased due to either 
-quality-adjustment of the factors of production or 
-including energy.
-
-Figure~\ref{fig:Solow_residual_trajectories_CD} indicates that
-for the Cobb-Douglas model, 
-neither 
-quality-adjusting the factors of production
-nor including energy 
-consistently reduces
-the Solow residual or the fitting residual.
-
-<<Solow_residual_trajectories_CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the Cobb-Douglas model.">>=
-residualsTrajGraph(filter(traj.data, model=="CD"))
-@
-
-We can also calculate the average values for $\Delta \lambda_{i,j}$ and $\Delta r_{i}$ 
-as shown in Table~\ref{tab:Trajectory_Means_CD}.
+such that Equation~\ref{eq:CESgeneric} can be restated as
 %
-<<Trajectory_Means_CD, results="asis">>=
-myXTable(data = filter(traj.data.stats, model=="CD") %>% select(-nest), 
-         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
-         label=paste0("tab:", opts_current$get("label")),
-         digits=6)
+\begin{equation} \label{eq:simple_y} 
+  y = \gamma A a^{-1/\rho} \; .
+\end{equation}
+%
+Taking the natural logarithm of Equation~\ref{eq:simple_y}
+and realizing that $\gamma$ is not a function of time, we find
+%
+\begin{equation}
+  \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} = \frac{1}{A} \frac{\mathrm{d} A}{\mathrm{d} t} 
+                      + \left( - \frac{1}{\rho} \right) \frac{1}{a} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+By Equation~\ref{eq:lambda_calc}, and after rearranging, 
+the dynamic Solow residual for the CES equation can be stated as
+%
+\begin{equation} \label{eq:lambda_for_CES}
+  \lambda = \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} + \frac{1}{a} \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+To find $\frac{\mathrm{d} a}{\mathrm{d} t}$ and $\frac{\mathrm{d} b}{\mathrm{d} t}$, 
+we take the time derivatives 
+of Equations~\ref{eq:a_def} and~\ref{eq:b_def}
+and rearrange slightly to obtain
+%
+\begin{equation} \label{eq:da_dt}
+  \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} = \delta b^{(\rho/\rho_1 - 1)} \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t}
+                                      - (1-\delta) x_3^{-(\rho + 1)} \frac{\mathrm{d} x_3}{\mathrm{d} t}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:db_dt}
+  \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t} = - \delta_1 x_1^{-(\rho_1 + 1)} \frac{\mathrm{d} x_1}{\mathrm{d} t}
+                                      - (1 - \delta_1) x_2^{-(\rho_1 + 1)} \frac{\mathrm{d} x_2}{\mathrm{d} t} \; .
+\end{equation}
+%
+Equations~\ref{eq:lambda_for_CES}--\ref{eq:db_dt} can be used to 
+calculate a dynamic time series for $\lambda$ given 
+fitted parameters from the CES model
+($\rho, \rho_1, \delta, \, \mathrm{and} \; \delta_1$)
+and time series for economic output~($y$) and
+factors of production 
+($x_1, x_2, \, \mathrm{and} \; x_3$).
+The time derivatives $\left( 
+\frac{\mathrm{d} y}{\mathrm{d} t}, 
+\frac{\mathrm{d} x_1}{\mathrm{d} t},
+\frac{\mathrm{d} x_2}{\mathrm{d} t}, \, \mathrm{and} \;
+\frac{\mathrm{d} x_3}{\mathrm{d} t} \right)$
+can be approximated from historical data
+by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Thoughts on the ``dynamic'' Solow residual}
+\label{sec:thoughts_dynamic_sr}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
+for a ``dynamic'' Solow residual 
+for Cobb-Douglas and CES production functions, respectively.
+However, these approaches conflate 
+stochastic error terms and the time-dependent contribution of ``technology'' 
+to economic growth
+in one variable~($\lambda_{i,j}$).
+In this appendix, we let the Solow residual 
+(expressed as time-independent $\lambda$)
+stand on its own and try to separate the stochastic and time-dependent
+aspects of the fitting residuals~($r_i$).
+Note: this section is speculative, and we need feedback from Marco and Randy 
+before moving ahead with a presentation or publication based on this work.
+
+We can re-state the models (in general) as
+%
+\begin{equation} \label{eq:general_y}
+  y_i = \hat{y}_i \epsilon_i
+\end{equation}
+%
+where $\epsilon_i$ is a multiplicative error term, 
+$\hat{y}_i$ is the predicted economic output, and
+$\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
+(For the Cobb-Douglas model, $f = \theta A k^\alpha l^\beta e^\gamma$.)
+
+Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
+%
+\begin{equation} \label{eq:ln_y}
+  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i \; ,
+\end{equation}
+%
+which can be rearranged to show
+%
+\begin{equation} \label{eq:lny_prep_for_r}
+  \ln y_i - \ln \hat{y}_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Using Equation~\ref{eq:log-residuals}, we can write
+%
+\begin{equation} \label{eq:r_epsilon}
+  r_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Our concern is that the residuals~($r_i$) may have a time-dependent component 
+in addition to a stochastic component.
+To decompose, we can define
+%
+\begin{equation} \label{eq:epsilon_definition}
+  \epsilon_i = \mathrm{e}^{m(t_i - t_0)} \mathrm{e}^{\varepsilon_i^*} \; .
+\end{equation}
+%
+Substituting Equation~\ref{eq:epsilon_definition} into \ref{eq:r_epsilon} yields
+%
+\begin{equation} \label{eq:r_for_correlation}
+  r_i = m (t_i - t_0) + \varepsilon_i^* \; .
+\end{equation}
+%
+where
+$m$ is a slope and captures the linear (in natural logarithmic space), 
+time-dependent component of $r_i$. 
+$\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
+Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$) as
+%
+\begin{equation} \label{eq:r_regression_eqn}
+  r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
+\end{equation}
+%
+In Equation~\ref{eq:r_regression_eqn},
+$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$.
+Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
+by Equation~\ref{eq:r_epsilon}.
+Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
+is equivalent to estimating the time-dependent, time-independent, and stochastic
+components, respectively, of the multiplicative errors~($\epsilon_i$).
+This regression is equivalent to performing a linear fit to data in 
+Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
+
+For PT, Cobb-Douglas, unadjusted, without energy, we obtain the following:
+%
+<<residual_correlation, echo=TRUE>>=
+mod <- models$PT$unadjusted$noE$CD
+r_regression <- lm(formula = resid(mod) ~ mod$data$iYear)
+print(summary(r_regression))
 @
 %
-The following tables and figures show the same analysis for the CES model.
+Note that the estimate for the coefficient in front of \texttt{mod\$data\$iYear}
+($m$ in Equation~\ref{eq:r_for_correlation})
+is incredibly small relative to the scale of the residuals~($r_i$),
+\Sexpr{coef(r_regression)[[2]]}, 
+indicating that there is little 
+linear time-dependent information in the residuals~($r_i$).
+This result is the same as saying that 
+the slope of a line fitted through the 
+PT, Unadjusted, Without energy data 
+in Figure~\ref{fig:Graphs CD-resid}
+is (effectively) zero.
+There is (effectively) no linear time trend in the residuals.
+
+Furthermore, the intercept ($b$ in Equation~\ref{eq:r_for_correlation})
+is very small relative to the scale of the residuals~($r_i$),
+\Sexpr{coef(r_regression)[[1]]}, 
+indicating that there is little time-independent information in the residuals~($r_i$).
+This result is the same as saying that the line fitted to the
+PT, Unadjusted, Without energy 
+data in Figure~\ref{fig:Graphs CD-resid}
+is nearly coincident with the $x$-axis.
+
+Almost all of the information in the residuals~($r_i$)
+is stochastic and captured by the $\varepsilon_i^*$ term.
+
+Perhaps Marco can help us interpret the rest of the
+output here (\texttt{F-statistic}, \texttt{p-value}, etc.).
+(An aside: what about fitting a quadratic curve,
+instead of a line, 
+through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
+
+We can compare $r_i$ and $\varepsilon_i^*$, graphically,
+but the result is uninteresting. 
+We would expect $r_i$ and $\varepsilon_i^*$
+to be equal to each other by Equation~\ref{eq:r_regression_eqn}, 
+because
+(a) $m (t_i - t_0) \ll \max(r_i)$
+for any value of $t_i$
+and
+(b) $b \ll \max(r_i)$.
+Indeed, Figure~\ref{fig:Residuals_comparison}
+shows this is the case.
 %
-<<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
-residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
+<<Residuals_comparison, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Comparison between $\\varepsilon_i^*$ and $r_i$">>=
+resids_comparison_df <- data.frame(list(iYear=mod$data$iYear, r=resid(mod), epsistar = resid(r_regression)))
+# resids_comparison_df <- melt(resids_comparison_df, measure.vars=c(r, epsistar), value.name="value", 
+#                              variable.name="name")
+ggplot(resids_comparison_df) + 
+  geom_point(mapping=aes(x=r, y=epsistar)) + 
+  xlab(expression(r[i])) +
+  ylab(expression(epsilon[i]^"*")) +
+  xy_theme()
 @
 %
-<<Trajectory_Means_CESkle, results="asis">>=
-myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="kle")), 
-         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
-         label=paste0("tab:", opts_current$get("label")),
-         digits=6)
-@
+I'm not sure where this leaves us.
+Marco and I agreed that I would re-derive the ``dynamic'' Solow residual
+equation while properly including the multiplicative error term~($\epsilon_i$).
+I think I have done that, but the results aren't terribly interesting.
+There is little (linear) time-dependent~($m$) or 
+time-independent~($b$) 
+information in the residuals~($r_i$),
+as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
 
-<<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
-residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
-@
+Perhaps there is another direction in which I should go with this analysis?
 
-<<Trajectory_Means_CESlek, results="asis">>=
-myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="lek")), 
-         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
-         label=paste0("tab:", opts_current$get("label")),
-         digits=6)
-@
-
-<<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
-residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
-@
-
-<<Trajectory_Means_CESekl, results="asis">>=
-myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="ekl")), 
-         caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
-         label=paste0("tab:", opts_current$get("label")),
-         digits=6)
-@
 
 
 
@@ -2060,506 +2303,276 @@ myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="ekl"
 % decrease the magnitude of the Solow residual.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusion}
-\label{sec:Conclusion}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Future Work}
-\label{sec:FutureWork}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%' %++++++++++++++++++++++++++++++
+%' \subsection{Dynamic Solow residuals} 
+%' \label{sec:dynamic_solow_residuals}
+%' %++++++++++++++++++++++++++++++
+%' 
+%' <<Dynamic Solow Residuals>>=
+%' # Calculate finite difference approximations of time derivatives for output and all factors of production
+%' dynamicSR <- function(model, id, lag=1, pad="tail"){
+%'   id_list <- strsplit(id, split = "[.]")[[1]]
+%'   energy <- id_list[[3]]
+%'   modelStr <- id_list[[4]]
+%'   
+%'   f <- model$formula
+%'   denom <- summands(f, n=length(summands(f))) # time variable
+%'   nums <- all.vars(f) [1:(length(all.vars(f))-1)] # y, k, l, and e (if present)
+%'   df <- getData(model)[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
+%'   
+%'   # Calculate names for the columns of finite difference derivatives
+%'   derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], ".d", denom)}) %>% unlist
+%'   derivCols <- lapply(1:length(nums), function(i){
+%'     # Calculate finite difference derivative columns
+%'     ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
+%'   }) %>% do.call(cbind, .) %>% as.data.frame
+%'   names(derivCols) <- derivNames  
+%'   df <- cbind(derivCols, df[ , c(nums, denom)]) # puts derivatives first, then raw numbers, then time
+%'   df[["dydtOvery"]] <- 1 / df[[ nums[[1]] ]] * df[[ derivNames[[1]] ]]
+%'   coeffs <- naturalCoef(model)
+%'   df <- cbind(df, coeffs)
+%'   
+%'   if (modelStr == "CD"){
+%'     lambda_fd <- 
+%'       df[["dydtOvery"]] - 
+%'       df[["alpha_1"]] / df[[nums[[2]]]] * df[[derivNames[[2]]]] - 
+%'       df[["alpha_2"]] / df[[nums[[3]]]] * df[[derivNames[[3]]]]
+%'     if (energy == "withE"){
+%'       # Subtract the energy term also
+%'       lambda_fd <- lambda_fd - 
+%'         df[["alpha_3"]] / df[[nums[[4]]]] * df[[derivNames[[4]]]]
+%'     }
+%'     # Fraction of growth explained by Solow Residual
+%'     solowFrac <- lambda_fd / df[["dydtOvery"]]
+%'     # Add to data frame
+%'     df$lambda_fd <- lambda_fd
+%'     df$solowFrac <- solowFrac
+%'     return(df)
+%'   } else if (modelStr == "CES"){
+%'     # Assign nice variable names so that the equations below are easier to read (and debug, and maintain)
+%'     # This code is nest-aware.
+%'     n <- model$nest
+%'     for (i in 1:length(model$nest)){
+%'       df[[paste0("x", i)]] <- df[[ nums[ model$nest[i]+1 ] ]] # GDP is 1st col, add 1 to get to the factors of production
+%'       df[[paste0("dx", i, "dt")]] <- df[[ derivNames[ model$nest[i]+1 ] ]]
+%'     }
+%'     if (energy == "noE"){
+%'       # Calculate terms for the finite-difference Solow residual (lambda_fd)
+%'       df <- df %>% 
+%'         transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+%'         transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+%'         transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
+%'         transform(solowFrac = lambda_fd / dydtOvery)
+%'       return(df)
+%'     } else if (energy == "withE"){
+%'       df <- df %>% 
+%'         transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+%'         transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
+%'         transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+%'         transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
+%'         transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
+%'         transform(solowFrac = lambda_fd / dydtOvery)
+%'       return(df)
+%'     } else {
+%'       stop (paste("Unknown energy:", energy))
+%'     }
+%'   } else {
+%'     stop(paste("Unknown modelStr", modelStr))
+%'   }
+%' }
+%' 
+%' lag.to.use <- 1 # years
+%' temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), 
+%'                         f = function(model, id, lag=lag.to.use, pad="tail"){
+%'   df <- dynamicSR(model, id=id, lag=lag, pad=pad)
+%'   id_list <- strsplit(id, split = "[.]")[[1]]
+%'   df$Country <- id_list[[1]]
+%'   df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
+%'   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
+%'   df$model <- id_list[[4]]
+%'   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
+%'   df$Year <- getData(model)[["Year"]]
+%'   return(df)  
+%' }) %>% do.call(plyr::rbind.fill, .)
+%' 
+%' # Get the unadjusted, without-energy Solow residuals and store them in a data frame
+%' sr_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
+%'                 select(Year, Country, lambda_fd, model)
+%' colnames(sr_unadj_noE)[colnames(sr_unadj_noE)=="lambda_fd"] <- "sr_unadj_noE"
+%' # Merge to get the unadjusted, without-energy values next to each country, year, and model
+%' solowResiduals <- merge(temp_data, sr_unadj_noE)
+%' 
+%' # Create a column containing ∆lambda_df, the difference between a lambda_df value
+%' # and the lambda_df value in the same year for the unadjusted, no-energy case
+%' solowResiduals[["Dlambda_fd"]] <- abs(solowResiduals[["lambda_fd"]]) - abs(solowResiduals[["sr_unadj_noE"]])
+%' 
+%' # Relevel factors before plotting
+%' solowResiduals$Country <- relevelFactor(as.factor(solowResiduals$Country), c("PT", "UK"))
+%' solowResiduals$flavor <- relevelFactor(as.factor(solowResiduals$flavor), c("Unadjusted", "Quality-adjusted"))
+%' solowResiduals$energy <- relevelFactor(as.factor(solowResiduals$energy), c("Without energy", "With energy"))
+%' solowResiduals$nest <- relevelFactor(as.factor(solowResiduals$nest), c("kl", "kle", "lek", "ekl"))
+%' 
+%' # Make data viewing easier
+%' solowResiduals <- arrange(solowResiduals, Country, model, flavor, energy, nest)
+%' @
+%' 
+%' <<DynamicSR_Graph>>=
+%' dynamicSRGraph <- function(data){
+%' ggplot(data=data) +
+%'   geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=dydtOvery)) +
+%'   geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
+%'   scale_linetype_manual(values=c(2,3), name="") +
+%'   facet_grid(Country ~ flavor) +
+%'   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+%'   xlab("") + 
+%'   ylab(expression(lambda[ij])) +
+%'   xy_theme()  
+%' }
+%' @
+%' 
+%' ``Dynamic'' Solow residuals~($\lambda_{i,j}$) can be calculated 
+%' for the Cobb-Douglas and CES models
+%' as shown in Appendices~\ref{sec:dynamic_sr_CD} and~\ref{sec:dynamic_sr_CES},
+%' respectively.
+%' 
+%' Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
+%' of the Solow residual~($\lambda_{i,j}$) over time
+%' as calculated by Equation~\ref{eq:lambdaij} 
+%' with the timespan for finite differences ($t_j - t_i$) set to 
+%' \Sexpr{lag.to.use}~\Sexpr{if (lag.to.use == 1) "year" else "years"}.
+%' %
+%' <<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CD"))
+%' @
+%' %
+%' <<DynamicSR_CESkle_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($kl$)$e$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="kle" | nest=="kl")))
+%' @
+%' %
+%' <<DynamicSR_CESlek_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($le$)$k$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="lek" | nest=="kl")))
+%' @
+%' %
+%' <<DynamicSR_CESekl_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($ek$)$l$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl")))
+%' @
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Acknowledgements}
-\label{sec:Acknowledgements}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section*{Reproducible Research}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
-% all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
-% associated with this paper can be found at\\*
-% \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
-
-
-
-%% References
-%%
-%% Following citation commands can be used in the body text:
-%%
-%%  \citet{key}  ==>>  Jones et al. (1990)
-%%  \citep{key}  ==>>  (Jones et al., 1990)
-%%
-%% Multiple citations as normal:
-%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
-%%                            or  (Jones et al., 1990, 1991)
-%%                            or  (Jones et al., 1990a,b)
-%% \cite{key} is the equivalent of \citet{key} in author-year mode
-%%
-%% Full author lists may be forced with \citet* or \citep*, e.g.
-%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
-%%
-%% Optional notes as:
-%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
-%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
-%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
-%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
-%%   Here, one note is like the standard, two make pre- and post-notes.)
-%%
-%%   \citealt{key}          ==>> Jones et al. 1990
-%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
-%%   \citealp{key}          ==>> Jones et al., 1990
-%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
-%%
-%% Additional citation possibilities
-%%   \citeauthor{key}       ==>> Jones et al.
-%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
-%%   \citeyear{key}         ==>> 1990
-%%   \citeyearpar{key}      ==>> (1990)
-%%   \citetext{priv. comm.} ==>> (priv. comm.)
-%%   \citenum{key}          ==>> 11 [non-superscripted]
-%% Note: full author lists depends on whether the bib style supports them;
-%%       if not, the abbreviated list is printed even when full requested.
-%%
-%% For names like della Robbia at the start of a sentence, use
-%%   \Citet{dRob98}         ==>> Della Robbia (1998)
-%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
-%%   \Citeauthor{dRob98}    ==>> Della Robbia
-
-
-%% References with bibTeX database:
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{References}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \bibliographystyle{model2-names}
-%%\bibliography{<your-bib-database>}
-% \bibliography{Paper2.bib}
-
-%% Authors are advised to submit their bibtex database files. They are
-%% requested to list a bibtex style file in the manuscript if they do
-%% not want to use model2-names.bst.
-
-%% References without bibTeX database:
-
-% \begin{thebibliography}{00}
-
-%% \bibitem must have one of the following forms:
-%%   \bibitem[Jones et al.(1990)]{key}...
-%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
-%%   \bibitem[Jones et al., 1990]{key}...
-%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
-%%       et al.}{1990}]{key}...
-%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
-%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
-%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
-%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
-%%
-
-% \bibitem[ ()]{}
-
-% \end{thebibliography}
-
-
-%% The Appendices part is started with the command \appendix;
-%% appendix sections are then done as normal sections
-%% \appendix
-%% \section{}
-%% \label{}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Derivation of dynamic Solow residual for the CD equation}
-\label{sec:dynamic_sr_CD}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Assuming that parameters $\theta$, $\alpha$, and $\beta$
-in Equation~\ref{eq:CDe} are known from parameter estimation,
-we can estimate the value of $\lambda$ as follows.
-First, assume constant returns to scale such that 
-$\alpha + \beta + \gamma = 1$, 
-and calculate $\gamma = 1 - \alpha - \beta$.
-Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
-%
-\begin{equation} \label{eq:lnCD}
-  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
-\end{equation}
-%
-By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
-and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
-constant with respect to time, we obtain
-%
-\begin{equation} \label{eq:ddtlnCD}
-  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
-\end{equation}
-%
-Solving for the total factor productivity term gives
-%
-\begin{equation} \label{eq:solow_resid}
-  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-      - \left[
-              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
-        \right] \;.
-\end{equation}
-%
-Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
-%
-\begin{equation} \label{eq:lambda_calc}
-  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
-    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
-    = \lambda \; ,
-\end{equation}
-%
-which can be substituted into Equation~\ref{eq:solow_resid} to find
-%
-\begin{equation} \label{eq:lambda}
-  \lambda 
-    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
-    - \left[
-              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
-      \right] \;.
-\end{equation}
-%
-Equation~\ref{eq:lambda} applies for any instant in time.
-
-If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
-between times $i$ and $j$, we find
-%
-\begin{equation} \label{eq:lambdaij}
-  \lambda_{i,j}
-    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
-    - \left[
-            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
-            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
-            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
-      \right] \;,
-\end{equation}
-% 
-where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
-from Equation~\ref{eq:lambda} between times $i$ and $j$.
-
-Interestingly, 
-%
-\begin{equation}
-  \lambda_{1,n}
-    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
-\end{equation}
-% 
-Rather,
-%
-\begin{equation} \label{eq:lambda1n}
-  \lambda_{1,n}
-    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
-      - \left[ 
-            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
-            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
-            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
-      \right] \; ,
-\end{equation}
-% 
-which will become increasingly inaccurate over large time spans,
-because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
-of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
-This suggests that an averaging approach such as
-%
-\begin{equation}
-  \lambda_{1,n}
-    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
-\end{equation}
-%
-is a better approximation of Equation~\ref{eq:lambda1n},
-which is, itself, an approximation of the true value of $\lambda$ 
-given by Equation~\ref{eq:lambda}.
-
-The fraction~($f$) of GDP growth explained by the Solow residual
-for the CD model
-can be given as
-%
-\begin{equation} \label{eq:frac_growth_explained_by_solow}
-  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
-            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
-                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
-                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
-                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
-\end{equation}
-%
-Using forward differences to estimate $f$ yields
-%
-\begin{equation} \label{eq:f_finite_diff_1}
-  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
-       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
-            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
-            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
-            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
-\end{equation}
-%
-Cancelling $t_j - t_i$ terms and simplifying gives
-%
-\begin{equation} \label{eq:f_finite_diff_2}
-  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
-                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
-                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
-            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
-\end{equation}
-%
-which is an estimate of the instantaneous value of $f$ 
-given by Equation~\ref{eq:frac_growth_explained_by_solow}.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Derivation of dynamic Solow residual for the CES equation}
-\label{sec:dynamic_sr_CES}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-In this section, we derive the dynamic Solow residual ($\lambda$) 
-for the CES equation with three generic factors of production, namely
-$x_1$, $x_2$, and $x_3$.
-
-We can define
-%
-\begin{equation} \label{eq:a_def}
-  a \equiv \delta b^{\rho/\rho_1} + (1-\delta) x_3^{-\rho}
-\end{equation}
-%
-and
-%
-\begin{equation} \label{eq:b_def}
-  b \equiv \delta_1 x_1^{-\rho_1} + (1 - \delta_1) x_2^{-\rho_1} \; ,
-\end{equation}
-%
-such that Equation~\ref{eq:CESgeneric} can be restated as
-%
-\begin{equation} \label{eq:simple_y} 
-  y = \gamma A a^{-1/\rho} \; .
-\end{equation}
-%
-Taking the natural logarithm of Equation~\ref{eq:simple_y}
-and realizing that $\gamma$ is not a function of time, we find
-%
-\begin{equation}
-  \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} = \frac{1}{A} \frac{\mathrm{d} A}{\mathrm{d} t} 
-                      + \left( - \frac{1}{\rho} \right) \frac{1}{a} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
-\end{equation}
-%
-By Equation~\ref{eq:lambda_calc}, and after rearranging, 
-the dynamic Solow residual for the CES equation can be stated as
-%
-\begin{equation} \label{eq:lambda_for_CES}
-  \lambda = \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} + \frac{1}{a} \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
-\end{equation}
-%
-To find $\frac{\mathrm{d} a}{\mathrm{d} t}$ and $\frac{\mathrm{d} b}{\mathrm{d} t}$, 
-we take the time derivatives 
-of Equations~\ref{eq:a_def} and~\ref{eq:b_def}
-and rearrange slightly to obtain
-%
-\begin{equation} \label{eq:da_dt}
-  \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} = \delta b^{(\rho/\rho_1 - 1)} \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t}
-                                      - (1-\delta) x_3^{-(\rho + 1)} \frac{\mathrm{d} x_3}{\mathrm{d} t}
-\end{equation}
-%
-and
-%
-\begin{equation} \label{eq:db_dt}
-  \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t} = - \delta_1 x_1^{-(\rho_1 + 1)} \frac{\mathrm{d} x_1}{\mathrm{d} t}
-                                      - (1 - \delta_1) x_2^{-(\rho_1 + 1)} \frac{\mathrm{d} x_2}{\mathrm{d} t} \; .
-\end{equation}
-%
-Equations~\ref{eq:lambda_for_CES}--\ref{eq:db_dt} can be used to 
-calculate a dynamic time series for $\lambda$ given 
-fitted parameters from the CES model
-($\rho, \rho_1, \delta, \, \mathrm{and} \; \delta_1$)
-and time series for economic output~($y$) and
-factors of production 
-($x_1, x_2, \, \mathrm{and} \; x_3$).
-The time derivatives $\left( 
-\frac{\mathrm{d} y}{\mathrm{d} t}, 
-\frac{\mathrm{d} x_1}{\mathrm{d} t},
-\frac{\mathrm{d} x_2}{\mathrm{d} t}, \, \mathrm{and} \;
-\frac{\mathrm{d} x_3}{\mathrm{d} t} \right)$
-can be approximated from historical data
-by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Thoughts on the ``dynamic'' Solow residual}
-\label{sec:thoughts_dynamic_sr}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
-for a ``dynamic'' Solow residual 
-for Cobb-Douglas and CES production functions, respectively.
-However, these approaches conflate 
-stochastic error terms and the time-dependent contribution of ``technology'' 
-to economic growth
-in one variable~($\lambda_{i,j}$).
-In this appendix, we let the Solow residual 
-(expressed as time-independent $\lambda$)
-stand on its own and try to separate the stochastic and time-dependent
-aspects of the fitting residuals~($r_i$).
-Note: this section is speculative, and we need feedback from Marco and Randy 
-before moving ahead with a presentation or publication based on this work.
-
-We can re-state the models (in general) as
-%
-\begin{equation} \label{eq:general_y}
-  y_i = \hat{y}_i \epsilon_i
-\end{equation}
-%
-where $\epsilon_i$ is a multiplicative error term, 
-$\hat{y}_i$ is the predicted economic output, and
-$\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
-(For the Cobb-Douglas model, $f = \theta A k^\alpha l^\beta e^\gamma$.)
-
-Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
-%
-\begin{equation} \label{eq:ln_y}
-  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i \; ,
-\end{equation}
-%
-which can be rearranged to show
-%
-\begin{equation} \label{eq:lny_prep_for_r}
-  \ln y_i - \ln \hat{y}_i = \ln \epsilon_i \; .
-\end{equation}
-%
-Using Equation~\ref{eq:log-residuals}, we can write
-%
-\begin{equation} \label{eq:r_epsilon}
-  r_i = \ln \epsilon_i \; .
-\end{equation}
-%
-Our concern is that the residuals~($r_i$) may have a time-dependent component 
-in addition to a stochastic component.
-To decompose, we can define
-%
-\begin{equation} \label{eq:epsilon_definition}
-  \epsilon_i = \mathrm{e}^{m(t_i - t_0)} \mathrm{e}^{\varepsilon_i^*} \; .
-\end{equation}
-%
-Substituting Equation~\ref{eq:epsilon_definition} into \ref{eq:r_epsilon} yields
-%
-\begin{equation} \label{eq:r_for_correlation}
-  r_i = m (t_i - t_0) + \varepsilon_i^* \; .
-\end{equation}
-%
-where
-$m$ is a slope and captures the linear (in natural logarithmic space), 
-time-dependent component of $r_i$. 
-$\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
-Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$) as
-%
-\begin{equation} \label{eq:r_regression_eqn}
-  r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
-\end{equation}
-%
-In Equation~\ref{eq:r_regression_eqn},
-$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$.
-Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
-by Equation~\ref{eq:r_epsilon}.
-Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
-is equivalent to estimating the time-dependent, time-independent, and stochastic
-components, respectively, of the multiplicative errors~($\epsilon_i$).
-This regression is equivalent to performing a linear fit to data in 
-Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
-
-For PT, Cobb-Douglas, unadjusted, without energy, we obtain the following:
-%
-<<residual_correlation, echo=TRUE>>=
-mod <- models$PT$unadjusted$noE$CD
-r_regression <- lm(formula = resid(mod) ~ mod$data$iYear)
-print(summary(r_regression))
-@
-%
-Note that the estimate for the coefficient in front of \texttt{mod\$data\$iYear}
-($m$ in Equation~\ref{eq:r_for_correlation})
-is incredibly small relative to the scale of the residuals~($r_i$),
-\Sexpr{coef(r_regression)[[2]]}, 
-indicating that there is little 
-linear time-dependent information in the residuals~($r_i$).
-This result is the same as saying that 
-the slope of a line fitted through the 
-PT, Unadjusted, Without energy data 
-in Figure~\ref{fig:Graphs CD-resid}
-is (effectively) zero.
-There is (effectively) no linear time trend in the residuals.
-
-Furthermore, the intercept ($b$ in Equation~\ref{eq:r_for_correlation})
-is very small relative to the scale of the residuals~($r_i$),
-\Sexpr{coef(r_regression)[[1]]}, 
-indicating that there is little time-independent information in the residuals~($r_i$).
-This result is the same as saying that the line fitted to the
-PT, Unadjusted, Without energy 
-data in Figure~\ref{fig:Graphs CD-resid}
-is nearly coincident with the $x$-axis.
-
-Almost all of the information in the residuals~($r_i$)
-is stochastic and captured by the $\varepsilon_i^*$ term.
-
-Perhaps Marco can help us interpret the rest of the
-output here (\texttt{F-statistic}, \texttt{p-value}, etc.).
-(An aside: what about fitting a quadratic curve,
-instead of a line, 
-through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
-
-We can compare $r_i$ and $\varepsilon_i^*$, graphically,
-but the result is uninteresting. 
-We would expect $r_i$ and $\varepsilon_i^*$
-to be equal to each other by Equation~\ref{eq:r_regression_eqn}, 
-because
-(a) $m (t_i - t_0) \ll \max(r_i)$
-for any value of $t_i$
-and
-(b) $b \ll \max(r_i)$.
-Indeed, Figure~\ref{fig:Residuals_comparison}
-shows this is the case.
-%
-<<Residuals_comparison, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Comparison between $\\varepsilon_i^*$ and $r_i$">>=
-resids_comparison_df <- data.frame(list(iYear=mod$data$iYear, r=resid(mod), epsistar = resid(r_regression)))
-# resids_comparison_df <- melt(resids_comparison_df, measure.vars=c(r, epsistar), value.name="value", 
-#                              variable.name="name")
-ggplot(resids_comparison_df) + 
-  geom_point(mapping=aes(x=r, y=epsistar)) + 
-  xlab(expression(r[i])) +
-  ylab(expression(epsilon[i]^"*")) +
-  xy_theme()
-@
-%
-I'm not sure where this leaves us.
-Marco and I agreed that I would re-derive the ``dynamic'' Solow residual
-equation while properly including the multiplicative error term~($\epsilon_i$).
-I think I have done that, but the results aren't terribly interesting.
-There is little (linear) time-dependent~($m$) or 
-time-independent~($b$) 
-information in the residuals~($r_i$),
-as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
-
-Perhaps there is another direction in which I should go with this analysis?
+%' %++++++++++++++++++++++++++++++
+%' \subsection{Does quality-adjusting the factors of production 
+%'             decrease fitting residuals and/or the dynamic Solow residual?} 
+%' \label{sec:quality_adj_energy_and_dynamic_solow_residual}
+%' %++++++++++++++++++++++++++++++
+%' 
+%' <<SR and R trajectory data>>=
+%' traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
+%'                    fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")]) %>%
+%'                    arrange(Country, model, flavor, energy, nest)
+%' traj.data.stats <- traj.data %>% 
+%'   group_by(model, Country, flavor, energy, nest) %>%
+%'   summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
+%' 
+%' ############################################
+%' # Dlambda_fd.p <- traj.data %>% 
+%' #   group_by(model, Country, flavor, energy, nest) %>% 
+%' #   select(Dlambda_fd) %>%
+%' #   t.test(., alternative="less")[["p.value"]]
+%' ############################################  
+%' @
+%' 
+%' <<SR and R trajectory plot function>>=
+%' residualsTrajGraph <- function(data){
+%'   plot <- ggplot(data=data) + 
+%'     geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
+%'     facet_grid(Country ~ flavor) +
+%'     xlab(expression(Delta*r[i])) +
+%'     ylab(expression(Delta*lambda[ij])) +
+%'     xy_theme() + 
+%'     theme(legend.title=element_blank())
+%'   return(plot)
+%' }
+%' @
+%' 
+%' We can test our hypothesis that quality-adjusting the factors of production
+%' and including energy will reduce the Solow residuals~($\lambda$)
+%' and the fitting residuals~($r$) by plotting
+%' $\Delta \lambda_i$ vs. $\Delta r_i$, where
+%' %
+%' \begin{equation} \label{eq:delta_lambda_i}
+%'   \Delta \lambda_i \equiv \left| \lambda_i \right| - \left| \lambda_{i, \, Unadjusted, \, Without \, energy} \right|
+%' \end{equation}
+%' %
+%' and
+%' %
+%' \begin{equation} \label{eq:delta_r}
+%'   \Delta r_i \equiv \left| r_i \right| - \left| r_{i, \,Unadjusted, \, Without \, energy} \right|.
+%' \end{equation}
+%' %
+%' If most of the points fall in the lower-left quadrant of a graph, 
+%' we can conclude that both Solow residual~($\lambda$) and
+%' fitting residual~($r$) have decreased due to either 
+%' quality-adjustment of the factors of production or 
+%' including energy.
+%' 
+%' Figure~\ref{fig:Solow_residual_trajectories_CD} indicates that
+%' for the Cobb-Douglas model, 
+%' neither 
+%' quality-adjusting the factors of production
+%' nor including energy 
+%' consistently reduces
+%' the Solow residual or the fitting residual.
+%' 
+%' <<Solow_residual_trajectories_CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the Cobb-Douglas model.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CD"))
+%' @
+%' 
+%' We can also calculate the average values for $\Delta \lambda_{i,j}$ and $\Delta r_{i}$ 
+%' as shown in Table~\ref{tab:Trajectory_Means_CD}.
+%' %
+%' <<Trajectory_Means_CD, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CD") %>% select(-nest), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' %
+%' The following tables and figures show the same analysis for the CES model.
+%' %
+%' <<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
+%' @
+%' %
+%' <<Trajectory_Means_CESkle, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="kle")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
+%' <<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
+%' @
+%' 
+%' <<Trajectory_Means_CESlek, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="lek")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
+%' <<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
+%' @
+%' 
+%' <<Trajectory_Means_CESekl, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="ekl")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
 
 
 \end{document}
