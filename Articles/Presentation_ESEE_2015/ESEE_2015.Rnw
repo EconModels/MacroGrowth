@@ -674,15 +674,19 @@ if (!rerunModels){
     kVar <- as.name(summands(form, n=1))
     lVar <- as.name(summands(form, n=2))
     tVar <- as.name(summands(form, n=3))
+    data <- historicalData[[country]]
     # Cobb-Douglas
-    cdModCST <- lm(log(eval(yVar)) - alphaCST*log(eval(kVar)) - betaCST*log(eval(lVar)) ~ eval(tVar), 
-                   data = historicalData[[country]])
+    cdModCST <- lm(log(eval(yVar)) - alphaCST*log(eval(kVar)) - betaCST*log(eval(lVar)) ~ eval(tVar), data = data)
     attr(cdModCST, "naturalCoeffs") <- data.frame(lambda=coef(cdModCST)[[2]],
                                                   logscale=coef(cdModCST)[[1]], 
                                                   scale=exp(coef(cdModCST)[[1]]),
                                                   alpha_1=alphaCST,
                                                   alpha_2=betaCST, 
                                                   alpha_3=0)
+    cdModCST$formula <- form
+    sdata <- subset(data, select=all.vars(form))
+    sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+    cdModCST$data <- sdata
     modelsCST[[country]][["unadjusted"]][["noE"]][["CD"]] <- cdModCST
     # CES
     cesModCST <- plm(log(eval(yVar) / (alphaCST*eval(kVar)^(-rho_1) + betaCST*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
@@ -691,6 +695,8 @@ if (!rerunModels){
     names(cesModCST$coefficients) <- c("logscale", "lambda", "rho_1")
     cesModCST$coefficients <- c(coef(cesModCST), c(delta_1=alphaCST, delta=1))
     attr(cesModCST, "naturalCoeffs") <- EconModels:::makeNatCoef(cesModCST)
+    cesModCST$formula <- form
+    cesModCST$data <- sdata
     modelsCST[[country]][["unadjusted"]][["noE"]][["CES"]][["kl"]] <- cesModCST
   }
   
