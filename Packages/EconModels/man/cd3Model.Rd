@@ -4,7 +4,7 @@
 \alias{cd3Model}
 \title{Fitting Cobb-Douglas models with 3 Factors}
 \usage{
-cd3Model(formula, data, response, x1, x2, x3, time, constrained = FALSE,
+cd3Model(formula, data, response, x1, x2, x3, time, constrained = TRUE,
   save.data = TRUE, ...)
 }
 \arguments{

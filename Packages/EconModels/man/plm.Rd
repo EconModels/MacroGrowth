@@ -14,7 +14,7 @@ plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
 
 \item{params}{a named vector of the parameters to be fit by numerical optimation outside of \code{lm}.}
 
-\item{optimize}{a logical indicating whether \code{param} should be plugged in or used as the seed
+\item{optimize}{a logical indicating whether \code{params} should be plugged in or used as the seed
 for the numerical optimization}
 
 \item{.ocall}{used for recursive calling}
@@ -25,7 +25,7 @@ for the numerical optimization}
 On object of class \code{c("plm", "lm")} which is an enhanced \code{"lm"} object.
 }
 \description{
-The optimal model is fit in a case where asside from some parameters, the model is linear.
+The optimal model is fit in a case where aside from some parameters, the model is linear.
 Numerical optimization is used over these parameters with \code{lm} fitting the rest.
 }
 \examples{
@@ -35,15 +35,15 @@ plm( log(iGDP) - log(iK) ~ iYear,
 
 plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear,
      data=Calvin \%>\% filter(Country=="US"),
-     p=c(delta=0.4),
+     params=c(delta=0.4),
      optimize=FALSE )
 
 plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"),
-     p=c(delta=0.4),
+     params=c(delta=0.4),
      optimize=TRUE )
 
 plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"),
-     p=c(delta=0.4), method=c("nlm", "spg"),
+     params=c(delta=0.4), method=c("nlm", "spg"),
      optimize=TRUE )
 
 foo <- plm( log(iGDP / delta*(delta_1*iK + (1-delta_1)*iL) + (1-delta)*iQp) ~ iYear,
