@@ -1,0 +1,94 @@
+---
+title: "Comparison of CD Fits"
+author: "MK Heun"
+date: "June 26, 2015"
+output: pdf_document
+---
+
+This document compares fits performed by Matt and Stan using
+ZA data with `iLfi` for labor.
+
+```{r Setup, echo=FALSE, include=FALSE}
+require(EconData)
+require(EconModels)
+require(dplyr)
+```
+
+First, set up the data and the formula.
+
+```{r Data and formula}
+form <- iGDP ~ iK + iLfi + iYear
+zaData <- filter(SUN, Country=="ZA")
+# Keeps only the variabls that are in the formula
+zaData <- subset(zaData, select=c(all.vars(form), "Year"))
+# Removes any years that do not have complete information 
+zaData <- zaData[complete.cases(zaData), ]
+# Tells how many rows are available.
+nrow(zaData)
+head(zaData)
+tail(zaData)
+```
+
+Here are Stan's results as reported in his email to me on 26 June 2015:
+
+```{r Stan\'s results}
+alpha_1 <- 0.0533081
+alpha_2 <- 0.9466919
+alpha_3 <- 0
+logscale <- -0.0753839
+lambda <- 0.0137483
+# Calculate sse in log space using all available data
+zaData <- within(zaData, {
+  residual <- log(iGDP) - (logscale + lambda*iYear + alpha_1*log(iK) + alpha_2*log(iLfi)) 
+})
+sse_stan <- sum(zaData$residual^2)
+sse_stan
+```
+
+The above result does not match the number reported by Stan
+during the telecon on 26 June 2015 (0.168).
+
+One question arises immediately:
+which years are being fitted?
+There are `r nrow(zaData)` rows of data
+where complete cases exist.
+Yet, Stan's email indicated that he is fitting 41 observations, 1973--2013.
+I suspect that Stan is trimming the rows
+where `iYear < 0`.
+So, let's make another data set where the
+rows where `iYear < 0` are trimmed
+and re-calculate `sse`.
+
+```{r Stan\'s results, trimmed data}
+zaData_trimmed <- zaData[zaData$iYear >= 0, ]
+sse_stan_trimmed <- sum(zaData_trimmed$residual^2)
+sse_stan_trimmed
+```
+
+For a correct comparison, I'll also fit using the 1973--2013 data only.
+
+```{r Matt\'s results trimmed}
+mod_trimmed <- cdModel(form, data = zaData_trimmed, constrained = TRUE)
+summary(mod_trimmed)
+naturalCoef(mod_trimmed)
+sum(resid(mod_trimmed)^2)
+```
+
+If we use the \emph{exact same data}, specifically 1973--2013, we obtain exactly the same results.
+
+For completeness, here are Matt's results when all available years are fitted:
+
+```{r Matt\'s results}
+mod <- cdModel(form, data = zaData, constrained = TRUE)
+summary(mod)
+sum(resid(mod)^2)
+```
+
+This number (`r sum(resid(mod)^2)`) is what Matt reported
+during the telecon on 26 June 2015.
+
+It is unsurprising that Stan (`r sse_stan_trimmed`)
+reported a lower `sse` value than Matt (`r sum(resid(mod)^2)`)
+during the telecon of 26 June 2015,
+because Stan was using fewer observations!
+
