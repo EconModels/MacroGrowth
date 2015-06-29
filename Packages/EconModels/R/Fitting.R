@@ -1,7 +1,17 @@
-
-# convert from delta_1 and delta to alpha_i in a nest-aware way.
-
-standardCoefs <- function (delta=NA, delta_1=NA, nest=NULL, digits=5) {
+# This function provides alpha_i values for the CES model.
+# It converts from delta_1 and delta to alpha_i in a nest-aware way.
+# The standardCoefs provide the importance of each parameter
+# IN THE ORDER THEY APPEAR IN THE FORMULA,
+# regardless of which nest you choose.
+# Example: A formula is specified as y ~ a + b + c + time,
+# nest is given as c(3,1,2) such that the parameters (during the estimation process)
+# are permuted to y ~ c + a + b + time.
+# Results will be the following:
+# delta    delta_1    alpha_1   alpha_2    alpha_3
+# 1        1          0         0          1
+# 1        0          1         0          0
+# 0        0 or 1     0         1          0
+standardCoefs <- function(delta=NA, delta_1=NA, nest=NULL, digits=5) {
   # convert to standard coefficents taking nest order into account
   # basically we are just permuting things so that alpha_i can always
   # refer to the same quantities, even when they show up in different parts of the model.
