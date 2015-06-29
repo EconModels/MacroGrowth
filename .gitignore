@@ -82,6 +82,7 @@ readme.pdf
 CES.pdf
 ExperimentingWithPlots.pdf
 Results_Comparison.pdf
+Investigation.pdf
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
