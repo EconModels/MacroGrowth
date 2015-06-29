@@ -2,7 +2,13 @@
 # It converts from delta_1 and delta to alpha_i in a nest-aware way.
 # The standardCoefs provide the importance of each parameter
 # IN THE ORDER THEY APPEAR IN THE FORMULA,
-# regardless of which nest you choose.
+# regardless of which nest you choose
+# and regardless of how the values for delta and delta_1 turn out.
+# The point here is that the values of delta and delta_1 are applicable to the permuted
+# variable order during the fitting process.
+# But, we want coefficients that apply to the parameters in the order they appeared
+# in the formula. 
+# standardCoefs does just that.
 # Example: A formula is specified as y ~ a + b + c + time,
 # nest is given as c(3,1,2) such that the parameters (during the estimation process)
 # are permuted to y ~ c + a + b + time.
