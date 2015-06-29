@@ -669,6 +669,9 @@ if (!rerunModels){
   alphaCST <- 0.3 # Fraction of national accounts spent on capital
   betaCST <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
+    # Replace with better code later. 
+    # Would like to say cdMod(formula, data, fittingParams=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
+    # or something like that.
     form <- keep_summands(formulas[[country]][["unadjusted"]], n=-3) # Remove energy
     yVar <- as.name(summands(form, n=1, right=FALSE))
     kVar <- as.name(summands(form, n=1))
@@ -710,7 +713,7 @@ if (!rerunModels){
   models <- list()
   for(country in countries){
     for (flavor in flavors){
-      fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term
+      fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term (3rd term on RHS)
       fwithE <- formulas[[country]][[flavor]]
       # CD models
       models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = historicalData[[country]])
@@ -720,8 +723,7 @@ if (!rerunModels){
                                                                         data = historicalData[[country]], 
                                                                         nest=c(1,2))
       nestsWithE <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
-      models[[country]][[flavor]][["withE"]][["CES"]] <- 
-        lapply(nestsWithE, function(nest){
+      models[[country]][[flavor]][["withE"]][["CES"]] <- lapply(nestsWithE, function(nest){
           cesModel(formula=fwithE, data=historicalData[[country]], nest=nest)
         })
     }      
