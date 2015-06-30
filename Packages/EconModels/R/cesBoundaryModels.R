@@ -40,14 +40,19 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
       x3 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
     ) 
-    # permute to reflect nesting
+    
+    #  pad to nestPlus using 1 + 2 + 3 = 6 to add missing index to end of the line
+    #      when there are 2 vals in nest and 3 factors in formula.
     if (length(nest) == 2) {
-      # 1 + 2 + 3 = 6, add missing index to end of the line
       nestPlus <- c(nest, 6 - sum(nest)) 
     } else {
       nestPlus <- nest
     }
-    names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[nestPlus]
+    # permute to reflect nesting
+    #    when shuffling names rather than values, the permuation works "backwards"
+    #      -- use order() to invert permuation. (Working on #242.)
+    #     
+    names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[order(nestPlus)]
   } else {
     formulaRosetta <- list(
       y = formula[[2]],
@@ -55,8 +60,8 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
       x2 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
     ) 
-    # permute to reflect nesting
-    names(formulaRosetta)[2:3] <- c("x1", "x2")[nest]
+    # permute to reflect nesting -- see above for comment about order()
+    names(formulaRosetta)[2:3] <- c("x1", "x2")[order(nest)]
   }
   
   # old names - new names 
