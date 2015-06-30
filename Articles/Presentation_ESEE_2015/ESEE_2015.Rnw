@@ -122,7 +122,7 @@ require(knitr)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunModels=TRUE
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
