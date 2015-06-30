@@ -26,11 +26,13 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
   
 
   numFactors <- cesParseFormula(formula, nest)$numFactors
+  numFactorsInFormula <- cesParseFormula(formula, nest)$numFactorsInFormula
+    
   if ( ! numFactors %in% 2:3 ) {
     stop("model must have 2 or 3 factors.")
   }
  
-  if (numFactors >=3) { 
+  if (numFactorsInFormula >=3) { 
     formulaRosetta <- list(
       y = formula[[2]],
       x1 = formula[[3]][[2]][[2]][[2]],
@@ -39,7 +41,13 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
       time = formula[[3]][[3]]
     ) 
     # permute to reflect nesting
-    names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[nest]
+    if (length(nest) == 2) {
+      # 1 + 2 + 3 = 6, add missing index to end of the line
+      nestPlus <- c(nest, 6 - sum(nest)) 
+    } else {
+      nestPlus <- nest
+    }
+    names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[nestPlus]
   } else {
     formulaRosetta <- list(
       y = formula[[2]],

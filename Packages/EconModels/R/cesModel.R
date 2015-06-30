@@ -317,6 +317,7 @@ cesParseFormula <- function(f, nest){
   cesNames <- c(yName, xNames, tName)
   
   out <- list(numFactors = numFactors, 
+              numFactorsInFormula =  length(fNames) - 2,  # not response, not time
               xNames = xNames,
               tName = tName,
               yName = yName,
