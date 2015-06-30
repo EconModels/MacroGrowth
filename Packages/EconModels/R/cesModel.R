@@ -248,7 +248,14 @@ cesModel <- function(formula, data,
     res$formula <- formula
     if (save.data) { res$data <- data }
     res$response <- data[,1] # eval( formula[[2]], sdata, parent.frame() )
-    res$nest <- nest
+    if (inherits(res, "cesEst")) {  # need to recor nest
+      if (is.null(res$nest)){
+        res$nest <- nest
+      } else {
+        res$nest <- nest[res$nest]
+      }
+      res$nest_orig <- nest
+    }
     class(res) <- unique(c("cesModel", class(res)))
   }
   return(res)

@@ -11,8 +11,8 @@ cesBoundaryModels(formula, data, nest, method = "nlm", subset = TRUE)
 
 \item{data}{historical time series data}
 
-\item{nest}{identifies the nesting of the variables in the original formula,
-assumed to be of the form \code{c(1,2,3)}.}
+\item{nest}{a permutation of the integers 1 to the number of factors describing how to nest and permute
+the variables in the formula.}
 }
 \value{
 a list of boundary models.
