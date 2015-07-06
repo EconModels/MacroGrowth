@@ -66,6 +66,7 @@
 \usepackage{hyperref}   % To create hyperlinks in the paper
 \usepackage{microtype}  % produces hanging punctuation and beautiful type
 \usepackage{booktabs}   % for beautiful tables
+\usepackage{dcolumn}    % aligns table columns at decimal places
 
 
 % From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
@@ -112,6 +113,7 @@ require(ggplot2)
 require(mosaic)
 require(xtable)
 require(knitr)
+require(texreg)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -1822,9 +1824,34 @@ In this section we present correlograms for all models that do not adhere to the
 leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, name){
   acf(resid(model), main=name)
 })
-
-
 @
+
+
+%++++++++++++++++++++++++++++++
+\section{Statistical details on all models} 
+\label{sec:staistical_details}
+%++++++++++++++++++++++++++++++
+
+In this section, we present statistical details of all models.
+
+At the moment, this is a simple example of two models.
+I hope to develop a table later, after I figure out some things.
+Both models are CES models with energy fitted to Quality-adjusted data using the ($kl$)($e$) nesting.
+In Table~\ref{tab:stat_details_table}, Model 1 is for Portugal, and Model 2 is for the UK.
+
+<<stat_details_table, results="asis">>=
+mods <- list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle)
+texreg(mods, dcolumn = TRUE, booktabs = TRUE, use.packages = FALSE, 
+       label=paste0("tab:", opts_current$get("label")), 
+       caption = "Example output from \\texttt{texreg}.",
+       caption.above = TRUE, 
+       digits = 6,
+       fontsize = "tiny",
+       float.pos = "hb")
+@
+
+
+
 
 % %++++++++++++++++++++++++++++++
 % \subsection{What effect does including energy and quality-adjustment have 
