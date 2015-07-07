@@ -260,7 +260,7 @@ The following subsections describe each.
 The Cobb-Douglas production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
-  y = \theta A k^\alpha l^\beta \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
 \end{equation}
 %
 where 
@@ -281,22 +281,22 @@ the 0 subscript indicates values at an initial year.%
   quantities are represented by upper-case symbols 
   ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
   Model parameters are represented by Greek letters
-  ($\alpha$, $\beta$, $\lambda$, $\theta$).
+  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
   }
 Constant returns to scale are represented by the constraint
-$\alpha + \beta = 1$.
+$\alpha_1 + \alpha_2 = 1$.
 
 The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
 can be augmented to include an energy term:
 %
 \begin{equation} \label{eq:CDe}
-  y = \theta A k^\alpha l^\beta e^\gamma \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
 \end{equation}
 %
 where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
 The energy-augmented Cobb-Douglas production function 
 is often assumed to have constant returns to scale for the three factors 
-of production: $\alpha + \beta + \gamma = 1$.
+of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
 The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 
@@ -625,22 +625,22 @@ $\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$
 for the CES model with two factors of production
 and by 
 $\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
-for the CES model with three factors of production.
+for the CES model with three factors of production and the ($kl$)$e$ nesting.
 The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
-$\alpha$, $\beta$, and $\gamma$ (coefficients for capital, labor, and energy, respectively)
+factor shares for capital, labor, and energy, respectively,
 as shown in Table \ref{tab:CES_abg_equations}, 
 assuming factors of production are specified in the fitting \texttt{formula} as
 \texttt{y~$\sim$~k~+~l~+~e~+~time}.
 
-\begin{table} \caption{Equations for $\alpha$, $\beta$, and $\gamma$ 
-                        (importance of capital, labor, and energy, respectively)
+\begin{table} \caption{Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ 
+                        (factor shares for capital, labor, and energy, respectively)
                         for the various CES nestings, 
                         provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
 \label{tab:CES_abg_equations} 
   \begin{center}
     \begin{tabular}{c c c c c} 
       \toprule
-      Nesting         & \texttt{nest}     & $\alpha$                & $\beta$                 & $\gamma$       \\
+      Nesting         & \texttt{nest}     & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
       \midrule
       ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
       ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
@@ -1286,6 +1286,85 @@ myXTable(Dr.t.values,
 @
 
 
+%++++++++++++++++++++++++++++++
+\subsection{What trends exist in factors shares?} 
+\label{sec:factor_shares}
+%++++++++++++++++++++++++++++++
+
+Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
+show factor shares ($\alpha$ values) for CES models for
+Portugal and the UK, respectively.
+See Table~\ref{tab:CES_abg_equations} for details.
+
+<<Factor_shares_bar_graph_function>>=
+fsbg <- function(coun, mod){
+  bar_chart_data <- filter(AllCoeffs, Country==coun & model==mod) %>% 
+    select(Country, model, flavor, energy, nest, cst, alpha_1, alpha_2, alpha_3)
+  # Change boolean cst column to meaningful words
+  bar_chart_data$cst <- plyr::mapvalues(bar_chart_data$cst, from=c(TRUE, FALSE), to=c("Adhere to CST", "Reject CST"))
+  # Change nest to a nicer-looking nest string
+  bar_chart_data$nest <- plyr::mapvalues(bar_chart_data$nest, 
+                                         from=c("kl", "kle", "lek", "ekl"), 
+                                         to=c("(kl)", "(kl)e", "(le)k", "(ek)l"))
+  # Add a label column
+  bar_chart_data$label <- paste(bar_chart_data$cst, bar_chart_data$flavor, 
+                                bar_chart_data$energy, bar_chart_data$nest, sep=", ")
+  # Capture the order that we want for the models on the vertical axis.
+  order <- bar_chart_data$label
+  # Now melt the data
+  bar_chart_data <- melt(bar_chart_data, 
+                         measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
+                         value.name = "value", 
+                         variable.name = "variable")
+  # Define the color palette (see http://www.cookbook-r.com/Graphs/Colors_(ggplot2))
+  cbPalette <- c("#E69F00", "#999999", "#F0E442", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  # Make the plot
+  plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+    geom_bar(stat="identity") + 
+    xlab("") +
+    scale_x_discrete(limits=rev(order)) +
+    ylab("") +
+    scale_y_continuous(breaks=c(0, 0.5, 1)) + 
+    guides(fill=guide_legend(title=NULL)) +
+    coord_flip() + 
+    scale_fill_brewer(palette="OrRd") +
+    xy_theme()
+  return(plot)
+}
+@
+
+<<Factor_shares_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for Portugal.">>=
+fsbg(coun = "PT", mod = "CES")
+@
+
+<<Factor_shares_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for the UK.">>=
+fsbg(coun = "UK", mod = "CES")
+@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1840,8 +1919,10 @@ Both models are CES models with energy fitted to Quality-adjusted data using the
 In Table~\ref{tab:stat_details_table}, Model 1 is for Portugal, and Model 2 is for the UK.
 
 <<stat_details_table, results="asis">>=
-mods <- list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle)
-texreg(mods, dcolumn = TRUE, booktabs = TRUE, use.packages = FALSE, 
+texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle), 
+       dcolumn = TRUE, 
+       booktabs = TRUE, 
+       use.packages = FALSE, 
        label=paste0("tab:", opts_current$get("label")), 
        caption = "Example output from \\texttt{texreg}.",
        caption.above = TRUE, 
