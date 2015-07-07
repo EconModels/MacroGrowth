@@ -50,6 +50,7 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
 
 #' @export
 xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
+  # See https://github.com/infotroph/ggplot-ticks if we want to mirror ticks on top and right.
   base_theme(base_size = base_size, base_family = base_family) %+replace% 
     theme(# panel.border = element_blank(), 
       panel.grid.major = element_blank(), # No grid lines
