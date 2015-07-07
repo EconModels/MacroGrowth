@@ -1328,7 +1328,8 @@ fsbg <- function(coun, mod){
     guides(fill=guide_legend(title=NULL)) +
     coord_flip() + 
     scale_fill_brewer(palette="OrRd") +
-    xy_theme()
+    xy_theme() +
+    theme(axis.ticks.y = element_blank())
   return(plot)
 }
 @
