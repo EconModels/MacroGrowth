@@ -31,23 +31,44 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             )
 }  
 
+# xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
+#   base_theme(base_size = base_size, base_family = base_family) %+replace% 
+#     theme(# panel.border = element_blank(), 
+#           # panel.grid.major = element_blank(), 
+#           panel.grid.minor = element_blank(),
+#           plot.background = element_blank(),
+#           strip.text = element_text(colour=label_colour, size=.8 * base_size),
+#           strip.background =  element_rect(fill = NA, colour = NA),
+#           legend.background = element_rect(fill=NA, colour=NA),
+#           legend.key= element_rect(fill=NA, colour=NA),
+#           legend.text=element_text(colour=label_colour),
+#           axis.text = element_text(colour=label_colour, size=.8 * base_size), 
+#           axis.ticks = element_blank(),
+#           axis.title = element_text(colour=label_colour, size=base_size)
+#     )
+# }
+
 #' @export
 xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
   base_theme(base_size = base_size, base_family = base_family) %+replace% 
     theme(# panel.border = element_blank(), 
-          # panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          plot.background = element_blank(),
-          strip.text = element_text(colour=label_colour, size=.8 * base_size),
-          strip.background =  element_rect(fill = NA, colour = NA),
-          legend.background = element_rect(fill=NA, colour=NA),
-          legend.key= element_rect(fill=NA, colour=NA),
-          legend.text=element_text(colour=label_colour),
-          axis.text = element_text(colour=label_colour, size=.8 * base_size), 
-          axis.ticks = element_blank(),
-          axis.title = element_text(colour=label_colour, size=base_size)
+      panel.grid.major = element_blank(), # No grid lines
+      panel.grid.minor = element_blank(), # No grid lines
+      plot.background = element_blank(),
+      strip.text = element_text(colour=label_colour, size=0.8 * base_size),
+      strip.background = element_rect(fill = NA, colour = NA),
+      legend.background = element_rect(fill=NA, colour=NA),
+      legend.key = element_rect(fill=NA, colour=NA),
+      legend.text = element_text(colour=label_colour),
+      axis.text = element_text(colour=label_colour, size=0.8 * base_size), 
+      # axis.ticks = element_blank(),
+      axis.ticks = element_line(colour=label_colour, size=0.2), 
+      axis.ticks.length = grid::unit(-0.1,  "cm"), # Puts ticks inside the graph
+      axis.ticks.margin = grid::unit( 0.25, "cm"), # Moves axis labes outside of the graph
+      axis.title = element_text(colour=label_colour, size=base_size)
     )
 }
+
 
 #' @export
 triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
