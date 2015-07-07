@@ -774,7 +774,7 @@ AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
   id_list <- strsplit(id, split = "[.]")[[1]]
   res <- rbind(list(Country = id_list[[1]], 
                     flavor = NA,
-                    energy = NA, 
+                    energy = "Without energy", 
                     model = "exp", 
                     nest = NA,
                     cst = FALSE))
@@ -820,16 +820,19 @@ AllCoeffsNoCST <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmod
   res <- cbind(res, list(mse=mse))
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
-AllCoeffs <- plyr::rbind.fill(AllCoeffsCST, AllCoeffsNoCST)
+AllCoeffs <- plyr::rbind.fill(AllCoeffsExp, AllCoeffsCST, AllCoeffsNoCST)
+# See hint at http://stackoverflow.com/questions/22555249/how-to-merge-data-frame-with-same-column-names
+AllCoeffs <- as.data.frame(lapply(AllCoeffs, function(x) unname(unlist(x))))
 # Get reference values for lambda and sse.
-ref <- filter(AllCoeffs, cst==TRUE & flavor=="Unadjusted" & energy=="Without energy") %>% 
-              select(Country, flavor, energy, model, nest, mse, lambda)
-
+# ref <- filter(AllCoeffs, cst==TRUE & flavor=="Unadjusted" & energy=="Without energy") %>% 
+#               select(Country, model, mse, lambda)
+ref <- filter(AllCoeffs, model=="exp") %>% select(Country, mse, lambda)
 colnames(ref)[colnames(ref)=="mse"] <- "mse_ref"
 colnames(ref)[colnames(ref)=="lambda"] <- "lambda_ref"
-AllCoeffs <- merge(AllCoeffs, ref[c("Country", "model", "mse_ref", "lambda_ref")])
+AllCoeffs <- merge(AllCoeffs, ref)
 # Calculate differences relative to the unadjusted, no-energy condition
-AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_ref), 
+AllCoeffs <- mutate(AllCoeffs, 
+                    Dlambda = abs(lambda) - abs(lambda_ref), 
                     Dmse = mse - mse_ref,
                     percDlambda = Dlambda / abs(lambda_ref) * 100)
 
@@ -837,7 +840,7 @@ AllCoeffs <- mutate(AllCoeffs, Dlambda = abs(lambda) - abs(lambda_ref),
 AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
 AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("Unadjusted", "Quality-adjusted"))
 AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("Without energy", "With energy"))
-AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("CD", "CES"))
+AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("exp", "CD", "CES"))
 AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
 AllCoeffs$cst <- relevelFactor(as.factor(unlist(AllCoeffs$cst)), c("TRUE", "FALSE"))
 # Rearrange for easier viewing
@@ -848,7 +851,7 @@ AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 fittedAndResidData <- function(model, id){
   # ******************************************
   # getData doesn't work for lm models that are created for CST=TRUE.
-  # After we implement fixed values for alpha_1 and alpha_2 in our fitting functions, 
+  # After we implement specified values for alpha_1, alpha_2, and alpha_3 in our fitting functions, 
   # getData(model) will probably work.
   # At that time, change model$data to getData(model)
   df <- data.frame(select(model$data, Year)) 
@@ -861,17 +864,26 @@ fittedAndResidData <- function(model, id){
   df[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(df$Year))]
   # Now add meta information
   id_list <- strsplit(id, split = "[.]")[[1]]
+  len <- length(id_list)
   df$Country <- id_list[[1]]
-  df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
-  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-  df$model <- id_list[[4]]
-  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
+  df$flavor <- if (len > 1) (if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted") else NA
+  df$energy <- if (len > 2) (if (id_list[[3]] == "noE") "Without energy" else "With energy") else "Without energy"
+  df$model <- if (len > 3) id_list[[4]] else "exp"
+  df$nest <- if (len > 4) id_list[[5]] else NA
   return(df)  
 }
-temp_data_noCST <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
-  return(fittedAndResidData(model, id))  
+
+temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
+  # ****************************************************
+  # Not all of the results from this code are not correct at this time.
+  # The residuals are OK.
+  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CST models.
+  # This is because modelsCST was not created with our typical functions.
+  # To correct this problem, we need to add arguments to cdModel and cesModel such that 
+  # the models produced by those functions will be in the correct form for yhat() function.
+  return(fittedAndResidData(model, id))
 }) %>% do.call(rbind, .)
-temp_data_noCST$cst <- FALSE
+temp_data_exp$cst <- FALSE
 
 temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
   # ****************************************************
@@ -885,18 +897,32 @@ temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model,
 }) %>% do.call(rbind, .)
 temp_data_CST$cst <- TRUE
 
-temp_data <- plyr::rbind.fill( temp_data_CST, temp_data_noCST )
+temp_data_noCST <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
+  return(fittedAndResidData(model, id))  
+}) %>% do.call(rbind, .)
+temp_data_noCST$cst <- FALSE
+
+temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CST, temp_data_noCST )
 
 # Get the unadjusted, without-energy residuals from models that obey the CST
 # and store them in a data frame
-r_unadj_noE_CST <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & cst==TRUE) %>% 
-  select(Year, Country, Residuals, model)
-colnames(r_unadj_noE_CST)[colnames(r_unadj_noE_CST)=="Residuals"] <- "r_unadj_noE"
+# r_unadj_noE_CST <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & cst==TRUE) %>% 
+#   select(Year, Country, Residuals, model)
+# colnames(r_unadj_noE_CST)[colnames(r_unadj_noE_CST)=="Residuals"] <- "r_unadj_noE"
 # Merge to get the unadjusted, without-energy values next to each country, year, and model
-fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CST)
+# fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CST)
 # Create a column containing ∆r, the difference between a residual value
 # and the residual value in the same year for the unadjusted, no-energy case
-fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
+# fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
+
+# Get the reference residuals (from the exponential-only models) and store them in a data frame
+r_ref <- filter(temp_data, model=="exp") %>% select(Year, Country, Residuals)
+colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
+# Merge to get the reference values in each appropriate row
+fitted_and_resid_data <- merge(temp_data, r_ref)
+# Create a column containing ∆r, the difference between a residual value
+# and the residual value in the same year for the reference case
+fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_ref"]])
 
 # Relevel factors before plotting
 fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
@@ -905,7 +931,7 @@ fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$en
 fitted_and_resid_data$nest <- relevelFactor(as.factor(fitted_and_resid_data$nest), c("kl", "kle", "lek", "ekl"))
 
 # Make data viewing easier
-fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, model, flavor, energy, nest)
+fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, cst, model, flavor, energy, nest)
 @
 
 
@@ -1052,11 +1078,14 @@ In so doing, we expect less ``unexplained'' economic growth
 and a decreased Solow residual~($\lambda$).
 
 Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
-on fitted parameters for the Cobb-Douglas model.
+on fitted parameters for the Cobb-Douglas model and the exponential-only model.
+The Cobb-Douglas models show lower $mse$ than the exponential-only models.
+The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
 %
 <<Effect_of_CST_CD, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD" & flavor=="Unadjusted" & energy=="Without energy") %>% 
-           select(Country, cst, scale, lambda, alpha_1, alpha_2, mse),
+myXTable(filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
+           select(Country, model, cst, scale, lambda, alpha_1, alpha_2, mse),
          caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1064,15 +1093,23 @@ myXTable(filter(AllCoeffs, model=="CD" & flavor=="Unadjusted" & energy=="Without
 %
 Table~\ref{tab:Effect_of_CST_CES} shows the effect of the CST 
 on fitted parameters for the CES model.
+The CES models show lower $mse$ than the exponential-only models.
+The CES models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
 %
 <<Effect_of_CST_CES, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & flavor=="Unadjusted" & energy=="Without energy") %>% 
-           select(Country, cst, gamma, lambda, alpha_1, alpha_2, sigma_1, mse),
+myXTable(filter(AllCoeffs, (model=="CES" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
+           select(Country, model, cst, gamma, lambda, alpha_1, alpha_2, sigma_1, mse),
          caption="Model parameters for CES models with unadjusted factors of production, without energy.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
 %
+Both Cobb-Douglas and CES models do a better job of fitting 
+historical data than an exponential-only model
+as evidenced by decreased $mse$ values.
+Both Cobb-Douglas and CES models exhibit reduced Solow residual~($\lambda$
+compared to the exponential-only model.
 For both Cobb-Douglas and CES, rejecting the Cost Share Theorem yields
 decreased mean squared error~($mse$) and
 smaller Solow residual ($\lambda$, on an absolute-value basis),
@@ -1139,30 +1176,31 @@ relative to the unadjusted, no-energy, CST case.
 
 To calculate $\Delta \lambda$ and $\Delta mse$, we need to fit all combinations of 
 country, model, flavor, energy, nest, and CST.
-Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models.
+Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
+and the reference model (exponential-only).
 %
 <<CD_coeffs, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD") %>% 
-           select(Country, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, mse),
+myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>% 
+           select(Country, model, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, mse),
          caption="Model parameters for all Cobb-Douglas models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
 %
 Tables~\ref{tab:CES_coeffs} and~\ref{tab:CES_coeffs_sigmas} show 
-coefficients for all fitted CES models.
+coefficients for all fitted CES models and the reference model (exponential-only).
 %
 <<CES_coeffs, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, flavor, energy, nest, cst, gamma, lambda, alpha_1, alpha_2, alpha_3),
+myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
+           select(Country, model, flavor, energy, nest, cst, gamma, lambda, alpha_1, alpha_2, alpha_3),
          caption="Model parameters for all CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
 %
 <<CES_coeffs_sigmas, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, flavor, energy, nest, cst, sigma_1, sigma, mse),
+myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
+           select(Country, model, flavor, energy, nest, cst, sigma_1, sigma, mse),
          caption="Model parameters for all CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1208,14 +1246,15 @@ Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize
 $\Delta \lambda$ and $\Delta mse$ 
 results for the Cobb-Douglas model.
 %
-<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the Unadjusted, Without energy, CST case.">>=
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.">>=
 ggplot() +
   geom_point(data=filter(AllCoeffs, cst==FALSE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy)) +
   geom_point(data=filter(AllCoeffs, cst==TRUE & model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy), shape=1) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
-  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
+  scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
   ylab(expression(Delta * lambda)) +
+  scale_y_continuous(limits=c(-0.04, 0)) +
   xy_theme() + 
   theme(legend.title=element_blank())
 @
