@@ -654,13 +654,48 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 <<Models>>=
 fileName <- "ESEE2015Models.rds"
 fileNameCST <- "EESE2015ModelsCST.rds"
+fileNameExp <- "EESE2015ModelsExp.rds"
 if (!rerunModels){
   # load from the file on disk
   models <- readRDS(fileName)
   modelsCST <- readRDS(fileNameCST)
+  modelsExp <- readRDS(fileNameExp)
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
+  
+  #
+  # Models that are exponential only
+  #
+  modelsExp <- list()
+  alphaExp <- 0
+  betaExp <- 0
+  gammaExp <- 0
+  for (country in countries){
+    # Replace with better code later. 
+    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
+    # or something like that.
+    form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Remove energy
+    yVar <- as.name(summands(form, n=1, right=FALSE))
+    tVar <- as.name(summands(form, n=1))
+    data <- historicalData[[country]]
+    expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
+    attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
+                                                  logscale=coef(expMod)[[1]], 
+                                                  scale=exp(coef(expMod)[[1]]),
+                                                  alpha_1=alphaExp,
+                                                  alpha_2=betaExp, 
+                                                  alpha_3=gammaExp)
+    expMod$formula <- form
+    sdata <- subset(data, select=all.vars(form))
+    sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+    expMod$data <- sdata
+    expMod$response <- sdata$iGDP 
+    modelsExp[[country]] <- expMod
+  }
+  # Save exponential theorem models to disk.
+  saveRDS(modelsExp, file=fileNameExp)
+
   
   #
   # Models that adhere to the cost-share theorem
@@ -672,7 +707,7 @@ if (!rerunModels){
   betaCST <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
     # Replace with better code later. 
-    # Would like to say cdMod(formula, data, fittingParams=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
+    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
     # or something like that.
     form <- keep_summands(formulas[[country]][["unadjusted"]], n=-3) # Remove energy
     yVar <- as.name(summands(form, n=1, right=FALSE))
@@ -733,7 +768,25 @@ if (!rerunModels){
   # Save models to disk.
   saveRDS(models, file=fileName)
 }
-# Put all the cost-share theorem (CST) coefficients into a data frame
+# Put all exponential model coefficients into a data frame
+AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
+  # Parse the id to find details of this model
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  res <- rbind(list(Country = id_list[[1]], 
+                    flavor = NA,
+                    energy = NA, 
+                    model = "exp", 
+                    nest = NA,
+                    cst = FALSE))
+  res <- cbind(res, naturalCoef(modExp))
+  # Now caluculate mean squared error (mse) for each model.
+  sqResids <- resid(modExp)^2
+  mse <- sum(sqResids) / (length(sqResids))
+  res <- cbind(res, list(mse=mse))
+  return(res)
+}) %>% do.call(plyr::rbind.fill, .)
+
+# Put all the cost-share theorem (CST) model coefficients into a data frame
 AllCoeffsCST <- leaf_apply(modelsCST, class = c("lm"), f = function(modCST, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_list <- strsplit(id, split = "[.]")[[1]]
