@@ -249,6 +249,8 @@ In this paper, we assess two prominent energy-augmented production functions
 that appear in the literature: 
 Cobb-Douglas (CD) and
 Constant Elasticity of Substitution (CES).
+These production functions are assessed relative to 
+a model of exponential growth only.
 The following subsections describe each.
 
 
@@ -397,6 +399,48 @@ are possible with the CES model.
 % 
 Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
 meanings depending upon the nesting of the factors of production.
+
+
+%------------------------------
+\subsubsection{Exponential Production Function} 
+\label{sec:exp}
+%------------------------------
+
+We define an exponential-only reference model for economic growth
+in Equation~\ref{eq:exponential-only-model}.
+%
+\begin{equation} \label{eq:exponential-only-model}
+  y = \theta A \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; .
+\end{equation}
+%
+The reference model is a degenerate case of the Cobb-Douglas production function
+wherein all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$)
+and the constant returns to scale constraint is not respected.
+
+We expect that the reference model will have a larger fitted Solow residual term than
+the Cobb-Douglas and CES models, because no factors of production are
+included in the reference model to drive growth.
+Indeed, in the reference model, 
+all growth is attributed to the Solow residual.
+
+In contrast, it is not necessarily true that 
+Cobb-Douglas and CES models 
+will exhibit lower $mse$ than the reference model
+shown in Equation~\ref{eq:exponential-only-model}.
+The Cobb-Douglas and CES models have more fitting parameters,
+but they incorporate the factors of production
+at constant returns to scale. 
+The reference model has $\alpha_1 + \alpha_2 + \alpha_3 = 0$,
+whereas our implementations of both the Cobb-Douglas and CES models
+requires constant returns to scale, $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+Thus, if the factors of production ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
+are poorly correlated to output ($y$),
+the constant returns to scale constraint may cause higher $mse$ for
+the Cobb-Douglas or CES models relative to the reference model.
+
+In the sections that follow, 
+we assess the Cobb-Douglas and CES models relative to the reference model
+in terms of goodness of both goodness of fit~($mse$) and Solow residual~($\lambda$).
 
 
 %++++++++++++++++++++++++++++++
@@ -1223,7 +1267,7 @@ Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show $\Delta \lambda$ an
 results for CES models with various nestings.
 %
 <<DSRmse_CESkle, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>% 
+myXTable(filter(AllCoeffs, (model=="CES" & (nest=="kl" | nest=="kle")) | model=="exp") %>% 
            select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($kl$)$e$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
@@ -1231,7 +1275,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="kle")) %>%
 @
 %
 <<DSRmse_CESlek, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>% 
+myXTable(filter(AllCoeffs, (model=="CES" & (nest=="kl" | nest=="lek")) | model=="exp") %>% 
            select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($le$)$k$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
@@ -1239,7 +1283,7 @@ myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="lek")) %>%
 @
 %
 <<DSRmse_CESekl, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" & (nest=="kl" | nest=="ekl")) %>% 
+myXTable(filter(AllCoeffs, (model=="CES" & (nest=="kl" | nest=="ekl")) | model=="exp") %>% 
            select(Country, model, flavor, energy, nest, cst, Dlambda, Dmse),
          caption="$\\Delta \\lambda$ and $\\Delta mse$ for CES models with ($ek$)$l$ nesting.",
          label=paste0("tab:", opts_current$get("label")), 
@@ -1252,9 +1296,9 @@ results for the Cobb-Douglas model.
 %
 <<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=cst)) +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, size=cst)) +
   facet_grid(Country ~ flavor) +
-  scale_shape_manual(values=c(1, 16)) + 
+  scale_size_manual(values=c(2,3.5)) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
   ylab(expression(Delta * lambda)) +
@@ -1265,11 +1309,11 @@ ggplot() +
 %
 <<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse \\, [\\%]$) for the Cobb-Douglas model relative to exponential-only models.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDmse, y=percDlambda, color=energy, shape=cst)) +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDmse, y=percDlambda, color=energy, size=cst)) +
   facet_grid(Country ~ flavor) +
-  scale_shape_manual(values=c(1, 16)) + 
+  scale_size_manual(values=c(2,3.5)) +
   xlab(expression(paste(Delta * mse, " [%]"))) + 
-#   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
+  scale_x_continuous(breaks=seq(-50, 50, 50), limits=c(-90, 50)) +  
   ylab(expression(paste(Delta * lambda, " [%]"))) +
   scale_y_continuous(breaks=seq(-80, 0, 20), limits=c(-100, 10)) +  
   xy_theme() + 
@@ -1280,12 +1324,11 @@ Figures~\ref{fig:DSRmse_CES_graph} and~\ref{fig:percDSRmse_CES_graph} summarize
 $\Delta \lambda$ and $\Delta mse$ 
 results for CES models.
 %
-<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
+<<DSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the CES modles relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES" & cst=="Reject CST"), 
-             mapping=aes(x=Dmse, y=Dlambda, color=energy, shape=nest)) +
-  geom_point(data=filter(AllCoeffs, model=="CES" & cst=="Adhere to CST"), 
-             mapping=aes(x=Dmse, y=Dlambda, color=energy), shape=1) +
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=Dmse, y=Dlambda, color=energy, size=cst, shape=nest)) +
+  scale_size_manual(values=c(2,3.5)) +
+  scale_shape_manual(values=c(16,17,18,15)) +
   facet_grid(Country ~ flavor) +
   xlab(expression(Delta * mse)) + 
   scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
@@ -1294,17 +1337,16 @@ ggplot() +
   theme(legend.title=element_blank())
 @
 %
-<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse$) for the CES modles relative to the Unadjusted, Without energy, CST case.">>=
+<<percDSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse \\, [\\%]$) for the CES models relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES" & cst=="Reject CST"), 
-             mapping=aes(x=Dmse, y=percDlambda, color=energy, shape=nest)) +
-  geom_point(data=filter(AllCoeffs, model=="CES" & cst=="Adhere to CST"), 
-             mapping=aes(x=Dmse, y=percDlambda, color=energy), shape=1) + 
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=percDmse, y=percDlambda, color=energy, size=cst, shape=nest)) +
+  scale_size_manual(values=c(2,3.5)) +
+  scale_shape_manual(values=c(16,17,18,15)) +
   facet_grid(Country ~ flavor) +
-  xlab(expression(Delta * mse)) + 
-  scale_x_continuous(breaks=seq(-0.005, 0, 0.005)) +  
+  xlab(expression(paste(Delta * mse, " [%]"))) + 
+  scale_x_continuous(breaks=seq(-80, 0, 20)) +  
   ylab(expression(paste(Delta * lambda, " [%]"))) +
-  scale_y_continuous(breaks=seq(-75, 25, 25)) +  
+  scale_y_continuous(breaks=seq(-80, 0, 20), limits=c(-100, 10)) +  
   xy_theme() +
   theme(legend.title=element_blank())
 @
