@@ -397,7 +397,7 @@ meanings depending upon the nesting of the factors of production.
 
 
 %------------------------------
-\subsubsection{Exponential Production Function} 
+\subsubsection{Exponential Production Function (reference model)} 
 \label{sec:exp}
 %------------------------------
 
@@ -409,14 +409,14 @@ in Equation~\ref{eq:exponential-only-model}.
 \end{equation}
 %
 The reference model is a degenerate case of the Cobb-Douglas production function
-wherein all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$)
-and the constant returns to scale constraint is not respected.
+wherein the constant returns to scale constraint is not respected,
+because all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$).
 
 We expect that the reference model will have a larger fitted Solow residual term than
 the Cobb-Douglas and CES models, because no factors of production are
-included in the reference model to drive growth.
+included in the reference model to drive economic growth.
 Indeed, in the reference model, 
-all growth is attributed to the Solow residual.
+all economics growth is attributed to the Solow residual.
 
 In contrast, it is not necessarily true that 
 Cobb-Douglas and CES models 
@@ -627,20 +627,10 @@ assuming factors of production are specified in the fitting \texttt{formula} as
   \end{center}
 \end{table}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{Error in saveRDS(models, file = fileName): object 'fileName' not found}}\end{kframe}
-\end{knitrout}
 
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-\label{sec:results}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %++++++++++++++++++++++++++++++
 \subsection{Fits to historical data} 
@@ -650,20 +640,7 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 
 
 Both historical GDP and fitted GDP are shown in 
-Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
-%
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-fitted-1} 
-
-}
-
-\caption[Cobb-Douglas models that reject the cost-share theorem]{Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.}\label{fig:Graphs CD-fitted}
-\end{figure}
-
-
-\end{knitrout}
+Figures~\ref{fig:Graphs CESkle-fitted}--\ref{fig:Graphs CESekl-fitted}.
 %
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
@@ -727,21 +704,8 @@ The mean squared error~($mse$) for any fitted model can be calculated by
   mse \equiv \frac{1}{N} \sum_{i=1}^N{r_i^2} .
 \end{equation}
 
-Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
-show fitting residuals for all models.
-%
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-resid-1} 
-
-}
-
-\caption[Fitting residuals for Cobb-Douglas models]{Fitting residuals for Cobb-Douglas models.}\label{fig:Graphs CD-resid}
-\end{figure}
-
-
-\end{knitrout}
+Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
+show fitting residuals for all CES models.
 %
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
@@ -787,6 +751,161 @@ show fitting residuals for all models.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The primary results from this paper involve the effects of
+the following modeling decisions:
+rejecting (or adhering to) the cost share theorem,
+quality-adjusting (or not) the factors of production,
+including energy (or not) in the production function, and
+nesting (in the CES model).
+
+
+
+
+
+We evaluate the effects of these modeling decisions 
+first on goodness of fit and Solow residual,
+next on factor shares, and 
+finally on factor substitutability.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Goodness of fit and Solow residual} 
+\label{sec:fit_and_sr}
+%++++++++++++++++++++++++++++++
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:gfsr_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:gfsr_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:gfsr_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:gfsr_nesting}
+%------------------------------
+
+
+
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Factor shares} 
+\label{sec:shares}
+%++++++++++++++++++++++++++++++
+
+
+Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
+show factor shares ($\alpha$ values) for CES models for
+Portugal and the UK, respectively.
+See Table~\ref{tab:CES_abg_equations} for details.
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_PT-1} 
+
+}
+
+\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for Portugal.}\label{fig:Factor_shares_graph_PT}
+\end{figure}
+
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_UK-1} 
+
+}
+
+\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for the UK.}\label{fig:Factor_shares_graph_UK}
+\end{figure}
+
+
+\end{knitrout}
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:fs_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:fs_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:fs_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:fs_nesting}
+%------------------------------
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Factor substitutability} 
+\label{sec:substitutability}
+%++++++++++++++++++++++++++++++
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:sigma_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:sigma_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:sigma_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:sigma_nesting}
+%------------------------------
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis}
 \label{sec:analysis}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -816,35 +935,6 @@ historical output.
 In so doing, we expect less ``unexplained'' economic growth 
 and a decreased Solow residual~($\lambda$).
 
-Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
-on fitted parameters for the Cobb-Douglas model and the exponential-only model.
-The Cobb-Douglas models show lower $mse$ than the exponential-only models.
-The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
-to the exponential-only case.
-%
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
-\begin{table}[ht]
-\centering
-\caption{Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.} 
-\label{tab:Effect_of_CST_CD}
-{\tiny
-\begin{tabular}{lllrrrrr}
-  \hline
-Country & model & cst & scale & lambda & alpha\_1 & alpha\_2 & mse \\ 
-  \hline
-PT & exp & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.013359 \\ 
-  PT & CD & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.011724 \\ 
-  PT & CD & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.003190 \\ 
-  UK & exp & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.001212 \\ 
-  UK & CD & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000775 \\ 
-  UK & CD & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000494 \\ 
-   \hline
-\end{tabular}
-}
-\end{table}
-
-%
 Table~\ref{tab:Effect_of_CST_CES} shows the effect of the CST 
 on fitted parameters for the CES model.
 The CES models show lower $mse$ than the exponential-only models.
@@ -852,7 +942,7 @@ The CES models also reduce solow residual ($\lambda$) relative
 to the exponential-only case.
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{Model parameters for CES models with unadjusted factors of production, without energy.} 
@@ -945,45 +1035,11 @@ relative to the unadjusted, no-energy, CST case.
 
 To calculate $\Delta \lambda$ and $\Delta mse$, we need to fit all combinations of 
 country, model, flavor, energy, nest, and CST.
-Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
-and the reference model (exponential-only).
-%
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
-\begin{table}[ht]
-\centering
-\caption{Model parameters for all Cobb-Douglas models.} 
-\label{tab:CD_coeffs}
-{\tiny
-\begin{tabular}{lllllrrrrrr}
-  \hline
-Country & model & flavor & energy & cst & scale & lambda & alpha\_1 & alpha\_2 & alpha\_3 & mse \\ 
-  \hline
-PT & exp &  & Without energy & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.000000 & 0.013359 \\ 
-  PT & CD & Unadjusted & Without energy & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.000000 & 0.011724 \\ 
-  PT & CD & Unadjusted & Without energy & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.000000 & 0.003190 \\ 
-  PT & CD & Unadjusted & With energy & Reject CST & 1.130790 & $-$0.004439 & 0.755978 & 0.000000 & 0.244022 & 0.002628 \\ 
-  PT & CD & Quality-adjusted & Without energy & Adhere to CST & 1.364226 & 0.004183 & 0.300000 & 0.700000 & 0.000000 & 0.011340 \\ 
-  PT & CD & Quality-adjusted & Without energy & Reject CST & 1.231989 & $-$0.015079 & 1.000000 & 0.000000 & 0.000000 & 0.008937 \\ 
-  PT & CD & Quality-adjusted & With energy & Reject CST & 1.111839 & $-$0.004569 & 0.000000 & 0.000000 & 1.000000 & 0.002268 \\ 
-  UK & exp &  & Without energy & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.000000 & 0.001212 \\ 
-  UK & CD & Unadjusted & Without energy & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000000 & 0.000775 \\ 
-  UK & CD & Unadjusted & Without energy & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000000 & 0.000494 \\ 
-  UK & CD & Unadjusted & With energy & Reject CST & 0.995030 & 0.018134 & 0.162500 & 0.460325 & 0.377175 & 0.000331 \\ 
-  UK & CD & Quality-adjusted & Without energy & Adhere to CST & 1.038384 & 0.008725 & 0.300000 & 0.700000 & 0.000000 & 0.001564 \\ 
-  UK & CD & Quality-adjusted & Without energy & Reject CST & 1.015146 & $-$0.008149 & 0.751058 & 0.248942 & 0.000000 & 0.000720 \\ 
-  UK & CD & Quality-adjusted & With energy & Reject CST & 0.970614 & 0.001981 & 0.403433 & 0.330248 & 0.266319 & 0.000453 \\ 
-   \hline
-\end{tabular}
-}
-\end{table}
-
-%
 Tables~\ref{tab:CES_coeffs} and~\ref{tab:CES_coeffs_sigmas} show 
 coefficients for all fitted CES models and the reference model (exponential-only).
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{Model parameters for all CES models.} 
@@ -1022,7 +1078,7 @@ PT & exp &  & Without energy &  & Reject CST &  & 0.034507 & 0.000000 & 0.000000
 
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{Model parameters for all CES models.} 
@@ -1060,42 +1116,11 @@ PT & exp &  & Without energy &  & Reject CST &  &  & 0.013359 \\
 \end{table}
 
 %
-Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
-%
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
-\begin{table}[ht]
-\centering
-\caption{$\Delta \lambda$ and $\Delta mse$ for Cobb-Douglas models.} 
-\label{tab:DSRmse_CD}
-{\tiny
-\begin{tabular}{lllllrr}
-  \hline
-Country & model & flavor & energy & cst & Dlambda & Dmse \\ 
-  \hline
-PT & CD & Unadjusted & Without energy & Adhere to CST & $-$0.018427 & $-$0.001635 \\ 
-  PT & CD & Unadjusted & Without energy & Reject CST & $-$0.028968 & $-$0.010168 \\ 
-  PT & CD & Unadjusted & With energy & Reject CST & $-$0.030068 & $-$0.010730 \\ 
-  PT & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.030324 & $-$0.002019 \\ 
-  PT & CD & Quality-adjusted & Without energy & Reject CST & $-$0.019428 & $-$0.004422 \\ 
-  PT & CD & Quality-adjusted & With energy & Reject CST & $-$0.029938 & $-$0.011091 \\ 
-  UK & CD & Unadjusted & Without energy & Adhere to CST & $-$0.008055 & $-$0.000437 \\ 
-  UK & CD & Unadjusted & Without energy & Reject CST & $-$0.016911 & $-$0.000717 \\ 
-  UK & CD & Unadjusted & With energy & Reject CST & $-$0.005432 & $-$0.000880 \\ 
-  UK & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.014840 & 0.000352 \\ 
-  UK & CD & Quality-adjusted & Without energy & Reject CST & $-$0.015416 & $-$0.000492 \\ 
-  UK & CD & Quality-adjusted & With energy & Reject CST & $-$0.021584 & $-$0.000758 \\ 
-   \hline
-\end{tabular}
-}
-\end{table}
-
-% 
 Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show $\Delta \lambda$ and $\Delta mse$ 
 results for CES models with various nestings.
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($kl$)$e$ nesting.} 
@@ -1126,7 +1151,7 @@ PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\
 
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($le$)$k$ nesting.} 
@@ -1157,7 +1182,7 @@ PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\
 
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:56 2015
+% Wed Jul  8 16:46:02 2015
 \begin{table}[ht]
 \centering
 \caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($ek$)$l$ nesting.} 
@@ -1186,37 +1211,6 @@ PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\
 }
 \end{table}
 
-%
-Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
-$\Delta \lambda$ and $\Delta mse$ 
-results for the Cobb-Douglas model.
-%
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/DSRmse_CD_graph-1} 
-
-}
-
-\caption[Change in Solow Residuals~(]{Change in Solow Residuals~($\Delta\lambda$) and mean squared error~($\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.}\label{fig:DSRmse_CD_graph}
-\end{figure}
-
-
-\end{knitrout}
-%
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/percDSRmse_CD_graph-1} 
-
-}
-
-\caption[Percentage change in Solow Residuals~(]{Percentage change in Solow Residuals~($\Delta\lambda \, [\%]$) and mean squared error~($\Delta mse \, [\%]$) for the Cobb-Douglas model relative to exponential-only models.}\label{fig:percDSRmse_CD_graph}
-\end{figure}
-
-
-\end{knitrout}
-%
 Figures~\ref{fig:DSRmse_CES_graph} and~\ref{fig:percDSRmse_CES_graph} summarize 
 $\Delta \lambda$ and $\Delta mse$ 
 results for CES models.
@@ -1275,7 +1269,7 @@ Table~\ref{tab:r_p_values} summarizes the mean
 and associated p-values values for the fitting residuals~($r_i$).
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:57 2015
+% Wed Jul  8 16:46:03 2015
 \begin{table}[ht]
 \centering
 \caption{Means and p-values for fitting residuals~($r_i$).} 
@@ -1285,11 +1279,7 @@ and associated p-values values for the fitting residuals~($r_i$).
   \hline
 Country & model & flavor & energy & nest & Residuals.mean & Residuals.p.value \\ 
   \hline
-PT & CD & Unadjusted & Without energy &  & $-$0.000000 & 1.000000 \\ 
-  PT & CD & Unadjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
-  PT & CD & Quality-adjusted & Without energy &  & 0.000000 & 1.000000 \\ 
-  PT & CD & Quality-adjusted & With energy &  & 0.000000 & 1.000000 \\ 
-  PT & CES & Unadjusted & Without energy & kl & 0.000000 & 0.999999 \\ 
+PT & CES & Unadjusted & Without energy & kl & 0.000000 & 0.999999 \\ 
   PT & CES & Unadjusted & With energy & kle & $-$0.000000 & 0.999999 \\ 
   PT & CES & Unadjusted & With energy & lek & $-$0.000162 & 0.962887 \\ 
   PT & CES & Unadjusted & With energy & ekl & $-$0.000080 & 0.985890 \\ 
@@ -1298,10 +1288,6 @@ PT & CD & Unadjusted & Without energy &  & $-$0.000000 & 1.000000 \\
   PT & CES & Quality-adjusted & With energy & lek & $-$0.000007 & 0.998657 \\ 
   PT & CES & Quality-adjusted & With energy & ekl & 0.000001 & 0.999715 \\ 
   PT & exp &  & Without energy &  & $-$0.000000 & 1.000000 \\ 
-  UK & CD & Unadjusted & Without energy &  & 0.000000 & 1.000000 \\ 
-  UK & CD & Unadjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
-  UK & CD & Quality-adjusted & Without energy &  & 0.000000 & 1.000000 \\ 
-  UK & CD & Quality-adjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
   UK & CES & Unadjusted & Without energy & kl & $-$0.000000 & 1.000000 \\ 
   UK & CES & Unadjusted & With energy & kle & $-$0.000037 & 0.986099 \\ 
   UK & CES & Unadjusted & With energy & lek & $-$0.000000 & 1.000000 \\ 
@@ -1341,7 +1327,7 @@ Table~\ref{tab:Dr_p_values} summarizes the mean
 and associated p-values values for $\Delta r$.
 %
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul  8 15:43:57 2015
+% Wed Jul  8 16:46:03 2015
 \begin{table}[ht]
 \centering
 \caption{Means and p-values for $\Delta r$.} 
@@ -1351,11 +1337,7 @@ and associated p-values values for $\Delta r$.
   \hline
 Country & model & flavor & energy & nest & Dr.mean & Dr.p.value \\ 
   \hline
-PT & CD & Unadjusted & Without energy &  & $-$0.025733 & 0.000000 \\ 
-  PT & CD & Unadjusted & With energy &  & $-$0.048181 & 0.000000 \\ 
-  PT & CD & Quality-adjusted & Without energy &  & $-$0.009587 & 0.003533 \\ 
-  PT & CD & Quality-adjusted & With energy &  & $-$0.051804 & 0.000000 \\ 
-  PT & CES & Unadjusted & Without energy & kl & $-$0.038049 & 0.000000 \\ 
+PT & CES & Unadjusted & Without energy & kl & $-$0.038049 & 0.000000 \\ 
   PT & CES & Unadjusted & With energy & kle & $-$0.069223 & 0.000000 \\ 
   PT & CES & Unadjusted & With energy & lek & $-$0.071483 & 0.000000 \\ 
   PT & CES & Unadjusted & With energy & ekl & $-$0.065928 & 0.000000 \\ 
@@ -1364,10 +1346,6 @@ PT & CD & Unadjusted & Without energy &  & $-$0.025733 & 0.000000 \\
   PT & CES & Quality-adjusted & With energy & lek & $-$0.067419 & 0.000000 \\ 
   PT & CES & Quality-adjusted & With energy & ekl & $-$0.067335 & 0.000000 \\ 
   PT & exp &  & Without energy &  & 0.000000 &  \\ 
-  UK & CD & Unadjusted & Without energy &  & $-$0.011254 & 0.000003 \\ 
-  UK & CD & Unadjusted & With energy &  & $-$0.014450 & 0.000000 \\ 
-  UK & CD & Quality-adjusted & Without energy &  & $-$0.004538 & 0.055557 \\ 
-  UK & CD & Quality-adjusted & With energy &  & $-$0.012454 & 0.000072 \\ 
   UK & CES & Unadjusted & Without energy & kl & $-$0.013655 & 0.000000 \\ 
   UK & CES & Unadjusted & With energy & kle & $-$0.017349 & 0.000000 \\ 
   UK & CES & Unadjusted & With energy & lek & $-$0.015158 & 0.000000 \\ 
@@ -1389,38 +1367,7 @@ PT & CD & Unadjusted & Without energy &  & $-$0.025733 & 0.000000 \\
 \label{sec:factor_shares}
 %++++++++++++++++++++++++++++++
 
-Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
-show factor shares ($\alpha$ values) for CES models for
-Portugal and the UK, respectively.
-See Table~\ref{tab:CES_abg_equations} for details.
 
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_PT-1} 
-
-}
-
-\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for Portugal.}\label{fig:Factor_shares_graph_PT}
-\end{figure}
-
-
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
-
-{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_UK-1} 
-
-}
-
-\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for the UK.}\label{fig:Factor_shares_graph_UK}
-\end{figure}
-
-
-\end{knitrout}
 
 
 
@@ -1976,19 +1923,54 @@ as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
 Perhaps there is another direction in which I should go with this analysis?
 
 
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Correlograms} 
 \label{sec:correlograms}
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This appendix contains correlograms for all models.
 
 %++++++++++++++++++++++++++++++
-\subsection{Correlograms for models respecting the cost-share theorem} 
+\subsection{Correlograms for the reference models} 
+\label{sec:correlograms_ref}
+%++++++++++++++++++++++++++++++
+
+In this section we present correlograms for the reference (exponential-only) models. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/Correlograms_Exp-1} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_Exp-2} 
+\begin{kframe}\begin{verbatim}
+$PT
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.863  0.724  0.585  0.460  0.350  0.254  0.153  0.075  0.018 
+    10     11     12     13     14     15     16     17 
+-0.051 -0.108 -0.150 -0.178 -0.168 -0.157 -0.179 -0.187 
+
+$UK
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.785  0.492  0.237  0.084  0.008 -0.110 -0.207 -0.234 -0.182 
+    10     11     12     13     14     15     16     17 
+-0.153 -0.155 -0.180 -0.192 -0.143 -0.086 -0.067 -0.060 
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Correlograms for models that adhere to the cost-share theorem} 
 \label{sec:correlograms_CST}
 %++++++++++++++++++++++++++++++
 
-In this section we present correlograms for all models that respect the cost-share theorem.
+In this section we present correlograms for all models that adhere to the cost-share theorem.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
@@ -2085,11 +2067,11 @@ Autocorrelations of series 'resid(model)', by lag
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Correlograms for models reject the cost-share theorem} 
+\subsection{Correlograms for models that reject the cost-share theorem} 
 \label{sec:correlograms_noCST}
 %++++++++++++++++++++++++++++++
 
-In this section we present correlograms for all models that do not adhere to the cost-share theorem.
+In this section we present correlograms for all models that reject the cost-share theorem.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
@@ -2361,10 +2343,10 @@ Autocorrelations of series 'resid(model)', by lag
 \end{knitrout}
 
 
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Statistical details on all models} 
 \label{sec:staistical_details}
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In this section, we present statistical details of all models.
 
@@ -2404,6 +2386,179 @@ Num.\ obs. & 50             & 51             \\
 \label{tab:stat_details_table}
 \end{center}
 \end{table}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cobb-Douglas results} 
+\label{sec:cd_results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section is the graveyard for information pertaining to the Cobb-Douglas model.
+
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-fitted-1} 
+
+}
+
+\caption[Cobb-Douglas models that reject the cost-share theorem]{Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.}\label{fig:Graphs CD-fitted}
+\end{figure}
+
+
+\end{knitrout}
+
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-resid-1} 
+
+}
+
+\caption[Fitting residuals for Cobb-Douglas models]{Fitting residuals for Cobb-Douglas models.}\label{fig:Graphs CD-resid}
+\end{figure}
+
+
+\end{knitrout}
+
+
+Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
+on fitted parameters for the Cobb-Douglas model and the exponential-only model.
+The Cobb-Douglas models show lower $mse$ than the exponential-only models.
+The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 16:46:04 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.} 
+\label{tab:Effect_of_CST_CD}
+{\tiny
+\begin{tabular}{lllrrrrr}
+  \hline
+Country & model & cst & scale & lambda & alpha\_1 & alpha\_2 & mse \\ 
+  \hline
+PT & exp & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.013359 \\ 
+  PT & CD & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.011724 \\ 
+  PT & CD & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.003190 \\ 
+  UK & exp & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.001212 \\ 
+  UK & CD & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000775 \\ 
+  UK & CD & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000494 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+
+
+Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
+and the reference model (exponential-only).
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 16:46:04 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for all Cobb-Douglas models.} 
+\label{tab:CD_coeffs}
+{\tiny
+\begin{tabular}{lllllrrrrrr}
+  \hline
+Country & model & flavor & energy & cst & scale & lambda & alpha\_1 & alpha\_2 & alpha\_3 & mse \\ 
+  \hline
+PT & exp &  & Without energy & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.000000 & 0.013359 \\ 
+  PT & CD & Unadjusted & Without energy & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.000000 & 0.011724 \\ 
+  PT & CD & Unadjusted & Without energy & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.000000 & 0.003190 \\ 
+  PT & CD & Unadjusted & With energy & Reject CST & 1.130790 & $-$0.004439 & 0.755978 & 0.000000 & 0.244022 & 0.002628 \\ 
+  PT & CD & Quality-adjusted & Without energy & Adhere to CST & 1.364226 & 0.004183 & 0.300000 & 0.700000 & 0.000000 & 0.011340 \\ 
+  PT & CD & Quality-adjusted & Without energy & Reject CST & 1.231989 & $-$0.015079 & 1.000000 & 0.000000 & 0.000000 & 0.008937 \\ 
+  PT & CD & Quality-adjusted & With energy & Reject CST & 1.111839 & $-$0.004569 & 0.000000 & 0.000000 & 1.000000 & 0.002268 \\ 
+  UK & exp &  & Without energy & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.000000 & 0.001212 \\ 
+  UK & CD & Unadjusted & Without energy & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000000 & 0.000775 \\ 
+  UK & CD & Unadjusted & Without energy & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000000 & 0.000494 \\ 
+  UK & CD & Unadjusted & With energy & Reject CST & 0.995030 & 0.018134 & 0.162500 & 0.460325 & 0.377175 & 0.000331 \\ 
+  UK & CD & Quality-adjusted & Without energy & Adhere to CST & 1.038384 & 0.008725 & 0.300000 & 0.700000 & 0.000000 & 0.001564 \\ 
+  UK & CD & Quality-adjusted & Without energy & Reject CST & 1.015146 & $-$0.008149 & 0.751058 & 0.248942 & 0.000000 & 0.000720 \\ 
+  UK & CD & Quality-adjusted & With energy & Reject CST & 0.970614 & 0.001981 & 0.403433 & 0.330248 & 0.266319 & 0.000453 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+
+Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 16:46:04 2015
+\begin{table}[ht]
+\centering
+\caption{$\Delta \lambda$ and $\Delta mse$ for Cobb-Douglas models.} 
+\label{tab:DSRmse_CD}
+{\tiny
+\begin{tabular}{lllllrr}
+  \hline
+Country & model & flavor & energy & cst & Dlambda & Dmse \\ 
+  \hline
+PT & CD & Unadjusted & Without energy & Adhere to CST & $-$0.018427 & $-$0.001635 \\ 
+  PT & CD & Unadjusted & Without energy & Reject CST & $-$0.028968 & $-$0.010168 \\ 
+  PT & CD & Unadjusted & With energy & Reject CST & $-$0.030068 & $-$0.010730 \\ 
+  PT & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.030324 & $-$0.002019 \\ 
+  PT & CD & Quality-adjusted & Without energy & Reject CST & $-$0.019428 & $-$0.004422 \\ 
+  PT & CD & Quality-adjusted & With energy & Reject CST & $-$0.029938 & $-$0.011091 \\ 
+  UK & CD & Unadjusted & Without energy & Adhere to CST & $-$0.008055 & $-$0.000437 \\ 
+  UK & CD & Unadjusted & Without energy & Reject CST & $-$0.016911 & $-$0.000717 \\ 
+  UK & CD & Unadjusted & With energy & Reject CST & $-$0.005432 & $-$0.000880 \\ 
+  UK & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.014840 & 0.000352 \\ 
+  UK & CD & Quality-adjusted & Without energy & Reject CST & $-$0.015416 & $-$0.000492 \\ 
+  UK & CD & Quality-adjusted & With energy & Reject CST & $-$0.021584 & $-$0.000758 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+% 
+
+%
+Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for the Cobb-Douglas model.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/DSRmse_CD_graph-1} 
+
+}
+
+\caption[Change in Solow Residuals~(]{Change in Solow Residuals~($\Delta\lambda$) and mean squared error~($\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.}\label{fig:DSRmse_CD_graph}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/percDSRmse_CD_graph-1} 
+
+}
+
+\caption[Percentage change in Solow Residuals~(]{Percentage change in Solow Residuals~($\Delta\lambda \, [\%]$) and mean squared error~($\Delta mse \, [\%]$) for the Cobb-Douglas model relative to exponential-only models.}\label{fig:percDSRmse_CD_graph}
+\end{figure}
+
+
+\end{knitrout}
+%
+
+
 
 
 

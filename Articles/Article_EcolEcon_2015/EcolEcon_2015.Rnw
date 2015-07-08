@@ -124,7 +124,7 @@ require(texreg)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=TRUE
+rerunModels=FALSE
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -402,7 +402,7 @@ meanings depending upon the nesting of the factors of production.
 
 
 %------------------------------
-\subsubsection{Exponential Production Function} 
+\subsubsection{Exponential Production Function (reference model)} 
 \label{sec:exp}
 %------------------------------
 
@@ -414,14 +414,14 @@ in Equation~\ref{eq:exponential-only-model}.
 \end{equation}
 %
 The reference model is a degenerate case of the Cobb-Douglas production function
-wherein all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$)
-and the constant returns to scale constraint is not respected.
+wherein the constant returns to scale constraint is not respected,
+because all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$).
 
 We expect that the reference model will have a larger fitted Solow residual term than
 the Cobb-Douglas and CES models, because no factors of production are
-included in the reference model to drive growth.
+included in the reference model to drive economic growth.
 Indeed, in the reference model, 
-all growth is attributed to the Solow residual.
+all economics growth is attributed to the Solow residual.
 
 In contrast, it is not necessarily true that 
 Cobb-Douglas and CES models 
@@ -812,7 +812,7 @@ if (!rerunModels){
     }      
   }
   # Save models to disk.
-  saveRDS(models, file=fileName)
+  saveRDS(models, file=fileNameCDCES)
 }
 # Put all exponential model coefficients into a data frame
 AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
@@ -983,11 +983,6 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, cst, model, fla
 @
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-\label{sec:results}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %++++++++++++++++++++++++++++++
 \subsection{Fits to historical data} 
 \label{sec:fits_to_historical_data}
@@ -1020,11 +1015,7 @@ fittedGraphNoCST <- function(data){
 @
 
 Both historical GDP and fitted GDP are shown in 
-Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
-%
-<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
-fittedGraphNoCST(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
-@
+Figures~\ref{fig:Graphs CESkle-fitted}--\ref{fig:Graphs CESekl-fitted}.
 %
 <<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
 fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")))
@@ -1072,12 +1063,8 @@ The mean squared error~($mse$) for any fitted model can be calculated by
   mse \equiv \frac{1}{N} \sum_{i=1}^N{r_i^2} .
 \end{equation}
 
-Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
-show fitting residuals for all models.
-%
-<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
-@
+Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
+show fitting residuals for all CES models.
 %
 <<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")))
@@ -1090,6 +1077,177 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (n
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")))
 @
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The primary results from this paper involve the effects of
+the following modeling decisions:
+rejecting (or adhering to) the cost share theorem,
+quality-adjusting (or not) the factors of production,
+including energy (or not) in the production function, and
+nesting (in the CES model).
+
+
+
+
+
+We evaluate the effects of these modeling decisions 
+first on goodness of fit and Solow residual,
+next on factor shares, and 
+finally on factor substitutability.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Goodness of fit and Solow residual} 
+\label{sec:fit_and_sr}
+%++++++++++++++++++++++++++++++
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:gfsr_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:gfsr_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:gfsr_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:gfsr_nesting}
+%------------------------------
+
+
+
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Factor shares} 
+\label{sec:shares}
+%++++++++++++++++++++++++++++++
+
+
+Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
+show factor shares ($\alpha$ values) for CES models for
+Portugal and the UK, respectively.
+See Table~\ref{tab:CES_abg_equations} for details.
+
+<<Factor_shares_bar_graph_function>>=
+fsbg <- function(coun, mod){
+  bar_chart_data <- filter(AllCoeffs, Country==coun & model==mod) %>% 
+    select(Country, model, flavor, energy, nest, cst, alpha_1, alpha_2, alpha_3)
+  # Change nest to a nicer-looking nest string
+  bar_chart_data$nest <- plyr::mapvalues(bar_chart_data$nest, 
+                                         from=c("kl", "kle", "lek", "ekl"), 
+                                         to=c("(kl)", "(kl)e", "(le)k", "(ek)l"))
+  # Add a label column
+  bar_chart_data$label <- paste(bar_chart_data$cst, bar_chart_data$flavor, 
+                                bar_chart_data$energy, bar_chart_data$nest, sep=", ")
+  # Capture the order that we want for the models on the vertical axis.
+  order <- bar_chart_data$label
+  # Now melt the data
+  bar_chart_data <- melt(bar_chart_data, 
+                         measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
+                         value.name = "value", 
+                         variable.name = "variable")
+  # Define the color palette (see http://www.cookbook-r.com/Graphs/Colors_(ggplot2))
+  cbPalette <- c("#E69F00", "#999999", "#F0E442", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  # Make the plot
+  plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+    geom_bar(stat="identity") + 
+    xlab("") +
+    scale_x_discrete(limits=rev(order)) +
+    ylab("") +
+    scale_y_continuous(breaks=c(0, 0.5, 1)) + 
+    guides(fill=guide_legend(title=NULL)) +
+    coord_flip() + 
+    scale_fill_brewer(palette="OrRd") +
+    xy_theme() +
+    theme(axis.ticks.y = element_blank())
+  return(plot)
+}
+@
+
+<<Factor_shares_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for Portugal.">>=
+fsbg(coun = "PT", mod = "CES")
+@
+
+<<Factor_shares_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for the UK.">>=
+fsbg(coun = "UK", mod = "CES")
+@
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:fs_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:fs_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:fs_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:fs_nesting}
+%------------------------------
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Factor substitutability} 
+\label{sec:substitutability}
+%++++++++++++++++++++++++++++++
+
+
+%------------------------------
+\subsubsection{Rejecting (or adhering to) the cost share theorem} 
+\label{sec:sigma_cst}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Quality-adjusting (or not) factors of production} 
+\label{sec:sigma_fop}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{Including energy (or not)} 
+\label{sec:sigma_energy}
+%------------------------------
+
+
+%------------------------------
+\subsubsection{CES nesting} 
+\label{sec:sigma_nesting}
+%------------------------------
+
 
 
 
@@ -1125,20 +1283,6 @@ historical output.
 In so doing, we expect less ``unexplained'' economic growth 
 and a decreased Solow residual~($\lambda$).
 
-Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
-on fitted parameters for the Cobb-Douglas model and the exponential-only model.
-The Cobb-Douglas models show lower $mse$ than the exponential-only models.
-The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
-to the exponential-only case.
-%
-<<Effect_of_CST_CD, results="asis">>=
-myXTable(filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
-           select(Country, model, cst, scale, lambda, alpha_1, alpha_2, mse),
-         caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
 Table~\ref{tab:Effect_of_CST_CES} shows the effect of the CST 
 on fitted parameters for the CES model.
 The CES models show lower $mse$ than the exponential-only models.
@@ -1224,17 +1368,6 @@ relative to the unadjusted, no-energy, CST case.
 
 To calculate $\Delta \lambda$ and $\Delta mse$, we need to fit all combinations of 
 country, model, flavor, energy, nest, and CST.
-Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
-and the reference model (exponential-only).
-%
-<<CD_coeffs, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>% 
-           select(Country, model, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, mse),
-         caption="Model parameters for all Cobb-Douglas models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
 Tables~\ref{tab:CES_coeffs} and~\ref{tab:CES_coeffs_sigmas} show 
 coefficients for all fitted CES models and the reference model (exponential-only).
 %
@@ -1254,15 +1387,6 @@ myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>%
          digits=6)
 @
 %
-Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
-%
-<<DSRmse_CD, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, cst, Dlambda, Dmse),
-         caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-% 
 Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show $\Delta \lambda$ and $\Delta mse$ 
 results for CES models with various nestings.
 %
@@ -1289,37 +1413,6 @@ myXTable(filter(AllCoeffs, (model=="CES" & (nest=="kl" | nest=="ekl")) | model==
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
-%
-Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
-$\Delta \lambda$ and $\Delta mse$ 
-results for the Cobb-Douglas model.
-%
-<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.">>=
-ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, size=cst)) +
-  facet_grid(Country ~ flavor) +
-  scale_size_manual(values=c(2,3.5)) +
-  xlab(expression(Delta * mse)) + 
-  scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
-  ylab(expression(Delta * lambda)) +
-  scale_y_continuous(limits=c(-0.04, 0)) +
-  xy_theme() + 
-  theme(legend.title=element_blank())
-@
-%
-<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse \\, [\\%]$) for the Cobb-Douglas model relative to exponential-only models.">>=
-ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDmse, y=percDlambda, color=energy, size=cst)) +
-  facet_grid(Country ~ flavor) +
-  scale_size_manual(values=c(2,3.5)) +
-  xlab(expression(paste(Delta * mse, " [%]"))) + 
-  scale_x_continuous(breaks=seq(-50, 50, 50), limits=c(-90, 50)) +  
-  ylab(expression(paste(Delta * lambda, " [%]"))) +
-  scale_y_continuous(breaks=seq(-80, 0, 20), limits=c(-100, 10)) +  
-  xy_theme() + 
-  theme(legend.title=element_blank())
-@
-%
 Figures~\ref{fig:DSRmse_CES_graph} and~\ref{fig:percDSRmse_CES_graph} summarize 
 $\Delta \lambda$ and $\Delta mse$ 
 results for CES models.
@@ -1380,7 +1473,7 @@ and associated p-values values for the fitting residuals~($r_i$).
 %
 <<r_p_values, results="asis">>=
 # Calculate p values for groups of fitting residuals.
-r.t.values <- fitted_and_resid_data %>% 
+r.t.values <- filter(fitted_and_resid_data, model != "CD") %>% 
   group_by(Country, model, flavor, energy, nest) %>% 
   summarize(Residuals.mean = mean(Residuals), Residuals.p.value = stats::t.test(Residuals)[["p.value"]])
 r.t.values <- arrange(ungroup(r.t.values), Country, model, flavor, energy, nest)
@@ -1416,7 +1509,7 @@ and associated p-values values for $\Delta r$.
 %
 <<Dr_p_values, results="asis">>=
 # Calculate p values for groups of Dr values.
-Dr.t.values <- fitted_and_resid_data %>% 
+Dr.t.values <- filter(fitted_and_resid_data, model != "CD") %>% 
   group_by(Country, model, flavor, energy, nest) %>% 
   summarize(Dr.mean = mean(Dr), Dr.p.value = stats::t.test(Dr, alternative = "less")[["p.value"]])
 Dr.t.values <- arrange(ungroup(Dr.t.values), Country, model, flavor, energy, nest)
@@ -1433,54 +1526,7 @@ myXTable(Dr.t.values,
 \label{sec:factor_shares}
 %++++++++++++++++++++++++++++++
 
-Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
-show factor shares ($\alpha$ values) for CES models for
-Portugal and the UK, respectively.
-See Table~\ref{tab:CES_abg_equations} for details.
 
-<<Factor_shares_bar_graph_function>>=
-fsbg <- function(coun, mod){
-  bar_chart_data <- filter(AllCoeffs, Country==coun & model==mod) %>% 
-    select(Country, model, flavor, energy, nest, cst, alpha_1, alpha_2, alpha_3)
-  # Change nest to a nicer-looking nest string
-  bar_chart_data$nest <- plyr::mapvalues(bar_chart_data$nest, 
-                                         from=c("kl", "kle", "lek", "ekl"), 
-                                         to=c("(kl)", "(kl)e", "(le)k", "(ek)l"))
-  # Add a label column
-  bar_chart_data$label <- paste(bar_chart_data$cst, bar_chart_data$flavor, 
-                                bar_chart_data$energy, bar_chart_data$nest, sep=", ")
-  # Capture the order that we want for the models on the vertical axis.
-  order <- bar_chart_data$label
-  # Now melt the data
-  bar_chart_data <- melt(bar_chart_data, 
-                         measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
-                         value.name = "value", 
-                         variable.name = "variable")
-  # Define the color palette (see http://www.cookbook-r.com/Graphs/Colors_(ggplot2))
-  cbPalette <- c("#E69F00", "#999999", "#F0E442", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
-  # Make the plot
-  plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
-    geom_bar(stat="identity") + 
-    xlab("") +
-    scale_x_discrete(limits=rev(order)) +
-    ylab("") +
-    scale_y_continuous(breaks=c(0, 0.5, 1)) + 
-    guides(fill=guide_legend(title=NULL)) +
-    coord_flip() + 
-    scale_fill_brewer(palette="OrRd") +
-    xy_theme() +
-    theme(axis.ticks.y = element_blank())
-  return(plot)
-}
-@
-
-<<Factor_shares_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for Portugal.">>=
-fsbg(coun = "PT", mod = "CES")
-@
-
-<<Factor_shares_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for the UK.">>=
-fsbg(coun = "UK", mod = "CES")
-@
 
 
 
@@ -2012,19 +2058,33 @@ as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
 Perhaps there is another direction in which I should go with this analysis?
 
 
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Correlograms} 
 \label{sec:correlograms}
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This appendix contains correlograms for all models.
 
 %++++++++++++++++++++++++++++++
-\subsection{Correlograms for models respecting the cost-share theorem} 
+\subsection{Correlograms for the reference models} 
+\label{sec:correlograms_ref}
+%++++++++++++++++++++++++++++++
+
+In this section we present correlograms for the reference (exponential-only) models. 
+
+<<Correlograms_Exp, echo=FALSE, message=FALSE>>=
+leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
+  acf(resid(model), main=name)
+})
+@
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Correlograms for models that adhere to the cost-share theorem} 
 \label{sec:correlograms_CST}
 %++++++++++++++++++++++++++++++
 
-In this section we present correlograms for all models that respect the cost-share theorem.
+In this section we present correlograms for all models that adhere to the cost-share theorem.
 
 <<Correlograms_CST, echo=FALSE, message=FALSE>>=
 leaf_apply(l = modelsCST, class = c("lm", "plm"), f = function(model, name){
@@ -2034,11 +2094,11 @@ leaf_apply(l = modelsCST, class = c("lm", "plm"), f = function(model, name){
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Correlograms for models reject the cost-share theorem} 
+\subsection{Correlograms for models that reject the cost-share theorem} 
 \label{sec:correlograms_noCST}
 %++++++++++++++++++++++++++++++
 
-In this section we present correlograms for all models that do not adhere to the cost-share theorem.
+In this section we present correlograms for all models that reject the cost-share theorem.
 
 <<Correlograms_noCST, echo=FALSE, message=FALSE>>=
 leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, name){
@@ -2047,10 +2107,10 @@ leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = func
 @
 
 
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Statistical details on all models} 
 \label{sec:staistical_details}
-%++++++++++++++++++++++++++++++
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In this section, we present statistical details of all models.
 
@@ -2071,6 +2131,101 @@ texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle),
        fontsize = "tiny",
        float.pos = "hb")
 @
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cobb-Douglas results} 
+\label{sec:cd_results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section is the graveyard for information pertaining to the Cobb-Douglas model.
+
+%
+<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
+fittedGraphNoCST(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
+@
+
+%
+<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
+@
+
+
+Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
+on fitted parameters for the Cobb-Douglas model and the exponential-only model.
+The Cobb-Douglas models show lower $mse$ than the exponential-only models.
+The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
+%
+<<Effect_of_CST_CD, results="asis">>=
+myXTable(filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
+           select(Country, model, cst, scale, lambda, alpha_1, alpha_2, mse),
+         caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+
+
+Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
+and the reference model (exponential-only).
+%
+<<CD_coeffs, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>% 
+           select(Country, model, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, mse),
+         caption="Model parameters for all Cobb-Douglas models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+
+Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
+%
+<<DSRmse_CD, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, cst, Dlambda, Dmse),
+         caption="$\\Delta \\lambda$ and $\\Delta mse$ for Cobb-Douglas models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+% 
+
+%
+Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for the Cobb-Douglas model.
+%
+<<DSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.">>=
+ggplot() +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dmse, y=Dlambda, color=energy, size=cst)) +
+  facet_grid(Country ~ flavor) +
+  scale_size_manual(values=c(2,3.5)) +
+  xlab(expression(Delta * mse)) + 
+  scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
+  ylab(expression(Delta * lambda)) +
+  scale_y_continuous(limits=c(-0.04, 0)) +
+  xy_theme() + 
+  theme(legend.title=element_blank())
+@
+%
+<<percDSRmse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta mse \\, [\\%]$) for the Cobb-Douglas model relative to exponential-only models.">>=
+ggplot() +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDmse, y=percDlambda, color=energy, size=cst)) +
+  facet_grid(Country ~ flavor) +
+  scale_size_manual(values=c(2,3.5)) +
+  xlab(expression(paste(Delta * mse, " [%]"))) + 
+  scale_x_continuous(breaks=seq(-50, 50, 50), limits=c(-90, 50)) +  
+  ylab(expression(paste(Delta * lambda, " [%]"))) +
+  scale_y_continuous(breaks=seq(-80, 0, 20), limits=c(-100, 10)) +  
+  xy_theme() + 
+  theme(legend.title=element_blank())
+@
+%
+
+
+
 
 
 
