@@ -124,7 +124,7 @@ require(texreg)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunModels=TRUE
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -696,12 +696,12 @@ assuming factors of production are specified in the fitting \texttt{formula} as
 \end{table}
 
 <<Models>>=
-fileName <- "ESEE2015Models.rds"
-fileNameCST <- "EESE2015ModelsCST.rds"
-fileNameExp <- "EESE2015ModelsExp.rds"
+fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
+fileNameCST <- "EcolEcon2015ModelsCST.rds"
+fileNameExp <- "EcolEcon2015ModelsExp.rds"
 if (!rerunModels){
   # load from the file on disk
-  models <- readRDS(fileName)
+  models <- readRDS(fileNameCDCES)
   modelsCST <- readRDS(fileNameCST)
   modelsExp <- readRDS(fileNameExp)
 } else {
