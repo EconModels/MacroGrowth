@@ -1,0 +1,3217 @@
+% This article has been prepared for publication in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2014-08-01
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+\usepackage{booktabs}   % for beautiful tables
+\usepackage{dcolumn}    % aligns table columns at decimal places
+
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\journal{Ecological Economics}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Effect of quality-adjusted production function inputs}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[IST]{Jo\~{a}o dos Santos}
+\author[Leeds]{Paul Brockway}
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+\author[Leeds]{Marco Sekai}
+\author[IST]{Tiago Domingos}
+\author[Leeds]{Julia Steinberger}
+
+\address[IST]{IST, Lisbon, Portugal}
+\address[Leeds]{Leeds University, Leeds, UK}
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\cortext[cor1]{Corresponding author}
+
+\begin{abstract}
+%% Text of abstract
+**** Add abstract ****
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep exergy \sep energy \sep Cobb-Douglas \sep CES
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This is a study of the effects of quality-adjusted production function inputs
+on the importance of energy in the production function.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coordinates of Analysis} 
+\label{sec:Coordinates}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This section describes the coordinates of analysis and briefly reviews 
+literature related to each.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Mathematical Forms of the Energy-augmented Production Function} 
+\label{sec:Prod_Func_Forms}
+%++++++++++++++++++++++++++++++
+
+In this paper, we assess two prominent energy-augmented production functions 
+that appear in the literature: 
+Cobb-Douglas (CD) and
+Constant Elasticity of Substitution (CES).
+These production functions are assessed relative to 
+a model of exponential growth only.
+The following subsections describe each.
+
+
+%------------------------------
+\subsubsection{Cobb-Douglas Production Function} 
+\label{sec:CDe}
+%------------------------------
+
+The Cobb-Douglas production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ (time) is measured in years,
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ (economic output) is represented by GDP, 
+$K$ (capital) is expressed in currency units, 
+$L$ (labor) is expressed in workers or work-hours/year, and
+the 0 subscript indicates values at an initial year.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+  Model parameters are represented by Greek letters
+  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
+  }
+Constant returns to scale are represented by the constraint
+$\alpha_1 + \alpha_2 = 1$.
+
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+The term $A$ is known as total factor productivity,
+and $\lambda$ is the Solow residual. 
+
+
+%------------------------------
+\subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
+\label{sec:CES}
+%------------------------------
+
+Other energy economists use an energy-augmented 
+Constant Elasticity of Substitution (CES) production function to 
+describe economic growth. The \texttt{R} 
+% \citep{R} 
+package \texttt{micEconCES} 
+% \citep{Henningsen:2011td} 
+estimates CES production 
+functions of the following form
+%
+\begin{equation} \label{eq:CESgeneric}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
+      + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)},
+\end{equation}
+%
+where $x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of capital~($k$), labor~($l$), and energy~($e$).
+
+The CES model without energy is given in Equation~\ref{eq:CESkl}.
+%
+\begin{equation} \label{eq:CESkl}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
+\end{equation}
+%
+Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
+using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
+where $\delta \rightarrow 1$. 
+%
+\begin{equation} \label{eq:CESkle}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}.
+\end{equation}
+%
+
+In the CES production function, 
+$\gamma$ is a fitting parameter that accounts for an atypical first year. 
+The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
+of substitution ($\sigma_1$ and $\sigma$).
+The elasticity of substitution 
+between capital ($k$) and labor ($l$) is given by 
+$\sigma_1 = \frac{1}{1+\rho_1}$, and
+the elasticity of substitution between ($kl$) and ($e$) is given by 
+$\sigma = \frac{1}{1+\rho}$. 
+As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
+and the embedded CES production function for $k$ and $l$ degenerates 
+to the Cobb-Douglas production function.
+Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
+and the CES production function for $(kl)$ and $(e)$ degenerates 
+to the Cobb-Douglas production function.
+As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
+($kl$) and ($e$) are perfect substitutes. 
+As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
+($kl$) and ($e$) are perfect complements: 
+no substitution is possible. Similarly, 
+as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
+$k$ and $l$ are perfect complements.
+$\delta_1$ describes the relative importance of capital ($k$)
+and labor ($l$), and
+$\delta$ describes the importance of ($kl$) relative to ($e$).
+
+Constraints on the fitting parameters include 
+$\delta_1 \in [0,1]$,
+$\delta \in [0,1]$,
+$\rho_1 \in [-1,0) \cup (0,\infty)$, and
+$\rho \in [-1,0) \cup (0,\infty)$. 
+
+Two other nestings of the factors of production ($k$, $l$, and $e$)
+are possible with the CES model.
+%
+\begin{equation} \label{eq:CESlek}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1} 
+      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) k^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+%
+\begin{equation} \label{eq:CESekl}
+  y = \gamma \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1} 
+      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) l^{-\rho} \right\}^{-1/\rho}; 
+      A \equiv \mathrm{e}^{\lambda (t-t_0)}
+\end{equation}
+% 
+Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
+meanings depending upon the nesting of the factors of production.
+
+
+%------------------------------
+\subsubsection{Exponential Production Function} 
+\label{sec:exp}
+%------------------------------
+
+We define an exponential-only reference model for economic growth
+in Equation~\ref{eq:exponential-only-model}.
+%
+\begin{equation} \label{eq:exponential-only-model}
+  y = \theta A \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; .
+\end{equation}
+%
+The reference model is a degenerate case of the Cobb-Douglas production function
+wherein all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$)
+and the constant returns to scale constraint is not respected.
+
+We expect that the reference model will have a larger fitted Solow residual term than
+the Cobb-Douglas and CES models, because no factors of production are
+included in the reference model to drive growth.
+Indeed, in the reference model, 
+all growth is attributed to the Solow residual.
+
+In contrast, it is not necessarily true that 
+Cobb-Douglas and CES models 
+will exhibit lower $mse$ than the reference model
+shown in Equation~\ref{eq:exponential-only-model}.
+The Cobb-Douglas and CES models have more fitting parameters,
+but they incorporate the factors of production
+at constant returns to scale. 
+The reference model has $\alpha_1 + \alpha_2 + \alpha_3 = 0$,
+whereas our implementations of both the Cobb-Douglas and CES models
+requires constant returns to scale, $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+Thus, if the factors of production ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
+are poorly correlated to output ($y$),
+the constant returns to scale constraint may cause higher $mse$ for
+the Cobb-Douglas or CES models relative to the reference model.
+
+In the sections that follow, 
+we assess the Cobb-Douglas and CES models relative to the reference model
+in terms of goodness of both goodness of fit~($mse$) and Solow residual~($\lambda$).
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Economies} 
+\label{sec:Economies}
+%++++++++++++++++++++++++++++++
+
+Discuss economies here.
+
+UK and Portugal.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sources of Data}
+\label{sec:Sources_of_Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Discuss data sources here.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Historical Data} 
+\label{sec:Historical_Data}
+%++++++++++++++++++++++++++++++
+
+Historical data are stored in the \texttt{IST} and \texttt{Leeds} data sets.
+
+
+
+
+
+For unadjusted variables, we use the time series shown in Table~\ref{tab:unadjusted_variables}.
+
+\begin{table} \caption{Unadjusted time-series variables.} 
+\label{tab:unadjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal           & UK                 \\
+      \midrule
+      Output      & iGDP   
+                                                             & iGDP\\
+      Capital     & iKstkS.L & iKstkO.WwithRD \\
+      Labor       & iL & iL \\
+      Energy      & iXpMP & iXp \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+For quality-adjusted variables, we use the time series shown in Table~\ref{tab:quality_adjusted_variables}.
+
+\begin{table} \caption{Quality-adjusted time series variables.} 
+\label{tab:quality_adjusted_variables} 
+  \begin{center}
+    \begin{tabular}{r l l} 
+      \toprule
+      Variable    & Portugal         & UK               \\
+      \midrule
+      Output      & iGDP   
+                                                           & iGDP \\
+      Capital     & iKservS.L & iKservO.WwithRD \\
+      Labor       & ihLest & ihLest \\
+      Energy      & iUMP & iU \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
+are shown in Figure~\ref{fig:Historical Data Graph}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Historical_Data_Graph-1} 
+
+}
+
+\caption[Historical data]{Historical data.}\label{fig:Historical Data Graph}
+\end{figure}
+
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Pre-econometric_graph-1} 
+
+}
+
+\caption[Pre-econometric data]{Pre-econometric data.}\label{fig:Pre-econometric graph}
+\end{figure}
+
+
+\end{knitrout}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation (Without Cost-share Theorem)}
+\label{sec:parameter_estimation_noCST}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Parameter estimation is accomplished with \texttt{formula}s of the form
+% %
+% \begin{equation} \label{eq:formulas}
+%   y \sim x_1 + x_2 + x_3 + time,
+% \end{equation}
+% %
+% where $y$ is economic output and 
+% $x_1$, $x_2$, and $x_3$ are factors of production
+% and permutations of
+% capital ($k$), labor ($l$), and energy ($e$).
+% (The factors of production may be quality-adjusted.)
+% $time$ is the time variable, usually \texttt{iYear}. 
+% The \texttt{formula}s are used in a fitting function such as 
+% \texttt{cdModel} to create a \texttt{model} object.
+% The function \texttt{naturalCoef} extracts reasonable
+% coefficients from \texttt{model} objects.
+% 
+% Note that in the fitting process for the Cobb-Douglas equation,
+% $\texttt{scale} = \theta$, 
+% $\alpha_1 = \alpha$,
+% $\alpha_2 = \beta$, and
+% $\alpha_3 = \gamma$,
+% when the \texttt{formula} is specified as 
+% %
+% \begin{equation} \label{eq:formula_kle}
+%   \texttt{y} \sim \texttt{k + l + e + time}.
+% \end{equation}
+% %
+% Note that for the CES model, $\texttt{scale} = \gamma$ and is expected to be close to unity. 
+
+The models being fit can be described by the algebraic form of the model 
+(Cobb-Douglas, CES, etc.) and a formula that enumerates 
+which data variables are being used in which roles to fit the model.  
+A formula of the form
+%
+\begin{equation} \label{eq:formulas-3-factor}
+y \sim x_1 + x_2 + x_3 + t,
+\end{equation}
+%
+or 
+%
+\begin{equation} \label{eq:formulas-2-factor}
+y \sim x_1 + x_2 + t,
+\end{equation}
+%
+describes the economic output variable ($y$, usually \texttt{iGDP},
+                                        indexed GDP) 
+and the factors of production ($x_1$, $x_2$, and $x_3$,
+                               which will be some measure of capital, labor, and energy, 
+                               but perhaps not in that order), 
+and a time variable ($t$, usually \texttt{iYear}, 
+                     the number of years since the beginning of data collection).  
+All of the models assume an error term that is additive on the 
+logarithmic scale and are fit by the method of least squares.  
+Model fitting provides estimates for all parameters in the model.
+
+For the CES model, values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are calculated by
+$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
+for the CES model with two factors of production
+and by 
+$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
+for the CES model with three factors of production and the ($kl$)$e$ nesting.
+The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
+factor shares for capital, labor, and energy, respectively,
+as shown in Table \ref{tab:CES_abg_equations}, 
+assuming factors of production are specified in the fitting \texttt{formula} as
+\texttt{y~$\sim$~k~+~l~+~e~+~time}.
+
+\begin{table} \caption{Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ 
+                        (factor shares for capital, labor, and energy, respectively)
+                        for the various CES nestings, 
+                        provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      \toprule
+      Nesting         & \texttt{nest}     & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
+      \midrule
+      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
+      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%++++++++++++++++++++++++++++++
+\subsection{Fits to historical data} 
+\label{sec:fits_to_historical_data}
+%++++++++++++++++++++++++++++++
+
+
+
+Both historical GDP and fitted GDP are shown in 
+Figures~\ref{fig:Graphs CD-fitted}--\ref{fig:Graphs CESekl-fitted}.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-fitted-1} 
+
+}
+
+\caption[Cobb-Douglas models that reject the cost-share theorem]{Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.}\label{fig:Graphs CD-fitted}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESkle-fitted-1} 
+
+}
+
+\caption[CES models with (]{CES models with ($kl$)$e$ nesting. Solid line is historical GDP.}\label{fig:Graphs CESkle-fitted}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESlek-fitted-1} 
+
+}
+
+\caption[CES models with (]{CES models with ($le$)$k$ nesting. Solid line is historical GDP.}\label{fig:Graphs CESlek-fitted}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESekl-fitted-1} 
+
+}
+
+\caption[CES models with (]{CES models with ($ek$)$l$ nesting. Solid line is historical GDP.}\label{fig:Graphs CESekl-fitted}
+\end{figure}
+
+
+\end{knitrout}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Fitting residuals} 
+\label{sec:fitting_residuals}
+%++++++++++++++++++++++++++++++
+
+
+
+Because we fit in log-space, fitting residuals ($r_i$) are defined as
+%
+\begin{equation} \label{eq:log-residuals}
+  r_i \equiv \ln(y_i) - \ln(\hat{y}_i) =\ln\left( \frac{y_i}{\hat{y}_i} \right), 
+\end{equation}
+%
+where $r_i$ will be zero when there is agreement between 
+historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
+
+The mean squared error~($mse$) for any fitted model can be calculated by
+%
+\begin{equation} \label{eq:mse}
+  mse \equiv \frac{1}{N} \sum_{i=1}^N{r_i^2} .
+\end{equation}
+
+Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}
+show fitting residuals for all models.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CD-resid-1} 
+
+}
+
+\caption[Fitting residuals for Cobb-Douglas models]{Fitting residuals for Cobb-Douglas models.}\label{fig:Graphs CD-resid}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESkle-resid-1} 
+
+}
+
+\caption[Fitting residuals for CES models with ]{Fitting residuals for CES models with $(kl$)$e$ nesting.}\label{fig:Graphs CESkle-resid}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESlek-resid-1} 
+
+}
+
+\caption[Fitting residuals for CES models with (]{Fitting residuals for CES models with ($le$)$k$ nesting.}\label{fig:Graphs CESlek-resid}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Graphs_CESekl-resid-1} 
+
+}
+
+\caption[Fitting residuals for CES models with ]{Fitting residuals for CES models with $(ek$)$l$ nesting.}\label{fig:Graphs CESekl-resid}
+\end{figure}
+
+
+\end{knitrout}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analysis}
+\label{sec:analysis}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For now, I've organized the analysis around questions that we would like to answer.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does rejecting the cost-share theorem 
+            decrease the mean squared error and/or the Solow residual?} 
+\label{sec:cst_and_solow_residual}
+%++++++++++++++++++++++++++++++
+
+Our hypothesis is that rejecting the cost-share theorem~(CST) will decrease
+both mean squared error~($mse$) and
+the Solow residual~($\lambda$).
+The mean squared error~($mse$) is expected to decrease 
+because rejecting the CST adds one or more fitting parameters
+to the model.
+The Solow residual~($\lambda$) is expected to decrease 
+because the factor shares for capital~($\alpha_1$) and labor~($\alpha_2 = 1 - \alpha_1$)
+are free to float, 
+allowing each factor of production 
+to contribute optimally toward production and
+bringing the model's prediction for economic output closer to 
+historical output. 
+In so doing, we expect less ``unexplained'' economic growth 
+and a decreased Solow residual~($\lambda$).
+
+Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
+on fitted parameters for the Cobb-Douglas model and the exponential-only model.
+The Cobb-Douglas models show lower $mse$ than the exponential-only models.
+The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:27 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.} 
+\label{tab:Effect_of_CST_CD}
+{\tiny
+\begin{tabular}{lllrrrrr}
+  \hline
+Country & model & cst & scale & lambda & alpha\_1 & alpha\_2 & mse \\ 
+  \hline
+PT & exp & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.013359 \\ 
+  PT & CD & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.011724 \\ 
+  PT & CD & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.003190 \\ 
+  UK & exp & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.001212 \\ 
+  UK & CD & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000775 \\ 
+  UK & CD & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000494 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+Table~\ref{tab:Effect_of_CST_CES} shows the effect of the CST 
+on fitted parameters for the CES model.
+The CES models show lower $mse$ than the exponential-only models.
+The CES models also reduce solow residual ($\lambda$) relative
+to the exponential-only case.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:27 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for CES models with unadjusted factors of production, without energy.} 
+\label{tab:Effect_of_CST_CES}
+{\tiny
+\begin{tabular}{lllrrrrrr}
+  \hline
+Country & model & cst & gamma & lambda & alpha\_1 & alpha\_2 & sigma\_1 & mse \\ 
+  \hline
+PT & exp & Reject CST &  & 0.034507 & 0.000000 & 0.000000 &  & 0.013359 \\ 
+  PT & CES & Adhere to CST & 1.318284 & 0.018825 & 0.300000 & 0.700000 & 0.665163 & 0.011450 \\ 
+  PT & CES & Reject CST & 0.998729 & 0.012404 & 0.983352 & 0.016648 & 0.173623 & 0.001113 \\ 
+  UK & exp & Reject CST &  & 0.023565 & 0.000000 & 0.000000 &  & 0.001212 \\ 
+  UK & CES & Adhere to CST & 1.006734 & 0.020914 & 0.300000 & 0.700000 & 0.509524 & 0.000491 \\ 
+  UK & CES & Reject CST & 0.977872 & 0.017904 & 0.436298 & 0.563702 & 0.500000 & 0.000326 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+Both Cobb-Douglas and CES models do a better job of fitting 
+historical data than an exponential-only model
+as evidenced by decreased $mse$ values.
+Both Cobb-Douglas and CES models exhibit reduced Solow residual~($\lambda$
+compared to the exponential-only model.
+For both Cobb-Douglas and CES, rejecting the Cost Share Theorem yields
+decreased mean squared error~($mse$) and
+smaller Solow residual ($\lambda$, on an absolute-value basis),
+as expected.
+
+***************
+
+Note that in Table~\ref{tab:Effect_of_CST_CES}, we see $\sigma_1 = 0.5$ 
+for UK when the cost share theorem is rejected. 
+This even-numbered result is coming from the grid search in $\rho_1$. 
+For an unknown reason, the gradient search from the best grid search point
+fails.
+I will investigate.
+
+This result means that we have found a set of fitting coefficients
+for this situation 
+that is \emph{close} to providing the minimum possible $mse$,
+but it may not be the \emph{exact} minimum.
+Regardless, the point above (that $mse$ and $\lambda$ always decrease 
+when rejecting the cost share theorem) remains valid.
+Investigating and fixing this problem
+will only serve to \emph{further} reduce $mse$ and $\lambda$ 
+from the values reported in Table~\ref{tab:Effect_of_CST_CES}.
+
+************
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does quality-adjusting the factors of production 
+            decrease the mean squared error and/or the Solow residual?} 
+\label{sec:quality_adj_energy_and_solow_residual}
+%++++++++++++++++++++++++++++++
+
+We can test our hypothesis that 
+quality-adjusting the factors of production
+and including energy will both reduce the Solow residuals~($\lambda$)
+and improve the fit to historical data
+(thereby reducing the fitting residuals, $r_i$, and mean squared error, $mse$)
+by calculating 
+$\Delta \lambda$ and $\Delta mse$, where
+%
+\begin{equation} \label{eq:delta_lambda}
+  \Delta \lambda \equiv \left| \lambda \right| - \left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_mse}
+  \Delta mse \equiv mse - mse_{Unadjusted, \, Without \, energy, \, CST}.
+\end{equation}
+%
+where~$N$ is the number of years of data.
+On a percentage basis,
+%
+\begin{equation} \label{eq:delta_lambda_perc}
+  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|} 
+            = \frac{100 \, \left| \lambda \right|}{\left| \lambda_{Unadjusted, \, Without \, energy, \, CST} \right|} - 1
+\end{equation}
+%
+When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta mse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) or
+the fitting residuals ($mse$)
+relative to the unadjusted, no-energy, CST case.
+
+To calculate $\Delta \lambda$ and $\Delta mse$, we need to fit all combinations of 
+country, model, flavor, energy, nest, and CST.
+Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
+and the reference model (exponential-only).
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for all Cobb-Douglas models.} 
+\label{tab:CD_coeffs}
+{\tiny
+\begin{tabular}{lllllrrrrrr}
+  \hline
+Country & model & flavor & energy & cst & scale & lambda & alpha\_1 & alpha\_2 & alpha\_3 & mse \\ 
+  \hline
+PT & exp &  & Without energy & Reject CST & 1.283537 & 0.034507 & 0.000000 & 0.000000 & 0.000000 & 0.013359 \\ 
+  PT & CD & Unadjusted & Without energy & Adhere to CST & 1.328501 & 0.016080 & 0.300000 & 0.700000 & 0.000000 & 0.011724 \\ 
+  PT & CD & Unadjusted & Without energy & Reject CST & 1.113489 & $-$0.005539 & 1.000000 & 0.000000 & 0.000000 & 0.003190 \\ 
+  PT & CD & Unadjusted & With energy & Reject CST & 1.130790 & $-$0.004439 & 0.755978 & 0.000000 & 0.244022 & 0.002628 \\ 
+  PT & CD & Quality-adjusted & Without energy & Adhere to CST & 1.364226 & 0.004183 & 0.300000 & 0.700000 & 0.000000 & 0.011340 \\ 
+  PT & CD & Quality-adjusted & Without energy & Reject CST & 1.231989 & $-$0.015079 & 1.000000 & 0.000000 & 0.000000 & 0.008937 \\ 
+  PT & CD & Quality-adjusted & With energy & Reject CST & 1.111839 & $-$0.004569 & 0.000000 & 0.000000 & 1.000000 & 0.002268 \\ 
+  UK & exp &  & Without energy & Reject CST & 1.021833 & 0.023565 & 0.000000 & 0.000000 & 0.000000 & 0.001212 \\ 
+  UK & CD & Unadjusted & Without energy & Adhere to CST & 1.032978 & 0.015510 & 0.300000 & 0.700000 & 0.000000 & 0.000775 \\ 
+  UK & CD & Unadjusted & Without energy & Reject CST & 1.000925 & 0.006654 & 0.544956 & 0.455044 & 0.000000 & 0.000494 \\ 
+  UK & CD & Unadjusted & With energy & Reject CST & 0.995030 & 0.018134 & 0.162500 & 0.460325 & 0.377175 & 0.000331 \\ 
+  UK & CD & Quality-adjusted & Without energy & Adhere to CST & 1.038384 & 0.008725 & 0.300000 & 0.700000 & 0.000000 & 0.001564 \\ 
+  UK & CD & Quality-adjusted & Without energy & Reject CST & 1.015146 & $-$0.008149 & 0.751058 & 0.248942 & 0.000000 & 0.000720 \\ 
+  UK & CD & Quality-adjusted & With energy & Reject CST & 0.970614 & 0.001981 & 0.403433 & 0.330248 & 0.266319 & 0.000453 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+Tables~\ref{tab:CES_coeffs} and~\ref{tab:CES_coeffs_sigmas} show 
+coefficients for all fitted CES models and the reference model (exponential-only).
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for all CES models.} 
+\label{tab:CES_coeffs}
+{\tiny
+\begin{tabular}{llllllrrrrr}
+  \hline
+Country & model & flavor & energy & nest & cst & gamma & lambda & alpha\_1 & alpha\_2 & alpha\_3 \\ 
+  \hline
+PT & exp &  & Without energy &  & Reject CST &  & 0.034507 & 0.000000 & 0.000000 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Adhere to CST & 1.318284 & 0.018825 & 0.300000 & 0.700000 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Reject CST & 0.998729 & 0.012404 & 0.983352 & 0.016648 & 0.000000 \\ 
+  PT & CES & Unadjusted & With energy & kle & Reject CST & 1.022631 & 0.009738 & 0.727922 & 0.000064 & 0.272014 \\ 
+  PT & CES & Unadjusted & With energy & lek & Reject CST & 1.005212 & 0.008318 & 1.000000 & 0.000000 & 0.000000 \\ 
+  PT & CES & Unadjusted & With energy & ekl & Reject CST & 1.009966 & 0.010742 & 0.983292 & 0.016708 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Adhere to CST & 1.335143 & 0.009131 & 0.300000 & 0.700000 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Reject CST & 1.017672 & 0.005739 & 1.000000 & 0.000000 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & With energy & kle & Reject CST & 1.027582 & 0.004508 & 0.902835 & 0.000000 & 0.097165 \\ 
+  PT & CES & Quality-adjusted & With energy & lek & Reject CST & 1.016454 & 0.005790 & 1.000000 & 0.000000 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & With energy & ekl & Reject CST & 1.017327 & 0.005789 & 1.000000 & 0.000000 & 0.000000 \\ 
+  UK & exp &  & Without energy &  & Reject CST &  & 0.023565 & 0.000000 & 0.000000 & 0.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Adhere to CST & 1.006734 & 0.020914 & 0.300000 & 0.700000 & 0.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Reject CST & 0.977872 & 0.017904 & 0.436298 & 0.563702 & 0.000000 \\ 
+  UK & CES & Unadjusted & With energy & kle & Reject CST & 0.989712 & 0.013857 & 0.445243 & 0.554757 & 0.000000 \\ 
+  UK & CES & Unadjusted & With energy & lek & Reject CST & 0.982919 & 0.020230 & 0.570049 & 0.134387 & 0.295564 \\ 
+  UK & CES & Unadjusted & With energy & ekl & Reject CST & 0.985088 & 0.022682 & 0.254298 & 0.738243 & 0.007460 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Adhere to CST & 1.008638 & 0.013592 & 0.300000 & 0.700000 & 0.000000 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Reject CST & 0.983725 & 0.001956 & 0.628728 & 0.371272 & 0.000000 \\ 
+  UK & CES & Quality-adjusted & With energy & kle & Reject CST & 0.980315 & 0.007103 & 0.426684 & 0.421804 & 0.151512 \\ 
+  UK & CES & Quality-adjusted & With energy & lek & Reject CST & 0.968799 & 0.007115 & 0.469167 & 0.144017 & 0.386817 \\ 
+  UK & CES & Quality-adjusted & With energy & ekl & Reject CST & 0.981695 & 0.011338 & 0.305749 & 0.642022 & 0.052229 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{Model parameters for all CES models.} 
+\label{tab:CES_coeffs_sigmas}
+{\tiny
+\begin{tabular}{llllllrrr}
+  \hline
+Country & model & flavor & energy & nest & cst & sigma\_1 & sigma & mse \\ 
+  \hline
+PT & exp &  & Without energy &  & Reject CST &  &  & 0.013359 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Adhere to CST & 0.665163 &  & 0.011450 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Reject CST & 0.173623 &  & 0.001113 \\ 
+  PT & CES & Unadjusted & With energy & kle & Reject CST & 0.078512 & 1.747120 & 0.000746 \\ 
+  PT & CES & Unadjusted & With energy & lek & Reject CST & 0.398887 & 0.013645 & 0.000588 \\ 
+  PT & CES & Unadjusted & With energy & ekl & Reject CST & 0.005193 & 0.186281 & 0.000985 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Adhere to CST & 0.399944 &  & 0.009694 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Reject CST & 0.017511 &  & 0.000804 \\ 
+  PT & CES & Quality-adjusted & With energy & kle & Reject CST & 0.017991 &     Inf & 0.000792 \\ 
+  PT & CES & Quality-adjusted & With energy & lek & Reject CST & 0.017595 & 0.005358 & 0.000812 \\ 
+  PT & CES & Quality-adjusted & With energy & ekl & Reject CST & 0.017013 &  & 0.000817 \\ 
+  UK & exp &  & Without energy &  & Reject CST &  &  & 0.001212 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Adhere to CST & 0.509524 &  & 0.000491 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Reject CST & 0.500000 &  & 0.000326 \\ 
+  UK & CES & Unadjusted & With energy & kle & Reject CST & 0.720815 & 0.009391 & 0.000223 \\ 
+  UK & CES & Unadjusted & With energy & lek & Reject CST &     Inf & 0.465188 & 0.000289 \\ 
+  UK & CES & Unadjusted & With energy & ekl & Reject CST & 0.103338 & 1.340508 & 0.000281 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Adhere to CST & 0.545219 &  & 0.001207 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Reject CST & 0.607601 &  & 0.000571 \\ 
+  UK & CES & Quality-adjusted & With energy & kle & Reject CST & 0.611818 & 0.014357 & 0.000267 \\ 
+  UK & CES & Quality-adjusted & With energy & lek & Reject CST &     Inf & 0.611994 & 0.000380 \\ 
+  UK & CES & Quality-adjusted & With energy & ekl & Reject CST & 0.190138 & 1.247783 & 0.000301 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+Table~\ref{tab:DSRmse_CD} shows $\Delta \lambda$ and $\Delta mse$ results for the Cobb-Douglas models.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{$\Delta \lambda$ and $\Delta mse$ for Cobb-Douglas models.} 
+\label{tab:DSRmse_CD}
+{\tiny
+\begin{tabular}{lllllrr}
+  \hline
+Country & model & flavor & energy & cst & Dlambda & Dmse \\ 
+  \hline
+PT & CD & Unadjusted & Without energy & Adhere to CST & $-$0.018427 & $-$0.001635 \\ 
+  PT & CD & Unadjusted & Without energy & Reject CST & $-$0.028968 & $-$0.010168 \\ 
+  PT & CD & Unadjusted & With energy & Reject CST & $-$0.030068 & $-$0.010730 \\ 
+  PT & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.030324 & $-$0.002019 \\ 
+  PT & CD & Quality-adjusted & Without energy & Reject CST & $-$0.019428 & $-$0.004422 \\ 
+  PT & CD & Quality-adjusted & With energy & Reject CST & $-$0.029938 & $-$0.011091 \\ 
+  UK & CD & Unadjusted & Without energy & Adhere to CST & $-$0.008055 & $-$0.000437 \\ 
+  UK & CD & Unadjusted & Without energy & Reject CST & $-$0.016911 & $-$0.000717 \\ 
+  UK & CD & Unadjusted & With energy & Reject CST & $-$0.005432 & $-$0.000880 \\ 
+  UK & CD & Quality-adjusted & Without energy & Adhere to CST & $-$0.014840 & 0.000352 \\ 
+  UK & CD & Quality-adjusted & Without energy & Reject CST & $-$0.015416 & $-$0.000492 \\ 
+  UK & CD & Quality-adjusted & With energy & Reject CST & $-$0.021584 & $-$0.000758 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+% 
+Tables~\ref{tab:DSRmse_CESkle}--\ref{tab:DSRmse_CESekl} show $\Delta \lambda$ and $\Delta mse$ 
+results for CES models with various nestings.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($kl$)$e$ nesting.} 
+\label{tab:DSRmse_CESkle}
+{\tiny
+\begin{tabular}{llllllrr}
+  \hline
+Country & model & flavor & energy & nest & cst & Dlambda & Dmse \\ 
+  \hline
+PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.015683 & $-$0.001908 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.022103 & $-$0.012246 \\ 
+  PT & CES & Unadjusted & With energy & kle & Reject CST & $-$0.024769 & $-$0.012613 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.025377 & $-$0.003665 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.028768 & $-$0.012555 \\ 
+  PT & CES & Quality-adjusted & With energy & kle & Reject CST & $-$0.029999 & $-$0.012566 \\ 
+  UK & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.002651 & $-$0.000721 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.005661 & $-$0.000886 \\ 
+  UK & CES & Unadjusted & With energy & kle & Reject CST & $-$0.009708 & $-$0.000989 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.009973 & $-$0.000004 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.021609 & $-$0.000641 \\ 
+  UK & CES & Quality-adjusted & With energy & kle & Reject CST & $-$0.016463 & $-$0.000944 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($le$)$k$ nesting.} 
+\label{tab:DSRmse_CESlek}
+{\tiny
+\begin{tabular}{llllllrr}
+  \hline
+Country & model & flavor & energy & nest & cst & Dlambda & Dmse \\ 
+  \hline
+PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.015683 & $-$0.001908 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.022103 & $-$0.012246 \\ 
+  PT & CES & Unadjusted & With energy & lek & Reject CST & $-$0.026189 & $-$0.012771 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.025377 & $-$0.003665 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.028768 & $-$0.012555 \\ 
+  PT & CES & Quality-adjusted & With energy & lek & Reject CST & $-$0.028717 & $-$0.012546 \\ 
+  UK & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.002651 & $-$0.000721 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.005661 & $-$0.000886 \\ 
+  UK & CES & Unadjusted & With energy & lek & Reject CST & $-$0.003335 & $-$0.000923 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.009973 & $-$0.000004 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.021609 & $-$0.000641 \\ 
+  UK & CES & Quality-adjusted & With energy & lek & Reject CST & $-$0.016450 & $-$0.000831 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:28 2015
+\begin{table}[ht]
+\centering
+\caption{$\Delta \lambda$ and $\Delta mse$ for CES models with ($ek$)$l$ nesting.} 
+\label{tab:DSRmse_CESekl}
+{\tiny
+\begin{tabular}{llllllrr}
+  \hline
+Country & model & flavor & energy & nest & cst & Dlambda & Dmse \\ 
+  \hline
+PT & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.015683 & $-$0.001908 \\ 
+  PT & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.022103 & $-$0.012246 \\ 
+  PT & CES & Unadjusted & With energy & ekl & Reject CST & $-$0.023766 & $-$0.012374 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.025377 & $-$0.003665 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.028768 & $-$0.012555 \\ 
+  PT & CES & Quality-adjusted & With energy & ekl & Reject CST & $-$0.028718 & $-$0.012542 \\ 
+  UK & exp &  & Without energy &  & Reject CST & 0.000000 & 0.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Adhere to CST & $-$0.002651 & $-$0.000721 \\ 
+  UK & CES & Unadjusted & Without energy & kl & Reject CST & $-$0.005661 & $-$0.000886 \\ 
+  UK & CES & Unadjusted & With energy & ekl & Reject CST & $-$0.000883 & $-$0.000930 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Adhere to CST & $-$0.009973 & $-$0.000004 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & Reject CST & $-$0.021609 & $-$0.000641 \\ 
+  UK & CES & Quality-adjusted & With energy & ekl & Reject CST & $-$0.012227 & $-$0.000910 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+%
+Figures~\ref{fig:DSRmse_CD_graph} and~\ref{fig:percDSRmse_CD_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for the Cobb-Douglas model.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/DSRmse_CD_graph-1} 
+
+}
+
+\caption[Change in Solow Residuals~(]{Change in Solow Residuals~($\Delta\lambda$) and mean squared error~($\Delta mse$) for the Cobb-Douglas model relative to the exponential-only model.}\label{fig:DSRmse_CD_graph}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/percDSRmse_CD_graph-1} 
+
+}
+
+\caption[Percentage change in Solow Residuals~(]{Percentage change in Solow Residuals~($\Delta\lambda \, [\%]$) and mean squared error~($\Delta mse \, [\%]$) for the Cobb-Douglas model relative to exponential-only models.}\label{fig:percDSRmse_CD_graph}
+\end{figure}
+
+
+\end{knitrout}
+%
+Figures~\ref{fig:DSRmse_CES_graph} and~\ref{fig:percDSRmse_CES_graph} summarize 
+$\Delta \lambda$ and $\Delta mse$ 
+results for CES models.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/DSRmse_CES_graph-1} 
+
+}
+
+\caption[Change in Solow Residuals~(]{Change in Solow Residuals~($\Delta\lambda$) and mean squared error~($\Delta mse$) for the CES modles relative to the exponential-only model.}\label{fig:DSRmse_CES_graph}
+\end{figure}
+
+
+\end{knitrout}
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/percDSRmse_CES_graph-1} 
+
+}
+
+\caption[Percentage change in Solow Residuals~(]{Percentage change in Solow Residuals~($\Delta\lambda \, [\%]$) and mean squared error~($\Delta mse \, [\%]$) for the CES models relative to the exponential-only model.}\label{fig:percDSRmse_CES_graph}
+\end{figure}
+
+
+\end{knitrout}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Are the means of the fitting residuals 
+            significantly different from zero?} 
+\label{sec:fitting_residuals_different_from_zero}
+%++++++++++++++++++++++++++++++
+
+The set of fitting residual values~($r_i$)
+for each combination of 
+country~(PT or UK), 
+model~(Cobb-Douglas or CES),
+flavor~(Unadjusted or Quality-adjusted), 
+energy~(with or without), and
+nest~[($kl$), ($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
+can be assessed for statistical significance
+compared to zero by a t-test.
+The null hypothesis for the t-test is that the mean of each group is
+equal to zero, and 
+the alternative hypothesis is that the mean is not equal to zero.
+Smaller p-values indicate increasing confidence that the 
+mean is different from zero. 
+We expect that p-values will be large (close to unity), 
+because the mean of the residuals is expected to be small (close to zero).
+Indeed, that is the case.
+Table~\ref{tab:r_p_values} summarizes the mean 
+and associated p-values values for the fitting residuals~($r_i$).
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:29 2015
+\begin{table}[ht]
+\centering
+\caption{Means and p-values for fitting residuals~($r_i$).} 
+\label{tab:r_p_values}
+{\tiny
+\begin{tabular}{lllllrr}
+  \hline
+Country & model & flavor & energy & nest & Residuals.mean & Residuals.p.value \\ 
+  \hline
+PT & CD & Unadjusted & Without energy &  & $-$0.000000 & 1.000000 \\ 
+  PT & CD & Unadjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
+  PT & CD & Quality-adjusted & Without energy &  & 0.000000 & 1.000000 \\ 
+  PT & CD & Quality-adjusted & With energy &  & 0.000000 & 1.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & 0.000000 & 0.999999 \\ 
+  PT & CES & Unadjusted & With energy & kle & $-$0.000000 & 0.999999 \\ 
+  PT & CES & Unadjusted & With energy & lek & $-$0.000162 & 0.962887 \\ 
+  PT & CES & Unadjusted & With energy & ekl & $-$0.000080 & 0.985890 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & $-$0.000025 & 0.997238 \\ 
+  PT & CES & Quality-adjusted & With energy & kle & $-$0.000083 & 0.983608 \\ 
+  PT & CES & Quality-adjusted & With energy & lek & $-$0.000007 & 0.998657 \\ 
+  PT & CES & Quality-adjusted & With energy & ekl & 0.000001 & 0.999715 \\ 
+  PT & exp &  & Without energy &  & $-$0.000000 & 1.000000 \\ 
+  UK & CD & Unadjusted & Without energy &  & 0.000000 & 1.000000 \\ 
+  UK & CD & Unadjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
+  UK & CD & Quality-adjusted & Without energy &  & 0.000000 & 1.000000 \\ 
+  UK & CD & Quality-adjusted & With energy &  & $-$0.000000 & 1.000000 \\ 
+  UK & CES & Unadjusted & Without energy & kl & $-$0.000000 & 1.000000 \\ 
+  UK & CES & Unadjusted & With energy & kle & $-$0.000037 & 0.986099 \\ 
+  UK & CES & Unadjusted & With energy & lek & $-$0.000000 & 1.000000 \\ 
+  UK & CES & Unadjusted & With energy & ekl & 0.000000 & 0.999997 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & 0.000000 & 0.999999 \\ 
+  UK & CES & Quality-adjusted & With energy & kle & $-$0.000000 & 0.999998 \\ 
+  UK & CES & Quality-adjusted & With energy & lek & 0.000000 & 1.000000 \\ 
+  UK & CES & Quality-adjusted & With energy & ekl & 0.000000 & 0.999998 \\ 
+  UK & exp &  & Without energy &  & $-$0.000000 & 1.000000 \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Does quality-adjusting the factors of production or including energy
+            decrease the fitting residuals in a statistically-significant manner?} 
+\label{sec:quality_adj_energy_and_fitting_residual}
+%++++++++++++++++++++++++++++++
+
+The set of annual $\Delta r$ values for each combination of 
+country~(PT or UK), 
+model~(Cobb-Douglas or CES),
+flavor~(Unadjusted or Quality-adjusted), 
+energy~(with or without), and
+nest~[($kl$), ($kl$)$e$, ($le$)$k$, or ($ek$)$l$, for the CES models]
+can be assessed for statistical significance
+compared to zero by a t-test.
+The null hypothesis for the t-test is that the mean of each group is
+equal to zero, and 
+the alternative hypothesis is that the mean is less than zero.
+Smaller p-values indicate increasing confidence that the 
+mean is actually less than zero.
+Table~\ref{tab:Dr_p_values} summarizes the mean 
+and associated p-values values for $\Delta r$.
+%
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jul  8 15:28:29 2015
+\begin{table}[ht]
+\centering
+\caption{Means and p-values for $\Delta r$.} 
+\label{tab:Dr_p_values}
+{\tiny
+\begin{tabular}{lllllrr}
+  \hline
+Country & model & flavor & energy & nest & Dr.mean & Dr.p.value \\ 
+  \hline
+PT & CD & Unadjusted & Without energy &  & $-$0.025733 & 0.000000 \\ 
+  PT & CD & Unadjusted & With energy &  & $-$0.048181 & 0.000000 \\ 
+  PT & CD & Quality-adjusted & Without energy &  & $-$0.009587 & 0.003533 \\ 
+  PT & CD & Quality-adjusted & With energy &  & $-$0.051804 & 0.000000 \\ 
+  PT & CES & Unadjusted & Without energy & kl & $-$0.038049 & 0.000000 \\ 
+  PT & CES & Unadjusted & With energy & kle & $-$0.069223 & 0.000000 \\ 
+  PT & CES & Unadjusted & With energy & lek & $-$0.071483 & 0.000000 \\ 
+  PT & CES & Unadjusted & With energy & ekl & $-$0.065928 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & Without energy & kl & $-$0.042697 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & With energy & kle & $-$0.067761 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & With energy & lek & $-$0.067419 & 0.000000 \\ 
+  PT & CES & Quality-adjusted & With energy & ekl & $-$0.067335 & 0.000000 \\ 
+  PT & exp &  & Without energy &  & 0.000000 &  \\ 
+  UK & CD & Unadjusted & Without energy &  & $-$0.011254 & 0.000003 \\ 
+  UK & CD & Unadjusted & With energy &  & $-$0.014450 & 0.000000 \\ 
+  UK & CD & Quality-adjusted & Without energy &  & $-$0.004538 & 0.055557 \\ 
+  UK & CD & Quality-adjusted & With energy &  & $-$0.012454 & 0.000072 \\ 
+  UK & CES & Unadjusted & Without energy & kl & $-$0.013655 & 0.000000 \\ 
+  UK & CES & Unadjusted & With energy & kle & $-$0.017349 & 0.000000 \\ 
+  UK & CES & Unadjusted & With energy & lek & $-$0.015158 & 0.000000 \\ 
+  UK & CES & Unadjusted & With energy & ekl & $-$0.015557 & 0.000000 \\ 
+  UK & CES & Quality-adjusted & Without energy & kl & $-$0.007222 & 0.003270 \\ 
+  UK & CES & Quality-adjusted & With energy & kle & $-$0.016547 & 0.000000 \\ 
+  UK & CES & Quality-adjusted & With energy & lek & $-$0.013366 & 0.000007 \\ 
+  UK & CES & Quality-adjusted & With energy & ekl & $-$0.014973 & 0.000000 \\ 
+  UK & exp &  & Without energy &  & 0.000000 &  \\ 
+   \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+%++++++++++++++++++++++++++++++
+\subsection{What trends exist in factors shares?} 
+\label{sec:factor_shares}
+%++++++++++++++++++++++++++++++
+
+Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
+show factor shares ($\alpha$ values) for CES models for
+Portugal and the UK, respectively.
+See Table~\ref{tab:CES_abg_equations} for details.
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_PT-1} 
+
+}
+
+\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for Portugal.}\label{fig:Factor_shares_graph_PT}
+\end{figure}
+
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Factor_shares_graph_UK-1} 
+
+}
+
+\caption[Factor shares (]{Factor shares ($\alpha$ values) for CES models for the UK.}\label{fig:Factor_shares_graph_UK}
+\end{figure}
+
+
+\end{knitrout}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section*{Reproducible Research}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% In the spirit of Reproducible Research \citep{Gandrud:2013vx}, 
+% all data, spreadsheets, \texttt{R} code \citep{R}, and other materials 
+% associated with this paper can be found at\\*
+% \protect\url{https://github.com/MatthewHeun/Econ-Growth-R-Analysis}.
+
+
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%%
+%%  \citet{key}  ==>>  Jones et al. (1990)
+%%  \citep{key}  ==>>  (Jones et al., 1990)
+%%
+%% Multiple citations as normal:
+%% \citep{key1,key2}         ==>> (Jones et al., 1990; Smith, 1989)
+%%                            or  (Jones et al., 1990, 1991)
+%%                            or  (Jones et al., 1990a,b)
+%% \cite{key} is the equivalent of \citet{key} in author-year mode
+%%
+%% Full author lists may be forced with \citet* or \citep*, e.g.
+%%   \citep*{key}            ==>> (Jones, Baker, and Williams, 1990)
+%%
+%% Optional notes as:
+%%   \citep[chap. 2]{key}    ==>> (Jones et al., 1990, chap. 2)
+%%   \citep[e.g.,][]{key}    ==>> (e.g., Jones et al., 1990)
+%%   \citep[see][pg. 34]{key}==>> (see Jones et al., 1990, pg. 34)
+%%  (Note: in standard LaTeX, only one note is allowed, after the ref.
+%%   Here, one note is like the standard, two make pre- and post-notes.)
+%%
+%%   \citealt{key}          ==>> Jones et al. 1990
+%%   \citealt*{key}         ==>> Jones, Baker, and Williams 1990
+%%   \citealp{key}          ==>> Jones et al., 1990
+%%   \citealp*{key}         ==>> Jones, Baker, and Williams, 1990
+%%
+%% Additional citation possibilities
+%%   \citeauthor{key}       ==>> Jones et al.
+%%   \citeauthor*{key}      ==>> Jones, Baker, and Williams
+%%   \citeyear{key}         ==>> 1990
+%%   \citeyearpar{key}      ==>> (1990)
+%%   \citetext{priv. comm.} ==>> (priv. comm.)
+%%   \citenum{key}          ==>> 11 [non-superscripted]
+%% Note: full author lists depends on whether the bib style supports them;
+%%       if not, the abbreviated list is printed even when full requested.
+%%
+%% For names like della Robbia at the start of a sentence, use
+%%   \Citet{dRob98}         ==>> Della Robbia (1998)
+%%   \Citep{dRob98}         ==>> (Della Robbia, 1998)
+%%   \Citeauthor{dRob98}    ==>> Della Robbia
+
+
+%% References with bibTeX database:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliographystyle{model2-names}
+%%\bibliography{<your-bib-database>}
+% \bibliography{Paper2.bib}
+
+%% Authors are advised to submit their bibtex database files. They are
+%% requested to list a bibtex style file in the manuscript if they do
+%% not want to use model2-names.bst.
+
+%% References without bibTeX database:
+
+% \begin{thebibliography}{00}
+
+%% \bibitem must have one of the following forms:
+%%   \bibitem[Jones et al.(1990)]{key}...
+%%   \bibitem[Jones et al.(1990)Jones, Baker, and Williams]{key}...
+%%   \bibitem[Jones et al., 1990]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones, Baker, and Williams}{Jones
+%%       et al.}{1990}]{key}...
+%%   \bibitem[\protect\citeauthoryear{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\astroncite{Jones et al.}{1990}]{key}...
+%%   \bibitem[\protect\citename{Jones et al., }1990]{key}...
+%%   \harvarditem[Jones et al.]{Jones, Baker, and Williams}{1990}{key}...
+%%
+
+% \bibitem[ ()]{}
+
+% \end{thebibliography}
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CD equation}
+\label{sec:dynamic_sr_CD}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Assuming that parameters $\theta$, $\alpha$, and $\beta$
+in Equation~\ref{eq:CDe} are known from parameter estimation,
+we can estimate the value of $\lambda$ as follows.
+First, assume constant returns to scale such that 
+$\alpha + \beta + \gamma = 1$, 
+and calculate $\gamma = 1 - \alpha - \beta$.
+Then, take the natural logarithm ($\ln$) of Equation~\ref{eq:CDe} to obtain
+%
+\begin{equation} \label{eq:lnCD}
+  \ln y = \ln \theta + \ln A + \alpha \ln k + \beta \ln l + (1 - \alpha - \beta) \ln e \;.
+\end{equation}
+%
+By taking the derivative of Equation~\ref{eq:lnCD} with respect to time ($t$) 
+and noting that model parameters $\theta$, $\alpha$, and $\beta$ are 
+constant with respect to time, we obtain
+%
+\begin{equation} \label{eq:ddtlnCD}
+  \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      = \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      + \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} \;.
+\end{equation}
+%
+Solving for the total factor productivity term gives
+%
+\begin{equation} \label{eq:solow_resid}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+      = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+      - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+        \right] \;.
+\end{equation}
+%
+Recognizing that $A \equiv \mathrm{e}^{\lambda (t-t_0)}$ gives
+%
+\begin{equation} \label{eq:lambda_calc}
+  \frac{1}{A}\frac{\mathrm{d}A}{\mathrm{d}t} 
+    = \frac{1}{\mathrm{e}^{\lambda (t-t_0)}} \; \lambda \mathrm{e}^{\lambda (t-t_0)}
+    = \lambda \; ,
+\end{equation}
+%
+which can be substituted into Equation~\ref{eq:solow_resid} to find
+%
+\begin{equation} \label{eq:lambda}
+  \lambda 
+    = \frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t} 
+    - \left[
+              \alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+              + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+              + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t} 
+      \right] \;.
+\end{equation}
+%
+Equation~\ref{eq:lambda} applies for any instant in time.
+
+If we approximate derivatives in Equation~\ref{eq:lambda} with forward differences
+between times $i$ and $j$, we find
+%
+\begin{equation} \label{eq:lambdaij}
+  \lambda_{i,j}
+    = \frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i} 
+    - \left[
+            \alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} 
+      \right] \;,
+\end{equation}
+% 
+where $\lambda_{i,j}$ approximates the true, instantaneous value of $\lambda$
+from Equation~\ref{eq:lambda} between times $i$ and $j$.
+
+Interestingly, 
+%
+\begin{equation}
+  \lambda_{1,n}
+    \neq \sum_{i=2}^{n} \lambda_{i,i-1}  \;.
+\end{equation}
+% 
+Rather,
+%
+\begin{equation} \label{eq:lambda1n}
+  \lambda_{1,n}
+    = \frac{1}{y_1}\frac{y_n - y_1}{t_n - t_1} 
+      - \left[ 
+            \alpha \frac{1}{k_1}\frac{k_n - k_1}{t_n - t_1} 
+            + \beta \frac{1}{l_1}\frac{l_n - l_1}{t_n - t_1} 
+            + (1 - \alpha - \beta) \frac{1}{e_1}\frac{e_n - e_1}{t_n - t_1} 
+      \right] \; ,
+\end{equation}
+% 
+which will become increasingly inaccurate over large time spans,
+because $y_1$, $k_1$, $l_1$, and $e_1$ will be less representative
+of the average value of $y$, $k$, $l$, and $e$ in the time span, respectively.
+This suggests that an averaging approach such as
+%
+\begin{equation}
+  \lambda_{1,n}
+    = \frac{\sum_{i=2}^{n} \lambda_{i,i-1}}{n-1}
+\end{equation}
+%
+is a better approximation of Equation~\ref{eq:lambda1n},
+which is, itself, an approximation of the true value of $\lambda$ 
+given by Equation~\ref{eq:lambda}.
+
+The fraction~($f$) of GDP growth explained by the Solow residual
+for the CD model
+can be given as
+%
+\begin{equation} \label{eq:frac_growth_explained_by_solow}
+  f \equiv \frac{\lambda}{\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} 
+            = 1 - \frac{\alpha \frac{1}{k}\frac{\mathrm{d}k}{\mathrm{d}t} 
+                      + \beta \frac{1}{l}\frac{\mathrm{d}l}{\mathrm{d}t} 
+                      + (1 - \alpha - \beta) \frac{1}{e}\frac{\mathrm{d}e}{\mathrm{d}t}}
+                  {\frac{1}{y}\frac{\mathrm{d}y}{\mathrm{d}t}} \; .
+\end{equation}
+%
+Using forward differences to estimate $f$ yields
+%
+\begin{equation} \label{eq:f_finite_diff_1}
+  f_{i,j} = \frac{\lambda_{i,j}}{\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}}
+       = 1 - \frac{\alpha \frac{1}{k_i}\frac{k_j - k_i}{t_j - t_i} 
+            + \beta \frac{1}{l_i}\frac{l_j - l_i}{t_j - t_i} 
+            + (1 - \alpha - \beta) \frac{1}{e_i}\frac{e_j - e_i}{t_j - t_i} }
+            {\frac{1}{y_i}\frac{y_j - y_i}{t_j - t_i}} \; .
+\end{equation}
+%
+Cancelling $t_j - t_i$ terms and simplifying gives
+%
+\begin{equation} \label{eq:f_finite_diff_2}
+  f_{i,j} = 1 - \frac{\alpha \left( \frac{k_j}{k_i} - 1 \right) 
+                      + \beta \left( \frac{l_j}{l_i} - 1 \right)
+                      + (1 - \alpha - \beta) \left( \frac{e_j}{e_i} - 1 \right)}
+            {\left( \frac{y_j}{y_i} - 1 \right)} \; ,
+\end{equation}
+%
+which is an estimate of the instantaneous value of $f$ 
+given by Equation~\ref{eq:frac_growth_explained_by_solow}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation of dynamic Solow residual for the CES equation}
+\label{sec:dynamic_sr_CES}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section, we derive the dynamic Solow residual ($\lambda$) 
+for the CES equation with three generic factors of production, namely
+$x_1$, $x_2$, and $x_3$.
+
+We can define
+%
+\begin{equation} \label{eq:a_def}
+  a \equiv \delta b^{\rho/\rho_1} + (1-\delta) x_3^{-\rho}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:b_def}
+  b \equiv \delta_1 x_1^{-\rho_1} + (1 - \delta_1) x_2^{-\rho_1} \; ,
+\end{equation}
+%
+such that Equation~\ref{eq:CESgeneric} can be restated as
+%
+\begin{equation} \label{eq:simple_y} 
+  y = \gamma A a^{-1/\rho} \; .
+\end{equation}
+%
+Taking the natural logarithm of Equation~\ref{eq:simple_y}
+and realizing that $\gamma$ is not a function of time, we find
+%
+\begin{equation}
+  \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} = \frac{1}{A} \frac{\mathrm{d} A}{\mathrm{d} t} 
+                      + \left( - \frac{1}{\rho} \right) \frac{1}{a} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+By Equation~\ref{eq:lambda_calc}, and after rearranging, 
+the dynamic Solow residual for the CES equation can be stated as
+%
+\begin{equation} \label{eq:lambda_for_CES}
+  \lambda = \frac{1}{y} \frac{\mathrm{d} y}{\mathrm{d} t} + \frac{1}{a} \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} \; .
+\end{equation}
+%
+To find $\frac{\mathrm{d} a}{\mathrm{d} t}$ and $\frac{\mathrm{d} b}{\mathrm{d} t}$, 
+we take the time derivatives 
+of Equations~\ref{eq:a_def} and~\ref{eq:b_def}
+and rearrange slightly to obtain
+%
+\begin{equation} \label{eq:da_dt}
+  \frac{1}{\rho} \frac{\mathrm{d} a}{\mathrm{d} t} = \delta b^{(\rho/\rho_1 - 1)} \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t}
+                                      - (1-\delta) x_3^{-(\rho + 1)} \frac{\mathrm{d} x_3}{\mathrm{d} t}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:db_dt}
+  \frac{1}{\rho_1} \frac{\mathrm{d} b}{\mathrm{d} t} = - \delta_1 x_1^{-(\rho_1 + 1)} \frac{\mathrm{d} x_1}{\mathrm{d} t}
+                                      - (1 - \delta_1) x_2^{-(\rho_1 + 1)} \frac{\mathrm{d} x_2}{\mathrm{d} t} \; .
+\end{equation}
+%
+Equations~\ref{eq:lambda_for_CES}--\ref{eq:db_dt} can be used to 
+calculate a dynamic time series for $\lambda$ given 
+fitted parameters from the CES model
+($\rho, \rho_1, \delta, \, \mathrm{and} \; \delta_1$)
+and time series for economic output~($y$) and
+factors of production 
+($x_1, x_2, \, \mathrm{and} \; x_3$).
+The time derivatives $\left( 
+\frac{\mathrm{d} y}{\mathrm{d} t}, 
+\frac{\mathrm{d} x_1}{\mathrm{d} t},
+\frac{\mathrm{d} x_2}{\mathrm{d} t}, \, \mathrm{and} \;
+\frac{\mathrm{d} x_3}{\mathrm{d} t} \right)$
+can be approximated from historical data
+by forward finite differences in a manner similar to Equation~\ref{eq:lambdaij}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Thoughts on the ``dynamic'' Solow residual}
+\label{sec:thoughts_dynamic_sr}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ref{sec:dynamic_sr_CD} and \ref{sec:dynamic_sr_CES} derived expressions
+for a ``dynamic'' Solow residual 
+for Cobb-Douglas and CES production functions, respectively.
+However, these approaches conflate 
+stochastic error terms and the time-dependent contribution of ``technology'' 
+to economic growth
+in one variable~($\lambda_{i,j}$).
+In this appendix, we let the Solow residual 
+(expressed as time-independent $\lambda$)
+stand on its own and try to separate the stochastic and time-dependent
+aspects of the fitting residuals~($r_i$).
+Note: this section is speculative, and we need feedback from Marco and Randy 
+before moving ahead with a presentation or publication based on this work.
+
+We can re-state the models (in general) as
+%
+\begin{equation} \label{eq:general_y}
+  y_i = \hat{y}_i \epsilon_i
+\end{equation}
+%
+where $\epsilon_i$ is a multiplicative error term, 
+$\hat{y}_i$ is the predicted economic output, and
+$\hat{y}_i \equiv f(\theta, \lambda, \alpha, \beta, \gamma; \; t_i)$.
+(For the Cobb-Douglas model, $f = \theta A k^\alpha l^\beta e^\gamma$.)
+
+Taking the natural logarithm~($\ln$) of Equation~\ref{eq:general_y} yields
+%
+\begin{equation} \label{eq:ln_y}
+  \ln y_i = \ln \hat{y}_i + \ln \epsilon_i \; ,
+\end{equation}
+%
+which can be rearranged to show
+%
+\begin{equation} \label{eq:lny_prep_for_r}
+  \ln y_i - \ln \hat{y}_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Using Equation~\ref{eq:log-residuals}, we can write
+%
+\begin{equation} \label{eq:r_epsilon}
+  r_i = \ln \epsilon_i \; .
+\end{equation}
+%
+Our concern is that the residuals~($r_i$) may have a time-dependent component 
+in addition to a stochastic component.
+To decompose, we can define
+%
+\begin{equation} \label{eq:epsilon_definition}
+  \epsilon_i = \mathrm{e}^{m(t_i - t_0)} \mathrm{e}^{\varepsilon_i^*} \; .
+\end{equation}
+%
+Substituting Equation~\ref{eq:epsilon_definition} into \ref{eq:r_epsilon} yields
+%
+\begin{equation} \label{eq:r_for_correlation}
+  r_i = m (t_i - t_0) + \varepsilon_i^* \; .
+\end{equation}
+%
+where
+$m$ is a slope and captures the linear (in natural logarithmic space), 
+time-dependent component of $r_i$. 
+$\varepsilon_i^*$ is a variable that captures a stochastic component of $\epsilon_i$.
+Equation~\ref{eq:r_for_correlation} can be fitted via linear regression in time~($t_i$) as
+%
+\begin{equation} \label{eq:r_regression_eqn}
+  r_i = m (t_i - t_0) + b + \varepsilon_i^* \; .
+\end{equation}
+%
+In Equation~\ref{eq:r_regression_eqn},
+$b$ is the $y$-intercept of the regression and captures a time-independent offset of $r_i$.
+Recall that $\epsilon_i$ is related to the fitting residuals~($r_i$)
+by Equation~\ref{eq:r_epsilon}.
+Thus, obtaining estimates of $m$ and $b$ and values for $\varepsilon_i^*$
+is equivalent to estimating the time-dependent, time-independent, and stochastic
+components, respectively, of the multiplicative errors~($\epsilon_i$).
+This regression is equivalent to performing a linear fit to data in 
+Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
+
+For PT, Cobb-Douglas, unadjusted, without energy, we obtain the following:
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mod} \hlkwb{<-} \hlstd{models}\hlopt{$}\hlstd{PT}\hlopt{$}\hlstd{unadjusted}\hlopt{$}\hlstd{noE}\hlopt{$}\hlstd{CD}
+\hlstd{r_regression} \hlkwb{<-} \hlkwd{lm}\hlstd{(}\hlkwc{formula} \hlstd{=} \hlkwd{resid}\hlstd{(mod)} \hlopt{~} \hlstd{mod}\hlopt{$}\hlstd{data}\hlopt{$}\hlstd{iYear)}
+\hlkwd{print}\hlstd{(}\hlkwd{summary}\hlstd{(r_regression))}
+\end{alltt}
+\begin{verbatim}
+
+Call:
+lm(formula = resid(mod) ~ mod$data$iYear)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.107498 -0.040098  0.009557  0.044471  0.109683 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)
+(Intercept)    -1.366e-17  1.575e-02       0        1
+mod$data$iYear  3.847e-19  5.322e-04       0        1
+
+Residual standard error: 0.0576 on 50 degrees of freedom
+Multiple R-squared:  5.069e-32,	Adjusted R-squared:  -0.02 
+F-statistic: 2.535e-30 on 1 and 50 DF,  p-value: 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%
+Note that the estimate for the coefficient in front of \texttt{mod\$data\$iYear}
+($m$ in Equation~\ref{eq:r_for_correlation})
+is incredibly small relative to the scale of the residuals~($r_i$),
+\ensuremath{3.8468693\times 10^{-19}}, 
+indicating that there is little 
+linear time-dependent information in the residuals~($r_i$).
+This result is the same as saying that 
+the slope of a line fitted through the 
+PT, Unadjusted, Without energy data 
+in Figure~\ref{fig:Graphs CD-resid}
+is (effectively) zero.
+There is (effectively) no linear time trend in the residuals.
+
+Furthermore, the intercept ($b$ in Equation~\ref{eq:r_for_correlation})
+is very small relative to the scale of the residuals~($r_i$),
+\ensuremath{-1.3658522\times 10^{-17}}, 
+indicating that there is little time-independent information in the residuals~($r_i$).
+This result is the same as saying that the line fitted to the
+PT, Unadjusted, Without energy 
+data in Figure~\ref{fig:Graphs CD-resid}
+is nearly coincident with the $x$-axis.
+
+Almost all of the information in the residuals~($r_i$)
+is stochastic and captured by the $\varepsilon_i^*$ term.
+
+Perhaps Marco can help us interpret the rest of the
+output here (\texttt{F-statistic}, \texttt{p-value}, etc.).
+(An aside: what about fitting a quadratic curve,
+instead of a line, 
+through the $r_i$ values in Figure~\ref{fig:Graphs CD-resid}?)
+
+We can compare $r_i$ and $\varepsilon_i^*$, graphically,
+but the result is uninteresting. 
+We would expect $r_i$ and $\varepsilon_i^*$
+to be equal to each other by Equation~\ref{eq:r_regression_eqn}, 
+because
+(a) $m (t_i - t_0) \ll \max(r_i)$
+for any value of $t_i$
+and
+(b) $b \ll \max(r_i)$.
+Indeed, Figure~\ref{fig:Residuals_comparison}
+shows this is the case.
+%
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/Residuals_comparison-1} 
+
+}
+
+\caption[Comparison between ]{Comparison between $\varepsilon_i^*$ and $r_i$}\label{fig:Residuals_comparison}
+\end{figure}
+
+
+\end{knitrout}
+%
+I'm not sure where this leaves us.
+Marco and I agreed that I would re-derive the ``dynamic'' Solow residual
+equation while properly including the multiplicative error term~($\epsilon_i$).
+I think I have done that, but the results aren't terribly interesting.
+There is little (linear) time-dependent~($m$) or 
+time-independent~($b$) 
+information in the residuals~($r_i$),
+as evidenced by Figures~\ref{fig:Graphs CD-resid}--\ref{fig:Graphs CESekl-resid}.
+
+Perhaps there is another direction in which I should go with this analysis?
+
+
+%++++++++++++++++++++++++++++++
+\section{Correlograms} 
+\label{sec:correlograms}
+%++++++++++++++++++++++++++++++
+
+This appendix contains correlograms for all models.
+
+%++++++++++++++++++++++++++++++
+\subsection{Correlograms for models respecting the cost-share theorem} 
+\label{sec:correlograms_CST}
+%++++++++++++++++++++++++++++++
+
+In this section we present correlograms for all models that respect the cost-share theorem.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-1} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-2} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-3} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-4} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-5} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-6} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-7} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_CST-8} 
+\begin{kframe}\begin{verbatim}
+$PT.unadjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.865  0.726  0.601  0.485  0.371  0.260  0.157  0.078  0.028 
+    10     11     12     13     14     15     16     17 
+-0.041 -0.110 -0.161 -0.174 -0.144 -0.150 -0.177 -0.190 
+
+$PT.unadjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.865  0.727  0.605  0.492  0.379  0.267  0.164  0.086  0.036 
+    10     11     12     13     14     15     16     17 
+-0.034 -0.107 -0.162 -0.175 -0.144 -0.152 -0.179 -0.194 
+
+$PT.adjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.852  0.696  0.566  0.445  0.326  0.219  0.116  0.039 -0.003 
+    10     11     12     13     14     15     16     17 
+-0.069 -0.139 -0.176 -0.186 -0.148 -0.154 -0.186 -0.200 
+
+$PT.adjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.842  0.676  0.543  0.422  0.299  0.186  0.083  0.008 -0.030 
+    10     11     12     13     14     15     16     17 
+-0.098 -0.174 -0.211 -0.213 -0.162 -0.163 -0.188 -0.198 
+
+$UK.unadjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.711  0.401  0.255  0.211  0.158  0.053 -0.011 -0.009  0.016 
+    10     11     12     13     14     15     16     17 
+ 0.018  0.017 -0.029 -0.014  0.029  0.047  0.002 -0.015 
+
+$UK.unadjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.634  0.259  0.125  0.119  0.063 -0.072 -0.121 -0.067 -0.032 
+    10     11     12     13     14     15     16     17 
+ 0.000  0.024 -0.033 -0.006  0.029  0.049 -0.018 -0.030 
+
+$UK.adjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.784  0.548  0.427  0.373  0.304  0.203  0.123  0.086  0.068 
+    10     11     12     13     14     15     16     17 
+ 0.043  0.029 -0.011 -0.024 -0.024 -0.040 -0.092 -0.129 
+
+$UK.adjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.740  0.470  0.344  0.298  0.226  0.120  0.054  0.041  0.021 
+    10     11     12     13     14     15     16     17 
+ 0.009  0.016 -0.018 -0.023 -0.031 -0.044 -0.093 -0.116 
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Correlograms for models reject the cost-share theorem} 
+\label{sec:correlograms_noCST}
+%++++++++++++++++++++++++++++++
+
+In this section we present correlograms for all models that do not adhere to the cost-share theorem.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-1} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-2} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-3} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-4} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-5} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-6} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-7} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-8} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-9} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-10} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-11} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-12} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-13} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-14} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-15} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-16} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-17} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-18} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-19} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-20} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-21} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-22} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-23} 
+
+\includegraphics[width=\maxwidth]{figure/Correlograms_noCST-24} 
+\begin{kframe}\begin{verbatim}
+$PT.unadjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.813  0.597  0.388  0.185  0.045 -0.042 -0.125 -0.137 -0.133 
+    10     11     12     13     14     15     16     17 
+-0.210 -0.270 -0.304 -0.327 -0.270 -0.191 -0.155 -0.073 
+
+$PT.unadjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.651  0.285  0.104 -0.064 -0.121 -0.178 -0.113  0.085  0.133 
+    10     11     12     13     14     15     16     17 
+-0.061 -0.278 -0.413 -0.472 -0.461 -0.324 -0.116  0.013 
+
+$PT.unadjusted.withE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.780  0.551  0.386  0.215  0.058 -0.057 -0.161 -0.167 -0.119 
+    10     11     12     13     14     15     16 
+-0.184 -0.233 -0.276 -0.294 -0.213 -0.139 -0.151 
+
+$PT.unadjusted.withE.CES.kle
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.514  0.042 -0.070 -0.098 -0.123 -0.275 -0.225  0.085  0.219 
+    10     11     12     13     14     15     16 
+ 0.005 -0.129 -0.217 -0.298 -0.213 -0.110 -0.043 
+
+$PT.unadjusted.withE.CES.lek
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.404 -0.109 -0.163 -0.199 -0.253 -0.384 -0.175  0.255  0.386 
+    10     11     12     13     14     15     16 
+ 0.165  0.018 -0.107 -0.282 -0.286 -0.166 -0.028 
+
+$PT.unadjusted.withE.CES.ekl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.539  0.134  0.043 -0.038 -0.133 -0.285 -0.218  0.033  0.139 
+    10     11     12     13     14     15     16 
+-0.077 -0.203 -0.265 -0.336 -0.348 -0.259 -0.105 
+
+$PT.adjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.877  0.728  0.599  0.473  0.360  0.267  0.170  0.101  0.066 
+    10     11     12     13     14     15     16     17 
+-0.004 -0.064 -0.118 -0.162 -0.167 -0.175 -0.216 -0.232 
+
+$PT.adjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.428 -0.104 -0.252 -0.335 -0.273 -0.252 -0.072  0.305  0.463 
+    10     11     12     13     14     15     16     17 
+ 0.184 -0.140 -0.289 -0.346 -0.284 -0.079  0.175  0.265 
+
+$PT.adjusted.withE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.757  0.530  0.401  0.237  0.040 -0.133 -0.343 -0.420 -0.411 
+    10     11     12     13     14     15     16 
+-0.435 -0.397 -0.355 -0.274 -0.145 -0.004  0.065 
+
+$PT.adjusted.withE.CES.kle
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.476 -0.023 -0.152 -0.239 -0.221 -0.255 -0.143  0.188  0.332 
+    10     11     12     13     14     15     16 
+ 0.077 -0.169 -0.286 -0.329 -0.245 -0.077  0.133 
+
+$PT.adjusted.withE.CES.lek
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.410 -0.108 -0.246 -0.342 -0.275 -0.259 -0.080  0.305  0.465 
+    10     11     12     13     14     15     16 
+ 0.184 -0.113 -0.262 -0.332 -0.288 -0.094  0.165 
+
+$PT.adjusted.withE.CES.ekl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.422 -0.106 -0.249 -0.332 -0.268 -0.252 -0.075  0.302  0.457 
+    10     11     12     13     14     15     16 
+ 0.172 -0.130 -0.278 -0.338 -0.282 -0.084  0.173 
+
+$UK.unadjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.595  0.130 -0.075 -0.107 -0.130 -0.225 -0.260 -0.193 -0.121 
+    10     11     12     13     14     15     16     17 
+-0.048 -0.012 -0.045  0.001  0.084  0.177  0.199  0.222 
+
+$UK.unadjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.509  0.021 -0.117 -0.085 -0.133 -0.294 -0.323 -0.198 -0.164 
+    10     11     12     13     14     15     16     17 
+-0.068 -0.001 -0.040  0.027  0.068  0.132  0.095  0.112 
+
+$UK.unadjusted.withE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.527  0.105 -0.064  0.004 -0.051 -0.249 -0.339 -0.321 -0.272 
+    10     11     12     13     14     15     16     17 
+-0.172 -0.133 -0.109 -0.052  0.078  0.147  0.207  0.213 
+
+$UK.unadjusted.withE.CES.kle
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.449  0.055 -0.100 -0.028 -0.044 -0.257 -0.376 -0.268 -0.179 
+    10     11     12     13     14     15     16     17 
+-0.099 -0.055 -0.128 -0.010  0.111  0.227  0.136  0.099 
+
+$UK.unadjusted.withE.CES.lek
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.521  0.074 -0.053  0.014 -0.059 -0.291 -0.378 -0.309 -0.279 
+    10     11     12     13     14     15     16     17 
+-0.161 -0.091 -0.099 -0.027  0.058  0.136  0.156  0.157 
+
+$UK.unadjusted.withE.CES.ekl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.513  0.080 -0.037  0.017 -0.036 -0.304 -0.416 -0.346 -0.311 
+    10     11     12     13     14     15     16     17 
+-0.174 -0.085 -0.089  0.000  0.092  0.165  0.195  0.176 
+
+$UK.adjusted.noE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.645  0.192 -0.020 -0.083 -0.109 -0.213 -0.302 -0.266 -0.140 
+    10     11     12     13     14     15     16     17 
+-0.063 -0.045 -0.072 -0.056  0.035  0.132  0.165  0.194 
+
+$UK.adjusted.noE.CES.kl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.615  0.186  0.039  0.032 -0.010 -0.146 -0.237 -0.207 -0.172 
+    10     11     12     13     14     15     16     17 
+-0.122 -0.085 -0.096 -0.048  0.003  0.067  0.067  0.085 
+
+$UK.adjusted.withE.CD
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.604  0.196  0.023  0.025 -0.023 -0.162 -0.258 -0.222 -0.182 
+    10     11     12     13     14     15     16     17 
+-0.084 -0.063 -0.077 -0.056 -0.055 -0.031  0.011  0.023 
+
+$UK.adjusted.withE.CES.kle
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.453  0.039 -0.098 -0.030 -0.034 -0.212 -0.332 -0.243 -0.142 
+    10     11     12     13     14     15     16     17 
+-0.053  0.008 -0.022  0.071  0.130  0.161  0.007 -0.086 
+
+$UK.adjusted.withE.CES.lek
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.562  0.151  0.006  0.023 -0.021 -0.189 -0.288 -0.243 -0.236 
+    10     11     12     13     14     15     16     17 
+-0.138 -0.093 -0.094 -0.039 -0.025  0.007  0.052  0.068 
+
+$UK.adjusted.withE.CES.ekl
+
+Autocorrelations of series 'resid(model)', by lag
+
+     0      1      2      3      4      5      6      7      8      9 
+ 1.000  0.500  0.067 -0.062 -0.024 -0.039 -0.255 -0.376 -0.316 -0.289 
+    10     11     12     13     14     15     16     17 
+-0.169 -0.080 -0.093 -0.006  0.061  0.136  0.182  0.188 
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+%++++++++++++++++++++++++++++++
+\section{Statistical details on all models} 
+\label{sec:staistical_details}
+%++++++++++++++++++++++++++++++
+
+In this section, we present statistical details of all models.
+
+At the moment, this is a simple example of two models.
+I hope to develop a table later, after I figure out some things.
+Both models are CES models with energy fitted to Quality-adjusted data using the ($kl$)($e$) nesting.
+In Table~\ref{tab:stat_details_table}, Model 1 is for Portugal, and Model 2 is for the UK.
+
+
+\begin{table}[hb]
+\caption{Example output from \texttt{texreg}.}
+\begin{center}
+\begin{tiny}
+\begin{tabular}{l D{.}{.}{4.9}@{} D{.}{.}{4.9}@{} }
+\toprule
+           & \multicolumn{1}{c}{Model 1} & \multicolumn{1}{c}{Model 2} \\
+\midrule
+gamma      & 1.027582^{***} & 0.980315^{***} \\
+           & (0.011759)     & (0.012946)     \\
+lambda     & 0.004508^{***} & 0.007103^{***} \\
+           & (0.001169)     & (0.001737)     \\
+delta\_1   & 1.000000^{***} & 0.502875^{***} \\
+           & (0.000000)     & (0.036155)     \\
+delta      & 0.902835^{***} & 0.848488       \\
+           & (0.161689)     & (0.661918)     \\
+rho\_1     & 54.581844      & 0.634472^{***} \\
+           & (119.786669)   & (0.138784)     \\
+rho        & -1.000000      & 68.650078      \\
+           & (6.852668)     & (115.484907)   \\
+\midrule
+R$^2$      & 0.997138       & 0.997823       \\
+Num.\ obs. & 50             & 51             \\
+\bottomrule
+\multicolumn{3}{l}{\tiny{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+\end{tabular}
+\end{tiny}
+\label{tab:stat_details_table}
+\end{center}
+\end{table}
+
+
+
+
+
+% %++++++++++++++++++++++++++++++
+% \subsection{What effect does including energy and quality-adjustment have 
+%             on the Solow residual in the Cobb-Douglas model?} 
+% \label{sec:quality_adj_energy_and_solow_residual}
+% %++++++++++++++++++++++++++++++
+% 
+% We'll first look at Portugal.
+% 
+% %------------------------------
+% \subsubsection{Portugal} 
+% %------------------------------
+% 
+% First, use non-quality-adjusted data for Portugal and the Cobb-Douglas model.
+% 
+% <<Portugal C-D undadjusted without energy>>=
+% naturalCoef(models$PT$unadjusted$noE$CD)
+% @
+% 
+% <<Portugal C-D undadjusted with energy>>=
+% naturalCoef(models$PT$unadjusted$withE$CD)
+% @
+% 
+% The Solow residual (\texttt{lambda}) is always negative. 
+% However, the absolute value of \texttt{lambda} decreases from 
+% naturalCoef(models$PT$unadjusted$noE$CD)$lambda to 
+% naturalCoef(models$PT$unadjusted$withE$CD)$lambda
+% when adding energy.
+% So it appears that for Portugal, 
+% using unadjusted inputs and including energy as a factor of production
+% reduces the absolute value of the Solow residual somewhat.
+% 
+% What about for quality-adjusted data and Portugal?
+% 
+% <<Portugal C-D adjusted without energy>>=
+% naturalCoef(models$PT$adjusted$noE$CD)
+% @
+% 
+% <<Portugal C-D adjusted with energy>>=
+% naturalCoef(models$PT$adjusted$withE$CD)
+% @
+% 
+% Using quality-adjusted inputs, the Solow residual (\texttt{lambda}) moves from 
+% naturalCoef(models$PT$adjusted$noE$CD)$lambda to
+% naturalCoef(models$PT$adjusted$withE$CD)$lambda when including energy.
+% The absolute value of the Solow residual again decreases when adding energy.
+% But, with quality-adjusted inputs, the effect is much stronger.
+% 
+% Table~\ref{tab:lambda_CD_PT} shows
+% the effect of both quality-corrected factors of production and energy.
+% We find that including energy as a factor of production 
+% reduces the absolute value of the Solow residual (\texttt{lambda})
+% whether or not the factors of production are quality-adjusted. 
+% Quality-adjustment gets part of the way toward eliminating the Solow residual.
+% 
+% \begin{table} \caption{Portugal Solow residual results with Cobb-Douglas.} 
+% \label{tab:lambda_CD_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$PT$unadjusted$noE$CD)$lambda    & naturalCoef(models$PT$adjusted$noE$CD)$lambda \\
+%       With energy     & naturalCoef(models$PT$unadjusted$withE$CD)$lambda  & naturalCoef(models$PT$adjusted$withE$CD)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Note that for Portugal the contribution of capital (\texttt{alpha\_1})
+% always shifts to energy (\texttt{alpha\_3}) when energy is included 
+% as a factor of production.
+% 
+% What about for the UK?
+% 
+% %------------------------------
+% \subsubsection{United Kingdom} 
+% %------------------------------
+% 
+% Table~\ref{tab:lambda_CD_UK} shows fitted Cobb-Douglas coefficients for the UK. 
+% 
+% \begin{table} \caption{UK Solow residual results with Cobb-Douglas.} 
+% \label{tab:lambda_CD_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$UK$unadjusted$noE$CD)$lambda   
+%                                                 & naturalCoef(models$UK$adjusted$noE$CD)$lambda \\
+%       With energy     & naturalCoef(models$UK$unadjusted$withE$CD)$lambda 
+%                                                 & naturalCoef(models$UK$adjusted$withE$CD)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% For the UK, the quality-adjusted, with energy Solow residual is 
+% naturalCoef(models$UK$adjusted$withE$CD)$lambda * 100\%,
+% a very small number indeed.
+% For the UK, it appears that \emph{both} quality-adjustment and addition of energy as a factor of production
+% are required to effectively eliminate the Solow residual,
+% reducing it to naturalCoef(models$UK$adjusted$withE$CD)$lambda.
+% 
+% Adding energy alone actually \emph{in}creases the Solow residual from 
+% naturalCoef(models$UK$unadjusted$noE$CD)$lambda to
+% naturalCoef(models$UK$unadjusted$withE$CD)$lambda.
+% The details for each model with unadjusted factors of production are shown below.
+% 
+% <<UK CD Unadjusted Coefficients>>=
+% naturalCoef(models$UK$unadjusted$noE$CD)
+% naturalCoef(models$UK$unadjusted$withE$CD)
+% @
+% 
+% When energy is included, much of the effect of capital (\texttt{alpha\_1}) is 
+% attributed to energy (\texttt{alpha\_3}), 
+% as \texttt{alpha\_1} moves from 
+% naturalCoef(models$UK$unadjusted$noE$CD)$alpha_1 to
+% naturalCoef(models$UK$unadjusted$withE$CD)$alpha_1.
+% 
+% When we look at quality-adjusted inputs, we find similar results.
+% 
+% <<UK CD Quality-adjusted Coefficients>>=
+% naturalCoef(models$UK$adjusted$noE$CD)
+% naturalCoef(models$UK$adjusted$withE$CD)
+% @
+% 
+% \texttt{alpha\_1} moves from 
+% naturalCoef(models$UK$adjusted$noE$CD)$alpha_1 to
+% naturalCoef(models$UK$adjusted$withE$CD)$alpha_1.
+% 
+% Now, let's compare the fits to historical data.
+% 
+% 
+% 
+% %++++++++++++++++++++++++++++++
+% \subsection{Do we obtain a negative Solow residual for Portugal with the CES model?} 
+% \label{sec:Solow_negative_for_PT_in_CES?}
+% %++++++++++++++++++++++++++++++
+% 
+% First, look at the CES model without energy.
+% Nesting is unabmiguous, so this fit does not need to be repeated
+% for each nesting option. 
+% (This means that the top rows of Tables~\ref{tab:lambda_CES-kle_PT}--\ref{tab:lambda_CES-ekl_PT}
+% are identical.)
+% 
+% <<PT CES-kl, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$noE$CES$kl)
+% naturalCoef(models$PT$adjusted$noE$CES$kl)
+% @
+% 
+% Both unadjusted and quality-adjusted variables give positive Solow residuals,
+% naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda for unadjusted inputs and
+% naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda for quality-adjusted inputs.
+% Furthermore, quality-adjustment reduces the magnitude of the Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($kl$)$e$ nesting} 
+% %------------------------------
+% 
+% Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<PT CES-kle unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$kle)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<PT CES-kle quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$kle)
+% @
+% 
+% Table~\ref{tab:lambda_CES-kle_PT} summarizes the Portugal Solow residual results with CES and the ($kl$)$e$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($kl$)$e$ nesting.} 
+% \label{tab:lambda_CES-kle_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda 
+%                                                             & naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$PT$unadjusted$withE$CES$kle)$lambda 
+%                                                             & naturalCoef(models$PT$adjusted$withE$CES$kle)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-kle_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($kl$)$e$ nesting.} 
+% \label{tab:sse_CES-kle_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse 
+%                                                             & EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$PT$unadjusted$withE$CES$kle)$sse 
+%                                                             & EconModels:::sse(models$PT$adjusted$withE$CES$kle)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% In contrast to the Cobb-Douglas model,
+% the CES model with ($kl$)$e$ nesting
+% produces positive Solow residuals in all cases. 
+% We also see that both 
+% quality-adjusting the inputs and
+% including energy
+% reduce the Solow residual (\texttt{lambda}).
+% 
+% %------------------------------
+% \subsubsection{($le$)$k$ nesting} 
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<PT CES-lek unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$lek)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<PT CES-lek quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$lek)
+% @
+% 
+% Table~\ref{tab:lambda_CES-lek_PT} summarizes the Portugal Solow residual results with CES and the ($le$)$k$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($le$)$k$ nesting.} 
+% \label{tab:lambda_CES-lek_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda 
+%                                         & naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda 
+%                                         & naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-lek_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($le$)$k$ nesting.} 
+% \label{tab:sse_CES-lek_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse 
+%                                         & EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$PT$unadjusted$withE$CES$lek)$sse 
+%                                         & EconModels:::sse(models$PT$adjusted$withE$CES$lek)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Similar to the CES model with ($kl$)$e$ nesting,
+% the CES model with ($le$)$k$ nesting
+% produces positive Solow residuals in all cases. 
+% After energy has been added, quality-adjustment 
+% has very little effect on the Solow residual,
+% creating a slight increase from 
+% naturalCoef(models$PT$unadjusted$withE$CES$lek)$lambda to
+% naturalCoef(models$PT$adjusted$withE$CES$lek)$lambda.
+% 
+% 
+% %------------------------------
+% \subsubsection{($ek$)$l$ nesting} 
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<PT CES-ekl unadjusted, warning=FALSE>>=
+% naturalCoef(models$PT$unadjusted$withE$CES$ekl)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<PT CES-ekl quality-adjusted, warning=FALSE>>=
+% naturalCoef(models$PT$adjusted$withE$CES$ekl)
+% @
+% 
+% Table~\ref{tab:lambda_CES-ekl_PT} summarizes the Portugal Solow residual results with CES and the ($ek$)$l$ nesting.
+% 
+% \begin{table} \caption{Portugal Solow residual results with CES and ($ek$)$l$ nesting.} 
+% \label{tab:lambda_CES-ekl_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$PT$unadjusted$noE$CES$kl)$lambda 
+%                                         & naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda 
+%                                         & naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-ekl_PT} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{PT $sse$ with CES and ($ek$)$l$ nesting.} 
+% \label{tab:sse_CES-ekl_PT} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$PT$unadjusted$noE$CES$kl)$sse 
+%                                         & EconModels:::sse(models$PT$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$PT$unadjusted$withE$CES$ekl)$sse 
+%                                         & EconModels:::sse(models$PT$adjusted$withE$CES$ekl)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% For the ($ek$)$l$ nesting, 
+% the Solow residual is positive, and 
+% quality-adjusting the inputs 
+% reduces the Solow residual (\texttt{lambda}).
+% Adding energy decreases the Solow residual 
+% (from naturalCoef(models$PT$unadjusted$withE$CES$ekl)$lambda to 
+% naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda)
+% when enegy is included in the model.
+% But, adding energy slightly increases the Solow residual
+% (from naturalCoef(models$PT$adjusted$noE$CES$kl)$lambda to naturalCoef(models$PT$adjusted$withE$CES$ekl)$lambda)
+% when quality-adjusted inputs are used.
+% 
+% 
+% %++++++++++++++++++++++++++++++
+% \subsection{Do we obtain a positive Solow residual for the UK with the CES model?} 
+% \label{sec:Solow_positive_for_UK_in_CES?}
+% %++++++++++++++++++++++++++++++
+% 
+% First, look at the CES model without energy.
+% Nesting is unabmiguous, so this fit does not need to be repeated
+% for each nesting option. 
+% (This means that the top rows of Tables~\ref{tab:lambda_CES-kle_UK}--\ref{tab:lambda_CES-ekl_UK}
+% are identical.)
+% 
+% <<UK CES-kl, warning=FALSE>>=
+% naturalCoef(models$UK$unadjusted$noE$CES$kl)
+% naturalCoef(models$UK$adjusted$noE$CES$kl)
+% @
+% 
+% Both unadjusted and quality-adjusted variables give positive Solow residuals for the UK,
+% naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda for unadjusted inputs and
+% naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda for quality-adjusted inputs.
+% Furthermore, quality-adjustment reduces the magnitude of the UK Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($kl$)$e$ nesting} 
+% %------------------------------
+% 
+% Now, look at unadjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<UK CES-kle unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$kle)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($kl$)$e$ nesting.
+% 
+% <<UK CES-kle quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$kle)
+% @
+% 
+% Table~\ref{tab:lambda_CES-kle_UK} summarizes the UK Solow residual results with CES and the ($kl$)$e$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($kl$)$e$ nesting.} 
+% \label{tab:lambda_CES-kle_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda & naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$UK$unadjusted$withE$CES$kle)$lambda 
+%                                                                 & naturalCoef(models$UK$adjusted$withE$CES$kle)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-kle_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($kl$)$e$ nesting.} 
+% \label{tab:sse_CES-kle_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse & EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$UK$unadjusted$withE$CES$kle)$sse 
+%                                                             & EconModels:::sse(models$UK$adjusted$withE$CES$kle)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Like the Cobb-Douglas model, the CES model produces positive Solow residuals
+% with the ($kl$)$e$ nesting.
+% We also see that both 
+% quality-adjusting the inputs and
+% including energy
+% reduce the Solow residual (\texttt{lambda}).
+% 
+% %------------------------------
+% \subsubsection{($le$)$k$ nesting}
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<UK CES-lek unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$lek)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($le$)$k$ nesting.
+% 
+% <<UK CES-lek quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$lek)
+% @
+% 
+% Table~\ref{tab:lambda_CES-lek_UK} summarizes the UK Solow residual results with CES and the ($le$)$k$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($le$)$k$ nesting.} 
+% \label{tab:lambda_CES-lek_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda & naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$UK$unadjusted$withE$CES$lek)$lambda 
+%                                                             & naturalCoef(models$UK$adjusted$withE$CES$lek)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-lek_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($le$)$k$ nesting.} 
+% \label{tab:sse_CES-lek_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse & EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$UK$unadjusted$withE$CES$lek)$sse 
+%                                                             & EconModels:::sse(models$UK$adjusted$withE$CES$lek)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% 
+% Similar to the CES model with ($kl$)$e$ nesting,
+% the CES model with ($le$)$k$ nesting
+% produces positive Solow residuals in all cases. 
+% Both quality-adjustment and inclusion of energy 
+% decrease the magnitude of the Solow residual.
+% 
+% %------------------------------
+% \subsubsection{($ek$)$l$ nesting}
+% %------------------------------
+% 
+% Next, look at unadjusted inputs using the ($el$)$l$ nesting.
+% 
+% <<UK CES-ekl unadjusted>>=
+% naturalCoef(models$UK$unadjusted$withE$CES$ekl)
+% @
+% 
+% Now look at quality-adjusted inputs using the ($ek$)$l$ nesting.
+% 
+% <<UK CES-ekl quality-adjusted>>=
+% naturalCoef(models$UK$adjusted$withE$CES$ekl)
+% @
+% 
+% Table~\ref{tab:lambda_CES-ekl_UK} summarizes the UK Solow residual results with CES and the ($ek$)$l$ nesting.
+% 
+% \begin{table} \caption{UK Solow residual results with CES and ($ek$)$l$ nesting.} 
+% \label{tab:lambda_CES-ekl_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & naturalCoef(models$UK$unadjusted$noE$CES$kl)$lambda & naturalCoef(models$UK$adjusted$noE$CES$kl)$lambda \\
+%       With energy     & naturalCoef(models$UK$unadjusted$withE$CES$ekl)$lambda 
+%                                                             & naturalCoef(models$UK$adjusted$withE$CES$ekl)$lambda \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% Table~\ref{tab:sse_CES-ekl_UK} shows the $sse$ values for each of these models.
+% 
+% \begin{table} \caption{UK $sse$ with CES and ($ek$)$l$ nesting.} 
+% \label{tab:sse_CES-ekl_UK} 
+%   \begin{center}
+%     \begin{tabular}{r c c} 
+%       \toprule
+%                       & Unadjusted     & Quality-adjusted   \\
+%       \midrule
+%       Without energy  & EconModels:::sse(models$UK$unadjusted$noE$CES$kl)$sse & EconModels:::sse(models$UK$adjusted$noE$CES$kl)$sse \\
+%       With energy     & EconModels:::sse(models$UK$unadjusted$withE$CES$ekl)$sse 
+%                                                             & EconModels:::sse(models$UK$adjusted$withE$CES$ekl)$sse \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+% 
+% 
+% Similar to the CES model with ($ek$)$l$ nesting,
+% the CES model with ($ek$)$l$ nesting
+% produces positive Solow residuals in all cases. 
+% Both quality-adjustment and inclusion of energy 
+% decrease the magnitude of the Solow residual.
+
+
+
+
+%' %++++++++++++++++++++++++++++++
+%' \subsection{Dynamic Solow residuals} 
+%' \label{sec:dynamic_solow_residuals}
+%' %++++++++++++++++++++++++++++++
+%' 
+%' <<Dynamic Solow Residuals>>=
+%' # Calculate finite difference approximations of time derivatives for output and all factors of production
+%' dynamicSR <- function(model, id, lag=1, pad="tail"){
+%'   id_list <- strsplit(id, split = "[.]")[[1]]
+%'   energy <- id_list[[3]]
+%'   modelStr <- id_list[[4]]
+%'   
+%'   f <- model$formula
+%'   denom <- summands(f, n=length(summands(f))) # time variable
+%'   nums <- all.vars(f) [1:(length(all.vars(f))-1)] # y, k, l, and e (if present)
+%'   df <- getData(model)[c(denom, nums)] # columns are: iYear, y, k, l, and e (if present)
+%'   
+%'   # Calculate names for the columns of finite difference derivatives
+%'   derivNames <- lapply(1:length(nums), function(i){paste0("d", nums[[i]], ".d", denom)}) %>% unlist
+%'   derivCols <- lapply(1:length(nums), function(i){
+%'     # Calculate finite difference derivative columns
+%'     ediff(df[[i+1]], pad=pad, lag=lag) / ediff(df[[1]], pad=pad, lag=lag)
+%'   }) %>% do.call(cbind, .) %>% as.data.frame
+%'   names(derivCols) <- derivNames  
+%'   df <- cbind(derivCols, df[ , c(nums, denom)]) # puts derivatives first, then raw numbers, then time
+%'   df[["dydtOvery"]] <- 1 / df[[ nums[[1]] ]] * df[[ derivNames[[1]] ]]
+%'   coeffs <- naturalCoef(model)
+%'   df <- cbind(df, coeffs)
+%'   
+%'   if (modelStr == "CD"){
+%'     lambda_fd <- 
+%'       df[["dydtOvery"]] - 
+%'       df[["alpha_1"]] / df[[nums[[2]]]] * df[[derivNames[[2]]]] - 
+%'       df[["alpha_2"]] / df[[nums[[3]]]] * df[[derivNames[[3]]]]
+%'     if (energy == "withE"){
+%'       # Subtract the energy term also
+%'       lambda_fd <- lambda_fd - 
+%'         df[["alpha_3"]] / df[[nums[[4]]]] * df[[derivNames[[4]]]]
+%'     }
+%'     # Fraction of growth explained by Solow Residual
+%'     solowFrac <- lambda_fd / df[["dydtOvery"]]
+%'     # Add to data frame
+%'     df$lambda_fd <- lambda_fd
+%'     df$solowFrac <- solowFrac
+%'     return(df)
+%'   } else if (modelStr == "CES"){
+%'     # Assign nice variable names so that the equations below are easier to read (and debug, and maintain)
+%'     # This code is nest-aware.
+%'     n <- model$nest
+%'     for (i in 1:length(model$nest)){
+%'       df[[paste0("x", i)]] <- df[[ nums[ model$nest[i]+1 ] ]] # GDP is 1st col, add 1 to get to the factors of production
+%'       df[[paste0("dx", i, "dt")]] <- df[[ derivNames[ model$nest[i]+1 ] ]]
+%'     }
+%'     if (energy == "noE"){
+%'       # Calculate terms for the finite-difference Solow residual (lambda_fd)
+%'       df <- df %>% 
+%'         transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+%'         transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+%'         transform(lambda_fd = dydtOvery + 1/b * dbdtOverrho1) %>%
+%'         transform(solowFrac = lambda_fd / dydtOvery)
+%'       return(df)
+%'     } else if (energy == "withE"){
+%'       df <- df %>% 
+%'         transform(b = delta_1 * x1^(-rho_1) + (1 - delta_1) * x2^(-rho_1)) %>%
+%'         transform(a = delta * b^(rho/rho_1) + (1 - delta) * x3^(-rho)) %>%
+%'         transform(dbdtOverrho1 = -delta_1 * x1^(-(rho_1+1))*dx1dt - (1 - delta_1) * x2^(-(rho_1+1))*dx2dt) %>%
+%'         transform(dadtOverrho = delta * b^(rho/rho_1 - 1) * dbdtOverrho1 - (1 - delta) * x3^(-(rho+1))*dx3dt) %>%
+%'         transform(lambda_fd = dydtOvery + 1/a * dadtOverrho) %>%
+%'         transform(solowFrac = lambda_fd / dydtOvery)
+%'       return(df)
+%'     } else {
+%'       stop (paste("Unknown energy:", energy))
+%'     }
+%'   } else {
+%'     stop(paste("Unknown modelStr", modelStr))
+%'   }
+%' }
+%' 
+%' lag.to.use <- 1 # years
+%' temp_data <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), 
+%'                         f = function(model, id, lag=lag.to.use, pad="tail"){
+%'   df <- dynamicSR(model, id=id, lag=lag, pad=pad)
+%'   id_list <- strsplit(id, split = "[.]")[[1]]
+%'   df$Country <- id_list[[1]]
+%'   df$flavor <- if (id_list[[2]] == "unadjusted") "Unadjusted" else "Quality-adjusted"
+%'   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
+%'   df$model <- id_list[[4]]
+%'   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
+%'   df$Year <- getData(model)[["Year"]]
+%'   return(df)  
+%' }) %>% do.call(plyr::rbind.fill, .)
+%' 
+%' # Get the unadjusted, without-energy Solow residuals and store them in a data frame
+%' sr_unadj_noE <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy") %>% 
+%'                 select(Year, Country, lambda_fd, model)
+%' colnames(sr_unadj_noE)[colnames(sr_unadj_noE)=="lambda_fd"] <- "sr_unadj_noE"
+%' # Merge to get the unadjusted, without-energy values next to each country, year, and model
+%' solowResiduals <- merge(temp_data, sr_unadj_noE)
+%' 
+%' # Create a column containing ∆lambda_df, the difference between a lambda_df value
+%' # and the lambda_df value in the same year for the unadjusted, no-energy case
+%' solowResiduals[["Dlambda_fd"]] <- abs(solowResiduals[["lambda_fd"]]) - abs(solowResiduals[["sr_unadj_noE"]])
+%' 
+%' # Relevel factors before plotting
+%' solowResiduals$Country <- relevelFactor(as.factor(solowResiduals$Country), c("PT", "UK"))
+%' solowResiduals$flavor <- relevelFactor(as.factor(solowResiduals$flavor), c("Unadjusted", "Quality-adjusted"))
+%' solowResiduals$energy <- relevelFactor(as.factor(solowResiduals$energy), c("Without energy", "With energy"))
+%' solowResiduals$nest <- relevelFactor(as.factor(solowResiduals$nest), c("kl", "kle", "lek", "ekl"))
+%' 
+%' # Make data viewing easier
+%' solowResiduals <- arrange(solowResiduals, Country, model, flavor, energy, nest)
+%' @
+%' 
+%' <<DynamicSR_Graph>>=
+%' dynamicSRGraph <- function(data){
+%' ggplot(data=data) +
+%'   geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=dydtOvery)) +
+%'   geom_line(mapping=aes(x=Year, y=lambda_fd, linetype=energy)) +
+%'   scale_linetype_manual(values=c(2,3), name="") +
+%'   facet_grid(Country ~ flavor) +
+%'   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+%'   xlab("") + 
+%'   ylab(expression(lambda[ij])) +
+%'   xy_theme()  
+%' }
+%' @
+%' 
+%' ``Dynamic'' Solow residuals~($\lambda_{i,j}$) can be calculated 
+%' for the Cobb-Douglas and CES models
+%' as shown in Appendices~\ref{sec:dynamic_sr_CD} and~\ref{sec:dynamic_sr_CES},
+%' respectively.
+%' 
+%' Figure~\ref{fig:DynamicSR_CD_Graph} shows the evolution 
+%' of the Solow residual~($\lambda_{i,j}$) over time
+%' as calculated by Equation~\ref{eq:lambdaij} 
+%' with the timespan for finite differences ($t_j - t_i$) set to 
+%' lag.to.use~if (lag.to.use == 1) "year" else "years".
+%' %
+%' <<DynamicSR_CD_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the Cobb-Douglas model. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CD"))
+%' @
+%' %
+%' <<DynamicSR_CESkle_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($kl$)$e$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="kle" | nest=="kl")))
+%' @
+%' %
+%' <<DynamicSR_CESlek_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($le$)$k$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="lek" | nest=="kl")))
+%' @
+%' %
+%' <<DynamicSR_CESekl_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residuals for the CES model with ($ek$)$l$ nesting. Dashed lines are $\\lambda$ values. Solid lines are $\\frac{1}{y}\\frac{\\mathrm{d} y}{\\mathrm{d} t}$.">>=
+%' dynamicSRGraph(filter(solowResiduals, model=="CES" & (nest=="ekl" | nest=="kl")))
+%' @
+
+
+%' %++++++++++++++++++++++++++++++
+%' \subsection{Does quality-adjusting the factors of production 
+%'             decrease fitting residuals and/or the dynamic Solow residual?} 
+%' \label{sec:quality_adj_energy_and_dynamic_solow_residual}
+%' %++++++++++++++++++++++++++++++
+%' 
+%' <<SR and R trajectory data>>=
+%' traj.data <- merge(solowResiduals[c("Country", "Year", "model", "flavor", "energy", "nest", "Dlambda_fd")], 
+%'                    fitted_and_resid_data[c("Country", "Year", "model", "flavor", "energy", "nest", "Dr")]) %>%
+%'                    arrange(Country, model, flavor, energy, nest)
+%' traj.data.stats <- traj.data %>% 
+%'   group_by(model, Country, flavor, energy, nest) %>%
+%'   summarise(Dlambda_fd.mean = mean(Dlambda_fd, na.rm=TRUE), Dr.mean = mean(Dr))
+%' 
+%' ############################################
+%' # Dlambda_fd.p <- traj.data %>% 
+%' #   group_by(model, Country, flavor, energy, nest) %>% 
+%' #   select(Dlambda_fd) %>%
+%' #   t.test(., alternative="less")[["p.value"]]
+%' ############################################  
+%' @
+%' 
+%' <<SR and R trajectory plot function>>=
+%' residualsTrajGraph <- function(data){
+%'   plot <- ggplot(data=data) + 
+%'     geom_point(mapping=aes(x=Dr, y=Dlambda_fd, color=energy)) + 
+%'     facet_grid(Country ~ flavor) +
+%'     xlab(expression(Delta*r[i])) +
+%'     ylab(expression(Delta*lambda[ij])) +
+%'     xy_theme() + 
+%'     theme(legend.title=element_blank())
+%'   return(plot)
+%' }
+%' @
+%' 
+%' We can test our hypothesis that quality-adjusting the factors of production
+%' and including energy will reduce the Solow residuals~($\lambda$)
+%' and the fitting residuals~($r$) by plotting
+%' $\Delta \lambda_i$ vs. $\Delta r_i$, where
+%' %
+%' \begin{equation} \label{eq:delta_lambda_i}
+%'   \Delta \lambda_i \equiv \left| \lambda_i \right| - \left| \lambda_{i, \, Unadjusted, \, Without \, energy} \right|
+%' \end{equation}
+%' %
+%' and
+%' %
+%' \begin{equation} \label{eq:delta_r}
+%'   \Delta r_i \equiv \left| r_i \right| - \left| r_{i, \,Unadjusted, \, Without \, energy} \right|.
+%' \end{equation}
+%' %
+%' If most of the points fall in the lower-left quadrant of a graph, 
+%' we can conclude that both Solow residual~($\lambda$) and
+%' fitting residual~($r$) have decreased due to either 
+%' quality-adjustment of the factors of production or 
+%' including energy.
+%' 
+%' Figure~\ref{fig:Solow_residual_trajectories_CD} indicates that
+%' for the Cobb-Douglas model, 
+%' neither 
+%' quality-adjusting the factors of production
+%' nor including energy 
+%' consistently reduces
+%' the Solow residual or the fitting residual.
+%' 
+%' <<Solow_residual_trajectories_CD, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the Cobb-Douglas model.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CD"))
+%' @
+%' 
+%' We can also calculate the average values for $\Delta \lambda_{i,j}$ and $\Delta r_{i}$ 
+%' as shown in Table~\ref{tab:Trajectory_Means_CD}.
+%' %
+%' <<Trajectory_Means_CD, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CD") %>% select(-nest), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for Cobb-Douglas models.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' %
+%' The following tables and figures show the same analysis for the CES model.
+%' %
+%' <<Solow_residual_trajectories_CESkle, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($kl$)$e$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="kle")))
+%' @
+%' %
+%' <<Trajectory_Means_CESkle, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="kle")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($kl$)$e$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
+%' <<Solow_residual_trajectories_CESlek, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($le$)$k$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="lek")))
+%' @
+%' 
+%' <<Trajectory_Means_CESlek, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="lek")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($le$)$k$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
+%' <<Solow_residual_trajectories_CESekl, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Dynamic Solow residual and fitting residual trajectories relative to the Unadjusted, Without-energy condition for the CES model with ($ek$)$l$ nesting.">>=
+%' residualsTrajGraph(filter(traj.data, model=="CES" & (nest=="kl" | nest=="ekl")))
+%' @
+%' 
+%' <<Trajectory_Means_CESekl, results="asis">>=
+%' myXTable(data = filter(traj.data.stats, model=="CES" & (nest=="kl" | nest=="ekl")), 
+%'          caption = "Average $\\Delta\\lambda$ and $\\Delta r$ for CES models with ($ek$)$l$ nesting.",
+%'          label=paste0("tab:", opts_current$get("label")),
+%'          digits=6)
+%' @
+%' 
+
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
