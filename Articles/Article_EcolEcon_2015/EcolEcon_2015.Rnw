@@ -184,7 +184,7 @@ myXTable <- function(data, caption, label, digits=2){
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Effect of quality-adjusted production function inputs}
+\title{Energy and the CES production function}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -192,16 +192,17 @@ myXTable <- function(data, caption, label, digits=2){
 %% \address[label2]{<address>}
 
 \author[IST]{Jo\~{a}o dos Santos}
-\author[Leeds]{Paul Brockway}
 \author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\author[Leeds]{Paul Brockway}
 \ead{mkh2@calvin.edu}
 \author[Leeds]{Marco Sekai}
 \author[IST]{Tiago Domingos}
-\author[Leeds]{Julia Steinberger}
+\author[CalvinMath]{Randall Pruim}
 
 \address[IST]{IST, Lisbon, Portugal}
 \address[Leeds]{Leeds University, Leeds, UK}
 \address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\address[CalvinMath]{Mathematics \& Statistics Department, Calvin College, Grand Rapids, MI 49546, USA}
 \cortext[cor1]{Corresponding author}
 
 \begin{abstract}
@@ -211,7 +212,7 @@ myXTable <- function(data, caption, label, digits=2){
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-economic growth \sep exergy \sep energy \sep Cobb-Douglas \sep CES
+economic growth \sep exergy \sep energy \sep CES
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
 \end{keyword}
@@ -245,19 +246,13 @@ literature related to each.
 \label{sec:Prod_Func_Forms}
 %++++++++++++++++++++++++++++++
 
-In this paper, we assess two prominent energy-augmented production functions 
-that appear in the literature: 
-Cobb-Douglas (CD) and
+In this paper, we assess a prominent energy-augmented production function:
 Constant Elasticity of Substitution (CES).
-These production functions are assessed relative to 
+The CES model is assessed relative to 
 a model of exponential growth only.
 The following subsections describe each.
 
 
-%------------------------------
-\subsubsection{Cobb-Douglas Production Function} 
-\label{sec:CDe}
-%------------------------------
 
 The Cobb-Douglas production function can be expressed as
 %
@@ -266,25 +261,7 @@ The Cobb-Douglas production function can be expressed as
 \end{equation}
 %
 where 
-$y \equiv Y/Y_{0}$,
-$\theta$ is a scale parameter,
-e is the base of the natural logarithm, 
-$\lambda$ is represents the pace of technological progress,
-$t$ (time) is measured in years,
-$k \equiv K/K_{0}$, 
-$l \equiv L/L_{0}$, 
-$Y$ (economic output) is represented by GDP, 
-$K$ (capital) is expressed in currency units, 
-$L$ (labor) is expressed in workers or work-hours/year, and
-the 0 subscript indicates values at an initial year.%
-  \footnote{Dimensionless, indexed quantities are represented by 
-  lower-case symbols 
-  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
-  quantities are represented by upper-case symbols 
-  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
-  Model parameters are represented by Greek letters
-  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
-  }
+
 Constant returns to scale are represented by the constraint
 $\alpha_1 + \alpha_2 = 1$.
 
@@ -303,19 +280,22 @@ The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 
 
+
 %------------------------------
 \subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
 \label{sec:CES}
 %------------------------------
 
-Other energy economists use an energy-augmented 
-Constant Elasticity of Substitution (CES) production function to 
-describe economic growth. The \texttt{R} 
-% \citep{R} 
-package \texttt{micEconCES} 
-% \citep{Henningsen:2011td} 
-estimates CES production 
-functions of the following form
+The energy-augmented 
+Constant Elasticity of Substitution (CES) production function%
+  \footnote{
+  We use the The \texttt{R} 
+  % \citep{R} 
+  package \texttt{micEconCES} 
+  % \citep{Henningsen:2011td} 
+  to estimate the CES production function.
+  }
+can be given as
 %
 \begin{equation} \label{eq:CESgeneric}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
@@ -324,9 +304,28 @@ functions of the following form
       A \equiv \mathrm{e}^{\lambda (t-t_0)},
 \end{equation}
 %
-where $x_1$, $x_2$, and $x_3$ are factors of production
-and permutations of capital~($k$), labor~($l$), and energy~($e$).
-
+where
+$y \equiv Y/Y_{0}$,
+$\gamma$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is the Solow residual (often thougth to represent the pace of technological progress),
+$t$ (time) is measured in years,
+$x_1$, $x_2$, and $x_3$ are factors of production
+and permutations of capital~($k$), labor~($l$), and energy~($e$),
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ (economic output) is represented by GDP, 
+$K$ (capital) is expressed in currency units, 
+$L$ (labor) is expressed in workers or work-hours/year, and
+the 0 subscript indicates values at an initial year.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+  Model parameters are represented by Greek letters
+  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
+  }
 The CES model without energy is given in Equation~\ref{eq:CESkl}.
 %
 \begin{equation} \label{eq:CESkl}
@@ -347,7 +346,6 @@ where $\delta \rightarrow 1$.
       A \equiv \mathrm{e}^{\lambda (t-t_0)}.
 \end{equation}
 %
-
 In the CES production function, 
 $\gamma$ is a fitting parameter that accounts for an atypical first year. 
 The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
@@ -400,6 +398,34 @@ are possible with the CES model.
 Note that $\rho$ ($\sigma$), $\rho_1$ ($\sigma_1$), $\delta$, and $\delta_1$ have different
 meanings depending upon the nesting of the factors of production.
 
+For the CES model, factors shares~($\alpha_1$, $\alpha_2$, and $\alpha_3$) are calculated by
+$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
+for the CES model with two factors of production
+and by 
+$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
+for the CES model with three factors of production and the ($kl$)$e$ nesting.
+The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
+factor shares for capital, labor, and energy, respectively,
+as shown in Table \ref{tab:CES_abg_equations}.
+
+\begin{table} \caption{Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ 
+                        (factor shares for capital, labor, and energy, respectively)
+                        for the various CES nestings.} 
+\label{tab:CES_abg_equations} 
+  \begin{center}
+    \begin{tabular}{c c c c c} 
+      \toprule
+      Nesting         & \texttt{nest}     & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
+      \midrule
+      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
+      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
 
 %------------------------------
 \subsubsection{Exponential Production Function (reference model)} 
@@ -413,26 +439,22 @@ in Equation~\ref{eq:exponential-only-model}.
   y = \theta A \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; .
 \end{equation}
 %
-The reference model is a degenerate case of the Cobb-Douglas production function
-wherein the constant returns to scale constraint is not respected,
-because all factor shares are zero~($\alpha_1 = \alpha_2 = \alpha_3 = 0$).
-
-We expect that the reference model will have a larger fitted Solow residual term than
-the Cobb-Douglas and CES models, because no factors of production are
+We expect that the reference model
+will have a larger fitted Solow residual term than
+the CES model, because no factors of production are
 included in the reference model to drive economic growth.
 Indeed, in the reference model, 
-all economics growth is attributed to the Solow residual.
+all economic growth is attributed to the Solow residual~($\lambda$).
 
 In contrast, it is not necessarily true that 
-Cobb-Douglas and CES models 
-will exhibit lower $mse$ than the reference model
+CES models will exhibit lower $mse$ than the reference model
 shown in Equation~\ref{eq:exponential-only-model}.
-The Cobb-Douglas and CES models have more fitting parameters,
-but they incorporate the factors of production
+The CES model has more fitting parameters,
+but it incorporates the factors of production
 at constant returns to scale. 
 The reference model has $\alpha_1 + \alpha_2 + \alpha_3 = 0$,
-whereas our implementations of both the Cobb-Douglas and CES models
-requires constant returns to scale, $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+whereas our implementation of the CES model~(Equation~\ref{eq:CESgeneric})
+assumes constant returns to scale.
 Thus, if the factors of production ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
 are poorly correlated to output ($y$),
 the constant returns to scale constraint may cause higher $mse$ for
@@ -663,37 +685,6 @@ and a time variable ($t$, usually \texttt{iYear},
 All of the models assume an error term that is additive on the 
 logarithmic scale and are fit by the method of least squares.  
 Model fitting provides estimates for all parameters in the model.
-
-For the CES model, factors shares~($\alpha_1$, $\alpha_2$, and $\alpha_3$) are calculated by
-$\alpha_1 = \delta_1$, $\alpha_2 = 1 - \delta_1$, and $\alpha_3 = 0$ 
-for the CES model with two factors of production
-and by 
-$\alpha_1 = \delta \delta_1$, $\alpha_2 = \delta(1 - \delta_1)$, and $\alpha_3 = 1 - \delta$
-for the CES model with three factors of production and the ($kl$)$e$ nesting.
-The values of $\alpha_1$, $\alpha_2$, and $\alpha_3$ are interpreted as
-factor shares for capital, labor, and energy, respectively,
-as shown in Table \ref{tab:CES_abg_equations}, 
-assuming factors of production are specified in the fitting \texttt{formula} as
-\texttt{y~$\sim$~k~+~l~+~e~+~time}.
-
-\begin{table} \caption{Equations for $\alpha_1$, $\alpha_2$, and $\alpha_3$ 
-                        (factor shares for capital, labor, and energy, respectively)
-                        for the various CES nestings, 
-                        provided that the \texttt{formula} is specified as \texttt{y~$\sim$~k~+~l~+~e~+~time}.} 
-\label{tab:CES_abg_equations} 
-  \begin{center}
-    \begin{tabular}{c c c c c} 
-      \toprule
-      Nesting         & \texttt{nest}     & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
-      \midrule
-      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
-      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
-      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
 
 <<Models>>=
 fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
@@ -1556,12 +1547,59 @@ texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle),
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Cobb-Douglas results} 
+\section{Cobb-Douglas Graveyard} 
 \label{sec:cd_results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This section is the graveyard for information pertaining to the Cobb-Douglas model.
 
+%------------------------------
+\subsubsection{Cobb-Douglas Production Function} 
+\label{sec:CDe}
+%------------------------------
+
+The Cobb-Douglas production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ (time) is measured in years,
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ (economic output) is represented by GDP, 
+$K$ (capital) is expressed in currency units, 
+$L$ (labor) is expressed in workers or work-hours/year, and
+the 0 subscript indicates values at an initial year.%
+  \footnote{Dimensionless, indexed quantities are represented by 
+  lower-case symbols 
+  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
+  quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
+  Model parameters are represented by Greek letters
+  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
+  }
+Constant returns to scale are represented by the constraint
+$\alpha_1 + \alpha_2 = 1$.
+
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+The term $A$ is known as total factor productivity,
+and $\lambda$ is the Solow residual. 
 %
 <<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
 fittedGraphNoCST(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
