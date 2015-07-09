@@ -413,14 +413,14 @@ as shown in Table \ref{tab:CES_abg_equations}.
                         for the various CES nestings.} 
 \label{tab:CES_abg_equations} 
   \begin{center}
-    \begin{tabular}{c c c c c} 
+    \begin{tabular}{c c c c} 
       \toprule
-      Nesting         & \texttt{nest}     & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
+      Nesting    & $\alpha_1$              & $\alpha_2$              & $\alpha_3$       \\
       \midrule
-      ($kl$) + ()     & \texttt{c(1,2)}   & $\delta_1$              & $1 - \delta_1$          & 0          \\
-      ($kl$) + ($e$)  & \texttt{c(1,2,3)} & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
-      ($le$) + ($k$)  & \texttt{c(2,3,1)} & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
-      ($ek$) + ($l$)  & \texttt{c(3,1,2)} & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
+      ($kl$) \;  & $\delta_1$              & $1 - \delta_1$          & 0          \\
+      ($kl$)$e$  & $\delta \delta_1$       & $\delta (1 - \delta_1)$ & $1 - \delta$ \\   
+      ($le$)$k$  & $1 - \delta$            & $\delta \delta_1$       & $\delta (1 - \delta_1)$ \\
+      ($ek$)$l$  & $\delta (1 - \delta_1)$ & $1 - \delta$            & $\delta \delta_1$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -453,16 +453,12 @@ The CES model has more fitting parameters,
 but it incorporates the factors of production
 at constant returns to scale. 
 The reference model has $\alpha_1 + \alpha_2 + \alpha_3 = 0$,
-whereas our implementation of the CES model~(Equation~\ref{eq:CESgeneric})
-assumes constant returns to scale.
-Thus, if the factors of production ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
-are poorly correlated to output ($y$),
+whereas the CES model~(Equation~\ref{eq:CESgeneric})
+implicitly assumes constant returns to scale.
+Thus, if the factors of production~($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
+are poorly correlated to output~($y$),
 the constant returns to scale constraint may cause higher $mse$ for
-the Cobb-Douglas or CES models relative to the reference model.
-
-In the sections that follow, 
-we assess the Cobb-Douglas and CES models relative to the reference model
-in terms of goodness of both goodness of fit~($mse$) and Solow residual~($\lambda$).
+the CES model relative to the reference model.
 
 
 %++++++++++++++++++++++++++++++
