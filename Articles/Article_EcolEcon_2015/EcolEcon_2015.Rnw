@@ -1164,6 +1164,22 @@ ggplot() +
   theme(legend.title=element_blank())
 @
 
+<<percSRmse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($mse$). $\\lambda$ and $mse$ values for the reference (exponential-only) model are shown as gridlines.">>=
+ggplot() +
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=mse, y=lambda, color=energy, size=cst, shape=nest)) +
+  scale_size_manual(values=c(2,3.5)) +
+  scale_shape_manual(values=c(16,17,18,15)) +
+  facet_grid(Country ~ flavor) +
+  scale_x_continuous(breaks=seq(0, 0.02, 0.01), limits=c(0, 0.02)) +  
+  ylab(expression(lambda)) +
+  scale_y_continuous(breaks=seq(0, 0.04, 0.01), limits=c(0, 0.04)) +  
+  xy_theme() +
+  theme(legend.title=element_blank())
+@
+
+
+
+
 
 %------------------------------
 \subsubsection{Rejecting (or adhering to) the cost share theorem} 
