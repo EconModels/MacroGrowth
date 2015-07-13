@@ -156,7 +156,8 @@ myXTable <- function(data, caption, label, digits=2){
         caption.placement="top", 
         size="\\tiny", 
         include.rownames=FALSE, 
-        math.style.negative=TRUE)
+        math.style.negative=TRUE, 
+        booktabs=TRUE)
 }
 @
 
