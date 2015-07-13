@@ -105,15 +105,15 @@
 \begin{document}
 
 <<setup, echo=FALSE, message=FALSE, eval=TRUE, warning=FALSE>>=
-require(EconData)
-require(EconModels)
-require(dplyr)
-require(reshape2)
-require(ggplot2)
-require(mosaic)
-require(xtable)
-require(knitr)
-require(texreg)
+library(EconData)
+library(EconModels)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(mosaic)
+library(xtable)
+library(knitr)
+library(texreg)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
