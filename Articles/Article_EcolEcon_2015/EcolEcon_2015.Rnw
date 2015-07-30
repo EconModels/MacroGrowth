@@ -255,30 +255,7 @@ The following subsections describe each.
 
 
 
-The Cobb-Douglas production function can be expressed as
-%
-\begin{equation} \label{eq:CD}
-  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
-\end{equation}
-%
-where 
 
-Constant returns to scale are represented by the constraint
-$\alpha_1 + \alpha_2 = 1$.
-
-The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
-can be augmented to include an energy term:
-%
-\begin{equation} \label{eq:CDe}
-  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
-\end{equation}
-%
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
-The energy-augmented Cobb-Douglas production function 
-is often assumed to have constant returns to scale for the three factors 
-of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
-The term $A$ is known as total factor productivity,
-and $\lambda$ is the Solow residual. 
 
 
 
@@ -1252,6 +1229,10 @@ fsbg <- function(coun, mod){
                          measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
                          value.name = "value", 
                          variable.name = "variable")
+  bar_chart_data$variable <- plyr::mapvalues(bar_chart_data$variable, 
+                                       from=c("alpha_1", "alpha_2", "alpha_3"), 
+                                       to=c("alpha_k", "alpha_l", "alpha_e"))
+
   # Define the color palette (see http://www.cookbook-r.com/Graphs/Colors_(ggplot2))
   cbPalette <- c("#E69F00", "#999999", "#F0E442", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
   # Make the plot
@@ -1572,6 +1553,33 @@ This section is the graveyard for information pertaining to the Cobb-Douglas mod
 \subsubsection{Cobb-Douglas Production Function} 
 \label{sec:CDe}
 %------------------------------
+
+The Cobb-Douglas production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where 
+
+Constant returns to scale are represented by the constraint
+$\alpha_1 + \alpha_2 = 1$.
+
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented to include an energy term:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
+The term $A$ is known as total factor productivity,
+and $\lambda$ is the Solow residual. 
+
+
 
 The Cobb-Douglas production function can be expressed as
 %
