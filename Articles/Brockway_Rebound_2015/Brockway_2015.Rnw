@@ -111,7 +111,7 @@ library(dplyr)
 library(reshape2)
 library(ggplot2)
 # library(mosaic)
-# library(xtable)
+library(xtable)
 library(knitr)
 # library(texreg)
 
@@ -144,9 +144,7 @@ opts_chunk$set(
   message=FALSE, 
   # Tells whether to echo code for all chunks. 
   # Set TRUE on an individual chunk to see its code.
-  echo=FALSE,
-  # Sets all table captions to the top.
-  xtable.caption.placement="top"
+  echo=FALSE
 )
 @
 
@@ -243,8 +241,8 @@ Historical data have been provided by Paul Brockway.
 <<Data>>=
 # Create the historicalData data frames
 # Set the working directory to the project directory.
-print(getwd())
-historicalData <- read.csv(file = "data/BrockwayData.csv")
+historicalData <- read.csv(file = file.path("data", "BrockwayData.csv"))
+countries <- c("UK", "US", "CN")
 @
 
 <<Historical Data Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
@@ -253,7 +251,7 @@ historicalDataForGraph <- melt(data = historicalData, measure.vars = c("iY", "iK
                                value.name = "value", variable.name = "variable")
 
 # Relevel factors before plotting
-historicalDataForGraph$Country <- relevelFactor(as.factor(historicalDataForGraph$Country), c("UK", "US", "CN"))
+historicalDataForGraph$Country <- relevelFactor(as.factor(historicalDataForGraph$Country), countries)
 
 historicalPlot(historicalDataForGraph, 
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
@@ -279,9 +277,10 @@ if (!rerunModels){
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
-  models <- lapply(c("UK", "US", "CN"), function(coun){
+  models <- lapply(countries, function(coun){
     return(cesModel(iY ~ iK + iL + iU + iYear, filter(historicalData, Country==coun, nest=1:3)))
   })
+  names(models) <- countries
   # Save the models.
   saveRDS(models, file = fileName)
 }
@@ -292,7 +291,44 @@ if (!rerunModels){
 \label{sec:results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+<<resultsUK, echo=TRUE>>=
+summary(models[["UK"]])
+naturalCoef(models[["UK"]])
+@
 
+<<resultsUS, echo=TRUE>>=
+summary(models[["US"]])
+naturalCoef(models[["US"]])
+@
+
+<<resultsCN, echo=TRUE>>=
+summary(models[["CN"]])
+naturalCoef(models[["CN"]])
+@
+
+The following provides the results in tabular form.
+
+<<resultsTable>>=
+fittedParamsTable <- lapply(countries, function(coun){
+  cbind(coun, naturalCoef(models[[coun]]))
+}) %>% do.call(rbind, .)
+@
+
+<<print_resultsTable, results="asis">>=
+myXTable <- function(data, caption, label, digits=2){
+  table <- xtable(data, caption=caption, label=label, digits=digits)
+  print(table, 
+        caption.placement="top", 
+        size="\\tiny", 
+        include.rownames=FALSE, 
+        math.style.negative=TRUE, 
+        booktabs=TRUE)
+}
+myXTable(fittedParamsTable,
+         caption="Tabular results.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
