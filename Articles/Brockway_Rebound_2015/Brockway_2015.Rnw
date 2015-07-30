@@ -1,0 +1,331 @@
+% This article has been prepared for publication in RStudio with knitr.
+% According to http://www.elsevier.com/author-schemas/the-elsarticle-latex-document-class, we should be using the
+% elsarticle.cls file.
+% According to http://cdn.elsevier.com/assets/pdf_file/0006/109392/journal_refstyles.pdf, we should be using
+% elsarticle-template-2-harv.tex as the template for the text.
+% Furthermore, we should be using model2-names.bst for the bibliographic references.
+% The approach here is to load the frontmatter and backmatter from elsarticle-template-2-harv.tex
+% both ahead of and behind the text for our paper.
+% -- Matthew Kuperus Heun, 2014-08-01
+
+%% This is file `elsarticle-template-2-harv.tex',
+%%
+%% Copyright 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle  Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: elsarticle-template-2-harv.tex 155 2009-10-08 05:35:05Z rishi $
+%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-2-harv.tex $
+%%
+\documentclass[preprint,authoryear,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,authoryear,1p,times]{elsarticle}
+%% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,3p,times]{elsarticle}
+%% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,authoryear,5p,times]{elsarticle}
+%% \documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\usepackage{wrapfig}    % Allows wrapping of text around figures
+\usepackage{soul}       % Provides strikethrough text
+\usepackage{float}      % Allows precise positioning of tables and figures within the text
+\usepackage{amsmath}    % Allows \begin{equation*} \end{equation*} for unnumbered equations
+\usepackage{multirow}   % To create multirow tables
+\usepackage{hyperref}   % To create hyperlinks in the paper
+\usepackage{microtype}  % produces hanging punctuation and beautiful type
+\usepackage{booktabs}   % for beautiful tables
+\usepackage{dcolumn}    % aligns table columns at decimal places
+
+
+% From http://economics.utoronto.ca/osborne/latex/BIBTEX.HTM
+\newcommand{\citeapos}[1]{\citeauthor{#1}'s (\citeyear{#1})} % Posessive citations. 
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+\journal{Unknown}
+
+\begin{document}
+
+<<setup, echo=FALSE, message=FALSE, eval=TRUE, warning=FALSE>>=
+library(EconData)
+library(EconModels)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+# library(mosaic)
+# library(xtable)
+library(knitr)
+# library(texreg)
+
+# Tell whether to re-run the analysis to create the models.
+# This file will use previously-saved models to generate
+# the paper if set to FALSE, greatly reducing time.
+# If something changes in the data or in the code that
+# performs the analysis, set 
+# rerunModels = TRUE
+# once to re-generate the information needed to 
+# create the paper.
+# ********************************************************
+rerunModels=FALSE
+# ********************************************************
+opts_chunk$set(
+  # ********************************************************
+  eval=TRUE,
+  # ********************************************************
+  # tikz allows LaTeX code in graphical output. 
+  # E.g., "$y$" for a variable name in the legend for a graph.  
+  # dev='tikz',
+  tidy=FALSE,
+  comment=NA,
+  # Tells whether to cache output from chunks are saved. Cacheing saves time. 
+  # However, references to LaTeX tables DO NOT WORK if cacheing is turned on.
+  cache=FALSE,
+  warning=FALSE,  #Tells whether to show warnings in the output.
+  # Turns off messages for all chunks. 
+  # Set TRUE on an individual chunk to see it.
+  message=FALSE, 
+  # Tells whether to echo code for all chunks. 
+  # Set TRUE on an individual chunk to see its code.
+  echo=FALSE,
+  # Sets all table captions to the top.
+  xtable.caption.placement="top"
+)
+@
+
+
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{CES analysis for Paul Brockway rebound paper}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[CalvinEngr]{Matthew Kuperus Heun\corref{cor1}}
+\ead{mkh2@calvin.edu}
+
+\address[CalvinEngr]{Engineering Department, Calvin College, Grand Rapids, MI 49546, USA}
+\cortext[cor1]{Corresponding author}
+
+\begin{abstract}
+%% Text of abstract
+This document provides an analysis of the CES production function
+for UK, US, and CN using quality-adjusted factors of production
+and the ($kl$)$e$ nesting.
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+economic growth \sep exergy \sep energy \sep CES
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+% \linenumbers
+%% main text
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} 
+\label{sec:Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This is a study of the effects of the CES production function 
+using quality-adjusted factors of production
+and the ($kl$)$e$ nesting.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{CES production function} 
+\label{sec:ces}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The version of the CES production function being fitted is:
+%
+\begin{equation} \label{eq:CESkle}
+  y = \theta \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho} \; ; \;
+      A \equiv \mathrm{e}^{\lambda (t-t_0)} \; .
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Historical data} 
+\label{sec:historical_data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Historical data have been provided by Paul Brockway.
+
+<<Data>>=
+# Create the historicalData data frames
+# Set the working directory to the project directory.
+print(getwd())
+historicalData <- read.csv(file = "data/BrockwayData.csv")
+@
+
+<<Historical Data Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+# Melt data for plotting
+historicalDataForGraph <- melt(data = historicalData, measure.vars = c("iY", "iK", "iL", "iU"), 
+                               value.name = "value", variable.name = "variable")
+
+# Relevel factors before plotting
+historicalDataForGraph$Country <- relevelFactor(as.factor(historicalDataForGraph$Country), c("UK", "US", "CN"))
+
+historicalPlot(historicalDataForGraph, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = ~ Country, 
+               line_types = c(1,2,4,3)) + 
+  scale_y_continuous(breaks=c(1, 10, 20)) +
+  xlab("") + 
+  ylab("Indexed Quantities")
+@
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parameter Estimation}
+\label{sec:parameter_estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<Models>>=
+fileName <- file.path("models", "Brockway2015Models.rds")
+if (!rerunModels){
+  # load from the file on disk
+  models <- readRDS(fileName)
+} else {
+  # re-run the models and save to disk.
+  # In RStudio, be sure to set the working directory to the source file directory.
+  models <- lapply(c("UK", "US", "CN"), function(coun){
+    return(cesModel(iY ~ iK + iL + iU + iYear, filter(historicalData, Country==coun, nest=1:3)))
+  })
+  # Save the models.
+  saveRDS(models, file = fileName)
+}
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}
+\label{sec:FutureWork}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}
+\label{sec:Acknowledgements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{document}
+
+%%
+%% End of file `elsarticle-template-2-harv.tex'.
