@@ -60,6 +60,7 @@ ZAGrowth_JAE.tex
 ExperimentingWithPlots.tex
 ESEE_2015.tex
 EcolEcon_2015.tex
+Brockway_2015.tex
 #
 # Files created by LaTeX
 #
@@ -85,6 +86,7 @@ CES.pdf
 ExperimentingWithPlots.pdf
 Results_Comparison.pdf
 Investigation.pdf
+Brockway_2015.pdf
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
