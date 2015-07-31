@@ -1222,6 +1222,8 @@ fsbg <- function(coun, mod){
   # Add a label column
   bar_chart_data$label <- paste(bar_chart_data$cst, bar_chart_data$flavor, 
                                 bar_chart_data$energy, bar_chart_data$nest, sep=", ")
+  # Add row numbers to the label column
+  bar_chart_data$label <- paste(paste0(1:length(bar_chart_data$label), ". "), bar_chart_data$label)
   # Capture the order that we want for the models on the vertical axis.
   order <- bar_chart_data$label
   # Now melt the data
