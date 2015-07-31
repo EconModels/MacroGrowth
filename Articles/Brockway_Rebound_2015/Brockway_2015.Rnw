@@ -110,10 +110,8 @@ library(EconModels)
 library(dplyr)
 library(reshape2)
 library(ggplot2)
-# library(mosaic)
 library(xtable)
 library(knitr)
-# library(texreg)
 
 # Tell whether to re-run the analysis to create the models.
 # This file will use previously-saved models to generate
@@ -257,6 +255,7 @@ historicalPlot(historicalDataForGraph,
                mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
                facet_formula = ~ Country, 
                line_types = c(1,2,4,3)) + 
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_y_continuous(breaks=c(1, 10, 20)) +
   xlab("") + 
   ylab("Indexed Quantities")
