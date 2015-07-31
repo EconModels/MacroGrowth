@@ -243,7 +243,7 @@ historicalData <- read.csv(file = file.path("data", "BrockwayData.csv"))
 countries <- c("UK", "US", "CN")
 @
 
-<<Historical Data Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
 # Melt data for plotting
 historicalDataForGraph <- melt(data = historicalData, measure.vars = c("iY", "iK", "iL", "iU"), 
                                value.name = "value", variable.name = "variable")
