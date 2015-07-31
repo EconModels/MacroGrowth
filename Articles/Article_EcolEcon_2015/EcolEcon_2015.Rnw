@@ -1001,10 +1001,10 @@ fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" 
 %++++++++++++++++++++++++++++++
 
 <<ResidualPlotFunction>>=
-residualPlot <- function(data){
+residualPlot <- function(data, withEnergyShape = 0){
   ggplot() +
-    geom_line(data=data, mapping=aes(x=Year, y=Residuals, linetype=energy)) +
-    scale_linetype_manual(values=c(2,3), name="") +
+    geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy)) +
+    scale_shape_manual(values=c(1, withEnergyShape)) +
     facet_grid(Country ~ flavor) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     xlab("") +
@@ -1032,19 +1032,19 @@ Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
 show fitting residuals for all CES models.
 %
 <<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")), 
+             withEnergyShape = 0) # square
 @
 %
 <<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest == "lek" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest == "lek" | nest=="kl")),
+             withEnergyShape = 3) # plus
 @
 %
 <<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")))
+residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")),
+             withEnergyShape = 4) # times
 @
-
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
