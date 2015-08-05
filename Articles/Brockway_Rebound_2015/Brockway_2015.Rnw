@@ -290,30 +290,187 @@ if (!rerunModels){
 \label{sec:results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+First, look a the UK results.
+
 <<resultsUK, echo=TRUE>>=
 summary(models[["UK"]])
 naturalCoef(models[["UK"]])
 @
+
+The fitted model for the UK is not near any boundaries
+to the economically-meaningful solution space.
+
+Next, look at the US results.
 
 <<resultsUS, echo=TRUE>>=
 summary(models[["US"]])
 naturalCoef(models[["US"]])
 @
 
+These results for the US deserve additional scrutiny.
+The winning US model looks like a boundary model, 
+with $\delta = 1$ and $\rho_1 = -1$.
+Indeed, this appears to be Boundary Model~7 in \ref{sec:boundary_models}.
+Note that $\rho_1 = -1$ corresponds to $\sigma_1 = \infty$.
+However, the winning model results report a value for $\sigma$, 
+which would be unknowable in Boundary Model~7.
+
+Upon closer examination, we find the following.
+
+<<InvestigateUS, echo=TRUE>>=
+# Establish some variable names to make code readable
+usdata <- filter(historicalData, Country=="US")
+usmodel <- models[["US"]]
+# Get the boundary model that is near
+bmod7 <- (attr(usmodel, "model.attempts"))$`07:*N1-`
+# Did Boundary Model 7 converge?
+bmod7$converged
+# The fitted parameters in bmod7 are as expected,
+# i.e., we get NA for both rho and sigma, 
+# and we have delta = 1.
+naturalCoef(bmod7)
+# Calculate the sse for bmod7
+sum(resid(bmod7)^2)
+# Compare to sse for fitted model
+sum(resid(usmodel)^2)
+# So, the sse for the winning model is, indeed, 
+# less than the sse for the boundary model.
+# To investigate why that is happening,
+# let's first look at the coefficient for delta
+# in the fitted model.
+naturalCoef(usmodel)$delta
+# Comes back as 1.
+# But machine precision is an issue here. 
+# Try this:
+naturalCoef(usmodel)$delta - 1
+# to find that delta is not EXACTLY 1.00000.
+# And, this makes a big difference.
+# To investigate further, Randy made a function
+# that calculates the ln(y) given historical data and 
+# some model coefficients.
+logces <- function(coefs, data=usdata) {
+  coefs <- as.list(coefs)
+  with(coefs,
+       log(gamma) + 
+         lambda * data$iYear + 
+         (-1/rho) * (
+           log( 
+             delta * ( delta_1 * data$iK^(-rho_1) + (1-delta_1) * data$iL^(-rho_1))^(rho/rho_1) +
+               (1-delta) * data$iU^(-rho))
+         )
+  )
+}
+# Now, calculate sse in many different ways
+# First, the boundary model (repeated from above).
+sum(resid(bmod7)^2)
+# Next from the winning model (repeated from above).
+sum(resid(usmodel)^2)
+# Using the logces function
+sum((log(usdata$iY) - logces(coef(usmodel)))^2)
+# Also try with the boundary model.
+# First, need to make an array of coefficients that
+# matches the full model
+bmod7coeffs <- coef(bmod7)
+bmod7coeffs[["gamma"]] <- exp(coef(bmod7)[["logscale"]])
+bmod7coeffs[["rho"]] <- 2 # value doesn't matter, because delta = 1.
+sum((log(usdata$iY) - logces(bmod7coeffs))^2)
+# This result matches the sse value from Boundary Model 7.
+# The above tests demonstrate that the logces function is correct.
+# Let's understand the sensitivity of sse to 
+# the fitted coefficients.
+# To do so, we'll calculate sse using rounded values 
+# of the model coefficients.
+# Try rounding to the 16th decimal place
+sum((log(usdata$iY) - logces(round(coef(usmodel), 16)))^2)
+# The above works as expected. We
+# reproduce the sse value from the model itself.
+# Try rounding to the 15th decimal place
+sum((log(usdata$iY) - logces(round(coef(usmodel), 15)))^2)
+# Same sse value as 16th decimal place.
+# Again, works as expected.
+# Now, try rounding to the 14th decimal place
+sum((log(usdata$iY) - logces(round(coef(usmodel), 14)))^2)
+# The sse value is slightly different!
+# 13th decimal place
+sum((log(usdata$iY) - logces(round(coef(usmodel), 13)))^2)
+# 12th decimal place
+sum((log(usdata$iY) - logces(round(coef(usmodel), 12)))^2)
+# Suddenly, we get a big jump in sse value.
+# Note that the value of delta above
+coef(usmodel)[["delta"]] - 1
+# is on the order of 10^-13,
+# right at the point we begin to see 
+# significant differences in sse.
+@
+
+At this point, Randy and I think that 
+our code is correct and we are seeing reality.
+We showed that $sse$ is sensitive to very small variations
+(in the 13$^{\mathrm{th}}$ decimal place!)
+in the values of the fitted coefficients.
+Moving slightly away from the boundary
+appears to improve the $sse$ enough
+so that the full fitted model is superior to 
+Boundary Model~7.
+And, our software was correct to report
+a model that contained all the parameters.
+
+This hypersensitivity to fitted coefficient values
+may come about because the value for $\rho$ is so large.
+Regardless of the reason, the hypersensitivity
+is unnerving (to me). 
+And, it provides additional encouragement to
+determine the statistical precision of the fitted values.
+
+Finally, look at the CN results.
+
 <<resultsCN, echo=TRUE>>=
 summary(models[["CN"]])
 naturalCoef(models[["CN"]])
 @
 
-The following provides the results in tabular form.
+Similar to the US results above, we can
+investigate the CN results in more detail.
+It looks like we are on a boundary:
+$\delta_1 = 1$ is Boundary Model~11
+in \ref{sec:boundary_models}.
+But, in fact, we are not.
 
-<<resultsTable>>=
-fittedParamsTable <- lapply(countries, function(coun){
-  cbind(coun, naturalCoef(models[[coun]]))
-}) %>% do.call(rbind, .)
+<<InvestigateCN, echo=TRUE>>=
+cndata <- filter(historicalData, Country=="CN")
+cnmodel <- models[["CN"]]
+naturalCoef(cnmodel)$delta_1
+naturalCoef(cnmodel)$delta_1 - 1
+# Similar to the US situation, we are close to,
+# but not exactly on, the boundary.
+# Get the boundary model that is nearby.
+bmod11 <- (attr(cnmodel, "model.attempts"))$`11:1-**`
+# Calcualte sse for the fitted model.
+sum(resid(cnmodel)^2)
+# Calculate sse for the nearby boundary model.
+sum(resid(bmod11)^2)
 @
 
-<<print_resultsTable, results="asis">>=
+Again, I think we are looking at reality here.
+The full fitted model is better than the nearby boundary model.
+
+I think this all means that we can use the 
+UK, US, and CN
+results straight away
+for rebound calculations.
+
+Tables~\ref{tab:print_resultsTable1} and~\ref{tab:print_resultsTable2}
+present the results in readable format.
+
+<<resultsTables>>=
+fittedParamsTable1 <- lapply(countries, function(coun){
+  cbind(coun, select(naturalCoef(models[[coun]]), scale, lambda, delta, delta_1, rho, rho_1))
+}) %>% do.call(rbind, .)
+
+fittedParamsTable2 <- lapply(countries, function(coun){
+  cbind(coun, select(naturalCoef(models[[coun]]), alpha_1, alpha_2, alpha_3, sigma_1, sigma))
+}) %>% do.call(rbind, .)
+
 myXTable <- function(data, caption, label, digits=2){
   table <- xtable(data, caption=caption, label=label, digits=digits)
   print(table, 
@@ -323,8 +480,18 @@ myXTable <- function(data, caption, label, digits=2){
         math.style.negative=TRUE, 
         booktabs=TRUE)
 }
-myXTable(fittedParamsTable,
-         caption="Tabular results.",
+@
+
+<<print_resultsTable1, results="asis">>=
+myXTable(fittedParamsTable1,
+         caption="Tabular results (1).",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+<<print_resultsTable2, results="asis">>=
+myXTable(fittedParamsTable2,
+         caption="Tabular results (2).",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
@@ -358,7 +525,105 @@ myXTable(fittedParamsTable,
 \appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Boundary models} 
+\label{sec:boundary_models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{table} \caption{CES boundary models (rows~1--20) and full model 
+(bottom row).} 
+\label{tab:CES_boundary_models} 
+  \begin{center}
+    \begin{tabular}{r c c c c l} 
+      \toprule
+      & $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
+      \midrule
+      1. & 1           & ---        & 1          & ---      & $y = \theta A x_1$ 
+      \\
+      2. & 0           & ---        & 1          & ---      & $y = \theta A x_2$ 
+      \\
+      3. & ---         & ---        & 0          & ---      & $y = \theta A x_3$ 
+      \\
+      \midrule
+      4. & ---         & 0          & 1          & ---      & $y = \theta A \min 
+      (x_1, \, x_2)$ \\
+      5. & 1           & ---        & ---        & 0        & $y = \theta A \min 
+      (x_1, \, x_3)$ \\
+      6. & 0           & ---        & ---        & 0        & $y = \theta A \min 
+      (x_2, \, x_3)$ \\
+%
+      7. &             & $\infty$   & 1          & ---        
+            & $y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
+%
+      8. & 1           & ---        &            & $\infty$        
+            & $y = \theta A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
+%
+      9. & 0           & ---        &            & $\infty$        
+            & $y = \theta A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
+%
+     10. &             &            & 1          & ---
+            & $y = \theta A \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
+                    \rho_1}$ \\
+%
+     11. & 1           & ---        &         & 
+            & $y = \theta A \left[ \delta x_1^{-\rho} 
+                    + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$ 
+                    \\ 
+%
+     12. & 0           & ---        &            & 
+            & $y = \theta A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right) 
+            x_3^{-\rho} \right]^{-1/\rho}$ \\
+      \midrule
+     13. & ---         & 0          & ---        & 0        & $y = \theta A \min 
+     (x_1, \, x_2, \, x_3)$ \\
+%
+     14. & ---         & 0          &            & $\infty$        
+            & $y = \theta A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta 
+            \right) x_3  \right]$ \\
+%
+     15. &             & $\infty$   & ---        & 0
+            & $y = \theta A \min \left[ \delta_1 x_1 + \left(1 - \delta_1 
+            \right) x_2, \, x_3  \right]$ \\
+%
+     16. &             & $\infty$   &            & $\infty$        
+            & $y = \theta A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 - 
+            \delta_1 \right) x_2 \right] 
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\
+%
+     17. & ---         & 0          &            & 
+            & $y = \theta A \left\{ \delta \left[ \min \left( x_1, \, x_2 
+            \right) \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ 
+                    {-1/\rho}$ \\ 
+%
+     18. &            &            & ---     & 0
+            & $y = \theta A \min \left\{ \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
+                    \rho_1}, \, x_3 \right\}$ \\ 
+%
+     19. &             &            &            & $\infty$
+            & $y = \theta A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
+                    \rho_1}  
+                    + \left( 1 - \delta \right) x_3  \right\}$ \\ 
+%
+     20. &             & $\infty$   &            &
+            & $y = \theta A \left\{ \delta \left[ \delta_1 x_1 
+                    + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ 
+                    {-1/\rho}$ \\
+\midrule
+         &            &            &         & 
+            & $y = \theta A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1} 
+                    + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/
+                    \rho_1}  
+                    + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^ 
+                    {-1/\rho}$ \\ 
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
 
 \end{document}
 
