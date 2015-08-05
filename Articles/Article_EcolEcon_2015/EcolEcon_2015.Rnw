@@ -880,6 +880,11 @@ if (rerunResampling){
 }
 @
 
+<<ResamplingGraph>>=
+
+
+@
+
 
 <<Fitted_and_Residuals>>=
 filenameResampleCoeffs <- ""
@@ -1106,7 +1111,7 @@ for all modeling decisions.
 %
 <<CES_sr_gof, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-           select(Country, model, flavor, energy, nest, cst, gamma, lambda, mse),
+           select(Country, model, flavor, energy, nest, cst, scale, lambda, mse),
          caption="$\\theta$, Solow residual, and $mse$ for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
