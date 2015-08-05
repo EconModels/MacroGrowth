@@ -125,6 +125,8 @@ library(texreg)
 # create the paper.
 # ********************************************************
 rerunModels=FALSE
+rerunResampling=FALSE
+nResamples <- 4 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -859,7 +861,28 @@ AllCoeffs$cst <- relevelFactor(as.factor(unlist(AllCoeffs$cst)), c("Adhere to CS
 AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
 @
 
+<<Resampling>>=
+resampleFilename <- "EcolEcon2015kleResamples.rds"
+if (rerunResampling){
+  # Run some resampling on the PT and UK models that adhere to the cost-share theorem,
+  # includes energy, uses quality-adjusted variables, and employs the (kl)e nesting.
+  # This is u-g-l-y code. Just getting something running for now.
+  modPT <- models$PT$adjusted$withE$CES$kle
+  modUK <- models$UK$adjusted$withE$CES$kle
+  resamplesPT <- resampledFits(modPT, method = "wild", n = nResamples)
+  resamplesUK <- resampledFits(modUK, method = "wild", n = nResamples)
+  resampleCoeffs <- rbind(cbind(resamplesPT$coeffs, Country="PT"), cbind(resamplesUK$coeffs, Country="UK"))
+  resampleCoeffs$energy <- TRUE
+  resampleCoeffs$nest <- "(kl)e"
+  saveRDS(resampleCoeffs, file = resampleFilename)
+} else {
+  resampleCoeffs <- readRDS(resampleFilename)
+}
+@
+
+
 <<Fitted_and_Residuals>>=
+filenameResampleCoeffs <- ""
 fittedAndResidData <- function(model, id){
   # ******************************************
   # getData doesn't work for lm models that are created for CST="Adhere to CST".
