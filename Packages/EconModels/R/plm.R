@@ -114,7 +114,8 @@ plm <- function( formula, data=parent.frame(), params=c(), optimize=TRUE, .ocall
       res <- plm(formula=formula, data=data, params=orig_params, optimize=FALSE, .ocall=.ocall)
       res$converged <- FALSE
     }
-    res$coefficients <- c(coef(res), unused_params)
+    # don't think we need this since the unused_params will be among orig_params or opt_params
+    # res$coefficients <- c(coef(res), unused_params)
     res$optimization <- opt_out
     res$start <- orig_params
     return(res)
