@@ -175,9 +175,14 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
       coefList[["sigma_1"]] <- 0
     }
   }
-  gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
-  if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
-  if (is.null(gamma_coef)) gamma_coef <- NA
+  # We also prefer the name "scale" for the pre-multiplier coefficient.
+  # cesEst gives this as "gamma"
+#   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+#   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
+#   if (is.null(gamma_coef)) gamma_coef <- NA
+  scale <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+  if (is.na(scale)) scale <- coefList$gamma
+  if (is.null(scale)) scale <- NA
   lambda <-  tryCatch(with(coefList, lambda), error=function(e) NA)
   delta_1 <-  tryCatch(with(coefList, delta_1), error=function(e) NA)
   delta <-  tryCatch(with(coefList, delta), error=function(e) NA)
@@ -185,15 +190,15 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
   sigma_1 <-  tryCatch(with(coefList, sigma_1), error=function(e) NA)
   rho <-  tryCatch(with(coefList, rho), error=function(e) NA)
   sigma <-  tryCatch(with(coefList, sigma), error=function(e) NA)
-  sse <-  sum(resid(object)^2)
+  # We no longer include sse in naturalCoef, because sse is not a coefficient
+  # sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
-
-    
 
   sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest)
   
   as.data.frame( 
-    dplyr::data_frame( gamma = gamma_coef,
+    dplyr::data_frame( scale = scale,
+              logscale = log(scale),
               lambda = lambda,
               delta = delta,
               delta_1 = delta_1,
