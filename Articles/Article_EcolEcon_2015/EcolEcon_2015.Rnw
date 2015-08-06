@@ -880,11 +880,6 @@ if (rerunResampling){
 }
 @
 
-<<ResamplingGraph>>=
-
-
-@
-
 
 <<Fitted_and_Residuals>>=
 filenameResampleCoeffs <- ""
@@ -1365,6 +1360,39 @@ myXTable(filter(AllCoeffs, model=="CES") %>%
 \subsubsection{CES nesting} 
 \label{sec:sigma_nesting}
 %------------------------------
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Resampling} 
+\label{sec:resampling}
+%++++++++++++++++++++++++++++++
+
+<<lambda_theta_resampling_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.1) +
+    labs(x=expression(theta), y=expression(lambda))
+@
+
+<<alpha_resampling_graph, fig.pos="H", fig.align='center', fig.width=5.5, fig.height=7.5, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.05)
+@
+
+<<sigma1_delta1_resampling_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1), 
+                    facet_formula=~Country, alpha=0.1) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
+    labs(x=expression(delta[1]), y=expression(sigma[kl]))
+@
+
+<<sigma_delta_resampling_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)e}$ and $\\delta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma), 
+                    facet_formula=~Country, alpha=0.1) +
+    coord_trans(y="sigma") +
+    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
+    labs(x=expression(delta), y=expression(sigma[kle]))
+@
 
 
 
