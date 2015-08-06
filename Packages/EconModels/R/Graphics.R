@@ -18,7 +18,7 @@ tri2y <- function(x,y,z) {
 
 #' @export
 tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
-    xy_theme(base_size = base_size, base_family = base_family) %+replace% 
+    xy_theme_old(base_size = base_size, base_family = base_family) %+replace% 
       theme(panel.border = element_blank(), 
             axis.line = element_blank(),
             axis.text = element_blank(),
@@ -27,26 +27,27 @@ tri_theme <- function(base_size=12, base_family = "", base_theme=theme_bw) {
             panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank(),
             plot.background = element_blank(),  
-            strip.background =  element_rect(fill = NA, colour = xy_theme()$axis.text$colour)
+            strip.background =  element_rect(fill = NA, colour = xy_theme_old()$axis.text$colour)
             )
 }  
 
-# xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
-#   base_theme(base_size = base_size, base_family = base_family) %+replace% 
-#     theme(# panel.border = element_blank(), 
-#           # panel.grid.major = element_blank(), 
-#           panel.grid.minor = element_blank(),
-#           plot.background = element_blank(),
-#           strip.text = element_text(colour=label_colour, size=.8 * base_size),
-#           strip.background =  element_rect(fill = NA, colour = NA),
-#           legend.background = element_rect(fill=NA, colour=NA),
-#           legend.key= element_rect(fill=NA, colour=NA),
-#           legend.text=element_text(colour=label_colour),
-#           axis.text = element_text(colour=label_colour, size=.8 * base_size), 
-#           axis.ticks = element_blank(),
-#           axis.title = element_text(colour=label_colour, size=base_size)
-#     )
-# }
+#' @export
+xy_theme_old <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
+  base_theme(base_size = base_size, base_family = base_family) %+replace% 
+    theme(# panel.border = element_blank(), 
+          # panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          plot.background = element_blank(),
+          strip.text = element_text(colour=label_colour, size=.8 * base_size),
+          strip.background =  element_rect(fill = NA, colour = NA),
+          legend.background = element_rect(fill=NA, colour=NA),
+          legend.key= element_rect(fill=NA, colour=NA),
+          legend.text=element_text(colour=label_colour),
+          axis.text = element_text(colour=label_colour, size=.8 * base_size), 
+          axis.ticks = element_blank(),
+          axis.title = element_text(colour=label_colour, size=base_size)
+    )
+}
 
 #' @export
 xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_colour="gray50") {
@@ -94,15 +95,15 @@ triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"),
     tri_theme() + 
     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
                      y=tri2y(h,0,1-h), yend = tri2y(h, 1-h, 0)),
-                     data=points, color=xy_theme()$panel.grid.major$colour) +
+                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
     geom_segment(aes(x=tri2x(0,h,1-h), xend = tri2x(1-h, h, 0), 
                      y=tri2y(0,h,1-h), yend = tri2y(1-h, h, 0)),
-                     data=points, color=xy_theme()$panel.grid.major$colour) +
+                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
-                     data=points, color=xy_theme()$panel.grid.major$colour) +
+                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
     geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), 
-              color=xy_theme()$axis.title$colour, 
+              color=xy_theme_old()$axis.title$colour, 
               size=4,
               data=data.frame(label=rep(labels, length.out=3),
                               x=c(.5,-.02,1.02), 
@@ -144,12 +145,13 @@ standardTriPlot <- function(data,
                             aes_string="", #"color=lambda", 
                             orig_color = "gray70",
                             mapping = aes(),
+                            labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
                             size=1.0, 
                             alpha=0.2,
                             facet_formula = country ~ nest ){
   p <- triPlot(subset(data, method!="orig"), 
-               gamma, alpha, beta,
-               labels=c("gamma", "alpha", "beta"),
+               alpha_3, alpha_1, alpha_2,
+               labels=labels,
                grid_lines=grid_lines,  aes_string=aes_string, mapping=mapping, 
                size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
@@ -184,7 +186,7 @@ standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2
   if ("color" %in% mapping || "colour" %in% mapping) {
     p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
   }
-  p + xy_theme()
+  p + xy_theme_old()
 }
 
 #' @export
