@@ -73,7 +73,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
 
 
 #' @export
-triPlot <- function(data, x, y, z, labels=c("gamma", "alpha", "beta"), 
+triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"), 
                     parse=TRUE, grid_lines=4, aes_string="", geom=geom_point, ...) {
   h <- seq(0, 1, by=1/grid_lines)
   points <- data.frame( h=h )
