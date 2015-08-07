@@ -537,7 +537,7 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
 Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
 are shown in Figure~\ref{fig:Historical Data Graph}.
 
-<<Historical Data Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
 # Melt the data into a form that is useful in a couple places
 histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, name){
   meta <- strsplit(name, split="[.]") %>% unlist
@@ -567,7 +567,7 @@ historicalPlot(histDataForGraph,
   ylab("Indexed (1960=1)")
 @
 
-<<Pre-econometric graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
+<<Pre-econometric_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
 pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form, name){
   meta <- strsplit(name, split="[.]") %>% unlist
   Country <- meta[1]
@@ -676,7 +676,7 @@ if (!rerunModels){
   # In RStudio, be sure to set the working directory to the source file directory.
   
   #
-  # Models that are exponential only
+  # Models that are exponential only, y = A * exp(lambda*t)
   #
   modelsExp <- list()
   alphaExp <- 0
@@ -686,7 +686,7 @@ if (!rerunModels){
     # Replace with better code later. 
     # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
     # or something like that.
-    form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Remove energy
+    form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
     yVar <- as.name(summands(form, n=1, right=FALSE))
     tVar <- as.name(summands(form, n=1))
     data <- historicalData[[country]]
@@ -704,7 +704,7 @@ if (!rerunModels){
     expMod$response <- sdata$iGDP 
     modelsExp[[country]] <- expMod
   }
-  # Save exponential theorem models to disk.
+  # Save exponential models to disk.
   saveRDS(modelsExp, file=fileNameExp)
 
   
@@ -815,6 +815,7 @@ AllCoeffsCST <- leaf_apply(modelsCST, class = c("lm"), f = function(modCST, id){
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
 
+# Put all CD and CES model coefficients into a data frame.  
 AllCoeffsNoCST <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_list <- strsplit(id, split = "[.]")[[1]]
@@ -914,7 +915,7 @@ temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
   # the models produced by those functions will be in the correct form for yhat() function.
   return(fittedAndResidData(model, id))
 }) %>% do.call(rbind, .)
-temp_data_exp$cst <- "Reject CST"
+temp_data_exp$cst <- NA
 
 temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
   # ****************************************************
@@ -998,17 +999,17 @@ fittedGraphNoCST <- function(data){
 @
 
 Both historical GDP and fitted GDP are shown in 
-Figures~\ref{fig:Graphs CESkle-fitted}--\ref{fig:Graphs CESekl-fitted}.
+Figures~\ref{fig:Graphs_CESkle-fitted}--\ref{fig:Graphs_CESekl-fitted}.
 %
-<<Graphs CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
+<<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
 fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")))
 @
 %
-<<Graphs CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
+<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
 fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="lek" | nest=="kl")))
 @
 %
-<<Graphs CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
+<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
 fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")))
 @
 
@@ -1302,6 +1303,8 @@ because $\sigma_1$ and $\sigma$ have different meanings
 for each nesting.
 I'm planning to change the table to make interpretation easier. ---MKH ****
 
+
+
 **** Is there a graph we want to make here? ---MKH ****
 %
 <<CES_sigma, results="asis">>=
@@ -1353,7 +1356,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formu
 
 <<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
-                labels=c("alpha[e]", "alpha[k]", "alpha[l]"))
+                labels=c("alpha[e]", "alpha[k]", "alpha[l]"), size=2.0)
 @
 
 <<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
