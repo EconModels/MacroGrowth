@@ -1020,6 +1020,7 @@ fittedGraphNoCSP(fittedGraphData_ekl)
 %++++++++++++++++++++++++++++++
 
 <<ResidualPlotFunction>>=
+
 residualPlot <- function(data, withEnergyShape = 0){
   ggplot() +
     geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy, size=energy)) +
@@ -1034,6 +1035,49 @@ residualPlot <- function(data, withEnergyShape = 0){
     xy_theme() +
     theme(legend.title=element_blank())
 }
+
+# This version also plots reference model residuals.
+# But the reference model dwarfs all other residuals and looks bad on the graph.
+# So, I decided not to use this. ---MKH, 14 Aug 2015
+
+# residualPlot <- function(data, withEnergyShape = 0){
+#   # Keep only the data we need
+#   residGraphData <- select(data, Year, Country, Residuals, flavor, energy, model, nest, CSP, ResidualsExp)
+#   # Melt the data so that we can include the reference model, too.
+#   residGraphData <- melt(residGraphData, 
+#                          measure.vars=c("Residuals", "ResidualsExp"),
+#                          value.name="value",
+#                          variable.name="variable")
+#   residGraphData$label <- with(residGraphData, paste(variable, energy))
+#   
+#   # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
+#   residGraphData <- filter(residGraphData, label=="Residuals With energy" | label=="Residuals Without energy" |
+#                              label=="ResidualsExp Without energy")
+#   
+#   residGraphData$label <- plyr::mapvalues(residGraphData$label, 
+#                                           from = c("Residuals With energy", 
+#                                                    "Residuals Without energy",
+#                                                    "ResidualsExp Without energy"), 
+#                                           to = c("With energy", 
+#                                                  "Without energy",
+#                                                  "Reference model"))
+#   # Relevel factors
+#   residGraphData$label <- relevelFactor(as.factor(residGraphData$label), 
+#                                          c("Without energy", "With energy", "Reference model"))
+#   
+#   ggplot() +
+#     geom_point(data=residGraphData, mapping=aes(x=Year, y=value, shape=label, color=label, size=label)) +
+#     scale_shape_manual(values=c(1, withEnergyShape, 5)) +
+#     scale_size_manual(values=c(4, 4, 2)) +
+#     # scale_color_manual(values=c("gray50", "green", "red")) +
+#     facet_grid(Country ~ flavor) +
+#     geom_hline(yintercept = 0, colour="gray50", size=0.1) +
+#     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+#     xlab("") +
+#     ylab("r") + 
+#     xy_theme() +
+#     theme(legend.title=element_blank())
+# }
 @
 
 Because we fit in log-space, fitting residuals ($r_i$) are defined as
@@ -1621,8 +1665,6 @@ is often assumed to have constant returns to scale for the three factors
 of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
 The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
-
-
 
 The Cobb-Douglas production function can be expressed as
 %
