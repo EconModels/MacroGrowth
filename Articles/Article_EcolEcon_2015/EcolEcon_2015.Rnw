@@ -1059,17 +1059,17 @@ historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
 Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
 show fitting residuals for all CES models.
 %
-<<Graphs CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
+<<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")), 
              withEnergyShape = 0) # square
 @
 %
-<<Graphs CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
+<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest == "lek" | nest=="kl")),
              withEnergyShape = 3) # plus
 @
 %
-<<Graphs CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
+<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")),
              withEnergyShape = 4) # times
 @
