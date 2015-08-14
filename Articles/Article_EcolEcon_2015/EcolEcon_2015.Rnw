@@ -1164,7 +1164,7 @@ ggplot() +
   scale_size_manual(values=c(2,4)) +
   scale_shape_manual(values=c(1,0,3,4)) + 
   facet_grid(Country ~ flavor) +
-  scale_y_continuous(breaks=c(0, 0.01, 0.02), limits=c(0, 0.03)) +
+  scale_y_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
   xlab("SSE") + 
   ylab(expression(lambda)) +
   xy_theme() +
