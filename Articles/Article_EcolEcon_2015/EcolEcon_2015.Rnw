@@ -535,7 +535,7 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
 \end{table}
 
 Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
-are shown in Figure~\ref{fig:Historical Data Graph}.
+are shown in Figure~\ref{fig:Historical_Data_Graph}.
 
 <<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
 # Melt the data into a form that is useful in a couple places
@@ -896,6 +896,31 @@ fittedAndResidData <- function(model, id){
   # After we implement specified values for alpha_1, alpha_2, and alpha_3 in our fitting functions, 
   # getData(model) will probably work.
   # At that time, change model$data to getData(model)
+}
+
+temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
+  df <- data.frame(select(model$data, Year, Country))
+  df$fittedExp <- exp(fitted(model)) # exp accounts for the fact that the model was fitted in log space.
+  df$ResidualsExp <- resid(model)
+  # df$model <- "exp"
+  return(df)
+}) %>% do.call(rbind, .)
+
+temp_data_CSP <- leaf_apply(modelsCSP, class=c("plm", "lm"), f = function(model, id){
+  df <- data.frame(select(model$data, Year, Country, iGDP))
+  df$fitted <- exp(fitted(model)) # fitted is in log space. Return to regular space.
+  df$Residuals <- resid(model) # residuals are in log space, and that is what we want.
+  # Now add meta information
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
+  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
+  df$model <- id_list[[4]]
+  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
+  return(df)
+}) %>% do.call(rbind, .)
+temp_data_CSP$CSP <- "Adhere to CSP"
+
+temp_data_noCSP <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
   df <- data.frame(select(model$data, Year)) 
   # By including [c(1:length(df$Year))] on the end, we 
   # add NAs (as appropriate) to the end of these columns
@@ -908,44 +933,21 @@ fittedAndResidData <- function(model, id){
   id_list <- strsplit(id, split = "[.]")[[1]]
   len <- length(id_list)
   df$Country <- id_list[[1]]
-  # Exponential models have only 1 item in the id list, namely country. Accommodate that length with if statements.
-  df$flavor <- if (len > 1) (if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted") else NA
-  df$energy <- if (len > 2) (if (id_list[[3]] == "noE") "Without energy" else "With energy") else "Without energy"
-  df$model <- if (len > 3) id_list[[4]] else "exp"
-  df$nest <- if (len > 4) id_list[[5]] else NA
+  df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
+  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
+  df$model <- id_list[[4]]
+  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
   return(df)  
-}
-
-temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
-  # ****************************************************
-  # Not all of the results from this code are not correct at this time.
-  # The residuals are OK.
-  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CSP models.
-  # This is because modelsCSP was not created with our typical functions.
-  # To correct this problem, we need to add arguments to cdModel and cesModel such that 
-  # the models produced by those functions will be in the correct form for yhat() function.
-  return(fittedAndResidData(model, id))
-}) %>% do.call(rbind, .)
-temp_data_exp$CSP <- NA
-
-temp_data_CSP <- leaf_apply(modelsCSP, class=c("plm", "lm"), f = function(model, id){
-  # ****************************************************
-  # Not all of the results from this code are not correct at this time.
-  # The residuals are OK.
-  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CSP models.
-  # This is because modelsCSP was not created with our typical functions.
-  # To correct this problem, we need to add arguments to cdModel and cesModel such that 
-  # the models produced by those functions will be in the correct form for yhat() function.
-  return(fittedAndResidData(model, id))
-}) %>% do.call(rbind, .)
-temp_data_CSP$CSP <- "Adhere to CSP"
-
-temp_data_noCSP <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
-  return(fittedAndResidData(model, id))  
 }) %>% do.call(rbind, .)
 temp_data_noCSP$CSP <- "Reject CSP"
 
-temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CSP, temp_data_noCSP )
+temp_data_noExp <- plyr::rbind.fill( temp_data_CSP, temp_data_noCSP )
+
+# Now merge the exponential-only model with the CSP and noCSP models. 
+# Doing this, because the exponential-only model is kind-of like iY:
+# it applies to all situations.
+# temp_data <- merge(temp_data_noExp, temp_data_exp)
+fitted_and_resid_data <- merge(temp_data_noExp, temp_data_exp)
 
 # No longer using this code, because we have a different "reference" model.
 # Get the unadjusted, without-energy residuals from models that adhere to the CSP
@@ -959,14 +961,23 @@ temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CSP, temp_data_noCSP )
 # and the residual value in the same year for the unadjusted, no-energy case
 # fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
 
+# # Get the reference residuals (from the exponential-only models) and store them in a data frame
+# r_ref <- filter(temp_data, model=="exp") %>% select(Year, Country, Residuals)
+# colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
+# # Merge to get the reference values in each appropriate row
+# fitted_and_resid_data <- merge(temp_data, r_ref)
+# # Create a column containing ∆r, the difference between a residual value
+# # and the residual value in the same year for the reference case
+# fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_ref"]])
+
 # Get the reference residuals (from the exponential-only models) and store them in a data frame
-r_ref <- filter(temp_data, model=="exp") %>% select(Year, Country, Residuals)
-colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
+# r_ref <- select(temp_data_exp, Year, Country, ResidualsExp)
+# colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
 # Merge to get the reference values in each appropriate row
-fitted_and_resid_data <- merge(temp_data, r_ref)
+# fitted_and_resid_data <- merge(temp_data, r_ref)
 # Create a column containing ∆r, the difference between a residual value
 # and the residual value in the same year for the reference case
-fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_ref"]])
+fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["ResidualsExp"]])
 
 # Relevel factors before plotting
 fitted_and_resid_data$Country <- relevelFactor(as.factor(fitted_and_resid_data$Country), c("PT", "UK"))
@@ -985,22 +996,32 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, CSP, model, fla
 %++++++++++++++++++++++++++++++
 
 <<Fitted and Residual Graph Functions>>=
-fittedGraphCSP <- function(data){
-  ggplot() +
-    geom_line(data=filter(data, CSP=="Adhere to CSP"), mapping=aes(x=Year, y=iGDP)) +
-    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=CSP)) +
-    scale_linetype_manual(values=c(2,3), name="") +
-    facet_grid(Country ~ flavor) + 
-    xlab("") +
-    ylab("Indexed GDP (1960=1)") +
-    xy_theme()
-}
-
 fittedGraphNoCSP <- function(data){
+  fittedGraphData <- select(data, Year, Country, iGDP, fitted, fittedExp, flavor, energy, CSP, nest)
+  fittedGraphData <- melt(fittedGraphData, 
+                     measure.vars = c("iGDP", "fitted", "fittedExp"), 
+                     value.name = "value", 
+                     variable.name = "variable")
+  fittedGraphData$label <- with(fittedGraphData, paste(variable, energy))
+  # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
+  fittedGraphData <- filter(fittedGraphData, label=="iGDP With energy" | label=="fittedExp With energy" |
+                       label == "fitted With energy" | label == "fitted Without energy")
+  fittedGraphData$label <- plyr::mapvalues(fittedGraphData$label, 
+                                      from = c("iGDP With energy", 
+                                               "fittedExp With energy",
+                                               "fitted With energy",
+                                               "fitted Without energy"), 
+                                      to = c("GDP", 
+                                             "Reference model",
+                                             "With energy",
+                                             "Without energy"))
+  # Relevel factors
+  fittedGraphData$label <- relevelFactor(as.factor(fittedGraphData$label), 
+                                         c("GDP", "Reference model", "Without energy", "With energy"))
+  # Make (and return) the graph
   ggplot() +
-    geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
-    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=energy)) +
-    scale_linetype_manual(values=c(2,3), name="") +
+    geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label)) +
+    scale_linetype_manual(values=c(1,4,2,3), name="") +
     facet_grid(Country ~ flavor) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
@@ -1013,16 +1034,19 @@ fittedGraphNoCSP <- function(data){
 Both historical GDP and fitted GDP are shown in 
 Figures~\ref{fig:Graphs_CESkle-fitted}--\ref{fig:Graphs_CESekl-fitted}.
 %
-<<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="kle" | nest=="kl")))
+<<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($kl$)$e$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_kle <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "kle"))
+fittedGraphNoCSP(fittedGraphData_kle)
 @
 %
-<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="lek" | nest=="kl")))
+<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($le$)$k$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "lek"))
+fittedGraphNoCSP(fittedGraphData_lek)
 @
 %
-<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")))
+<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($ek$)$l$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_ekl <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "ekl"))
+fittedGraphNoCSP(fittedGraphData_ekl)
 @
 
 
