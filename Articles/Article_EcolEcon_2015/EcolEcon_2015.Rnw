@@ -947,6 +947,7 @@ temp_data_noCSP$CSP <- "Reject CSP"
 
 temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CSP, temp_data_noCSP )
 
+# No longer using this code, because we have a different "reference" model.
 # Get the unadjusted, without-energy residuals from models that adhere to the CSP
 # and store them in a data frame
 # r_unadj_noE_CSP <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & CSP=="Adhere to CSP") %>% 
