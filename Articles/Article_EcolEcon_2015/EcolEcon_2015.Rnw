@@ -959,7 +959,7 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, CSP, model, fla
 \label{sec:fits_to_historical_data}
 %++++++++++++++++++++++++++++++
 
-<<Fitted and Residual Graph Functions>>=
+<<Fitted_and_Residual_Graph_Functions>>=
 fittedGraphNoCSP <- function(data){
   fittedGraphData <- select(data, Year, Country, iGDP, fitted, fittedExp, flavor, energy, CSP, nest)
   fittedGraphData <- melt(fittedGraphData, 
@@ -1667,12 +1667,12 @@ of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
 The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 %
-<<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
+<<Graphs_CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
 fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CD" & CSP=="Reject CSP"))
 @
 
 %
-<<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
+<<Graphs_CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
 residualPlot(filter(fitted_and_resid_data, model=="CD" & CSP=="Reject CSP"))
 @
 
