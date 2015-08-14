@@ -614,7 +614,7 @@ historicalPlot(pre_econometric_data,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parameter Estimation (Without Cost-share Theorem)}
-\label{sec:parameter_estimation_noCST}
+\label{sec:parameter_estimation_noCSP}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parameter estimation is accomplished with \texttt{formula}s of the form
@@ -675,12 +675,12 @@ Model fitting provides estimates for all parameters in the model.
 
 <<Models>>=
 fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
-fileNameCST <- "EcolEcon2015ModelsCST.rds"
+fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
 fileNameExp <- "EcolEcon2015ModelsExp.rds"
 if (!rerunModels){
   # load from the file on disk
   models <- readRDS(fileNameCDCES)
-  modelsCST <- readRDS(fileNameCST)
+  modelsCSP <- readRDS(fileNameCSP)
   modelsExp <- readRDS(fileNameExp)
 } else {
   # re-run the models and save to disk.
@@ -723,10 +723,10 @@ if (!rerunModels){
   # Models that adhere to the cost-share theorem
   # 
   
-  modelsCST <- list()
+  modelsCSP <- list()
   # Output elasticities based on cost share theorem
-  alphaCST <- 0.3 # Fraction of national accounts spent on capital
-  betaCST <- 0.7 # Fraction of national accounts spent on labor
+  alphaCSP <- 0.3 # Fraction of national accounts spent on capital
+  betaCSP <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
     for (adj in c("unadjusted", "adjusted")){
       # Replace with better code later. 
@@ -739,33 +739,33 @@ if (!rerunModels){
       tVar <- as.name(summands(form, n=3))
       data <- historicalData[[country]]
       # Cobb-Douglas
-      cdModCST <- lm(log(eval(yVar)) - alphaCST*log(eval(kVar)) - betaCST*log(eval(lVar)) ~ eval(tVar), data = data)
-      attr(cdModCST, "naturalCoeffs") <- data.frame(lambda=coef(cdModCST)[[2]],
-                                                    logscale=coef(cdModCST)[[1]], 
-                                                    scale=exp(coef(cdModCST)[[1]]),
-                                                    alpha_1=alphaCST,
-                                                    alpha_2=betaCST, 
+      cdModCSP <- lm(log(eval(yVar)) - alphaCSP*log(eval(kVar)) - betaCSP*log(eval(lVar)) ~ eval(tVar), data = data)
+      attr(cdModCSP, "naturalCoeffs") <- data.frame(lambda=coef(cdModCSP)[[2]],
+                                                    logscale=coef(cdModCSP)[[1]], 
+                                                    scale=exp(coef(cdModCSP)[[1]]),
+                                                    alpha_1=alphaCSP,
+                                                    alpha_2=betaCSP, 
                                                     alpha_3=0)
-      cdModCST$formula <- form
+      cdModCSP$formula <- form
       sdata <- subset(data, select=all.vars(form))
       sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-      cdModCST$data <- sdata
-      cdModCST$response <- sdata$iGDP
-      modelsCST[[country]][[adj]][["noE"]][["CD"]] <- cdModCST
+      cdModCSP$data <- sdata
+      cdModCSP$response <- sdata$iGDP
+      modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
       # CES
-      cesModCST <- plm(log(eval(yVar) / (alphaCST*eval(kVar)^(-rho_1) + betaCST*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
+      cesModCSP <- plm(log(eval(yVar) / (alphaCSP*eval(kVar)^(-rho_1) + betaCSP*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
                        data = historicalData[[country]],
                        params=c(rho_1=0.8))
-      names(cesModCST$coefficients) <- c("logscale", "lambda", "rho_1")
-      cesModCST$coefficients <- c(coef(cesModCST), c(delta_1=alphaCST, delta=1))
-      attr(cesModCST, "naturalCoeffs") <- EconModels:::makeNatCoef(cesModCST)
-      cesModCST$formula <- form
-      cesModCST$data <- sdata
-      modelsCST[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCST
+      names(cesModCSP$coefficients) <- c("logscale", "lambda", "rho_1")
+      cesModCSP$coefficients <- c(coef(cesModCSP), c(delta_1=alphaCSP, delta=1))
+      attr(cesModCSP, "naturalCoeffs") <- EconModels:::makeNatCoef(cesModCSP)
+      cesModCSP$formula <- form
+      cesModCSP$data <- sdata
+      modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
     }
   }
   # Save cost-share theorem models to disk.
-  saveRDS(modelsCST, file=fileNameCST)
+  saveRDS(modelsCSP, file=fileNameCSP)
 
   #
   # Models where all parameters are estimated (models don't adhere to the cost share theorem)
@@ -801,7 +801,7 @@ AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
                     energy = "Without energy", 
                     model = "exp", 
                     nest = NA,
-                    cst = "Reject CST"))
+                    CSP = "Reject CSP"))
   res <- cbind(res, naturalCoef(modExp))
   # Now caluculate mean squared error (sse) for each model.
   sse <- sum(resid(modExp)^2)
@@ -809,8 +809,8 @@ AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
 
-# Put all the cost-share theorem (CST) model coefficients into a data frame
-AllCoeffsCST <- leaf_apply(modelsCST, class = c("lm"), f = function(modCST, id){
+# Put all the cost-share theorem (CSP) model coefficients into a data frame
+AllCoeffsCSP <- leaf_apply(modelsCSP, class = c("lm"), f = function(modCSP, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_list <- strsplit(id, split = "[.]")[[1]]
   res <- rbind(list(Country = id_list[[1]], 
@@ -818,16 +818,16 @@ AllCoeffsCST <- leaf_apply(modelsCST, class = c("lm"), f = function(modCST, id){
                     energy = if (id_list[[3]]=="noE") "Without energy" else "With energy",
                     model=id_list[[4]], 
                     nest=if(length(id_list) > 4) id_list[[5]] else NA,
-                    cst="Adhere to CST"))
-  res <- cbind(res, naturalCoef(modCST))
+                    CSP="Adhere to CSP"))
+  res <- cbind(res, naturalCoef(modCSP))
   # Now calculate the mean squared error (sse) for each model.
-  sse <- sum(resid(modCST)^2)
+  sse <- sum(resid(modCSP)^2)
   res <- cbind(res, list(sse=sse))
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
 
 # Put all CD and CES model coefficients into a data frame.  
-AllCoeffsNoCST <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
+AllCoeffsNoCSP <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_list <- strsplit(id, split = "[.]")[[1]]
   res <- rbind(list(Country = id_list[[1]], 
@@ -835,14 +835,14 @@ AllCoeffsNoCST <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmod
                     energy = if (id_list[[3]]=="noE") "Without energy" else "With energy",
                     model=id_list[[4]], 
                     nest=if(length(id_list) > 4) id_list[[5]] else NA,
-                    cst="Reject CST"))
+                    CSP="Reject CSP"))
   res <- cbind(res, naturalCoef(mod))
   # Now calculate the sum of squared error (sse) for each model.
   sse <- sum(resid(mod)^2)
   res <- cbind(res, list(sse=sse))
   return(res)
 }) %>% do.call(plyr::rbind.fill, .)
-AllCoeffs <- plyr::rbind.fill(AllCoeffsExp, AllCoeffsCST, AllCoeffsNoCST)
+AllCoeffs <- plyr::rbind.fill(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
 # See hint at http://stackoverflow.com/questions/22555249/how-to-merge-data-frame-with-same-column-names
 AllCoeffs <- as.data.frame(lapply(AllCoeffs, function(x) unname(unlist(x))))
 # Get reference values for lambda and sse.
@@ -863,9 +863,9 @@ AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("Unadju
 AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("Without energy", "With energy"))
 AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("exp", "CD", "CES"))
 AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
-AllCoeffs$cst <- relevelFactor(as.factor(unlist(AllCoeffs$cst)), c("Adhere to CST", "Reject CST"))
+AllCoeffs$CSP <- relevelFactor(as.factor(unlist(AllCoeffs$CSP)), c("Adhere to CSP", "Reject CSP"))
 # Rearrange for easier viewing
-AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, cst)
+AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, CSP)
 @
 
 <<Resampling>>=
@@ -892,7 +892,7 @@ if (rerunResampling){
 filenameResampleCoeffs <- ""
 fittedAndResidData <- function(model, id){
   # ******************************************
-  # getData doesn't work for lm models that are created for CST="Adhere to CST".
+  # getData doesn't work for lm models that are created for CSP="Adhere to CSP".
   # After we implement specified values for alpha_1, alpha_2, and alpha_3 in our fitting functions, 
   # getData(model) will probably work.
   # At that time, change model$data to getData(model)
@@ -920,40 +920,40 @@ temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
   # ****************************************************
   # Not all of the results from this code are not correct at this time.
   # The residuals are OK.
-  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CST models.
-  # This is because modelsCST was not created with our typical functions.
+  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CSP models.
+  # This is because modelsCSP was not created with our typical functions.
   # To correct this problem, we need to add arguments to cdModel and cesModel such that 
   # the models produced by those functions will be in the correct form for yhat() function.
   return(fittedAndResidData(model, id))
 }) %>% do.call(rbind, .)
-temp_data_exp$cst <- NA
+temp_data_exp$CSP <- NA
 
-temp_data_CST <- leaf_apply(modelsCST, class=c("plm", "lm"), f = function(model, id){
+temp_data_CSP <- leaf_apply(modelsCSP, class=c("plm", "lm"), f = function(model, id){
   # ****************************************************
   # Not all of the results from this code are not correct at this time.
   # The residuals are OK.
-  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CST models.
-  # This is because modelsCST was not created with our typical functions.
+  # But, the yhat() call in fittedAndResidData() will not return the correct information from the CSP models.
+  # This is because modelsCSP was not created with our typical functions.
   # To correct this problem, we need to add arguments to cdModel and cesModel such that 
   # the models produced by those functions will be in the correct form for yhat() function.
   return(fittedAndResidData(model, id))
 }) %>% do.call(rbind, .)
-temp_data_CST$cst <- "Adhere to CST"
+temp_data_CSP$CSP <- "Adhere to CSP"
 
-temp_data_noCST <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
+temp_data_noCSP <- leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, id){
   return(fittedAndResidData(model, id))  
 }) %>% do.call(rbind, .)
-temp_data_noCST$cst <- "Reject CST"
+temp_data_noCSP$CSP <- "Reject CSP"
 
-temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CST, temp_data_noCST )
+temp_data <- plyr::rbind.fill( temp_data_exp, temp_data_CSP, temp_data_noCSP )
 
-# Get the unadjusted, without-energy residuals from models that obey the CST
+# Get the unadjusted, without-energy residuals from models that adhere to the CSP
 # and store them in a data frame
-# r_unadj_noE_CST <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & cst=="Adhere to CST") %>% 
+# r_unadj_noE_CSP <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & CSP=="Adhere to CSP") %>% 
 #   select(Year, Country, Residuals, model)
-# colnames(r_unadj_noE_CST)[colnames(r_unadj_noE_CST)=="Residuals"] <- "r_unadj_noE"
+# colnames(r_unadj_noE_CSP)[colnames(r_unadj_noE_CSP)=="Residuals"] <- "r_unadj_noE"
 # Merge to get the unadjusted, without-energy values next to each country, year, and model
-# fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CST)
+# fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CSP)
 # Create a column containing ∆r, the difference between a residual value
 # and the residual value in the same year for the unadjusted, no-energy case
 # fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
@@ -974,7 +974,7 @@ fitted_and_resid_data$energy <- relevelFactor(as.factor(fitted_and_resid_data$en
 fitted_and_resid_data$nest <- relevelFactor(as.factor(fitted_and_resid_data$nest), c("kl", "kle", "lek", "ekl"))
 
 # Make data viewing easier
-fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, cst, model, flavor, energy, nest)
+fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, CSP, model, flavor, energy, nest)
 @
 
 
@@ -984,10 +984,10 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, cst, model, fla
 %++++++++++++++++++++++++++++++
 
 <<Fitted and Residual Graph Functions>>=
-fittedGraphCST <- function(data){
+fittedGraphCSP <- function(data){
   ggplot() +
-    geom_line(data=filter(data, cst=="Adhere to CST"), mapping=aes(x=Year, y=iGDP)) +
-    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=cst)) +
+    geom_line(data=filter(data, CSP=="Adhere to CSP"), mapping=aes(x=Year, y=iGDP)) +
+    geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=CSP)) +
     scale_linetype_manual(values=c(2,3), name="") +
     facet_grid(Country ~ flavor) + 
     xlab("") +
@@ -995,7 +995,7 @@ fittedGraphCST <- function(data){
     xy_theme()
 }
 
-fittedGraphNoCST <- function(data){
+fittedGraphNoCSP <- function(data){
   ggplot() +
     geom_line(data=filter(data, energy=="Without energy"), mapping=aes(x=Year, y=iGDP)) +
     geom_line(data=data, mapping=aes(x=Year, y=fitted, linetype=energy)) +
@@ -1013,15 +1013,15 @@ Both historical GDP and fitted GDP are shown in
 Figures~\ref{fig:Graphs_CESkle-fitted}--\ref{fig:Graphs_CESekl-fitted}.
 %
 <<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($kl$)$e$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")))
+fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="kle" | nest=="kl")))
 @
 %
 <<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($le$)$k$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="lek" | nest=="kl")))
+fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="lek" | nest=="kl")))
 @
 %
 <<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with ($ek$)$l$ nesting. Solid line is historical GDP.">>=
-fittedGraphNoCST(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")))
+fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")))
 @
 
 
@@ -1060,17 +1060,17 @@ Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
 show fitting residuals for all CES models.
 %
 <<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="kle" | nest=="kl")), 
+residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="kle" | nest=="kl")), 
              withEnergyShape = 0) # square
 @
 %
 <<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest == "lek" | nest=="kl")),
+residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest == "lek" | nest=="kl")),
              withEnergyShape = 3) # plus
 @
 %
 <<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & cst=="Reject CST" & (nest=="ekl" | nest=="kl")),
+residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")),
              withEnergyShape = 4) # times
 @
 
@@ -1109,7 +1109,7 @@ for all modeling decisions.
 %
 <<CES_sr_gof, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-           select(Country, model, flavor, energy, nest, cst, scale, lambda, sse),
+           select(Country, model, flavor, energy, nest, CSP, scale, lambda, sse),
          caption="$\\theta$, Solow residual, and $sse$ for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1158,7 +1158,7 @@ results for CES models.
 
 <<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=sse, y=lambda, color=energy, size=cst, shape=nest)) +
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
   geom_vline(aes(xintercept = sse), filter(AllCoeffs, model=="exp") %>% select(Country, sse), colour="gray50", size=0.1) +
   geom_hline(aes(yintercept = lambda), filter(AllCoeffs, model=="exp") %>% select(Country, lambda), colour="gray50", size=0.1) +
   scale_size_manual(values=c(2,4)) +
@@ -1177,7 +1177,7 @@ ggplot() +
 
 %------------------------------
 \subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:gfsr_cst}
+\label{sec:gfsr_CSP}
 %------------------------------
 
 
@@ -1213,7 +1213,7 @@ the factor shares~($\alpha_i$ values) for all CES modeling decisions.
 %
 <<CES_alpha, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-           select(Country, model, flavor, energy, nest, cst, alpha_1, alpha_2, alpha_3),
+           select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3),
          caption="Factor shares~($\\alpha$) for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1228,13 +1228,13 @@ of factor shares from fitted values of $\delta_1$ and $\delta$.
 <<Factor_shares_bar_graph_function>>=
 fsbg <- function(coun, mod){
   bar_chart_data <- filter(AllCoeffs, Country==coun & model==mod) %>% 
-    select(Country, model, flavor, energy, nest, cst, alpha_1, alpha_2, alpha_3)
+    select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3)
   # Change nest to a nicer-looking nest string
   bar_chart_data$nest <- plyr::mapvalues(bar_chart_data$nest, 
                                          from=c("kl", "kle", "lek", "ekl"), 
                                          to=c("(kl)", "(kl)e", "(le)k", "(ek)l"))
   # Add a label column
-  bar_chart_data$label <- paste(bar_chart_data$cst, bar_chart_data$flavor, 
+  bar_chart_data$label <- paste(bar_chart_data$CSP, bar_chart_data$flavor, 
                                 bar_chart_data$energy, bar_chart_data$nest, sep=", ")
   # Add row numbers to the label column
   bar_chart_data$label <- paste(paste0(1:length(bar_chart_data$label), ". "), bar_chart_data$label)
@@ -1278,7 +1278,7 @@ fsbg(coun = "UK", mod = "CES")
 
 %------------------------------
 \subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:fs_cst}
+\label{sec:fs_CSP}
 %------------------------------
 
 
@@ -1322,7 +1322,7 @@ I'm planning to change the table to make interpretation easier. ---MKH ****
 %
 <<CES_sigma, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, model, flavor, energy, nest, cst, sigma_1, sigma),
+           select(Country, model, flavor, energy, nest, CSP, sigma_1, sigma),
          caption="Factor substitution~($\\sigma$) for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1333,7 +1333,7 @@ myXTable(filter(AllCoeffs, model=="CES") %>%
 
 %------------------------------
 \subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:sigma_cst}
+\label{sec:sigma_CSP}
 %------------------------------
 
 
@@ -1541,13 +1541,13 @@ leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
 
 %++++++++++++++++++++++++++++++
 \subsection{Correlograms for models that adhere to the cost-share theorem} 
-\label{sec:correlograms_CST}
+\label{sec:correlograms_CSP}
 %++++++++++++++++++++++++++++++
 
 In this section we present correlograms for all models that adhere to the cost-share theorem.
 
-<<Correlograms_CST, echo=FALSE, message=FALSE>>=
-leaf_apply(l = modelsCST, class = c("lm", "plm"), f = function(model, name){
+<<Correlograms_CSP, echo=FALSE, message=FALSE>>=
+leaf_apply(l = modelsCSP, class = c("lm", "plm"), f = function(model, name){
   acf(resid(model), main=name)
 })
 @
@@ -1555,12 +1555,12 @@ leaf_apply(l = modelsCST, class = c("lm", "plm"), f = function(model, name){
 
 %++++++++++++++++++++++++++++++
 \subsection{Correlograms for models that reject the cost-share theorem} 
-\label{sec:correlograms_noCST}
+\label{sec:correlograms_noCSP}
 %++++++++++++++++++++++++++++++
 
 In this section we present correlograms for all models that reject the cost-share theorem.
 
-<<Correlograms_noCST, echo=FALSE, message=FALSE>>=
+<<Correlograms_noCSP, echo=FALSE, message=FALSE>>=
 leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -1679,24 +1679,24 @@ The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 %
 <<Graphs CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
-fittedGraphNoCST(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
+fittedGraphNoCSP(filter(fitted_and_resid_data, model=="CD" & CSP=="Reject CSP"))
 @
 
 %
 <<Graphs CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CD" & cst=="Reject CST"))
+residualPlot(filter(fitted_and_resid_data, model=="CD" & CSP=="Reject CSP"))
 @
 
 
-Table~\ref{tab:Effect_of_CST_CD} shows the effect of the CST 
+Table~\ref{tab:Effect_of_CSP_CD} shows the effect of the CSP 
 on fitted parameters for the Cobb-Douglas model and the exponential-only model.
 The Cobb-Douglas models show lower $sse$ than the exponential-only models.
 The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
 to the exponential-only case.
 %
-<<Effect_of_CST_CD, results="asis">>=
+<<Effect_of_CSP_CD, results="asis">>=
 myXTable(filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
-           select(Country, model, cst, scale, lambda, alpha_1, alpha_2, sse),
+           select(Country, model, CSP, scale, lambda, alpha_1, alpha_2, sse),
          caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1709,7 +1709,7 @@ and the reference model (exponential-only).
 %
 <<CD_coeffs, results="asis">>=
 myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>% 
-           select(Country, model, flavor, energy, cst, scale, lambda, alpha_1, alpha_2, alpha_3, sse),
+           select(Country, model, flavor, energy, CSP, scale, lambda, alpha_1, alpha_2, alpha_3, sse),
          caption="Model parameters for all Cobb-Douglas models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1719,7 +1719,7 @@ myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>%
 Table~\ref{tab:DSRsse_CD} shows $\Delta \lambda$ and $\Delta sse$ results for the Cobb-Douglas models.
 %
 <<DSRsse_CD, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, cst, Dlambda, Dsse),
+myXTable(filter(AllCoeffs, model=="CD") %>% select(Country, model, flavor, energy, CSP, Dlambda, Dsse),
          caption="$\\Delta \\lambda$ and $\\Delta sse$ for Cobb-Douglas models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1733,7 +1733,7 @@ results for the Cobb-Douglas model.
 %
 <<DSRsse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta sse$) for the Cobb-Douglas model relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dsse, y=Dlambda, color=energy, size=cst)) +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=Dsse, y=Dlambda, color=energy, size=CSP)) +
   facet_grid(Country ~ flavor) +
   scale_size_manual(values=c(2,3.5)) +
   xlab(expression(Delta * sse)) + 
@@ -1746,7 +1746,7 @@ ggplot() +
 %
 <<percDSRsse_CD_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta sse \\, [\\%]$) for the Cobb-Douglas model relative to exponential-only models.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDsse, y=percDlambda, color=energy, size=cst)) +
+  geom_point(data=filter(AllCoeffs, model=="CD"), mapping=aes(x=percDsse, y=percDlambda, color=energy, size=CSP)) +
   facet_grid(Country ~ flavor) +
   scale_size_manual(values=c(2,3.5)) +
   xlab(expression(paste(Delta * sse, " [%]"))) + 
@@ -1759,7 +1759,7 @@ ggplot() +
 %
 <<DSRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Change in Solow Residuals~($\\Delta\\lambda$) and mean squared error~($\\Delta sse$) for the CES modles relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=Dsse, y=Dlambda, color=energy, size=cst, shape=nest)) +
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=Dsse, y=Dlambda, color=energy, size=CSP, shape=nest)) +
   scale_size_manual(values=c(2,3.5)) +
   scale_shape_manual(values=c(16,17,18,15)) +
   facet_grid(Country ~ flavor) +
@@ -1772,7 +1772,7 @@ ggplot() +
 %
 <<percDSRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Percentage change in Solow Residuals~($\\Delta\\lambda \\, [\\%]$) and mean squared error~($\\Delta sse \\, [\\%]$) for the CES models relative to the exponential-only model.">>=
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=percDsse, y=percDlambda, color=energy, size=cst, shape=nest)) +
+  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=percDsse, y=percDlambda, color=energy, size=CSP, shape=nest)) +
   scale_size_manual(values=c(2,3.5)) +
   scale_shape_manual(values=c(16,17,18,15)) +
   facet_grid(Country ~ flavor) +
