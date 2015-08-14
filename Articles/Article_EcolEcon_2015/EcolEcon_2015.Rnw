@@ -889,20 +889,10 @@ if (rerunResampling){
 
 
 <<Fitted_and_Residuals>>=
-filenameResampleCoeffs <- ""
-fittedAndResidData <- function(model, id){
-  # ******************************************
-  # getData doesn't work for lm models that are created for CSP="Adhere to CSP".
-  # After we implement specified values for alpha_1, alpha_2, and alpha_3 in our fitting functions, 
-  # getData(model) will probably work.
-  # At that time, change model$data to getData(model)
-}
-
 temp_data_exp <- leaf_apply(modelsExp, class=c("lm"), f = function(model, id){
   df <- data.frame(select(model$data, Year, Country))
   df$fittedExp <- exp(fitted(model)) # exp accounts for the fact that the model was fitted in log space.
   df$ResidualsExp <- resid(model)
-  # df$model <- "exp"
   return(df)
 }) %>% do.call(rbind, .)
 
@@ -949,34 +939,8 @@ temp_data_noExp <- plyr::rbind.fill( temp_data_CSP, temp_data_noCSP )
 # temp_data <- merge(temp_data_noExp, temp_data_exp)
 fitted_and_resid_data <- merge(temp_data_noExp, temp_data_exp)
 
-# No longer using this code, because we have a different "reference" model.
-# Get the unadjusted, without-energy residuals from models that adhere to the CSP
-# and store them in a data frame
-# r_unadj_noE_CSP <- filter(temp_data, flavor=="Unadjusted" & energy=="Without energy" & CSP=="Adhere to CSP") %>% 
-#   select(Year, Country, Residuals, model)
-# colnames(r_unadj_noE_CSP)[colnames(r_unadj_noE_CSP)=="Residuals"] <- "r_unadj_noE"
-# Merge to get the unadjusted, without-energy values next to each country, year, and model
-# fitted_and_resid_data <- merge(temp_data, r_unadj_noE_CSP)
 # Create a column containing ∆r, the difference between a residual value
-# and the residual value in the same year for the unadjusted, no-energy case
-# fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_unadj_noE"]])
-
-# # Get the reference residuals (from the exponential-only models) and store them in a data frame
-# r_ref <- filter(temp_data, model=="exp") %>% select(Year, Country, Residuals)
-# colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
-# # Merge to get the reference values in each appropriate row
-# fitted_and_resid_data <- merge(temp_data, r_ref)
-# # Create a column containing ∆r, the difference between a residual value
-# # and the residual value in the same year for the reference case
-# fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["r_ref"]])
-
-# Get the reference residuals (from the exponential-only models) and store them in a data frame
-# r_ref <- select(temp_data_exp, Year, Country, ResidualsExp)
-# colnames(r_ref)[colnames(r_ref)=="Residuals"] <- "r_ref"
-# Merge to get the reference values in each appropriate row
-# fitted_and_resid_data <- merge(temp_data, r_ref)
-# Create a column containing ∆r, the difference between a residual value
-# and the residual value in the same year for the reference case
+# and the residual value in the same year for the reference model
 fitted_and_resid_data[["Dr"]] <- abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["ResidualsExp"]])
 
 # Relevel factors before plotting
