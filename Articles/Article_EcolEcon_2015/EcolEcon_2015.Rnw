@@ -552,6 +552,17 @@ histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, nam
   return(mtrimmed_historical_data)
 }) %>% do.call(rbind, .)
 
+# Change variable names to make a nicer-looking graph
+histDataForGraph$variable <- plyr::mapvalues(histDataForGraph$variable,
+                                             from=c("iGDP", 
+                                                    "iKstkS.L", "iKservS.L", "iKstkO.WwithRD", "iKservO.WwithRD",
+                                                    "iL", "ihLest",
+                                                    "iXpMP", "iXp", "iUMP", "iU"),
+                                             to=c("y", 
+                                                  "k", "k", "k", "k",
+                                                  "l", "l",
+                                                  "e", "e", "e", "e"))
+
 # Relevel factors before plotting
 histDataForGraph$Country <- relevelFactor(as.factor(histDataForGraph$Country), c("PT", "UK"))
 histDataForGraph$flavor <- relevelFactor(as.factor(histDataForGraph$flavor), c("Unadjusted", "Quality-adjusted"))
@@ -1026,6 +1037,8 @@ residualPlot <- function(data, withEnergyShape = 0){
     scale_shape_manual(values=c(1, withEnergyShape)) +
     scale_size_manual(values=c(4,4)) +
     facet_grid(Country ~ flavor) +
+    # geom_hline(aes(yintercept = 0), colour="gray50", size=0.1) +
+    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     xlab("") +
     ylab("r") + 
