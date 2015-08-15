@@ -1420,7 +1420,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
     coord_trans(y="sigma") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
-    labs(x=expression(delta), y=expression(sigma[kle]))
+    labs(x=expression(delta), y=expression(sigma["(kl)"*e]))
 @
 
 
