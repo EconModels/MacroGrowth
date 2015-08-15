@@ -126,7 +126,7 @@ library(texreg)
 # ********************************************************
 rerunModels=FALSE
 rerunResampling=FALSE
-nResamples <- 100 # Number of resamples
+nResamples <- 1000 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
