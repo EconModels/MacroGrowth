@@ -1394,7 +1394,7 @@ myXTable(filter(AllCoeffs, model=="CES") %>%
 %++++++++++++++++++++++++++++++
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.1) +
+standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
     scale_y_continuous(breaks=c(0, 0.005, 0.01), limits=c(0, 0.01)) +
     labs(x=expression(theta), y=expression(lambda))
