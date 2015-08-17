@@ -186,7 +186,7 @@ standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2
   if ("color" %in% mapping || "colour" %in% mapping) {
     p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
   }
-  p + xy_theme_old()
+  p + xy_theme()
 }
 
 #' @export
