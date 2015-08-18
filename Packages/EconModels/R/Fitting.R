@@ -1,3 +1,34 @@
+
+
+standardES <- function( sigma=NA, sigma_1=NA, sigma_2=NA, nest=1:3, standardize=TRUE) {
+  if (standardize) {
+    nest <- c(nest, c(5,5,5,5))  # add dummy slots so nest has length >= 4
+    nest[1:2] <- sort(nest[1:2])
+    nest[3:4] <- sort(nest[3:4])
+    nest <- nest[nest < 5]      # remove dummy slots
+  }
+  
+  if (length(nest) == 2L) {
+    res <- data.frame(a=sigma)
+    names(res) <- paste0("sigma_", nest[1], nest[2])
+    return(res)
+  }
+  
+  if (length(nest) == 3L) {
+    res <- data.frame(a = sigma_1, b = sigma)
+    names(res) <- c( paste0("sigma_", nest[1], nest[2]),
+                     paste0("sigma_", nest[1], nest[2], "_", nest[3]) 
+    )
+    return(res)
+  }
+    res <- data.frame(a = sigma_1, b=sigma_2, c=sigma)
+    names(res) <- c( paste0("sigma_", nest[1], nest[2]),
+                     paste0("sigma_", nest[3], nest[4]),
+                     paste0("sigma_", nest[1], nest[2], "_", nest[3], nest[4])
+    )
+    return(res)
+}
+
 # This function provides alpha_i values for the CES model.
 # It converts from delta_1 and delta to alpha_i in a nest-aware way.
 # The standardCoefs provide the importance of each parameter
@@ -196,21 +227,25 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
 
   sc <- standardCoefs(delta_1=delta_1, delta=delta, nest=nest)
   
-  as.data.frame( 
-    dplyr::data_frame( scale = scale,
-              logscale = log(scale),
-              lambda = lambda,
-              delta = delta,
-              delta_1 = delta_1,
-              sigma_1 = if (is.na(sigma_1)) 1/(1 + rho_1) else sigma_1,
-              rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
-              sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
-              rho = if (is.na(rho)) 1/sigma - 1 else rho,
-              alpha_1 = sc$alpha_1,
-              alpha_2 = sc$alpha_2,
-              alpha_3 = sc$alpha_3
-    )
+  res <- 
+    as.data.frame( 
+      dplyr::data_frame( 
+        scale = scale,
+        logscale = log(scale),
+        lambda = lambda,
+        delta = delta,
+        delta_1 = delta_1,
+        sigma_1 = if (is.na(sigma_1)) 1/(1 + rho_1) else sigma_1,
+        rho_1 = if (is.na(rho_1)) 1/sigma_1 - 1 else rho_1,
+        sigma = if (is.na(sigma)) 1/(1 + rho) else sigma,
+        rho = if (is.na(rho)) 1/sigma - 1 else rho,
+        alpha_1 = sc$alpha_1,
+        alpha_2 = sc$alpha_2,
+        alpha_3 = sc$alpha_3
+      )
   )
+  
+ bind_cols( res, standardES(sigma = res$sigma, sigma_1 = res$sigma_1, nest=nest))
 }
 
 #' Fitting history of a model
