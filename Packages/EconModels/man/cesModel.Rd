@@ -49,6 +49,7 @@ if you want to skip the gradient search from a previous model.}
 
 \item{multErr}{logical, tells whether errors are to be assessed in a multiplicative manner}
 
+<<<<<<< HEAD
 \item{rho,rho1}{creates a grid upon which gradient searches in all other (free) parameters will be made.
 (I.e., when \code{rho} and/or \code{rho1} are specified,
 the algorithm performs gradient searches in the \code{scale} parameter,
@@ -60,6 +61,14 @@ include the value 0.25.
 used by \code{cesEst} for gradient searches
 when \code{rho} and \code{rho1} are unspecified.
 Thus, if you accept the default arguments, there is no need to do an additional
+=======
+\item{rho,rho1}{creates a grid upon which searches will be made.
+Note that the default arguments for both \code{rho} and \code{rho1} grids
+include the value 0.25.
+0.25 is the starting value for \code{rho} and \code{rho1} used by \code{cesEst} for gradient searches
+when values of \code{rho} and \code{rho1} are not specified.
+So, if you accept the default arguments, there is no need to do an additional
+>>>>>>> bb69aa377842a48ee9b32c156a4740d8560a8b9c
 \code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
 (\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)}
 
