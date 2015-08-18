@@ -165,7 +165,7 @@ standardTriPlot <- function(data,
                grid_lines=grid_lines,  aes_string=aes_string, mapping=mapping, 
                size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
-               color=orig_color, alpha=1, size=3, shape=10) 
+               color=orig_color, alpha=1, size=4, shape=10) 
   if ( !is.null(facet_formula) ) {
     if ( length(facet_formula)==2 ) {
       p <- p + facet_wrap( facet_formula )
@@ -196,7 +196,7 @@ standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2
   if ("color" %in% mapping || "colour" %in% mapping) {
     p <- p + scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
   }
-  p + xy_theme_old()
+  p + xy_theme()
 }
 
 #' @export
