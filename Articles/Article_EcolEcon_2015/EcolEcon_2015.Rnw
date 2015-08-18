@@ -161,6 +161,7 @@ myXTable <- function(data, caption, label, digits=2){
         size="\\tiny", 
         include.rownames=FALSE, 
         math.style.negative=TRUE, 
+        sanitize.text.function=function(x){x},
         booktabs=TRUE)
 }
 @
@@ -1247,8 +1248,12 @@ Table~\ref{tab:CES_alpha} shows
 the factor shares~($\alpha_i$ values) for all CES modeling decisions.
 %
 <<CES_alpha, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-           select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3),
+data_CES_alpha <- filter(AllCoeffs, model=="CES" | model=="exp") %>% 
+  select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3)
+data_CES_alpha <- plyr::rename(data_CES_alpha, c("alpha_1" = "$\\alpha_1$",
+                                                 "alpha_2" = "$\\alpha_2$",
+                                                 "alpha_3" = "$\\alpha_3$"))
+myXTable(data_CES_alpha,
          caption="Factor shares~($\\alpha$) for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1355,25 +1360,39 @@ I'm planning to change the table to make interpretation easier. ---MKH ****
 
 **** Is there a graph we want to make here? ---MKH ****
 %
+<<CES_sigma_table_data>>=
+sigma_data <- filter(AllCoeffs, model=="CES") 
+sigma_data <- plyr::rename(sigma_data, c("model" = "Model", "flavor" = "Type", "energy" = "Energy", "nest" = "Nest"))
+@
+
 <<CES_sigma, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, model, flavor, energy, nest, CSP, sigma_1, sigma),
+data_CES_sigma_raw <- sigma_data %>% select(Country, Model, Type, Energy, Nest, CSP, sigma_1, sigma)
+data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("sigma" = "$\\sigma$",
+                                                         "sigma_1" = "$\\sigma_1$"))
+myXTable(data_CES_sigma_raw,
          caption="Factor substitution~($\\sigma$) for CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
 %
 <<CES_sigma_nest_aware_inner, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, model, flavor, energy, nest, CSP, sigma_12, sigma_23, sigma_13),
+sigma_inner_data <- sigma_data %>% select(Country, Type, Energy, Nest, CSP, sigma_12, sigma_23, sigma_13)
+sigma_inner_data <- plyr::rename(sigma_inner_data, c("sigma_12" = "$\\sigma_{kl}$",
+                                                     "sigma_23" = "$\\sigma_{le}$",
+                                                     "sigma_13" = "$\\sigma_{ek}$"))
+#
+myXTable(sigma_inner_data,
          caption="Factor substitution~($\\sigma$) for CES models. Inner nests.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
 %
 <<CES_sigma_nest_aware_outer, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES") %>% 
-           select(Country, model, flavor, energy, nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2),
+sigma_outer_data <- sigma_data %>% select(Country, Type, Energy, Nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2)
+sigma_outer_data <- plyr::rename(sigma_outer_data, c("sigma_12_3" = "$\\sigma_{(kl)e}$",
+                                                     "sigma_23_1" = "$\\sigma_{(le)k}$",
+                                                     "sigma_13_2" = "$\\sigma_{(ek)l}$"))
+myXTable(sigma_outer_data,
          caption="Factor substitution~($\\sigma$) for CES models. Outer nests.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1743,8 +1762,10 @@ The Cobb-Douglas models also reduce solow residual ($\lambda$) relative
 to the exponential-only case.
 %
 <<Effect_of_CSP_CD, results="asis">>=
-myXTable(filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
-           select(Country, model, CSP, scale, lambda, alpha_1, alpha_2, sse),
+data_CSP_CD <- filter(AllCoeffs, (model=="CD" & flavor=="Unadjusted" & energy=="Without energy") | model=="exp") %>% 
+  select(Country, model, CSP, scale, lambda, alpha_1, alpha_2, sse)
+data_CSP_CD <- plyr::rename(data_CSP_CD, c("alpha_1" = "$\\alpha_1$", "alpha_2" = "$\\alpha_2$"))
+myXTable(data_CSP_CD,
          caption="Model parameters for Cobb-Douglas models with unadjusted factors of production, without energy.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
@@ -1756,8 +1777,12 @@ Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
 and the reference model (exponential-only).
 %
 <<CD_coeffs, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CD" | model=="exp") %>% 
-           select(Country, model, flavor, energy, CSP, scale, lambda, alpha_1, alpha_2, alpha_3, sse),
+data_CD_exp <- filter(AllCoeffs, model=="CD" | model=="exp") %>% 
+  select(Country, model, flavor, energy, CSP, scale, lambda, alpha_1, alpha_2, alpha_3, sse)
+data_CD_exp <- plyr::rename(data_CD_exp, c("alpha_1" = "$\\alpha_1$", 
+                                           "alpha_2" = "$\\alpha_2$", 
+                                           "alpha_3" = "$\\alpha_3$"))
+myXTable(data_CD_exp,
          caption="Model parameters for all Cobb-Douglas models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
