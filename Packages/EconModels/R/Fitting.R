@@ -9,7 +9,7 @@ standardES <- function( sigma=NA, sigma_1=NA, sigma_2=NA, nest=1:3, standardize=
   }
   
   if (length(nest) == 2L) {
-    res <- data.frame(a=sigma)
+    res <- data.frame(a=sigma_1)
     names(res) <- paste0("sigma_", nest[1], nest[2])
     return(res)
   }
