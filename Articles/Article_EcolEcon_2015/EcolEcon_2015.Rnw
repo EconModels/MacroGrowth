@@ -1359,7 +1359,7 @@ standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
 <<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1), 
                     facet_formula=~Country, alpha=0.1) +
-    coord_trans(y="sigma") +
+    coord_trans(y="sigma2") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
     labs(x=expression(delta[1]), y=expression(sigma[kl]))
@@ -1368,7 +1368,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1),
 <<resample_graph_sigma_delta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)e}$ and $\\delta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma), 
                     facet_formula=~Country, alpha=0.1) +
-    coord_trans(y="sigma") +
+    coord_trans(y="sigma2") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
     labs(x=expression(delta), y=expression(sigma[kle]))
