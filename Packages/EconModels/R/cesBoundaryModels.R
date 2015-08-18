@@ -141,6 +141,7 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
           names(res$coefficients)[1] <- "logscale"
           names(res$coefficients)[2] <- "lambda"
         }
+        res$nest = nest
         res
       }, 
       formulas[keep & plmModel & subset], params[keep & plmModel & subset]
