@@ -1363,6 +1363,21 @@ myXTable(filter(AllCoeffs, model=="CES") %>%
          digits=6)
 @
 %
+<<CES_sigma_nest_aware_inner, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES") %>% 
+           select(Country, model, flavor, energy, nest, CSP, sigma_12, sigma_23, sigma_13),
+         caption="Factor substitution~($\\sigma$) for CES models. Inner nests.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+%
+<<CES_sigma_nest_aware_outer, results="asis">>=
+myXTable(filter(AllCoeffs, model=="CES") %>% 
+           select(Country, model, flavor, energy, nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2),
+         caption="Factor substitution~($\\sigma$) for CES models. Outer nests.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
 
 
 
