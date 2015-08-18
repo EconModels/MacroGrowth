@@ -1770,7 +1770,7 @@ ggplot() +
   facet_grid(Country ~ flavor) +
   scale_size_manual(values=c(2,3.5)) +
   xlab(expression(Delta * sse)) + 
-  scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
+  # scale_x_continuous(breaks=seq(-0.01, 0, 0.005), limits=c(-0.012, 0.003)) +  
   ylab(expression(Delta * lambda)) +
   scale_y_continuous(limits=c(-0.04, 0)) +
   xy_theme() + 
