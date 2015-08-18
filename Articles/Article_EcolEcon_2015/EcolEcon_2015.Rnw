@@ -784,10 +784,10 @@ if (!rerunModels){
       # CES models
       models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, 
                                                                         data = historicalData[[country]], 
-                                                                        nest=c(1,2))
+                                                                        nest=c(1,2), digits = 10)
       nestsWithE <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
       models[[country]][[flavor]][["withE"]][["CES"]] <- lapply(nestsWithE, function(nest){
-          cesModel(formula=fwithE, data=historicalData[[country]], nest=nest)
+          cesModel(formula=fwithE, data=historicalData[[country]], nest=nest, digits = 10)
         })
     }      
   }
