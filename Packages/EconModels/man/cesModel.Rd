@@ -49,12 +49,19 @@ if you want to skip the gradient search from a previous model.}
 
 \item{multErr}{logical, tells whether errors are to be assessed in a multiplicative manner}
 
-\item{rho,rho1}{Default values for \code{rho} and \code{rho1} are a grid upon which
-searches will be made.
-Note that \code{rho = 0.25} and \code{rho1 = 0.25} are included. These are the default
-starting values for \code{rho} and \code{rho1}, so that we don't need to do a fit from
-the default values.
-\code{rho = 0.25} corresponds to \code{sigma = 0.8}.}
+\item{rho,rho1}{creates a grid upon which gradient searches in all other (free) parameters will be made.
+(I.e., when \code{rho} and/or \code{rho1} are specified,
+the algorithm performs gradient searches in the \code{scale} parameter,
+\code{lambda}, \code{delta}, and \code{delta1} (if 3 factors of production are given)
+with \code{rho} and \code{rho1} fixed.)
+Note that the default arguments for both \code{rho} and \code{rho1}
+include the value 0.25.
+0.25 is also the starting value for both \code{rho} and \code{rho1}
+used by \code{cesEst} for gradient searches
+when \code{rho} and \code{rho1} are unspecified.
+Thus, if you accept the default arguments, there is no need to do an additional
+\code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
+(\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)}
 
 \item{digits}{the number of sse digits that is to be considered significant
 when comparing one fit against another.}
