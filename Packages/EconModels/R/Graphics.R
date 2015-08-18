@@ -140,6 +140,16 @@ sigma_trans <- function(base = exp(1)) {
 }
 
 #' @export
+sigma2_trans <- function() {
+  trans_new("sigma2",
+            transform = function(x) sign(x) * pnorm(log(abs(x))),
+            inverse =   function(x) sign(x) * exp(qnorm(abs(x))),
+            domain = c(0, Inf)
+  )
+}
+
+
+#' @export
 standardTriPlot <- function(data, 
                             grid_lines=5, 
                             aes_string="", #"color=lambda", 
