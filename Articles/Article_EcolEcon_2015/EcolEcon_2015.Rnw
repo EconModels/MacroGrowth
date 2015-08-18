@@ -115,12 +115,14 @@ library(xtable)
 library(knitr)
 library(texreg)
 
-# Tell whether to re-run the analysis to create the models.
-# This file will use previously-saved models to generate
+# Tell whether to re-run the analysis to create the models
+# or the resampling on the (kl)e models.
+# This file will use previously-saved models and resampling to generate
 # the paper if set to FALSE, greatly reducing time.
 # If something changes in the data or in the code that
-# performs the analysis, set 
+# performs the analysis or resampling, set 
 # rerunModels = TRUE
+# rerunResampling = TRUE
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
