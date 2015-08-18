@@ -66,7 +66,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
       # axis.ticks = element_blank(),
       axis.ticks = element_line(colour=label_colour, size=0.2), 
       axis.ticks.length = grid::unit(-0.1,  "cm"), # Puts ticks inside the graph
-      axis.ticks.margin = grid::unit( 0.25, "cm"), # Moves axis labes outside of the graph
+      axis.ticks.margin = grid::unit( 0.25, "cm"), # Moves axis labels outside of the graph
       axis.title = element_text(colour=label_colour, size=base_size)
     )
 }
