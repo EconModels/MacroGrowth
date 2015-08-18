@@ -22,7 +22,7 @@ require(texreg)
 #' For models with 3 factors, the nesting
 #' is (xa + xb) + xc.  For 4 factors, the nesting is (xa + xb) + (xc + xd)
 #' @param prevModel a model used to start a gradient search.
-#' \code{prevModel} will be used as a starting point for a gradient search after
+#' \code{prevModel} will be used as a starting point for a gradient search after both
 #' (a) grid search in \code{rho} and \code{rho1} and 
 #' (b) a gradient search starting from the best grid search 
 #' are complete.
@@ -42,6 +42,9 @@ require(texreg)
 #' Thus, if you accept the default arguments, there is no need to do an additional 
 #' \code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
 #' (\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)
+#' After the grid search, a gradient search is performed
+#' in which all parameters are free (including \code{rho} and \code{rho1})
+#' starting from the best grid search point.
 #' @param digits the number of sse digits that is to be considered significant 
 #' when comparing one fit against another.
 #' @param save.data a logical indicating whether data is to be saved with the model.
