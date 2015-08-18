@@ -40,7 +40,7 @@ For models with 3 factors, the nesting
 is (xa + xb) + xc.  For 4 factors, the nesting is (xa + xb) + (xc + xd)}
 
 \item{prevModel}{a model used to start a gradient search.
-\code{prevModel} will be used as a starting point for a gradient search after
+\code{prevModel} will be used as a starting point for a gradient search after both
 (a) grid search in \code{rho} and \code{rho1} and
 (b) a gradient search starting from the best grid search
 are complete.
@@ -49,7 +49,6 @@ if you want to skip the gradient search from a previous model.}
 
 \item{multErr}{logical, tells whether errors are to be assessed in a multiplicative manner}
 
-<<<<<<< HEAD
 \item{rho,rho1}{creates a grid upon which gradient searches in all other (free) parameters will be made.
 (I.e., when \code{rho} and/or \code{rho1} are specified,
 the algorithm performs gradient searches in the \code{scale} parameter,
@@ -61,16 +60,11 @@ include the value 0.25.
 used by \code{cesEst} for gradient searches
 when \code{rho} and \code{rho1} are unspecified.
 Thus, if you accept the default arguments, there is no need to do an additional
-=======
-\item{rho,rho1}{creates a grid upon which searches will be made.
-Note that the default arguments for both \code{rho} and \code{rho1} grids
-include the value 0.25.
-0.25 is the starting value for \code{rho} and \code{rho1} used by \code{cesEst} for gradient searches
-when values of \code{rho} and \code{rho1} are not specified.
-So, if you accept the default arguments, there is no need to do an additional
->>>>>>> bb69aa377842a48ee9b32c156a4740d8560a8b9c
 \code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
-(\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)}
+(\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)
+After the grid search, a gradient search is performed
+in which all parameters are free (including \code{rho} and \code{rho1}),
+starting from the best grid search point.}
 
 \item{digits}{the number of sse digits that is to be considered significant
 when comparing one fit against another.}

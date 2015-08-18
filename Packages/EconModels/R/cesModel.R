@@ -43,7 +43,7 @@ require(texreg)
 #' \code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
 #' (\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)
 #' After the grid search, a gradient search is performed
-#' in which all parameters are free (including \code{rho} and \code{rho1})
+#' in which all parameters are free (including \code{rho} and \code{rho1}),
 #' starting from the best grid search point.
 #' @param digits the number of sse digits that is to be considered significant 
 #' when comparing one fit against another.
