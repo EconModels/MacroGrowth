@@ -1374,7 +1374,7 @@ data_CES_SR_gof <- plyr::rename(data_CES_SR_gof, c("flavor" = "Factors of prod."
 myXTable(data_CES_SR_gof,
          caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
+         digits=4)
 @
 
 Table~\ref{tab:CES_alpha} shows 
@@ -1390,7 +1390,7 @@ data_CES_alpha <- plyr::rename(data_CES_alpha, c("flavor" = "Factors of prod.",
 myXTable(data_CES_alpha,
          caption="Output elasticities~($\\alpha$) for all models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
+         digits=2)
 @
 
 Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
@@ -1411,7 +1411,7 @@ sigma_inner_data <- plyr::rename(sigma_inner_data, c("flavor" = "Factors of prod
 myXTable(sigma_inner_data,
          caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
+         digits=2)
 @
 
 Table~\ref{tab:CES_sigma_nest_aware_outer} shows elasticity of substitution~($\sigma$)
@@ -1432,7 +1432,7 @@ sigma_outer_data <- plyr::rename(sigma_outer_data, c("flavor" = "Factors of prod
 myXTable(sigma_outer_data,
          caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
+         digits=2)
 @
 
 
