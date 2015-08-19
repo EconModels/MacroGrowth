@@ -1195,8 +1195,6 @@ fsbg <- function(coun, mod){
                                        from=c("alpha_1", "alpha_2", "alpha_3"), 
                                        to=c("alpha_k", "alpha_l", "alpha_e"))
 
-  # Define the color palette (see http://www.cookbook-r.com/Graphs/Colors_(ggplot2))
-  cbPalette <- c("#E69F00", "#999999", "#F0E442", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
   # Make the plot
   plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
     geom_bar(stat="identity") + 
