@@ -1320,11 +1320,6 @@ myXTable(data_CES_alpha,
          digits=6)
 @
 
-
-<<CES_sigma_table_data>>=
-# This chunk does some preliminary processing
-@
-
 Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
 for inner nests.
 Note that the row with 
@@ -1341,7 +1336,7 @@ sigma_inner_data <- plyr::rename(sigma_inner_data, c("flavor" = "Factors of prod
                                                      "sigma_13" = "$\\sigma_{ek}$"))
 #
 myXTable(sigma_inner_data,
-         caption="Factor substitution~($\\sigma$) for inner nests of CES models.",
+         caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
@@ -1362,7 +1357,7 @@ sigma_outer_data <- plyr::rename(sigma_outer_data, c("flavor" = "Factors of prod
                                                      "sigma_23_1" = "$\\sigma_{(le)k}$",
                                                      "sigma_13_2" = "$\\sigma_{(ek)l}$"))
 myXTable(sigma_outer_data,
-         caption="Factor substitution~($\\sigma$) for outer nests of CES models.",
+         caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
