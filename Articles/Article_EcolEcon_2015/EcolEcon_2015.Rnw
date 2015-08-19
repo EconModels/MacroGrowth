@@ -1222,6 +1222,44 @@ fsbg(coun = "UK", mod = "CES")
 @
 
 
+%++++++++++++++++++++++++++++++
+\subsection{$\sigma$ graph} 
+\label{sec:sigma_graph}
+%++++++++++++++++++++++++++++++
+
+<<sigma_graph>>=
+sigma_graph_data <- filter(AllCoeffs, model=="CES") %>% 
+  select(Country, CSP, flavor, energy, nest, sigma_12, sigma_23, sigma_13, sigma_12_3, sigma_23_1, sigma_13_2)
+# Change nest to a nicer-looking nest string
+sigma_graph_data$nest <- plyr::mapvalues(sigma_graph_data$nest, 
+                                         from=c("kl", "kle", "lek", "ekl"), 
+                                         to=c("kl", "(kl)e", "(le)k", "(ek)l"))
+# Now melt the data
+sigma_graph_data <- melt(sigma_graph_data, 
+                         measure.vars = c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2"), 
+                         value.name = "value", 
+                         variable.name = "variable")
+# Create labels
+sigma_graph_data$label <- paste(sigma_graph_data$CSP, sigma_graph_data$flavor, 
+                                sigma_graph_data$energy, sigma_graph_data$nest, 
+                                sigma_graph_data$variable, sep=", ")
+sigma_graph_data <- na.omit(sigma_graph_data)
+
+# Make the plot
+plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+  geom_bar(stat="identity") + 
+  xlab("") +
+  # scale_x_discrete(limits=rev(order)) +
+  ylab("") +
+#   scale_y_continuous(breaks=c(0, 0.5, 1)) + 
+  guides(fill=guide_legend(title=NULL)) +
+  scale_fill_brewer(palette="OrRd") +
+  coord_flip() + 
+  xy_theme() +
+  theme(axis.ticks.y = element_blank())
+plot # for debugging
+@
+
 
 
 %++++++++++++++++++++++++++++++
@@ -1269,7 +1307,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 Table~\ref{tab:CES_sr_gof} shows estimated values of
 the scale parameter~($\theta$),
 the Solow residual~($\lambda$), and
-goodness of fit~($sse$)
+goodness of fit~(SSE)
 for all modeling choices.
 
 <<Table_data>>=
@@ -1286,7 +1324,7 @@ table_data$CSP <- plyr::mapvalues(table_data$CSP,
 table_data$Energy <- plyr::mapvalues(table_data$Energy, 
                                      from=c("Without energy", "With energy"), 
                                      to=c("Without", "With"))
-table_data$model <- plyr::mapvalues(table_data$model, 
+table_data$Model <- plyr::mapvalues(table_data$Model, 
                                     from=c("exp"), 
                                     to=c("Ref."))
 @
@@ -1294,7 +1332,7 @@ table_data$model <- plyr::mapvalues(table_data$model,
 
 <<CES_sr_gof, results="asis">>=
 data_CES_SR_gof <- filter(table_data, Model=="CES" | Model=="Ref.") %>% 
-  select(Country, Model, flavor, Energy, Nest, CSP, scale, lambda, sse)
+  select(Country, Model, CSP, flavor, Energy, Nest, scale, lambda, sse)
 data_CES_SR_gof <- plyr::rename(data_CES_SR_gof, c("flavor" = "Factors of prod.",
                                                    "scale" = "$\\theta$",
                                                    "lambda" = "$\\lambda$"))
@@ -1309,7 +1347,7 @@ output elasticities~($\alpha$) for all modeling choices.
 
 <<CES_alpha, results="asis">>=
 data_CES_alpha <- filter(table_data, Model=="CES" | Model=="Ref.") %>% 
-  select(Country, Model, flavor, Energy, Nest, CSP, alpha_1, alpha_2, alpha_3)
+  select(Country, Model, CSP, flavor, Energy, Nest, alpha_1, alpha_2, alpha_3)
 data_CES_alpha <- plyr::rename(data_CES_alpha, c("flavor" = "Factors of prod.",
                                                  "alpha_1" = "$\\alpha_k$",
                                                  "alpha_2" = "$\\alpha_l$",
@@ -1329,7 +1367,7 @@ As such, the only knowable elasticity is $\sigma_{kl}$.
 
 <<CES_sigma_nest_aware_inner, results="asis">>=
 sigma_inner_data <- filter(table_data, Model=="CES") %>% 
-  select(Country, flavor, Energy, Nest, CSP, sigma_12, sigma_23, sigma_13)
+  select(Country, CSP, flavor, Energy, Nest, sigma_12, sigma_23, sigma_13)
 sigma_inner_data <- plyr::rename(sigma_inner_data, c("flavor" = "Factors of prod.",
                                                      "sigma_12" = "$\\sigma_{kl}$",
                                                      "sigma_23" = "$\\sigma_{le}$",
@@ -1351,7 +1389,7 @@ that includes only~$k$ and~$l$.
 
 <<CES_sigma_nest_aware_outer, results="asis">>=
 sigma_outer_data <- filter(table_data, Model=="CES") %>% 
-  select(Country, flavor, Energy, Nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2)
+  select(Country, CSP, flavor, Energy, Nest, sigma_12_3, sigma_23_1, sigma_13_2)
 sigma_outer_data <- plyr::rename(sigma_outer_data, c("flavor" = "Factors of prod.", 
                                                      "sigma_12_3" = "$\\sigma_{(kl)e}$",
                                                      "sigma_23_1" = "$\\sigma_{(le)k}$",
