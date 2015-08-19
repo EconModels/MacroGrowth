@@ -1149,8 +1149,12 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (n
 
 
 <<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
+data_sr_sse <- filter(AllCoeffs, model=="CES")
+data_sr_sse$nest <- plyr::mapvalues(data_sr_sse$nest, 
+                                    from=c("kl", "kle", "lek", "ekl"), 
+                                    to=c("kl", "(kl)e", "(le)k", "(ek)l"))
 ggplot() +
-  geom_point(data=filter(AllCoeffs, model=="CES"), mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
+  geom_point(data=data_sr_sse, mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
   geom_vline(aes(xintercept = sse), filter(AllCoeffs, model=="exp") %>% select(Country, sse), colour="gray50", size=0.1) +
   geom_hline(aes(yintercept = lambda), filter(AllCoeffs, model=="exp") %>% select(Country, lambda), colour="gray50", size=0.1) +
   scale_size_manual(values=c(2,4)) +
@@ -1178,7 +1182,7 @@ fsbg <- function(coun, mod){
   # Change nest to a nicer-looking nest string
   bar_chart_data$nest <- plyr::mapvalues(bar_chart_data$nest, 
                                          from=c("kl", "kle", "lek", "ekl"), 
-                                         to=c("(kl)", "(kl)e", "(le)k", "(ek)l"))
+                                         to=c("kl", "(kl)e", "(le)k", "(ek)l"))
   # Add a label column
   bar_chart_data$label <- paste(bar_chart_data$CSP, bar_chart_data$flavor, 
                                 bar_chart_data$energy, bar_chart_data$nest, sep=", ")
