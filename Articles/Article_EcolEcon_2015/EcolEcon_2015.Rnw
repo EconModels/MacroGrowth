@@ -1204,7 +1204,8 @@ fsbg <- function(coun, mod){
     scale_y_continuous(breaks=c(0, 0.5, 1)) + 
     guides(fill=guide_legend(title=NULL)) +
     coord_flip() + 
-    scale_fill_brewer(palette="OrRd") +
+    scale_fill_brewer(palette="OrRd", 
+                      labels=c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e]))) +
     xy_theme() +
     theme(axis.ticks.y = element_blank())
   return(plot)
