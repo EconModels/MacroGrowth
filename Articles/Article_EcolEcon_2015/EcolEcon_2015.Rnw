@@ -1191,9 +1191,6 @@ fsbg <- function(coun, mod){
                          measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
                          value.name = "value", 
                          variable.name = "variable")
-  bar_chart_data$variable <- plyr::mapvalues(bar_chart_data$variable, 
-                                       from=c("alpha_1", "alpha_2", "alpha_3"), 
-                                       to=c("alpha_k", "alpha_l", "alpha_e"))
 
   # Make the plot
   plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
