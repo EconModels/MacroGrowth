@@ -1223,43 +1223,78 @@ fsbg(coun = "UK", mod = "CES")
 
 
 %++++++++++++++++++++++++++++++
-\subsection{$\sigma$ graph} 
-\label{sec:sigma_graph}
+\subsection{$\sigma$ graphs} 
+\label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
-<<sigma_graph>>=
-sigma_graph_data <- filter(AllCoeffs, model=="CES") %>% 
-  select(Country, CSP, flavor, energy, nest, sigma_12, sigma_23, sigma_13, sigma_12_3, sigma_23_1, sigma_13_2)
-# Change nest to a nicer-looking nest string
-sigma_graph_data$nest <- plyr::mapvalues(sigma_graph_data$nest, 
-                                         from=c("kl", "kle", "lek", "ekl"), 
-                                         to=c("kl", "(kl)e", "(le)k", "(ek)l"))
-# Now melt the data
-sigma_graph_data <- melt(sigma_graph_data, 
-                         measure.vars = c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2"), 
-                         value.name = "value", 
-                         variable.name = "variable")
-# Create labels
-sigma_graph_data$label <- paste(sigma_graph_data$CSP, sigma_graph_data$flavor, 
-                                sigma_graph_data$energy, sigma_graph_data$nest, 
-                                sigma_graph_data$variable, sep=", ")
-sigma_graph_data <- na.omit(sigma_graph_data)
-
-# Make the plot
-plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
-  geom_bar(stat="identity") + 
-  xlab("") +
-  # scale_x_discrete(limits=rev(order)) +
-  ylab("") +
-#   scale_y_continuous(breaks=c(0, 0.5, 1)) + 
-  guides(fill=guide_legend(title=NULL)) +
-  scale_fill_brewer(palette="OrRd") +
-  coord_flip() + 
-  xy_theme() +
-  theme(axis.ticks.y = element_blank())
-plot # for debugging
+<<sigma_graph_function>>=
+  
+sigma_graph_function <- function(data){
+  sigma_graph_data <- select(data, Country, CSP, flavor, energy, nest, 
+                             sigma_12, sigma_23, sigma_13, 
+                             sigma_12_3, sigma_23_1, sigma_13_2)
+  # Change nest to a nicer-looking nest string
+  sigma_graph_data$nest <- plyr::mapvalues(sigma_graph_data$nest, 
+                                           from=c("kl", "kle", "lek", "ekl"), 
+                                           to=c("kl", "(kl)e", "(le)k", "(ek)l"))
+  # Now melt the data
+  sigma_graph_data <- melt(sigma_graph_data, 
+                           measure.vars = c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2"), 
+                           value.name = "value", 
+                           variable.name = "variable")
+  # Create a nicer-looking sigma
+#   sigma_graph_data$variable <- plyr::mapvalues(sigma_graph_data$variable,
+#                                                from=c("sigma_12", 
+#                                                       "sigma_23",
+#                                                       "sigma_13",
+#                                                       "sigma_12_3",
+#                                                       "sigma_23_1",
+#                                                       "sigma_13_2"),
+#                                                to=c("expression(sigma[kl])", 
+#                                                     "expression(sigma[le])",
+#                                                     "expression(sigma[ek])",
+#                                                     'expression(sigma["(kl)"*e])',
+#                                                     'expression(sigma["(le)"*k])',
+#                                                     'expression(sigma["(ek)"*l])'))
+  # Create labels
+  sigma_graph_data$label <- paste(sigma_graph_data$CSP, sigma_graph_data$flavor, 
+                                  sigma_graph_data$energy, sigma_graph_data$nest, 
+                                  sigma_graph_data$variable, sep=", ")
+  sigma_graph_data <- na.omit(sigma_graph_data)
+  
+  # Make the plot
+  plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+    geom_bar(stat="identity") + 
+    xlab("") +
+    # scale_x_discrete(limits=rev(order)) +
+    scale_x_discrete(labels=sigma_graph_data$label) +
+    geom_hline(aes(yintercept = 1), colour="gray50", size=0.1) +
+    ylab("") +
+    # coord_trans(y="sigma") +
+    scale_y_continuous(limits=c(0, 10), breaks=c(0, 1.0, 10)) +
+    guides(fill=guide_legend(title=NULL)) +
+    scale_fill_brewer(palette="OrRd") +
+#     scale_fill_brewer(palette="OrRd",
+#                       labels=c(expression(sigma[kl]), 
+#                                expression(sigma[le]), 
+#                                expression(sigma[ek]),
+#                                expression(sigma["(kl)e"]),
+#                                expression(sigma["(le)k"]),
+#                                expression(sigma["(ek)l"]))) +
+    coord_flip() + 
+    xy_theme() +
+    theme(axis.ticks.y = element_blank())
+  return(plot)
+}
 @
 
+<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
+sigma_graph_function(filter(AllCoeffs, model=="CES", Country=="PT"))
+@
+
+<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
+sigma_graph_function(filter(AllCoeffs, model=="CES", Country=="UK"))
+@
 
 
 %++++++++++++++++++++++++++++++
