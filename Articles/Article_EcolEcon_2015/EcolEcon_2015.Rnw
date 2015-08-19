@@ -537,82 +537,6 @@ For quality-adjusted variables, we use the time series shown in Table~\ref{tab:q
   \end{center}
 \end{table}
 
-Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
-are shown in Figure~\ref{fig:Historical_Data_Graph}.
-
-<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
-# Melt the data into a form that is useful in a couple places
-histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, name){
-  meta <- strsplit(name, split="[.]") %>% unlist
-  Country <- meta[1]
-  flavor <- meta[2]
-  measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
-  trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
-  mtrimmed_historical_data <- melt(trimmed_historical_data, measure.vars = measure.vars, 
-                                   value.name = "value", variable.name = "variable")
-  mtrimmed_historical_data$Country <- Country
-  mtrimmed_historical_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
-  return(mtrimmed_historical_data)
-}) %>% do.call(rbind, .)
-
-# Change variable names to make a nicer-looking graph
-histDataForGraph$variable <- plyr::mapvalues(histDataForGraph$variable,
-                                             from=c("iGDP", 
-                                                    "iKstkS.L", "iKservS.L", "iKstkO.WwithRD", "iKservO.WwithRD",
-                                                    "iL", "ihLest",
-                                                    "iXpMP", "iXp", "iUMP", "iU"),
-                                             to=c("y", 
-                                                  "k", "k", "k", "k",
-                                                  "l", "l",
-                                                  "e", "e", "e", "e"))
-
-# Relevel factors before plotting
-histDataForGraph$Country <- relevelFactor(as.factor(histDataForGraph$Country), c("PT", "UK"))
-histDataForGraph$flavor <- relevelFactor(as.factor(histDataForGraph$flavor), c("Unadjusted", "Quality-adjusted"))
-histDataForGraph$variable <- relevelFactor(as.factor(histDataForGraph$variable), unique(histDataForGraph$variable))
-
-historicalPlot(histDataForGraph, 
-               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ flavor, 
-               line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
-  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-  coord_cartesian(ylim=c(0.5, 13)) +
-  xlab("") + 
-  ylab("Indexed (1960=1)")
-@
-
-<<Pre-econometric_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
-pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form, name){
-  meta <- strsplit(name, split="[.]") %>% unlist
-  Country <- meta[1]
-  flavor <- meta[2]
-  nums <- summands(form, n=1:3)
-  denom <- summands(form, n=1, right=FALSE)
-  ratios <- lapply(nums, function(num) {paste(num, denom, sep="/")}) %>% unlist
-  coltemplate <- build_formula(NULL, c("Year", ratios))
-  trimmed_historical_data <- historicalData[[Country]][all.vars(coltemplate)]
-  ratio_data <- evalFormula(coltemplate, data=trimmed_historical_data)$right
-  mratio_data <- melt(ratio_data, measure.vars = ratios, value.name = "ratio", variable.name = "variable")
-  mratio_data$Country <- Country
-  mratio_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
-  return(mratio_data)
-}) %>% do.call(rbind, .)
-
-# Fix levels
-pre_econometric_data$flavor <- relevelFactor(as.factor(as.character(pre_econometric_data$flavor)), 
-                                               c("Unadjusted", "Quality-adjusted"))
-pre_econometric_data$Country <- relevelFactor(as.factor(pre_econometric_data$Country), 
-                                              c("PT", "UK"))
-pre_econometric_data$variable <- relevelFactor(as.factor(pre_econometric_data$variable),
-                                               unique(pre_econometric_data$variable))
-# Now make the plot of pre-econometric data
-historicalPlot(pre_econometric_data, 
-               mapping=aes(x=Year, y=ratio, group=variable, linetype=variable), 
-               facet_formula = Country ~ flavor, 
-               line_types = c(2,4,3, 2,4,3, 2,3,2, 3)) + 
-  xlab("") + 
-  ylab("Indexed (1960=1)")
-@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -804,7 +728,7 @@ AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
                     energy = "Without energy", 
                     model = "exp", 
                     nest = NA,
-                    CSP = "Reject CSP"))
+                    CSP = NA))
   res <- cbind(res, naturalCoef(modExp))
   # Now caluculate mean squared error (sse) for each model.
   sse <- sum(resid(modExp)^2)
@@ -957,6 +881,137 @@ fitted_and_resid_data <- arrange(fitted_and_resid_data, Country, CSP, model, fla
 @
 
 
+
+%++++++++++++++++++++++++++++++
+\subsection{Fitting residuals} 
+\label{sec:fitting_residuals}
+%++++++++++++++++++++++++++++++
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The primary results from this paper involve the effects of
+the following modeling decisions:
+rejecting (or adhering to) the cost share theorem,
+quality-adjusting (or not) the factors of production,
+including energy (or not) in the production function, and
+nesting (in the CES model).
+
+
+
+
+
+We evaluate the effects of these modeling decisions 
+first on goodness of fit and Solow residual,
+next on factor shares, and 
+finally on factor substitutability.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Goodness of fit and Solow residual} 
+\label{sec:fit_and_sr}
+%++++++++++++++++++++++++++++++
+
+%
+We can evaluate the effect of modeling decisions on 
+goodness of fit and Solow residual by
+calculating values relative to the reference model.
+To do so, we define 
+$\Delta \lambda$ and $\Delta sse$, where
+%
+\begin{equation} \label{eq:delta_lambda}
+  \Delta \lambda \equiv \lambda - \lambda_{ref}
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_sse}
+  \Delta sse \equiv sse - sse_{ref},
+\end{equation}
+%
+with~$\lambda_{ref}$ and $sse_{ref}$ being the values 
+of the Solow residual and $sse$ for the reference model, respectively.
+On a percentage basis,
+%
+\begin{equation} \label{eq:delta_lambda_perc}
+  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\lambda_{ref}} 
+            = \frac{100 \, \lambda}{\lambda_{ref}} - 1 \; ,
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:delta_sse_perc}
+  \Delta sse \, [\%] = \frac{100 \, \Delta sse}{sse_{ref}} 
+            = \frac{100 \, sse}{sse_{ref}} - 1 \; .
+\end{equation}
+
+When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta sse$ are negative, 
+we observe reduction in the Solow residual ($\lambda$) or
+the fitting residuals ($sse$)
+relative to the reference model.
+
+Figure~\ref{fig:DSRsse_CES_graph} summarizes 
+$\lambda$ and $sse$ 
+results for CES models.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Graphs for paper} 
+\label{sec:graphs_for_paper}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
+are shown in Figure~\ref{fig:Historical_Data_Graph}.
+
+<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+# Melt the data into a form that is useful in a couple places
+histDataForGraph <- leaf_apply(formulas, class = "formula", f=function(form, name){
+  meta <- strsplit(name, split="[.]") %>% unlist
+  Country <- meta[1]
+  flavor <- meta[2]
+  measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
+  trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
+  mtrimmed_historical_data <- melt(trimmed_historical_data, measure.vars = measure.vars, 
+                                   value.name = "value", variable.name = "variable")
+  mtrimmed_historical_data$Country <- Country
+  mtrimmed_historical_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
+  return(mtrimmed_historical_data)
+}) %>% do.call(rbind, .)
+
+# Change variable names to make a nicer-looking graph
+histDataForGraph$variable <- plyr::mapvalues(histDataForGraph$variable,
+                                             from=c("iGDP", 
+                                                    "iKstkS.L", "iKservS.L", "iKstkO.WwithRD", "iKservO.WwithRD",
+                                                    "iL", "ihLest",
+                                                    "iXpMP", "iXp", "iUMP", "iU"),
+                                             to=c("y", 
+                                                  "k", "k", "k", "k",
+                                                  "l", "l",
+                                                  "e", "e", "e", "e"))
+
+# Relevel factors before plotting
+histDataForGraph$Country <- relevelFactor(as.factor(histDataForGraph$Country), c("PT", "UK"))
+histDataForGraph$flavor <- relevelFactor(as.factor(histDataForGraph$flavor), c("Unadjusted", "Quality-adjusted"))
+histDataForGraph$variable <- relevelFactor(as.factor(histDataForGraph$variable), unique(histDataForGraph$variable))
+
+historicalPlot(histDataForGraph, 
+               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
+               facet_formula = Country ~ flavor, 
+               line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
+  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
+  coord_cartesian(ylim=c(0.5, 13)) +
+  xlab("") + 
+  ylab("Indexed (1960=1)")
+@
+
+
 %++++++++++++++++++++++++++++++
 \subsection{Fits to historical data} 
 \label{sec:fits_to_historical_data}
@@ -1005,25 +1060,10 @@ Figures~\ref{fig:Graphs_CESkle-fitted}--\ref{fig:Graphs_CESekl-fitted}.
 fittedGraphData_kle <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "kle"))
 fittedGraphNoCSP(fittedGraphData_kle)
 @
-%
-<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($le$)$k$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "lek"))
-fittedGraphNoCSP(fittedGraphData_lek)
-@
-%
-<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($ek$)$l$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_ekl <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "ekl"))
-fittedGraphNoCSP(fittedGraphData_ekl)
-@
 
 
-%++++++++++++++++++++++++++++++
-\subsection{Fitting residuals} 
-\label{sec:fitting_residuals}
-%++++++++++++++++++++++++++++++
 
 <<ResidualPlotFunction>>=
-
 residualPlot <- function(data, withEnergyShape = 0){
   ggplot() +
     geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy, size=energy)) +
@@ -1100,97 +1140,13 @@ residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (n
              withEnergyShape = 0) # square
 @
 %
-<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest == "lek" | nest=="kl")),
-             withEnergyShape = 3) # plus
-@
-%
-<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")),
-             withEnergyShape = 4) # times
-@
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-\label{sec:results}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-The primary results from this paper involve the effects of
-the following modeling decisions:
-rejecting (or adhering to) the cost share theorem,
-quality-adjusting (or not) the factors of production,
-including energy (or not) in the production function, and
-nesting (in the CES model).
-
-
-
-
-
-We evaluate the effects of these modeling decisions 
-first on goodness of fit and Solow residual,
-next on factor shares, and 
-finally on factor substitutability.
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Goodness of fit and Solow residual} 
-\label{sec:fit_and_sr}
+\subsection{Factor shares} 
+\label{sec:shares}
 %++++++++++++++++++++++++++++++
 
-Table~\ref{tab:CES_sr_gof} shows 
-the Solow residual~($\lambda$) and
-goodness of fit~($sse$)
-for all modeling decisions.
-%
-<<CES_sr_gof, results="asis">>=
-myXTable(filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-           select(Country, model, flavor, energy, nest, CSP, scale, lambda, sse),
-         caption="$\\theta$, Solow residual, and $sse$ for CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-We can evaluate the effect of modeling decisions on 
-goodness of fit and Solow residual by
-calculating values relative to the reference model.
-To do so, we define 
-$\Delta \lambda$ and $\Delta sse$, where
-%
-\begin{equation} \label{eq:delta_lambda}
-  \Delta \lambda \equiv \lambda - \lambda_{ref}
-\end{equation}
-%
-and
-%
-\begin{equation} \label{eq:delta_sse}
-  \Delta sse \equiv sse - sse_{ref},
-\end{equation}
-%
-with~$\lambda_{ref}$ and $sse_{ref}$ being the values 
-of the Solow residual and $sse$ for the reference model, respectively.
-On a percentage basis,
-%
-\begin{equation} \label{eq:delta_lambda_perc}
-  \Delta \lambda \, [\%] = \frac{100 \, \Delta \lambda}{\lambda_{ref}} 
-            = \frac{100 \, \lambda}{\lambda_{ref}} - 1 \; ,
-\end{equation}
-%
-and
-%
-\begin{equation} \label{eq:delta_sse_perc}
-  \Delta sse \, [\%] = \frac{100 \, \Delta sse}{sse_{ref}} 
-            = \frac{100 \, sse}{sse_{ref}} - 1 \; .
-\end{equation}
-
-When $\Delta \lambda$, $\Delta \lambda \, [\%]$, or $\Delta sse$ are negative, 
-we observe reduction in the Solow residual ($\lambda$) or
-the fitting residuals ($sse$)
-relative to the reference model.
-
-Figure~\ref{fig:DSRsse_CES_graph} summarizes 
-$\lambda$ and $sse$ 
-results for CES models.
 
 <<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
 ggplot() +
@@ -1208,56 +1164,6 @@ ggplot() +
 @
 
 
-
-
-
-%------------------------------
-\subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:gfsr_CSP}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Quality-adjusting (or not) factors of production} 
-\label{sec:gfsr_fop}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Including energy (or not)} 
-\label{sec:gfsr_energy}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{CES nesting} 
-\label{sec:gfsr_nesting}
-%------------------------------
-
-
-
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Factor shares} 
-\label{sec:shares}
-%++++++++++++++++++++++++++++++
-
-Table~\ref{tab:CES_alpha} shows 
-the factor shares~($\alpha_i$ values) for all CES modeling decisions.
-%
-<<CES_alpha, results="asis">>=
-data_CES_alpha <- filter(AllCoeffs, model=="CES" | model=="exp") %>% 
-  select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3)
-data_CES_alpha <- plyr::rename(data_CES_alpha, c("alpha_1" = "$\\alpha_1$",
-                                                 "alpha_2" = "$\\alpha_2$",
-                                                 "alpha_3" = "$\\alpha_3$"))
-myXTable(data_CES_alpha,
-         caption="Factor shares~($\\alpha$) for CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
 %
 Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
 show factor shares ($\alpha$ values) for CES models for
@@ -1316,112 +1222,6 @@ fsbg(coun = "UK", mod = "CES")
 @
 
 
-%------------------------------
-\subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:fs_CSP}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Quality-adjusting (or not) factors of production} 
-\label{sec:fs_fop}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Including energy (or not)} 
-\label{sec:fs_energy}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{CES nesting} 
-\label{sec:fs_nesting}
-%------------------------------
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Factor substitutability} 
-\label{sec:substitutability}
-%++++++++++++++++++++++++++++++
-
-Table~\ref{tab:CES_sigma} shows 
-substitutability parameters~($\sigma_i$ values) 
-for all CES modeling decisions.
-
-**** Note: At the present time, Table~\ref{tab:CES_sigma}
-requires a LOT of effort to interpret, 
-because $\sigma_1$ and $\sigma$ have different meanings
-for each nesting.
-I'm planning to change the table to make interpretation easier. ---MKH ****
-
-
-
-**** Is there a graph we want to make here? ---MKH ****
-%
-<<CES_sigma_table_data>>=
-sigma_data <- filter(AllCoeffs, model=="CES") 
-sigma_data <- plyr::rename(sigma_data, c("model" = "Model", "flavor" = "Type", "energy" = "Energy", "nest" = "Nest"))
-@
-
-<<CES_sigma, results="asis">>=
-data_CES_sigma_raw <- sigma_data %>% select(Country, Model, Type, Energy, Nest, CSP, sigma_1, sigma)
-data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("sigma" = "$\\sigma$",
-                                                         "sigma_1" = "$\\sigma_1$"))
-myXTable(data_CES_sigma_raw,
-         caption="Factor substitution~($\\sigma$) for CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-<<CES_sigma_nest_aware_inner, results="asis">>=
-sigma_inner_data <- sigma_data %>% select(Country, Type, Energy, Nest, CSP, sigma_12, sigma_23, sigma_13)
-sigma_inner_data <- plyr::rename(sigma_inner_data, c("sigma_12" = "$\\sigma_{kl}$",
-                                                     "sigma_23" = "$\\sigma_{le}$",
-                                                     "sigma_13" = "$\\sigma_{ek}$"))
-#
-myXTable(sigma_inner_data,
-         caption="Factor substitution~($\\sigma$) for CES models. Inner nests.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-%
-<<CES_sigma_nest_aware_outer, results="asis">>=
-sigma_outer_data <- sigma_data %>% select(Country, Type, Energy, Nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2)
-sigma_outer_data <- plyr::rename(sigma_outer_data, c("sigma_12_3" = "$\\sigma_{(kl)e}$",
-                                                     "sigma_23_1" = "$\\sigma_{(le)k}$",
-                                                     "sigma_13_2" = "$\\sigma_{(ek)l}$"))
-myXTable(sigma_outer_data,
-         caption="Factor substitution~($\\sigma$) for CES models. Outer nests.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=6)
-@
-
-
-
-%------------------------------
-\subsubsection{Rejecting (or adhering to) the cost share theorem} 
-\label{sec:sigma_CSP}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Quality-adjusting (or not) factors of production} 
-\label{sec:sigma_fop}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{Including energy (or not)} 
-\label{sec:sigma_energy}
-%------------------------------
-
-
-%------------------------------
-\subsubsection{CES nesting} 
-\label{sec:sigma_nesting}
-%------------------------------
 
 
 %++++++++++++++++++++++++++++++
@@ -1460,7 +1260,112 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 @
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tables for paper} 
+\label{sec:tables_for_paper}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+Table~\ref{tab:CES_sr_gof} shows estimated values of
+the scale parameter~($\theta$),
+the Solow residual~($\lambda$), and
+goodness of fit~($sse$)
+for all modeling choices.
+
+<<Table_data>>=
+table_data <- AllCoeffs 
+table_data <- plyr::rename(table_data, c("model" = "Model", 
+                                         "energy" = "Energy", 
+                                         "nest" = "Nest"))
+table_data$Nest <- plyr::mapvalues(table_data$Nest,
+                                   from=c("kl", "kle", "lek", "ekl"),
+                                   to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$"))
+table_data$CSP <- plyr::mapvalues(table_data$CSP, 
+                                  from=c("Adhere to CSP", "Reject CSP"), 
+                                  to=c("Adhere", "Reject"))
+table_data$Energy <- plyr::mapvalues(table_data$Energy, 
+                                     from=c("Without energy", "With energy"), 
+                                     to=c("Without", "With"))
+table_data$model <- plyr::mapvalues(table_data$model, 
+                                    from=c("exp"), 
+                                    to=c("Ref."))
+@
+
+
+<<CES_sr_gof, results="asis">>=
+data_CES_SR_gof <- filter(table_data, Model=="CES" | Model=="Ref.") %>% 
+  select(Country, Model, flavor, Energy, Nest, CSP, scale, lambda, sse)
+data_CES_SR_gof <- plyr::rename(data_CES_SR_gof, c("flavor" = "Factors of prod.",
+                                                   "scale" = "$\\theta$",
+                                                   "lambda" = "$\\lambda$"))
+myXTable(data_CES_SR_gof,
+         caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+Table~\ref{tab:CES_alpha} shows 
+output elasticities~($\alpha$) for all modeling choices.
+
+<<CES_alpha, results="asis">>=
+data_CES_alpha <- filter(table_data, Model=="CES" | Model=="Ref.") %>% 
+  select(Country, Model, flavor, Energy, Nest, CSP, alpha_1, alpha_2, alpha_3)
+data_CES_alpha <- plyr::rename(data_CES_alpha, c("flavor" = "Factors of prod.",
+                                                 "alpha_1" = "$\\alpha_k$",
+                                                 "alpha_2" = "$\\alpha_l$",
+                                                 "alpha_3" = "$\\alpha_e$"))
+myXTable(data_CES_alpha,
+         caption="Output elasticities~($\\alpha$) for all models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+
+<<CES_sigma_table_data>>=
+# This chunk does some preliminary processing
+@
+
+Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
+for inner nests.
+Note that the row with 
+``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
+is, in fact, a boundary model that does not include energy.
+As such, the only knowable elasticity is $\sigma_{kl}$.
+
+<<CES_sigma_nest_aware_inner, results="asis">>=
+sigma_inner_data <- filter(table_data, Model=="CES") %>% 
+  select(Country, flavor, Energy, Nest, CSP, sigma_12, sigma_23, sigma_13)
+sigma_inner_data <- plyr::rename(sigma_inner_data, c("flavor" = "Factors of prod.",
+                                                     "sigma_12" = "$\\sigma_{kl}$",
+                                                     "sigma_23" = "$\\sigma_{le}$",
+                                                     "sigma_13" = "$\\sigma_{ek}$"))
+#
+myXTable(sigma_inner_data,
+         caption="Factor substitution~($\\sigma$) for inner nests of CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+Table~\ref{tab:CES_sigma_nest_aware_outer} shows elasticity of substitution~($\sigma$)
+for outer nests.
+Rows with the $kl$ nesting are blank, because they have no outer nest.
+The row with
+``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
+has no values for $\sigma$, because it has no outer nest, being a boundary model
+that includes only~$k$ and~$l$.
+
+<<CES_sigma_nest_aware_outer, results="asis">>=
+sigma_outer_data <- filter(table_data, Model=="CES") %>% 
+  select(Country, flavor, Energy, Nest, CSP, sigma_12_3, sigma_23_1, sigma_13_2)
+sigma_outer_data <- plyr::rename(sigma_outer_data, c("flavor" = "Factors of prod.", 
+                                                     "sigma_12_3" = "$\\sigma_{(kl)e}$",
+                                                     "sigma_23_1" = "$\\sigma_{(le)k}$",
+                                                     "sigma_13_2" = "$\\sigma_{(ek)l}$"))
+myXTable(sigma_outer_data,
+         caption="Factor substitution~($\\sigma$) for outer nests of CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1593,6 +1498,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This appendix contains correlograms for all models.
+But, they are not included for now.
 
 %++++++++++++++++++++++++++++++
 \subsection{Correlograms for the reference models} 
@@ -1601,7 +1507,7 @@ This appendix contains correlograms for all models.
 
 In this section we present correlograms for the reference (exponential-only) models. 
 
-<<Correlograms_Exp, echo=FALSE, message=FALSE>>=
+<<Correlograms_Exp, echo=FALSE, message=FALSE, include=FALSE>>=
 leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -1615,7 +1521,7 @@ leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
 
 In this section we present correlograms for all models that adhere to the cost-share theorem.
 
-<<Correlograms_CSP, echo=FALSE, message=FALSE>>=
+<<Correlograms_CSP, echo=FALSE, message=FALSE, include=FALSE>>=
 leaf_apply(l = modelsCSP, class = c("lm", "plm"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -1629,7 +1535,7 @@ leaf_apply(l = modelsCSP, class = c("lm", "plm"), f = function(model, name){
 
 In this section we present correlograms for all models that reject the cost-share theorem.
 
-<<Correlograms_noCSP, echo=FALSE, message=FALSE>>=
+<<Correlograms_noCSP, echo=FALSE, message=FALSE, include=FALSE>>=
 leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -1648,7 +1554,9 @@ I hope to develop a table later, after I figure out some things.
 Both models are CES models with energy fitted to Quality-adjusted data using the ($kl$)($e$) nesting.
 In Table~\ref{tab:stat_details_table}, Model 1 is for Portugal, and Model 2 is for the UK.
 
-<<stat_details_table, results="asis">>=
+This information is not included at present.
+
+<<stat_details_table, results="asis", include=FALSE>>=
 texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle), 
        dcolumn = TRUE, 
        booktabs = TRUE, 
@@ -1662,12 +1570,50 @@ texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle),
 @
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pre-econometrics graph} 
+\label{sec:pre-econometric_graph}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<Pre-econometric_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Pre-econometric data.", warning=FALSE>>=
+pre_econometric_data <- leaf_apply(formulas, class = "formula", f=function(form, name){
+  meta <- strsplit(name, split="[.]") %>% unlist
+  Country <- meta[1]
+  flavor <- meta[2]
+  nums <- summands(form, n=1:3)
+  denom <- summands(form, n=1, right=FALSE)
+  ratios <- lapply(nums, function(num) {paste(num, denom, sep="/")}) %>% unlist
+  coltemplate <- build_formula(NULL, c("Year", ratios))
+  trimmed_historical_data <- historicalData[[Country]][all.vars(coltemplate)]
+  ratio_data <- evalFormula(coltemplate, data=trimmed_historical_data)$right
+  mratio_data <- melt(ratio_data, measure.vars = ratios, value.name = "ratio", variable.name = "variable")
+  mratio_data$Country <- Country
+  mratio_data$flavor <- if (flavor == "adjusted") "Quality-adjusted" else "Unadjusted"
+  return(mratio_data)
+}) %>% do.call(rbind, .)
+
+# Fix levels
+pre_econometric_data$flavor <- relevelFactor(as.factor(as.character(pre_econometric_data$flavor)), 
+                                               c("Unadjusted", "Quality-adjusted"))
+pre_econometric_data$Country <- relevelFactor(as.factor(pre_econometric_data$Country), 
+                                              c("PT", "UK"))
+pre_econometric_data$variable <- relevelFactor(as.factor(pre_econometric_data$variable),
+                                               unique(pre_econometric_data$variable))
+# Now make the plot of pre-econometric data
+historicalPlot(pre_econometric_data, 
+               mapping=aes(x=Year, y=ratio, group=variable, linetype=variable), 
+               facet_formula = Country ~ flavor, 
+               line_types = c(2,4,3, 2,4,3, 2,3,2, 3)) + 
+  xlab("") + 
+  ylab("Indexed (1960=1)")
+@
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cobb-Douglas Graveyard} 
-\label{sec:cd_results}
+\label{sec:cd_graveyard}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This section is the graveyard for information pertaining to the Cobb-Douglas model.
@@ -1855,6 +1801,59 @@ ggplot() +
   xy_theme() +
   theme(legend.title=element_blank())
 @
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{CES Graveyard} 
+\label{sec:ces_graveyard}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Here is a table of the raw CES coefficient values. 
+This table is not used in the paper, so I'm putting it in 
+<<CES_sigma, results="asis">>=
+data_CES_sigma_raw <- sigma_data %>% select(Country, Model, flavor, Energy, Nest, CSP, sigma_1, sigma)
+data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("sigma" = "$\\sigma$",
+                                                         "sigma_1" = "$\\sigma_1$"))
+data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("flavor" = "Factors of prod."))
+data_CES_sigma_raw$CSP <- plyr::mapvalues(data_CES_sigma_raw$CSP, 
+                                         from=c("Adhere to CSP", "Reject CSP"), 
+                                         to=c("Adhere", "Reject"))
+data_CES_sigma_raw$Energy <- plyr::mapvalues(data_CES_sigma_raw$Energy, 
+                                         from=c("Without energy", "With energy"), 
+                                         to=c("Without", "With"))
+
+myXTable(data_CES_sigma_raw,
+         caption="Factor substitution~($\\sigma$) for CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=6)
+@
+
+
+
+
+
+<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest == "lek" | nest=="kl")),
+             withEnergyShape = 3) # plus
+@
+%
+<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
+residualPlot(filter(fitted_and_resid_data, model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")),
+             withEnergyShape = 4) # times
+@
+
+
+%
+<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($le$)$k$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "lek"))
+fittedGraphNoCSP(fittedGraphData_lek)
+@
+%
+<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($ek$)$l$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_ekl <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "ekl"))
+fittedGraphNoCSP(fittedGraphData_ekl)
+@
+
 
 
 
