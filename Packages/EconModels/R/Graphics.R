@@ -93,8 +93,7 @@ triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
   
     p <-  ggplot(data = data)
     
-#    p <- eval(parse(text=command), envir=parent.frame())                   
-    p + 
+    q <- p + 
     expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
     tri_theme() + 
     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
@@ -115,9 +114,8 @@ triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
                               hj = c(.5,1,0),
                               vj = c(0,0.5,0.5)
               ), 
-              parse=parse) +
-    do.call( geom, c(list(mapping=mapping), list(...)) )
-      
+              parse=parse) 
+    q + do.call( geom, c(list(mapping=mapping), list(...)) )
 }
 
 #' @export
@@ -154,21 +152,25 @@ sigma2_trans <- function() {
 
 
 #' @export
-standardTriPlot <- function(data, 
-                            grid_lines=5, 
-                            aes_string="", #"color=lambda", 
-                            orig_color = "gray70",
-                            mapping = aes(),
-                            labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
-                            size=1.0, 
-                            alpha=0.2,
-                            facet_formula = country ~ nest ){
+standardTriPlot <- function(
+  data, 
+  mapping = aes(),
+  grid_lines=5, 
+  orig_color = "gray70",
+  labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
+  size=1.0, 
+  alpha=0.2,
+  facet_formula = country ~ nest )
+{
+  
   p <- triPlot(subset(data, method!="orig"), 
                alpha_3, alpha_1, alpha_2,
                labels=labels,
-               grid_lines=grid_lines,  aes_string=aes_string, mapping=mapping, 
+               grid_lines=grid_lines, mapping=mapping, 
                size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
+               aes(x = tri2x(alpha_3, alpha_1, alpha_2),
+                   y = tri2y(alpha_3, alpha_1, alpha_2)),
                color=orig_color, alpha=1, size=4, shape=10) 
   if ( !is.null(facet_formula) ) {
     if ( length(facet_formula)==2 ) {
