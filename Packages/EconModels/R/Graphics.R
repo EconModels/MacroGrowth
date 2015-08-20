@@ -72,8 +72,8 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
 }
 
 #' @export
-triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"), 
-                    parse=TRUE, grid_lines=4, mapping=aes(), aes_string = NULL,
+triPlot <- function(data, mapping, labels=c("alpha[3]", "alpha[1]", "alpha[2]"), 
+                    parse=TRUE, grid_lines=4, aes_string = NULL,
                     geom=geom_point, ...) {
   if (!is.null(aes_string)) 
     stop( "aes_string has been deprecated.",
@@ -81,15 +81,21 @@ triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
   
   h <- seq(0, 1, by=1/grid_lines)
   points <- data.frame( h=h )
-  
+
+  requiredNames <- c("x", "y", "z") 
+  w <- which (! requiredNames %in% names(mapping))
+  if (length(w) > 0)
+    stop("triPlot requires the following aesthetics: ", paste(requiredNames[w], collapse=","))
+      
   xyz_mapping <- 
     list( 
-      x = bquote(tri2x(.(substitute(x)), .(substitute(y)), .(substitute(z)))), 
-      y = bquote(tri2y(.(substitute(x)), .(substitute(y)), .(substitute(z)))) 
+      x = bquote(tri2x(.(mapping$x), .(mapping$y), .(mapping$z))),
+      y = bquote(tri2y(.(mapping$x), .(mapping$y), .(mapping$z)))
     )
   class(xyz_mapping) <- "uneval"
+  mapping["z"] <- NULL
     
-  mapping <- modifyList(xyz_mapping, mapping)
+  mapping <- modifyList(mapping, xyz_mapping)
   
     p <-  ggplot(data = data)
     
@@ -164,9 +170,9 @@ standardTriPlot <- function(
 {
   
   p <- triPlot(subset(data, method!="orig"), 
-               alpha_3, alpha_1, alpha_2,
+               mapping = modifyList(aes(x=alpha_3, y=alpha_1, z=alpha_2), mapping),
                labels=labels,
-               grid_lines=grid_lines, mapping=mapping, 
+               grid_lines=grid_lines, 
                size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
                aes(x = tri2x(alpha_3, alpha_1, alpha_2),
