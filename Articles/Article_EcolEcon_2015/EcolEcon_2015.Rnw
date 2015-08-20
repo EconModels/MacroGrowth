@@ -734,7 +734,7 @@ AllCoeffsExp <- leaf_apply(modelsExp, class = c("lm"), f = function(modExp, id){
   sse <- sum(resid(modExp)^2)
   res <- cbind(res, list(sse=sse))
   return(res)
-}) %>% do.call(plyr::rbind.fill, .)
+}) %>% bind_rows() # do.call(plyr::rbind.fill, .)
 
 # Put all the cost-share theorem (CSP) model coefficients into a data frame
 AllCoeffsCSP <- leaf_apply(modelsCSP, class = c("lm"), f = function(modCSP, id){
@@ -751,7 +751,7 @@ AllCoeffsCSP <- leaf_apply(modelsCSP, class = c("lm"), f = function(modCSP, id){
   sse <- sum(resid(modCSP)^2)
   res <- cbind(res, list(sse=sse))
   return(res)
-}) %>% do.call(plyr::rbind.fill, .)
+}) %>% bind_rows() # do.call(plyr::rbind.fill, .)
 
 # Put all CD and CES model coefficients into a data frame.  
 AllCoeffsNoCSP <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(mod, id){
@@ -768,31 +768,32 @@ AllCoeffsNoCSP <- leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmod
   sse <- sum(resid(mod)^2)
   res <- cbind(res, list(sse=sse))
   return(res)
-}) %>% do.call(plyr::rbind.fill, .)
-AllCoeffs <- plyr::rbind.fill(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
-# See hint at http://stackoverflow.com/questions/22555249/how-to-merge-data-frame-with-same-column-names
-AllCoeffs <- as.data.frame(lapply(AllCoeffs, function(x) unname(unlist(x))))
+}) %>% bind_rows()  # do.call(plyr::rbind.fill, .)
+AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
+# # See hint at http://stackoverflow.com/questions/22555249/how-to-merge-data-frame-with-same-column-names
+# AllCoeffs <- as.data.frame(lapply(AllCoeffs, function(x) unname(unlist(x))))
 # Get reference values for lambda and sse.
 ref <- filter(AllCoeffs, model=="exp") %>% select(Country, sse, lambda)
 colnames(ref)[colnames(ref)=="sse"] <- "sse_ref"
 colnames(ref)[colnames(ref)=="lambda"] <- "lambda_ref"
 AllCoeffs <- merge(AllCoeffs, ref)
 # Calculate differences relative to the reference model
-AllCoeffs <- mutate(AllCoeffs, 
-                    Dlambda = abs(lambda) - abs(lambda_ref), 
-                    Dsse = sse - sse_ref,
-                    percDlambda = Dlambda / abs(lambda_ref) * 100, 
-                    percDsse = Dsse / sse_ref * 100)
-
-# Relevel factors
-AllCoeffs$Country <- relevelFactor(as.factor(unlist(AllCoeffs$Country)), c("PT", "UK"))
-AllCoeffs$flavor <- relevelFactor(as.factor(unlist(AllCoeffs$flavor)), c("Unadjusted", "Quality-adjusted"))
-AllCoeffs$energy <- relevelFactor(as.factor(unlist(AllCoeffs$energy)), c("Without energy", "With energy"))
-AllCoeffs$model <- relevelFactor(as.factor(unlist(AllCoeffs$model)), c("exp", "CD", "CES"))
-AllCoeffs$nest <- relevelFactor(as.factor(unlist(AllCoeffs$nest)), c("kl", "kle", "lek", "ekl"))
-AllCoeffs$CSP <- relevelFactor(as.factor(unlist(AllCoeffs$CSP)), c("Adhere to CSP", "Reject CSP"))
-# Rearrange for easier viewing
-AllCoeffs <- arrange(AllCoeffs, Country, model, flavor, energy, nest, CSP)
+AllCoeffs <- 
+  AllCoeffs %>%
+  mutate(
+    Dlambda = abs(lambda) - abs(lambda_ref), 
+    Dsse = sse - sse_ref,
+    percDlambda = Dlambda / abs(lambda_ref) * 100, 
+    percDsse = Dsse / sse_ref * 100,
+    # Relevel factors
+    Country = relevelFactor(Country, c("PT", "UK")),
+    flavor = relevelFactor(flavor, c("Unadjusted", "Quality-adjusted")),
+    energy = relevelFactor(energy, c("Without energy", "With energy")),
+    model = relevelFactor(model, c("exp", "CD", "CES")),
+    nest = relevelFactor(nest, c("kl", "kle", "lek", "ekl")),
+    CSP = relevelFactor(CSP, c("Adhere to CSP", "Reject CSP"))
+  ) %>% 
+  arrange(Country, model, flavor, energy, nest, CSP)
 @
 
 <<Resampling>>=
@@ -1786,6 +1787,18 @@ myXTable(data_CSP_CD,
 @
 %
 
+<<>>=
+triPlot(
+  data=AllCoeffs, 
+  aes(x = alpha_3, y = alpha_1, z = alpha_2, 
+      fill  = nest, 
+      shape = nest,
+      size = CSP, alpha = CSP)) +
+  facet_grid(. ~ Country) +
+  scale_size_manual(values = c(5, 2)) +
+  scale_alpha_manual(values = c(.2, .6)) +
+  scale_shape_manual(values = 21:25)
+@
 
 Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
 and the reference model (exponential-only).
