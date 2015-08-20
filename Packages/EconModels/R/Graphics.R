@@ -71,25 +71,29 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
     )
 }
 
-
 #' @export
 triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"), 
-                    parse=TRUE, grid_lines=4, aes_string="", geom=geom_point, ...) {
+                    parse=TRUE, grid_lines=4, mapping=aes(), aes_string = NULL,
+                    geom=geom_point, ...) {
+  if (!is.null(aes_string)) 
+    stop( "aes_string has been deprecated.",
+          "Assign the output of aes() to mapping instead.")
+  
   h <- seq(0, 1, by=1/grid_lines)
   points <- data.frame( h=h )
-  if ( nchar(aes_string) > 0 ) aes_string <- paste(",", aes_string)
   
-  command <- paste("ggplot( aes(x=tri2x(", 
-                   deparse(substitute(x)), ",", 
-                   deparse(substitute(y)), ",", 
-                   deparse(substitute(z)),
-                   "), y=tri2y(",
-                   deparse(substitute(x)), ",", 
-                   deparse(substitute(y)), ",", 
-                   deparse(substitute(z)),
-                   ")", aes_string, "), data=", deparse(substitute(data)), " )", sep="")
-
-    p <- eval(parse(text=command),envir=parent.frame())                   
+  xyz_mapping <- 
+    list( 
+      x = bquote(tri2x(.(substitute(x)), .(substitute(y)), .(substitute(z)))), 
+      y = bquote(tri2y(.(substitute(x)), .(substitute(y)), .(substitute(z)))) 
+    )
+  class(xyz_mapping) <- "uneval"
+    
+  mapping <- modifyList(xyz_mapping, mapping)
+  
+    p <-  ggplot(data = data)
+    
+#    p <- eval(parse(text=command), envir=parent.frame())                   
     p + 
     expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
     tri_theme() + 
@@ -112,7 +116,7 @@ triPlot <- function(data, x, y, z, labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
                               vj = c(0,0.5,0.5)
               ), 
               parse=parse) +
-    do.call( geom, list(...) )
+    do.call( geom, c(list(mapping=mapping), list(...)) )
       
 }
 
