@@ -853,6 +853,9 @@ if (rerunResampling){
 
 
 <<Fitted_and_Residuals>>=
+### Why are we going back and forth between CamelCase and interspersed_underscores?
+### If there isn't a reason, probably we should stick with one naming convention.
+
 temp_data_exp <- 
   leaf_apply(
     modelsExp, class=c("lm"), 
@@ -1126,6 +1129,10 @@ ylab("Indexed (1960=1)")
 %++++++++++++++++++++++++++++++
 
 <<Fitted_and_Residual_Graph_Functions>>=
+
+### Can fittedGraphNoCSP and fittedGraphCSP be combined into one function with an argument?
+### Or can the data filtering happen outside and everything else be the same?
+### Did you copy and paste to make one from the other?  That should be a sign...
 fittedGraphNoCSP <- function(data){
   fittedGraphData <- 
     data %>% 
