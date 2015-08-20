@@ -1954,7 +1954,9 @@ triPlot(
   scale_colour_manual(values = c("gray70", "black")) +
   scale_size_manual(values = c(5, 3,3,3,3)) +
   # scale_alpha_manual(values = c(.2, .6,.6,.6,.6)) +
-  scale_shape_manual(values = 21:25)  
+  scale_shape_manual(values = 21:25) +
+  guides( 
+    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
 @
 
 Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
