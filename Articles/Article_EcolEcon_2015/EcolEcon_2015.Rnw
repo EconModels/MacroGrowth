@@ -1436,7 +1436,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formu
 
 <<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
-                labels=c("alpha[e]", "alpha[k]", "alpha[l]"), size=2.0)
+                labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
 @
 
 <<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
@@ -1943,7 +1943,8 @@ triPlot(
     AllCoeffs %>% 
     mutate( Model = interaction(nest, CSP, sep = " -- ", drop=TRUE),
             Inputs = flavor), 
-  aes(x = alpha_3, y = alpha_1, z = alpha_2, 
+  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
+  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
       fill  = Model, 
       shape = Model,
       size = Model, 

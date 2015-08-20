@@ -8,12 +8,12 @@
 
 #' @export
 tri2x <- function(x,y,z) {
-  return( x * 0.5 + y * 0 + z * 1 )
+    y * 1 + z * 0.5   # + x * 0 
 }
 
 #' @export
 tri2y <- function(x,y,z) {
-  return( x * 1 + y * 0 + z * 0 )
+  z * 1 # + x * 0 + y * 0 
 }
 
 #' @export
@@ -72,7 +72,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
 }
 
 #' @export
-triPlot <- function(data, mapping, labels=c("alpha[3]", "alpha[1]", "alpha[2]"), 
+triPlot <- function(data, mapping, labels=c("alpha[1]", "alpha[2]", "alpha[3]"), 
                     parse=TRUE, grid_lines=4, aes_string = NULL,
                     geom=geom_point, ...) {
   if (!is.null(aes_string)) 
@@ -115,10 +115,10 @@ triPlot <- function(data, mapping, labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
               color=xy_theme_old()$axis.title$colour, 
               size=4,
               data=data.frame(label=rep(labels, length.out=3),
-                              x=c(.5,-.02,1.02), 
-                              y=c(1.02,0,0),
-                              hj = c(.5,1,0),
-                              vj = c(0,0.5,0.5)
+                              x=c(.5,-.02,1.02)[c(2, 3, 1)], 
+                              y=c(1.02,0,0)[c(2, 3, 1)],
+                              hj = c(.5,1,0)[ c(2, 3, 1)],
+                              vj = c(0,0.5,0.5)[c(2, 3, 1)]
               ), 
               parse=parse) 
     q + do.call( geom, c(list(mapping=mapping), list(...)) )
@@ -170,13 +170,13 @@ standardTriPlot <- function(
 {
   
   p <- triPlot(subset(data, method!="orig"), 
-               mapping = modifyList(aes(x=alpha_3, y=alpha_1, z=alpha_2), mapping),
+               mapping = modifyList(aes(x=alpha_1, y=alpha_2, z=alpha_3), mapping),
                labels=labels,
                grid_lines=grid_lines, 
                size=size, alpha=alpha ) + 
     geom_point(data=subset(data, method=="orig"), 
-               aes(x = tri2x(alpha_3, alpha_1, alpha_2),
-                   y = tri2y(alpha_3, alpha_1, alpha_2)),
+               aes(x = tri2x(alpha_1, alpha_2, alpha_3),
+                   y = tri2y(alpha_1, alpha_2, alpha_3)),
                color=orig_color, alpha=1, size=4, shape=10) 
   if ( !is.null(facet_formula) ) {
     if ( length(facet_formula)==2 ) {
