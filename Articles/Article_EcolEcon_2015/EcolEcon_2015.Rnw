@@ -1437,6 +1437,7 @@ triPlot(
 Clean up labeling, etc. later.
 
 <<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$).">>=
+breaks_labels = c(0.01, 1, 100)
 p <- 
 ggplot(
   AllCoeffs %>% 
@@ -1454,7 +1455,7 @@ ggplot(
                  #position = position_jitter(height=0.2, width=0)
              ) + 
   facet_grid( type ~ Country, scales = "free_y" ) + 
-  scale_x_log10(limits = c(0.001,2000), labels=comma) +
+  scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
   ylab("") +
