@@ -115,6 +115,7 @@ library(xtable)
 library(knitr)
 library(texreg)
 library(tidyr)
+library(scales)
 
 # Tell whether to re-run the analysis to create the models
 # or the resampling on the (kl)e models.
@@ -1453,7 +1454,7 @@ ggplot(
                  #position = position_jitter(height=0.2, width=0)
              ) + 
   facet_grid( type ~ Country, scales = "free_y" ) + 
-  scale_x_log10(limits = c(0.001,2000)) +
+  scale_x_log10(limits = c(0.001,2000), labels=comma) +
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
   ylab("") +
