@@ -182,7 +182,6 @@ model_points_style <- function(p) {
   guides( 
     col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
 }
-
 @
 
 \begin{frontmatter}
@@ -1383,6 +1382,51 @@ fsbg(coun = "PT", mod = "CES")
 fsbg(coun = "UK", mod = "CES")
 @
 
+<<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=7.5, fig.height=2.8, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
+p <- triPlot(
+  data=
+    AllCoeffs %>% filter(model == "CES") %>%
+    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor), 
+  grid_lines = 5,
+  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
+  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
+      fill  = Model, 
+      shape = Model,
+      size = Model,
+      color = Inputs)
+  ) +
+  facet_grid(. ~ Country)
+  model_points_style(p)
+@
+
+<<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=7.5, fig.height=5, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
+triPlot(
+  data=
+    AllCoeffs %>% filter(model == "CES") %>%
+    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor), 
+  grid_lines = 5,
+  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
+  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
+      fill  = Model, 
+      shape = Model,
+      size = Model
+      # color = Inputs
+      )
+  ) +
+  facet_grid(Inputs ~ Country) +
+    
+    # model_points_style(p)
+  
+  # scale_colour_manual(values = c("gray70", "black")) +
+  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
+  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
+  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
+  scale_shape_manual(values = c(21, 21, 23:27)) +
+  guides( 
+    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
+@
 
 %++++++++++++++++++++++++++++++
 \subsection{$\sigma$ graphs} 
@@ -1391,17 +1435,18 @@ fsbg(coun = "UK", mod = "CES")
 
 Clean up labeling, etc. later.
 
-<<fig.width=8.5, fig.height=5, out.width=".9\\textwidth">>=
+<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$).">>=
 p <- 
 ggplot(
   AllCoeffs %>% 
     gather(type, value, matches("sigma")) %>% 
     filter(!is.na(value)) %>% 
     filter(! type %in% c("sigma", "sigma_1")) %>%
-    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor) 
+    mutate(Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+           Inputs = flavor
+           )
   ) + 
-  geom_point(aes(x=.0001 + value, y=type, 
+  geom_point(aes(x=value, y=type, 
                  shape = Model, fill=Model, size=Model,
                  color=Inputs
                  )
@@ -1409,13 +1454,14 @@ ggplot(
              ) + 
   facet_grid( type ~ Country, scales = "free_y" ) + 
   scale_x_log10(limits = c(0.001,2000)) +
+  geom_vline(xintercept = 1, color="gray50", size=0.2) +
   xy_theme() +
   theme(legend.position="top")
 
 model_points_style(p)
 @
 
-<<sigma_graph>>=
+<<sigma_graph, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
 ### A function named blah_function should return a function, not a plot.  Don't use function in the name 
 ### of a function unless it tells you something about the function.  All functions are functions, we don't
 ### need to name them like that.
@@ -1463,11 +1509,11 @@ sigma_graph <- function(data){
 }
 @
 
-<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
+<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.", eval=FALSE, include=FALSE>>=
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 @
 
-<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
+<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
@@ -1986,26 +2032,6 @@ myXTable(data_CSP_CD,
          digits=6)
 @
 %
-
-<<fig.height=3>>=
-
-p <- triPlot(
-  data=
-    AllCoeffs %>% filter(model == "CES") %>%
-    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor), 
-  grid_lines = 5,
-  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
-  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
-      fill  = Model, 
-      shape = Model,
-      size = Model,
-      color = Inputs)
-  ) +
-  facet_grid(. ~ Country)
-  model_points_style(p)
-@
-
 Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
 and the reference model (exponential-only).
 %
