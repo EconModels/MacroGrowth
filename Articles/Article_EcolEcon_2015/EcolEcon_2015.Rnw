@@ -2058,7 +2058,7 @@ ggplot() +
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Here is a table of the raw CES coefficient values. 
-This table is not used in the paper, so I'm putting it in 
+This table is not used in the paper, so I'm putting it in the graveyard.
 <<CES_sigma, results="asis">>=
 ### Is sigma_data defined anywhere?
 
