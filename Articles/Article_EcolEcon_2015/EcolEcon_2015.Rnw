@@ -156,7 +156,9 @@ opts_chunk$set(
 
 # This function is used in many places below.
 ### That's nice.  I assume that's why you wrote a function.  But what does it DO?
+@
 
+<<myXTable>>=
 myXTable <- function(data, caption, label, digits=2){
   table <- xtable(data, caption=caption, label=label, digits=digits)
   print(table, 
@@ -169,6 +171,19 @@ myXTable <- function(data, caption, label, digits=2){
 }
 @
 
+<<model_points>>=
+model_points <- function(p) {
+  p + 
+  scale_colour_manual(values = c("gray70", "black")) +
+  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
+  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
+  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
+  scale_shape_manual(values = c(21, 21, 23:27)) +
+  guides( 
+    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
+}
+
+@
 
 \begin{frontmatter}
 
@@ -780,13 +795,13 @@ AllCoeffsExp <-
 AllCoeffsCSP <- 
   leaf_apply(modelsCSP, class = c("lm"), f = model2df) %>% 
   bind_rows() %>%
-  mutate(CSP = "Adhere to CSP")
+  mutate(CSP = "w/ CSP")
 
 # Put all CD and CES model coefficients into a data frame.  
 AllCoeffsNoCSP <- 
   leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = model2df) %>%
   bind_rows() %>%
-  mutate(CSP="Reject CSP")
+  mutate(CSP="w/o CSP")
 
 
 AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
@@ -794,7 +809,8 @@ AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
 AllCoeffs <-
   AllCoeffs %>% 
   mutate( 
-    nest = ifelse(is.na(nest), "", nest)
+    nest = ifelse(is.na(nest), "", nest),
+    CSP = ifelse( CSP == "w/ CSP", "w/ CSP", "w/o CSP")
     )
     
 
@@ -835,7 +851,7 @@ AllCoeffs <-
     energy = relevelFactor(factor(energy), c("Without energy", "With energy")),
     model = relevelFactor(factor(model), c("exp", "CD", "CES")),
     nest = relevelFactor(factor(nest), c("kl", "kle", "lek", "ekl")),
-    CSP = relevelFactor(factor(CSP), c("Adhere to CSP", "Reject CSP"))
+    CSP = relevelFactor(factor(CSP), c("w/ CSP", "w/o CSP"))
   ) %>% 
   arrange(Country, model, flavor, energy, nest, CSP)
 @
@@ -908,7 +924,7 @@ temp_data_exp <-
 temp_data_CSP <- 
   leaf_apply(modelsCSP, class=c("plm", "lm"), model2df) %>% 
   bind_rows() %>%
-  mutate(CSP = "Adhere to CSP")
+  mutate(CSP = "w/ CSP")
 
 ### This looks like a candidate for clean up a la model2df
 
@@ -935,7 +951,7 @@ function_that_was_here_before <- function(model, id){
 temp_data_noCSP <- 
   leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), function_that_was_here_before) %>% 
   bind_rows() %>%
-  mutate(CSP = "Reject CSP")
+  mutate(CSP = "w/o CSP")
 
 temp_data_noExp <- 
   bind_rows( temp_data_CSP, temp_data_noCSP )
@@ -1181,7 +1197,7 @@ Figures~\ref{fig:Graphs_CESkle-fitted}--\ref{fig:Graphs_CESekl-fitted}.
 <<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($kl$)$e$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_kle <- 
   fitted_and_resid_data %>% 
-  filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "kle"))
+  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "kle"))
 
 fittedGraphNoCSP(fittedGraphData_kle)
 
@@ -1266,7 +1282,7 @@ show fitting residuals for all CES models.
 <<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
 residualPlot(
   fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="Reject CSP" & (nest=="kle" | nest=="kl")), 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl")), 
   withEnergyShape = 0) # square
 @
 %
@@ -1373,7 +1389,10 @@ fsbg(coun = "UK", mod = "CES")
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
-<<>>=
+Clean up labeling, etc. later.
+
+<<fig.width=8.5, fig.height=5, out.width=".9\\textwidth">>=
+p <- 
 ggplot(
   AllCoeffs %>% 
     gather(type, value, matches("sigma")) %>% 
@@ -1391,15 +1410,9 @@ ggplot(
   facet_grid( type ~ Country, scales = "free_y" ) + 
   scale_x_log10(limits = c(0.001,2000)) +
   xy_theme() +
-  scale_colour_manual(values = c("gray70", "black")) +
-  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
-  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
-  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
-  scale_shape_manual(values = c(21, 21, 23:27)) +
-  guides( 
-    col = guide_legend(override.aes = aes(size = 5, shape = 21))
-    ) 
-  
+  theme(legend.position="top")
+
+model_points(p)
 @
 
 <<sigma_graph>>=
@@ -1519,7 +1532,7 @@ table_data <-
          CSP =  
            plyr::mapvalues(
              CSP, 
-             from=c("Adhere to CSP", "Reject CSP"), 
+             from=c("w/ CSP", "w/o CSP"), 
              to=c("Adhere", "Reject")),
          Energy =
            plyr::mapvalues(
@@ -1944,12 +1957,12 @@ The term $A$ is known as total factor productivity,
 and $\lambda$ is the Solow residual. 
 %
 <<Graphs_CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
-fittedGraphNoCSP(fitted_and_resid_data %>% filter(model=="CD" & CSP=="Reject CSP"))
+fittedGraphNoCSP(fitted_and_resid_data %>% filter(model=="CD" & CSP=="w/o CSP"))
 @
 
 %
 <<Graphs_CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
-residualPlot(fitted_and_resid_data %>% filter(model=="CD" & CSP=="Reject CSP"))
+residualPlot(fitted_and_resid_data %>% filter(model=="CD" & CSP=="w/o CSP"))
 @
 
 
@@ -1975,7 +1988,8 @@ myXTable(data_CSP_CD,
 %
 
 <<fig.height=3>>=
-triPlot(
+
+p <- triPlot(
   data=
     AllCoeffs %>% filter(model == "CES") %>%
     mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
@@ -1988,14 +2002,8 @@ triPlot(
       size = Model,
       color = Inputs)
   ) +
-  facet_grid(. ~ Country) +
-  scale_colour_manual(values = c("gray70", "black")) +
-  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
-  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
-  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
-  scale_shape_manual(values = c(21, 21, 23:27)) +
-  guides( 
-    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
+  facet_grid(. ~ Country)
+  model_points(p)
 @
 
 Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
@@ -2106,7 +2114,7 @@ This table is not used in the paper, so I'm putting it in the graveyard.
 #                                                          "sigma_1" = "$\\sigma_1$"))
 # data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("flavor" = "Factors of prod."))
 # data_CES_sigma_raw$CSP <- plyr::mapvalues(data_CES_sigma_raw$CSP, 
-#                                          from=c("Adhere to CSP", "Reject CSP"), 
+#                                          from=c("w/ CSP", "w/o CSP"), 
 #                                          to=c("Adhere", "Reject"))
 # data_CES_sigma_raw$Energy <- plyr::mapvalues(data_CES_sigma_raw$Energy, 
 #                                          from=c("Without energy", "With energy"), 
@@ -2119,7 +2127,7 @@ data_CES_sigma_raw <- AllCoeffs %>%
                             from=c("kl", "kle", "lek", "ekl"),
                             to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$")),
      CSP = plyr::mapvalues(CSP, 
-                           from=c("Adhere to CSP", "Reject CSP"), 
+                           from=c("w/ CSP", "w/o CSP"), 
                            to=c("Adhere", "Reject")),
      Energy = plyr::mapvalues(energy, 
                               from=c("Without energy", "With energy"), 
@@ -2143,27 +2151,27 @@ myXTable(data_CES_sigma_raw,
 
 <<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
 residualPlot(fitted_and_resid_data %>% 
-               filter(model=="CES" & CSP=="Reject CSP" & (nest == "lek" | nest=="kl")),
+               filter(model=="CES" & CSP=="w/o CSP" & (nest == "lek" | nest=="kl")),
              withEnergyShape = 3) # plus
 @
 %
 <<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
 residualPlot(fitted_and_resid_data %>% 
-               filter(model=="CES" & CSP=="Reject CSP" & (nest=="ekl" | nest=="kl")),
+               filter(model=="CES" & CSP=="w/o CSP" & (nest=="ekl" | nest=="kl")),
              withEnergyShape = 4) # times
 @
 
 
 %
 <<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($le$)$k$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "lek"))
+fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "lek"))
 fittedGraphNoCSP(fittedGraphData_lek)
 @
 %
 <<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($ek$)$l$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_ekl <- 
   fitted_and_resid_data %>% 
-  filter(model=="CES" & CSP=="Reject CSP" & (nest == "kl" | nest == "ekl"))
+  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "ekl"))
 fittedGraphNoCSP(fittedGraphData_ekl)
 @
 
