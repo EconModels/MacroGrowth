@@ -1373,7 +1373,6 @@ fsbg(coun = "UK", mod = "CES")
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
-
 <<>>=
 ggplot(
   AllCoeffs %>% 
@@ -1403,12 +1402,12 @@ ggplot(
   
 @
 
-<<sigma_graph_function>>=
+<<sigma_graph>>=
 ### A function named blah_function should return a function, not a plot.  Don't use function in the name 
 ### of a function unless it tells you something about the function.  All functions are functions, we don't
 ### need to name them like that.
 
-sigma_graph_function <- function(data){
+sigma_graph <- function(data){
   sigma_graph_data <- 
     data %>% 
     select(Country, CSP, flavor, energy, nest, 
@@ -1423,7 +1422,7 @@ sigma_graph_function <- function(data){
     mutate(label = paste(CSP, flavor, energy, nest, variable, sep=", ")) %>%
     na.omit()
   
-  return(sigma_graph_data)
+  # return(sigma_graph_data)
   
   # Make the plot
   plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
@@ -1452,11 +1451,11 @@ sigma_graph_function <- function(data){
 @
 
 <<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
-sigma_graph_function(AllCoeffs %>% filter(model=="CES", Country=="PT"))
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 @
 
 <<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
-sigma_graph_function(AllCoeffs %>% filter(model=="CES", Country=="UK"))
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
 
@@ -2102,16 +2101,35 @@ This table is not used in the paper, so I'm putting it in the graveyard.
 <<CES_sigma, results="asis">>=
 ### Is sigma_data defined anywhere?
 
-data_CES_sigma_raw <- sigma_data %>% select(Country, Model, flavor, Energy, Nest, CSP, sigma_1, sigma)
-data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("sigma" = "$\\sigma$",
-                                                         "sigma_1" = "$\\sigma_1$"))
-data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("flavor" = "Factors of prod."))
-data_CES_sigma_raw$CSP <- plyr::mapvalues(data_CES_sigma_raw$CSP, 
-                                         from=c("Adhere to CSP", "Reject CSP"), 
-                                         to=c("Adhere", "Reject"))
-data_CES_sigma_raw$Energy <- plyr::mapvalues(data_CES_sigma_raw$Energy, 
-                                         from=c("Without energy", "With energy"), 
-                                         to=c("Without", "With"))
+# data_CES_sigma_raw <- sigma_data %>% select(Country, Model, flavor, Energy, Nest, CSP, sigma_1, sigma)
+# data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("sigma" = "$\\sigma$",
+#                                                          "sigma_1" = "$\\sigma_1$"))
+# data_CES_sigma_raw <- plyr::rename(data_CES_sigma_raw, c("flavor" = "Factors of prod."))
+# data_CES_sigma_raw$CSP <- plyr::mapvalues(data_CES_sigma_raw$CSP, 
+#                                          from=c("Adhere to CSP", "Reject CSP"), 
+#                                          to=c("Adhere", "Reject"))
+# data_CES_sigma_raw$Energy <- plyr::mapvalues(data_CES_sigma_raw$Energy, 
+#                                          from=c("Without energy", "With energy"), 
+#                                          to=c("Without", "With"))
+
+data_CES_sigma_raw <- AllCoeffs %>%
+  filter(model=="CES") %>%
+   mutate(
+     Nest = plyr::mapvalues(nest,
+                            from=c("kl", "kle", "lek", "ekl"),
+                            to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$")),
+     CSP = plyr::mapvalues(CSP, 
+                           from=c("Adhere to CSP", "Reject CSP"), 
+                           to=c("Adhere", "Reject")),
+     Energy = plyr::mapvalues(energy, 
+                              from=c("Without energy", "With energy"), 
+                              to=c("Without", "With"))
+     ) %>%
+  select(Country, flavor, Energy, Nest, CSP, sigma_1, sigma) %>%
+  plyr::rename(
+    c("sigma" = "$\\sigma$",
+      "sigma_1" = "$\\sigma_1$",
+      "flavor" = "Factors of Prod."))
 
 myXTable(data_CES_sigma_raw,
          caption="Factor substitution~($\\sigma$) for CES models.",
