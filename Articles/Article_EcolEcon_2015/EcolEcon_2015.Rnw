@@ -788,7 +788,15 @@ AllCoeffsNoCSP <-
   bind_rows() %>%
   mutate(CSP="Reject CSP")
 
+
 AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
+
+AllCoeffs <-
+  AllCoeffs %>% 
+  mutate( 
+    nest = ifelse(is.na(nest), "", nest)
+    )
+    
 
 ### It looks like this could also be done the otehr way arround:  We could scoop up all the models
 ### into AllCoeffs and then filter to the subsets.
@@ -1365,6 +1373,36 @@ fsbg(coun = "UK", mod = "CES")
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
+
+<<>>=
+ggplot(
+  AllCoeffs %>% 
+    gather(type, value, matches("sigma")) %>% 
+    filter(!is.na(value)) %>% 
+    filter(! type %in% c("sigma", "sigma_1")) %>%
+    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor) 
+  ) + 
+  geom_point(aes(x=.0001 + value, y=type, 
+                 shape = Model, fill=Model, size=Model,
+                 color=Inputs
+                 )
+                 #position = position_jitter(height=0.2, width=0)
+             ) + 
+  facet_grid( type ~ Country, scales = "free_y" ) + 
+  scale_x_log10(limits = c(0.001,2000)) +
+  xy_theme() +
+  scale_colour_manual(values = c("gray70", "black")) +
+  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
+  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
+  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
+  scale_shape_manual(values = c(21, 21, 23:27)) +
+  guides( 
+    col = guide_legend(override.aes = aes(size = 5, shape = 21))
+    ) 
+  
+@
+
 <<sigma_graph_function>>=
 ### A function named blah_function should return a function, not a plot.  Don't use function in the name 
 ### of a function unless it tells you something about the function.  All functions are functions, we don't
@@ -1940,21 +1978,23 @@ myXTable(data_CSP_CD,
 <<fig.height=3>>=
 triPlot(
   data=
-    AllCoeffs %>% 
-    mutate( Model = interaction(nest, CSP, sep = " -- ", drop=TRUE),
+    AllCoeffs %>% filter(model == "CES") %>%
+    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
             Inputs = flavor), 
+  grid_lines = 5,
   labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
   aes(x = alpha_1, y = alpha_2, z = alpha_3, 
       fill  = Model, 
       shape = Model,
-      size = Model, 
-      color = Inputs),
-  alpha = 0.6) +
+      size = Model,
+      color = Inputs)
+  ) +
   facet_grid(. ~ Country) +
   scale_colour_manual(values = c("gray70", "black")) +
-  scale_size_manual(values = c(5, 3,3,3,3)) +
-  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6)) +
-  scale_shape_manual(values = 21:25) +
+  scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
+  # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
+  scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
+  scale_shape_manual(values = c(21, 21, 23:27)) +
   guides( 
     col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
 @
