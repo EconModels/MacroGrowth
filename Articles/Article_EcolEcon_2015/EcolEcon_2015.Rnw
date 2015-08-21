@@ -1365,12 +1365,12 @@ fsbg(coun = "UK", mod = "CES")
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
-<<sigma_graph_function>>=
+<<sigma_graph>>=
 ### A function named blah_function should return a function, not a plot.  Don't use function in the name 
 ### of a function unless it tells you something about the function.  All functions are functions, we don't
 ### need to name them like that.
 
-sigma_graph_function <- function(data){
+sigma_graph <- function(data){
   sigma_graph_data <- 
     data %>% 
     select(Country, CSP, flavor, energy, nest, 
@@ -1385,7 +1385,7 @@ sigma_graph_function <- function(data){
     mutate(label = paste(CSP, flavor, energy, nest, variable, sep=", ")) %>%
     na.omit()
   
-  return(sigma_graph_data)
+  # return(sigma_graph_data)
   
   # Make the plot
   plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
@@ -1414,11 +1414,11 @@ sigma_graph_function <- function(data){
 @
 
 <<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
-sigma_graph_function(AllCoeffs %>% filter(model=="CES", Country=="PT"))
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 @
 
 <<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
-sigma_graph_function(AllCoeffs %>% filter(model=="CES", Country=="UK"))
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
 
