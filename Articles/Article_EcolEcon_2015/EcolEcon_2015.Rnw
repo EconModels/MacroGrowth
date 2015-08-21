@@ -172,7 +172,7 @@ myXTable <- function(data, caption, label, digits=2){
 @
 
 <<model_points>>=
-model_points <- function(p) {
+model_points_style <- function(p) {
   p + 
   scale_colour_manual(values = c("gray70", "black")) +
   scale_size_manual(values = c(5, 3,3,3,3,3,3)) +
@@ -1412,7 +1412,7 @@ ggplot(
   xy_theme() +
   theme(legend.position="top")
 
-model_points(p)
+model_points_style(p)
 @
 
 <<sigma_graph>>=
@@ -2003,7 +2003,7 @@ p <- triPlot(
       color = Inputs)
   ) +
   facet_grid(. ~ Country)
-  model_points(p)
+  model_points_style(p)
 @
 
 Table~\ref{tab:CD_coeffs} shows coefficients for all fitted Cobb-Douglas models
