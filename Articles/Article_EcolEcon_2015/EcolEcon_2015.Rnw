@@ -1480,9 +1480,16 @@ sigma_graph <- function(data){
 }
 @
 
+<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.", eval=FALSE, include=FALSE>>=
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
+@
+
+<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
+@
 
 <<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$).">>=
-breaks_labels = c(0.01, 1, 100)
+breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
 ggplot(
   AllCoeffs %>% 
@@ -1513,44 +1520,31 @@ model_points_style(p)
 @
 
 <<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
-breaks_labels = c(0.01, 1, 100)
+breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
-ggplot(
-  AllCoeffs %>% 
-    gather(type, value, matches("sigma")) %>% 
-    filter(!is.na(value)) %>% 
-    filter(! type %in% c("sigma", "sigma_1")) %>%
-    mutate(Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-           Inputs = flavor
-           )
-  ) + 
+  ggplot(
+    AllCoeffs %>% 
+      gather(type, value, matches("sigma")) %>% 
+      filter(!is.na(value)) %>% 
+      filter(! type %in% c("sigma", "sigma_1")) %>%
+      mutate(Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+             Inputs = flavor
+             )
+    ) + 
   geom_point(aes(x=value, y=type, 
                  shape = Model, fill=Model, size=Model,
                  color=Inputs
                  )
-                 #position = position_jitter(height=0.2, width=0)
+             #position = position_jitter(height=0.2, width=0)
              ) + 
-  # facet_grid( type ~ Country, scales = "free_y" ) + 
   facet_grid( Inputs ~ Country) + 
   scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
   ylab("") +
-  xy_theme() #+
-#   theme(
-#     legend.position="top",
-#     strip.text.y = element_blank())
+  xy_theme()
 
 model_points_style(p)
-@
-
-
-<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.", eval=FALSE, include=FALSE>>=
-sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
-@
-
-<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
-sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
 
