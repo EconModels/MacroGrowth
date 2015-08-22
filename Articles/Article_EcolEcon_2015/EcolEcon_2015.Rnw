@@ -1065,6 +1065,123 @@ $\lambda$ and $sse$
 results for CES models.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tables for paper} 
+\label{sec:tables_for_paper}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Table~\ref{tab:CES_sr_gof} shows estimated values of
+the scale parameter~($\theta$),
+the Solow residual~($\lambda$), and
+goodness of fit~(SSE)
+for all modeling choices.
+
+<<Table_data>>=
+table_data <- 
+  AllCoeffs %>%
+  plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
+  mutate(Nest = 
+           plyr::mapvalues(
+             Nest,
+             from=c("kl", "kle", "lek", "ekl"),
+             to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$")),
+         CSP =  
+           plyr::mapvalues(
+             CSP, 
+             from=c("w/ CSP", "w/o CSP"), 
+             to=c("Adhere", "Reject")),
+         Energy =
+           plyr::mapvalues(
+             Energy, 
+             from=c("Without energy", "With energy"), 
+             to=c("Without", "With")),
+         Model = 
+           plyr::mapvalues(
+             Model, 
+             from=c("exp"), 
+             to=c("Ref."))
+  )
+@
+
+
+<<CES_sr_gof, results="asis">>=
+data_CES_SR_gof <- 
+  table_data %>% 
+  filter(Model=="CES" | Model=="Ref.") %>% 
+  select(Country, Model, CSP, flavor, Energy, Nest, scale, lambda, sse) %>%
+  plyr::rename(c("flavor" = "Factors of prod.",
+                  "scale" = "$\\theta$",
+                  "lambda" = "$\\lambda$"))
+
+myXTable(data_CES_SR_gof,
+         caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=4)
+@
+
+Table~\ref{tab:CES_alpha} shows 
+output elasticities~($\alpha$) for all modeling choices.
+
+<<CES_alpha, results="asis">>=
+data_CES_alpha <- 
+  table_data %>% 
+  filter(Model=="CES" | Model=="Ref.") %>% 
+  select(Country, Model, CSP, flavor, Energy, Nest, alpha_1, alpha_2, alpha_3) %>%
+  plyr::rename(c("flavor" = "Factors of prod.",
+                 "alpha_1" = "$\\alpha_k$",
+                 "alpha_2" = "$\\alpha_l$",
+                 "alpha_3" = "$\\alpha_e$"))
+myXTable(data_CES_alpha,
+         caption="Output elasticities~($\\alpha$) for all models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=2)
+@
+
+Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
+for inner nests.
+Note that the row with 
+``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
+is, in fact, a boundary model that does not include energy.
+As such, the only knowable elasticity is $\sigma_{kl}$.
+
+<<CES_sigma_nest_aware_inner, results="asis">>=
+sigma_inner_data <- 
+  table_data %>% 
+  filter(Model=="CES") %>% 
+  select(Country, CSP, flavor, Energy, Nest, sigma_12, sigma_23, sigma_13) %>%
+  plyr::rename( c("flavor" = "Factors of prod.",
+                  "sigma_12" = "$\\sigma_{kl}$",
+                  "sigma_23" = "$\\sigma_{le}$",
+                  "sigma_13" = "$\\sigma_{ek}$"))
+#
+myXTable(sigma_inner_data,
+         caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=2)
+@
+
+Table~\ref{tab:CES_sigma_nest_aware_outer} shows elasticity of substitution~($\sigma$)
+for outer nests.
+Rows with the $kl$ nesting are blank, because they have no outer nest.
+The row with
+``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
+has no values for $\sigma$, because it has no outer nest, being a boundary model
+that includes only~$k$ and~$l$.
+
+<<CES_sigma_nest_aware_outer, results="asis">>=
+sigma_outer_data <- 
+  table_data %>% 
+  filter(Model=="CES") %>% 
+  select(Country, CSP, flavor, Energy, Nest, sigma_12_3, sigma_23_1, sigma_13_2) %>%
+  plyr::rename(c("flavor" = "Factors of prod.", 
+                 "sigma_12_3" = "$\\sigma_{(kl)e}$",
+                 "sigma_23_1" = "$\\sigma_{(le)k}$",
+                 "sigma_13_2" = "$\\sigma_{(ek)l}$"))
+myXTable(sigma_outer_data,
+         caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=2)
+@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1072,6 +1189,11 @@ results for CES models.
 \label{sec:graphs_for_paper}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%++++++++++++++++++++++++++++++
+\subsection{Historical data} 
+\label{sec:historical_data_graph}
+%++++++++++++++++++++++++++++++
 
 Unadjusted and quality-adjusted data for both Portugal and the United Kingdom 
 are shown in Figure~\ref{fig:Historical_Data_Graph}.
@@ -1205,6 +1327,10 @@ fittedGraphNoCSP(fittedGraphData_kle)
 @
 
 
+%++++++++++++++++++++++++++++++
+\subsection{Residual plot} 
+\label{sec:residual_plot}
+%++++++++++++++++++++++++++++++
 
 <<ResidualPlotFunction>>=
 residualPlot <- function(data, withEnergyShape = 0){
@@ -1289,8 +1415,8 @@ residualPlot(
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Factor shares} 
-\label{sec:shares}
+\subsection{Output elasticities} 
+\label{sec:output_elasticities_graph}
 %++++++++++++++++++++++++++++++
 
 
@@ -1429,12 +1555,11 @@ triPlot(
     col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
 @
 
+
 %++++++++++++++++++++++++++++++
 \subsection{$\sigma$ graphs} 
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
-
-
 
 <<sigma_graph, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
 sigma_graph <- function(data){
@@ -1584,124 +1709,6 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 @
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Tables for paper} 
-\label{sec:tables_for_paper}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-Table~\ref{tab:CES_sr_gof} shows estimated values of
-the scale parameter~($\theta$),
-the Solow residual~($\lambda$), and
-goodness of fit~(SSE)
-for all modeling choices.
-
-<<Table_data>>=
-table_data <- 
-  AllCoeffs %>%
-  plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
-  mutate(Nest = 
-           plyr::mapvalues(
-             Nest,
-             from=c("kl", "kle", "lek", "ekl"),
-             to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$")),
-         CSP =  
-           plyr::mapvalues(
-             CSP, 
-             from=c("w/ CSP", "w/o CSP"), 
-             to=c("Adhere", "Reject")),
-         Energy =
-           plyr::mapvalues(
-             Energy, 
-             from=c("Without energy", "With energy"), 
-             to=c("Without", "With")),
-         Model = 
-           plyr::mapvalues(
-             Model, 
-             from=c("exp"), 
-             to=c("Ref."))
-  )
-@
-
-
-<<CES_sr_gof, results="asis">>=
-data_CES_SR_gof <- 
-  table_data %>% 
-  filter(Model=="CES" | Model=="Ref.") %>% 
-  select(Country, Model, CSP, flavor, Energy, Nest, scale, lambda, sse) %>%
-  plyr::rename(c("flavor" = "Factors of prod.",
-                  "scale" = "$\\theta$",
-                  "lambda" = "$\\lambda$"))
-
-myXTable(data_CES_SR_gof,
-         caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=4)
-@
-
-Table~\ref{tab:CES_alpha} shows 
-output elasticities~($\alpha$) for all modeling choices.
-
-<<CES_alpha, results="asis">>=
-data_CES_alpha <- 
-  table_data %>% 
-  filter(Model=="CES" | Model=="Ref.") %>% 
-  select(Country, Model, CSP, flavor, Energy, Nest, alpha_1, alpha_2, alpha_3) %>%
-  plyr::rename(c("flavor" = "Factors of prod.",
-                 "alpha_1" = "$\\alpha_k$",
-                 "alpha_2" = "$\\alpha_l$",
-                 "alpha_3" = "$\\alpha_e$"))
-myXTable(data_CES_alpha,
-         caption="Output elasticities~($\\alpha$) for all models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
-@
-
-Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
-for inner nests.
-Note that the row with 
-``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
-is, in fact, a boundary model that does not include energy.
-As such, the only knowable elasticity is $\sigma_{kl}$.
-
-<<CES_sigma_nest_aware_inner, results="asis">>=
-sigma_inner_data <- 
-  table_data %>% 
-  filter(Model=="CES") %>% 
-  select(Country, CSP, flavor, Energy, Nest, sigma_12, sigma_23, sigma_13) %>%
-  plyr::rename( c("flavor" = "Factors of prod.",
-                  "sigma_12" = "$\\sigma_{kl}$",
-                  "sigma_23" = "$\\sigma_{le}$",
-                  "sigma_13" = "$\\sigma_{ek}$"))
-#
-myXTable(sigma_inner_data,
-         caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
-@
-
-Table~\ref{tab:CES_sigma_nest_aware_outer} shows elasticity of substitution~($\sigma$)
-for outer nests.
-Rows with the $kl$ nesting are blank, because they have no outer nest.
-The row with
-``PT, Quality-adjusted, With energy, $(ek)l$ nesting, Rejecting the CSP''
-has no values for $\sigma$, because it has no outer nest, being a boundary model
-that includes only~$k$ and~$l$.
-
-<<CES_sigma_nest_aware_outer, results="asis">>=
-sigma_outer_data <- 
-  table_data %>% 
-  filter(Model=="CES") %>% 
-  select(Country, CSP, flavor, Energy, Nest, sigma_12_3, sigma_23_1, sigma_13_2) %>%
-  plyr::rename(c("flavor" = "Factors of prod.", 
-                 "sigma_12_3" = "$\\sigma_{(kl)e}$",
-                 "sigma_23_1" = "$\\sigma_{(le)k}$",
-                 "sigma_13_2" = "$\\sigma_{(ek)l}$"))
-myXTable(sigma_outer_data,
-         caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
-@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
