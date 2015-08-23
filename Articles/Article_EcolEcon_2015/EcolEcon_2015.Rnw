@@ -172,7 +172,7 @@ myXTable <- function(data, caption, label, digits=2){
 }
 @
 
-<<model_points>>=
+<<model_points_style>>=
 model_points_style <- function(p) {
   p + 
   scale_colour_manual(values = c("gray70", "black")) +
@@ -1199,16 +1199,12 @@ Unadjusted and quality-adjusted data for both Portugal and the United Kingdom
 are shown in Figure~\ref{fig:Historical_Data_Graph}.
 
 <<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
-# Melt the data into a form that is useful in a couple places
-### Don't write comments like that.  Say what you are doing to reshape and why.  
-### I figured you were going to use it and don't need a comment for that.
-### But it not at all easy to glance at this and see what the point is.
 
 ### Also, I find tidyr::gather() and tidyr::spread() easier to work with than melt() and cast()
 
 histDataForGraph <- 
   leaf_apply(formulas, class = "formula", f=function(form, name){
-    meta <- strsplit(name, split="[.]")[[1]] # %>% unlist  ### Why use unlist() here?
+    meta <- strsplit(name, split="[.]")[[1]]
     Country <- meta[1]
     flavor <- meta[2]
     measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
@@ -1216,20 +1212,20 @@ histDataForGraph <-
     trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
     
     # return this.  ### No need to name and store it.
-    melt(trimmed_historical_data, measure.vars = measure.vars, 
-         value.name = "value", variable.name = "variable") %>%
+    melt(
+      trimmed_historical_data, 
+      measure.vars = measure.vars, 
+      value.name = "value",
+      variable.name = "variable") %>%
     mutate(
-        Country = Country,
-        flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted")
+      Country = Country,
+      flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted"),
+      variable = as.character(variable, stringsAsFactors=FALSE) # eliminate factors which cause problems with bind_rows() below.
       )
   }
-  ) %>% bind_rows()
-
-# Change variable names to make a nicer-looking graph and relevel factors before plotting
-### Note: You an also change the order of things in the legend without changing the order in the data.
-
-histDataForGraph <- 
-  histDataForGraph %>% 
+  ) %>% 
+  bind_rows() %>%
+  # Change variable names to make a nicer-looking graph and relevel factors before plotting
   mutate( variable = plyr::mapvalues(
     variable,
     from=c("iGDP", 
@@ -1244,27 +1240,15 @@ histDataForGraph <-
     flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")),
     variable = relevelFactor(factor(variable), unique(variable)) 
   )
-   
-### I think this exhibits poor use of white space.  See alternative below. 
-if (FALSE)
-historicalPlot(histDataForGraph, 
-               mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-               facet_formula = Country ~ flavor, 
-               line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
-  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-  coord_cartesian(ylim=c(0.5, 13)) +
-  xlab("") + 
-  ylab("Indexed (1960=1)")
 
-### Here each summand has the same indentation so you can see which things are being added together.
 historicalPlot(
   histDataForGraph, 
   mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-  facet_formula = Country ~ flavor, 
+  # facet_formula = Country ~ flavor, 
+  facet_formula = flavor ~ Country, 
   line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
-scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-coord_cartesian(ylim=c(0.5, 13)) +
 xlab("") + 
+scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
 ylab("Indexed (1960=1)")
 @
 
