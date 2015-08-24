@@ -1277,10 +1277,10 @@ fittedGraphNoCSP <- function(data){
       label = plyr::mapvalues(label, 
                               from = c("iGDP With energy",  "fittedExp With energy",
                                        "fitted With energy", "fitted Without energy"), 
-                              to = c("GDP",  "Reference model",
-                                     "With energy", "Without energy")),
+                              to = c("GDP",  "Ref. model",
+                                     "w/ energy", "w/o energy")),
       label = relevelFactor(factor(label), 
-                            c("GDP", "Reference model", "Without energy", "With energy"))
+                            c("GDP", "Ref. model", "w/o energy", "w/ energy"))
     )
   
   # Make (and return) the graph
