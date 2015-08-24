@@ -1218,7 +1218,9 @@ histDataForGraph <-
       value.name = "value",
       variable.name = "variable") %>%
     mutate(
-      variable = as.character(variable) # eliminate factors, which cause warnings with bind_rows() below.
+      variable = as.character(variable), # eliminate factors, which cause warnings with bind_rows() below.
+      Country = Country,
+      flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted")
       )
   }
   ) %>% bind_rows() %>%
@@ -1235,7 +1237,6 @@ histDataForGraph <-
          "l", "l",
          "e", "e", "e", "e")),
     Country = relevelFactor(factor(Country), c("PT", "UK")),
-    flavor = ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted"),
     flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted"))
   )
 
