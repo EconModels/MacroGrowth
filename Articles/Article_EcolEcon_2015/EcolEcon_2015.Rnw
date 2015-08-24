@@ -1757,11 +1757,6 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formu
     labs(x=expression(theta), y=expression(lambda))
 @
 
-<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
-                labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
-@
-
 <<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1), 
                     facet_formula=~Country, alpha=0.1) +
@@ -1778,6 +1773,11 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
     labs(x=expression(delta), y=expression(sigma["(kl)"*e]))
+@
+
+<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
+                labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
 @
 
 
