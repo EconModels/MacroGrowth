@@ -1220,7 +1220,7 @@ histDataForGraph <-
     mutate(
       Country = Country,
       flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted"),
-      variable = as.character(variable, stringsAsFactors=FALSE) # eliminate factors which cause warnings with bind_rows() below.
+      variable = as.character(variable) # eliminate factors, which cause warnings with bind_rows() below.
       )
   }
   ) %>% 
