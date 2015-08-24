@@ -1328,8 +1328,44 @@ residualPlot <- function(data, withEnergyShape = 0){
     theme(legend.title=element_blank())
 }
 
-### Put in a separate R chunk and use eval=FALSE, include=FALSE 
-# This version also plots reference model residuals.
+residualPlot2 <- function(data){
+  dataToPlot <- 
+    data %>%
+    mutate(nest = 
+             plyr::mapvalues(
+               nest, 
+               from=c("kl", "kle", "lek", "ekl"), 
+               to=c("kl", "(kl)e", "(le)k", "(ek)l")
+               ),
+           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+           Inputs = flavor)
+
+  p <- ggplot() +
+    geom_point(
+      data=dataToPlot, 
+      mapping=aes(
+        x=Year, 
+        y=Residuals, 
+        fill=Model, 
+        shape=Model, 
+        size=Model,
+        color=Inputs)
+      ) +
+    facet_grid(flavor ~ Country) +
+    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
+    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+    xlab("") +
+    ylab("r") + 
+    xy_theme() +
+    labs(color = "Factors of production") # +
+    # theme(legend.title=element_blank())
+  
+  model_points_style(p)
+}
+@
+
+<<Resid_plot_with_ref, eval=FALSE, include=FALSE>>=
+# This version of the residual plot includes reference model residuals.
 # But the reference model dwarfs all other residuals and looks bad on the graph.
 # So, I decided not to use this. ---MKH, 14 Aug 2015
 
@@ -1392,13 +1428,21 @@ residualPlot(
   withEnergyShape = 0) # square
 @
 %
+<<Graphs_CESkle-resid_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting. This is an alternative version that uses our new plot style.">>=
+residualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl"))
+  )
+@
+
+
+
 
 
 %++++++++++++++++++++++++++++++
 \subsection{Output elasticities} 
 \label{sec:output_elasticities_graph}
 %++++++++++++++++++++++++++++++
-
 
 <<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
 data_sr_sse <- 
@@ -1409,9 +1453,10 @@ data_sr_sse <-
              nest, 
              from=c("kl", "kle", "lek", "ekl"), 
              to=c("kl", "(kl)e", "(le)k", "(ek)l")
-             )
+             ),
+         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+         Inputs = flavor
   )
-
 ggplot() +
   geom_point(data=data_sr_sse, mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
   geom_vline(aes(xintercept = sse), 
@@ -1428,6 +1473,52 @@ ggplot() +
   ylab(expression(lambda)) +
   xy_theme() +
   theme(legend.title=element_blank())
+
+@
+
+
+<<SRsse_CES_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
+data_sr_sse <- 
+  AllCoeffs %>% 
+  filter(model=="CES") %>% 
+  mutate(nest = 
+           plyr::mapvalues(
+             nest, 
+             from=c("kl", "kle", "lek", "ekl"), 
+             to=c("kl", "(kl)e", "(le)k", "(ek)l")
+             ),
+         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+         Inputs = flavor
+  )
+
+p <- ggplot() +
+  geom_point(
+    data=data_sr_sse, 
+    mapping=aes(
+      x=lambda, 
+      y=sse, 
+      fill=Model, 
+      shape=Model, 
+      size=Model, 
+      color=Inputs)) +
+  geom_vline(aes(xintercept = lambda), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, lambda), 
+             colour="gray50", size=0.1) +
+  geom_hline(aes(yintercept = sse), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
+             colour="gray50", size=0.1) +
+  facet_grid(flavor ~ Country) +
+  scale_x_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
+  xlab(expression(lambda)) +
+  scale_y_continuous(limits=c(-0.05, 0.7)) +
+  ylab("SSE") + 
+  labs(color = "Factors of production") +
+  xy_theme() # +
+  # theme(legend.title=element_blank())
+
+# Add our style
+model_points_style(p)
+
 @
 %
 Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
@@ -1501,6 +1592,7 @@ p <- triPlot(
       size = Model,
       color = Inputs)
   ) +
+  labs(color = "Factors of production") +
   facet_grid(. ~ Country)
   model_points_style(p)
 @
@@ -1530,7 +1622,7 @@ triPlot(
   scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
   scale_shape_manual(values = c(21, 21, 23:27)) +
   guides( 
-    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )
+    col = guide_legend(override.aes = aes(size = 5, shape = 21)) )  
 @
 
 
@@ -1614,6 +1706,7 @@ ggplot(
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
   ylab("") +
+  labs(color = "Factors of production") +
   xy_theme() +
   theme(
     legend.position="top",
@@ -1645,6 +1738,7 @@ p <-
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
   ylab("") +
+  labs(color = "Factors of production") +
   xy_theme()
 
 model_points_style(p)
