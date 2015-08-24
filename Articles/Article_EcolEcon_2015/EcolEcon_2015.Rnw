@@ -1305,8 +1305,6 @@ fittedGraphData_kle <-
   filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "kle"))
 
 fittedGraphNoCSP(fittedGraphData_kle)
-
-### Note: I like a blank line have a chain of %>% operators to make it easy to spot where the chain ends.
 @
 
 
@@ -1321,8 +1319,7 @@ residualPlot <- function(data, withEnergyShape = 0){
     geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy, size=energy)) +
     scale_shape_manual(values=c(1, withEnergyShape)) +
     scale_size_manual(values=c(4,4)) +
-    facet_grid(Country ~ flavor) +
-    # geom_hline(aes(yintercept = 0), colour="gray50", size=0.1) +
+    facet_grid(flavor ~ Country) +
     geom_hline(yintercept = 0, colour="gray50", size=0.1) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     xlab("") +
