@@ -1220,11 +1220,13 @@ histDataForGraph <-
     mutate(
       Country = Country,
       flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted"),
-      variable = as.character(variable, stringsAsFactors=FALSE) # eliminate factors which cause problems with bind_rows() below.
+      variable = as.character(variable, stringsAsFactors=FALSE) # eliminate factors which cause warnings with bind_rows() below.
       )
   }
   ) %>% 
+  
   bind_rows() %>%
+  
   # Change variable names to make a nicer-looking graph and relevel factors before plotting
   mutate( variable = plyr::mapvalues(
     variable,
