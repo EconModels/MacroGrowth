@@ -1269,16 +1269,16 @@ fittedGraphNoCSP <- function(data){
     melt(measure.vars = c("iGDP", "fitted", "fittedExp"), 
          value.name = "value", variable.name = "variable") %>%
     mutate(label = paste(variable, energy)) %>%
-  # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
+    # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
     filter(label %in% c("iGDP With energy", "fittedExp With energy", 
                         "fitted With energy", "fitted Without energy")
     ) %>% 
     mutate(
       label = plyr::mapvalues(label, 
-        from = c("iGDP With energy",  "fittedExp With energy",
-                 "fitted With energy", "fitted Without energy"), 
-        to = c("GDP",  "Reference model",
-               "With energy", "Without energy")),
+                              from = c("iGDP With energy",  "fittedExp With energy",
+                                       "fitted With energy", "fitted Without energy"), 
+                              to = c("GDP",  "Reference model",
+                                     "With energy", "Without energy")),
       label = relevelFactor(factor(label), 
                             c("GDP", "Reference model", "Without energy", "With energy"))
     )
@@ -1287,7 +1287,7 @@ fittedGraphNoCSP <- function(data){
   ggplot() +
     geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label)) +
     scale_linetype_manual(values=c(1,4,2,3), name="") +
-    facet_grid(Country ~ flavor) +
+    facet_grid(flavor ~ Country) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
     xlab("") +
