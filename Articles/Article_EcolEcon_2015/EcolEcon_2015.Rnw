@@ -1211,7 +1211,7 @@ histDataForGraph <-
     ### Is there any reason to select away some of the columns?
     trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
     
-    # return this.  ### No need to name and store it.
+    # return this.
     melt(
       trimmed_historical_data, 
       measure.vars = measure.vars, 
@@ -1221,9 +1221,7 @@ histDataForGraph <-
       variable = as.character(variable) # eliminate factors, which cause warnings with bind_rows() below.
       )
   }
-  ) %>% 
-  
-  bind_rows() %>%
+  ) %>% bind_rows() %>%
   
   # Change variable names to make a nicer-looking graph and relevel factors before plotting
   mutate( variable = plyr::mapvalues(
@@ -1251,7 +1249,6 @@ xlab("") +
 scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
 ylab("Indexed (1960=1)") +
 scale_fill_discrete(breaks=c("y", "k", "l", "e"))
-
 @
 
 
