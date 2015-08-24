@@ -1225,25 +1225,24 @@ histDataForGraph <-
   }
   ) %>% bind_rows() %>%
   
-  # Change variable names to make a nicer-looking graph and relevel factors before plotting
-  mutate( variable = plyr::mapvalues(
-    variable,
-    from=c("iGDP", 
-           "iKstkS.L", "iKservS.L", "iKstkO.WwithRD", "iKservO.WwithRD",
-           "iL", "ihLest",
-           "iXpMP", "iXp", "iUMP", "iU"),
-    to=c("y", 
-         "k", "k", "k", "k",
-         "l", "l",
-         "e", "e", "e", "e")),
-    Country = relevelFactor(factor(Country), c("PT", "UK")),
-    flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted"))
+  mutate( 
+    # Change variable names to make a nicer-looking graph and relevel factors before plotting
+    variable = plyr::mapvalues(variable,
+                               from=c("iGDP", 
+                                      "iKstkS.L", "iKservS.L", "iKstkO.WwithRD", "iKservO.WwithRD",
+                                      "iL", "ihLest",
+                                      "iXpMP", "iXp", "iUMP", "iU"),
+                               to=c("y", 
+                                    "k", "k", "k", "k",
+                                    "l", "l",
+                                    "e", "e", "e", "e")),
+    Country = relevelFactor(factor(Country), c("PT", "UK")), # Adjusts facet order
+    flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")) # Adjusts facet order
   )
 
 historicalPlot(
   histDataForGraph, 
   mapping=aes(x=Year, y=value, group=variable, linetype=variable), 
-  # facet_formula = Country ~ flavor, 
   facet_formula = flavor ~ Country, 
   line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
 xlab("") + 
