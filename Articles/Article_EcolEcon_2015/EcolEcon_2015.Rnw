@@ -1747,7 +1747,7 @@ sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
-<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$).">>=
+<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, fig.cap="Elasticities of substitution~($\\sigma$).">>=
 breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
 ggplot(
@@ -1786,7 +1786,7 @@ ggplot(
 model_points_style(p)
 @
 
-<<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, out.width="0.9\\textwidth", fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
+<<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
 breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
   ggplot(
