@@ -1489,7 +1489,7 @@ ggplot() +
 @
 
 
-<<SRsse_CES_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
+<<SRsse_CES_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
 data_sr_sse <- 
   AllCoeffs %>% 
   filter(model=="CES") %>% 
@@ -1647,8 +1647,12 @@ fsbg(coun = "UK", mod = "CES")
 p <- triPlot(
   data=
     AllCoeffs %>% filter(model == "CES") %>%
-    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor), 
+    mutate( nest = plyr::mapvalues(nest, 
+                                   from=c("kle", "lek", "ekl"), 
+                                   to=c("(kl)e", "(le)k", "(ek)l")),
+            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor
+            ), 
   grid_lines = 5,
   labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
   aes(x = alpha_1, y = alpha_2, z = alpha_3, 
@@ -1666,7 +1670,10 @@ p <- triPlot(
 p <- triPlot(
   data=
     AllCoeffs %>% filter(model == "CES") %>%
-    mutate( Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+    mutate( nest = plyr::mapvalues(nest, 
+                                   from=c("kle", "lek", "ekl"), 
+                                   to=c("(kl)e", "(le)k", "(ek)l")),
+            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
             Inputs = flavor), 
   grid_lines = 5,
   labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
@@ -1688,7 +1695,7 @@ p <- triPlot(
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
 
-<<sigma_graph, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
+<<sigma_graph>>=
 sigma_graph <- function(data){
   sigma_graph_data <- 
     data %>% 
@@ -1732,11 +1739,11 @@ sigma_graph <- function(data){
 }
 @
 
-<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.", eval=FALSE, include=FALSE>>=
+<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 @
 
-<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.", eval=FALSE, include=FALSE>>=
+<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
@@ -1748,7 +1755,10 @@ ggplot(
     gather(type, value, matches("sigma")) %>% 
     filter(!is.na(value)) %>% 
     filter(! type %in% c("sigma", "sigma_1")) %>%
-    mutate(Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+    mutate(nest = plyr::mapvalues(nest, 
+                                  from=c("kle", "lek", "ekl"), 
+                                  to=c("(kl)e", "(le)k", "(ek)l")),
+           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
            Inputs = flavor
            )
   ) + 
@@ -1780,8 +1790,12 @@ p <-
       gather(type, value, matches("sigma")) %>% 
       filter(!is.na(value)) %>% 
       filter(! type %in% c("sigma", "sigma_1")) %>%
-      mutate(Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-             Inputs = flavor
+      mutate(nest = plyr::mapvalues(nest, 
+                                    from=c("kle", "lek", "ekl"), 
+                                    to=c("(kl)e", "(le)k", "(ek)l")),
+             Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+             Inputs = flavor,
+             type = relevelFactor(type, rev(c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")))
              )
     ) + 
   geom_point(aes(x=value, y=type, 
