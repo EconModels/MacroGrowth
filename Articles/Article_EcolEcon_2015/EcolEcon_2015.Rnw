@@ -1767,7 +1767,7 @@ ggplot(
                  shape = Model, fill=Model, size=Model,
                  color=Inputs
                  )
-                 #position = position_jitter(height=0.2, width=0)
+                 # position = position_jitter(height=0.2, width=0)
              ) + 
   facet_grid( type ~ Country, scales = "free_y" ) + 
   scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
@@ -1804,18 +1804,15 @@ p <-
                                     to=c("(kl)e", "(le)k", "(ek)l")),
              Model = interaction(nest, CSP, sep = " ", drop=TRUE),
              Inputs = flavor,
-#              type = plyr::mapvalues(type,
-#                                     from=c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2"),
-#                                     to  =c("sigma_kl", "sigma_le", "sigma_ek", "sigma_kl_e", "sigma_le_k", "sigma_ek_l")),
-#              type = relevelFactor(type, rev(c("sigma_kl", "sigma_le", "sigma_ek", "sigma_kl_e", "sigma_le_k", "sigma_ek_l")))
              type = relevelFactor(type, rev(c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")))
              )
     ) + 
-  geom_point(aes(x=value, y=type, 
-                 shape = Model, fill=Model, size=Model#,
-                 # color=Inputs
+  geom_point(aes(x=value, 
+                 y=type, 
+                 shape = Model, 
+                 fill=Model, 
+                 size=Model
                  )
-             #position = position_jitter(height=0.2, width=0)
              ) + 
   facet_grid( Inputs ~ Country) + 
   scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
@@ -1830,7 +1827,6 @@ p <-
     sigma_23_1 = expression(sigma["(le)"*k]),
     sigma_13_2 = expression(sigma["(ek)"*l]))
     ) +
-#   labs(color = "Factors of production") +
   xy_theme()
 
 model_points_style_quad(p)
