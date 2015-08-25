@@ -1758,10 +1758,7 @@ ggplot(
     mutate(nest = plyr::mapvalues(nest, 
                                   from=c("kle", "lek", "ekl"), 
                                   to=c("(kl)e", "(le)k", "(ek)l")),
-           type = plyr::mapvalues(type,
-                                  from=c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2"),
-                                  to  =c("sigma_kl", "sigma_le", "sigma_ek", "sigma_kl_e", "sigma_le_k", "sigma_ek_l")),
-           type = relevelFactor(type, c("sigma_kl", "sigma_le", "sigma_ek", "sigma_kl_e", "sigma_le_k", "sigma_ek_l")),
+           type = relevelFactor(type, c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")),
            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
            Inputs = flavor
            )
@@ -1776,6 +1773,14 @@ ggplot(
   scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
   xlab("") +
   geom_vline(xintercept = 1, color="gray50", size=0.2) +
+  scale_y_discrete(labels = c(
+    sigma_12 = expression(sigma[kl]),
+    sigma_23 = expression(sigma[le]),
+    sigma_13 = expression(sigma[ek]),
+    sigma_12_3 = expression(sigma["(kl)"*e]),
+    sigma_23_1 = expression(sigma["(le)"*k]),
+    sigma_13_2 = expression(sigma["(ek)"*l]))
+    ) +
   ylab("") +
   labs(color = "Factors of production") +
   xy_theme() +
