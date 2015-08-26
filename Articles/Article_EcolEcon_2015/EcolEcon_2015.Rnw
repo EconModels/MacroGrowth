@@ -191,9 +191,6 @@ model_points_style_quad <- function(p) {
   # scale_alpha_manual(values = c(.2, .6,.6,.6,.6, .6, .6)) +
   scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
   scale_shape_manual(values = c(21, 21, 23:27)) +
-  guides( 
-    col = guide_legend(override.aes = aes(size = 5, shape = 21)) 
-    ) + 
   theme(legend.title=element_blank())
 }
 @
