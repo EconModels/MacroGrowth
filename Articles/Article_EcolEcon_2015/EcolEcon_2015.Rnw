@@ -1643,7 +1643,7 @@ fsbg(coun = "PT", mod = "CES")
 fsbg(coun = "UK", mod = "CES")
 @
 
-<<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=7.5, fig.height=2.8, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
+<<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=2.3, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
 p <- triPlot(
   data=
     AllCoeffs %>% filter(model == "CES") %>%
@@ -1666,7 +1666,7 @@ p <- triPlot(
   model_points_style(p)
 @
 
-<<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=7.5, fig.height=5, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
+<<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=4.1, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
 p <- triPlot(
   data=
     AllCoeffs %>% filter(model == "CES") %>%
@@ -1747,7 +1747,7 @@ sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
 sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
 @
 
-<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, fig.cap="Elasticities of substitution~($\\sigma$).">>=
+<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$).">>=
 breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
 ggplot(
@@ -1786,12 +1786,14 @@ ggplot(
   xy_theme() +
   theme(
     legend.position="top",
-    strip.text.y = element_blank())
+    strip.text.y = element_blank(),
+    axis.text.y = element_text(size=12)
+    )
 
 model_points_style(p)
 @
 
-<<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=8.5, fig.height=5, fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
+<<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
 breaks_labels = c(0.01, 0.1, 1, 10, 100)
 p <- 
   ggplot(
@@ -1827,7 +1829,8 @@ p <-
     sigma_23_1 = expression(sigma["(le)"*k]),
     sigma_13_2 = expression(sigma["(ek)"*l]))
     ) +
-  xy_theme()
+  xy_theme() +
+  theme(axis.text.y = element_text(size=12))
 
 model_points_style_quad(p)
 @
