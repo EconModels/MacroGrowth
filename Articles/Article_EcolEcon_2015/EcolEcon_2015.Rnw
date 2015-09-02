@@ -1296,7 +1296,7 @@ fittedGraphNoCSP <- function(data){
   # Make (and return) the graph
   ggplot() +
     geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label)) +
-    scale_linetype_manual(values=c(1,4,2,3), name="") +
+    scale_linetype_manual(values=c(1,2,4,3), name="") +
     facet_grid(flavor ~ Country) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
@@ -1324,21 +1324,22 @@ fittedGraphNoCSP(fittedGraphData_kle)
 %++++++++++++++++++++++++++++++
 
 <<ResidualPlotFunction>>=
-residualPlot <- function(data, withEnergyShape = 0){
-  ggplot() +
-    geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy, size=energy)) +
-    scale_shape_manual(values=c(1, withEnergyShape)) +
-    scale_size_manual(values=c(4,4)) +
-    facet_grid(flavor ~ Country) +
-    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-    xlab("") +
-    ylab("r") + 
-    xy_theme() +
-    theme(legend.title=element_blank())
-}
 
-residualPlot2 <- function(data){
+# residualPlot <- function(data, withEnergyShape = 0){
+#   ggplot() +
+#     geom_point(data=data, mapping=aes(x=Year, y=Residuals, shape=energy, color=energy, size=energy)) +
+#     scale_shape_manual(values=c(1, withEnergyShape)) +
+#     scale_size_manual(values=c(4,4)) +
+#     facet_grid(flavor ~ Country) +
+#     geom_hline(yintercept = 0, colour="gray50", size=0.1) +
+#     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+#     xlab("") +
+#     ylab("r") + 
+#     xy_theme() +
+#     theme(legend.title=element_blank())
+# }
+
+cesResidualPlot2 <- function(data){
   dataToPlot <- 
     data %>%
     mutate(nest = 
@@ -1431,24 +1432,6 @@ Because we fit in log-space, fitting residuals ($r_i$) are defined as
 %
 where $r_i$ will be zero when there is agreement between 
 historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
-
-Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
-show fitting residuals for all CES models.
-%
-<<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
-residualPlot(
-  fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl")), 
-  withEnergyShape = 0) # square
-@
-%
-<<Graphs_CESkle-resid_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting. This is an alternative version that uses our new plot style.">>=
-residualPlot2(
-  fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl"))
-  )
-@
-
 
 
 %++++++++++++++++++++++++++++++
@@ -2205,13 +2188,32 @@ and $\lambda$ is the Solow residual.
 <<Graphs_CD-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Cobb-Douglas models that reject the cost-share theorem. Solid line is historical GDP.">>=
 fittedGraphNoCSP(fitted_and_resid_data %>% filter(model=="CD" & CSP=="w/o CSP"))
 @
-
 %
-<<Graphs_CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models.">>=
-residualPlot(fitted_and_resid_data %>% filter(model=="CD" & CSP=="w/o CSP"))
+<<Graphs_CD-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for Cobb-Douglas models that reject the CSP.">>=
+  ggplot() +
+    geom_point(
+      data=fitted_and_resid_data %>% 
+        filter(model=="CD" & CSP=="w/o CSP"), 
+      mapping=aes(
+        x=Year,
+        y=Residuals,
+        fill=energy, 
+        shape=energy 
+        )
+      ) +
+    facet_grid( flavor ~ Country) +
+    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
+    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+    xlab("") +
+    ylab("r") + 
+    xy_theme() +
+    # This is custom stuff here to match the model_points_style function. 
+    # We can't use model_points_style, because the aesthetics are different here
+    scale_fill_manual(values = c("transparent", "transparent")) +
+    scale_shape_manual(values = c(21, 23)) +
+  theme(legend.title=element_blank())
 @
-
-
+%
 Table~\ref{tab:Effect_of_CSP_CD} shows the effect of the CSP 
 on fitted parameters for the Cobb-Douglas model and the exponential-only model.
 The Cobb-Douglas models show lower $sse$ than the exponential-only models.
@@ -2370,24 +2372,6 @@ myXTable(data_CES_sigma_raw,
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
-
-
-
-
-
-<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-residualPlot(fitted_and_resid_data %>% 
-               filter(model=="CES" & CSP=="w/o CSP" & (nest == "lek" | nest=="kl")),
-             withEnergyShape = 3) # plus
-@
-%
-<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-residualPlot(fitted_and_resid_data %>% 
-               filter(model=="CES" & CSP=="w/o CSP" & (nest=="ekl" | nest=="kl")),
-             withEnergyShape = 4) # times
-@
-
-
 %
 <<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and ($le$)$k$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_lek <- fitted_and_resid_data %>% filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "lek"))
@@ -2399,6 +2383,30 @@ fittedGraphData_ekl <-
   fitted_and_resid_data %>% 
   filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "ekl"))
 fittedGraphNoCSP(fittedGraphData_ekl)
+@
+%
+Figures~\ref{fig:Graphs CESkle-resid}--\ref{fig:Graphs CESekl-resid}
+show fitting residuals for all CES models.
+%
+<<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl"))
+)
+@
+%
+<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest == "lek" | nest=="kl"))
+)
+@
+%
+<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="ekl" | nest=="kl"))
+)
 @
 
 
