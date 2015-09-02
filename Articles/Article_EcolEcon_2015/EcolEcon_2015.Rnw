@@ -1247,7 +1247,8 @@ histDataForGraph <-
                                     "l", "l",
                                     "e", "e", "e", "e")),
     Country = relevelFactor(factor(Country), c("PT", "UK")), # Adjusts facet order
-    flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")) # Adjusts facet order
+    flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")), # Adjusts facet order
+    variable = relevelFactor(factor(variable), c("y", "k", "l", "e"))
   )
 
 historicalPlot(
@@ -1257,8 +1258,7 @@ historicalPlot(
   line_types = c(1,2,4,3,2,4,3,2,3,2,3)) + 
 xlab("") + 
 scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
-ylab("Indexed (1960=1)") +
-scale_fill_discrete(breaks=c("y", "k", "l", "e"))
+ylab("Indexed (1960=1)")
 @
 
 
