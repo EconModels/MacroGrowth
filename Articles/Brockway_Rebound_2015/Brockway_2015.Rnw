@@ -123,6 +123,8 @@ library(knitr)
 # create the paper.
 # ********************************************************
 rerunModels=FALSE
+rerunResamples=FALSE
+nResamples <- 100 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -269,10 +271,10 @@ historicalPlot(historicalDataForGraph,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<Models>>=
-fileName <- file.path("models", "Brockway2015Models.rds")
+modelsFileName <- file.path("models", "Brockway2015Models.rds")
 if (!rerunModels){
   # load from the file on disk
-  models <- readRDS(fileName)
+  models <- readRDS(modelsFileName)
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
@@ -281,13 +283,36 @@ if (!rerunModels){
   })
   names(models) <- countries
   # Save the models.
-  saveRDS(models, file = fileName)
+  saveRDS(models, file = modelsFileName)
+}
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Resampling Calculations}
+\label{sec:resampling_calculations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<Resampling>>=
+resampleFileName <- file.path("models", "Brockway2015Resamples.rds")
+if (!rerunResamples){
+  # load resample data from the file on disk
+    resampleCoeffs <- readRDS(resampleFileName)
+} else {
+  # Run resampling on models.
+  resampleCoeffs <- leaf_apply(l = models, class = c("cesModel", "plm"), f = function(mod, mod_name){
+    resampledFits(mod, method = "wild", n = nResamples)$coeffs %>%
+      mutate(
+        Country = mod_name
+      )
+  }) %>% bind_rows
+  saveRDS(resampleCoeffs, file = resampleFileName)
 }
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-\label{sec:results}
+\section{Model Results}
+\label{sec:model_results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 First, look a the UK results.
@@ -495,6 +520,38 @@ myXTable(fittedParamsTable2,
          label=paste0("tab:", opts_current$get("label")), 
          digits=6)
 @
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Resampling Results}
+\label{sec:resampling_results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Calculate rebound by Equation~\ref{eq:rebound}.
+%
+\begin{equation} \label{eq:rebound}
+  Re \approx 1 - \frac{\rho}{1 + \rho} = \sigma_{(kl)e}\; .
+\end{equation}
+%
+<<calc_rebound>>=
+# Add a Rebound column to the resample coefficients
+resampleCoeffs <- resampleCoeffs %>%
+  # Applying the approximation Re ~ 1 - rho/(1 + rho) = sigma
+  mutate(Re = sigma) 
+@
+%
+Plot resampling results for \Sexpr{nResamples} resamples in Figure~\ref{fig:rebound_graph}.
+%
+<<rebound_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="$\\alpha_e$ vs. $Re$ for all three countries.">>=
+standardScatterPlot(data=resampleCoeffs, mapping=aes(Re, alpha_3), facet_formula=~Country, alpha=0.2, orig_color = "black") +
+    # scale_x_continuous(limits=c(0, 5)) + 
+    scale_x_log10(limits = c(0.001,100), breaks = c(0.01, 0.1, 1, 10), labels = c(0.01, 0.1, 1, 10)) +
+
+    scale_y_continuous(breaks=c(seq(0, 1, 0.2))) +
+    geom_vline(xintercept = 1, colour="gray50", size=0.1) +
+    labs(y=expression(alpha[e]))
+@
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
