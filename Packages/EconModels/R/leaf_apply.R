@@ -5,7 +5,8 @@
 #' 
 #' @param l the list to be traversed.
 #' @param f the function to be applied to the leaves of the list. 
-#' @param class a vector of class names.  All and only objects inheriting from any of 
+#' @param class a vector of class names (as quoted strings).  
+#' All and only objects inheriting from any of 
 #' these will be considered a leaf, even if they are also lists.   
 #' Any objects that are neither lists nor inherit from \code{class} will be ignored.
 #' @param strict.lists a logical.  If \code{TRUE}, an item will only be considered a list

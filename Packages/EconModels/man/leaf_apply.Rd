@@ -14,7 +14,8 @@ leaf_apply(l, f, class = NULL, name = "", sep = ".",
 
 \item{f}{the function to be applied to the leaves of the list.}
 
-\item{class}{a vector of class names.  All and only objects inheriting from any of
+\item{class}{a vector of class names (as quoted strings).
+All and only objects inheriting from any of
 these will be considered a leaf, even if they are also lists.
 Any objects that are neither lists nor inherit from \code{class} will be ignored.}
 
