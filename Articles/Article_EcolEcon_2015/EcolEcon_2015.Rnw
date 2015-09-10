@@ -1126,7 +1126,7 @@ data_CES_SR_gof <-
 myXTable(data_CES_SR_gof,
          caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=4)
+         digits=c(1,1,1,1,1,1,1, 2, 4, 3))
 @
 
 Table~\ref{tab:CES_alpha} shows 
@@ -1144,7 +1144,7 @@ data_CES_alpha <-
 myXTable(data_CES_alpha,
          caption="Output elasticities~($\\alpha$) for all models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
+         digits=3)
 @
 
 Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
@@ -1167,7 +1167,7 @@ sigma_inner_data <-
 myXTable(sigma_inner_data,
          caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
+         digits=c(1,1,1,1,1,1, 3,3,3))
 @
 
 Table~\ref{tab:CES_sigma_nest_aware_outer} shows elasticity of substitution~($\sigma$)
@@ -1190,7 +1190,7 @@ sigma_outer_data <-
 myXTable(sigma_outer_data,
          caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
          label=paste0("tab:", opts_current$get("label")), 
-         digits=2)
+         digits=c(1,1,1,1,1,1, 3,3,3))
 @
 
 
