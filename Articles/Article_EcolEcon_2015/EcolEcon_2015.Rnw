@@ -2045,7 +2045,7 @@ In Table~\ref{tab:stat_details_table}, Model 1 is for Portugal, and Model 2 is f
 
 This information is not included at present.
 
-<<stat_details_table, results="asis", include=FALSE>>=
+<<stat_details_table, results="asis", include=FALSE, eval=FALSE>>=
 texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle), 
        dcolumn = TRUE, 
        booktabs = TRUE, 
