@@ -20,41 +20,38 @@ The files will be stored at `Packages/EconData/data/<Source>.rda`.
 This command is fast; it can be run on a local machine.    
 * Build and reload the `EconData` package on a local machine.    
 * Push the changes to GitHub.   
-* On `acc`, pull from GitHub.     
+* In RStudio at http://rstudio-acc.calvin.edu, pull from GitHub to ensure that RStudio on `acc` will use the same code.
 * Install the `EconData` package from GitHub to dahl
-    + `ssh` to node-00 on dahl. (For some reason, this doesn't work from `fs1` or any other node.)   
+    + Log in to dahl.
     + Open an R shell by saying `R` at the command prompt.    
     + Say `require(devtools)`.
-    + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.      
+    + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.
+    + While you're at it, you might want to install the `EconModels` package, too. Say 
+        `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconModels")`
 
-`install_github` makes the historical data available to the nodes of `dahl`.
-This command doesn't work from `fs1` or any of the other nodes of `dahl` (`node-01` through `node-42`).
+`install_github` installs the packages into your home directory, which is available to all nodes of `dahl`.
 
 ### Create the batch script
-* Run the script `r-versions` on `dahl` to see which nodes are operational and which nodes have a working version of `R`. (This script is located at `/usr/local/bin/r-versions`.)
-* Create the file `Scripts/<Source>_batch.bash` file.
-    + It is probably best to modify an existing `<Source>_batch.bash` file.      
+* Create the file `Scripts/<Source>-torque.bash` file.
+    + It is probably best to modify an existing `<Source>-torque.bash` file.      
     + Be sure to edit the `$SRC` variable.
-    + Distribute the work over the nodes in a way that makes sense.
-    + Avoid non-working nodes or nodes that have an out-of-date version of `R` as revealed by `r-versions`.
-* Push the `<Source>_batch.bash` file to GitHub.
-* On `acc`, pull from GitHub.      
+* Push the `<Source>-torque.bash` file to GitHub.
+* On http://rstudio-acc.calvin.edu, pull from GitHub.      
 
 ### Submit the job to dahl
-* `cd` to the `Econ-Growth-R-Analysis` directory from `fs1.calvin.edu`.
-* Run `Scripts/<Source>_batch.bash "-n 2 -C -d"` followed by `more data_resample/<SOURCE>/node*.txt` to obtain a printout of what will be executed.    
-* Run `Scripts/<Source>_batch.bash "-n 2 -C"` to test that things work as expected.
-* Then do `Scripts/<Source>_batch.bash "-n 1000 -C"` to do a complete run.
-* Check `dahl`'s status at (http://fs1.calvin.edu/ganglia/?m=load_one&r=hour&s=by%2520name&c=dahl&h=&sh=1&hc=4&z=small).
-* Check progress with `more data_resample/<Source>/node*.txt`.
+* `cd` to the `Econ-Growth-R-Analysis` directory on `node-00` of `dahl`.
+* Run `Scripts/<Source>-torque.bash "-n 2 -C -d"`. Sample status files will be saved in `Econ-Growth-R-Analysis`. (Would be nice to save these output files into `data_resample`.) Look at the status files to see that everything worked as expected.
+* Run `Scripts/<Source>-torque.bash "-n 2 -C"` to test that things work as expected.
+* Then do `Scripts/<Source>-torque.bash "-n 1000 -C"` to do a complete run.
+* Check `dahl`'s status at http://dahl.calvin.edu/ganglia/.
+* Check progress with commands such as `more JobF-CN-iU.e31170`, where `JobF-CN-iU.e31170` is the name of the process that you'd likt to check.
 
 ### Post-process the results
-* Run `Scripts/PostProcess.R -S <Source>` on a node of `dahl` to create:       
-    + `data_postprocessed/<Source>_Coeffs.rda` and
-    + `data_postprocessed/<Source>_Fitted.rda`.  
+* Run `Scripts/PostProcess.R -S <Source>` on `node-00` of `dahl` to create:       
+    + `data_postprocessed/<Source>_Coeffs.rds`,
+    + `data_postprocessed/<Source>_Fitted.rds`, and  
+    + `data_postprocessed/<Source>_oModels.rds`.
 * `PostProcess.R` will accept multiple `<Source>`s. E.g., `Scripts/PostProcess.R -S IST,Leeds,SUN,REXS1960`
-* Note that this command must be issued from a node of the cluster (e.g., `node-00`), not from `fs1.calvin.edu`.
-`fs1` does not have a full install of `R`.
 
 ### Download post-processed results to local machine
 * From the `Econ-Growth-R-Analysis` directory of a local machine, 
@@ -66,9 +63,6 @@ show the files to be transferred to the local machine, without actually transfer
 * The files are downloaded to the `data_postprocessed` directory on the local machine.
 * Use the function `loadPostProcessedData` in the `EconData` package to load the downloaded data into
 the environment. 
-* The `DownloadPostProcessed.R` script connects to `dahl.calvin.edu` (`node-00`). 
-The choice to connect to `node-00` was made to minimize the risk that a file won't propagate across the cluster's 
-file system prior to the download request.
 
 The data files are saved with `saveRDS` by `PostProcess.R`, so `loadPostProcessedData` uses `readRDS` to 
 load the data into memory. 
@@ -77,3 +71,4 @@ As a consequence, `loadPostProcessedData` returns an object which must be assign
 ### 
 * If Randy has run the analysis, resampling results can be placed in `/home/rpruim/Share`. 
 * To download resampling results to his laptop, Matt can say, for example, `scp -P 22122 mkh2@dahl.calvin.edu:/home/rpruim/Share/2015-06-11-run/data_resample/Calvin/* ~/github/Econ-Growth-R-Analysis/data_resample/Calvin`
+* Another way to run some of this is to say `qsub -N JobF-US -d `pwd` batchEcon.R -F "-c US -e all -f all -m fast -S Calvin -n 1000 -C"`
