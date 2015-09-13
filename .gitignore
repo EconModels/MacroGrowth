@@ -15,6 +15,7 @@ data_resample/
 data_resample*.zip
 data_failures/
 core
+Job*-
 #
 # Data files
 # 
