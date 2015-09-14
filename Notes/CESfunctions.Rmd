@@ -6,60 +6,7 @@ output: pdf_document
 
 \large
 
-\[
-U = 
-\left(\delta _1 k^{-\rho _1}+\left(1-\delta _1\right) l^{-\rho
-   _1}\right){}^{-\frac{1}{\rho _1}}
-\]
 
-\[
-C 
-=
-\theta  e^{\lambda  t} \left(\delta  \left(\delta _1 k^{-\rho
-   _1}-\left(\delta _1-1\right) l^{-\rho _1}\right){}^{\frac{\rho
-   }{\rho _1}}-(\delta -1) e^{-\rho }\right){}^{-1/\rho }
-\]
-
-
-
-\[
-\frac{\partial C}{\partial k} 
-=
-\delta  \delta _1 \theta  k^{-\rho _1-1} e^{\lambda  t} \left(\delta _1
-   k^{-\rho _1}-\left(\delta _1-1\right) l^{-\rho
-   _1}\right){}^{\frac{\rho }{\rho _1}-1} \left(\delta  \left(\delta _1
-   k^{-\rho _1}-\left(\delta _1-1\right) l^{-\rho
-   _1}\right){}^{\frac{\rho }{\rho _1}}-(\delta -1) e^{-\rho
-   }\right){}^{-\frac{\rho +1}{\rho }}
-\]
-
-\[
-\frac{
-\frac{\partial C}{\partial k} }{
-\frac{C}{k}
-}
-=
-\frac{\delta  \delta _1 e^{\rho } k^{-\rho _1} \left(\delta _1 k^{-\rho
-   _1}-\left(\delta _1-1\right) l^{-\rho _1}\right){}^{\frac{\rho
-   }{\rho _1}-1}}{\delta  e^{\rho } \left(\delta _1 k^{-\rho
-   _1}-\left(\delta _1-1\right) l^{-\rho _1}\right){}^{\frac{\rho
-   }{\rho _1}}-\delta +1}
-   \]
-   
-  
-  \[
-\frac{
-\frac{\partial C}{\partial e} }{
-\frac{C}{e}
-}
-=
-   -\frac{\delta -1}{\delta  e^{\rho } \left(\delta _1 k^{-\rho
-   _1}-\left(\delta _1-1\right) l^{-\rho _1}\right){}^{\frac{\rho
-   }{\rho _1}}-\delta +1}
-   \]
-   
-   
-## Re-do
 
 \[
 C = \theta  e^{\lambda  t} \left((1-\delta ) e^{-\rho }+\delta  \left(\delta _1 k^{-\rho
@@ -75,7 +22,7 @@ C = \theta  e^{\lambda  t} \left((1-\delta ) e^{-\rho }+\delta  \left(\delta _1 
    _1-1\right) x_2^{-\rho _1}\right){}^{\frac{\rho }{\rho _1}-1}}{\delta  \left(\delta _1
    x_1^{-\rho _1}-\left(\delta _1-1\right) x_2^{-\rho _1}\right){}^{\frac{\rho }{\rho
    _1}}-(\delta -1) x_3^{-\rho }}
-\\ 
+\\[6mm]
 \frac{
 \frac{\partial C}{\partial x_2} }{
 \frac{C}{x_2}
@@ -85,7 +32,7 @@ C = \theta  e^{\lambda  t} \left((1-\delta ) e^{-\rho }+\delta  \left(\delta _1 
    _1}\right){}^{\frac{\rho }{\rho _1}-1}}{\delta  \left(\delta _1 x_1^{-\rho
    _1}-\left(\delta _1-1\right) x_2^{-\rho _1}\right){}^{\frac{\rho }{\rho _1}}-(\delta
    -1) x_3^{-\rho }}
-\\ 
+\\[6mm]
 \frac{
 \frac{\partial C}{\partial x_3} }{
 \frac{C}{x_3}
