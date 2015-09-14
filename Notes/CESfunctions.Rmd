@@ -47,11 +47,11 @@ We can use this to simplify the expressions for the output elasticities as follo
    \\
 & = \frac{\alpha_1 x_1^{-\rho _1} R
    }{
-   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho}}
    \\
 & = \frac{\alpha_1 x_1^{-\rho _1} R
    }{
-   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho}}
 \\[6mm]
 \frac{
 \frac{\partial C}{\partial x_2} }{
@@ -66,11 +66,11 @@ We can use this to simplify the expressions for the output elasticities as follo
 \\
 & = \frac{\alpha_2 x_2^{-\rho _1} R
    }{
-   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho}}
    \\
 & = \frac{\alpha_1 x_1^{-\rho _1} R
    }{
-   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho}}
 \\[6mm]
 \frac{
 \frac{\partial C}{\partial x_3} }{
@@ -84,15 +84,20 @@ We can use this to simplify the expressions for the output elasticities as follo
 \\
 & = \frac{\alpha_3 x_3^{-\rho} 
    }{
-   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho}}
    \\
 & = \frac{\alpha_3 x_3^{\rho} 
    }{
-   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho_1}}
+   (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho}}
 \end{align*}
 
 From this we see that the output elasticities sum to 1 and are in the ratio
 
 \[
-\alpha_1 x_1^{-\rho_1} R : \alpha_2 x_2^{-\rho_1} R : \alpha_3 x_3 ^{-\rho_1}
+\alpha_1 x_1^{-\rho_1} R : \alpha_2 x_2^{-\rho_1} R : \alpha_3 x_3 ^{-\rho}
 \]
+
+Need to deal with limiting cases. When $\rho \to \infty$ or $\rho_1 \to \infty$.
+
+
+
