@@ -88,6 +88,7 @@ ExperimentingWithPlots.pdf
 Results_Comparison.pdf
 Investigation.pdf
 Brockway_2015.pdf
+CESfunctions.pdf
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
