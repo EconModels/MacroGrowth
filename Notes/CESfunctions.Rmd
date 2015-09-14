@@ -9,9 +9,12 @@ output: pdf_document
 
 
 \[
-C = \theta  e^{\lambda  t} \left((1-\delta ) e^{-\rho }+\delta  \left(\delta _1 k^{-\rho
-   _1}+\left(1-\delta _1\right) l^{-\rho _1}\right){}^{\frac{\rho }{\rho
-   _1}}\right){}^{-1/\rho }
+C = \theta  e^{\lambda  t} 
+  \left(
+     \delta \left(\delta _1 x_1^{-\rho _1} +
+     \left(1-\delta _1\right) x_2^{-\rho _1}\right){}^{\frac{\rho }{\rho _1}} +
+     (1-\delta ) x_3^{-\rho } 
+     \right){}^{-1/\rho }
 \]
    
 \begin{align*}
