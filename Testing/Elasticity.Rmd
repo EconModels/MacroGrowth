@@ -35,7 +35,7 @@ model2OE <- function( model ) {
   ggplot() +
     tri_theme() +
     tri_grid() +
-    tri_labels(labels = c("k", "l", "e"), parse = TRUE) +
+    tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]"), parse = TRUE) +
     geom_tripath( 
       data = data, aes(x=oe1, y=oe2, z=oe3),
       alpha=0.6, colour = "black") +
