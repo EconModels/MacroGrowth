@@ -71,58 +71,58 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
     )
 }
 
-#' @export
-triPlot <- function(data, mapping, labels=c("alpha[1]", "alpha[2]", "alpha[3]"), 
-                    parse=TRUE, grid_lines=4, aes_string = NULL,
-                    geom=geom_point, ...) {
-  if (!is.null(aes_string)) 
-    stop( "aes_string has been deprecated.",
-          "Assign the output of aes() to mapping instead.")
-  
-  h <- seq(0, 1, by=1/grid_lines)
-  points <- data.frame( h=h )
-
-  requiredNames <- c("x", "y", "z") 
-  w <- which (! requiredNames %in% names(mapping))
-  if (length(w) > 0)
-    stop("triPlot requires the following aesthetics: ", paste(requiredNames[w], collapse=","))
-      
-  xyz_mapping <- 
-    list( 
-      x = bquote(tri2x(.(mapping$x), .(mapping$y), .(mapping$z))),
-      y = bquote(tri2y(.(mapping$x), .(mapping$y), .(mapping$z)))
-    )
-  class(xyz_mapping) <- "uneval"
-  mapping["z"] <- NULL
-    
-  mapping <- modifyList(mapping, xyz_mapping)
-  
-    p <-  ggplot(data = data)
-    
-    q <- p + 
-    expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
-    tri_theme() + 
-    geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
-                     y=tri2y(h,0,1-h), yend = tri2y(h, 1-h, 0)),
-                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
-    geom_segment(aes(x=tri2x(0,h,1-h), xend = tri2x(1-h, h, 0), 
-                     y=tri2y(0,h,1-h), yend = tri2y(1-h, h, 0)),
-                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
-    geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
-                     y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
-                     data=points, color=xy_theme_old()$panel.grid.major$colour) +
-    geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), 
-              color=xy_theme_old()$axis.title$colour, 
-              size=4,
-              data=data.frame(label=rep(labels, length.out=3),
-                              x=c(.5,-.02,1.02)[c(2, 3, 1)], 
-                              y=c(1.02,0,0)[c(2, 3, 1)],
-                              hj = c(.5,1,0)[ c(2, 3, 1)],
-                              vj = c(0,0.5,0.5)[c(2, 3, 1)]
-              ), 
-              parse=parse) 
-    q + do.call( geom, c(list(mapping=mapping), list(...)) )
-}
+# #' @export
+# triPlot <- function(data, mapping, labels=c("alpha[1]", "alpha[2]", "alpha[3]"), 
+#                     parse=TRUE, grid_lines=4, aes_string = NULL,
+#                     geom=geom_point, ...) {
+#   if (!is.null(aes_string)) 
+#     stop( "aes_string has been deprecated.",
+#           "Assign the output of aes() to mapping instead.")
+#   
+#   h <- seq(0, 1, by=1/grid_lines)
+#   points <- data.frame( h=h )
+# 
+#   requiredNames <- c("x", "y", "z") 
+#   w <- which (! requiredNames %in% names(mapping))
+#   if (length(w) > 0)
+#     stop("triPlot requires the following aesthetics: ", paste(requiredNames[w], collapse=","))
+#       
+#   xyz_mapping <- 
+#     list( 
+#       x = bquote(tri2x(.(mapping$x), .(mapping$y), .(mapping$z))),
+#       y = bquote(tri2y(.(mapping$x), .(mapping$y), .(mapping$z)))
+#     )
+#   class(xyz_mapping) <- "uneval"
+#   mapping["z"] <- NULL
+#     
+#   mapping <- modifyList(mapping, xyz_mapping)
+#   
+#     p <-  ggplot(data = data)
+#     
+#     q <- p + 
+#     expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
+#     tri_theme() + 
+#     geom_segment(aes(x=tri2x(h,0,1-h), xend = tri2x(h, 1-h, 0), 
+#                      y=tri2y(h,0,1-h), yend = tri2y(h, 1-h, 0)),
+#                      data=points, color=xy_theme_old()$panel.grid.major$colour) +
+#     geom_segment(aes(x=tri2x(0,h,1-h), xend = tri2x(1-h, h, 0), 
+#                      y=tri2y(0,h,1-h), yend = tri2y(1-h, h, 0)),
+#                      data=points, color=xy_theme_old()$panel.grid.major$colour) +
+#     geom_segment(aes(x=tri2x(0,1-h,h), xend = tri2x(1-h, 0, h), 
+#                      y=tri2y(0,1-h,h), yend = tri2y(1-h, 0, h)),
+#                      data=points, color=xy_theme_old()$panel.grid.major$colour) +
+#     geom_text(aes(label=label, x=x, y=y, hjust=hj, vjust=vj), 
+#               color=xy_theme_old()$axis.title$colour, 
+#               size=4,
+#               data=data.frame(label=rep(labels, length.out=3),
+#                               x=c(.5,-.02,1.02)[c(2, 3, 1)], 
+#                               y=c(1.02,0,0)[c(2, 3, 1)],
+#                               hj = c(.5,1,0)[ c(2, 3, 1)],
+#                               vj = c(0,0.5,0.5)[c(2, 3, 1)]
+#               ), 
+#               parse=parse) 
+#     q + do.call( geom, c(list(mapping=mapping), list(...)) )
+# }
 
 #' @export
 Log <- function(x, ...) {
@@ -157,37 +157,37 @@ sigma2_trans <- function() {
 }
 
 
-#' @export
-standardTriPlot <- function(
-  data, 
-  mapping = aes(),
-  grid_lines=5, 
-  orig_color = "gray70",
-  labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
-  size=1.0, 
-  alpha=0.2,
-  facet_formula = country ~ nest )
-{
-  
-  p <- triPlot(subset(data, method!="orig"), 
-               mapping = modifyList(aes(x=alpha_1, y=alpha_2, z=alpha_3), mapping),
-               labels=labels,
-               grid_lines=grid_lines, 
-               size=size, alpha=alpha ) + 
-    geom_point(data=subset(data, method=="orig"), 
-               aes(x = tri2x(alpha_1, alpha_2, alpha_3),
-                   y = tri2y(alpha_1, alpha_2, alpha_3)),
-               color=orig_color, alpha=1, size=4, shape=10) 
-  if ( !is.null(facet_formula) ) {
-    if ( length(facet_formula)==2 ) {
-      p <- p + facet_wrap( facet_formula )
-    } else { 
-      p <- p + facet_grid( facet_formula )
-    }
-  }  
-  return(p)
-  # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
-}
+# #' @export
+# standardTriPlot <- function(
+#   data, 
+#   mapping = aes(),
+#   grid_lines=5, 
+#   orig_color = "gray70",
+#   labels=c("alpha[3]", "alpha[1]", "alpha[2]"),
+#   size=1.0, 
+#   alpha=0.2,
+#   facet_formula = country ~ nest )
+# {
+#   
+#   p <- triPlot(subset(data, method!="orig"), 
+#                mapping = modifyList(aes(x=alpha_1, y=alpha_2, z=alpha_3), mapping),
+#                labels=labels,
+#                grid_lines=grid_lines, 
+#                size=size, alpha=alpha ) + 
+#     geom_point(data=subset(data, method=="orig"), 
+#                aes(x = tri2x(alpha_1, alpha_2, alpha_3),
+#                    y = tri2y(alpha_1, alpha_2, alpha_3)),
+#                color=orig_color, alpha=1, size=4, shape=10) 
+#   if ( !is.null(facet_formula) ) {
+#     if ( length(facet_formula)==2 ) {
+#       p <- p + facet_wrap( facet_formula )
+#     } else { 
+#       p <- p + facet_grid( facet_formula )
+#     }
+#   }  
+#   return(p)
+#   # scale_colour_gradient(expression(lambda), high="navy", low="skyblue") 
+# }
 
 #' @export
 standardScatterPlot <- function(data, mapping=aes(), orig_color="gray70", size=2.0, alpha=0.4, 
