@@ -1,4 +1,4 @@
-
+#' @rdname triplot
 #' @export
 StatTriangle <- 
   ggproto("StatTriangle", Stat, 
@@ -19,6 +19,7 @@ StatTriangle <-
           required_aes = c("x", "y", "z")
 )
 
+#' @rdname triplot
 #' @export
 stat_triangle <- 
   function(
@@ -32,8 +33,21 @@ stat_triangle <-
     )
   }
 
-
+#' Triangle Plots
+#' 
+#' Triangle Plots
+#' 
+#' @rdname triplot
 #' @export
+#' @examples
+#' ddd <- data.frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) %>% mutate(z = 1 - x - y) 
+#' ggplot()  + 
+#'   tri_theme() + 
+#'   tri_grid(colour="red") +  
+#'   tri_labels(size=10, padding=.05) + 
+#'   geom_path(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=2, alpha=.3) +
+#'   geom_point(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=3, alpha=.6, colour="navy")
+#' 
 tri_grid <- function(colour = color, color = "gray70", grid_lines = 5, 
                      labels = c("alpha[1]", "alpha[2]", "alpha[3]"), 
                      ...) {
@@ -55,6 +69,7 @@ tri_grid <- function(colour = color, color = "gray70", grid_lines = 5,
     ) 
 }
 
+#' @rdname triplot
 #' @export
 tri_labels <- function(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = TRUE,
                        colour = color, color = "gray60", size = 4, padding = 0.1, ...) { 
