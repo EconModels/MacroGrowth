@@ -103,7 +103,7 @@ When $x_1 = x_2 = x_3$, we get
 $Q = 1$ and $R = 1$, so the  output elasticities are given by
 
 \[
-\frac{ \alpha_i}{\alpha_1 + \alpha_2 + \alpha_3}
+\frac{ \alpha_i}{\alpha_1 + \alpha_2 + \alpha_3} = \alpha_i
 \]
 
 
