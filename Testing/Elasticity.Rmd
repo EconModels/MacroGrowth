@@ -1,0 +1,79 @@
+---
+title: "Triplots and Output Elasticities"
+output:
+  pdf_document: 
+    fig_height: 3
+    fig_width: 5
+  html_document:
+    fig_height: 3
+    fig_width: 4
+date: "September 16, 2015"
+---
+
+```{r include=FALSE}
+require(mosaic)
+require(EconModels)
+require(EconData)
+require(knitr)
+knitr::opts_chunk$set(fig.show = "hold", cache=TRUE)
+```
+
+```{r}
+UK <- Leeds %>% filter(Country == "UK")
+PT <- IST %>% filter(Country == "PT")
+
+modUK <- cesModel( iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, data = UK)
+modPT <- cesModel( iGDP ~ iKservS.L + ihLest + iUMP + iYear, data = PT)
+```
+
+```{r} 
+model2OE <- function( model ) {
+  data <- fortify(model)
+  if (! "Country" %in% names(data)) data$Country <- "  "
+  data <- data %>% group_by(Country) %>% mutate( start = iYear == min(iYear))
+  
+  ggplot() +
+    tri_theme() +
+    tri_grid() +
+    tri_labels(labels = c("k", "l", "e"), parse = TRUE) +
+    geom_tripath( 
+      data = data, aes(x=oe1, y=oe2, z=oe3),
+      alpha=0.6, colour = "black") +
+    geom_tripoint( 
+      data = data, aes(x=oe1, y=oe2, z=oe3, colour = start, size = start), 
+      alpha=0.6) +
+    facet_grid( ~ Country)
+}
+```
+
+## Trajectories of Ouput Elasticities (2 examples)
+```{r}
+bigData <-
+  bind_rows(
+    fortify(modUK) %>% mutate(Country = "UK"),
+    fortify(modPT) %>% mutate(Country = "PT")
+  )
+model2OE(bigData) + facet_wrap( ~ Country)
+
+```   
+
+
+## Side note about bug in ggplot2
+
+```{r}
+  ggplot() +
+    geom_text(
+      data = data.frame(x = 0, y = 0, label = "alpha[1]"),
+      parse = TRUE,
+      aes(x=x, y=y, label=label)
+    ) 
+
+  ggplot() +
+    geom_text(
+      data = data.frame(x = 0, y = 0),
+      parse = TRUE,
+      aes(x=x, y=y, label=label),
+      label = "alpha[1]"
+    ) 
+```
+  
