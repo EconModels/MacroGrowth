@@ -90,6 +90,23 @@ tri_labels <- function(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = T
   )  
 }
 
+#' @rdname triplot
+#' @export
+geom_tripoint <- function(..., stat = "triangle") {
+  geom_point( ..., stat=stat)
+}
+
+#' @rdname triplot
+#' @export
+geom_triline <- function(..., stat = "triangle") {
+  geom_line( ..., stat=stat)
+}
+
+#' @rdname triplot
+#' @export
+geom_tripath <- function(..., stat = "triangle") {
+  geom_path( ..., stat=stat)
+}
 
 #' @export
 triPlot <- 

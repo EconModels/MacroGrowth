@@ -3,6 +3,9 @@
 \docType{data}
 \name{StatTriangle}
 \alias{StatTriangle}
+\alias{geom_triline}
+\alias{geom_tripath}
+\alias{geom_tripoint}
 \alias{stat_triangle}
 \alias{tri_grid}
 \alias{tri_labels}
@@ -31,6 +34,12 @@ tri_grid(colour = color, color = "gray70", grid_lines = 5,
 
 tri_labels(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = TRUE,
   colour = color, color = "gray60", size = 4, padding = 0.1, ...)
+
+geom_tripoint(..., stat = "triangle")
+
+geom_triline(..., stat = "triangle")
+
+geom_tripath(..., stat = "triangle")
 }
 \description{
 Triangle Plots
