@@ -81,8 +81,7 @@ tri_labels <- function(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = T
   )
   geom_text(
     data = text_data, stat="triangle",
-    aes(label = label, x = x, y = y, z = z), 
-    label = rep(labels, length.out = 3),
+    aes(label = label, x = x, y = y, z = z, label=label), 
     vjust = 0.5, hjust = 0.5,
     colour=colour, size=size, 
     parse = parse,
