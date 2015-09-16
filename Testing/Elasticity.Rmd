@@ -58,23 +58,4 @@ model2OE(bigData) + facet_wrap( ~ Country)
 
 ```   
 
-
-## Side note about bug in ggplot2
-
-```{r}
-  ggplot() +
-    geom_text(
-      data = data.frame(x = 0, y = 0, label = "alpha[1]"),
-      parse = TRUE,
-      aes(x=x, y=y, label=label)
-    ) 
-
-  ggplot() +
-    geom_text(
-      data = data.frame(x = 0, y = 0),
-      parse = TRUE,
-      aes(x=x, y=y, label=label),
-      label = "alpha[1]"
-    ) 
-```
-  
+ 

@@ -45,7 +45,7 @@ geom_tripath(..., stat = "triangle")
 Triangle Plots
 }
 \examples{
-ddd <- data.frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) \%>\% mutate(z = 1 - x - y)
+ddd <- data_frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) \%>\% mutate(z = 1 - x - y)
 ggplot()  +
   tri_theme() +
   tri_grid(colour="red") +
