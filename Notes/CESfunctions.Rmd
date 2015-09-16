@@ -97,6 +97,18 @@ From this we see that the output elasticities sum to 1 and are in the ratio
 \alpha_1 x_1^{-\rho_1} R : \alpha_2 x_2^{-\rho_1} R : \alpha_3 x_3 ^{-\rho}
 \]
 
+## Special case
+
+When $x_1 = x_2 = x_3$, we get 
+$Q = 1$ and $R = 1$, so the  output elasticities are given by
+
+\[
+\frac{ \alpha_i}{\alpha_1 + \alpha_2 + \alpha_3}
+\]
+
+
+
+## Limiting Cases
 Need to deal with limiting cases. When $\rho \to \infty$ or $\rho_1 \to \infty$.
 
 
