@@ -26,7 +26,7 @@ modUK <- cesModel( iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, data = UK)
 modPT <- cesModel( iGDP ~ iKservS.L + ihLest + iUMP + iYear, data = PT)
 ```
 
-```{r, plotfun} 
+```{r, plotfun, cache=FALSE} 
 model2OE <- function( model ) {
   data <- fortify(model)
   if (! "Country" %in% names(data)) data$Country <- "  "
@@ -48,7 +48,7 @@ model2OE <- function( model ) {
 ```
 
 ## Trajectories of Ouput Elasticities (2 examples)
-```{r, plots}
+```{r, plots, cache = FALSE}
 bigData <-
   bind_rows(
     fortify(modUK) %>% mutate(Country = "UK"),
