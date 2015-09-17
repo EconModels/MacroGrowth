@@ -866,6 +866,46 @@ AllCoeffs <-
   arrange(Country, model, flavor, energy, nest, CSP)
 @
 
+<<>>=
+leaf_apply(models, function(mod, id) class(mod), class="cesModel")
+@
+
+<<output-elasticity>>=
+mod2oedf <- function(mod, id){
+  # Parse the id to find out whether this is quality-adjusted data, etc.
+  ### Don't name non-lists with variables whose names sound like a list.
+  ### I'm guessing you just didn't know what kind of data you were working with here. 
+  ### Either way, it's a bad thing.
+  id_components <- strsplit(id, split = "[.]")[[1]]
+  
+  # return this data frame 
+  ### NOTE: ifelse() and [ ] handle NAs the way we want here
+  ### The former use of [[ ]] was unnecessary and would break things in the new code
+  ### I'm guessing you had [[ ]] because you thought you had a list when you did not.
+  
+  ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
+  message(class(mod))
+  if (! inherits(mod, "cesModel") ) return(NULL)
+  
+  fortify(mod) %>%
+    mutate(
+      Country = id_components[1], 
+      flavor  = ifelse(id_components[2]=="unadjusted", "Unadjusted", "Quality-adjusted"),
+      energy  = ifelse(id_components[3]=="noE", "Without energy", "With energy"),
+      model   = id_components[4], 
+      nest    = id_components[5]
+    ) 
+} 
+
+AllOE <- 
+  leaf_apply(
+    models, 
+    class = "cesModel", 
+    mod2oedf
+  ) %>% 
+  bind_rows()
+@
+
 <<Resampling>>=
 resampleFilename <- "EcolEcon2015kleResamples.rds"
 if (rerunResampling){
@@ -2409,6 +2449,66 @@ cesResidualPlot2(
 )
 @
 
+<<>>=
+OEplot <- function( data ) {
+  ggplot( data %>% 
+          mutate(
+            slice = interaction(Country, flavor, lex.order=TRUE, sep= " ")
+            )
+          ) +
+    tri_theme() +
+    tri_grid() +
+    tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]"), parse = TRUE) +
+    geom_tripath( 
+      aes(x=oe1, y=oe2, z=oe3, 
+          colour = Year,
+          group=interaction(Country, nest, flavor)),
+      alpha=0.6,  size=1) +
+    geom_tripoint( 
+      aes(x=oe1, y=oe2, z=oe3, colour = Year, size=Year), 
+      alpha=0.7, shape=21)  +
+    scale_colour_gradient(low = scales::muted("navy"),  high = "green") +
+    facet_grid(nest ~ slice) +
+    scale_size_continuous( range = c(1.4, 4))
+}
+OEplot(AllOE) 
+@
+
+<<>>=
+require(tidyr)
+ggplot(AllOE %>% 
+         mutate(split = as.character(
+           interaction(Country, flavor, lex.order = TRUE))) %>%
+         gather(factor, elasticity, oe1, oe2, oe3), aes(x=Year)) +
+  geom_line( 
+    alpha = .5, size=1.8,
+    aes(y = elasticity, 
+        colour = factor, 
+        linetype=flavor
+    ) ) +
+  facet_grid(nest ~ Country) +
+  theme_minimal() 
+@
+
+<<>>=
+ggplot(AllOE %>% mutate(split = interaction(Country, flavor, lex.order=TRUE))) +
+  tri_theme() + 
+  tri_grid() +
+  tri_labels( labels = c("alpha[k]", "alpha[l]", "alpha[e]") ) +
+  geom_tripath(alpha = 0.8, size = 1.2,
+               aes(x = oe1, y = oe2, z = oe3,
+                   colour = Year, group = interaction(Country, nest, flavor)
+               ) ) +
+#  geom_tripoint( size = 1.8, alpha = 0.5,
+#                 aes(x = oe1, y = oe2, z = oe3,
+#                     shape = flavor,
+#                     colour = Year
+#                 ) ) +
+  facet_grid( nest~ split) + 
+  scale_shape_manual(values = c(21:25)) +
+  scale_colour_gradient2(low = scales::muted("navy"), mid="red", high = "green", midpoint = 1985)
+
+@
 
 
 
