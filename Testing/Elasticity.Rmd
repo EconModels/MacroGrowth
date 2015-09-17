@@ -26,6 +26,29 @@ modUK <- cesModel( iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, data = UK)
 modPT <- cesModel( iGDP ~ iKservS.L + ihLest + iUMP + iYear, data = PT)
 ```
 
+```{r}
+UK2 <- 
+  modUK$data %>%
+  mutate(
+    iGDP = iGDP / tail(iGDP, 1),
+    iKservO.WwithRD = iKservO.WwithRD / tail(iKservO.WwithRD, 1),
+    ihLest = ihLest / tail(ihLest, 1),
+    iU = iU / tail(iU, 1)
+  )
+
+PT2 <- 
+  modPT$data %>%
+  mutate(
+    iGDP = iGDP / tail(iGDP, 1),
+    iKservS.L = iKservS.L / tail(iKservS.L, 1),
+    ihLest = ihLest / tail(ihLest, 1),
+    iUMP = iUMP / tail(iUMP, 1)
+  )
+
+modUK2 <- cesModel( iGDP ~ iKservO.WwithRD + ihLest + iU + iYear, data = UK2)
+modPT2 <- cesModel( iGDP ~ iKservS.L + ihLest + iUMP + iYear, data = PT2)
+```
+
 ```{r, plotfun, cache=FALSE} 
 model2OE <- function( model ) {
   data <- fortify(model)
@@ -51,11 +74,12 @@ model2OE <- function( model ) {
 ```{r, plots, cache = FALSE}
 bigData <-
   bind_rows(
-    fortify(modUK) %>% mutate(Country = "UK"),
-    fortify(modPT) %>% mutate(Country = "PT")
+    fortify(modUK) %>% mutate(Country = "UK", reindex = "first"),
+    fortify(modPT) %>% mutate(Country = "PT", reindex = "first"),
+    fortify(modUK2) %>% mutate(Country = "UK", reindex = "last"),
+    fortify(modPT2) %>% mutate(Country = "PT", reindex = "last")
   )
-model2OE(bigData) + facet_wrap( ~ Country)
-
+model2OE(bigData) + facet_grid(reindex ~ Country)
 ```   
 
  
