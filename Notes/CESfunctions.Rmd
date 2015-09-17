@@ -111,5 +111,7 @@ $Q = 1$ and $R = 1$, so the  output elasticities are given by
 ## Limiting Cases
 Need to deal with limiting cases. When $\rho \to \infty$ or $\rho_1 \to \infty$.
 
+## Document Status
 
+Compilation time: `r format(Sys.time(), usetz = TRUE)`.
 
