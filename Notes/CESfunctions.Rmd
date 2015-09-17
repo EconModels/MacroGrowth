@@ -68,7 +68,7 @@ We can use this to simplify the expressions for the output elasticities as follo
    }{
    (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho}}
    \\
-& = \frac{\alpha_1 x_1^{-\rho _1} R
+& = \frac{\alpha_2 x_2^{-\rho _1} R
    }{
    (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho}}
 \\[6mm]
@@ -86,7 +86,7 @@ We can use this to simplify the expressions for the output elasticities as follo
    }{
    (\alpha_1 + \alpha_2) Q R + \alpha_3 x_3 ^{-\rho}}
    \\
-& = \frac{\alpha_3 x_3^{\rho} 
+& = \frac{\alpha_3 x_3^{-\rho} 
    }{
    (\alpha_1 x_1^{-\rho_1} + \alpha_2 x_2^{-\rho_1}) R + \alpha_3 x_3 ^{-\rho}}
 \end{align*}
