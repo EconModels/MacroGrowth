@@ -48,7 +48,7 @@ leaf_apply <-
     
     if (is.parent(item, item_name)) {
       # descend
-      res <- c(res, leaf_apply(item, f, name=item_name, is.parent=is.parent))
+      res <- c(res, leaf_apply(item, f, name=item_name, is.parent=is.parent, class=class))
     } else {
       if (is.null(class) || inherits(item, as.character(class))) {
         # process leaf
