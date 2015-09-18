@@ -2510,7 +2510,20 @@ ggplot(AllOE %>% mutate(split = interaction(Country, flavor, lex.order=TRUE))) +
 
 @
 
-
+<<>>=
+ggplot(AllOE %>% mutate(split = interaction(Country, flavor, lex.order=TRUE))) +
+  tri_theme() + 
+  tri_grid() +
+  tri_labels( labels = c("alpha[k]", "alpha[l]", "alpha[e]") ) +
+  geom_tripath(alpha = 0.8, size = 1.2,
+               aes(x = oe1, y = oe2, z = oe3,
+                   alpha = Year, 
+                   colour = flavor,
+                   group = interaction(Country, nest, flavor)
+               ) ) +
+  facet_grid( nest~ Country)  +
+  scale_colour_manual(values = c("black", "gray70")) 
+@
 
 \end{document}
 
