@@ -1667,43 +1667,54 @@ fsbg(coun = "UK", mod = "CES")
 @
 
 <<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=2.3, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
-p <- triPlot(
-  data=
-    AllCoeffs %>% filter(model == "CES") %>%
+#p <- triPlot(
+#  data=
+p <-
+  AllCoeffs %>% filter(model == "CES") %>%
     mutate( nest = plyr::mapvalues(nest, 
                                    from=c("kle", "lek", "ekl"), 
                                    to=c("(kl)e", "(le)k", "(ek)l")),
             Model = interaction(nest, CSP, sep = " ", drop=TRUE),
             Inputs = flavor
-            ), 
-  grid_lines = 5,
-  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
-  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
+            ) %>%
+  ggplot() +
+  tri_theme() +
+  tri_grid(grid_lines = 5) +
+#  tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
+  geom_tripoint(
+    aes(
+      x = alpha_1, y = alpha_2, z = alpha_3, 
       fill  = Model, 
       shape = Model,
       size = Model,
       color = Inputs)
   ) +
   labs(color = "Factors of production") +
-  facet_grid(. ~ Country)
+  facet_grid(. ~ Country) 
+
   model_points_style(p)
 @
 
 <<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=4.1, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
-p <- triPlot(
-  data=
+p <- 
+#    triPlot(
+#  data=
     AllCoeffs %>% filter(model == "CES") %>%
     mutate( nest = plyr::mapvalues(nest, 
                                    from=c("kle", "lek", "ekl"), 
                                    to=c("(kl)e", "(le)k", "(ek)l")),
             Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor), 
-  grid_lines = 5,
-  labels = c("alpha[k]", "alpha[l]", "alpha[e]"),
-  aes(x = alpha_1, y = alpha_2, z = alpha_3, 
-      fill  = Model, 
-      shape = Model,
-      size = Model
+            Inputs = flavor) %>%
+    ggplot() +
+    tri_theme() + 
+    tri_grid(grid_lines = 5) +
+    tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
+    geom_tripoint(
+      aes(
+        x = alpha_1, y = alpha_2, z = alpha_3, 
+        fill  = Model, 
+        shape = Model,
+        size = Model
       # color = Inputs
       )
   ) +
@@ -2476,18 +2487,51 @@ OEplot(AllOE)
 
 <<>>=
 require(tidyr)
-ggplot(AllOE %>% 
-         mutate(split = as.character(
-           interaction(Country, flavor, lex.order = TRUE))) %>%
-         gather(factor, elasticity, oe1, oe2, oe3), aes(x=Year)) +
+AllOE %>% 
+  mutate(split =
+           as.character(
+             interaction(
+               factor(flavor, labels = c("QA", "UA")), 
+               factor(nest, 
+                      labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
+               sep = ", ",
+               lex.order = FALSE ) )
+  ) %>%
+  gather(factor, elasticity, oe1, oe2, oe3) %>%
+  mutate(
+    split2 = relevelFactor(
+      factor(split), 
+      paste( rep(c("UA", "QA"), times = 4 ), 
+             rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
+             sep=", ")
+    )
+  ) %>%
+  ggplot(aes(x=Year)) + 
   geom_line( 
-    alpha = .5, size=1.8,
+    alpha = .8, # size=1.0,
     aes(y = elasticity, 
-        colour = factor, 
-        linetype=flavor
+        colour = factor,
+        linetype=factor,
+        size = factor
     ) ) +
-  facet_grid(nest ~ Country) +
-  theme_minimal() 
+  facet_grid(split2 ~ Country) +
+  scale_color_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c("black", "black", "gray70")
+  ) +
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_size_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values = c(.9, .9, .6)) +
+  scale_linetype_manual( 
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c(2,3,1) ) + 
+  xy_theme()
+  
+
 @
 
 <<>>=
