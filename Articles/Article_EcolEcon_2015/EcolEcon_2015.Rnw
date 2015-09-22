@@ -1658,7 +1658,6 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 @
 
 
-
 <<Graphs_CESkle_resample_alphas, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
 ReModels %>% 
   gather(factor, elasticity, oe1, oe2, oe3) %>%
@@ -1681,7 +1680,7 @@ ReModels %>%
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c("black", "black", "gray70"),
-    guid=FALSE
+    guide=FALSE
   ) +
   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
   scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
