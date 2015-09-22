@@ -116,6 +116,8 @@ library(knitr)
 library(texreg)
 library(tidyr)
 library(scales)
+library(tidyr)
+
 
 # Tell whether to re-run the analysis to create the models
 # or the resampling on the (kl)e models.
@@ -866,9 +868,9 @@ AllCoeffs <-
   arrange(Country, model, flavor, energy, nest, CSP)
 @
 
-<<>>=
-leaf_apply(models, function(mod, id) class(mod), class="cesModel")
-@
+%' <<>>=
+%' leaf_apply(models, function(mod, id) class(mod), class="cesModel")
+%' @
 
 <<output-elasticity>>=
 mod2oedf <- function(mod, id){
@@ -929,6 +931,15 @@ if (rerunResampling){
   resampleCoeffs <- readRDS(resampleCoeffsFilename)
   resampleModels <- readRDS(resampleModelsFilename)
 }
+@
+
+<<ReModels>>=
+ReModels <-
+  bind_rows(
+  leaf_apply(resampleModels, 
+             function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
+             strict.lists = TRUE)
+)
 @
 
 
@@ -1175,23 +1186,6 @@ myXTable(data_CES_SR_gof,
          digits=c(1,1,1,1,1,1,1, 2, 4, 3))
 @
 
-Table~\ref{tab:CES_alpha} shows 
-output elasticities~($\alpha$) for all modeling choices.
-
-<<CES_alpha, results="asis">>=
-data_CES_alpha <- 
-  table_data %>% 
-  filter(Model=="CES" | Model=="Ref.") %>% 
-  select(Country, Model, CSP, flavor, Energy, Nest, alpha_1, alpha_2, alpha_3) %>%
-  plyr::rename(c("flavor" = "Factors of prod.",
-                 "alpha_1" = "$\\alpha_k$",
-                 "alpha_2" = "$\\alpha_l$",
-                 "alpha_3" = "$\\alpha_e$"))
-myXTable(data_CES_alpha,
-         caption="Output elasticities~($\\alpha$) for all models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=3)
-@
 
 Table~\ref{tab:CES_sigma_nest_aware_inner} shows elasticity of substitution~($\sigma$)
 for inner nests.
@@ -1485,85 +1479,6 @@ historical~($y_i$) and fitted~($\hat{y}_i$) economic output.
 \label{sec:SSE_and_SR_graphs}
 %++++++++++++++++++++++++++++++
 
-<<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
-data_sr_sse <- 
-  AllCoeffs %>% 
-  filter(model=="CES") %>% 
-  mutate(nest = 
-           plyr::mapvalues(
-             nest, 
-             from=c("kl", "kle", "lek", "ekl"), 
-             to=c("kl", "(kl)e", "(le)k", "(ek)l")
-             ),
-         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-         Inputs = flavor
-  )
-ggplot() +
-  geom_point(data=data_sr_sse, mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
-  geom_vline(aes(xintercept = sse), 
-             AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
-             colour="gray50", size=0.1) +
-  geom_hline(aes(yintercept = lambda), 
-             AllCoeffs %>% filter(model=="exp") %>% select(Country, lambda), 
-             colour="gray50", size=0.1) +
-  scale_size_manual(values=c(2,4)) +
-  scale_shape_manual(values=c(1,0,3,4)) + 
-  facet_grid(flavor ~ Country) +
-  scale_y_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
-  xlab("SSE") + 
-  ylab(expression(lambda)) +
-  xy_theme() +
-  theme(legend.title=element_blank())
-
-@
-
-
-<<SRsse_CES_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
-data_sr_sse <- 
-  AllCoeffs %>% 
-  filter(model=="CES") %>% 
-  mutate(nest = 
-           plyr::mapvalues(
-             nest, 
-             from=c("kl", "kle", "lek", "ekl"), 
-             to=c("kl", "(kl)e", "(le)k", "(ek)l")
-             ),
-         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-         Inputs = flavor
-  )
-
-p <- ggplot() +
-  geom_point(
-    data=data_sr_sse, 
-    mapping=aes(
-      x=lambda, 
-      y=sse, 
-      fill=Model, 
-      shape=Model, 
-      size=Model, 
-      color=Inputs
-      )) +
-  geom_vline(aes(xintercept = lambda), 
-             AllCoeffs %>% filter(model=="exp") %>% select(Country, lambda), 
-             colour="gray50", size=0.1) +
-  geom_hline(aes(yintercept = sse), 
-             AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
-             colour="gray50", size=0.1) +
-  facet_grid(. ~ Country) +
-  scale_x_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
-  xlab(expression(lambda)) +
-  scale_y_continuous(limits=c(-0.05, 0.7)) +
-  ylab("SSE") + 
-  labs(color = "Factors of production") +
-  xy_theme() # +
-  # theme(legend.title=element_blank())
-
-# Add our style
-model_points_style(p)
-
-@
-
-
 <<SRsse_CES_graph_3, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
 data_sr_sse <- 
   AllCoeffs %>% 
@@ -1615,118 +1530,52 @@ model_points_style_quad(p)
 \label{sec:output_elasticities_graph}
 %++++++++++++++++++++++++++++++
 
-Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
-show factor shares ($\alpha$ values) for CES models for
-Portugal and the UK, respectively.
-See Table~\ref{tab:CES_abg_equations} for details on the calculation
-of factor shares from fitted values of $\delta_1$ and $\delta$.
-%
-<<Factor_shares_bar_graph_function>>=
-fsbg <- function(coun, mod){
-  bar_chart_data <- 
-    AllCoeffs %>% 
-    filter(Country==coun & model==mod) %>% 
-    select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3) %>%
-    mutate(nest =   # Change nest to a nicer-looking nest string
-             plyr::mapvalues(nest, 
-                             from=c("kl", "kle", "lek", "ekl"), 
-                             to=c("kl", "(kl)e", "(le)k", "(ek)l")),
-           label = # Add a label column
-              paste(CSP, flavor, energy, nest, sep=", "),
-           label =  # Add row numbers to the label column
-              paste(paste0(1:length(label), ". "), label)
+<<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
+AllOE %>% 
+  mutate(split =
+           as.character(
+             interaction(
+               factor(flavor, labels = c("QA", "UA")), 
+               factor(nest, 
+                      labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
+               sep = ", ",
+               lex.order = FALSE ) )
+  ) %>%
+  gather(factor, elasticity, oe1, oe2, oe3) %>%
+  mutate(
+    split2 = relevelFactor(
+      factor(split), 
+      paste( rep(c("UA", "QA"), times = 4 ), 
+             rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
+             sep=", ")
     )
-  # Capture the order that we want for the models on the vertical axis.
-  order <- bar_chart_data$label
-  # Now melt the data
-  ### tidyr::spread and tidyr::gather are preferred in most cases now
-#   bar_chart_data <- melt(bar_chart_data, 
-#                          measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
-#                          value.name = "value", 
-#                          variable.name = "variable")
-  bar_chart_data <-
-    bar_chart_data %>% gather( key=variable, value=value, alpha_1 : alpha_3 )
-
-  # Make the plot
-  plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
-    geom_bar(stat="identity") + 
-    xlab("") +
-    scale_x_discrete(limits=rev(order)) +
-    ylab("") +
-    scale_y_continuous(breaks=c(0, 0.5, 1)) + 
-    guides(fill=guide_legend(title=NULL)) +
-    coord_flip() + 
-    scale_fill_brewer(palette="OrRd", 
-                      labels=c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e]))) +
-    xy_theme() +
-    theme(axis.ticks.y = element_blank())
-  return(plot)
-}
-@
-
-<<Factor_shares_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for Portugal.">>=
-fsbg(coun = "PT", mod = "CES")
-@
-
-<<Factor_shares_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for the UK.">>=
-fsbg(coun = "UK", mod = "CES")
-@
-
-<<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=2.3, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
-#p <- triPlot(
-#  data=
-p <-
-  AllCoeffs %>% filter(model == "CES") %>%
-    mutate( nest = plyr::mapvalues(nest, 
-                                   from=c("kle", "lek", "ekl"), 
-                                   to=c("(kl)e", "(le)k", "(ek)l")),
-            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor
-            ) %>%
-  ggplot() +
-  tri_theme() +
-  tri_grid(grid_lines = 5) +
-#  tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
-  geom_tripoint(
-    aes(
-      x = alpha_1, y = alpha_2, z = alpha_3, 
-      fill  = Model, 
-      shape = Model,
-      size = Model,
-      color = Inputs)
+  ) %>%
+  ggplot(aes(x=Year)) + 
+  geom_line( 
+    alpha = .8, # size=1.0,
+    aes(y = elasticity, 
+        colour = factor,
+        linetype=factor,
+        size = factor
+    ) ) +
+  facet_grid(split2 ~ Country) +
+  scale_color_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c("black", "black", "gray70")
   ) +
-  labs(color = "Factors of production") +
-  facet_grid(. ~ Country) 
-
-  model_points_style(p)
-@
-
-<<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=4.1, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
-p <- 
-#    triPlot(
-#  data=
-    AllCoeffs %>% filter(model == "CES") %>%
-    mutate( nest = plyr::mapvalues(nest, 
-                                   from=c("kle", "lek", "ekl"), 
-                                   to=c("(kl)e", "(le)k", "(ek)l")),
-            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-            Inputs = flavor) %>%
-    ggplot() +
-    tri_theme() + 
-    tri_grid(grid_lines = 5) +
-    tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
-    geom_tripoint(
-      aes(
-        x = alpha_1, y = alpha_2, z = alpha_3, 
-        fill  = Model, 
-        shape = Model,
-        size = Model
-      # color = Inputs
-      )
-  ) +
-  facet_grid(Inputs ~ Country)
-    
-  model_points_style_quad(p)
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
+  scale_size_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values = c(.9, .9, .6)) +
+  scale_linetype_manual( 
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c(2,3,1) ) + 
+  labs(x="", y="") +
+  xy_theme()
 @
 
 
@@ -1734,104 +1583,6 @@ p <-
 \subsection{$\sigma$ graphs} 
 \label{sec:sigma_graphs}
 %++++++++++++++++++++++++++++++
-
-<<sigma_graph>>=
-sigma_graph <- function(data){
-  sigma_graph_data <- 
-    data %>% 
-    select(Country, CSP, flavor, energy, nest, 
-           sigma_12, sigma_23, sigma_13, 
-           sigma_12_3, sigma_23_1, sigma_13_2) %>%
-    mutate(nest = plyr::mapvalues( # Change nest to a nicer-looking nest string
-      nest, 
-      from=c("kl", "kle", "lek", "ekl"), 
-      to=c("kl", "(kl)e", "(le)k", "(ek)l"))
-    ) %>%
-    gather(variable, value, sigma_12, sigma_23, sigma_13, sigma_12_3, sigma_23_1, sigma_13_2) %>%
-    mutate(label = paste(CSP, flavor, energy, nest, variable, sep=", ")) %>%
-    na.omit()
-  
-  # return(sigma_graph_data)
-  
-  # Make the plot
-  plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
-    geom_bar(stat="identity") + 
-    xlab("") +
-    # scale_x_discrete(limits=rev(order)) +
-    scale_x_discrete(labels=sigma_graph_data$label) +
-    geom_hline(aes(yintercept = 1), colour="gray50", size=0.1) +
-    ylab("") +
-    # coord_trans(y="sigma") +
-    scale_y_continuous(limits=c(0, 10), breaks=c(0, 1.0, 10)) +
-    guides(fill=guide_legend(title=NULL)) +
-    scale_fill_brewer(palette="OrRd") +
-#     scale_fill_brewer(palette="OrRd",
-#                       labels=c(expression(sigma[kl]), 
-#                                expression(sigma[le]), 
-#                                expression(sigma[ek]),
-#                                expression(sigma["(kl)e"]),
-#                                expression(sigma["(le)k"]),
-#                                expression(sigma["(ek)l"]))) +
-    coord_flip() + 
-    xy_theme() +
-    theme(axis.ticks.y = element_blank())
-  return(plot)
-}
-@
-
-<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
-sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
-@
-
-<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
-sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
-@
-
-<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$).">>=
-breaks_labels = c(0.01, 0.1, 1, 10, 100)
-p <- 
-ggplot(
-  AllCoeffs %>% 
-    gather(type, value, matches("sigma")) %>% 
-    filter(!is.na(value)) %>% 
-    filter(! type %in% c("sigma", "sigma_1")) %>%
-    mutate(nest = plyr::mapvalues(nest, 
-                                  from=c("kle", "lek", "ekl"), 
-                                  to=c("(kl)e", "(le)k", "(ek)l")),
-           type = relevelFactor(type, c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")),
-           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-           Inputs = flavor
-           )
-  ) + 
-  geom_point(aes(x=value, y=type, 
-                 shape = Model, fill=Model, size=Model,
-                 color=Inputs
-                 )
-                 # position = position_jitter(height=0.2, width=0)
-             ) + 
-  facet_grid( type ~ Country, scales = "free_y" ) + 
-  scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
-  xlab("") +
-  geom_vline(xintercept = 1, color="gray50", size=0.2) +
-  scale_y_discrete(labels = c(
-    sigma_12 = expression(sigma[kl]),
-    sigma_23 = expression(sigma[le]),
-    sigma_13 = expression(sigma[ek]),
-    sigma_12_3 = expression(sigma["(kl)"*e]),
-    sigma_23_1 = expression(sigma["(le)"*k]),
-    sigma_13_2 = expression(sigma["(ek)"*l]))
-    ) +
-  ylab("") +
-  labs(color = "Factors of production") +
-  xy_theme() +
-  theme(
-    legend.position="top",
-    strip.text.y = element_blank(),
-    axis.text.y = element_text(size=12)
-    )
-
-model_points_style(p)
-@
 
 <<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
 breaks_labels = c(0.01, 0.1, 1, 10, 100)
@@ -1906,10 +1657,47 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
     labs(x=expression(delta), y=expression(sigma["(kl)"*e]))
 @
 
-<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
-                labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
+
+
+<<Graphs_CESkle_resample_alphas, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
+ReModels %>% 
+  gather(factor, elasticity, oe1, oe2, oe3) %>%
+  ggplot(aes(x=Year)) + 
+  geom_line( 
+    aes(y = elasticity,
+        alpha = grepl("orig", id),
+        group = interaction(id, factor),
+        color = factor,
+        linetype = factor,
+        size = grepl("orig", id)
+    ) ) +
+  facet_grid(. ~ Country) +
+  scale_alpha_manual(
+    name = "",
+    values = c(.3, 1),
+    guide = FALSE
+  ) + 
+  scale_color_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c("black", "black", "gray70"),
+    guid=FALSE
+  ) +
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
+  scale_size_manual(
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values = c(.3, .9),
+    guide = FALSE) +
+  scale_linetype_manual( 
+    name = "",
+    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+    values=c(2,3,1) ) + 
+  xy_theme() +
+  labs(x="", y="")
 @
+
 
 
 
@@ -2053,7 +1841,7 @@ But, they are not included for now.
 
 In this section we present correlograms for the reference (exponential-only) models. 
 
-<<Correlograms_Exp, echo=FALSE, message=FALSE, include=FALSE>>=
+<<Correlograms_Exp, echo=FALSE, message=FALSE, include=FALSE, eval=FALSE>>=
 leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -2067,7 +1855,7 @@ leaf_apply(l = modelsExp, class = c("lm"), f = function(model, name){
 
 In this section we present correlograms for all models that adhere to the cost-share theorem.
 
-<<Correlograms_CSP, echo=FALSE, message=FALSE, include=FALSE>>=
+<<Correlograms_CSP, echo=FALSE, message=FALSE, include=FALSE, eval=FALSE>>=
 leaf_apply(l = modelsCSP, class = c("lm", "plm"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -2081,7 +1869,7 @@ leaf_apply(l = modelsCSP, class = c("lm", "plm"), f = function(model, name){
 
 In this section we present correlograms for all models that reject the cost-share theorem.
 
-<<Correlograms_noCSP, echo=FALSE, message=FALSE, include=FALSE>>=
+<<Correlograms_noCSP, echo=FALSE, message=FALSE, include=FALSE, eval=FALSE>>=
 leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = function(model, name){
   acf(resid(model), main=name)
 })
@@ -2389,6 +2177,32 @@ ggplot() +
 \label{sec:ces_graveyard}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+Table~\ref{tab:CES_alpha} shows 
+output elasticities~($\alpha$) for all modeling choices.
+
+Here is a table of $\alpha$ values. 
+These values represent the initial points of the trajectories. 
+We no longer use these values. 
+Instead, we use the time-dependent values of alpha.
+So, this table goes in the graveyard.
+
+<<CES_alpha, results="asis">>=
+data_CES_alpha <- 
+  table_data %>% 
+  filter(Model=="CES" | Model=="Ref.") %>% 
+  select(Country, Model, CSP, flavor, Energy, Nest, alpha_1, alpha_2, alpha_3) %>%
+  plyr::rename(c("flavor" = "Factors of prod.",
+                 "alpha_1" = "$\\alpha_k$",
+                 "alpha_2" = "$\\alpha_l$",
+                 "alpha_3" = "$\\alpha_e$"))
+myXTable(data_CES_alpha,
+         caption="Output elasticities~($\\alpha$) for all models.",
+         label=paste0("tab:", opts_current$get("label")), 
+         digits=3)
+@
+
+
 Here is a table of the raw CES coefficient values. 
 This table is not used in the paper, so I'm putting it in the graveyard.
 <<CES_sigma, results="asis">>=
@@ -2466,6 +2280,198 @@ cesResidualPlot2(
 )
 @
 
+<<SRsse_CES_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines.">>=
+data_sr_sse <- 
+  AllCoeffs %>% 
+  filter(model=="CES") %>% 
+  mutate(nest = 
+           plyr::mapvalues(
+             nest, 
+             from=c("kl", "kle", "lek", "ekl"), 
+             to=c("kl", "(kl)e", "(le)k", "(ek)l")
+             ),
+         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+         Inputs = flavor
+  )
+ggplot() +
+  geom_point(data=data_sr_sse, mapping=aes(x=sse, y=lambda, color=energy, size=CSP, shape=nest)) +
+  geom_vline(aes(xintercept = sse), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
+             colour="gray50", size=0.1) +
+  geom_hline(aes(yintercept = lambda), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, lambda), 
+             colour="gray50", size=0.1) +
+  scale_size_manual(values=c(2,4)) +
+  scale_shape_manual(values=c(1,0,3,4)) + 
+  facet_grid(flavor ~ Country) +
+  scale_y_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
+  xlab("SSE") + 
+  ylab(expression(lambda)) +
+  xy_theme() +
+  theme(legend.title=element_blank())
+
+@
+
+
+<<SRsse_CES_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
+data_sr_sse <- 
+  AllCoeffs %>% 
+  filter(model=="CES") %>% 
+  mutate(nest = 
+           plyr::mapvalues(
+             nest, 
+             from=c("kl", "kle", "lek", "ekl"), 
+             to=c("kl", "(kl)e", "(le)k", "(ek)l")
+             ),
+         Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+         Inputs = flavor
+  )
+
+p <- ggplot() +
+  geom_point(
+    data=data_sr_sse, 
+    mapping=aes(
+      x=lambda, 
+      y=sse, 
+      fill=Model, 
+      shape=Model, 
+      size=Model, 
+      color=Inputs
+      )) +
+  geom_vline(aes(xintercept = lambda), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, lambda), 
+             colour="gray50", size=0.1) +
+  geom_hline(aes(yintercept = sse), 
+             AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
+             colour="gray50", size=0.1) +
+  facet_grid(. ~ Country) +
+  scale_x_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
+  xlab(expression(lambda)) +
+  scale_y_continuous(limits=c(-0.05, 0.7)) +
+  ylab("SSE") + 
+  labs(color = "Factors of production") +
+  xy_theme() # +
+  # theme(legend.title=element_blank())
+
+# Add our style
+model_points_style(p)
+
+@
+
+Figures~\ref{fig:Factor_shares_graph_PT} and~\ref{fig:Factor_shares_graph_UK}
+show factor shares ($\alpha$ values) for CES models for
+Portugal and the UK, respectively.
+See Table~\ref{tab:CES_abg_equations} for details on the calculation
+of factor shares from fitted values of $\delta_1$ and $\delta$.
+%
+<<Factor_shares_bar_graph_function>>=
+fsbg <- function(coun, mod){
+  bar_chart_data <- 
+    AllCoeffs %>% 
+    filter(Country==coun & model==mod) %>% 
+    select(Country, model, flavor, energy, nest, CSP, alpha_1, alpha_2, alpha_3) %>%
+    mutate(nest =   # Change nest to a nicer-looking nest string
+             plyr::mapvalues(nest, 
+                             from=c("kl", "kle", "lek", "ekl"), 
+                             to=c("kl", "(kl)e", "(le)k", "(ek)l")),
+           label = # Add a label column
+              paste(CSP, flavor, energy, nest, sep=", "),
+           label =  # Add row numbers to the label column
+              paste(paste0(1:length(label), ". "), label)
+    )
+  # Capture the order that we want for the models on the vertical axis.
+  order <- bar_chart_data$label
+  # Now melt the data
+  ### tidyr::spread and tidyr::gather are preferred in most cases now
+#   bar_chart_data <- melt(bar_chart_data, 
+#                          measure.vars = c("alpha_1", "alpha_2", "alpha_3"), 
+#                          value.name = "value", 
+#                          variable.name = "variable")
+  bar_chart_data <-
+    bar_chart_data %>% gather( key=variable, value=value, alpha_1 : alpha_3 )
+
+  # Make the plot
+  plot <- ggplot(bar_chart_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+    geom_bar(stat="identity") + 
+    xlab("") +
+    scale_x_discrete(limits=rev(order)) +
+    ylab("") +
+    scale_y_continuous(breaks=c(0, 0.5, 1)) + 
+    guides(fill=guide_legend(title=NULL)) +
+    coord_flip() + 
+    scale_fill_brewer(palette="OrRd", 
+                      labels=c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e]))) +
+    xy_theme() +
+    theme(axis.ticks.y = element_blank())
+  return(plot)
+}
+@
+
+<<Factor_shares_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for Portugal.">>=
+fsbg(coun = "PT", mod = "CES")
+@
+
+<<Factor_shares_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=2.5, fig.cap="Factor shares ($\\alpha$ values) for CES models for the UK.">>=
+fsbg(coun = "UK", mod = "CES")
+@
+
+<<output_elasticities_graph_ternary, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=2.3, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version shows all Unadjusted and Quality-adjusted points on the same graph. Perhaps it is easier to see the effect of quality-adjustment of data this way.">>=
+#p <- triPlot(
+#  data=
+p <-
+  AllCoeffs %>% filter(model == "CES") %>%
+    mutate( nest = plyr::mapvalues(nest, 
+                                   from=c("kle", "lek", "ekl"), 
+                                   to=c("(kl)e", "(le)k", "(ek)l")),
+            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor
+            ) %>%
+  ggplot() +
+  tri_theme() +
+  tri_grid(grid_lines = 5) +
+#  tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
+  geom_tripoint(
+    aes(
+      x = alpha_1, y = alpha_2, z = alpha_3, 
+      fill  = Model, 
+      shape = Model,
+      size = Model,
+      color = Inputs)
+  ) +
+  labs(color = "Factors of production") +
+  facet_grid(. ~ Country) 
+
+  model_points_style(p)
+@
+
+<<output_elasticities_graph_ternary_2, fig.pos="H", fig.align="center", fig.width=6.5, fig.height=4.1, fig.cap="Ternary graph of output elasticities~($\\alpha$). This version splits the Unadjusted and Quality-adjusted values on their own graphs. This approach is parallel to the previous figures (historical data, fitted GDP, and residuals.">>=
+p <- 
+#    triPlot(
+#  data=
+    AllCoeffs %>% filter(model == "CES") %>%
+    mutate( nest = plyr::mapvalues(nest, 
+                                   from=c("kle", "lek", "ekl"), 
+                                   to=c("(kl)e", "(le)k", "(ek)l")),
+            Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+            Inputs = flavor) %>%
+    ggplot() +
+    tri_theme() + 
+    tri_grid(grid_lines = 5) +
+    tri_labels(labels = c("alpha[k]", "alpha[l]", "alpha[e]")) +
+    geom_tripoint(
+      aes(
+        x = alpha_1, y = alpha_2, z = alpha_3, 
+        fill  = Model, 
+        shape = Model,
+        size = Model
+      # color = Inputs
+      )
+  ) +
+  facet_grid(Inputs ~ Country)
+    
+  model_points_style_quad(p)
+@
+
 <<>>=
 OEplot <- function( data ) {
   ggplot( data %>% 
@@ -2511,54 +2517,6 @@ OEplot(AllOE)
 OEplot2(AllOE) 
 @
 
-<<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
-require(tidyr)
-AllOE %>% 
-  mutate(split =
-           as.character(
-             interaction(
-               factor(flavor, labels = c("QA", "UA")), 
-               factor(nest, 
-                      labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
-               sep = ", ",
-               lex.order = FALSE ) )
-  ) %>%
-  gather(factor, elasticity, oe1, oe2, oe3) %>%
-  mutate(
-    split2 = relevelFactor(
-      factor(split), 
-      paste( rep(c("UA", "QA"), times = 4 ), 
-             rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
-             sep=", ")
-    )
-  ) %>%
-  ggplot(aes(x=Year)) + 
-  geom_line( 
-    alpha = .8, # size=1.0,
-    aes(y = elasticity, 
-        colour = factor,
-        linetype=factor,
-        size = factor
-    ) ) +
-  facet_grid(split2 ~ Country) +
-  scale_color_manual(
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c("black", "black", "gray70")
-  ) +
-  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
-  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
-  scale_size_manual(
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values = c(.9, .9, .6)) +
-  scale_linetype_manual( 
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c(2,3,1) ) + 
-  labs(x="", y="") +
-  xy_theme()
-@
 
 <<>>=
 ggplot(AllOE %>% mutate(split = interaction(Country, flavor, lex.order=TRUE))) +
@@ -2597,54 +2555,114 @@ ggplot(AllOE %>% mutate(split = interaction(Country, flavor, lex.order=TRUE))) +
 
 
 <<>>=
-ReModels <-
-  bind_rows(
-  leaf_apply(resampleModels, 
-             function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
-             strict.lists = TRUE)
-)
 
 OEplot(ReModels)
 OEplot2(ReModels)
 @
 
-<<Graphs_CESkle_resample_alphas, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
-ReModels %>% 
-  gather(factor, elasticity, oe1, oe2, oe3) %>%
-  ggplot(aes(x=Year)) + 
-  geom_line( 
-    aes(y = elasticity,
-        alpha = grepl("orig", id),
-        group = interaction(id, factor),
-        color = factor,
-        linetype = factor,
-        size = grepl("orig", id)
-    ) ) +
-  facet_grid(. ~ Country) +
-  scale_alpha_manual(
-    name = "",
-    values = c(.3, 1),
-    guide = FALSE
+
+
+<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
+                labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
+@
+
+<<sigma_graph>>=
+sigma_graph <- function(data){
+  sigma_graph_data <- 
+    data %>% 
+    select(Country, CSP, flavor, energy, nest, 
+           sigma_12, sigma_23, sigma_13, 
+           sigma_12_3, sigma_23_1, sigma_13_2) %>%
+    mutate(nest = plyr::mapvalues( # Change nest to a nicer-looking nest string
+      nest, 
+      from=c("kl", "kle", "lek", "ekl"), 
+      to=c("kl", "(kl)e", "(le)k", "(ek)l"))
+    ) %>%
+    gather(variable, value, sigma_12, sigma_23, sigma_13, sigma_12_3, sigma_23_1, sigma_13_2) %>%
+    mutate(label = paste(CSP, flavor, energy, nest, variable, sep=", ")) %>%
+    na.omit()
+  
+  # return(sigma_graph_data)
+  
+  # Make the plot
+  plot <- ggplot(sigma_graph_data, mapping=aes(x=label, y=value, fill=variable, width=0.4)) + 
+    geom_bar(stat="identity") + 
+    xlab("") +
+    # scale_x_discrete(limits=rev(order)) +
+    scale_x_discrete(labels=sigma_graph_data$label) +
+    geom_hline(aes(yintercept = 1), colour="gray50", size=0.1) +
+    ylab("") +
+    # coord_trans(y="sigma") +
+    scale_y_continuous(limits=c(0, 10), breaks=c(0, 1.0, 10)) +
+    guides(fill=guide_legend(title=NULL)) +
+    scale_fill_brewer(palette="OrRd") +
+#     scale_fill_brewer(palette="OrRd",
+#                       labels=c(expression(sigma[kl]), 
+#                                expression(sigma[le]), 
+#                                expression(sigma[ek]),
+#                                expression(sigma["(kl)e"]),
+#                                expression(sigma["(le)k"]),
+#                                expression(sigma["(ek)l"]))) +
+    coord_flip() + 
+    xy_theme() +
+    theme(axis.ticks.y = element_blank())
+  return(plot)
+}
+@
+
+<<sigma_graph_PT, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for Portugal.">>=
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="PT"))
+@
+
+<<sigma_graph_UK, fig.pos="H", fig.align='center', fig.width=7.5, fig.height=3.3, fig.cap="Elasticities of substitution~($\\sigma$) for the UK.">>=
+sigma_graph(AllCoeffs %>% filter(model=="CES", Country=="UK"))
+@
+
+<<sigma_graph_2, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$).">>=
+breaks_labels = c(0.01, 0.1, 1, 10, 100)
+p <- 
+ggplot(
+  AllCoeffs %>% 
+    gather(type, value, matches("sigma")) %>% 
+    filter(!is.na(value)) %>% 
+    filter(! type %in% c("sigma", "sigma_1")) %>%
+    mutate(nest = plyr::mapvalues(nest, 
+                                  from=c("kle", "lek", "ekl"), 
+                                  to=c("(kl)e", "(le)k", "(ek)l")),
+           type = relevelFactor(type, c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")),
+           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
+           Inputs = flavor
+           )
   ) + 
-  scale_color_manual(
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c("black", "black", "gray70"),
-    guid=FALSE
-  ) +
-  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
-  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
-  scale_size_manual(
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values = c(.3, .9),
-    guide = FALSE) +
-  scale_linetype_manual( 
-    name = "",
-    labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c(2,3,1) ) + 
+  geom_point(aes(x=value, y=type, 
+                 shape = Model, fill=Model, size=Model,
+                 color=Inputs
+                 )
+                 # position = position_jitter(height=0.2, width=0)
+             ) + 
+  facet_grid( type ~ Country, scales = "free_y" ) + 
+  scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
+  xlab("") +
+  geom_vline(xintercept = 1, color="gray50", size=0.2) +
+  scale_y_discrete(labels = c(
+    sigma_12 = expression(sigma[kl]),
+    sigma_23 = expression(sigma[le]),
+    sigma_13 = expression(sigma[ek]),
+    sigma_12_3 = expression(sigma["(kl)"*e]),
+    sigma_23_1 = expression(sigma["(le)"*k]),
+    sigma_13_2 = expression(sigma["(ek)"*l]))
+    ) +
+  ylab("") +
+  labs(color = "Factors of production") +
   xy_theme() +
-  labs(x="", y="")
+  theme(
+    legend.position="top",
+    strip.text.y = element_blank(),
+    axis.text.y = element_text(size=12)
+    )
+
+model_points_style(p)
 @
 
 
