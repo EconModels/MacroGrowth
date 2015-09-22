@@ -2527,6 +2527,7 @@ AllOE %>%
     values=c("black", "black", "gray70")
   ) +
   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
   scale_size_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
