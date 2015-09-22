@@ -2556,9 +2556,8 @@ AllOE %>%
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c(2,3,1) ) + 
+  labs(x="", y="") +
   xy_theme()
-  
-
 @
 
 <<>>=
