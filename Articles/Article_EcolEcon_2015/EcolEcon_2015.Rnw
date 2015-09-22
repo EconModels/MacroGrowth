@@ -2608,7 +2608,7 @@ OEplot(ReModels)
 OEplot2(ReModels)
 @
 
-<<>>=
+<<Graphs_CESkle_resample_alphas, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
 ReModels %>% 
   gather(factor, elasticity, oe1, oe2, oe3) %>%
   ggplot(aes(x=Year)) + 
@@ -2645,8 +2645,6 @@ ReModels %>%
     values=c(2,3,1) ) + 
   xy_theme() +
   labs(x="", y="")
-  
-
 @
 
 
