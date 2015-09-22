@@ -130,7 +130,7 @@ library(scales)
 # ********************************************************
 rerunModels=FALSE
 rerunResampling=FALSE
-nResamples <- 1000 # Number of resamples
+nResamples <- 10 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -884,7 +884,7 @@ mod2oedf <- function(mod, id){
   ### I'm guessing you had [[ ]] because you thought you had a list when you did not.
   
   ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
-  message(class(mod))
+  # message(class(mod))
   if (! inherits(mod, "cesModel") ) return(NULL)
   
   fortify(mod) %>%
@@ -907,21 +907,27 @@ AllOE <-
 @
 
 <<Resampling>>=
-resampleFilename <- "EcolEcon2015kleResamples.rds"
+resampleCoeffsFilename <- "EcolEcon2015kleResampleCoeffs.rds"
+resampleModelsFilename <- "EcolEcon2015kleResampleModels.rds"
 if (rerunResampling){
-  # Run some resampling on the PT and UK models that adhere to the cost-share theorem,
-  # includes energy, uses quality-adjusted variables, and employs the (kl)e nesting.
+  # Run some resampling on the PT and UK models that reject the cost-share theorem,
+  # include energy, use quality-adjusted variables, and employ the (kl)e nesting.
   # This is u-g-l-y code. Just getting something running for now.
   modPT <- models$PT$adjusted$withE$CES$kle
   modUK <- models$UK$adjusted$withE$CES$kle
   resamplesPT <- resampledFits(modPT, method = "wild", n = nResamples)
   resamplesUK <- resampledFits(modUK, method = "wild", n = nResamples)
+  # Resample coefficients
   resampleCoeffs <- rbind(cbind(resamplesPT$coeffs, Country="PT"), cbind(resamplesUK$coeffs, Country="UK"))
   resampleCoeffs$energy <- TRUE
   resampleCoeffs$nest <- "(kl)e"
-  saveRDS(resampleCoeffs, file = resampleFilename)
+  saveRDS(resampleCoeffs, file = resampleCoeffsFilename)
+  # Resample models
+  resampleModels <- list(PT=resamplesPT$models, UK=resamplesUK$models)
+  saveRDS(resampleModels, file = resampleModelsFilename)
 } else {
-  resampleCoeffs <- readRDS(resampleFilename)
+  resampleCoeffs <- readRDS(resampleCoeffsFilename)
+  resampleModels <- readRDS(resampleModelsFilename)
 }
 @
 
