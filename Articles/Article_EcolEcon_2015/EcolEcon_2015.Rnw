@@ -1659,6 +1659,11 @@ ReModels %>%
         size = grepl("orig", id)
     ) ) +
   facet_grid(. ~ Country) +
+  
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
+  labs(x="", y="") +
+  
   scale_alpha_manual(
     name = "",
     values = c(.3, 1),
@@ -1668,8 +1673,6 @@ ReModels %>%
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c("black", "black", "gray70"),
     guide=FALSE) +
-  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
-  scale_y_continuous(breaks = c(0.0, 0.5, 1.0)) +
   scale_size_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
@@ -1679,8 +1682,8 @@ ReModels %>%
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c(2,3,1) ) + 
-  xy_theme() +
-  labs(x="", y="")
+  
+  xy_theme() 
 @
 
 
