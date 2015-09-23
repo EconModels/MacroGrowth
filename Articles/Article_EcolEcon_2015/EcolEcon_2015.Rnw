@@ -1335,10 +1335,10 @@ fittedGraphNoCSP <- function(data){
                             c("GDP", "Ref. model", "w/o energy", "w/ energy"))
     )
   
-  # Make (and return) the graph
   ggplot() +
-    geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label)) +
+    geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label, size=label)) +
     scale_linetype_manual(values=c(1,2,4,3), name="") +
+    scale_size_manual(name = "", values=c(1, 0.5, 0.5, 0.5)) +
     facet_grid(flavor ~ Country) +
     scale_x_continuous(breaks=c(1960, 1980, 2000)) +
     scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
@@ -1646,7 +1646,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma),
 @
 
 
-<<Graphs_CESkle_resample_alphas, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
+<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resample output elasticities for CES models with $(kl$)$e$ nesting.">>=
 ReModels %>% 
   gather(factor, elasticity, oe1, oe2, oe3) %>%
   ggplot(aes(x=Year)) + 
@@ -2549,7 +2549,7 @@ OEplot2(ReModels)
 
 
 
-<<resample_graph_alpha, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
+<<resample_graph_alpha_ternary, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
                 labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
 @
