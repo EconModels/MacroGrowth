@@ -132,7 +132,7 @@ library(tidyr)
 # ********************************************************
 rerunModels=FALSE
 rerunResampling=FALSE
-nResamples <- 10 # Number of resamples
+nResamples <- 100 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
