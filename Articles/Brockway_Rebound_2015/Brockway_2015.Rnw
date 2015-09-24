@@ -245,7 +245,7 @@ historicalData <- read.csv(file = file.path("data", "BrockwayData.csv"))
 countries <- c("UK", "US", "CN")
 @
 
-<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Historical data.", warning=FALSE>>=
+<<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="Historical data.", warning=FALSE>>=
 # Melt data for plotting
 historicalDataForGraph <- melt(data = historicalData, measure.vars = c("iY", "iK", "iL", "iU"), 
                                value.name = "value", variable.name = "variable")
@@ -261,6 +261,19 @@ historicalPlot(historicalDataForGraph,
   scale_y_continuous(breaks=c(1, 10, 20)) +
   xlab("") + 
   ylab("Indexed Quantities")
+@
+
+<<sF-sK-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="$sF$ and $sK$ values.", warning=FALSE>>=
+ggplot(data=historicalData %>%
+         melt(measure.vars = c("sF", "sK"),
+              value.name = "value", variable.name = "variable")) + 
+  geom_line(mapping = aes(x=Year, y=value, group=variable, linetype=variable)) +
+  facet_grid(. ~ Country) +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+  scale_y_continuous(breaks=c(0, 0.5, 1.0), limits=c(0, 1)) +
+  xlab("") + 
+  ylab("sF, sK") +
+  xy_theme()
 @
 
 
