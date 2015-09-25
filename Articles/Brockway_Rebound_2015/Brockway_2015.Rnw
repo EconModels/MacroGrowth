@@ -266,14 +266,20 @@ historicalPlot(historicalDataForGraph,
 <<sF-sK-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="$sF$ and $sK$ values.", warning=FALSE>>=
 ggplot(data=historicalData %>%
          melt(measure.vars = c("sF", "sK"),
-              value.name = "value", variable.name = "variable")) + 
+              value.name = "value", variable.name = "variable") %>%
+         mutate(
+           Country = relevelFactor(as.factor(Country), countries),
+           variable = relevelFactor(as.factor(variable), c("sK", "sF"))
+         )
+       ) + 
   geom_line(mapping = aes(x=Year, y=value, group=variable, linetype=variable)) +
   facet_grid(. ~ Country) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_y_continuous(breaks=c(0, 0.5, 1.0), limits=c(0, 1)) +
   xlab("") + 
   ylab("sF, sK") +
-  xy_theme()
+  xy_theme() +
+  theme(legend.title=element_blank())
 @
 
 
@@ -300,28 +306,6 @@ if (!rerunModels){
 }
 @
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Resampling Calculations}
-\label{sec:resampling_calculations}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-<<Resampling>>=
-resampleFileName <- file.path("models", "Brockway2015Resamples.rds")
-if (!rerunResamples){
-  # load resample data from the file on disk
-    resampleCoeffs <- readRDS(resampleFileName)
-} else {
-  # Run resampling on models.
-  resampleCoeffs <- leaf_apply(l = models, class = c("cesModel", "plm"), f = function(mod, mod_name){
-    resampledFits(mod, method = "wild", n = nResamples)$coeffs %>%
-      mutate(
-        Country = mod_name
-      )
-  }) %>% bind_rows
-  saveRDS(resampleCoeffs, file = resampleFileName)
-}
-@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model Results}
@@ -536,11 +520,43 @@ myXTable(fittedParamsTable2,
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Resampling Results}
-\label{sec:resampling_results}
+\section{Resampling}
+\label{sec:resampling}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Calculate rebound by Equation~\ref{eq:rebound}.
+<<Resampling>>=
+resampleFileName <- file.path("models", "Brockway2015Resamples.rds")
+if (!rerunResamples){
+  # load resample data from the file on disk
+    resampleCoeffs <- readRDS(resampleFileName)
+} else {
+  # Run resampling on models.
+  resampleCoeffs <- leaf_apply(l = models, class = c("cesModel", "plm"), f = function(mod, mod_name){
+    resampledFits(mod, method = "wild", n = nResamples)$coeffs %>%
+      mutate(
+        Country = mod_name
+      )
+  }) %>% bind_rows
+  saveRDS(resampleCoeffs, file = resampleFileName)
+}
+@
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rebound}
+\label{sec:rebound_calculations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%++++++++++++++++++++++++++++++
+\subsection{Basic Rebound} 
+\label{sec:basic_rebound}
+%++++++++++++++++++++++++++++++
+
+For the basic rebound calculations, 
+we can calculate rebound by Equation~\ref{eq:rebound}.
 %
 \begin{equation} \label{eq:rebound}
   Re \approx 1 - \frac{\rho}{1 + \rho} = \sigma_{(kl)e}\; .
@@ -554,6 +570,9 @@ resampleCoeffs <- resampleCoeffs %>%
 @
 %
 Plot resampling results for \Sexpr{nResamples} resamples in Figure~\ref{fig:rebound_graph}.
+
+Note that the vertical axis is $\alpha_e$. We now know that this is the initial value for $\alpha_e$.
+In fact, there would be a trajectory with each dot as its starting point.
 %
 <<rebound_graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="$\\alpha_e$ vs. $Re$ for all three countries.">>=
 standardScatterPlot(data=resampleCoeffs, mapping=aes(Re, alpha_3), facet_formula=~Country, alpha=0.05, orig_color = "black") +
@@ -564,6 +583,54 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(Re, alpha_3), facet_formula
     geom_vline(xintercept = 1, colour="gray50", size=0.1) +
     labs(y=expression(alpha[e]))
 @
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Full rebound}
+\label{sec:full_rebound}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Now, we calculate rebound by the full equation
+%
+\begin{equation} \label{eq:time_dependent_rebound}
+  Re = 1 + \frac{s_F \left[ s_F (1 + \rho) + \rho \right] + \rho (s_F - 1 - s_k) + s_F }{(1 + s_k + s_F)(1 + \rho)}
+\end{equation}
+%
+for each country.
+
+<<Rebound, echo=TRUE>>=
+Rebound <- leaf_apply(models, class = c("cesModel"), f = function(mod, id){
+  # "id" is the Country for mod
+  rho <- naturalCoef(mod)$rho
+  historicalData %>% 
+    filter(Country == id) %>%
+    mutate(
+      Re = 1 + 
+              (sF * (sF*(1+rho) + rho) + rho*(sF - 1  - sK) + sF) / 
+                    ( (1 + sK + sF ) * (1 + rho) )
+      )
+}) %>% 
+  bind_rows() %>%
+  mutate(
+    Country = relevelFactor(as.factor(Country), rev(countries))
+    )
+@
+
+<<Rebound-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4.5, fig.cap="Time-dependent rebound.">>=
+ggplot(Rebound) + 
+  geom_line(mapping=aes(x=Year, y=Re, group=Country, linetype=Country)) +
+  geom_hline(y=1, color = "gray70", size=0.3) +
+  scale_y_continuous(breaks=c(0, 1, 2, 3), limits=c(0, 3)) +
+  scale_linetype_manual(values = c(3,2,1)) +
+  xlab("") +
+  ylab("Rebound") +
+  xy_theme() +
+  theme(legend.title=element_blank())
+@
+
+If we want to do so, we could apply the same calculation to each resampled model,
+which would give $n$ lines for each country in Figure~\ref{fig:Rebound-graph}.
+This would be similar to Figure~9 in the CES paper.
 
 
 
