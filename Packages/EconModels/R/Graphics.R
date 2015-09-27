@@ -68,7 +68,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
       # Put ticks inside graph and adjust location of axis labels.
       axis.ticks.length = unit(-0.3*base_size,  "pt"),
       axis.text.x = element_text(margin = margin(t = base_size, unit = "pt")),
-      axis.text.y = element_text(margin = margin(r = 0.8*base_size, unit = "pt"), hjust = 1)
+      axis.text.y = element_text(margin = margin(r = 0.8*base_size, unit = "pt"), hjust = 1) # Right justify
     )
 }
 
