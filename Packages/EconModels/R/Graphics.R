@@ -63,10 +63,12 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
       legend.key = element_rect(fill=NA, colour=NA),
       legend.text = element_text(colour=label_colour),
       axis.text = element_text(colour=label_colour, size=0.8 * base_size), 
-      axis.ticks = element_line(colour=label_colour, size=0.2), 
-#      axis.ticks.length = grid::unit(-0.1,  "cm"), # Puts ticks inside the graph
-#      axis.ticks.margin = grid::unit( 0.25, "cm"), # Moves axis labels outside of the graph
-      axis.title = element_text(colour=label_colour, size=base_size)
+      axis.ticks = element_line(colour=label_colour, size=0.2), # Sets thickness of ticks
+      axis.title = element_text(colour=label_colour, size=base_size),
+      # Put ticks inside graph and adjust location of axis labels.
+      axis.ticks.length = unit(-0.3*base_size,  "pt"),
+      axis.text.x = element_text(margin = margin(t = base_size, unit = "pt")),
+      axis.text.y = element_text(margin = margin(r = 0.8*base_size, unit = "pt"), hjust = 1)
     )
 }
 
