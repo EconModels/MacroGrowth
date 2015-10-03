@@ -220,6 +220,77 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 \label{sec:intro}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Ideas for an Ecological Economics frame for the paper:
+
+%
+\begin{itemize}
+
+  \item EE ideas (work of Kummel and Ayres and Warr, especially) 
+        inspire us to include energy, 
+        reject the CSP, and 
+        quality-adjust energy. 
+
+  \item Another insight from Ayres and Warr (and Kummel before them) 
+        is that output elasticities can be functions of time. 
+        Linex gives this explicitly. 
+        But, so does CES.
+        This means moving away from Cobb-Douglas toward CES.
+        
+  \item Also, inspired by Ayres and Warr, 
+        we don’t want to assume elasticity of substitution 
+        of unity as CD does.
+        (What does Linex give for the elasticity of substitution between factors of production?)
+
+  \item But, questions remain from Ayres and Warr's work.
+  
+  \begin{itemize}
+    
+    \item Ayres and Warr used a non-standard production function.
+          Will their insights hold true for standard production functinos like Cobb-Douglas and CES?
+          
+    \item Ayres and Warr quality-adjusted only one factor of production, energy, by employing useful work.  
+          What happens when all factors of production, including capital and labor, are quality-adjusted?
+    
+    \item Ayres and Warr expended minimal effort at statistical precision of estimated parameters. 
+          How robust are their findings, from a statistical point of view?
+    
+  \end{itemize}
+
+  \item We want to explore the last point above (statistical precision of estimated parameters)
+        in the context of a standard production function (CES).
+        
+  \item However, when moving away from CD and Linex toward CES, 
+        we leave the world of linear fitting behind.
+        
+  \item Standard approaches assume normal distributions for model parameters. 
+        In the non-linear world of CES, 
+        those assumptions aren't appropriate. 
+        Need a new approach in the non-CD world.
+        
+  \begin{itemize}
+    
+    \item Need advanced techniques for fitting.
+    
+    \item We use customized version of Henningsen and Henningsen for fitting.
+
+    \item Need advanced techniques for estimating precision of estimated parameters.
+    
+    \item We use resampling to estimate precision of estimated parameters.
+    
+  \end{itemize}
+
+\end{itemize}
+%
+This paper explores and justifies those choices by 
+%
+\begin{enumerate}
+
+  \item comparing standard techniques and our approaches for the Cobb-Douglas production function and 
+
+  \item applying our techniques to the CES production production function.
+
+\end{enumerate}
+%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -230,7 +301,7 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 
 
 %++++++++++++++++++++++++++++++
-\subsection{Production Functions}	% 202 words on 14-09-2015
+\subsection{Production Functions}
 \label{sec:models}
 %++++++++++++++++++++++++++++++
 
