@@ -162,14 +162,14 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Estimating statical precison for parameters of Ecological Economics-inspired production functions}
+\title{Parameter precision in economic growth models inspired by Ecological Economics}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[label1]{Randall Pruim}
+\author[label1]{Randall J. Pruim}
 \ead{rpruim@calvin.edu}
 
 \author[label2]{Matthew K. Heun}
