@@ -281,7 +281,7 @@ Ideas for an Ecological Economics frame for the paper:
 
 \end{itemize}
 %
-This paper explores and justifies those choices by 
+This paper explores and justifies those choices by
 %
 \begin{enumerate}
 
@@ -291,6 +291,7 @@ This paper explores and justifies those choices by
 
 \end{enumerate}
 %
+for the Portuguese economy from 1960--2010.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -311,28 +312,73 @@ This paper explores and justifies those choices by
 \label{sec:CD}
 %------------------------------
 
-Information about the C-D equation here.
+**** Go completely generic everywhere ($x_1$ instead of $k$). ****
 
+The Cobb-Douglas production function 
+is the canonical representation of indexed economic output ($y$) 
+as a function of 
+indexed labor~($l$), 
+indexed capital stock~($k$), and 
+an additional exogenous, time-dependent term~($A$).
+This production function can be expressed as
+%
+\begin{equation} \label{eq:CD}
+  y = \theta A k^\alpha_k l^\alpha_l \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
+\end{equation}
+%
+where 
+$y \equiv Y/Y_{0}$,
+$\theta$ is a scale parameter,
+e is the base of the natural logarithm, 
+$\lambda$ is represents the pace of technological progress,
+$t$ is time (typically measured in years),
+$k \equiv K/K_{0}$, 
+$l \equiv L/L_{0}$, 
+$Y$ is represented by GDP, 
+$K$ is expressed in currency units, 
+$L$ is expressed in workers or work-hours/year, and
+0 subscripts indicate values at an initial year.
+The parameters $\alpha_k$ and $\alpha_l$ are output elasticities
+that indicate the marginal productivity of 
+capital and labor in the economy, respectively.
+Typically, the constraint $\alpha_k + \alpha_l = 1$ is assumed, 
+indicating constant returns to scale.%
+  \footnote{Dimensionless, indexed quantities are represented by lower-case symbols 
+  ($y$, $k$, $l$, and later $e$), 
+  and dimensional quantities are represented by upper-case symbols 
+  ($Y$, $K$, $L$, and later $E$). 
+  Model parameters are represented by Greek letters
+  ($\theta$, $\lambda$, $\alpha_k$, $\alpha_l$, 
+  later $\alpha_e$, $\delta_1$, $\delta$, $\sigma_1$, and $\sigma$).} 
 
-%------------------------------
-\subsubsection{CES production function}
-\label{sec:CES}
-%------------------------------
+The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
+can be augmented by energy:
+%
+\begin{equation} \label{eq:CDe}
+  y = \theta A k^\alpha_k l^\alpha_l e^\alpha_e \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
+\end{equation}
+%
+where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
+The energy-augmented Cobb-Douglas production function 
+is often assumed to have constant returns to scale for the three factors 
+of production: $\alpha_k + \alpha_l + \alpha_e = 1$.
+
 
 %------------------------------
 \subsubsection{Constant Elasticity of Substitution Production Function (CES)} 
 \label{sec:CES}
 %------------------------------
 
-The energy-augmented 
-Constant Elasticity of Substitution (CES) production function%
-  \footnote{
-  We use the The \texttt{R} 
-  % \citep{R} 
-  package \texttt{micEconCES} 
-  % \citep{Henningsen:2011td} 
-  to estimate the CES production function.
-  }
+The Constant Elasticity of Substitution~(CES) model 
+without energy is given in Equation~\ref{eq:CESkl}.
+%
+\begin{equation} \label{eq:CESkl}
+  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
+      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; \;
+      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
+\end{equation}
+%
+The generic CES production function
 can be given as
 %
 \begin{equation} \label{eq:CESgeneric}
@@ -343,37 +389,11 @@ can be given as
 \end{equation}
 %
 where
-$y \equiv Y/Y_{0}$,
-$\gamma$ is a scale parameter,
-e is the base of the natural logarithm, 
-$\lambda$ is the Solow residual (often thougth to represent the pace of technological progress),
-$t$ (time) is measured in years,
 $x_1$, $x_2$, and $x_3$ are factors of production
-and permutations of capital~($k$), labor~($l$), and energy~($e$),
-$k \equiv K/K_{0}$, 
-$l \equiv L/L_{0}$, 
-$Y$ (economic output) is represented by GDP, 
-$K$ (capital) is expressed in currency units, 
-$L$ (labor) is expressed in workers or work-hours/year, and
-the 0 subscript indicates values at an initial year.%
-  \footnote{Dimensionless, indexed quantities are represented by 
-  lower-case symbols 
-  ($y$, $k$, $l$, $e$, $q$, $x$, and $u$), and dimensional 
-  quantities are represented by upper-case symbols 
-  ($Y$, $K$, $L$, $E$, $Q$, $X$, and $U$). 
-  Model parameters are represented by Greek letters
-  ($\alpha_1$, $\alpha_2$, $\lambda$, $\theta$).
-  }
-The CES model without energy is given in Equation~\ref{eq:CESkl}.
-%
-\begin{equation} \label{eq:CESkl}
-  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
-\end{equation}
+and permutations of capital~($k$), labor~($l$), and energy~($e$).
 %
 Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
-using a ($kl$)($e$) nesting structure, as is typical in the literature. 
+using a ($kl$)$e$ nesting structure, as is typical in the literature. 
 Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
 where $\delta \rightarrow 1$. 
 %
@@ -385,58 +405,13 @@ where $\delta \rightarrow 1$.
 \end{equation}
 %
 In the CES production function, 
-$\gamma$ is a fitting parameter that accounts for an atypical first year. 
+$\theta$ is a fitting parameter that accounts for an atypical first year. 
 The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
 of substitution ($\sigma_1$ and $\sigma$).
-The elasticity of substitution 
-between capital ($k$) and labor ($l$) is given by 
-$\sigma_1 = \frac{1}{1+\rho_1}$, and
-the elasticity of substitution between ($kl$) and ($e$) is given by 
-$\sigma = \frac{1}{1+\rho}$. 
-As $\rho_1 \rightarrow 0$, $\sigma_1 \rightarrow 1$,
-and the embedded CES production function for $k$ and $l$ degenerates 
-to the Cobb-Douglas production function.
-Similarly, as $\rho \rightarrow 0$, $\sigma \rightarrow 1$,
-and the CES production function for $(kl)$ and $(e)$ degenerates 
-to the Cobb-Douglas production function.
-As $\sigma \rightarrow \infty$ ($\rho \rightarrow -1$), 
-($kl$) and ($e$) are perfect substitutes. 
-As $\sigma \rightarrow 0$ ($\rho \rightarrow \infty$), 
-($kl$) and ($e$) are perfect complements: 
-no substitution is possible. Similarly, 
-as $\sigma_1 \rightarrow 0$ ($\rho_1 \rightarrow \infty$),
-$k$ and $l$ are perfect complements.
-$\delta_1$ describes the relative importance of capital ($k$)
-and labor ($l$), and
-$\delta$ describes the importance of ($kl$) relative to ($e$).
 
-The CES production function shown in Equation~\ref{eq:CESkl} 
-includes two factors of production, capital~($k$) and labor~($l$).
-Extending to three factors of production can be accomplished by nesting
-two factors of production against the third.
-\authNote{rjp:  
-This is not really the correct metaphor for ``nest".  They are nested 
-because one CES formula is inside the other (like nested tables).  Basically
-the inner CES formula is being plugged into the slot of one of the factors of production
-of the outer CES formula.}%
-Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy~($e$),
-in a ($kl$)$e$ nesting structure, as is common in the literature:
-%
-\begin{equation} \label{eq:CESkle}
-  y = \theta \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1}
-      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1}
-      + (1-\delta) e^{-\rho} \right\}^{-1/\rho} \; ; \;
-      A \equiv \mathrm{e}^{\lambda t} \; .
-\end{equation}
-%
-Note that Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle}
-with $\delta = 1$ and $\rho$ and $e$ undetermined.
 Two other nestings of the 
 factors of production---($le$)$k$ and ($ek$)$l$---are possible 
 with a three-factor CES function.
-\authNoted{Do we need/want to comment about the other 3 nestings and that
-each is just a reparameterization of one of the three we have given. ---rjp
-I don't think we need to comment on the other three. ---MKH}
 %
 \begin{equation} \label{eq:CESlek}
   y = \theta \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1}
@@ -456,7 +431,8 @@ Each of the CES functions (Equations~\ref{eq:CESkl}
 and~\ref{eq:CESkle}--\ref{eq:CESekl}) assumes constant returns 
 to scale.
 
-Output elasticities~($\alpha$) are not constant;
+For the CES function, 
+output elasticities~($\alpha$) are not constant;
 rather, they vary with factors of production $k$, $l$, and $e$ over time.
 For the $(kl)e$ nesting (Equation~\ref{eq:CESkle}),
 output elasticities are shown in Equations~\ref{eq:alpha_k}--\ref{eq:alpha_e}.
@@ -506,51 +482,10 @@ It can be verified that
 %
 for all nests.
 
-Elasticities of substitution~($\sigma$) are a function of $\rho_1$, $\rho$, and
-nesting as shown in 
-Table~\ref{tab:CES_sigma_equations}.
-\authNote{Need to use the equations for time-varying $\sigma$ values instead of this table.}
-Note that $\sigma~\in~[0,\infty)$. 
-The limiting case $\sigma \to 0$ is the Leontief production function and 
-indicates perfect complementarity.  
-The limiting case 
-$\sigma \to \infty$ is a linear production function and 
-indicates infinite substitutability.
-When $\sigma = 1$, the CES production function simplifies to the
-Cobb-Douglas production function.
-%
-\begin{table} \caption{Equations for elasticities of substitution~($\sigma$)
-for various CES nests.}
-\label{tab:CES_sigma_equations}
-  \begin{center}
-    \begin{tabular}{c c c c c c c c}
-      \toprule
-      Nest       & Equation
-	  			 & $\sigma_{kl}$             & $\sigma_{(kl)e}$
-	  			 & $\sigma_{le}$             & $\sigma_{(le)k}$
-				 & $\sigma_{ek}$             & $\sigma_{(ek)l}$       \\
-      \midrule
-      ($kl$) \;  & \ref{eq:CESkl}
-	  			 & $\frac{1}{1 + \rho_1}$   & --
-	             & --                       & --
-				 & --                       & --                    \\
-      ($kl$)$e$  & \ref{eq:CESkle}
-	  			 & $\frac{1}{1 + \rho_1}$   & $\frac{1}{1 + \rho}$
-	             & --                       & --
-				 & --                       & --                    \\
-      ($le$)$k$  & \ref{eq:CESlek}
-	  			 & --                       & --
-	             & $\frac{1}{1 + \rho_1}$   & $\frac{1}{1 + \rho}$
-				 & --                       & --                    \\
-      ($ek$)$l$  & \ref{eq:CESekl}
-	  			 & --                       & --
-	             & --                       & --
-	             & $\frac{1}{1 + \rho_1}$   & $\frac{1}{1 + \rho}$   \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-\end{table}
-
+Elasticities of substitution~($\sigma$) between factors of production
+are a function of $\rho_1$, $\rho$, and nesting. 
+**** More here on the actual $\sigma$ equations. 
+Gather them from the Henningsen and Henningsen paper. ****
 
 
 %++++++++++++++++++++++++++++++
@@ -1120,6 +1055,8 @@ Show graph of historical data here.
 \section{Conclusions}
 \label{sec:conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Teaser at the end that variability varies from one country to the next.
 
 
 
