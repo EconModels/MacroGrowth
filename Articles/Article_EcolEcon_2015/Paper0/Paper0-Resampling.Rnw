@@ -316,14 +316,12 @@ for the Portuguese economy from 1960--2010.
 
 The Cobb-Douglas production function 
 is the canonical representation of indexed economic output ($y$) 
-as a function of 
-indexed labor~($l$), 
-indexed capital stock~($k$), and 
+as a function of indexed factors of production~($x_1$, $x_2$, and $x_3$) and 
 an additional exogenous, time-dependent term~($A$).
 This production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
-  y = \theta A k^\alpha_k l^\alpha_l \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
+  y = \theta A \, {x_1}^{\alpha_1} \, {x_2}^{\alpha_2} \, {x_3}^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
 \end{equation}
 %
 where 
@@ -331,12 +329,12 @@ $y \equiv Y/Y_{0}$,
 $\theta$ is a scale parameter,
 e is the base of the natural logarithm, 
 $\lambda$ is represents the pace of technological progress,
-$t$ is time (typically measured in years),
-$k \equiv K/K_{0}$, 
-$l \equiv L/L_{0}$, 
-$Y$ is represented by GDP, 
-$K$ is expressed in currency units, 
-$L$ is expressed in workers or work-hours/year, and
+$t$ is time measured in years,
+$x_1 \equiv K/K_{0}$, 
+$x_2 \equiv L/L_{0}$, 
+$Y$ is economic output represented by GDP, 
+$K$ is capital stock expressed in currency units, 
+$L$ is labor expressed in workers or work-hours/year, and
 0 subscripts indicate values at an initial year.
 The parameters $\alpha_k$ and $\alpha_l$ are output elasticities
 that indicate the marginal productivity of 
