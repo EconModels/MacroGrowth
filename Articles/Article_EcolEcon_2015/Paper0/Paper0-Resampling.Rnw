@@ -367,13 +367,13 @@ The Constant Elasticity of Substitution~(CES) model
 is given as
 %
 \begin{equation} \label{eq:CESgeneric}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
-      + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1} 
+  y = \theta \: A \: \left\{\delta B_1^{\rho/\rho_1} 
       + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)},
+      A \equiv \mathrm{e}^{\lambda t},
 \end{equation}
 %
 where
+$B_1 \equiv \delta_1 x_1^{-\rho_1} + (1-\delta_1) x_2^{-\rho_1}$, and
 $x_1$, $x_2$, and $x_3$ are factors of production
 and permutations of capital~($k$), labor~($l$), and energy~($e$).
 
@@ -381,44 +381,46 @@ For the CES function,
 output elasticities~($\alpha_1$, $\alpha_2$, and $\alpha_3$) are not constant;
 rather, they vary with factors of production ($x_1$, $x_2$, and $x_3$) over time.
 %
-\begin{equation} \label{eq:alpha_x_1}
-  \alpha_{x_1} \equiv
+\begin{equation} \label{eq:alpha_1}
+  \alpha_1 \equiv
   \frac{ \frac{\partial y}{\partial x_1} }
           { \frac{y}{x_1} } 
   = 
-  \frac{ \delta  \delta _1 x_1^{-\rho _1} \left[\delta _1 x_1^{-\rho _1} + \left(1 - \delta_1 \right) x_2^{-\rho _1}\right]
-                             ^{\frac{\rho}{\rho _1}-1} }
-  { \delta \left[\delta _1 x_1^{-\rho _1} + \left(1 - \delta _1 \right) x_2^{-\rho _1} \right]
-                             ^{ \frac{\rho }{\rho_1} } 
-                + (1 - \delta) x_3^{-\rho }}
+  \frac{ \delta  \delta _1 x_1^{-\rho _1} B_1^{ ( \frac{\rho}{\rho_1}-1 ) }  }
+  { \delta B_1^{ ( \frac{\rho }{\rho_1} ) } + (1 - \delta) x_3^{-\rho }}
 \end{equation}
 %
-\begin{equation} \label{eq:alpha_x_2}
-  \alpha_{x_2} \equiv \frac{ \frac{\partial y}{\partial x_2} }{\frac{y}{x_2}} =
-  \frac{ \delta  \left(1-\delta _1 \right) x_2^{-\rho _1} \left[\delta _1 x_1^{-\rho _1}+\left(1 - \delta_1\right) x_2^{-\rho_1}\right]
-	 				^{\frac{\rho }{\rho _1}-1} }
-		{\delta  \left[\delta _1 x_1^{-\rho_1} + \left(1 - \delta_1\right) x_2
-                                        ^{-\rho_1}\right]^{\frac{\rho }{\rho _1}}+ (1 - \delta) {x_3}^{-\rho }}
+
+\begin{equation} \label{eq:alpha_2}
+  \alpha_2 \equiv \frac{ \frac{\partial y}{\partial x_2} }{\frac{y}{x_2}} =
+  \frac{ \delta  \left(1-\delta _1 \right) x_2^{-\rho _1} B_1^{ ( \frac{\rho }{\rho _1}-1 ) } }
+  { \delta B_1^{ ( \frac{\rho }{\rho_1} ) } + (1 - \delta) x_3^{-\rho }}
 \end{equation}
 %
-\begin{equation} \label{eq:alpha_x_3}
-  \alpha_{x_3} \equiv \frac{ \frac{\partial y}{\partial x_3} }{ \frac{y}{x_3} } =  
-      \frac{1 - \delta}{\delta  x_3^{\rho } \left[\delta _1 x_1^{-\rho_1} + \left(1 - \delta_1 \right) x_2^{-\rho _1}\right]
-				^{\frac{\rho }{\rho_1}} + 1 - \delta}
+\begin{equation} \label{eq:alpha_3}
+  \alpha_3 \equiv \frac{ \frac{\partial y}{\partial x_3} }{ \frac{y}{x_3} } =  
+      \frac{1 - \delta}{\delta  x_3^{\rho } B_1^{(\frac{\rho }{\rho_1} ) } + 1 - \delta}
 \end{equation}
 %
 It can be verified that
 %
 \begin{equation} \label{eq:sum_betas}
-  \alpha_{x_1} + \alpha_{x_2} + \alpha_{x_3} = 1
+  \alpha_1 + \alpha_2 + \alpha_3 = 1
 \end{equation}
 %
 for all nests.
 
-Elasticities of substitution~($\sigma$) between factors of production
-are a function of $\rho_1$, $\rho$, and nesting. 
-**** More here on the actual $\sigma$ equations. 
-Gather them from the Henningsen and Henningsen paper. ****
+Similar to the output elasticities, 
+the elasticity of substitution between factors of production $x_1$ and $x_2$~($\sigma_{1,2}$) 
+is time-varying and given by the Allen-Uzawa elasticity of substitution:
+%
+\begin{equation} \label{eq:sigma_1_2}
+  \sigma_{1,2} = \frac{ (1 - \rho_1)^{-1} - (1-\rho)^{-1}}{\delta \left( \frac{y}{B_1^{-\frac{1}{\rho_1}}} \right) ^ {1 + \rho}}
+                      + (1 + \rho)^{-1} \; .
+\end{equation}
+%
+
+**** Add Hicks-McFadden elasticity of substitution here. ****
 
 
 %++++++++++++++++++++++++++++++
@@ -428,113 +430,66 @@ Gather them from the Henningsen and Henningsen paper. ****
 
 
 %------------------------------
-\subsubsection{Technique} 
-\label{sec:parameter_estimation_technique}
+\subsubsection{Cobb-Douglas model} 
+\label{sec:param_estimation_CD}
 %------------------------------
 
-To estimate values of parameters
-($\theta$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
-for the reference and CES models,
-we use an ordinary least squares~(OLS) approach.
-The objective of the OLS analysis is minimization of the sum of squared errors~(\sse):
+To estimate the parameters $\theta$, $\lambda$, $\alpha_1$, $\alpha_2$, and $\alpha_3$ 
+in the Cobb-Douglas model, 
+we reparameterized Equation~\ref{eq:CD} as
+%
+\begin{equation} \label{eq:CDe_AB_reparam}
+  y = \theta \, \mathrm{e}^{\lambda t} \, x_1^{\alpha_1} \, x_2^{\alpha_2} \, x_3^{1 - \alpha_1 - \alpha_2}
+\end{equation}
+%
+ensuring that $\alpha_1 + \alpha_2 + \alpha_3 = 1$,
+thereby providing constant returns to scale.
+The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
+values of $\lambda$, $\theta$, $\alpha_1$, and $\alpha_2$ in log-transform space.
+If the fitted value for $\alpha_1$ or $\alpha_2$ fell outside the interval $[0,1]$,
+we fit along all boundaries 
+($\alpha_1 = 1$,
+$\alpha_2 = 1$,
+$\alpha_3 = 1$,
+$\alpha_1 = 0$,
+$\alpha_2 = 0$, and
+$\alpha_3 = 0$)
+and chose the boundary fit with
+minimum sum of squared errors~(\sse) as the winning model:
 %
 \begin{equation} \label{eq:sse}
   \sse = \sum_{i} r_i^2 \; ,
 \end{equation}
 %
-where
-$r_i \equiv \ln (y_i / \hat{y}_i)$ is $i^{\mathrm{th}}$ residual 
-(all models assume multiplicative errors),
+where the residual is given as
+%
+\begin{equation} \label{eq:residual}
+  r_i \equiv \ln (y_i / \hat{y}_i)
+\end{equation}
+%
+is the $i^{\mathrm{th}}$ residual (all models assume multiplicative errors),
 and
 $\hat{y}_i$ is the fitted value for economic output at time $t_i$.
+$\alpha_3$ was recovered with $\alpha_3 = 1 - \alpha_1 - \alpha_2$.
+
 In cases where a model adheres to the cost share principle,
 output elasticities are fixed
 in accordance with long-run historical cost shares
-for capital and labor ($\hat{\alpha}_k = 0.3$ and $\hat{\alpha}_l = 0.7$).%
-\authNoted{Randy put hats on 
-$\alpha_k$ and $\alpha_l$, 
-but I don't think they should be ``hatted.''
-These are not estimated numbers. 
-They are give \emph{a-priori} from national accounts data. ---MKH;  
+for capital and labor ($\hat{\alpha}_1 = 0.3$ and $\hat{\alpha}_2 = 0.7$).
+Under these conditions, $\hat{\alpha}_3$ is assumed to be $0$.
 
-This is an edge case.  From data = estimated; just estimated in a different way,
-and external to the data we are analyzing.  But that doesn't make those values
-correct. ---rjp
 
-OK. I'm willing to live with the hats. ---MKH}
-We estimate parameters using a highly-customized version
-of the \texttt{R} package \texttt{micEconCES} \citep{Henningsen:2011td}.
-See the Supplemental Information
-(\ref{sec:appendix_CES_fitting}) for additional details.
-\authNoted{Is there a reason to use \mse{} rather than \sse?  Typically,
-the denominator for \mse{} is not $N$ but the degrees of freedom
-used to estimate the variance parameter of the model (typically $N - p$ for
-a model with $p$ parameters).  Perhaps we should refer to this as
-an ``unadjusted'' \mse{} if we stick with it.
-I changed everything to sse. ---MKH}
+%------------------------------
+\subsubsection{CES model} 
+\label{sec:param_estimation_CES}
+%------------------------------
 
-\authNoted{What sort of ``expect'' is this? Can we say something more precise? ---rjp
-I changed to ``know,'' which is more precise. ---MKH}
-
-In the reference model,
-all economic growth is attributed to the Solow residual. %~($\lambda$).
-Indeed, the reference model will
-have a larger estimated Solow 
-residual~($\hat{\lambda}$) than
-any CES model, because no factors of production are
-included in the reference model to drive economic growth.
-(If all of $y$, $k$, $l$, and $e$ are $\ge 1$,
-the non-$A$ part of a CES model
-will be $\ge 1$,
-thereby driving $A$, and $\lambda$, to be smaller.)
-
-\authNoted{I'm not sure this is true, and if it is, I think it is misleading, since
-as $\rho \to 0$, CES $\to$ C-D, right?  Even if we disallow $\rho = 0$, this suggests
-that the CES model can have \sse{} arbitrarily close to that for the C-D model, even if
-the C-D model were best.  In practice, I'm guessing one will never see \sse{} for
-CES exceeding that for C-D.  And in our CES function, we fit the limiting cases
-explicitly, so it should be impossible.  Matt, am I forgetting something here? ---rjp
-CD $\ne$ reference model.
-The reference model is exponential-only. ---MKH}
-
-On the other hand, it is not necessarily true that
-CES models (Equations~\ref{eq:CESkl} and \ref{eq:CESkle}--\ref{eq:CESekl})
-will exhibit lower \sse{} than the reference model
-(Equation~\ref{eq:exponential-only-model}).
-The CES production functions
-have more parameters,
-but there is no set 
-of parameter 
-estimates~($\hat\theta$, $\hat\lambda$, $\hat\delta_1$, 
-$\hat\delta$, $\hat\rho_1$, and $\hat\rho$)
-that mathematically eliminates 
-the factors of production~($k$, $l$, and $e$)
-from the CES models, 
-thereby reproducing the reference model.%
-\authNote{I added the clause ``but there is no combination of parameters
-that can eliminate the factors of production
-from the models.'' Is Randy OK with this? ---MKH}
-%but they incorporate the factors of production
-%at constant returns to scale, and we constrain them so that 
-%$\alpha_k + \alpha_l + \alpha_e = 1$.
-%In contrast, the reference model has $\alpha_k = \alpha_l = \alpha_e = 0$.
-%\authNoted{Have we defined $\alpha_i$ for the reference model? ---rjp
-%I have now added a sentence stating that reference models are a degenerate 
-%form of CES models with $\alpha_i = 0$. ---MKH
-%But this still isn't true --rjp}%
-If the factors of production
-are poorly correlated to output~($y$),
-\sse{} may be higher for a CES model than for the reference model.
-\authNoted{rjp:  removed bit about CRS.  I don't think CRS is the reason.
-That's fine. ---MKH}%
-
-%++++++++++++++++++++++++++++++
-\subsection{CES fitting algorithm}
-\label{sec:appendix_CES_fitting}
-%++++++++++++++++++++++++++++++
-
-We use the \texttt{R}~\citep{R}
-package \texttt{micEconCES}
+To estimate values of parameters
+($\theta$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
+for the CES model,
+we use an ordinary least squares~(OLS) approach.
+The objective of the OLS analysis is minimization of the sum of squared errors~(Equation~\ref{eq:sse}).
+We estimate parameters using the \texttt{R}~\citep{R} package \texttt{micEconCES}
 \citep{Henningsen:2011td}
 with significant customization
 to estimate parameters in the CES production function.
@@ -564,7 +519,7 @@ are allowed to float.
 The starting values for fitting parameters are taken from
 the grid search point that provided the lowest sum of squared errors~(\sse).
 
-Henningsen and Henningsen~\cite{Henningsen:2011td},
+\citet{Henningsen:2011td},
 in their detailed analysis of Kemfert~\cite{kemfert1998estimated}, found that
 %
 \begin{quote}
@@ -776,21 +731,22 @@ the model with the lowest row number in Table~\ref{tab:CES_boundary_models}
 is deemed the winning model.
 
 
-
-
-%------------------------------	439 words on 14-09-2015
-\subsubsection{Precision} 
+%++++++++++++++++++++++++++++++
+\subsection{Parameter precision} 
 \label{sec:parameter_precision}
-%------------------------------
+%++++++++++++++++++++++++++++++
 
-Determining the precision of estimates for CES parameters
+Determining the precision of estimates for 
+Cobb-Douglas parameters
+($\hat\theta$, $\hat\lambda$, $\hat\alpha_1$, $\hat\alpha_2$, and $\hat\alpha_3$)
+and 
+CES parameters
 ($\hat\theta$, $\hat\lambda$, $\hat\delta_1$, $\hat\delta$, $\hat\rho_1$, 
-and $\hat\rho$, but also
-$\hat\alpha_k$, $\hat\alpha_l$, $\hat\alpha_e$, 
-$\hat\sigma_{kl}$, $\hat\sigma_{le}$, $\hat\sigma_{ek}$, 
-$\hat\sigma_{(kl)e}$, $\hat\sigma_{(le)k}$, and $\hat\sigma_{(ek)l}$)
+and $\hat\rho$, but also time series for
+$\hat\alpha_1$, $\hat\alpha_2$, $\hat\alpha_3$, 
+$\hat\sigma_{1,2}$, and $\hat\sigma_{(1,2)3}$)
 is important but challenging.
-It is quite possible for substantial changes in a CES model parameter
+It is quite possible for substantial changes in a model parameter
 to have a relatively modest effect on the objective function
 that is determining the parameter estimates (in this case, \sse).
 When this happens, the ``best estimate''
@@ -801,19 +757,6 @@ The usual methods for quantifying the precision of parameter estimates
 using standard errors, confidence intervals,
 and $p$-values rely on an asymptotic theory that applies
 on the interior of a parameter space and assumes independence of error terms.
-% With $n \approx 50$\authNoted{We have 50 years, 1960--2009, not 30 years as Randy 
-% originally thought. 
-% Does this change the way we write this section? ---MKH
-% Well, we're closer to infinity, but we still have edges --rjp} 
-% (in this case, years)
-% \authNoted{Do you mean 30 years?
-% Should we rather say ``With 30 years of data''---MKH.
-% Perhaps there is a better word than sample, but it isn't really primarily
-% about time but about the number of rows of data.  That happens to equal the number
-% of years of data in this case but isn't the real issue.
-% For now, I'm punting and just using $N \approx 30$. ---rjp}%
-% and with CES functions (Equations~\ref{eq:CESkl} and~\ref{eq:CESkle}--\ref{eq:CESekl})
-% having as many as six parameters,
 It can be difficult to provide an \emph{a priori} justification
 for the use of such asymptotic results.
 The authors of the \texttt{R} package \texttt{micEconCES}
@@ -826,12 +769,11 @@ without correcting for degrees of freedom.'' \citep{Henningsen:2011td}
 Further complicating matters is our interest in issues that arise on the
 boundary of (the economically meaningful portion of) the parameter space.
 In an investigation of whether energy is important, for example,
-we may consider the null hypothesis that $\alpha_e = 0$.  
-In the ($kl$)$e$ nesting, 
+we may consider the null hypothesis that $\alpha_3 = 0$.  
+In the ($kl$)$e$ nesting for the CES model, 
 this null hypothesis is equivalent to $\delta = 1$.
 While there is an asymptotic theory for this case as well,%
-\authNote{%
-Randy: can you provide a reference for the asymptotic theory? ---MKH}%
+  \authNote{Randy: can you provide a reference for the asymptotic theory? ---MKH}
 the distributions are, in general,
 more complicated---mixtures of chi-squared variates---and the
 precise mix may be difficult or impossible to determine analytically.
@@ -865,16 +807,6 @@ can be extremely challenging, especially when the model is located
 at the boundary of the economically-meaningful region.
 \fi
 
-
-
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Bootstrap resampling algorithm}
-\label{sec:appendix_resampling}
-%++++++++++++++++++++++++++++++
-
 Bootstrapping is a statistical resampling technique for assigning
 measures of accuracy and precision to sample estimates by measuring
 properties of an estimator when sampling from a resampling
@@ -888,8 +820,7 @@ which the desired analysis method can be applied.
 By investigating, for example,
 the variability of a parameter estimate from one resample to another,
 one can learn about the precision of the estimation method.
-**** Add some references here. ---rjp ****
-% \authNote{Add some references here. ---rjp}
+\authNote{Add some references here. ---rjp}
 
 In the context of linear models (regression),
 resamples are generally created
@@ -904,17 +835,19 @@ Intuitively, this method assumes that the residuals are indicative of
 the variability (from many potential sources) inherent in the data such that
 it would be unsurprising if the residual from
 any particular year had been observed in a different year.
-Thus, a resampled response $\tilde Y'$ can be computed as
-**** Randy edit the following equations to reflect the fact that
-we're fitting in log space? ---MKH ****
-%
-\begin{equation}
+Thus, a resampled response $\tilde Y'$ can be computed as%
+\authNote{Randy: edit the following equations to reflect the fact that
+we're fitting in log space? ---MKH}
+
+\begin{equation} \label{eq:resampled_y}
   \tilde Y_i' = \hat y_i \pm r_j \; ,
 \end{equation}
 %
 where
 %
-\begin{equation}
+\authNote{Do we need this equation for $r_i$ here? We already have Equation~\ref{eq:residual}.}%
+%
+\begin{equation} \label{eq:residual_2}
   r_i = y_i - \hat y_i \; .
 \end{equation}
 %
