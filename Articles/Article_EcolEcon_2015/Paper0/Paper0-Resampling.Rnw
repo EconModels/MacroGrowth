@@ -321,7 +321,7 @@ an additional exogenous, time-dependent term~($A$).
 This production function can be expressed as
 %
 \begin{equation} \label{eq:CD}
-  y = \theta A \, {x_1}^{\alpha_1} \, {x_2}^{\alpha_2} \, {x_3}^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
+  y = \theta A \, {x_1}^{\alpha_1} \, {x_2}^{\alpha_2} \, {x_3}^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda t},
 \end{equation}
 %
 where 
@@ -330,36 +330,32 @@ $\theta$ is a scale parameter,
 e is the base of the natural logarithm, 
 $\lambda$ is represents the pace of technological progress,
 $t$ is time measured in years,
-$x_1 \equiv K/K_{0}$, 
-$x_2 \equiv L/L_{0}$, 
+$x_1 = k \equiv K/K_{0}$, 
+$x_2 = l \equiv L/L_{0}$, 
+$x_3 = e \equiv E/E_{0}$, 
 $Y$ is economic output represented by GDP, 
 $K$ is capital stock expressed in currency units, 
-$L$ is labor expressed in workers or work-hours/year, and
+$L$ is labor expressed in workers or work-hours/year, 
+$E$ is energy expressed in units of energy per time, typically TJ/year, and
 0 subscripts indicate values at an initial year.
-The parameters $\alpha_k$ and $\alpha_l$ are output elasticities
-that indicate the marginal productivity of 
-capital and labor in the economy, respectively.
-Typically, the constraint $\alpha_k + \alpha_l = 1$ is assumed, 
-indicating constant returns to scale.%
+All historical data~($y$, $k$, $l$, and $e$) are indexed (by ratio)
+relative to an initial year. 
+Time~($t$) is indexed (by difference) relative to an initial year.
+After indexing, $\theta$ is expected to be near unity,
+but no other parameters change.%
   \footnote{Dimensionless, indexed quantities are represented by lower-case symbols 
-  ($y$, $k$, $l$, and later $e$), 
+  ($y$, $x$, $k$, $l$, and $e$), 
   and dimensional quantities are represented by upper-case symbols 
-  ($Y$, $K$, $L$, and later $E$). 
+  ($Y$, $K$, $L$, and $E$). 
   Model parameters are represented by Greek letters
-  ($\theta$, $\lambda$, $\alpha_k$, $\alpha_l$, 
-  later $\alpha_e$, $\delta_1$, $\delta$, $\sigma_1$, and $\sigma$).} 
+  ($\theta$, $\lambda$, $\alpha_1$, $\alpha_2$, $\alpha_3$, and
+  later $\delta_1$, $\delta$, $\sigma_1$, and $\sigma$).} 
 
-The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
-can be augmented by energy:
-%
-\begin{equation} \label{eq:CDe}
-  y = \theta A k^\alpha_k l^\alpha_l e^\alpha_e \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)},
-\end{equation}
-%
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year. 
-The energy-augmented Cobb-Douglas production function 
-is often assumed to have constant returns to scale for the three factors 
-of production: $\alpha_k + \alpha_l + \alpha_e = 1$.
+The parameters $\alpha_1$, $\alpha_2$, and $\alpha_3$ are output elasticities
+that indicate the marginal productivity of 
+$x_1$, $x_2$, and $x_3$ in the economy, respectively.
+Typically, the constraint $\alpha_1 + \alpha_2 + \alpha_3 = 1$ is assumed, 
+indicating constant returns to scale.
 
 
 %------------------------------
@@ -368,16 +364,7 @@ of production: $\alpha_k + \alpha_l + \alpha_e = 1$.
 %------------------------------
 
 The Constant Elasticity of Substitution~(CES) model 
-without energy is given in Equation~\ref{eq:CESkl}.
-%
-\begin{equation} \label{eq:CESkl}
-  y = \gamma \: A \: \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{-1/\rho_1}; \;
-      A \equiv \mathrm{e}^{\lambda (t-t_0)} . 
-\end{equation}
-%
-The generic CES production function
-can be given as
+is given as
 %
 \begin{equation} \label{eq:CESgeneric}
   y = \gamma \: A \: \left\{\delta \left[\delta_1 x_1^{-\rho_1} 
@@ -389,93 +376,41 @@ can be given as
 where
 $x_1$, $x_2$, and $x_3$ are factors of production
 and permutations of capital~($k$), labor~($l$), and energy~($e$).
-%
-Equation~\ref{eq:CESkle} augments Equation~\ref{eq:CESkl} with energy 
-using a ($kl$)$e$ nesting structure, as is typical in the literature. 
-Equation~\ref{eq:CESkl} is a degenerate form of Equation~\ref{eq:CESkle} 
-where $\delta \rightarrow 1$. 
-%
-\begin{equation} \label{eq:CESkle}
-  y = \gamma \: A \: \left\{\delta \left[\delta_1 k^{-\rho_1} 
-      + (1-\delta_1)l^{-\rho_1} \right]^{\rho/\rho_1} 
-      + (1-\delta) e^{-\rho} \right\}^{-1/\rho}; 
-      A \equiv \mathrm{e}^{\lambda (t-t_0)}.
-\end{equation}
-%
-In the CES production function, 
-$\theta$ is a fitting parameter that accounts for an atypical first year. 
-The fitting parameters $\rho_1$ and $\rho$ indicate elasticities 
-of substitution ($\sigma_1$ and $\sigma$).
-
-Two other nestings of the 
-factors of production---($le$)$k$ and ($ek$)$l$---are possible 
-with a three-factor CES function.
-%
-\begin{equation} \label{eq:CESlek}
-  y = \theta \: A \: \left\{\delta \left[\delta_1 l^{-\rho_1}
-      + (1-\delta_1) e^{-\rho_1} \right]^{\rho/\rho_1}
-      + (1-\delta) k^{-\rho} \right\}^{-1/\rho};
-      A \equiv \mathrm{e}^{\lambda t}
-\end{equation}
-%
-\begin{equation} \label{eq:CESekl}
-  y = \theta \: A \: \left\{\delta \left[\delta_1 e^{-\rho_1}
-      + (1-\delta_1) k^{-\rho_1} \right]^{\rho/\rho_1}
-      + (1-\delta) l^{-\rho} \right\}^{-1/\rho};
-      A \equiv \mathrm{e}^{\lambda t}
-\end{equation}
-%
-Each of the CES functions (Equations~\ref{eq:CESkl} 
-and~\ref{eq:CESkle}--\ref{eq:CESekl}) assumes constant returns 
-to scale.
 
 For the CES function, 
-output elasticities~($\alpha$) are not constant;
-rather, they vary with factors of production $k$, $l$, and $e$ over time.
-For the $(kl)e$ nesting (Equation~\ref{eq:CESkle}),
-output elasticities are shown in Equations~\ref{eq:alpha_k}--\ref{eq:alpha_e}.
-Output elasticities for other nests can obtained by permutation of
-the factors of production $k$, $l$, and $e$.
+output elasticities~($\alpha_1$, $\alpha_2$, and $\alpha_3$) are not constant;
+rather, they vary with factors of production ($x_1$, $x_2$, and $x_3$) over time.
 %
-\begin{equation} \label{eq:alpha_k}
-  \alpha_k \equiv
-  \frac{
-  \frac{\partial y}{\partial k} }{
-  \frac{y}{k}
-  } = \frac{\delta  \delta _1 k^{-\rho _1} \left[\delta _1 k^{-\rho _1}
-  	+\left(1 - \delta_1 \right) 
-		l^{-\rho _1}\right]{}^{\frac{\rho }{\rho _1}-1}}{\delta  
-		\left[\delta _1
-     k^{-\rho _1} + \left(1 - \delta _1 \right) l^{-\rho _1} \right]{}^{\frac{\rho }{\rho
-     _1}} + (1 - \delta) e^{-\rho }}
+\begin{equation} \label{eq:alpha_x_1}
+  \alpha_{x_1} \equiv
+  \frac{ \frac{\partial y}{\partial x_1} }
+          { \frac{y}{x_1} } 
+  = 
+  \frac{ \delta  \delta _1 x_1^{-\rho _1} \left[\delta _1 x_1^{-\rho _1} + \left(1 - \delta_1 \right) x_2^{-\rho _1}\right]
+                             ^{\frac{\rho}{\rho _1}-1} }
+  { \delta \left[\delta _1 x_1^{-\rho _1} + \left(1 - \delta _1 \right) x_2^{-\rho _1} \right]
+                             ^{ \frac{\rho }{\rho_1} } 
+                + (1 - \delta) x_3^{-\rho }}
 \end{equation}
 %
-\begin{equation} \label{eq:alpha_l}
-  \alpha_l \equiv 
-  \frac{
-  \frac{\partial y}{\partial l} }{
-  \frac{y}{l}} =
-  \frac{\delta  \left(1-\delta _1\right) l^{-\rho _1}
-     \left[\delta _1 k^{-\rho _1}+\left(1 - \delta_1\right) l^{-\rho_1}\right]{}
-	 				^{\frac{\rho }{\rho _1}-1}}
-		{\delta  \left[\delta _1 k^{-\rho_1} + \left(1 - \delta_1\right) 
-					l^{-\rho_1}\right]{}^{\frac{\rho }{\rho _1}}+ (1 - \delta) e^{-\rho }}
+\begin{equation} \label{eq:alpha_x_2}
+  \alpha_{x_2} \equiv \frac{ \frac{\partial y}{\partial x_2} }{\frac{y}{x_2}} =
+  \frac{ \delta  \left(1-\delta _1 \right) x_2^{-\rho _1} \left[\delta _1 x_1^{-\rho _1}+\left(1 - \delta_1\right) x_2^{-\rho_1}\right]
+	 				^{\frac{\rho }{\rho _1}-1} }
+		{\delta  \left[\delta _1 x_1^{-\rho_1} + \left(1 - \delta_1\right) x_2
+                                        ^{-\rho_1}\right]^{\frac{\rho }{\rho _1}}+ (1 - \delta) {x_3}^{-\rho }}
 \end{equation}
 %
-\begin{equation} \label{eq:alpha_e}
-  \alpha_e \equiv
-  \frac{
-  \frac{\partial y}{\partial e} }{
-  \frac{y}{e}
-  } =  \frac{1 - \delta}{\delta  e^{\rho } \left[\delta _1 k^{-\rho_1} 
-  			+ \left(1 - \delta_1 \right) l^{-\rho _1}\right]{}
+\begin{equation} \label{eq:alpha_x_3}
+  \alpha_{x_3} \equiv \frac{ \frac{\partial y}{\partial x_3} }{ \frac{y}{x_3} } =  
+      \frac{1 - \delta}{\delta  x_3^{\rho } \left[\delta _1 x_1^{-\rho_1} + \left(1 - \delta_1 \right) x_2^{-\rho _1}\right]
 				^{\frac{\rho }{\rho_1}} + 1 - \delta}
 \end{equation}
 %
 It can be verified that
 %
 \begin{equation} \label{eq:sum_betas}
-  \alpha_k + \alpha_l + \alpha_e = 1
+  \alpha_{x_1} + \alpha_{x_2} + \alpha_{x_3} = 1
 \end{equation}
 %
 for all nests.
