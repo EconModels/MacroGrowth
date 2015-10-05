@@ -376,6 +376,9 @@ where
 $B_1 \equiv \delta_1 x_1^{-\rho_1} + (1-\delta_1) x_2^{-\rho_1}$, and
 $x_1$, $x_2$, and $x_3$ are factors of production
 and permutations of capital~($k$), labor~($l$), and energy~($e$).
+The $(kl)e$ nesting has $x_1 = k$, $x_2 = l$, and $x_3 = e$; 
+the $(le)k$ nesting has $x_1 = l$, $x_2 = e$, and $x_3 = k$; and
+the $(ek)l$ nesting has $x_1 = e$, $x_2 = k$, and $x_3 = l$.
 
 For the CES function, 
 output elasticities~($\alpha_1$, $\alpha_2$, and $\alpha_3$) are not constant;
@@ -405,10 +408,8 @@ rather, they vary with factors of production ($x_1$, $x_2$, and $x_3$) over time
 It can be verified that
 %
 \begin{equation} \label{eq:sum_betas}
-  \alpha_1 + \alpha_2 + \alpha_3 = 1
+  \alpha_1 + \alpha_2 + \alpha_3 = 1 \; .
 \end{equation}
-%
-for all nests.
 
 Similar to the output elasticities, 
 the elasticity of substitution between factors of production $x_1$ and $x_2$~($\sigma_{1,2}$) 
@@ -487,18 +488,15 @@ Under these conditions, $\hat{\alpha}_3$ is assumed to be $0$.
 To estimate values of parameters
 ($\theta$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
 for the CES model,
-we use an ordinary least squares~(OLS) approach.
-The objective of the OLS analysis is minimization of the sum of squared errors~(Equation~\ref{eq:sse}).
+we use an ordinary least squares~(OLS) approach, 
+wherein the objective is minimization of the sum of squared errors~(Equation~\ref{eq:sse}).
 We estimate parameters using the \texttt{R}~\citep{R} package \texttt{micEconCES}
 \citep{Henningsen:2011td}
 with significant customization
-to estimate parameters in the CES production function.
+to estimate parameters.
 Our CES parameter estimation algorithm starts with an eleven-value grid search
 in $\rho_1$ and $\rho$
-(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
-corresponding to $\sigma_1$ and $\sigma$ values of
-0.1, 0.33, 0.5, 0.7, 0.8, 0.9, 1.11, 2, 4, 10, and 100,
-respectively.
+(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99).
 During the grid search, values of $\rho_1$ and $\rho$ are fixed,
 and values of $\theta$, $\lambda$, $\delta_1$, and $\delta$ are estimated
 by gradient search with the \texttt{PORT} and \texttt{L-BFGS-B} algorithms
@@ -512,7 +510,7 @@ are $\lambda$ = 0.015/year, $\delta_1$ = 0.5, $\delta$ = 0.5,
 and $\theta$ is set by the \texttt{cesEst} function
 to a value such that the mean of the residuals is zero.
 
-Next, a gradient search (using both \texttt{PORT} and \texttt{L-BFGS-B})
+Next, a gradient search (using \texttt{PORT} and \texttt{L-BFGS-B} algorithms available in \texttt{micEconCES})
 is attempted wherein all parameters
 ($\theta$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
 are allowed to float.
@@ -826,8 +824,8 @@ In the context of linear models (regression),
 resamples are generally created
 by residual resampling.
 In our case, we formed resamples by adding to the fitted
-response~($\hat{y}$) the product of a residual from the original CES function fit
-(see Figure~\ref{fig:r_kle}) and
+response~($\hat{y}$) the product of a residual from the original function (Cobb-Douglas or CES) fit
+and
 random sign ($-1$ or $1$, each with probability $0.5$).
 This residual resampling occurs on the
 log-transformed data.
@@ -855,9 +853,7 @@ Both the sign~($\pm$) and the index
 ($j$,~typically different from $i$)
 of the residual~($r_j$)
 are chosen at random (with replacement).
-We repeated the resampling process 1000 times for each
-combination of growth model and country,
-both with and without energy as appropriate.
+We repeated the resampling process 1000 times.
 
 The parameters from the fit to a resampled time series
 (the ``resample parameters'') will be different from the parameters
@@ -882,19 +878,13 @@ sources of uncertainty in parameter estimates.
 We choose the resampling approach instead of the more-common technique
 of estimating confidence intervals from standard errors for two reasons.
 First, model parameters are highly constrained, and confidence intervals often violate the constraints.
-For example, a result of $\alpha_k = 0.25 \pm 0.3$ is nonsensical,
-because $ \alpha_k \in [0, 1]$.
+For example, a result of $\alpha_1 = 0.25 \pm 0.3$ is nonsensical,
+because $ \alpha_1 \in [0, 1]$.
 Second, true confidence intervals for constrained parameters are often asymmetric
-(e.g., $\alpha_k = 0.2 + 0.1, -0.05$),
+(e.g., $\alpha_1 = 0.2 + 0.1, -0.05$),
 but the standard error approach yields symmetric confidence intervals.
 The resampling approach that we employed both respects constraints
-and allows for asymmetric confidence intervals.%
-In addition, we choose to present parameter uncertainty results visually
-(see Figures~\ref{fig:resample_lambda_theta}--\ref{fig:resample_alpha}),
-both because the resampling technique lends itself to visual presentation and
-because we believe visual comparison is more effective
-in communicating results than endless tables of numbers.
-
+and allows for asymmetric confidence intervals.
 
 
 %++++++++++++++++++++++++++++++
