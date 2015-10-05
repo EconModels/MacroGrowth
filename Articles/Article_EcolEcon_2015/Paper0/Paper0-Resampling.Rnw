@@ -766,10 +766,10 @@ without correcting for degrees of freedom.'' \citep{Henningsen:2011td}
 
 Further complicating matters is our interest in issues that arise on the
 boundary of (the economically meaningful portion of) the parameter space.
-In an investigation of whether energy is important, for example,
+In an investigation of the marginal productivity of energy 
+in the $(kl)e$ nesting of the CES model, for example,
 we may consider the null hypothesis that $\alpha_3 = 0$.  
-In the ($kl$)$e$ nesting for the CES model, 
-this null hypothesis is equivalent to $\delta = 1$.
+This null hypothesis is equivalent to $\delta = 1$.
 While there is an asymptotic theory for this case as well,%
   \authNote{Randy: can you provide a reference for the asymptotic theory? ---MKH}
 the distributions are, in general,
