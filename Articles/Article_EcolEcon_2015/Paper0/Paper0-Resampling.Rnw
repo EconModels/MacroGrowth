@@ -312,8 +312,6 @@ for the Portuguese economy from 1960--2010.
 \label{sec:CD}
 %------------------------------
 
-**** Go completely generic everywhere ($x_1$ instead of $k$). ****
-
 The Cobb-Douglas production function 
 is the canonical representation of indexed economic output ($y$) 
 as a function of indexed factors of production~($x_1$, $x_2$, and $x_3$) and 
@@ -328,7 +326,7 @@ where
 $y \equiv Y/Y_{0}$,
 $\theta$ is a scale parameter,
 e is the base of the natural logarithm, 
-$\lambda$ is represents the pace of technological progress,
+$\lambda$ is the so-called Solow residual,
 $t$ is time measured in years,
 $x_1 = k \equiv K/K_{0}$, 
 $x_2 = l \equiv L/L_{0}$, 
@@ -341,8 +339,8 @@ $E$ is energy expressed in units of energy per time, typically TJ/year, and
 All historical data~($y$, $k$, $l$, and $e$) are indexed (by ratio)
 relative to an initial year. 
 Time~($t$) is indexed (by difference) relative to an initial year.
-After indexing, $\theta$ is expected to be near unity,
-but no other parameters change.%
+Due to indexing, $\theta$ is expected to be near unity,
+but no other parameters are affected.%
   \footnote{Dimensionless, indexed quantities are represented by lower-case symbols 
   ($y$, $x$, $k$, $l$, and $e$), 
   and dimensional quantities are represented by upper-case symbols 
@@ -363,7 +361,7 @@ indicating constant returns to scale.
 \label{sec:CES}
 %------------------------------
 
-The Constant Elasticity of Substitution~(CES) model 
+The Constant Elasticity of Substitution~(CES) production function 
 is given as
 %
 \begin{equation} \label{eq:CESgeneric}
@@ -445,6 +443,7 @@ we reparameterized Equation~\ref{eq:CD} as
 %
 ensuring that $\alpha_1 + \alpha_2 + \alpha_3 = 1$,
 thereby providing constant returns to scale.
+$\alpha_3$ was recovered with $\alpha_3 = 1 - \alpha_1 - \alpha_2$.
 The \texttt{R} \citep{R} function \texttt{lm} was used to estimate 
 values of $\lambda$, $\theta$, $\alpha_1$, and $\alpha_2$ in log-transform space.
 If the fitted value for $\alpha_1$ or $\alpha_2$ fell outside the interval $[0,1]$,
@@ -462,7 +461,7 @@ minimum sum of squared errors~(\sse) as the winning model:
   \sse = \sum_{i} r_i^2 \; ,
 \end{equation}
 %
-where the residual is given as
+where
 %
 \begin{equation} \label{eq:residual}
   r_i \equiv \ln (y_i / \hat{y}_i)
@@ -471,13 +470,13 @@ where the residual is given as
 is the $i^{\mathrm{th}}$ residual (all models assume multiplicative errors),
 and
 $\hat{y}_i$ is the fitted value for economic output at time $t_i$.
-$\alpha_3$ was recovered with $\alpha_3 = 1 - \alpha_1 - \alpha_2$.
 
 In cases where a model adheres to the cost share principle,
 output elasticities are fixed
 in accordance with long-run historical cost shares
 for capital and labor ($\hat{\alpha}_1 = 0.3$ and $\hat{\alpha}_2 = 0.7$).
-Under these conditions, $\hat{\alpha}_3$ is assumed to be $0$.
+Under these conditions, $\hat{\alpha}_3$ is assumed to be $0$.%
+  \authNote{Need to fix the discussion of $\alpha$s and the CSP.}
 
 
 %------------------------------
@@ -514,25 +513,25 @@ Next, a gradient search (using \texttt{PORT} and \texttt{L-BFGS-B} algorithms av
 is attempted wherein all parameters
 ($\theta$, $\lambda$, $\delta_1$, $\delta$, $\rho_1$, and $\rho$)
 are allowed to float.
-The starting values for fitting parameters are taken from
+The starting values for parameters are taken from
 the grid search point that provided the lowest sum of squared errors~(\sse).
 
 \citet{Henningsen:2011td},
 in their detailed analysis of Kemfert~\cite{kemfert1998estimated}, found that
 %
 \begin{quote}
-\ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms
-are---at least in this study---most likely to find the
-coefficients that give the best fit to the model,
-where the \texttt{PORT} algorithm can be used to restrict the estimates
-to the economically meaningful region.
+  \ldots the Levenberg-Marquardt and the \texttt{PORT} algorithms
+  are---at least in this study---most likely to find the
+  coefficients that give the best fit to the model,
+  where the \texttt{PORT} algorithm can be used to restrict the estimates
+  to the economically meaningful region.
 \end{quote}
 %
 In our testing, we found that to be mostly true.
 \texttt{PORT} nearly always provides lower
 \sse{} than \texttt{L-BFGS-B}, despite the fact that
 \texttt{L-BFGS-B} often reports convergence
-and \texttt{PORT} does not for the same data
+and \texttt{PORT} does not for the same historical data
 (i.e., for the same $y$, $k$, $l$, and $e$ time series).
 
 In addition to the above trials,
@@ -548,7 +547,7 @@ of 20 degenerate equations found along parameter boundaries~(rows~1--20),
 wherein factors of production ($x_1$,~$x_2$,~$x_3$)
 are permutations of ($k$,~$l$,~$e$).
 The bottom (unnumbered) row of Table~\ref{tab:CES_boundary_models}
-shows the generic three-factor CES equation.
+is a repeat of Equation~\ref{eq:CESgeneric}.
 Each degenerate equation provides a boundary model.
 Note that many boundary parameter combinations
 yield equivalent CES boundary models,%
@@ -582,7 +581,7 @@ minimum located at a boundary will be found, if it exists.
 Second, fitting on the boundaries of the economically-meaningful region
 prevents erroneous reporting of unknowable parameters.
 Table~\ref{tab:CES_boundary_models} includes many dashes~(``---'')
-indicating that many fitting parameters are unknowable
+indicating that many parameters are unknowable
 in the boundary models.
 For example, $\sigma_1$ and $\sigma$ are unknowable in
 the boundary model shown in Row 1 of Table~\ref{tab:CES_boundary_models}.
@@ -590,33 +589,34 @@ If an OLS search algorithm
 (such as \texttt{PORT} and \texttt{L-BFGS-B}, discussed above)
 operating with the full CES model (bottom row of Table~\ref{tab:CES_boundary_models})
 were to find an \sse{} minimum along that boundary,
-it would report values for $\sigma_1$ and $\sigma$
+it would report values for $\rho_1$ and $\rho$
 \emph{in addition to} $\theta$, $\lambda$, $\delta_1$~(which will be unity),
 and $\delta$~(also unity).
 Under these conditions,
 it is clearly erroneous to report
 meaningless, because they are unknowable,
-values for $\sigma_1$ and $\sigma$.
+values for $\rho_1$ and $\rho$.
 Fitting with the boundary models
 shown in Table~\ref{tab:CES_boundary_models}
 avoids this mistake.
 
+**** Change to talk about $\rho$ only. ****
 Boundary models obtained when $\delta_1$ or $\delta$ is at an extreme value
 (0 or 1)
 are straightforward to derive from the bottom row of
 Table~\ref{tab:CES_boundary_models}.
-When $\sigma_1$ or $\sigma$ is 0,
+When $\rho_1$ or $\rho$ is $\infty$,
 factors of production are perfect complements
 and the Leontief model applies.%
   \footnote{
-  E.g., when $\sigma_1 = 0$ and $\delta~=~1$, the Leontief model is
+  E.g., when $\rho_1 = \infty$ and $\delta~=~1$, the Leontief model is
   $y = \theta A \min (x_1, x_2)$, row 4 in Table~\ref{tab:CES_boundary_models}.
   }
-When $\sigma_1$ or $\sigma$ is $\infty$,
+When $\rho_1$ or $\rho$ is $-1$,
 factors of production are perfect substitutes
 and the linear model applies.%
   \footnote{
-  E.g., when $\sigma_1 = \infty$ and $\delta~=~1$, the linear model is
+  E.g., when $\rho_1 = -1$ and $\delta~=~1$, the linear model is
   $y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$,
   row 7 in Table~\ref{tab:CES_boundary_models}.
   }
@@ -629,7 +629,7 @@ row).}
   \begin{center}
     \begin{tabular}{r c c c c l}
       \toprule
-      & $\delta_1$  & $\sigma_1$ & $\delta$   & $\sigma$ & Boundary model \\
+      & $\delta_1$     & $\rho_1$   & $\delta$   & $\rho$   & Boundary model \\
       \midrule
       1. & 1           & ---        & 1          & ---      & $y = \theta A x_1$
       \\
@@ -638,20 +638,20 @@ row).}
       3. & ---         & ---        & 0          & ---      & $y = \theta A x_3$
       \\
       \midrule
-      4. & ---         & 0          & 1          & ---      & $y = \theta A \min
+      4. & ---         & $\infty$   & 1          & ---      & $y = \theta A \min
       (x_1, \, x_2)$ \\
-      5. & 1           & ---        & ---        & 0        & $y = \theta A \min
+      5. & 1           & ---        & ---        & $\infty$ & $y = \theta A \min
       (x_1, \, x_3)$ \\
-      6. & 0           & ---        & ---        & 0        & $y = \theta A \min
+      6. & 0           & ---        & ---        & $\infty$ & $y = \theta A \min
       (x_2, \, x_3)$ \\
 %
-      7. &             & $\infty$   & 1          & ---
+      7. &             & $-1$       & 1          & ---
             & $y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$ \\
 %
-      8. & 1           & ---        &            & $\infty$
+      8. & 1           & ---        &            & $-1$
             & $y = \theta A \left[ \delta x_1 + (1 - \delta) x_3 \right]$ \\
 %
-      9. & 0           & ---        &            & $\infty$
+      9. & 0           & ---        &            & $-1$
             & $y = \theta A \left[ \delta x_2 + (1 - \delta) x_3 \right]$ \\
 %
      10. &             &            & 1          & ---
@@ -659,7 +659,7 @@ row).}
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
                     \rho_1}$ \\
 %
-     11. & 1           & ---        &         &
+     11. & 1           & ---        &            &
             & $y = \theta A \left[ \delta x_1^{-\rho}
                     + \left(1 - \delta \right) x_3^{-\rho} \right] ^ {-1/\rho}$
                     \\
@@ -668,46 +668,46 @@ row).}
             & $y = \theta A \left[ \delta x_2^{-\rho} + \left(1 - \delta \right)
             x_3^{-\rho} \right]^{-1/\rho}$ \\
       \midrule
-     13. & ---         & 0          & ---        & 0        & $y = \theta A \min
+     13. & ---         & $\infty$   & ---        & $\infty$   & $y = \theta A \min
      (x_1, \, x_2, \, x_3)$ \\
 %
-     14. & ---         & 0          &            & $\infty$
+     14. & ---         & $\infty$   &            & $-1$
             & $y = \theta A \left[ \delta \min (x_1, \, x_2) + \left( 1 - \delta
             \right) x_3  \right]$ \\
 %
-     15. &             & $\infty$   & ---        & 0
+     15. &             & $-1$       & ---        & $\infty$
             & $y = \theta A \min \left[ \delta_1 x_1 + \left(1 - \delta_1
             \right) x_2, \, x_3  \right]$ \\
 %
-     16. &             & $\infty$   &            & $\infty$
+     16. &             & $-1$       &            & $-1$
             & $y = \theta A \left\{ \delta \left[ \delta_1 x_1 + \left( 1 -
             \delta_1 \right) x_2 \right]
                     + \left( 1 - \delta \right) x_3  \right\}$ \\
 %
-     17. & ---         & 0          &            &
+     17. & ---         & $\infty$   &            &
             & $y = \theta A \left\{ \delta \left[ \min \left( x_1, \, x_2
             \right) \right]^{-\rho}
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^
                     {-1/\rho}$ \\
 %
-     18. &            &            & ---     & 0
+     18. &            &            & ---         & $\infty$
             & $y = \theta A \min \left\{ \left[ \delta_1 x_1^{-\rho_1}
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
                     \rho_1}, \, x_3 \right\}$ \\
 %
-     19. &             &            &            & $\infty$
+     19. &             &            &            & $-1$
             & $y = \theta A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1}
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{-1/
                     \rho_1}
                     + \left( 1 - \delta \right) x_3  \right\}$ \\
 %
-     20. &             & $\infty$   &            &
+     20. &             & $-1$       &            &
             & $y = \theta A \left\{ \delta \left[ \delta_1 x_1
                     + \left( 1 - \delta_1 \right) x_2 \right]^{-\rho}
                     + \left( 1 - \delta \right) x_3^{-\rho}  \right\} ^
                     {-1/\rho}$ \\
 \midrule
-         &            &            &         &
+         &            &             &            &
             & $y = \theta A \left\{ \delta \left[ \delta_1 x_1^{-\rho_1}
                     + \left( 1 - \delta_1 \right) x_2^{-\rho_1} \right]^{\rho/
                     \rho_1}
@@ -851,18 +851,20 @@ where
 %
 Both the sign~($\pm$) and the index
 ($j$,~typically different from $i$)
-of the residual~($r_j$)
+of the residual~($r_j$) in Equation~\ref{eq:resampled_y}
 are chosen at random (with replacement).
 We repeated the resampling process 1000 times.
 
 The parameters from the fit to a resampled time series
 (the ``resample parameters'') will be different from the parameters
 obtained from the fit to historical data (the ``base parameters'').
-When these resample parameters are highly variable,
+When the distribution of these resample parameters 
+(the ``bootstrap resample distribution'') 
+is highly variable,
 it is an indication
 that the data do not determine the parameter estimates very precisely.
 Lack of precision can stem from a number of factors, most obviously
-a poor model fit,
+a poor model fit to historical data,
 low model sensitivity to one or more parameters, or
 correlations between parameter estimates.
 
@@ -875,7 +877,8 @@ yet be difficult to estimate some or all of the model parameters precisely.
 The resampling method employed herein reflects all three of these potential
 sources of uncertainty in parameter estimates.
 
-We choose the resampling approach instead of the more-common technique
+We choose the resampling approach to estimating parameter precision
+instead of the more-common technique
 of estimating confidence intervals from standard errors for two reasons.
 First, model parameters are highly constrained, and confidence intervals often violate the constraints.
 For example, a result of $\alpha_1 = 0.25 \pm 0.3$ is nonsensical,
@@ -891,8 +894,6 @@ and allows for asymmetric confidence intervals.
 \subsection{Historical data}
 \label{sec:historical_data}
 %++++++++++++++++++++++++++++++
-
-Refer to other paper for historica data.
 
 Focus on Portugal only.
 
