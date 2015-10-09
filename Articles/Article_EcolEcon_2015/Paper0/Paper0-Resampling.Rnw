@@ -246,7 +246,7 @@ Ideas for an Ecological Economics frame for the paper:
   \begin{itemize}
     
     \item Ayres and Warr used a non-standard production function.
-          Will their insights hold true for standard production functinos like Cobb-Douglas and CES?
+          Will their insights hold true for standard production functions like Cobb-Douglas and CES?
           
     \item Ayres and Warr quality-adjusted only one factor of production, energy, by employing useful work.  
           What happens when all factors of production, including capital and labor, are quality-adjusted?
