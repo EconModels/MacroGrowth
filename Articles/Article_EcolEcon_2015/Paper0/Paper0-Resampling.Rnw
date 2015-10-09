@@ -237,7 +237,7 @@ Ideas for an Ecological Economics frame for the paper:
         This means moving away from Cobb-Douglas toward CES.
         
   \item Also, inspired by Ayres and Warr, 
-        we don’t want to assume elasticity of substitution 
+        we don't want to assume elasticity of substitution 
         of unity as CD does.
         (What does Linex give for the elasticity of substitution between factors of production?)
 
@@ -262,10 +262,14 @@ Ideas for an Ecological Economics frame for the paper:
   \item However, when moving away from CD and Linex toward CES, 
         we leave the world of linear fitting behind.
         
-  \item Standard approaches assume normal distributions for model parameters. 
+  \item Non-linear fitting has several complications in the fitting process.
+        
+  \item Furthermore, standard approaches to determining parameter precision 
+        for linear and non-linear fitting
+        assume normal distributions for model parameters. 
         In the non-linear world of CES, 
         those assumptions aren't appropriate. 
-        Need a new approach in the non-CD world.
+        Need new approaches in the non-CD world.
         
   \begin{itemize}
     
@@ -281,13 +285,16 @@ Ideas for an Ecological Economics frame for the paper:
 
 \end{itemize}
 %
-This paper explores and justifies those choices by
+This paper explores and justifies those choices by:
 %
 \begin{enumerate}
 
-  \item comparing standard techniques and our approaches for the Cobb-Douglas production function and 
+  \item comparing standard techniques and our approaches for estimating parameter precision
+        for the Cobb-Douglas production function, and 
 
-  \item applying our techniques to the CES production production function.
+  \item applying our advanced techniques for parameter estimation
+        (including precision)
+        to the CES production production function.
 
 \end{enumerate}
 %
