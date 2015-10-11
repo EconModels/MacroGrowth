@@ -908,35 +908,76 @@ AllOE <-
   bind_rows()
 @
 
-<<Resampling>>=
-resampleCoeffsFilename <- "EcolEcon2015kleResampleCoeffs.rds"
-resampleModelsFilename <- "EcolEcon2015kleResampleModels.rds"
+<<Resampling-CD>>=
+print("Top of Resampling-CD")
+
+resampleCoeffsCDFilename <- "EcolEcon2015ResampleCoeffsCD.rds"
+resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
+if (rerunResampling){
+  resamplesCD <- leaf_apply(models, class = "CDEmodel", f = function(model, id){
+    id_components <- strsplit(id, split = "[.]")[[1]]
+    print(id_components)
+    resamples <- resampledFits(model, method = "wild", n = nResamples)
+    resamples$coeffs <- mutate(
+      resamples$coeffs, 
+      Country = id_components[[1]],
+      flavor = id_components[[2]],
+      energy = id_components[[3]],
+      model = id_components[[4]]
+    )
+    return(resamples)
+  })
+  # Resample coefficients
+  resampleCoeffsCD <- lapply(resamplesCD, function(resample){
+    resample$coeffs
+  }) %>% plyr::rbind.fill()
+  saveRDS(resampleCoeffsCD, resampleCoeffsCDFilename)
+  # Resample models
+  # At present these resample models are stored in a "flat" list.
+  # We may want to change that later.
+  resampleModelsCD <- lapply(resamplesCD, function(resample){
+    resample$models
+  })
+  saveRDS(resampleModelsCD, resampleModelsCDFilename)
+} else {
+  resampleCoeffsCD <- readRDS(resampleCoeffsCDFilename)
+  resampleModelsCD <- readRDS(resampleModelsCDFilename)
+}
+@
+
+<<Resampling-CES-adjusted-kle>>=
+print("Top of Resampling-CES-adjusted-kle")
+
+resampleCoeffsCESFilename <- "EcolEcon2015kleResampleCoeffsCES.rds"
+resampleModelsCESFilename <- "EcolEcon2015kleResampleModelsCES.rds"
 if (rerunResampling){
   # Run some resampling on the PT and UK models that reject the cost-share theorem,
   # include energy, use quality-adjusted variables, and employ the (kl)e nesting.
   # This is u-g-l-y code. Just getting something running for now.
   modPT <- models$PT$adjusted$withE$CES$kle
   modUK <- models$UK$adjusted$withE$CES$kle
-  resamplesPT <- resampledFits(modPT, method = "wild", n = nResamples)
-  resamplesUK <- resampledFits(modUK, method = "wild", n = nResamples)
+  resamplesCESPT <- resampledFits(modPT, method = "wild", n = nResamples)
+  resamplesCESUK <- resampledFits(modUK, method = "wild", n = nResamples)
   # Resample coefficients
-  resampleCoeffs <- rbind(cbind(resamplesPT$coeffs, Country="PT"), cbind(resamplesUK$coeffs, Country="UK"))
-  resampleCoeffs$energy <- TRUE
-  resampleCoeffs$nest <- "(kl)e"
-  saveRDS(resampleCoeffs, file = resampleCoeffsFilename)
+  resampleCoeffsCES <- rbind(cbind(resamplesCESPT$coeffs, Country="PT"), cbind(resamplesCESUK$coeffs, Country="UK"))
+  resampleCoeffsCES$energy <- TRUE
+  resampleCoeffsCES$nest <- "(kl)e"
+  saveRDS(resampleCoeffsCES, file = resampleCoeffsCESFilename)
   # Resample models
-  resampleModels <- list(PT=resamplesPT$models, UK=resamplesUK$models)
-  saveRDS(resampleModels, file = resampleModelsFilename)
+  resampleModelsCES <- list(PT=resamplesCESPT$models, UK=resamplesCESUK$models)
+  saveRDS(resampleModelsCES, file = resampleModelsCESFilename)
 } else {
-  resampleCoeffs <- readRDS(resampleCoeffsFilename)
-  resampleModels <- readRDS(resampleModelsFilename)
+  resampleCoeffsCES <- readRDS(resampleCoeffsCESFilename)
+  resampleModelsCES <- readRDS(resampleModelsCESFilename)
 }
 @
 
 <<ReModels>>=
+print("Top of ReModels")
+
 ReModels <-
   bind_rows(
-  leaf_apply(resampleModels, 
+  leaf_apply(resampleModelsCES, 
              function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
              strict.lists = TRUE)
 )
@@ -946,6 +987,8 @@ ReModels <-
 <<Fitted_and_Residuals>>=
 ### Why are we going back and forth between CamelCase and interspersed_underscores?
 ### If there isn't a reason, probably we should stick with one naming convention.
+
+print("top of Fitted_and_Residuals")
 
 temp_data_exp <- 
   leaf_apply(
@@ -1144,6 +1187,8 @@ goodness of fit~(SSE)
 for all modeling choices.
 
 <<Table_data>>=
+print("Top of Table_data")
+
 table_data <- 
   AllCoeffs %>%
   plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
@@ -1172,6 +1217,8 @@ table_data <-
 
 
 <<CES_sr_gof, results="asis">>=
+print("Top of CES sr gof")
+
 data_CES_SR_gof <- 
   table_data %>% 
   filter(Model=="CES" | Model=="Ref.") %>% 
@@ -1621,14 +1668,14 @@ model_points_style_quad(p)
 %++++++++++++++++++++++++++++++
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffs, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
+standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
     scale_y_continuous(breaks=c(0, 0.005, 0.01), limits=c(0, 0.01)) +
     labs(x=expression(theta), y=expression(lambda))
 @
 
 <<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1), 
+standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, sigma_1), 
                     facet_formula=~Country, alpha=0.1) +
     coord_trans(y="sigma2") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
@@ -1637,7 +1684,7 @@ standardScatterPlot(data=resampleCoeffs, mapping=aes(delta_1, sigma_1),
 @
 
 <<resample_graph_sigma_delta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)e}$ and $\\delta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffs, mapping=aes(delta, sigma), 
+standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta, sigma), 
                     facet_formula=~Country, alpha=0.1) +
     coord_trans(y="sigma2") +
     scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
@@ -1949,31 +1996,6 @@ This section is the graveyard for information pertaining to the Cobb-Douglas mod
 \subsubsection{Cobb-Douglas Production Function} 
 \label{sec:CDe}
 %------------------------------
-
-The Cobb-Douglas production function can be expressed as
-%
-\begin{equation} \label{eq:CD}
-  y = \theta A k^{\alpha_1} l^{\alpha_2} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
-\end{equation}
-%
-where 
-
-Constant returns to scale are represented by the constraint
-$\alpha_1 + \alpha_2 = 1$.
-
-The capital-labor Cobb-Douglas production function shown in Equation~\ref{eq:CD}
-can be augmented to include an energy term:
-%
-\begin{equation} \label{eq:CDe}
-  y = \theta A k^{\alpha_1} l^{\alpha_2} e^{\alpha_3} \; ; \; A \equiv \mathrm{e}^{\lambda(t-t_0)} \; ,
-\end{equation}
-%
-where $e \equiv E/E_0$, and $E$ is in units of energy per time, typically TJ/year.
-The energy-augmented Cobb-Douglas production function 
-is often assumed to have constant returns to scale for the three factors 
-of production: $\alpha_1 + \alpha_2 + \alpha_3 = 1$.
-The term $A$ is known as total factor productivity,
-and $\lambda$ is the Solow residual. 
 
 The Cobb-Douglas production function can be expressed as
 %
@@ -2551,7 +2573,7 @@ OEplot2(ReModels)
 
 
 <<resample_graph_alpha_ternary, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.0, fig.cap="$\\alpha_k$, $\\alpha_l$, and $\\alpha_e$ values for CES resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardTriPlot(data=resampleCoeffs, facet_formula=~Country, alpha=0.1,
+standardTriPlot(data=resampleCoeffsCES, facet_formula=~Country, alpha=0.1,
                 labels=c("alpha[k]", "alpha[l]", "alpha[e]"), size=2.0)
 @
 
