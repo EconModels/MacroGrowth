@@ -214,6 +214,22 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 
 %\linenumbers
 
+%%%% Import Analysis chunks
+
+
+<<child="TestChild.Rnw", eval=TRUE>>=
+@
+
+<<child="../EcolEcon_2015A.Rnw", eval=TRUE>>=
+@
+
+<<include=FALSE>>=
+knitr::opts_chunk$set(include = TRUE)
+@
+
+<<replay, include=TRUE, echo=FALSE>>=
+<<Graphs_CESlek-fitted>>
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction/Background}
@@ -931,7 +947,13 @@ Show graph of historical data here.
 \label{sec:results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Looking at boostrap distribution of a parameter.
+<<>>=
+ggplot( aes(x = lambda, color = method), data = resampledCoeffsCD) + geom_line(stat="density") + facet_grid( foo ~ Country, scales = "free" ) 
+mod <- resampleModelsCD[["PT.adjusted.noE.CD"]][["orig"]]
+coef(summary(mod))
 
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
