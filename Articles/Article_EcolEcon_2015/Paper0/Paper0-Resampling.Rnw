@@ -220,6 +220,24 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 \label{sec:intro}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+The book entitled
+\emph{The Economic Growth Engine: How Energy and Work Drive Material Prosperity} 
+\citep{Ayres:2010ug} 
+was a watershed moment in the understanding 
+of interactions between energy and the economy.
+It represents the culmination of a decade of fruitful inquiry by Ayres and Warr, 
+whose greatest insights
+(that energy matters in economic growth,
+that ``useful work'' dissipated at the point of production
+is an essential factor of production, and
+that the ``Cost Share Principle'' from neoclassical economics should be rejected)
+were inspired by Ecological Economics in one way or another.
+
+
+
+
+
+
 Ideas for an Ecological Economics frame for the paper:
 
 %
