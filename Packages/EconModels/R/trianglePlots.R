@@ -124,7 +124,7 @@ triPlot <-
     expand_limits( x=c(-.2,1.2), y=c(-.05,1.25) ) +
     tri_theme() + 
     tri_grid(grid_lines = grid_lines) +
-    tri_labels(labels = labels ) # +
+    tri_labels(labels = labels )
   q + do.call( geom, c(list(mapping=mapping, stat="triangle"), list(...)) )
 }
 
