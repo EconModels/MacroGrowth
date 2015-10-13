@@ -5,7 +5,7 @@
 \title{Fitting Cobb-Douglas models}
 \usage{
 cdModel(formula, data, response, x1, x2, x3, time, constrained = TRUE,
-  save.data = TRUE, corellation = correlation, ...)
+  save.data = TRUE, correlation = NULL, ...)
 }
 \arguments{
 \item{data}{a data frame in which \code{formula} is evaluated}
