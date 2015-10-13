@@ -1,4 +1,3 @@
-require(texreg)
 
 #' Fitting CES models
 #' 
