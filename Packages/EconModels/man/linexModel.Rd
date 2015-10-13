@@ -4,7 +4,8 @@
 \alias{linexModel}
 \title{Fitting LINEX models}
 \usage{
-linexModel(formula, data, response, x1, x2, x3, time, save.data = TRUE)
+linexModel(formula, data, response, x1, x2, x3, time, save.data = TRUE,
+  correlation = NULL)
 }
 \arguments{
 \item{formula}{a formula of the form \code{response ~ x1 + x2 + x3 + time}}
@@ -25,6 +26,13 @@ the components can be specified individually.}
 
 \item{time}{instead of specifying a formula, expressions for
 the components can be specified individually.}
+
+\item{correlation}{an optional \code{\link{corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link{corClasses}}
+for a description of the available \code{corStruct} classes.
+If a grouping variable is to be used,
+it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 }
 \description{
 Fitting LINEX models

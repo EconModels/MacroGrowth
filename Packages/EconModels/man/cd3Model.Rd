@@ -5,7 +5,7 @@
 \title{Fitting Cobb-Douglas models with 3 Factors}
 \usage{
 cd3Model(formula, data, response, x1, x2, x3, time, constrained = TRUE,
-  save.data = TRUE, ...)
+  save.data = TRUE, correlation = NULL, ...)
 }
 \arguments{
 \item{formula}{a formula of the form \code{response ~ x1 + x2 + x3 + time}}
@@ -28,6 +28,13 @@ the components can be specified individually as character strings.}
 the components can be specified individually as character strings.}
 
 \item{constrained}{a logical indicated whether the coefficents are constrained. See details}
+
+\item{correlation}{an optional \code{\link{corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link{corClasses}}
+for a description of the available \code{corStruct} classes.
+If a grouping variable is to be used,
+it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 
 \item{\dots}{additional arguments; currently unused.}
 }

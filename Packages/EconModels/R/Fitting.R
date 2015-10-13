@@ -453,6 +453,12 @@ predict.LINEXmodel <- function( object, ... ) {
 #' @param formula a formula of the form \code{ y ~ factor + time }
 #' @param data a data frame in which \code{formula} is evaluated
 #' @param constrained a logical indicating whether the model parameters are constrained
+#' @param correlation an optional \code{\link{corStruct}} object describing the 
+#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
+#'   for a description of the available \code{corStruct} classes. 
+#'   If a grouping variable is to be used, 
+#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor. 
+#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
 #' @return an lm object with some additional attributes
 #' @examples
 #' US <- subset(Calvin, Country=="US")
@@ -462,7 +468,7 @@ predict.LINEXmodel <- function( object, ... ) {
 #' 
 #' @export
 sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
-                              save.data=TRUE) {
+                              save.data=TRUE, correlation = NULL) {
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ factor + time,
@@ -486,12 +492,14 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   )
   
   if (constrained){
-    res <- eval( substitute(lm(f, data=data), list(f=formulas[[2]])) )
+    res <- eval( substitute(gls(f, data=data, correlation = C), 
+                            list(C = correlation, f=formulas[[2]])) )
     res$winner <- 2
     logscale <- coef(res)[1]
     lambda <- coef(res)[2]
   } else {
-    res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
+    res <- eval( substitute(gls(f, data=data, correlation = C), 
+                            list(C = correlation, f=formulas[[1]])) )
     res$winner <- 1
     logscale <- coef(res)[1]
     lambda <- as.vector(coef(res)[3])
@@ -536,7 +544,8 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' 
 #' @export
 cdModel <- function(formula, data, response, x1, x2, x3, time, 
-                             constrained=TRUE, save.data=TRUE, ...) {
+                             constrained=TRUE, save.data=TRUE, 
+                             corellation = correlation, ...) {
   if (missing(formula)) {
     if (missing(x3)) {
       return( cd2Model( data=data, 
@@ -544,7 +553,8 @@ cdModel <- function(formula, data, response, x1, x2, x3, time,
                           x1=x1, 
                           x2=x2, 
                           time=time, 
-                          constrained = constrained, save.data=save.data, ...) )
+                          constrained = constrained, save.data=save.data, 
+                          correlation = correlation, ...) )
     } else {
       return( cd3Model( data=data, 
                         response=response, 
@@ -552,16 +562,19 @@ cdModel <- function(formula, data, response, x1, x2, x3, time,
                         x2=x2,
                         x3=x3,
                         time=time, 
-                        constrained = constrained, save.data=save.data, ...) )
+                        constrained = constrained, save.data=save.data, 
+                        correlation = correlation, ...) )
     }
   }
   
   if (ncol( attr(terms(formula),"factors") ) == 3 ) {
     # formula contains response, x1, and x2
-    cd2Model( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
+    cd2Model( formula=formula, data=data, constrained = constrained, 
+              save.data=save.data, correlation = correlation, ... )
   } else {
     # formula contains response, x1, x2, and x3
-    cd3Model( formula=formula, data=data, constrained = constrained, save.data=save.data, ... )
+    cd3Model( formula=formula, data=data, constrained = constrained, save.data=save.data, 
+              correlation = correlation, ... )
   }
 }
 
@@ -605,6 +618,12 @@ CDcoefNames <- list(
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param constrained a logical indicating whether the parameters are constrained
+#' @param correlation an optional \code{\link{corStruct}} object describing the 
+#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
+#'   for a description of the available \code{corStruct} classes. 
+#'   If a grouping variable is to be used, 
+#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor. 
+#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
@@ -613,7 +632,7 @@ CDcoefNames <- list(
 #' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
 #' 
 cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE, 
-                       save.data=TRUE, ...) {
+                       save.data=TRUE, correlation = NULL, ...) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + time,
                            list( response = as_name_or_null(response),
@@ -640,7 +659,8 @@ cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE,
                                           )
                       )
   )
-  res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[2]])))
+  res <- eval(substitute(gls( f, correlation = C, data=sdata ), 
+                         list(C = correlation, f=formulas[[2]])))
   winner <- 2
   names(res$coefficients) <- CDcoefNames[[2]]
   alpha_1 <- coef(res)["alpha_1"]
@@ -654,7 +674,8 @@ cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE,
       winner <- 5
     }
     if (winner > 2) {  
-      res <- eval(substitute(lm( f, data=sdata ), list(f=formulas[[winner]])))
+      res <- eval(substitute(gls( f, data=sdata, correlation = C ), 
+                             list(C = correlation, f=formulas[[winner]])))
       names(res$coefficients) <- CDcoefNames[[winner]]
     }
   }
@@ -698,6 +719,12 @@ respectsConstraints <- function( model ) {
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param constrained a logical indicated whether the coefficents are constrained. See details
+#' @param correlation an optional \code{\link{corStruct}} object describing the 
+#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
+#'   for a description of the available \code{corStruct} classes. 
+#'   If a grouping variable is to be used, 
+#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor. 
+#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
 #' @examples
@@ -709,7 +736,9 @@ respectsConstraints <- function( model ) {
 
 # y ~ x1 + x2 + x3 + time
 cd3Model <- function( formula, data, response, x1, x2, x3, time, 
-                      constrained=TRUE, save.data=TRUE, ...){
+                      constrained=TRUE, save.data=TRUE, 
+                      correlation = NULL,
+                      ...){
   
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + x3 + time,
@@ -735,7 +764,7 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
   ) ) )
   
   models <- lapply( formulas, function(form)
-    eval(substitute(lm(f, data=sdata), list(f=form)))  
+    eval(substitute(gls(f, correlation = C, data=sdata), list(f=form, C = correlation)))  
   )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
   if ( constrained ) {
@@ -771,6 +800,12 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param data a data frame in which \code{formula} is evaluated
+#' @param correlation an optional \code{\link{corStruct}} object describing the 
+#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
+#'   for a description of the available \code{corStruct} classes. 
+#'   If a grouping variable is to be used, 
+#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor. 
+#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
 #' linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
@@ -779,7 +814,8 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 #' 
 #' @export
 #' 
-linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE) {
+linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE,
+                       correlation = NULL) {
   if ( missing(formula) ) {
     formula <- substitute( response ~ x1 + x2 + x3 + time,
                            list( response = as_name_or_null(response),
@@ -805,7 +841,8 @@ linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE
   ) 
   ) ) )
   
-  res <- eval( substitute(lm(f, data=data), list(f=formulas[[1]])) )
+  res <- eval( substitute(gls(f, data=data, correlation = C), 
+                          list(C = correlation, f=formulas[[1]])) )
   
   sdata <- subset(data, select = all.vars(formula))
   sdata <- data[complete.cases(sdata), unique(c(all.vars(formula), names(data)))]

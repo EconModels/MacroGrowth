@@ -5,7 +5,7 @@
 \title{Fitting single factor models}
 \usage{
 sfModel(formula, data, response, factor, time, constrained = FALSE,
-  save.data = TRUE)
+  save.data = TRUE, correlation = NULL)
 }
 \arguments{
 \item{formula}{a formula of the form \code{ y ~ factor + time }}
@@ -13,6 +13,13 @@ sfModel(formula, data, response, factor, time, constrained = FALSE,
 \item{data}{a data frame in which \code{formula} is evaluated}
 
 \item{constrained}{a logical indicating whether the model parameters are constrained}
+
+\item{correlation}{an optional \code{\link{corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link{corClasses}}
+for a description of the available \code{corStruct} classes.
+If a grouping variable is to be used,
+it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 }
 \value{
 an lm object with some additional attributes

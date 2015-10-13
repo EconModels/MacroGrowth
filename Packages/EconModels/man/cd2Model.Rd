@@ -5,7 +5,7 @@
 \title{Fitting Cobb-Douglas Models}
 \usage{
 cd2Model(formula, data, response, x1, x2, time, constrained = TRUE,
-  save.data = TRUE, ...)
+  save.data = TRUE, correlation = NULL, ...)
 }
 \arguments{
 \item{data}{a data fram in which \code{formula} is evaluated}
@@ -23,6 +23,13 @@ the components can be specified individually as character strings.}
 the components can be specified individually as character strings.}
 
 \item{constrained}{a logical indicating whether the parameters are constrained}
+
+\item{correlation}{an optional \code{\link{corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link{corClasses}}
+for a description of the available \code{corStruct} classes.
+If a grouping variable is to be used,
+it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 
 \item{formala}{a formual of the form \code{response ~ x1 + x2 + time}}
 }
