@@ -444,14 +444,20 @@ response.default <- function(object, ...) {
 #' @export
 predict.CDEmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
+  # lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
+  # grabbing log(x_0) from from the call
+  #  2 -> formula
+  #  2 -> lhs of ~
+  #  3 -> rhs of -
+  lx0 <- eval(object$call[[2]][[2]][[3]], getData(object))
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
 #' @export
 predict.LINEXmodel <- function( object, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
+  # lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
+  lx0 <- eval(object$call[[2]][[2]][[3]], getData(object))
   exp( NextMethod() + lx0[!is.na(lx0)] )
 }
 
