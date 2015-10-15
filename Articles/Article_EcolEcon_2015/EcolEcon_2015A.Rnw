@@ -1103,18 +1103,18 @@ leaf_apply(l = models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = func
 
 
 
-<<stat_details_table, results="asis", include=FALSE, eval=FALSE>>=
-texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle), 
-       dcolumn = TRUE, 
-       booktabs = TRUE, 
-       use.packages = FALSE, 
-       label=paste0("tab:", opts_current$get("label")), 
-       caption = "Example output from \\texttt{texreg}.",
-       caption.above = TRUE, 
-       digits = 6,
-       fontsize = "tiny",
-       float.pos = "hb")
-@
+%' <<stat_details_table, results="asis", include=FALSE, eval=FALSE>>=
+%' texreg(list(models$PT$adjusted$withE$CES$kle, models$UK$adjusted$withE$CES$kle), 
+%'        dcolumn = TRUE, 
+%'        booktabs = TRUE, 
+%'        use.packages = FALSE, 
+%'        label=paste0("tab:", opts_current$get("label")), 
+%'        caption = "Example output from \\texttt{texreg}.",
+%'        caption.above = TRUE, 
+%'        digits = 6,
+%'        fontsize = "tiny",
+%'        float.pos = "hb")
+%' @
 
 
 
