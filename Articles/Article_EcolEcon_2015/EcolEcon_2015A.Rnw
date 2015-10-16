@@ -16,6 +16,7 @@ library(texreg)
 library(tidyr)
 library(scales)
 library(tidyr)
+library(nlme)
 
 
 # Tell whether to re-run the analysis to create the models
@@ -29,7 +30,7 @@ library(tidyr)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunModels=TRUE
 rerunResampling=FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
@@ -202,10 +203,11 @@ if (!rerunModels){
       tVar <- as.name(summands(form, n=3))
       data <- historicalData[[country]]
       # Cobb-Douglas
-      ### breaking a formerly long line
       cdModCSP <- 
         lm(log(eval(yVar)) - alphaCSP*log(eval(kVar)) - betaCSP*log(eval(lVar)) ~ eval(tVar), 
            data = data)
+      # cdModCSP is an "lm" object. It is not a "CDEmodel" object. 
+      # Thus, it needs its own "naturalCoeffs" attribute if it is to work correctly in the "naturalCoef" function.
       attr(cdModCSP, "naturalCoeffs") <- data.frame(lambda=coef(cdModCSP)[[2]],
                                                     logscale=coef(cdModCSP)[[1]], 
                                                     scale=exp(coef(cdModCSP)[[1]]),
@@ -219,14 +221,24 @@ if (!rerunModels){
       cdModCSP$response <- sdata$iGDP
       modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
       # CES
-      cesModCSP <- plm(log(eval(yVar) / (alphaCSP*eval(kVar)^(-rho_1) + betaCSP*eval(lVar)^(-rho_1))^(-1/rho_1)) ~ eval(tVar),
-                       data = historicalData[[country]],
-                       params=c(rho_1=0.8))
-      names(cesModCSP$coefficients) <- c("logscale", "lambda", "rho_1")
-      cesModCSP$coefficients <- c(coef(cesModCSP), c(delta_1=alphaCSP, delta=1))
-      attr(cesModCSP, "naturalCoeffs") <- EconModels:::makeNatCoef(cesModCSP)
-      cesModCSP$formula <- form
-      cesModCSP$data <- sdata
+      # The only CES models that can adhere to the CSP are models where
+      # alpha values are constant with respect to time. 
+      # I.e., models where energy is not included AND where rho_1 = 0.
+      # CES models where rho_1 = 0 are the Cobb-Douglas model.
+      # Convienently, we previously fit that model.
+      cesModCSP <- cdModCSP
+      # Again, we need a customized "naturalCoeffs" attribute so that 
+      # the "naturalCoef" function will do the right thing.
+      # "naturalCoeffs" can be based on the same "naturalCoeffs"
+      # from the Cobb-Douglas model, but a few additions are needed.
+      attr(cesModCSP, "naturalCoeffs") <- 
+        naturalCoef(cdModCSP) %>%
+        mutate(
+          delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
+          delta = 1,
+          rho_1 = 0, 
+          rho = NA
+        )
       modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
     }
   }
