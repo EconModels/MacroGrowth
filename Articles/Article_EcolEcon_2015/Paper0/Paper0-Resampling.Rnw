@@ -850,6 +850,10 @@ Bootstrapping is a statistical resampling technique for assigning
 measures of accuracy and precision to sample estimates by measuring
 properties of an estimator when sampling from a resampling
 distribution.
+\authNote{We should point out that we are NOT doing bootstrap aggregating,
+  whose purpose is to obtain better initial fits to data. 
+  See \url{https://en.wikipedia.org/wiki/Bootstrap_aggregating}.
+}
 Resampling distributions can be formed in a number of
 ways in accordance with the type of data, experimental design,
 and modeling assumptions involved.
