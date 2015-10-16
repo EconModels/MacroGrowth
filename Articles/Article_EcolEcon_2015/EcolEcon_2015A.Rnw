@@ -30,7 +30,7 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=TRUE
+rerunModels=FALSE
 rerunResampling=FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
