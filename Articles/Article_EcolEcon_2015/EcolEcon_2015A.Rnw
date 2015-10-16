@@ -239,7 +239,9 @@ if (!rerunModels){
           rho_1 = 0, 
           rho = NA,
           sigma_1 = 1,
-          sigma = NA
+          sigma_12 = 1,
+          sigma = NA,
+          sigma_12_3 = NA
         )
       modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
     }
