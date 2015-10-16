@@ -30,7 +30,7 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunModels=TRUE
 rerunResampling=FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
@@ -237,7 +237,9 @@ if (!rerunModels){
           delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
           delta = 1,
           rho_1 = 0, 
-          rho = NA
+          rho = NA,
+          sigma_1 = 1,
+          sigma = NA
         )
       modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
     }
