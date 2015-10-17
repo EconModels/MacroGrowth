@@ -93,6 +93,8 @@ Brockway_2015.pdf
 CESfunctions.pdf
 Paper0-Resampling.pdf
 EcolEcon_2015A.pdf
+Paper1-lambda-alpha.pdf
+Paper1-lambda-alpha.tex
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
