@@ -130,7 +130,7 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{Paper 1}
+\title{Paper 1 Analysis}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -255,18 +255,10 @@ Looking at boostrap distribution of a parameter.
 \label{sec:graphs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<Historical_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4.0, fig.cap="Historical data.", warning=FALSE>>=
-ggplot(histDataForGraph) + 
-  geom_line(aes(x=Year, y=value, group=variable, linetype=variable, colour=variable, size=variable)) +
-  facet_grid(flavor ~ Country) + 
-  scale_color_manual(name = "", values=c("black", "black", "black", "gray70")) +
-  scale_linetype_manual(name="", values=c(1,2,3,1)) + 
-  scale_size_manual(name="", values = c(1, 0.9, 0.9, 0.6)) +
-  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
-  xlab("") + 
-  ylab("Indexed (1960=1)") +
-  xy_theme()
+<<Historical_Plot_replay, include=TRUE, echo=FALSE, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4.0, fig.cap="Historical data.", warning=FALSE>>=
+<<Historical_Plot>>
 @
+
 
 <<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(kl)e$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_kle <- 
@@ -275,6 +267,8 @@ fittedGraphData_kle <-
 
 fittedGraphNoCSP(fittedGraphData_kle)
 @
+
+
 
 <<SRsse_CES_graph_3, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow Residuals~($\\lambda$) and mean squared error~($sse$). $\\lambda$ and $sse$ values for the reference (exponential-only) model are shown as gridlines. This version uses our proposed new style.">>=
 data_sr_sse <- 
@@ -369,48 +363,6 @@ AllOE %>%
 @
 
 
-<<sigma_graph_3, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.82, fig.cap="Elasticities of substitution~($\\sigma$) with factors of production on the vertical facet.">>=
-breaks_labels = c(0.01, 0.1, 1, 10, 100)
-p <- 
-  ggplot(
-    AllCoeffs %>% 
-      gather(type, value, matches("sigma")) %>% 
-      filter(!is.na(value)) %>% 
-      filter(! type %in% c("sigma", "sigma_1")) %>%
-      mutate(nest = plyr::mapvalues(nest, 
-                                    from=c("kle", "lek", "ekl"), 
-                                    to=c("(kl)e", "(le)k", "(ek)l")),
-             Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-             Inputs = flavor,
-             type = relevelFactor(type, rev(c("sigma_12", "sigma_23", "sigma_13", "sigma_12_3", "sigma_23_1", "sigma_13_2")))
-             )
-    ) + 
-  geom_point(aes(x=value, 
-                 y=type, 
-                 shape = Model, 
-                 fill=Model, 
-                 size=Model
-                 )
-             ) + 
-  facet_grid( Inputs ~ Country) + 
-  scale_x_log10(limits = c(0.001,2000), breaks=breaks_labels, labels=breaks_labels) +
-  xlab("") +
-  geom_vline(xintercept = 1, color="gray50", size=0.2) +
-  ylab("") +
-  scale_y_discrete(labels = c(
-    sigma_12 = expression(sigma[kl]),
-    sigma_23 = expression(sigma[le]),
-    sigma_13 = expression(sigma[ek]),
-    sigma_12_3 = expression(sigma["(kl)"*e]),
-    sigma_23_1 = expression(sigma["(le)"*k]),
-    sigma_13_2 = expression(sigma["(ek)"*l]))
-    ) +
-  xy_theme() +
-  theme(axis.text.y = element_text(size=12))
-
-model_points_style_quad(p)
-@
-
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
@@ -427,6 +379,11 @@ standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, sigma_1),
     scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
     labs(x=expression(delta[1]), y=expression(sigma[kl]))
 @
+
+
+
+
+
 
 
 <<resample_graph_sigma_delta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)e}$ and $\\delta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=

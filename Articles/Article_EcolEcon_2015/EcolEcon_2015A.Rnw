@@ -687,6 +687,20 @@ histDataForGraph <-
 @
 
 
+<<Historical_Plot>>=
+ggplot(histDataForGraph) + 
+  geom_line(aes(x=Year, y=value, group=variable, linetype=variable, colour=variable, size=variable)) +
+  facet_grid(flavor ~ Country) + 
+  scale_color_manual(name = "", values=c("black", "black", "black", "gray70")) +
+  scale_linetype_manual(name="", values=c(1,2,3,1)) + 
+  scale_size_manual(name="", values = c(1, 0.9, 0.9, 0.6)) +
+  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
+  xlab("") + 
+  ylab("Indexed (1960=1)") +
+  xy_theme()
+@
+
+
 <<Fitted_and_Residual_Graph_Functions>>=
 
 ### Can fittedGraphNoCSP and fittedGraphCSP be combined into one function with an argument?
