@@ -213,42 +213,6 @@ myXTable(data_CES_SR_gof,
 @
 
 
-<<CES_sigma_nest_aware_inner, results="asis">>=
-sigma_inner_data <- 
-  table_data %>% 
-  filter(Model=="CES") %>% 
-  select(Country, CSP, flavor, Energy, Nest, sigma_12, sigma_23, sigma_13) %>%
-  plyr::rename( c("flavor" = "Factors of prod.",
-                  "sigma_12" = "$\\sigma_{kl}$",
-                  "sigma_23" = "$\\sigma_{le}$",
-                  "sigma_13" = "$\\sigma_{ek}$"))
-#
-myXTable(sigma_inner_data,
-         caption="Elasticities of substitution~($\\sigma$) for inner nests of CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=c(1,1,1,1,1,1, 3,3,3))
-@
-
-
-<<CES_sigma_nest_aware_outer, results="asis">>=
-sigma_outer_data <- 
-  table_data %>% 
-  filter(Model=="CES") %>% 
-  select(Country, CSP, flavor, Energy, Nest, sigma_12_3, sigma_23_1, sigma_13_2) %>%
-  plyr::rename(c("flavor" = "Factors of prod.", 
-                 "sigma_12_3" = "$\\sigma_{(kl)e}$",
-                 "sigma_23_1" = "$\\sigma_{(le)k}$",
-                 "sigma_13_2" = "$\\sigma_{(ek)l}$"))
-myXTable(sigma_outer_data,
-         caption="Elasticities of substitution~($\\sigma$) for outer nests of CES models.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=c(1,1,1,1,1,1, 3,3,3))
-@
-
-
-Looking at boostrap distribution of a parameter.
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graphs}
@@ -314,6 +278,7 @@ p <- ggplot() +
 model_points_style_quad(p)
 @
 
+
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
 AllOE %>% 
   mutate(split =
@@ -363,7 +328,6 @@ AllOE %>%
 @
 
 
-
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
@@ -371,28 +335,14 @@ standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_fo
     labs(x=expression(theta), y=expression(lambda))
 @
 
-<<resample_graph_sigma1_delta1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)}$ and $\\delta_1$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, sigma_1), 
-                    facet_formula=~Country, alpha=0.1) +
-    coord_trans(y="sigma2") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
-    labs(x=expression(delta[1]), y=expression(sigma[kl]))
-@
 
-
-
-
-
-
-
-<<resample_graph_sigma_delta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma_{(kl)e}$ and $\\delta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta, sigma), 
-                    facet_formula=~Country, alpha=0.1) +
-    coord_trans(y="sigma2") +
-    scale_x_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0,1)) +
-    scale_y_continuous(breaks=c(0, 0.5, 1.0, 2.0), limits=c(0, 1e6)) +
-    labs(x=expression(delta), y=expression(sigma["(kl)"*e]))
+<<resample_graph_delta_delta_1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\delta$ and $\\delta_1$ values for resample models that reject the cost share theorem, include energy, use quality-adjusted factors of production, and employ the $(kl)e$ nesting.">>=
+standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
+                    facet_formula=~Country, alpha=0.1,
+                    orig_color="black") +
+  scale_x_continuous(limits=c(0, 1), breaks=c(0, 0.5, 1)) +
+  scale_y_continuous(limits=c(0,1), breaks=c(0, 0.5, 1)) +
+  labs(x=expression(delta[1]), y=expression(delta))
 @
 
 
@@ -454,6 +404,54 @@ ReModels %>%
 \section*{Acknowledgements}
 \label{sec:acknowledgements}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\appendix
+
+
+<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(le)k$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_lek <- 
+  fitted_and_resid_data %>% 
+  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "lek"))
+
+fittedGraphNoCSP(fittedGraphData_lek)
+@
+
+
+<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(ek)l$ nesting that reject the CSP. Solid line is historical GDP.">>=
+fittedGraphData_ekl <- 
+  fitted_and_resid_data %>% 
+  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "ekl"))
+
+fittedGraphNoCSP(fittedGraphData_ekl)
+@
+
+
+<<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl"))
+)
+@
+
+
+<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest == "lek" | nest=="kl"))
+)
+@
+
+
+<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
+cesResidualPlot2(
+  fitted_and_resid_data %>% 
+    filter(model=="CES" & CSP=="w/o CSP" & (nest=="ekl" | nest=="kl"))
+)
+@
+
+
 
 
 %%References
