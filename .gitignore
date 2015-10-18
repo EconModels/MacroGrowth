@@ -64,6 +64,8 @@ EcolEcon_2015.tex
 Brockway_2015.tex
 Paper0-Resampling.tex
 EcolEcon_2015A.tex
+Paper1-lambda-alpha.tex
+Paper2-sigma.tex
 #
 # Files created by LaTeX
 #
@@ -94,7 +96,7 @@ CESfunctions.pdf
 Paper0-Resampling.pdf
 EcolEcon_2015A.pdf
 Paper1-lambda-alpha.pdf
-Paper1-lambda-alpha.tex
+Paper2-sigma.pdf
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
