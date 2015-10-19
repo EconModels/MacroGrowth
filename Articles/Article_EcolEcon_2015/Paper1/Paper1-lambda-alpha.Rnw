@@ -166,22 +166,6 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 
 \linenumbers
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Highlights}
-\label{sec:highlights}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\emph{This will go in a separate document eventually.}
-
-\begin{itemize}
-\item Highlight 1
-\item Highlight 2
-\item Highlight 3
-\item Highlight 4
-\end{itemize}
-
-%\linenumbers
-
 %%%% Import Analysis chunks
 
 <<child="../EcolEcon_2015A.Rnw", eval=TRUE>>=
