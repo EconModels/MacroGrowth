@@ -231,6 +231,7 @@ myXTable(data_delta_table,
          )
 @
 
+
 <<rho_table, results="asis">>=
 data_rho_table <- 
   table_data %>% 
