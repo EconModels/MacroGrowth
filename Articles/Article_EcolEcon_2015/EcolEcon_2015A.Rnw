@@ -133,23 +133,105 @@ historicalData <- list(
 @
 
 
-
-<<Models>>=
-fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
+<<Models_CSP>>=
 fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
+if (!rerunModels){
+  # load from the file on disk
+  modelsCSP <- readRDS(fileNameCSP)
+} else {
+  #
+  # Models that adhere to the cost-share theorem
+  # 
+  
+  modelsCSP <- list()
+  # Output elasticities based on cost share principle
+  alphaCSP <- 0.3 # Fraction of national accounts spent on capital
+  betaCSP <- 0.7 # Fraction of national accounts spent on labor
+  for (country in countries){
+    for (adj in c("unadjusted", "adjusted")){
+      # Replace with better code later. 
+      # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
+      # or something like that.
+      form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
+      yVar <- as.name(summands(form, n=1, right=FALSE))
+      kVar <- as.name(summands(form, n=1))
+      lVar <- as.name(summands(form, n=2))
+      tVar <- as.name(summands(form, n=3))
+      data <- historicalData[[country]]
+      # Cobb-Douglas
+      cdModCSP <- 
+        lm(log(eval(yVar)) - alphaCSP*log(eval(kVar)) - betaCSP*log(eval(lVar)) ~ eval(tVar), 
+           data = data)
+      # cdModCSP is an "lm" object. It is not a "CDEmodel" object. 
+      # Thus, it needs its own "naturalCoeffs" attribute if it is to work correctly in the "naturalCoef" function.
+      attr(cdModCSP, "naturalCoeffs") <- data.frame(lambda=coef(cdModCSP)[[2]],
+                                                    logscale=coef(cdModCSP)[[1]], 
+                                                    scale=exp(coef(cdModCSP)[[1]]),
+                                                    alpha_1=alphaCSP,
+                                                    alpha_2=betaCSP, 
+                                                    alpha_3=0
+                                                    )
+      cdModCSP$formula <- form
+      sdata <- subset(data, select=all.vars(form))
+      sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+      cdModCSP$data <- sdata
+      cdModCSP$response <- sdata$iGDP
+      modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
+      # CES
+      # The only CES models that can adhere to the CSP are models where
+      # alpha values are constant with respect to time. 
+      # I.e., models where energy is not included AND where rho_1 = 0.
+      # CES models where rho_1 = 0 are the Cobb-Douglas model.
+      # Convienently, we previously fit that model.
+      cesModCSP <- cdModCSP
+      # Again, we need a customized "naturalCoeffs" attribute so that 
+      # the "naturalCoef" function will do the right thing.
+      # "naturalCoeffs" can be based on the same "naturalCoeffs"
+      # from the Cobb-Douglas model, but a few additions are needed.
+      attr(cesModCSP, "naturalCoeffs") <- 
+        naturalCoef(cdModCSP) %>%
+        mutate(
+          delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
+          delta = 1,
+          rho_1 = 0, 
+          rho = NA,
+          sigma_1 = 1,
+          sigma_12 = 1,
+          sigma = NA,
+          sigma_12_3 = NA
+        )
+      # Add output elasticities (as a function of time) to this model.
+      # This would have been done by a "fortify" function, 
+      # but this is not a typical CES model, so we can't "fortify" it.
+      # Add other metadata, too.
+      cesModCSP$data <- cesModCSP$data %>%
+        mutate(
+          oe1 = alphaCSP,
+          oe2 = betaCSP,
+          oe3 = 0,
+          Country = country, 
+          flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
+          energy  = "Without energy",
+          model   = "CES", 
+          nest    = "kl",
+          CSP     = "w/ CSP"
+        )
+      modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
+    }
+  }
+  # Save cost-share theorem models to disk.
+  saveRDS(modelsCSP, file=fileNameCSP)
+}
+
+@
+
+
+<<Models_Exp>>=
 fileNameExp <- "EcolEcon2015ModelsExp.rds"
 if (!rerunModels){
   # load from the file on disk
-  models <- readRDS(fileNameCDCES)
-  modelsCSP <- readRDS(fileNameCSP)
   modelsExp <- readRDS(fileNameExp)
-} else {   ### PLEASE USE COMMENTS TO MARK WHERE LONG CHUNKS END; BETTER: AVOID LONG CHUNKS, WHERE POSSIBLE
-  
-  ### This has not been inspected by rjp
-  
-  # re-run the models and save to disk.
-  # In RStudio, be sure to set the working directory to the source file directory.
-  
+} else {
   #
   # Models that are exponential only, y = A * exp(lambda*t)
   #
@@ -181,78 +263,20 @@ if (!rerunModels){
   }
   # Save exponential models to disk.
   saveRDS(modelsExp, file=fileNameExp)
+}
 
-  
-  #
-  # Models that adhere to the cost-share theorem
-  # 
-  
-  modelsCSP <- list()
-  # Output elasticities based on cost share theorem
-  alphaCSP <- 0.3 # Fraction of national accounts spent on capital
-  betaCSP <- 0.7 # Fraction of national accounts spent on labor
-  for (country in countries){
-    for (adj in c("unadjusted", "adjusted")){
-      # Replace with better code later. 
-      # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
-      # or something like that.
-      form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
-      yVar <- as.name(summands(form, n=1, right=FALSE))
-      kVar <- as.name(summands(form, n=1))
-      lVar <- as.name(summands(form, n=2))
-      tVar <- as.name(summands(form, n=3))
-      data <- historicalData[[country]]
-      # Cobb-Douglas
-      cdModCSP <- 
-        lm(log(eval(yVar)) - alphaCSP*log(eval(kVar)) - betaCSP*log(eval(lVar)) ~ eval(tVar), 
-           data = data)
-      # cdModCSP is an "lm" object. It is not a "CDEmodel" object. 
-      # Thus, it needs its own "naturalCoeffs" attribute if it is to work correctly in the "naturalCoef" function.
-      attr(cdModCSP, "naturalCoeffs") <- data.frame(lambda=coef(cdModCSP)[[2]],
-                                                    logscale=coef(cdModCSP)[[1]], 
-                                                    scale=exp(coef(cdModCSP)[[1]]),
-                                                    alpha_1=alphaCSP,
-                                                    alpha_2=betaCSP, 
-                                                    alpha_3=0)
-      cdModCSP$formula <- form
-      sdata <- subset(data, select=all.vars(form))
-      sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-      cdModCSP$data <- sdata
-      cdModCSP$response <- sdata$iGDP
-      modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
-      # CES
-      # The only CES models that can adhere to the CSP are models where
-      # alpha values are constant with respect to time. 
-      # I.e., models where energy is not included AND where rho_1 = 0.
-      # CES models where rho_1 = 0 are the Cobb-Douglas model.
-      # Convienently, we previously fit that model.
-      cesModCSP <- cdModCSP
-      # Again, we need a customized "naturalCoeffs" attribute so that 
-      # the "naturalCoef" function will do the right thing.
-      # "naturalCoeffs" can be based on the same "naturalCoeffs"
-      # from the Cobb-Douglas model, but a few additions are needed.
-      attr(cesModCSP, "naturalCoeffs") <- 
-        naturalCoef(cdModCSP) %>%
-        mutate(
-          delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
-          delta = 1,
-          rho_1 = 0, 
-          rho = NA,
-          sigma_1 = 1,
-          sigma_12 = 1,
-          sigma = NA,
-          sigma_12_3 = NA
-        )
-      modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
-    }
-  }
-  # Save cost-share theorem models to disk.
-  saveRDS(modelsCSP, file=fileNameCSP)
+@
 
+
+<<Models_CDCES>>=
+fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
+if (!rerunModels){
+  # load from the file on disk
+  models <- readRDS(fileNameCDCES)
+} else {
   #
   # Models where all parameters are estimated (models don't adhere to the cost share theorem)
-  # 
-  
+  #
   models <- list()
   for(country in countries){
     for (flavor in flavors){
@@ -272,20 +296,12 @@ if (!rerunModels){
     }      
   }
   # Save models to disk.
-  saveRDS(models, file=fileNameCDCES)
-}  ### END ELSE FROM WAY UP THERE???
+  saveRDS(models, file=fileNameCDCES)  
+}
 @
 
-<<Models2>>=
-### TIME FOR A NEW R CHUNK -- That helps detect the end of that long code chunk
 
-### This function is the same in each model group below.  DRY (Don't repeat yourself).
-### Using this makes it (a) easier to see what's going on, and (b) easier to make adjustments
-### that affect all of the situations simultaneously.
-
-### General hint:  If you find yourself wanting to copy and paste a chunk of code, there is usually
-### a better way to do what you are about to do.
-
+<<AllCoeffs>>=
 model2df <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   ### Don't name non-lists with variables whose names sound like a list.
@@ -319,7 +335,7 @@ AllCoeffsExp <-
   bind_rows() %>%
   mutate(model = "exp", CSP = NA)  
 
-# Put all the cost-share theorem (CSP) model coefficients into a data frame
+# Put all the cost-share principle (CSP) model coefficients into a data frame
 AllCoeffsCSP <- 
   leaf_apply(modelsCSP, class = c("lm"), f = model2df) %>% 
   bind_rows() %>%
@@ -340,33 +356,6 @@ AllCoeffs <-
     nest = ifelse(is.na(nest), "", nest),
     CSP = ifelse( CSP == "w/ CSP", "w/ CSP", "w/o CSP")
     )
-    
-
-### It looks like this could also be done the otehr way arround:  We could scoop up all the models
-### into AllCoeffs and then filter to the subsets.
-
-# Get reference values for lambda and sse.
-### This could be done without saving ref if we have no other need for it
-### I've renamed ref to Ref since it is a data frame.
-Ref <- 
-  AllCoeffs %>% 
-  filter(model=="exp") %>% 
-  select(Country, sse, lambda) %>%
-  rename(sse_ref = sse, lambda_ref = lambda)
-AllCoeffs <- merge(AllCoeffs, Ref)
-
-# Calculate differences relative to the reference model
-### If all we need are the differences, we could skip the part where we put the intermediate stuff 
-### into AllCoefs
-
-AllCoeffs <- 
-  AllCoeffs %>%
-  mutate(
-    Dlambda = abs(lambda) - abs(lambda_ref), 
-    Dsse = sse - sse_ref,
-    percDlambda = Dlambda / abs(lambda_ref) * 100, 
-    percDsse = Dsse / sse_ref * 100
-  )
 
 # Relevel factors and re-order data
 ### NOTE:  Need to convert from strings to factors to use relevelFactor()
@@ -384,9 +373,6 @@ AllCoeffs <-
   arrange(Country, model, flavor, energy, nest, CSP)
 @
 
-%' <<>>=
-%' leaf_apply(models, function(mod, id) class(mod), class="cesModel")
-%' @
 
 <<output-elasticity>>=
 mod2oedf <- function(mod, id){
@@ -395,11 +381,6 @@ mod2oedf <- function(mod, id){
   ### I'm guessing you just didn't know what kind of data you were working with here. 
   ### Either way, it's a bad thing.
   id_components <- strsplit(id, split = "[.]")[[1]]
-  
-  # return this data frame 
-  ### NOTE: ifelse() and [ ] handle NAs the way we want here
-  ### The former use of [[ ]] was unnecessary and would break things in the new code
-  ### I'm guessing you had [[ ]] because you thought you had a list when you did not.
   
   ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
   # message(class(mod))
@@ -421,7 +402,26 @@ AllOE <-
     class = "cesModel", 
     mod2oedf
   ) %>% 
-  bind_rows()
+  bind_rows() %>%
+  # None of "models" adheres to the CSP.
+  mutate (CSP = "w/o CSP")
+
+# Now append to AllOE time-varying output elasticities from models that adhere to the CSP.
+# These output elasticities are stored with variable names oe1, oe2, and oe3 in the data object in the models.
+# See the <<Models_CSP>> chunk above.
+# Uncomment when we're ready to add the CSP models to the alpha vs. time graph.
+
+# AllOE <- leaf_apply(modelsCSP, class="lm", f=function(mod, id){
+#   id_components <- strsplit(id, split = "[.]")[[1]]
+#   if (id_components[4] == "CES") {
+#     return(mod$data)
+#   } else {
+#     return(NULL)
+#   }
+# }) %>% 
+#   do.call(plyr::rbind.fill, .) %>%
+#   bind_rows(AllOE, .)
+
 @
 
 <<Resampling-CD>>=
@@ -546,7 +546,6 @@ temp_data_exp <-
 #   return(df)
 # }
 
-### One line for each operation:  first leaf_apply, then rbind, then mutate -- Clarity by Code Convention
 temp_data_CSP <- 
   leaf_apply(modelsCSP, class=c("plm", "lm"), model2df) %>% 
   bind_rows() %>%
