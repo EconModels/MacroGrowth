@@ -412,25 +412,13 @@ ReModels %>%
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusions}
-\label{sec:conclusion}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Acknowledgements}
-\label{sec:acknowledgements}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 \appendix
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fitted Graphs}
+\label{sec:appendix_fitted}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(le)k$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_lek <- 
@@ -448,6 +436,12 @@ fittedGraphData_ekl <-
 
 fittedGraphNoCSP(fittedGraphData_ekl)
 @
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Residual Graphs}
+\label{sec:appendix_residual}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 <<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
