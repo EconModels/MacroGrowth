@@ -130,6 +130,9 @@ historicalData <- list(
     filter(Country == "UK") 
     # %>% select_(unique(c(commonVars, all.vars(formulas$UK$unadjusted), all.vars(formulas$UK$adjusted))))
 )
+
+# Load historical cost shares
+CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), header=TRUE)
 @
 
 
