@@ -246,6 +246,36 @@ myXTable(data_rho_table,
 @
 
 
+<<Cost_Share_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=1.5, fig.cap="Historical cost shares for capital, labor, and energy.">>=
+ggplot(
+  data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l, cs_e)
+  ) + 
+  geom_line(mapping = aes(
+    x = Year, 
+    y = value, 
+    group = cost_share, 
+    linetype = cost_share,
+    color = cost_share)) +
+  facet_grid( ~ Country) +
+  ylab("Cost Share") +
+  scale_y_continuous(limits=c(-0.2, 1.1), breaks=c(0, 0.5, 1)) +
+  geom_hline(aes(yintercept = 0.3), colour="gray50", size=0.1) +
+  geom_hline(aes(yintercept = 0.7), colour="gray50", size=0.1) +
+  xlab("") +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
+  scale_color_manual(name = "", 
+                     labels=c("k", "l", "e"),
+                     values=c("black", "black", "gray70")) +
+  scale_linetype_manual(name="", 
+                        labels=c("k", "l", "e"),
+                        values=c(2,3,1)) + 
+  scale_size_manual(name="", 
+                    labels=c("k", "l", "e"),
+                    values = c(0.9, 0.9, 0.6)) +
+  xy_theme()
+@
+
+
 <<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(kl)e$ nesting that reject the CSP. Solid line is historical GDP.">>=
 fittedGraphData_kle <- 
   fitted_and_resid_data %>% 
