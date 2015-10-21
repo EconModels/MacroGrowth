@@ -513,19 +513,12 @@ temp_data_exp <-
   leaf_apply(
     modelsExp, class=c("lm"), 
     f = function(model, id){
-      ### Why wrap in data.frame() something that already is a tbl_df?  If this is necessary, say why.
-      #  df <- data.frame(select(model$data, Year, Country))
-      ### Also: let's use a consistent style for the dplyr commands, prefering to use %>% in most cases.
-      ### Also: The following use of white space makes it clearer what is going on (and how many steps 
-      ###       are involved.  I'm going to change A LOT of code to this format.
-      ### In this format, there is no name to create a temporary variable (or to use return())
-      
       model$dat %>% 
         select(Year, Country) %>%
         mutate(
           Country = as.character(Country),  # to avoid warning about unmatched levels of factors
           fittedExp = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
-          ResidualsExp = resid(model)     ### Why is this capitalized?
+          residualsExp = resid(model)     
         )
     }
   ) %>% 
@@ -549,32 +542,34 @@ temp_data_exp <-
 #   return(df)
 # }
 
-temp_data_CSP <- 
-  leaf_apply(modelsCSP, class=c("plm", "lm"), model2df) %>% 
-  bind_rows() %>%
-  mutate(CSP = "w/ CSP")
 
 ### This looks like a candidate for clean up a la model2df
 
 function_that_was_here_before <- function(model, id){
-  df <- data.frame(select(model$data, Year)) 
-  # By including [c(1:length(df$Year))] on the end, we 
-  # add NAs (as appropriate) to the end of these columns
-  # if data do not exist.
-  df$fitted <- yhat(model)[c(1:length(df$Year))]
-  df$Residuals <- resid(model)[c(1:length(df$Year))]
-  # Now add the response, using the original variable name.
-  df[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(df$Year))]
-  # Now add meta information
   id_list <- strsplit(id, split = "[.]")[[1]]
-  len <- length(id_list)
-  df$Country <- id_list[[1]]
-  df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
-  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-  df$model <- id_list[[4]]
-  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-  return(df)  
+  out <- model$data %>% 
+    select(Year) %>%
+    mutate(
+      # By including [c(1:length(df$Year))] on the end, we 
+      # add NAs (as appropriate) to the end of these columns
+      # if data do not exist.
+      fitted = yhat(model)[c(1:length(Year))],
+      Residuals = resid(model)[c(1:length(Year))],
+      Country = id_list[[1]],
+      flavor = if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted",
+      energy = if (id_list[[3]] == "noE") "Without energy" else "With energy",
+      model = id_list[[4]],
+      nest = if (length(id_list) > 4) id_list[[5]] else NA
+    )
+  # Now add the response, using the original variable name.
+  out[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(out$Year))]
+  return(out)  
 }
+
+temp_data_CSP <- 
+  leaf_apply(modelsCSP, class=c("plm", "lm"), function_that_was_here_before) %>% 
+  bind_rows() %>%
+  mutate(CSP = "w/ CSP")
 
 temp_data_noCSP <- 
   leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), function_that_was_here_before) %>% 
@@ -587,22 +582,9 @@ temp_data_noExp <-
 # Now merge the exponential-only model with the CSP and noCSP models. 
 # Doing this, because the exponential-only model is kind-of like iY:
 # it applies to all situations.
-fitted_and_resid_data <- 
-  merge(temp_data_noExp, temp_data_exp) %>% 
-  mutate( Dr = abs(Residuals) - abs(ResidualsExp) )  
-### Caps in bad places?
-
-# Create a column containing ∆r, the difference between a residual value
-# and the residual value in the same year for the reference model
-### BREAK LONG LINES IN REASONABLE PLACES
-### BUT better to use mutate here.  See above.
-# fitted_and_resid_data[["Dr"]] <- 
-#   abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["ResidualsExp"]])
+fitted_and_resid_data <- merge(temp_data_noExp, temp_data_exp) 
 
 # Relevel factors before plotting
-### Use mutate for this stuff!
-### Align = to make similarities between successive lines stand out.
-
 fitted_and_resid_data <-
   fitted_and_resid_data %>% 
   mutate(
