@@ -31,7 +31,11 @@ output_elasticity.cesModel <- function(object, ...) {
  
   cf <- naturalCoef(object)
  
-  inputVars <- inputs(object)[object$nest] 
+  inputVars <- inputs(object)
+  # adjust for nest, if we have one recorded:
+  if (!is.null(object$nest)) {
+    inputVars <- inputVars[object$nest] 
+  }
   
   output_elasticity(
     delta = cf$delta, 

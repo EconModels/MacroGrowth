@@ -138,7 +138,7 @@ CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), head
 
 <<Models_CSP>>=
 fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
-if (!rerunModels){
+if (FALSE && !rerunModels){
   # load from the file on disk
   modelsCSP <- readRDS(fileNameCSP)
 } else {
@@ -152,6 +152,7 @@ if (!rerunModels){
   betaCSP <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
     for (adj in c("unadjusted", "adjusted")){
+      print(adj)
       # Replace with better code later. 
       # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
       # or something like that.
@@ -161,24 +162,28 @@ if (!rerunModels){
       lVar <- as.name(summands(form, n=2))
       tVar <- as.name(summands(form, n=3))
       data <- historicalData[[country]]
+      formula <- substitute(
+        log(Y) - alpha_1 * log(K) - alpha_2 * log(L) ~ T,
+        list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
+      )
       # Cobb-Douglas
       cdModCSP <- 
-        lm(log(eval(yVar)) - alphaCSP*log(eval(kVar)) - betaCSP*log(eval(lVar)) ~ eval(tVar), 
-           data = data)
-      # cdModCSP is an "lm" object. It is not a "CDEmodel" object. 
-      # Thus, it needs its own "naturalCoeffs" attribute if it is to work correctly in the "naturalCoef" function.
-      attr(cdModCSP, "naturalCoeffs") <- data.frame(lambda=coef(cdModCSP)[[2]],
-                                                    logscale=coef(cdModCSP)[[1]], 
-                                                    scale=exp(coef(cdModCSP)[[1]]),
-                                                    alpha_1=alphaCSP,
-                                                    alpha_2=betaCSP, 
-                                                    alpha_3=0
-                                                    )
+        eval(substitute( 
+          plm(formula, data = data, params = c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0.0), 
+              optimize = FALSE),
+          list(formula = formula)))
+      
+      # convert hand-fit object into a CDEmodel object
+      names(cdModCSP$coefficients)[1:2] <- c("logscale", "lambda")
+      class(cdModCSP) <- c("CDEmodel", class(cdModCSP))
       cdModCSP$formula <- form
       sdata <- subset(data, select=all.vars(form))
       sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
       cdModCSP$data <- sdata
       cdModCSP$response <- sdata$iGDP
+      cdModCSP$handcrafted <- TRUE
+      
+      # store the result in our list
       modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
       # CES
       # The only CES models that can adhere to the CSP are models where
@@ -187,38 +192,48 @@ if (!rerunModels){
       # CES models where rho_1 = 0 are the Cobb-Douglas model.
       # Convienently, we previously fit that model.
       cesModCSP <- cdModCSP
-      # Again, we need a customized "naturalCoeffs" attribute so that 
-      # the "naturalCoef" function will do the right thing.
-      # "naturalCoeffs" can be based on the same "naturalCoeffs"
-      # from the Cobb-Douglas model, but a few additions are needed.
-      attr(cesModCSP, "naturalCoeffs") <- 
-        naturalCoef(cdModCSP) %>%
-        mutate(
-          delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
-          delta = 1,
-          rho_1 = 0, 
-          rho = NA,
-          sigma_1 = 1,
-          sigma_12 = 1,
-          sigma = NA,
-          sigma_12_3 = NA
+      
+      cesModCSP$coefficients <- 
+        c(cesModCSP$coefficients, 
+          c(delta_1 = cesModCSP$coefficients["alpha_1"],
+            delta = 0,
+            rho_1 = 0,
+            rho = NA)
         )
-      # Add output elasticities (as a function of time) to this model.
-      # This would have been done by a "fortify" function, 
-      # but this is not a typical CES model, so we can't "fortify" it.
-      # Add other metadata, too.
-      cesModCSP$data <- cesModCSP$data %>%
-        mutate(
-          oe1 = alphaCSP,
-          oe2 = betaCSP,
-          oe3 = 0,
-          Country = country, 
-          flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
-          energy  = "Without energy",
-          model   = "CES", 
-          nest    = "kl",
-          CSP     = "w/ CSP"
-        )
+      cesModCSP$handcrafted <- TRUE
+      class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
+      # # Again, we need a customized "naturalCoeffs" attribute so that 
+      # # the "naturalCoef" function will do the right thing.
+      # # "naturalCoeffs" can be based on the same "naturalCoeffs"
+      # # from the Cobb-Douglas model, but a few additions are needed.
+      # attr(cesModCSP, "naturalCoeffs") <- 
+      #   naturalCoef(cdModCSP) %>%
+      #   mutate(
+      #     delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
+      #     delta = 1,
+      #     rho_1 = 0, 
+      #     rho = NA,
+      #     sigma_1 = 1,
+      #     sigma_12 = 1,
+      #     sigma = NA,
+      #     sigma_12_3 = NA
+      #   )
+      # # Add output elasticities (as a function of time) to this model.
+      # # This would have been done by a "fortify" function, 
+      # # but this is not a typical CES model, so we can't "fortify" it.
+      # # Add other metadata, too.
+      # cesModCSP$data <- cesModCSP$data %>%
+      #   mutate(
+      #     oe1 = alphaCSP,
+      #     oe2 = betaCSP,
+      #     oe3 = 0,
+      #     Country = country, 
+      #     flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
+      #     energy  = "Without energy",
+      #     model   = "CES", 
+      #     nest    = "kl",
+      #     CSP     = "w/ CSP"
+      #   )
       modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
     }
   }
