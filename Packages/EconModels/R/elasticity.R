@@ -78,7 +78,7 @@ output_elasticity.default <- function(
   
   s1 <- ifelse(is.finite(R), alpha1 * x1 ^ (-rho1) *R, alpha1 * x1^(-rho1))
   s2 <- ifelse(is.finite(R), alpha2 * x2 ^ (-rho1) *R, alpha2 * x2^(-rho1))
-  s3 <- ifelse(is.finite(R), alpha3 * x3 ^ (-rho), 0)
+  s3 <- ifelse(is.finite(R) & !is.null(x3), alpha3 * x3 ^ (-rho), 0)
   
   oe1 <- s1 / (s1 + s2 + s3)
   oe2 <- s2 / (s1 + s2 + s3)
