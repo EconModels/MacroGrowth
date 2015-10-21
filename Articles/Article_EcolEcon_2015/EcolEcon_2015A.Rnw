@@ -195,8 +195,8 @@ if (FALSE && !rerunModels){
       
       cesModCSP$coefficients <- 
         c(cesModCSP$coefficients, 
-          c(delta_1 = cesModCSP$coefficients["alpha_1"],
-            delta = 0,
+          c(delta_1 = as.vector(cesModCSP$coefficients["alpha_1"]),
+            delta = 1,
             rho_1 = 0,
             rho = NA)
         )
