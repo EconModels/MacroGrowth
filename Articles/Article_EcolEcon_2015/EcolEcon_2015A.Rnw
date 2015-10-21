@@ -162,7 +162,7 @@ if (!rerunModels){
       tVar <- as.name(summands(form, n=3))
       data <- historicalData[[country]]
       formula <- substitute(
-        log(Y) - alpha_1 * log(K) - alpha_2 * log(L) ~ T,
+        log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
         list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
       )
       # Cobb-Douglas
