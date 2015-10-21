@@ -138,7 +138,7 @@ CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), head
 
 <<Models_CSP>>=
 fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
-if (FALSE && !rerunModels){
+if (!rerunModels){
   # load from the file on disk
   modelsCSP <- readRDS(fileNameCSP)
 } else {
@@ -152,7 +152,6 @@ if (FALSE && !rerunModels){
   betaCSP <- 0.7 # Fraction of national accounts spent on labor
   for (country in countries){
     for (adj in c("unadjusted", "adjusted")){
-      print(adj)
       # Replace with better code later. 
       # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
       # or something like that.
@@ -532,8 +531,8 @@ temp_data_exp <-
         select(Year, Country) %>%
         mutate(
           Country = as.character(Country),  # to avoid warning about unmatched levels of factors
-          fittedExp = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
-          residualsExp = resid(model)     
+          fitted = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
+          residuals = resid(model)     
         )
     }
   ) %>% 
@@ -569,12 +568,12 @@ function_that_was_here_before <- function(model, id){
       # add NAs (as appropriate) to the end of these columns
       # if data do not exist.
       fitted = yhat(model)[c(1:length(Year))],
-      Residuals = resid(model)[c(1:length(Year))],
+      residuals = resid(model)[c(1:length(Year))],
       Country = id_list[[1]],
-      flavor = if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted",
-      energy = if (id_list[[3]] == "noE") "Without energy" else "With energy",
+      flavor = ifelse (id_list[[2]] ==  "unadjusted", "Unadjusted", "Quality-adjusted"),
+      energy = ifelse(id_list[[3]] == "noE", "Without energy", "With energy"),
       model = id_list[[4]],
-      nest = if (length(id_list) > 4) id_list[[5]] else NA
+      nest = ifelse (length(id_list) > 4, id_list[[5]], NA)
     )
   # Now add the response, using the original variable name.
   out[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(out$Year))]
