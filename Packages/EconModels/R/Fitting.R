@@ -388,7 +388,10 @@ yhat.CDEmodel <- function( object, ... ) {
   #  2 -> formula
   #  2 -> lhs of ~
   #  3 -> rhs of -
-  lx0 <- eval(object$call[[2]][[2]][[3]], getData(object))
+  coef_env <- as.environment(as.list(object$coefficients))
+  parent.env(coef_env) <- parent.frame()
+  lx0 <- 0 - eval(object$call[[2]][[2]], getData(object), coef_env) +
+    log(object$response)
   exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
