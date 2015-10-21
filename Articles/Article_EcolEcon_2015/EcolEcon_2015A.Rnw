@@ -189,7 +189,8 @@ if (!rerunModels){
       # alpha values are constant with respect to time. 
       # I.e., models where energy is not included AND where rho_1 = 0.
       # CES models where rho_1 = 0 are the Cobb-Douglas model.
-      # Convienently, we previously fit that model.
+      # Convienently, we previously fit that model 
+      # with the required output elasticities.
       cesModCSP <- cdModCSP
       
       cesModCSP$coefficients <- 
@@ -414,30 +415,17 @@ mod2oedf <- function(mod, id){
 } 
 
 AllOE <- 
-  leaf_apply(
-    models, 
-    class = "cesModel", 
-    mod2oedf
-  ) %>% 
+  leaf_apply(models, class = "cesModel", mod2oedf) %>% 
   bind_rows() %>%
   # None of "models" adheres to the CSP.
   mutate (CSP = "w/o CSP")
 
 # Now append to AllOE time-varying output elasticities from models that adhere to the CSP.
-# These output elasticities are stored with variable names oe1, oe2, and oe3 in the data object in the models.
-# See the <<Models_CSP>> chunk above.
-# Uncomment when we're ready to add the CSP models to the alpha vs. time graph.
 
-# AllOE <- leaf_apply(modelsCSP, class="lm", f=function(mod, id){
-#   id_components <- strsplit(id, split = "[.]")[[1]]
-#   if (id_components[4] == "CES") {
-#     return(mod$data)
-#   } else {
-#     return(NULL)
-#   }
-# }) %>% 
-#   do.call(plyr::rbind.fill, .) %>%
-#   bind_rows(AllOE, .)
+AllOE <- leaf_apply(modelsCSP, class="cesModel", f=mod2oedf) %>% 
+  bind_rows() %>%
+  mutate (CSP = "w/ CSP") %>%
+  bind_rows(AllOE, .)
 
 @
 
