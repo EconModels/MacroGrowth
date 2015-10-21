@@ -385,13 +385,13 @@ yhat.CDEmodel <- function( object, ... ) {
   #lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   
   # grabbing log(x_0) from from the call
-  #  2 -> formula
   #  2 -> lhs of ~
-  #  3 -> rhs of -
+  #  3 -> rhs of (last) - ; use ( ) to group for handcrafted hacky kludge
   coef_env <- as.environment(as.list(object$coefficients))
   parent.env(coef_env) <- parent.frame()
-  lx0 <- 0 - eval(object$call[[2]][[2]], getData(object), coef_env) +
-    log(object$response)
+  # two ways to skin this cat, but first requires more careful use of parens.
+  # lx0 <- eval(object$call$formula[[2]][[3]], getData(object), coef_env)
+  lx0 <- 0 - eval(object$call$formula[[2]], getData(object), coef_env) + log(object$response)
   exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
