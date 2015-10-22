@@ -464,43 +464,24 @@ ReModels <-
 ### Why are we going back and forth between CamelCase and interspersed_underscores?
 ### If there isn't a reason, probably we should stick with one naming convention.
 
-print("top of Fitted_and_Residuals")
-
 temp_data_exp <- 
   leaf_apply(
     modelsExp, class=c("lm"), 
     f = function(model, id){
-      model$dat %>% 
+      out <- model$dat %>% 
         select(Year, Country) %>%
         mutate(
           Country = as.character(Country),  # to avoid warning about unmatched levels of factors
           fitted = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
-          residuals = resid(model)     
+          residuals = resid(model), 
+          model = "exp"
         )
+        # Now add the response, using the original variable name.
+      out[[summands(model$formula, right = FALSE)]] <- exp(response(model)[c(1:length(out$Year))])
+      return(out)
     }
   ) %>% 
   bind_rows()
-
-### If the function is this long, it should be separated out and named rather than embedded in another
-### function call.  
-### But this looks like model2df from above.  Let's use that instead.
-
-### Probably just junk now.
-# function_that_was_here_before <- function(model, id){
-#   df <- data.frame(select(model$data, Year, Country, iGDP))
-#   df$fitted <- exp(fitted(model)) # fitted is in log space. Return to regular space.
-#   df$Residuals <- resid(model) # residuals are in log space, and that is what we want.
-#   # Now add meta information
-#   id_list <- strsplit(id, split = "[.]")[[1]]
-#   df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
-#   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-#   df$model <- id_list[[4]]
-#   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-#   return(df)
-# }
-
-
-### This looks like a candidate for clean up a la model2df
 
 function_that_was_here_before <- function(model, id){
   id_list <- strsplit(id, split = "[.]")[[1]]
@@ -533,24 +514,8 @@ temp_data_noCSP <-
   bind_rows() %>%
   mutate(CSP = "w/o CSP")
 
-temp_data_noExp <- 
-  bind_rows( temp_data_CSP, temp_data_noCSP )
+FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP)
 
-# Now merge the exponential-only model with the CSP and noCSP models. 
-# Doing this, because the exponential-only model is kind-of like iY:
-# it applies to all situations.
-fitted_and_resid_data <- merge(temp_data_noExp, temp_data_exp) 
-
-# Relevel factors before plotting
-fitted_and_resid_data <-
-  fitted_and_resid_data %>% 
-  mutate(
-    Country = relevelFactor(factor(Country), c("PT", "UK")),
-    flavor  = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")),
-    energy  = relevelFactor(factor(energy), c("Without energy", "With energy")),
-    nest    = relevelFactor(factor(nest), c("kl", "kle", "lek", "ekl"))
-  ) %>%
-  arrange(Country, CSP, model, flavor, energy, nest)
 @
 
 
@@ -641,88 +606,6 @@ ggplot(histDataForGraph) +
   xy_theme()
 @
 
-
-<<Fitted_and_Residual_Graph_Functions>>=
-
-### Can fittedGraphNoCSP and fittedGraphCSP be combined into one function with an argument?
-### Or can the data filtering happen outside and everything else be the same?
-### Did you copy and paste to make one from the other?  That should be a sign...
-fittedGraphNoCSP <- function(data){
-  fittedGraphData <- 
-    data %>% 
-    select(Year, Country, iGDP, fitted, fittedExp, flavor, energy, CSP, nest) %>%
-    melt(measure.vars = c("iGDP", "fitted", "fittedExp"), 
-         value.name = "value", variable.name = "variable") %>%
-    mutate(label = paste(variable, energy)) %>%
-    # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
-    filter(label %in% c("iGDP With energy", "fittedExp With energy", 
-                        "fitted With energy", "fitted Without energy")
-    ) %>% 
-    mutate(
-      label = plyr::mapvalues(label, 
-                              from = c("iGDP With energy",  "fittedExp With energy",
-                                       "fitted With energy", "fitted Without energy"), 
-                              to = c("GDP",  "Ref. model",
-                                     "w/ energy", "w/o energy")),
-      label = relevelFactor(factor(label), 
-                            c("GDP", "Ref. model", "w/o energy", "w/ energy"))
-    )
-  
-  ggplot() +
-    geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label, size=label)) +
-    scale_linetype_manual(values=c(1,2,4,3), name="") +
-    scale_size_manual(name = "", values=c(1, 0.5, 0.5, 0.5)) +
-    facet_grid(flavor ~ Country) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-    scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-    xlab("") +
-    ylab("Indexed GDP (1960=1)") +
-    xy_theme()
-}
-@
-
-
-<<ResidualPlotFunction>>=
-
-cesResidualPlot2 <- function(data){
-  dataToPlot <- 
-    data %>%
-    mutate(nest = 
-             plyr::mapvalues(
-               nest, 
-               from=c("kl", "kle", "lek", "ekl"), 
-               to=c("kl", "(kl)e", "(le)k", "(ek)l")
-               ),
-           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-           Inputs = flavor)
-
-  ggplot() +
-    geom_point(
-      data=dataToPlot, 
-      mapping=aes(
-        x=Year, 
-        y=Residuals, 
-        fill=Model, 
-        shape=Model, 
-        size=Model
-        )
-      ) +
-    facet_grid(flavor ~ Country) +
-    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-    xlab("") +
-    ylab("r") + 
-    xy_theme() +
-    labs(color = "Factors of production") +
-    # This is custom stuff here to match the model_points_style function. 
-    # We can't use model_points_style, because the aesthetics are different here
-    # with only two series (kl w/o CSP and (kl)e w/o CSP) in the graph.
-    scale_size_manual(values = c(3, 3)) +
-    scale_fill_manual(values = c("transparent", "transparent")) +
-    scale_shape_manual(values = c(21, 23)) +
-  theme(legend.title=element_blank())
-}
-@
 
 
 \section{End EcolEcon2015A}

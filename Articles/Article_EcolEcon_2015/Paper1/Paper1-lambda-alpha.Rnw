@@ -275,46 +275,99 @@ ggplot(data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l)) +
 @
 
 
-<<Graphs_CESkle-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(kl)e$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_kle <- 
-  fitted_and_resid_data %>% 
-  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "kle"))
+<<faceting_functions>>=
 
-fittedGraphNoCSP(fittedGraphData_kle)
+# Replicates exponential models for each flavor in the flavors vector
+replicateExpModels <- function(data, flavors){
+  lapply(flavors, function(flav){
+    data %>% 
+      filter(model=="exp") %>%
+      mutate(
+        flavor = flav,
+        nest = "exp",
+        CSP = "exp"
+      )
+  }) %>%
+    bind_rows() %>% 
+    
+    # Combine the replicated exponential models with everything else in data
+    rbind(., filter(data, model != "exp"))
+}
+
+# Add facet columns to data for both fitted and residuals graphs.
+addFacetCols <- function(data){
+  # Create the facet variables
+  mutate(data,
+    nest = plyr::mapvalues(nest, from=c("kle", "lek", "ekl"), to=c("(kl)e", "(le)k", "(ek)l")),
+    flavor = plyr::mapvalues(flavor, from=c("Unadjusted", "Quality-adjusted"), to=c("UA", "QA")),
+    
+    xfacet = interaction(Country, flavor, sep = " - "),
+    xfacet = relevelFactor(factor(xfacet), c("PT - UA", "PT - QA", "UK - UA", "UK - QA")),
+    
+    yfacet = interaction(model, nest, CSP, sep = " - "),
+    yfacet = plyr::mapvalues(yfacet, 
+                             from=c("exp - exp - exp", 
+                                    "CES - kl - w/ CSP",
+                                    "CES - kl - w/o CSP",
+                                    "CES - (kl)e - w/o CSP",
+                                    "CES - (le)k - w/o CSP",
+                                    "CES - (ek)l - w/o CSP"), 
+                             to  =c("Ref.",
+                                    "kl - w/ CSP",
+                                    "kl - w/o CSP",
+                                    "(kl)e - w/o CSP",
+                                    "(le)k - w/o CSP",
+                                    "(ek)l - w/o CSP")
+    ),
+    yfacet = relevelFactor(factor(yfacet), c("Ref.", 
+                                             "kl - w/ CSP", 
+                                             "kl - w/o CSP", 
+                                             "(kl)e - w/o CSP", 
+                                             "(le)k - w/o CSP", 
+                                             "(ek)l - w/o CSP"))
+  )
+}
+
 @
 
 
 
-<<Fitted_Graph, eval=FALSE>>=
-fitted_and_resid_data %>% 
-  filter(model=="CES") %>%
-  gather()
-  melt(measure.vars = c("iGDP", "fitted", "fittedExp"), 
-       value.name = "value", variable.name = "variable") %>%
-  mutate(label = paste(variable, energy)) %>%
-  # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
-  filter(label %in% c("iGDP With energy", "fittedExp With energy", 
-                      "fitted With energy", "fitted Without energy")
+<<Fitted_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=7, fig.cap="Fitted compared to historical GDP time series.">>=
+
+# Duplicate the exponential models for both Unadjusted and Quality-adjusted cases.
+replicateExpModels(
+  data = filter(FittedAndResid, model=="exp" | model=="CES"), 
+  flavors = c("Unadjusted", "Quality-adjusted")
   ) %>% 
-  mutate(
-    label = plyr::mapvalues(label, 
-                            from = c("iGDP With energy",  "fittedExp With energy",
-                                     "fitted With energy", "fitted Without energy"), 
-                            to = c("GDP",  "Ref. model",
-                                   "w/ energy", "w/o energy")),
-    label = relevelFactor(factor(label), 
-                          c("GDP", "Ref. model", "w/o energy", "w/ energy"))
-  ) %>%
+  
+  addFacetCols() %>%
+  
+  gather(key = y_type, value = y_value, iGDP, fitted) %>%
   
   ggplot() +
-  geom_line( mapping=aes(x=Year, y=value, group=label, linetype=label, size=label)) +
-  scale_linetype_manual(values=c(1,2,4,3), name="") +
-  scale_size_manual(name = "", values=c(1, 0.5, 0.5, 0.5)) +
-  facet_grid(flavor ~ Country) +
-  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-  scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-  xlab("") +
-  ylab("Indexed GDP (1960=1)") +
+  geom_line(alpha = 0.8, aes(x = Year, 
+                             y = y_value,
+                             group = y_type,
+                             color = y_type,
+                             linetype = y_type,
+                             size = y_type)
+  ) + 
+  facet_grid(yfacet ~ xfacet) + 
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_color_manual(
+    name = "",
+    labels = c("historical", "fitted"),
+    values=c("gray70", "black")
+  ) +
+  scale_size_manual(
+    name = "",
+    labels = c("historical", "fitted"),
+    values = c(1.5, 0.3)) +
+  scale_linetype_manual( 
+    name = "",
+    labels = c("historical", "fitted"),
+    values=c(1,1) ) + 
+  labs(x="", y="GDP") +
   xy_theme()
 
 @
@@ -329,8 +382,8 @@ data_sr_sse <-
   mutate(nest = 
            plyr::mapvalues(
              nest, 
-             from=c("kl", "kle", "lek", "ekl"), 
-             to=c("kl", "(kl)e", "(le)k", "(ek)l")
+             from=c("kl", "kle",   "lek",   "ekl"), 
+             to  =c("kl", "(kl)e", "(le)k", "(ek)l")
              ),
          Model = interaction(nest, CSP, sep = " ", drop=TRUE),
          Inputs = flavor
@@ -469,28 +522,6 @@ ReModels %>%
 \appendix
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Fitted Graphs}
-\label{sec:appendix_fitted}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-<<Graphs_CESlek-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(le)k$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_lek <- 
-  fitted_and_resid_data %>% 
-  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "lek"))
-
-fittedGraphNoCSP(fittedGraphData_lek)
-@
-
-
-<<Graphs_CESekl-fitted, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="CES models with $kl$ and $(ek)l$ nesting that reject the CSP. Solid line is historical GDP.">>=
-fittedGraphData_ekl <- 
-  fitted_and_resid_data %>% 
-  filter(model=="CES" & CSP=="w/o CSP" & (nest == "kl" | nest == "ekl"))
-
-fittedGraphNoCSP(fittedGraphData_ekl)
-@
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Residual Graphs}
@@ -498,29 +529,25 @@ fittedGraphNoCSP(fittedGraphData_ekl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-<<Graphs_CESkle-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(kl$)$e$ nesting.">>=
-cesResidualPlot2(
-  fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="w/o CSP" & (nest=="kle" | nest=="kl"))
-)
+<<Residuals_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=7, fig.cap="Model residuals.">>=
+
+# Duplicate the exponential models for both Unadjusted and Quality-adjusted cases.
+replicateExpModels(
+  data = filter(FittedAndResid, model=="exp" | model=="CES"), 
+  flavors = c("Unadjusted", "Quality-adjusted")
+  ) %>% 
+  
+  addFacetCols() %>% 
+  
+  ggplot() +
+  geom_point(alpha = 0.8, size = 0.5, aes(x = Year, y = residuals)) + 
+  facet_grid(yfacet ~ xfacet, scales = "free_y" ) + 
+  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  labs(x="", y="Residuals") +
+  geom_hline(aes(yintercept = 0.0), colour="gray50", size=0.1) + 
+  xy_theme()
+
 @
-
-
-<<Graphs_CESlek-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with ($le$)$k$ nesting.">>=
-cesResidualPlot2(
-  fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="w/o CSP" & (nest == "lek" | nest=="kl"))
-)
-@
-
-
-<<Graphs_CESekl-resid, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Fitting residuals for CES models with $(ek$)$l$ nesting.">>=
-cesResidualPlot2(
-  fitted_and_resid_data %>% 
-    filter(model=="CES" & CSP=="w/o CSP" & (nest=="ekl" | nest=="kl"))
-)
-@
-
 
 
 
