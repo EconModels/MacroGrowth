@@ -365,6 +365,7 @@ AllOE <- leaf_apply(modelsCSP, class="cesModel", f=mod2oedf) %>%
 
 @
 
+
 <<Resampling-CD>>=
 resampleCoeffsCDFilename <- "EcolEcon2015ResampleCoeffsCD.rds"
 resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
@@ -400,6 +401,7 @@ if (rerunResampling){
 }
 @
 
+
 <<Resampling-CES-adjusted-kle>>=
 print("Top of Resampling-CES-adjusted-kle")
 
@@ -426,6 +428,7 @@ if (rerunResampling){
   resampleModelsCES <- readRDS(resampleModelsCESFilename)
 }
 @
+
 
 <<ReModels>>=
 ReModels <-
@@ -522,32 +525,27 @@ FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP
 @
 
 
-<<Historical_Data>>=
-
-### Also, I find tidyr::gather() and tidyr::spread() easier to work with than melt() and cast()
-
-histDataForGraph <- 
-  leaf_apply(formulas, class = "formula", f=function(form, name){
-    meta <- strsplit(name, split="[.]")[[1]]
-    Country <- meta[1]
-    flavor <- meta[2]
-    measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
-    ### Is there any reason to select away some of the columns?
-    trimmed_historical_data <- HistoricalData[[Country]][c("Year", measure.vars)]
-    
-    # return this.
-    melt(
-      trimmed_historical_data, 
-      measure.vars = measure.vars, 
-      value.name = "value",
-      variable.name = "variable") %>%
+<<Historical_Plot>>=
+leaf_apply(formulas, class = "formula", f=function(form, id){
+  meta <- strsplit(id, split="[.]")[[1]]
+  Country <- meta[1]
+  flavor <- meta[2]
+  measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
+  # Trim to avoid plotting data which are unused for one coutry but included for the other.
+  trimmed_historical_data <- HistoricalData[[Country]][c("Year", measure.vars)]
+  
+  melt(
+    trimmed_historical_data, 
+    measure.vars = measure.vars, 
+    value.name = "value",
+    variable.name = "variable") %>%
     mutate(
       variable = as.character(variable), # eliminate factors, which cause warnings with bind_rows() below.
       Country = Country,
       flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted")
-      )
-  }
-  ) %>% bind_rows() %>%
+    )
+}
+) %>% bind_rows() %>%
   
   mutate( 
     # Change variable names to make a nicer-looking graph and relevel factors before plotting
@@ -563,12 +561,9 @@ histDataForGraph <-
     Country = relevelFactor(factor(Country), c("PT", "UK")), # Adjusts facet order
     flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")), # Adjusts facet order
     variable = relevelFactor(factor(variable), c("y", "k", "l", "e"))
-  )
-@
-
-
-<<Historical_Plot>>=
-ggplot(histDataForGraph) + 
+  ) %>%
+  
+  ggplot() + 
   geom_line(aes(x=Year, y=value, group=variable, linetype=variable, colour=variable, size=variable)) +
   facet_grid(flavor ~ Country) + 
   scale_color_manual(name = "", values=c("black", "black", "black", "gray70")) +
