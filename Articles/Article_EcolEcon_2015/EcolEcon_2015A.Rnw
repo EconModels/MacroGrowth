@@ -144,6 +144,7 @@ modelsCSP <- list()
 # Output elasticities based on cost share principle
 alphaCSP <- 0.3 # Fraction of national accounts spent on capital
 betaCSP <- 0.7 # Fraction of national accounts spent on labor
+gammaCSP <- 0.0
 for (country in countries){
   for (adj in c("unadjusted", "adjusted")){
     
@@ -163,7 +164,7 @@ for (country in countries){
     # Cobb-Douglas
     cdModCSP <- 
       eval(substitute( 
-        plm(formula, data = data, params = c(alpha_1 = alphaCSP, alpha_2 = betaCSP, alpha_3 = 0.0), 
+        plm(formula, data = data, params = c(alpha_1 = alphaCSP, alpha_2 = betaCSP, alpha_3 = gammaCSP), 
             optimize = FALSE),
         list(formula = formula)))
     
