@@ -137,150 +137,133 @@ CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), head
 
 
 <<Models_CSP>>=
-fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
-if (!rerunModels){
-  # load from the file on disk
-  modelsCSP <- readRDS(fileNameCSP)
-} else {
-  #
-  # Models that adhere to the cost-share theorem
-  # 
-  
-  modelsCSP <- list()
-  # Output elasticities based on cost share principle
-  alphaCSP <- 0.3 # Fraction of national accounts spent on capital
-  betaCSP <- 0.7 # Fraction of national accounts spent on labor
-  for (country in countries){
-    for (adj in c("unadjusted", "adjusted")){
-      # Replace with better code later. 
-      # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
-      # or something like that.
-      form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
-      yVar <- as.name(summands(form, n=1, right=FALSE))
-      kVar <- as.name(summands(form, n=1))
-      lVar <- as.name(summands(form, n=2))
-      tVar <- as.name(summands(form, n=3))
-      data <- historicalData[[country]]
-      formula <- substitute(
-        log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
-        list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
+#
+# Models that adhere to the cost-share principle
+# 
+modelsCSP <- list()
+# Output elasticities based on cost share principle
+alphaCSP <- 0.3 # Fraction of national accounts spent on capital
+betaCSP <- 0.7 # Fraction of national accounts spent on labor
+for (country in countries){
+  for (adj in c("unadjusted", "adjusted")){
+    # Replace with better code later. 
+    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
+    # or something like that.
+    form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
+    yVar <- as.name(summands(form, n=1, right=FALSE))
+    kVar <- as.name(summands(form, n=1))
+    lVar <- as.name(summands(form, n=2))
+    tVar <- as.name(summands(form, n=3))
+    data <- historicalData[[country]]
+    formula <- substitute(
+      log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
+      list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
+    )
+    # Cobb-Douglas
+    cdModCSP <- 
+      eval(substitute( 
+        plm(formula, data = data, params = c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0.0), 
+            optimize = FALSE),
+        list(formula = formula)))
+    
+    # convert hand-fit object into a CDEmodel object
+    names(cdModCSP$coefficients)[1:2] <- c("logscale", "lambda")
+    class(cdModCSP) <- c("CDEmodel", class(cdModCSP))
+    cdModCSP$formula <- form
+    sdata <- subset(data, select=all.vars(form))
+    sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+    cdModCSP$data <- sdata
+    cdModCSP$response <- sdata$iGDP
+    cdModCSP$handcrafted <- TRUE
+    
+    # store the result in our list
+    modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
+    # CES
+    # The only CES models that can adhere to the CSP are models where
+    # alpha values are constant with respect to time. 
+    # I.e., models where energy is not included AND where rho_1 = 0.
+    # CES models where rho_1 = 0 are the Cobb-Douglas model.
+    # Convienently, we previously fit that model 
+    # with the required output elasticities.
+    cesModCSP <- cdModCSP
+    
+    cesModCSP$coefficients <- 
+      c(cesModCSP$coefficients, 
+        c(delta_1 = as.vector(cesModCSP$coefficients["alpha_1"]),
+          delta = 1,
+          rho_1 = 0,
+          rho = NA)
       )
-      # Cobb-Douglas
-      cdModCSP <- 
-        eval(substitute( 
-          plm(formula, data = data, params = c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0.0), 
-              optimize = FALSE),
-          list(formula = formula)))
-      
-      # convert hand-fit object into a CDEmodel object
-      names(cdModCSP$coefficients)[1:2] <- c("logscale", "lambda")
-      class(cdModCSP) <- c("CDEmodel", class(cdModCSP))
-      cdModCSP$formula <- form
-      sdata <- subset(data, select=all.vars(form))
-      sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-      cdModCSP$data <- sdata
-      cdModCSP$response <- sdata$iGDP
-      cdModCSP$handcrafted <- TRUE
-      
-      # store the result in our list
-      modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
-      # CES
-      # The only CES models that can adhere to the CSP are models where
-      # alpha values are constant with respect to time. 
-      # I.e., models where energy is not included AND where rho_1 = 0.
-      # CES models where rho_1 = 0 are the Cobb-Douglas model.
-      # Convienently, we previously fit that model 
-      # with the required output elasticities.
-      cesModCSP <- cdModCSP
-      
-      cesModCSP$coefficients <- 
-        c(cesModCSP$coefficients, 
-          c(delta_1 = as.vector(cesModCSP$coefficients["alpha_1"]),
-            delta = 1,
-            rho_1 = 0,
-            rho = NA)
-        )
-      cesModCSP$handcrafted <- TRUE
-      class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
-      # # Again, we need a customized "naturalCoeffs" attribute so that 
-      # # the "naturalCoef" function will do the right thing.
-      # # "naturalCoeffs" can be based on the same "naturalCoeffs"
-      # # from the Cobb-Douglas model, but a few additions are needed.
-      # attr(cesModCSP, "naturalCoeffs") <- 
-      #   naturalCoef(cdModCSP) %>%
-      #   mutate(
-      #     delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
-      #     delta = 1,
-      #     rho_1 = 0, 
-      #     rho = NA,
-      #     sigma_1 = 1,
-      #     sigma_12 = 1,
-      #     sigma = NA,
-      #     sigma_12_3 = NA
-      #   )
-      # # Add output elasticities (as a function of time) to this model.
-      # # This would have been done by a "fortify" function, 
-      # # but this is not a typical CES model, so we can't "fortify" it.
-      # # Add other metadata, too.
-      # cesModCSP$data <- cesModCSP$data %>%
-      #   mutate(
-      #     oe1 = alphaCSP,
-      #     oe2 = betaCSP,
-      #     oe3 = 0,
-      #     Country = country, 
-      #     flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
-      #     energy  = "Without energy",
-      #     model   = "CES", 
-      #     nest    = "kl",
-      #     CSP     = "w/ CSP"
-      #   )
-      modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
-    }
+    cesModCSP$handcrafted <- TRUE
+    class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
+    # # Again, we need a customized "naturalCoeffs" attribute so that 
+    # # the "naturalCoef" function will do the right thing.
+    # # "naturalCoeffs" can be based on the same "naturalCoeffs"
+    # # from the Cobb-Douglas model, but a few additions are needed.
+    # attr(cesModCSP, "naturalCoeffs") <- 
+    #   naturalCoef(cdModCSP) %>%
+    #   mutate(
+    #     delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
+    #     delta = 1,
+    #     rho_1 = 0, 
+    #     rho = NA,
+    #     sigma_1 = 1,
+    #     sigma_12 = 1,
+    #     sigma = NA,
+    #     sigma_12_3 = NA
+    #   )
+    # # Add output elasticities (as a function of time) to this model.
+    # # This would have been done by a "fortify" function, 
+    # # but this is not a typical CES model, so we can't "fortify" it.
+    # # Add other metadata, too.
+    # cesModCSP$data <- cesModCSP$data %>%
+    #   mutate(
+    #     oe1 = alphaCSP,
+    #     oe2 = betaCSP,
+    #     oe3 = 0,
+    #     Country = country, 
+    #     flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
+    #     energy  = "Without energy",
+    #     model   = "CES", 
+    #     nest    = "kl",
+    #     CSP     = "w/ CSP"
+    #   )
+    modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
   }
-  # Save cost-share theorem models to disk.
-  saveRDS(modelsCSP, file=fileNameCSP)
 }
 
 @
 
 
 <<Models_Exp>>=
-fileNameExp <- "EcolEcon2015ModelsExp.rds"
-if (!rerunModels){
-  # load from the file on disk
-  modelsExp <- readRDS(fileNameExp)
-} else {
-  #
-  # Models that are exponential only, y = A * exp(lambda*t)
-  #
-  modelsExp <- list()
-  alphaExp <- 0
-  betaExp <- 0
-  gammaExp <- 0
-  for (country in countries){
-    # Replace with better code later. 
-    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
-    # or something like that.
-    form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
-    yVar <- as.name(summands(form, n=1, right=FALSE))
-    tVar <- as.name(summands(form, n=1))
-    data <- historicalData[[country]]
-    expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
-    attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
-                                                  logscale=coef(expMod)[[1]], 
-                                                  scale=exp(coef(expMod)[[1]]),
-                                                  alpha_1=alphaExp,
-                                                  alpha_2=betaExp, 
-                                                  alpha_3=gammaExp)
-    expMod$formula <- form
-    sdata <- subset(data, select=all.vars(form))
-    sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-    expMod$data <- sdata
-    expMod$response <- sdata$iGDP 
-    modelsExp[[country]] <- expMod
-  }
-  # Save exponential models to disk.
-  saveRDS(modelsExp, file=fileNameExp)
+#
+# Models that are exponential only, y = A * exp(lambda*t)
+#
+modelsExp <- list()
+alphaExp <- 0
+betaExp <- 0
+gammaExp <- 0
+for (country in countries){
+  # Replace with better code later. 
+  # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
+  # or something like that.
+  form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
+  yVar <- as.name(summands(form, n=1, right=FALSE))
+  tVar <- as.name(summands(form, n=1))
+  data <- historicalData[[country]]
+  expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
+  attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
+                                              logscale=coef(expMod)[[1]], 
+                                              scale=exp(coef(expMod)[[1]]),
+                                              alpha_1=alphaExp,
+                                              alpha_2=betaExp, 
+                                              alpha_3=gammaExp)
+  expMod$formula <- form
+  sdata <- subset(data, select=all.vars(form))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+  expMod$data <- sdata
+  expMod$response <- sdata$iGDP 
+  modelsExp[[country]] <- expMod
 }
 
 @
