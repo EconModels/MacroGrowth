@@ -30,7 +30,7 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunCESModels=FALSE
 rerunResampling=FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
@@ -57,9 +57,6 @@ opts_chunk$set(
   # Sets all table captions to the top.
   xtable.caption.placement="top"
 )
-
-# This function is used in many places below.
-### That's nice.  I assume that's why you wrote a function.  But what does it DO?
 @
 
 <<myXTable>>=
@@ -116,23 +113,51 @@ flavors <- names(formulas$PT)
 @
 
 <<Data>>=
-# Create the historicalData data frames
-### If we need to select variables, we can do that.  Unfortunately, select() and select_() don't do
-### what we would like here (they don't accept a vector of character strings), so we'd have to use
-### something else.  I've kept the fake select_() command here just to record what was done earlier.
-
+# Create the HistoricalData data frames
 commonVars <- c("Year", "Country", "Source")
-historicalData <- list(
+HistoricalData <- list(
   PT =  IST %>% 
     filter(Country == "PT"), 
-    #  %>% select_(unique(c(commonVars, all.vars(formulas$PT$unadjusted), all.vars(formulas$PT$adjusted)))),
   UK = Leeds %>% 
     filter(Country == "UK") 
-    # %>% select_(unique(c(commonVars, all.vars(formulas$UK$unadjusted), all.vars(formulas$UK$adjusted))))
 )
 
 # Load historical cost shares
 CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), header=TRUE)
+@
+
+
+<<Models_Exp>>=
+#
+# Models that are exponential only, y = A * exp(lambda*t)
+#
+modelsExp <- list()
+alphaExp <- 0
+betaExp <- 0
+gammaExp <- 0
+for (country in countries){
+  # Replace with better code later. 
+  # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
+  # or something like that.
+  form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
+  yVar <- as.name(summands(form, n=1, right=FALSE))
+  tVar <- as.name(summands(form, n=1))
+  data <- HistoricalData[[country]]
+  expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
+  attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
+                                              logscale=coef(expMod)[[1]], 
+                                              scale=exp(coef(expMod)[[1]]),
+                                              alpha_1=alphaExp,
+                                              alpha_2=betaExp, 
+                                              alpha_3=gammaExp)
+  expMod$formula <- form
+  sdata <- subset(data, select=all.vars(form))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+  expMod$data <- sdata
+  expMod$response <- sdata$iGDP 
+  modelsExp[[country]] <- expMod
+}
+
 @
 
 
@@ -156,7 +181,7 @@ for (country in countries){
     kVar <- as.name(summands(form, n=1))
     lVar <- as.name(summands(form, n=2))
     tVar <- as.name(summands(form, n=3))
-    data <- historicalData[[country]]
+    data <- HistoricalData[[country]]
     formula <- substitute(
       log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
       list( Y = yVar, K = kVar, L = lVar, T = tVar)
@@ -207,69 +232,41 @@ for (country in countries){
 @
 
 
-<<Models_Exp>>=
-#
-# Models that are exponential only, y = A * exp(lambda*t)
-#
-modelsExp <- list()
-alphaExp <- 0
-betaExp <- 0
-gammaExp <- 0
-for (country in countries){
-  # Replace with better code later. 
-  # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
-  # or something like that.
-  form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
-  yVar <- as.name(summands(form, n=1, right=FALSE))
-  tVar <- as.name(summands(form, n=1))
-  data <- historicalData[[country]]
-  expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
-  attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
-                                              logscale=coef(expMod)[[1]], 
-                                              scale=exp(coef(expMod)[[1]]),
-                                              alpha_1=alphaExp,
-                                              alpha_2=betaExp, 
-                                              alpha_3=gammaExp)
-  expMod$formula <- form
-  sdata <- subset(data, select=all.vars(form))
-  sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-  expMod$data <- sdata
-  expMod$response <- sdata$iGDP 
-  modelsExp[[country]] <- expMod
-}
+<<Models_CDC>>=
+models <- list()
 
+for(country in countries){
+  for (flavor in flavors){
+    fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term (3rd term on RHS)
+    fwithE <- formulas[[country]][[flavor]]
+    models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = HistoricalData[[country]])
+    models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = HistoricalData[[country]])
+  }
+}
 @
 
-
-<<Models_CDCES>>=
-fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
-if (!rerunModels){
-  # load from the file on disk
-  models <- readRDS(fileNameCDCES)
+<<Models_CES>>=
+fileNameCES <- "EcolEcon2015ModelsCES.rds"
+if (!rerunCESModels){
+  # Load CES models from the file on disk
+  models <- readRDS(fileNameCES)
 } else {
-  #
-  # Models where all parameters are estimated (models don't adhere to the cost share theorem)
-  #
-  models <- list()
+  # Re-fit CES models
   for(country in countries){
     for (flavor in flavors){
       fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term (3rd term on RHS)
       fwithE <- formulas[[country]][[flavor]]
-      # CD models
-      models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = historicalData[[country]])
-      models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = historicalData[[country]])
-      # CES models
       models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, 
-                                                                        data = historicalData[[country]], 
+                                                                        data = HistoricalData[[country]], 
                                                                         nest=c(1,2), digits = 10)
       nestsWithE <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
       models[[country]][[flavor]][["withE"]][["CES"]] <- lapply(nestsWithE, function(nest){
-          cesModel(formula=fwithE, data=historicalData[[country]], nest=nest, digits = 10)
+          cesModel(formula=fwithE, data=HistoricalData[[country]], nest=nest, digits = 10)
         })
     }      
   }
   # Save models to disk.
-  saveRDS(models, file=fileNameCDCES)  
+  saveRDS(models, file=fileNameCES)  
 }
 @
 
@@ -559,7 +556,7 @@ histDataForGraph <-
     flavor <- meta[2]
     measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
     ### Is there any reason to select away some of the columns?
-    trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
+    trimmed_historical_data <- HistoricalData[[Country]][c("Year", measure.vars)]
     
     # return this.
     melt(
