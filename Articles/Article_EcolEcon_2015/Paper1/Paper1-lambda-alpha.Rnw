@@ -273,6 +273,11 @@ ggplot(data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l)) +
 <<faceting_functions>>=
 
 # Replicates exponential models for each flavor in the flavors vector
+# Exponential models cannot have 
+# a "flavor" (Quality-adjusted or Unadjusted),
+# because they do not utilize factors of production in the functional form.
+# Because we will be using the interaction of Country and flavor
+# as the x facet, we need to replicate the exponential models for the various flavors.
 replicateExpModels <- function(data, flavors){
   lapply(flavors, function(flav){
     data %>% 
@@ -339,6 +344,7 @@ replicateExpModels(
   
   gather(key = y_type, value = y_value, iGDP, fitted) %>%
   
+  # Now make the plot
   ggplot() +
   geom_line(alpha = 0.8, aes(x = Year, 
                              y = y_value,
@@ -407,8 +413,7 @@ p <- ggplot() +
   scale_y_continuous(limits=c(-0.05, 0.7)) +
   ylab("SSE") + 
   labs(color = "Factors of production") +
-  xy_theme() # +
-  # theme(legend.title=element_blank())
+  xy_theme()
 
 # Add our style
 model_points_style_quad(p)
@@ -418,9 +423,11 @@ model_points_style_quad(p)
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
 AllOE %>% 
   mutate(
-    xfacet = as.character(interaction(Country, factor(flavor, labels = c("QA", "UA")), sep = " - ")),
+    flavor = plyr::mapvalues(flavor, from=c("Quality-adjusted", "Unadjusted"), to=c("QA", "UA")),
+    xfacet = interaction(Country, flavor, sep = " - "),
     xfacet = relevelFactor(factor(xfacet), c("PT - UA", "PT - QA", "UK - UA", "UK - QA")),
-    yfacet = as.character(interaction(factor(nest, labels = c("(ek)l", "kl", "(kl)e", "(le)k")), CSP, sep = " - ")),
+    nest = plyr::mapvalues(nest, from=c("kle", "lek", "ekl"), to=c("(kl)e", "(le)k", "(ek)l")),
+    yfacet = interaction(nest, CSP, sep = " - "),
     yfacet = relevelFactor(factor(yfacet), c("kl - w/ CSP", "kl - w/o CSP", "(kl)e - w/o CSP", "(le)k - w/o CSP", "(ek)l - w/o CSP"))
   ) %>% 
   gather(key = oe_type, value = oe_value, oe1, oe2, oe3) %>%
