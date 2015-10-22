@@ -401,53 +401,6 @@ AllOE %>%
   labs(x="", y="") +
   xy_theme()
 
-# AllOE %>% 
-#   mutate(split =
-#            as.character(
-#              interaction(
-#                factor(flavor, labels = c("QA", "UA")), 
-#                factor(nest, 
-#                       labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
-#                sep = ", ",
-#                lex.order = FALSE ) )
-#   ) %>%
-#   gather(factor, elasticity, oe1, oe2, oe3) %>%
-#   mutate(
-#     split2 = relevelFactor(
-#       factor(split), 
-#       paste( rep(c("UA", "QA"), times = 4 ), 
-#              rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
-#              sep=", ")
-#     )
-#   ) %>%
-#
-#   ggplot(aes(x=Year)) + 
-#   geom_line( 
-#     alpha = .8, # size=1.0,
-#     aes(y = elasticity, 
-#         colour = factor,
-#         linetype=factor,
-#         size = factor
-#     ) ) +
-#   facet_grid(split2 ~ Country) +
-#   scale_color_manual(
-#     name = "",
-#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-#     values=c("black", "black", "gray70")
-#   ) +
-#   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
-#   scale_y_continuous(breaks = c(0.0, 0.5, 1.0), limits=c(-0.2, 1.2)) +
-#   scale_size_manual(
-#     name = "",
-#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-#     values = c(.9, .9, .6)) +
-#   scale_linetype_manual( 
-#     name = "",
-#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-#     values=c(2,3,1) ) + 
-#   labs(x="", y="") +
-#   xy_theme()
-
 @
 
 
