@@ -146,9 +146,10 @@ alphaCSP <- 0.3 # Fraction of national accounts spent on capital
 betaCSP <- 0.7 # Fraction of national accounts spent on labor
 for (country in countries){
   for (adj in c("unadjusted", "adjusted")){
-    # Replace with better code later. 
-    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
-    # or something like that.
+    
+    # Cobb-Douglas 
+    
+    # Pull variables out of the formulas for use in fitting the model.
     form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
     yVar <- as.name(summands(form, n=1, right=FALSE))
     kVar <- as.name(summands(form, n=1))
@@ -178,7 +179,9 @@ for (country in countries){
     
     # store the result in our list
     modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
+    
     # CES
+    
     # The only CES models that can adhere to the CSP are models where
     # alpha values are constant with respect to time. 
     # I.e., models where energy is not included AND where rho_1 = 0.
@@ -196,38 +199,6 @@ for (country in countries){
       )
     cesModCSP$handcrafted <- TRUE
     class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
-    # # Again, we need a customized "naturalCoeffs" attribute so that 
-    # # the "naturalCoef" function will do the right thing.
-    # # "naturalCoeffs" can be based on the same "naturalCoeffs"
-    # # from the Cobb-Douglas model, but a few additions are needed.
-    # attr(cesModCSP, "naturalCoeffs") <- 
-    #   naturalCoef(cdModCSP) %>%
-    #   mutate(
-    #     delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
-    #     delta = 1,
-    #     rho_1 = 0, 
-    #     rho = NA,
-    #     sigma_1 = 1,
-    #     sigma_12 = 1,
-    #     sigma = NA,
-    #     sigma_12_3 = NA
-    #   )
-    # # Add output elasticities (as a function of time) to this model.
-    # # This would have been done by a "fortify" function, 
-    # # but this is not a typical CES model, so we can't "fortify" it.
-    # # Add other metadata, too.
-    # cesModCSP$data <- cesModCSP$data %>%
-    #   mutate(
-    #     oe1 = alphaCSP,
-    #     oe2 = betaCSP,
-    #     oe3 = 0,
-    #     Country = country, 
-    #     flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
-    #     energy  = "Without energy",
-    #     model   = "CES", 
-    #     nest    = "kl",
-    #     CSP     = "w/ CSP"
-    #   )
     modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
   }
 }
