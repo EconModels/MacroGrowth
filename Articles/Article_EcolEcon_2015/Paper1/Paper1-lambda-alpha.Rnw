@@ -370,12 +370,10 @@ model_points_style_quad(p)
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
 AllOE %>% 
   mutate(
-    xfacet = as.character(
-                interaction(Country, factor(flavor, labels = c("QA", "UA")), sep = " - ")
-    ),
-    yfacet = as.character(
-                interaction(factor(nest, labels = c("(ek)l", "kl", "(kl)e", "(le)k")), CSP, sep = " - ")
-    )
+    xfacet = as.character(interaction(Country, factor(flavor, labels = c("QA", "UA")), sep = " - ")),
+    xfacet = relevelFactor(factor(xfacet), c("PT - UA", "PT - QA", "UK - UA", "UK - QA")),
+    yfacet = as.character(interaction(factor(nest, labels = c("(ek)l", "kl", "(kl)e", "(le)k")), CSP, sep = " - ")),
+    yfacet = relevelFactor(factor(yfacet), c("kl - w/ CSP", "kl - w/o CSP", "(kl)e - w/o CSP", "(le)k - w/o CSP", "(ek)l - w/o CSP"))
   ) %>% 
   gather(key = oe_type, value = oe_value, oe1, oe2, oe3) %>%
   
