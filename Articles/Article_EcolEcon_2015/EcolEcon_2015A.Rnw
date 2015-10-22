@@ -158,12 +158,12 @@ for (country in countries){
     data <- historicalData[[country]]
     formula <- substitute(
       log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
-      list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
+      list( Y = yVar, K = kVar, L = lVar, T = tVar)
     )
     # Cobb-Douglas
     cdModCSP <- 
       eval(substitute( 
-        plm(formula, data = data, params = c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0.0), 
+        plm(formula, data = data, params = c(alpha_1 = alphaCSP, alpha_2 = betaCSP, alpha_3 = 0.0), 
             optimize = FALSE),
         list(formula = formula)))
     
