@@ -246,7 +246,7 @@ myXTable(data_rho_table,
 @
 
 
-<<Cost_Share_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=1.5, fig.cap="Historical cost shares for capital and labor.">>=
+<<Cost_Share_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=1.5, fig.cap="Historical cost shares for capital and labor.", eval=FALSE>>=
 ggplot(data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l)) + 
   geom_line(mapping = aes(
     x = Year, 
@@ -369,33 +369,22 @@ model_points_style_quad(p)
 
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
 AllOE %>% 
-  mutate(split =
-           as.character(
-             interaction(
-               factor(flavor, labels = c("QA", "UA")), 
-               factor(nest, 
-                      labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
-               sep = ", ",
-               lex.order = FALSE ) )
-  ) %>%
-  gather(factor, elasticity, oe1, oe2, oe3) %>%
   mutate(
-    split2 = relevelFactor(
-      factor(split), 
-      paste( rep(c("UA", "QA"), times = 4 ), 
-             rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
-             sep=", ")
+    xfacet = as.character(
+                interaction(Country, factor(flavor, labels = c("QA", "UA")), sep = " - ")
+    ),
+    yfacet = as.character(
+                interaction(factor(nest, labels = c("(ek)l", "kl", "(kl)e", "(le)k")), CSP, sep = " - ")
     )
-  ) %>%
-  ggplot(aes(x=Year)) + 
-  geom_line( 
-    alpha = .8, # size=1.0,
-    aes(y = elasticity, 
-        colour = factor,
-        linetype=factor,
-        size = factor
-    ) ) +
-  facet_grid(split2 ~ Country) +
+  ) %>% 
+  gather(key = oe_type, value = oe_value, oe1, oe2, oe3) %>%
+  
+  ggplot(aes(x = Year)) +
+  geom_line(alpha = 0.8, aes(y = oe_value, 
+            color = oe_type,
+            linetype = oe_type,
+            size = oe_type)) + 
+  facet_grid(yfacet ~ xfacet) + 
   scale_color_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
@@ -413,6 +402,54 @@ AllOE %>%
     values=c(2,3,1) ) + 
   labs(x="", y="") +
   xy_theme()
+
+# AllOE %>% 
+#   mutate(split =
+#            as.character(
+#              interaction(
+#                factor(flavor, labels = c("QA", "UA")), 
+#                factor(nest, 
+#                       labels = c("(ek)l", "kl", "(kl)e", "(le)k")), 
+#                sep = ", ",
+#                lex.order = FALSE ) )
+#   ) %>%
+#   gather(factor, elasticity, oe1, oe2, oe3) %>%
+#   mutate(
+#     split2 = relevelFactor(
+#       factor(split), 
+#       paste( rep(c("UA", "QA"), times = 4 ), 
+#              rep(c("kl", "(kl)e", "(le)k", "(ek)l"), each=2),
+#              sep=", ")
+#     )
+#   ) %>%
+#
+#   ggplot(aes(x=Year)) + 
+#   geom_line( 
+#     alpha = .8, # size=1.0,
+#     aes(y = elasticity, 
+#         colour = factor,
+#         linetype=factor,
+#         size = factor
+#     ) ) +
+#   facet_grid(split2 ~ Country) +
+#   scale_color_manual(
+#     name = "",
+#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+#     values=c("black", "black", "gray70")
+#   ) +
+#   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+#   scale_y_continuous(breaks = c(0.0, 0.5, 1.0), limits=c(-0.2, 1.2)) +
+#   scale_size_manual(
+#     name = "",
+#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+#     values = c(.9, .9, .6)) +
+#   scale_linetype_manual( 
+#     name = "",
+#     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
+#     values=c(2,3,1) ) + 
+#   labs(x="", y="") +
+#   xy_theme()
+
 @
 
 
