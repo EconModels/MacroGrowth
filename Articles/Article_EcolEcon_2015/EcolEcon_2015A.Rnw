@@ -232,7 +232,10 @@ for (country in countries){
 @
 
 
-<<Models_CDC>>=
+<<Models_CD>>=
+#
+# Cobb-Douglas models
+#
 models <- list()
 
 for(country in countries){
@@ -246,6 +249,9 @@ for(country in countries){
 @
 
 <<Models_CES>>=
+#
+# CES models
+#
 fileNameCES <- "EcolEcon2015ModelsCES.rds"
 if (!rerunCESModels){
   # Load CES models from the file on disk
@@ -274,17 +280,8 @@ if (!rerunCESModels){
 <<AllCoeffs>>=
 model2df <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
-  ### Don't name non-lists with variables whose names sound like a list.
-  ### I'm guessing you just didn't know what kind of data you were working with here. 
-  ### Either way, it's a bad thing.
   id_components <- strsplit(id, split = "[.]")[[1]]
   
-  # return this data frame 
-  ### NOTE: ifelse() and [ ] handle NAs the way we want here
-  ### The former use of [[ ]] was unnecessary and would break things in the new code
-  ### I'm guessing you had [[ ]] because you thought you had a list when you did not.
-  
-  ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
   data_frame(
     Country = id_components[1], 
     flavor  = ifelse(id_components[2]=="unadjusted", "Unadjusted", "Quality-adjusted"),
@@ -294,10 +291,6 @@ model2df <- function(mod, id){
   cbind(naturalCoef(mod)) %>% 
   cbind(data.frame(sse = sum(resid(mod)^2)))
 } 
-
-### AH: So much tidier here :-)
-### NOTE: dplyr::bind_rows() can replace plyr::rbind.fill() in most (all?) situations
-###       plyr should probably not be used for data frame level operations anymore.
 
 # Put all exponential model coefficients into a data frame
 AllCoeffsExp <- 
@@ -317,7 +310,6 @@ AllCoeffsNoCSP <-
   bind_rows() %>%
   mutate(CSP="w/o CSP")
 
-
 AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
 
 AllCoeffs <-
@@ -328,8 +320,6 @@ AllCoeffs <-
     )
 
 # Relevel factors and re-order data
-### NOTE:  Need to convert from strings to factors to use relevelFactor()
-###        We could modify relevelFacotr() to accept character inputs
 AllCoeffs <- 
   AllCoeffs %>%
   mutate(
@@ -347,13 +337,8 @@ AllCoeffs <-
 <<output-elasticity>>=
 mod2oedf <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
-  ### Don't name non-lists with variables whose names sound like a list.
-  ### I'm guessing you just didn't know what kind of data you were working with here. 
-  ### Either way, it's a bad thing.
   id_components <- strsplit(id, split = "[.]")[[1]]
   
-  ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
-  # message(class(mod))
   if (! inherits(mod, "cesModel") ) return(NULL)
   
   fortify(mod) %>%
@@ -373,7 +358,6 @@ AllOE <-
   mutate (CSP = "w/o CSP")
 
 # Now append to AllOE time-varying output elasticities from models that adhere to the CSP.
-
 AllOE <- leaf_apply(modelsCSP, class="cesModel", f=mod2oedf) %>% 
   bind_rows() %>%
   mutate (CSP = "w/ CSP") %>%
@@ -382,8 +366,6 @@ AllOE <- leaf_apply(modelsCSP, class="cesModel", f=mod2oedf) %>%
 @
 
 <<Resampling-CD>>=
-print("Top of Resampling-CD")
-
 resampleCoeffsCDFilename <- "EcolEcon2015ResampleCoeffsCD.rds"
 resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
 if (rerunResampling){
@@ -446,8 +428,6 @@ if (rerunResampling){
 @
 
 <<ReModels>>=
-print("Top of ReModels")
-
 ReModels <-
   bind_rows(
   leaf_apply(resampleModelsCES, 
@@ -457,10 +437,7 @@ ReModels <-
 @
 
 
-<<Fitted_and_Residuals>>=
-### Why are we going back and forth between CamelCase and interspersed_underscores?
-### If there isn't a reason, probably we should stick with one naming convention.
-
+<<FittedAndResiduals>>=
 temp_data_exp <- 
   leaf_apply(
     modelsExp, class=c("lm"), 
@@ -517,8 +494,8 @@ FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP
 
 
 
-<<Table_data>>=
-table_data <- 
+<<TableData>>=
+  TableData <- 
   AllCoeffs %>%
   plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
   mutate(Nest = 

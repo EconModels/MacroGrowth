@@ -182,56 +182,51 @@ knitr::opts_chunk$set(include = TRUE)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<CES_sr_gof, results="asis">>=
-data_CES_SR_gof <- 
-  table_data %>% 
+TableData %>% 
   filter(Model=="CES" | Model=="Ref.") %>% 
   select(Country, Model, CSP, flavor, Energy, Nest, scale, lambda, sse) %>%
   plyr::rename(c("flavor" = "Factors of prod.",
-                  "scale" = "$\\theta$",
-                  "lambda" = "$\\lambda$"))
-
-myXTable(data_CES_SR_gof,
-         caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), and sum of squared errors~($sse$) for all modeling choices.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=c(1,1,1,1,1,1,1, 2, 4, 3))
+                 "scale" = "$\\theta$",
+                 "lambda" = "$\\lambda$")) %>%
+  
+  myXTable(caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), 
+           and sum of squared errors~($sse$) for all modeling choices.",
+           label=paste0("tab:", opts_current$get("label")), 
+           digits=c(1,1,1,1,1,1,1, 2, 4, 3))
 @
 
 
 <<delta_table, results="asis">>=
-data_delta_table <- 
-  table_data %>% 
+TableData %>% 
   filter(Model=="CES") %>% 
   select(Country, Model, CSP, flavor, Energy, Nest, delta_1, delta) %>%
   plyr::rename(c("flavor" = "Factors of prod.",
-                  "scale" = "$\\theta$",
-                  "lambda" = "$\\lambda$",
-                  "delta_1" = "$\\delta_1$",
-                  "delta" = "$\\delta$"))
-
-myXTable(data_delta_table,
-         caption="Distribution parameters ($\\delta_1$ and $\\delta$) for all modeling choices.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=c(1,1,1,1,1,1,1, 3, 3)
-         )
+                 "scale" = "$\\theta$",
+                 "lambda" = "$\\lambda$",
+                 "delta_1" = "$\\delta_1$",
+                 "delta" = "$\\delta$")) %>%
+  
+  myXTable(caption="Distribution parameters ($\\delta_1$ and $\\delta$) for all modeling choices.",
+           label=paste0("tab:", opts_current$get("label")), 
+           digits=c(1,1,1,1,1,1,1, 3, 3)
+  )
 @
 
 
 <<rho_table, results="asis">>=
-data_rho_table <- 
-  table_data %>% 
+TableData %>% 
   filter(Model=="CES") %>% 
   select(Country, Model, CSP, flavor, Energy, Nest, rho_1, rho) %>%
   plyr::rename(c("flavor" = "Factors of prod.",
-                  "scale" = "$\\theta$",
-                  "lambda" = "$\\lambda$",
-                  "rho_1" = "$\\rho_1$",
-                  "rho" = "$\\rho$"))
-
-myXTable(data_rho_table,
-         caption="Values of ($\\rho_1$ and $\\rho$) for all modeling choices.",
-         label=paste0("tab:", opts_current$get("label")), 
-         digits=c(1,1,1,1,1,1,1, 3, 3)
-         )
+                 "scale" = "$\\theta$",
+                 "lambda" = "$\\lambda$",
+                 "rho_1" = "$\\rho_1$",
+                 "rho" = "$\\rho$")) %>%
+  
+  myXTable(caption="Values of ($\\rho_1$ and $\\rho$) for all modeling choices.",
+           label=paste0("tab:", opts_current$get("label")), 
+           digits=c(1,1,1,1,1,1,1, 3, 3)
+  )
 @
 
 
