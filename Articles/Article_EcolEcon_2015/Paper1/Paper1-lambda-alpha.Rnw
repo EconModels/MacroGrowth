@@ -354,7 +354,8 @@ replicateExpModels(
                              size = y_type)
   ) + 
   facet_grid(yfacet ~ xfacet) + 
-  scale_x_continuous(breaks = c(1960, 1980, 2000)) +
+  scale_x_continuous(limits = c(1955, 2013), breaks = c(1960, 1980, 2000)) +
+  scale_y_continuous(limits = c(0.5, 7), breaks = c(1, 2, 4, 6)) +
   scale_color_manual(
     name = "",
     labels = c("historical", "fitted"),
@@ -368,7 +369,7 @@ replicateExpModels(
     name = "",
     labels = c("historical", "fitted"),
     values=c(1,1) ) + 
-  labs(x="", y="GDP") +
+  labs(x="", y="Indexed GDP (1960 = 1)") +
   xy_theme()
 
 @
