@@ -30,7 +30,7 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
+rerunCESModels=FALSE
 rerunResampling=FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
@@ -57,9 +57,6 @@ opts_chunk$set(
   # Sets all table captions to the top.
   xtable.caption.placement="top"
 )
-
-# This function is used in many places below.
-### That's nice.  I assume that's why you wrote a function.  But what does it DO?
 @
 
 <<myXTable>>=
@@ -116,19 +113,13 @@ flavors <- names(formulas$PT)
 @
 
 <<Data>>=
-# Create the historicalData data frames
-### If we need to select variables, we can do that.  Unfortunately, select() and select_() don't do
-### what we would like here (they don't accept a vector of character strings), so we'd have to use
-### something else.  I've kept the fake select_() command here just to record what was done earlier.
-
+# Create the HistoricalData data frames
 commonVars <- c("Year", "Country", "Source")
-historicalData <- list(
+HistoricalData <- list(
   PT =  IST %>% 
     filter(Country == "PT"), 
-    #  %>% select_(unique(c(commonVars, all.vars(formulas$PT$unadjusted), all.vars(formulas$PT$adjusted)))),
   UK = Leeds %>% 
     filter(Country == "UK") 
-    # %>% select_(unique(c(commonVars, all.vars(formulas$UK$unadjusted), all.vars(formulas$UK$adjusted))))
 )
 
 # Load historical cost shares
@@ -136,185 +127,152 @@ CostShares <- read.table(file.path("cost_shares", "Cost_Shares_PT_UK.txt"), head
 @
 
 
-<<Models_CSP>>=
-fileNameCSP <- "EcolEcon2015ModelsCSP.rds"
-if (FALSE && !rerunModels){
-  # load from the file on disk
-  modelsCSP <- readRDS(fileNameCSP)
-} else {
-  #
-  # Models that adhere to the cost-share theorem
-  # 
-  
-  modelsCSP <- list()
-  # Output elasticities based on cost share principle
-  alphaCSP <- 0.3 # Fraction of national accounts spent on capital
-  betaCSP <- 0.7 # Fraction of national accounts spent on labor
-  for (country in countries){
-    for (adj in c("unadjusted", "adjusted")){
-      print(adj)
-      # Replace with better code later. 
-      # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0))
-      # or something like that.
-      form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
-      yVar <- as.name(summands(form, n=1, right=FALSE))
-      kVar <- as.name(summands(form, n=1))
-      lVar <- as.name(summands(form, n=2))
-      tVar <- as.name(summands(form, n=3))
-      data <- historicalData[[country]]
-      formula <- substitute(
-        log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
-        list( Y = yVar, K = kVar, L = lVar, T = tVar, A = alphaCSP, B = betaCSP)
-      )
-      # Cobb-Douglas
-      cdModCSP <- 
-        eval(substitute( 
-          plm(formula, data = data, params = c(alpha_1 = 0.3, alpha_2 = 0.7, alpha_3 = 0.0), 
-              optimize = FALSE),
-          list(formula = formula)))
-      
-      # convert hand-fit object into a CDEmodel object
-      names(cdModCSP$coefficients)[1:2] <- c("logscale", "lambda")
-      class(cdModCSP) <- c("CDEmodel", class(cdModCSP))
-      cdModCSP$formula <- form
-      sdata <- subset(data, select=all.vars(form))
-      sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-      cdModCSP$data <- sdata
-      cdModCSP$response <- sdata$iGDP
-      cdModCSP$handcrafted <- TRUE
-      
-      # store the result in our list
-      modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
-      # CES
-      # The only CES models that can adhere to the CSP are models where
-      # alpha values are constant with respect to time. 
-      # I.e., models where energy is not included AND where rho_1 = 0.
-      # CES models where rho_1 = 0 are the Cobb-Douglas model.
-      # Convienently, we previously fit that model.
-      cesModCSP <- cdModCSP
-      
-      cesModCSP$coefficients <- 
-        c(cesModCSP$coefficients, 
-          c(delta_1 = as.vector(cesModCSP$coefficients["alpha_1"]),
-            delta = 1,
-            rho_1 = 0,
-            rho = NA)
-        )
-      cesModCSP$handcrafted <- TRUE
-      class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
-      # # Again, we need a customized "naturalCoeffs" attribute so that 
-      # # the "naturalCoef" function will do the right thing.
-      # # "naturalCoeffs" can be based on the same "naturalCoeffs"
-      # # from the Cobb-Douglas model, but a few additions are needed.
-      # attr(cesModCSP, "naturalCoeffs") <- 
-      #   naturalCoef(cdModCSP) %>%
-      #   mutate(
-      #     delta_1 = naturalCoef(cdModCSP)[["alpha_1"]],
-      #     delta = 1,
-      #     rho_1 = 0, 
-      #     rho = NA,
-      #     sigma_1 = 1,
-      #     sigma_12 = 1,
-      #     sigma = NA,
-      #     sigma_12_3 = NA
-      #   )
-      # # Add output elasticities (as a function of time) to this model.
-      # # This would have been done by a "fortify" function, 
-      # # but this is not a typical CES model, so we can't "fortify" it.
-      # # Add other metadata, too.
-      # cesModCSP$data <- cesModCSP$data %>%
-      #   mutate(
-      #     oe1 = alphaCSP,
-      #     oe2 = betaCSP,
-      #     oe3 = 0,
-      #     Country = country, 
-      #     flavor  = ifelse(adj=="unadjusted", "Unadjusted", "Quality-adjusted"),
-      #     energy  = "Without energy",
-      #     model   = "CES", 
-      #     nest    = "kl",
-      #     CSP     = "w/ CSP"
-      #   )
-      modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
-    }
-  }
-  # Save cost-share theorem models to disk.
-  saveRDS(modelsCSP, file=fileNameCSP)
+<<Models_Exp>>=
+#
+# Models that are exponential only, y = A * exp(lambda*t)
+#
+modelsExp <- list()
+alphaExp <- 0
+betaExp <- 0
+gammaExp <- 0
+for (country in countries){
+  # Replace with better code later. 
+  # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
+  # or something like that.
+  form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
+  yVar <- as.name(summands(form, n=1, right=FALSE))
+  tVar <- as.name(summands(form, n=1))
+  data <- HistoricalData[[country]]
+  expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
+  attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
+                                              logscale=coef(expMod)[[1]], 
+                                              scale=exp(coef(expMod)[[1]]),
+                                              alpha_1=alphaExp,
+                                              alpha_2=betaExp, 
+                                              alpha_3=gammaExp)
+  expMod$formula <- form
+  sdata <- subset(data, select=all.vars(form))
+  sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
+  expMod$data <- sdata
+  expMod$response <- sdata$iGDP 
+  modelsExp[[country]] <- expMod
 }
 
 @
 
 
-<<Models_Exp>>=
-fileNameExp <- "EcolEcon2015ModelsExp.rds"
-if (!rerunModels){
-  # load from the file on disk
-  modelsExp <- readRDS(fileNameExp)
-} else {
-  #
-  # Models that are exponential only, y = A * exp(lambda*t)
-  #
-  modelsExp <- list()
-  alphaExp <- 0
-  betaExp <- 0
-  gammaExp <- 0
-  for (country in countries){
-    # Replace with better code later. 
-    # Would like to say cdModel(formula, data, factorShares=c(alpha_1 = 0, alpha_2 = 0, alpha_3 = 0))
-    # or something like that.
-    form <- keep_summands(formulas[[country]][["unadjusted"]], n = c(-1, -2, -3)) # Keep none of the factors of production
+<<Models_CSP>>=
+#
+# Models that adhere to the cost-share principle
+# 
+modelsCSP <- list()
+# Output elasticities based on cost share principle
+alphaCSP <- 0.3 # Fraction of national accounts spent on capital
+betaCSP <- 0.7 # Fraction of national accounts spent on labor
+gammaCSP <- 0.0
+for (country in countries){
+  for (adj in c("unadjusted", "adjusted")){
+    
+    # Cobb-Douglas 
+    
+    # Pull variables out of the formulas for use in fitting the model.
+    form <- keep_summands(formulas[[country]][[adj]], n=-3) # Remove energy
     yVar <- as.name(summands(form, n=1, right=FALSE))
-    tVar <- as.name(summands(form, n=1))
-    data <- historicalData[[country]]
-    expMod <- lm(log(eval(yVar)) ~ eval(tVar), data=data)
-    attr(expMod, "naturalCoeffs") <- data.frame(lambda=coef(expMod)[[2]],
-                                                  logscale=coef(expMod)[[1]], 
-                                                  scale=exp(coef(expMod)[[1]]),
-                                                  alpha_1=alphaExp,
-                                                  alpha_2=betaExp, 
-                                                  alpha_3=gammaExp)
-    expMod$formula <- form
+    kVar <- as.name(summands(form, n=1))
+    lVar <- as.name(summands(form, n=2))
+    tVar <- as.name(summands(form, n=3))
+    data <- HistoricalData[[country]]
+    formula <- substitute(
+      log(Y) - (alpha_1 * log(K) + alpha_2 * log(L)) ~ T,
+      list( Y = yVar, K = kVar, L = lVar, T = tVar)
+    )
+    # Cobb-Douglas
+    cdModCSP <- 
+      eval(substitute( 
+        plm(formula, data = data, params = c(alpha_1 = alphaCSP, alpha_2 = betaCSP, alpha_3 = gammaCSP), 
+            optimize = FALSE),
+        list(formula = formula)))
+    
+    # convert hand-fit object into a CDEmodel object
+    names(cdModCSP$coefficients)[1:2] <- c("logscale", "lambda")
+    class(cdModCSP) <- c("CDEmodel", class(cdModCSP))
+    cdModCSP$formula <- form
     sdata <- subset(data, select=all.vars(form))
     sdata <- data[complete.cases(sdata), unique(c(all.vars(form), names(data)))]
-    expMod$data <- sdata
-    expMod$response <- sdata$iGDP 
-    modelsExp[[country]] <- expMod
+    cdModCSP$data <- sdata
+    cdModCSP$response <- sdata$iGDP
+    cdModCSP$handcrafted <- TRUE
+    
+    # store the result in our list
+    modelsCSP[[country]][[adj]][["noE"]][["CD"]] <- cdModCSP
+    
+    # CES
+    
+    # The only CES models that can adhere to the CSP are models where
+    # alpha values are constant with respect to time. 
+    # I.e., models where energy is not included AND where rho_1 = 0.
+    # CES models where rho_1 = 0 are the Cobb-Douglas model.
+    # Convienently, we previously fit that model 
+    # with the required output elasticities.
+    cesModCSP <- cdModCSP
+    
+    cesModCSP$coefficients <- 
+      c(cesModCSP$coefficients, 
+        c(delta_1 = as.vector(cesModCSP$coefficients["alpha_1"]),
+          delta = 1,
+          rho_1 = 0,
+          rho = NA)
+      )
+    cesModCSP$handcrafted <- TRUE
+    class(cesModCSP) <- setdiff(c("cesModel", class(cesModCSP)), "CDEmodel")
+    modelsCSP[[country]][[adj]][["noE"]][["CES"]][["kl"]] <- cesModCSP
   }
-  # Save exponential models to disk.
-  saveRDS(modelsExp, file=fileNameExp)
 }
 
 @
 
 
-<<Models_CDCES>>=
-fileNameCDCES <- "EcolEcon2015ModelsCDCES.rds"
-if (!rerunModels){
-  # load from the file on disk
-  models <- readRDS(fileNameCDCES)
+<<Models_CD>>=
+#
+# Cobb-Douglas models
+#
+models <- list()
+
+for(country in countries){
+  for (flavor in flavors){
+    fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term (3rd term on RHS)
+    fwithE <- formulas[[country]][[flavor]]
+    models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = HistoricalData[[country]])
+    models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = HistoricalData[[country]])
+  }
+}
+@
+
+<<Models_CES>>=
+#
+# CES models
+#
+fileNameCES <- "EcolEcon2015ModelsCES.rds"
+if (!rerunCESModels){
+  # Load CES models from the file on disk
+  models <- readRDS(fileNameCES)
 } else {
-  #
-  # Models where all parameters are estimated (models don't adhere to the cost share theorem)
-  #
-  models <- list()
+  # Re-fit CES models
   for(country in countries){
     for (flavor in flavors){
       fnoE <- keep_summands(formulas[[country]][[flavor]], -3) # Drop the energy term (3rd term on RHS)
       fwithE <- formulas[[country]][[flavor]]
-      # CD models
-      models[[country]][[flavor]][["noE"]][["CD"]]   <- cdModel(fnoE, data = historicalData[[country]])
-      models[[country]][[flavor]][["withE"]][["CD"]] <- cdModel(fwithE, data = historicalData[[country]])
-      # CES models
       models[[country]][[flavor]][["noE"]][["CES"]][["kl"]] <- cesModel(fnoE, 
-                                                                        data = historicalData[[country]], 
+                                                                        data = HistoricalData[[country]], 
                                                                         nest=c(1,2), digits = 10)
       nestsWithE <- list(kle=c(1,2,3), lek=c(2,3,1), ekl=c(3,1,2))
       models[[country]][[flavor]][["withE"]][["CES"]] <- lapply(nestsWithE, function(nest){
-          cesModel(formula=fwithE, data=historicalData[[country]], nest=nest, digits = 10)
+          cesModel(formula=fwithE, data=HistoricalData[[country]], nest=nest, digits = 10)
         })
     }      
   }
   # Save models to disk.
-  saveRDS(models, file=fileNameCDCES)  
+  saveRDS(models, file=fileNameCES)  
 }
 @
 
@@ -322,17 +280,8 @@ if (!rerunModels){
 <<AllCoeffs>>=
 model2df <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
-  ### Don't name non-lists with variables whose names sound like a list.
-  ### I'm guessing you just didn't know what kind of data you were working with here. 
-  ### Either way, it's a bad thing.
   id_components <- strsplit(id, split = "[.]")[[1]]
   
-  # return this data frame 
-  ### NOTE: ifelse() and [ ] handle NAs the way we want here
-  ### The former use of [[ ]] was unnecessary and would break things in the new code
-  ### I'm guessing you had [[ ]] because you thought you had a list when you did not.
-  
-  ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
   data_frame(
     Country = id_components[1], 
     flavor  = ifelse(id_components[2]=="unadjusted", "Unadjusted", "Quality-adjusted"),
@@ -342,10 +291,6 @@ model2df <- function(mod, id){
   cbind(naturalCoef(mod)) %>% 
   cbind(data.frame(sse = sum(resid(mod)^2)))
 } 
-
-### AH: So much tidier here :-)
-### NOTE: dplyr::bind_rows() can replace plyr::rbind.fill() in most (all?) situations
-###       plyr should probably not be used for data frame level operations anymore.
 
 # Put all exponential model coefficients into a data frame
 AllCoeffsExp <- 
@@ -365,7 +310,6 @@ AllCoeffsNoCSP <-
   bind_rows() %>%
   mutate(CSP="w/o CSP")
 
-
 AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
 
 AllCoeffs <-
@@ -376,8 +320,6 @@ AllCoeffs <-
     )
 
 # Relevel factors and re-order data
-### NOTE:  Need to convert from strings to factors to use relevelFactor()
-###        We could modify relevelFacotr() to accept character inputs
 AllCoeffs <- 
   AllCoeffs %>%
   mutate(
@@ -395,13 +337,8 @@ AllCoeffs <-
 <<output-elasticity>>=
 mod2oedf <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
-  ### Don't name non-lists with variables whose names sound like a list.
-  ### I'm guessing you just didn't know what kind of data you were working with here. 
-  ### Either way, it's a bad thing.
   id_components <- strsplit(id, split = "[.]")[[1]]
   
-  ### NOTE: data_frame does not auto-convert to factors.  It leaves things as strings.
-  # message(class(mod))
   if (! inherits(mod, "cesModel") ) return(NULL)
   
   fortify(mod) %>%
@@ -415,36 +352,21 @@ mod2oedf <- function(mod, id){
 } 
 
 AllOE <- 
-  leaf_apply(
-    models, 
-    class = "cesModel", 
-    mod2oedf
-  ) %>% 
+  leaf_apply(models, class = "cesModel", mod2oedf) %>% 
   bind_rows() %>%
   # None of "models" adheres to the CSP.
   mutate (CSP = "w/o CSP")
 
 # Now append to AllOE time-varying output elasticities from models that adhere to the CSP.
-# These output elasticities are stored with variable names oe1, oe2, and oe3 in the data object in the models.
-# See the <<Models_CSP>> chunk above.
-# Uncomment when we're ready to add the CSP models to the alpha vs. time graph.
-
-# AllOE <- leaf_apply(modelsCSP, class="lm", f=function(mod, id){
-#   id_components <- strsplit(id, split = "[.]")[[1]]
-#   if (id_components[4] == "CES") {
-#     return(mod$data)
-#   } else {
-#     return(NULL)
-#   }
-# }) %>% 
-#   do.call(plyr::rbind.fill, .) %>%
-#   bind_rows(AllOE, .)
+AllOE <- leaf_apply(modelsCSP, class="cesModel", f=mod2oedf) %>% 
+  bind_rows() %>%
+  mutate (CSP = "w/ CSP") %>%
+  bind_rows(AllOE, .)
 
 @
 
-<<Resampling-CD>>=
-print("Top of Resampling-CD")
 
+<<Resampling-CD>>=
 resampleCoeffsCDFilename <- "EcolEcon2015ResampleCoeffsCD.rds"
 resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
 if (rerunResampling){
@@ -479,6 +401,7 @@ if (rerunResampling){
 }
 @
 
+
 <<Resampling-CES-adjusted-kle>>=
 print("Top of Resampling-CES-adjusted-kle")
 
@@ -506,9 +429,8 @@ if (rerunResampling){
 }
 @
 
-<<ReModels>>=
-print("Top of ReModels")
 
+<<ReModels>>=
 ReModels <-
   bind_rows(
   leaf_apply(resampleModelsCES, 
@@ -518,121 +440,65 @@ ReModels <-
 @
 
 
-<<Fitted_and_Residuals>>=
-### Why are we going back and forth between CamelCase and interspersed_underscores?
-### If there isn't a reason, probably we should stick with one naming convention.
-
-print("top of Fitted_and_Residuals")
-
+<<FittedAndResiduals>>=
 temp_data_exp <- 
   leaf_apply(
     modelsExp, class=c("lm"), 
     f = function(model, id){
-      ### Why wrap in data.frame() something that already is a tbl_df?  If this is necessary, say why.
-      #  df <- data.frame(select(model$data, Year, Country))
-      ### Also: let's use a consistent style for the dplyr commands, prefering to use %>% in most cases.
-      ### Also: The following use of white space makes it clearer what is going on (and how many steps 
-      ###       are involved.  I'm going to change A LOT of code to this format.
-      ### In this format, there is no name to create a temporary variable (or to use return())
-      
-      model$dat %>% 
+      out <- model$dat %>% 
         select(Year, Country) %>%
         mutate(
           Country = as.character(Country),  # to avoid warning about unmatched levels of factors
-          fittedExp = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
-          ResidualsExp = resid(model)     ### Why is this capitalized?
+          fitted = exp(fitted(model)), # exp accounts for the fact that the model was fitted in log space.
+          residuals = resid(model), 
+          model = "exp"
         )
+        # Now add the response, using the original variable name.
+      out[[summands(model$formula, right = FALSE)]] <- exp(response(model)[c(1:length(out$Year))])
+      return(out)
     }
   ) %>% 
   bind_rows()
 
-### If the function is this long, it should be separated out and named rather than embedded in another
-### function call.  
-### But this looks like model2df from above.  Let's use that instead.
-
-### Probably just junk now.
-# function_that_was_here_before <- function(model, id){
-#   df <- data.frame(select(model$data, Year, Country, iGDP))
-#   df$fitted <- exp(fitted(model)) # fitted is in log space. Return to regular space.
-#   df$Residuals <- resid(model) # residuals are in log space, and that is what we want.
-#   # Now add meta information
-#   id_list <- strsplit(id, split = "[.]")[[1]]
-#   df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
-#   df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-#   df$model <- id_list[[4]]
-#   df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-#   return(df)
-# }
+function_that_was_here_before <- function(model, id){
+  id_list <- strsplit(id, split = "[.]")[[1]]
+  out <- model$data %>% 
+    select(Year) %>%
+    mutate(
+      # By including [c(1:length(df$Year))] on the end, we 
+      # add NAs (as appropriate) to the end of these columns
+      # if data do not exist.
+      fitted = yhat(model)[c(1:length(Year))],
+      residuals = resid(model)[c(1:length(Year))],
+      Country = id_list[[1]],
+      flavor = ifelse (id_list[[2]] ==  "unadjusted", "Unadjusted", "Quality-adjusted"),
+      energy = ifelse(id_list[[3]] == "noE", "Without energy", "With energy"),
+      model = id_list[[4]],
+      nest = ifelse (length(id_list) > 4, id_list[[5]], NA)
+    )
+  # Now add the response, using the original variable name.
+  out[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(out$Year))]
+  return(out)  
+}
 
 temp_data_CSP <- 
-  leaf_apply(modelsCSP, class=c("plm", "lm"), model2df) %>% 
+  leaf_apply(modelsCSP, class=c("plm", "lm"), function_that_was_here_before) %>% 
   bind_rows() %>%
   mutate(CSP = "w/ CSP")
-
-### This looks like a candidate for clean up a la model2df
-
-function_that_was_here_before <- function(model, id){
-  df <- data.frame(select(model$data, Year)) 
-  # By including [c(1:length(df$Year))] on the end, we 
-  # add NAs (as appropriate) to the end of these columns
-  # if data do not exist.
-  df$fitted <- yhat(model)[c(1:length(df$Year))]
-  df$Residuals <- resid(model)[c(1:length(df$Year))]
-  # Now add the response, using the original variable name.
-  df[[summands(model$formula, right = FALSE)]] <- response(model)[c(1:length(df$Year))]
-  # Now add meta information
-  id_list <- strsplit(id, split = "[.]")[[1]]
-  len <- length(id_list)
-  df$Country <- id_list[[1]]
-  df$flavor <- if (id_list[[2]] ==  "unadjusted") "Unadjusted" else "Quality-adjusted"
-  df$energy <- if (id_list[[3]] == "noE") "Without energy" else "With energy"
-  df$model <- id_list[[4]]
-  df$nest <- if (length(id_list) > 4) id_list[[5]] else NA
-  return(df)  
-}
 
 temp_data_noCSP <- 
   leaf_apply(models, class=c("CDEmodel", "cesModel", "LINEXmodel"), function_that_was_here_before) %>% 
   bind_rows() %>%
   mutate(CSP = "w/o CSP")
 
-temp_data_noExp <- 
-  bind_rows( temp_data_CSP, temp_data_noCSP )
+FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP)
 
-# Now merge the exponential-only model with the CSP and noCSP models. 
-# Doing this, because the exponential-only model is kind-of like iY:
-# it applies to all situations.
-fitted_and_resid_data <- 
-  merge(temp_data_noExp, temp_data_exp) %>% 
-  mutate( Dr = abs(Residuals) - abs(ResidualsExp) )  
-### Caps in bad places?
-
-# Create a column containing ∆r, the difference between a residual value
-# and the residual value in the same year for the reference model
-### BREAK LONG LINES IN REASONABLE PLACES
-### BUT better to use mutate here.  See above.
-# fitted_and_resid_data[["Dr"]] <- 
-#   abs(fitted_and_resid_data[["Residuals"]]) - abs(fitted_and_resid_data[["ResidualsExp"]])
-
-# Relevel factors before plotting
-### Use mutate for this stuff!
-### Align = to make similarities between successive lines stand out.
-
-fitted_and_resid_data <-
-  fitted_and_resid_data %>% 
-  mutate(
-    Country = relevelFactor(factor(Country), c("PT", "UK")),
-    flavor  = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")),
-    energy  = relevelFactor(factor(energy), c("Without energy", "With energy")),
-    nest    = relevelFactor(factor(nest), c("kl", "kle", "lek", "ekl"))
-  ) %>%
-  arrange(Country, CSP, model, flavor, energy, nest)
 @
 
 
 
-<<Table_data>>=
-table_data <- 
+<<TableData>>=
+  TableData <- 
   AllCoeffs %>%
   plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
   mutate(Nest = 
@@ -659,32 +525,27 @@ table_data <-
 @
 
 
-<<Historical_Data>>=
-
-### Also, I find tidyr::gather() and tidyr::spread() easier to work with than melt() and cast()
-
-histDataForGraph <- 
-  leaf_apply(formulas, class = "formula", f=function(form, name){
-    meta <- strsplit(name, split="[.]")[[1]]
-    Country <- meta[1]
-    flavor <- meta[2]
-    measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
-    ### Is there any reason to select away some of the columns?
-    trimmed_historical_data <- historicalData[[Country]][c("Year", measure.vars)]
-    
-    # return this.
-    melt(
-      trimmed_historical_data, 
-      measure.vars = measure.vars, 
-      value.name = "value",
-      variable.name = "variable") %>%
+<<Historical_Plot>>=
+leaf_apply(formulas, class = "formula", f=function(form, id){
+  meta <- strsplit(id, split="[.]")[[1]]
+  Country <- meta[1]
+  flavor <- meta[2]
+  measure.vars <- c(summands(form, right=FALSE), summands(form, 1:3))
+  # Trim to avoid plotting data which are unused for one coutry but included for the other.
+  trimmed_historical_data <- HistoricalData[[Country]][c("Year", measure.vars)]
+  
+  melt(
+    trimmed_historical_data, 
+    measure.vars = measure.vars, 
+    value.name = "value",
+    variable.name = "variable") %>%
     mutate(
       variable = as.character(variable), # eliminate factors, which cause warnings with bind_rows() below.
       Country = Country,
       flavor =  ifelse (flavor == "adjusted", "Quality-adjusted", "Unadjusted")
-      )
-  }
-  ) %>% bind_rows() %>%
+    )
+}
+) %>% bind_rows() %>%
   
   mutate( 
     # Change variable names to make a nicer-looking graph and relevel factors before plotting
@@ -700,12 +561,9 @@ histDataForGraph <-
     Country = relevelFactor(factor(Country), c("PT", "UK")), # Adjusts facet order
     flavor = relevelFactor(factor(flavor), c("Unadjusted", "Quality-adjusted")), # Adjusts facet order
     variable = relevelFactor(factor(variable), c("y", "k", "l", "e"))
-  )
-@
-
-
-<<Historical_Plot>>=
-ggplot(histDataForGraph) + 
+  ) %>%
+  
+  ggplot() + 
   geom_line(aes(x=Year, y=value, group=variable, linetype=variable, colour=variable, size=variable)) +
   facet_grid(flavor ~ Country) + 
   scale_color_manual(name = "", values=c("black", "black", "black", "gray70")) +
@@ -717,88 +575,6 @@ ggplot(histDataForGraph) +
   xy_theme()
 @
 
-
-<<Fitted_and_Residual_Graph_Functions>>=
-
-### Can fittedGraphNoCSP and fittedGraphCSP be combined into one function with an argument?
-### Or can the data filtering happen outside and everything else be the same?
-### Did you copy and paste to make one from the other?  That should be a sign...
-fittedGraphNoCSP <- function(data){
-  fittedGraphData <- 
-    data %>% 
-    select(Year, Country, iGDP, fitted, fittedExp, flavor, energy, CSP, nest) %>%
-    melt(measure.vars = c("iGDP", "fitted", "fittedExp"), 
-         value.name = "value", variable.name = "variable") %>%
-    mutate(label = paste(variable, energy)) %>%
-    # Now collapse some of the information. Don't need multiple versions of the exponential model, e.g.
-    filter(label %in% c("iGDP With energy", "fittedExp With energy", 
-                        "fitted With energy", "fitted Without energy")
-    ) %>% 
-    mutate(
-      label = plyr::mapvalues(label, 
-                              from = c("iGDP With energy",  "fittedExp With energy",
-                                       "fitted With energy", "fitted Without energy"), 
-                              to = c("GDP",  "Ref. model",
-                                     "w/ energy", "w/o energy")),
-      label = relevelFactor(factor(label), 
-                            c("GDP", "Ref. model", "w/o energy", "w/ energy"))
-    )
-  
-  ggplot() +
-    geom_line(data=fittedGraphData, mapping=aes(x=Year, y=value, group=label, linetype=label, size=label)) +
-    scale_linetype_manual(values=c(1,2,4,3), name="") +
-    scale_size_manual(name = "", values=c(1, 0.5, 0.5, 0.5)) +
-    facet_grid(flavor ~ Country) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-    scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12)) +
-    xlab("") +
-    ylab("Indexed GDP (1960=1)") +
-    xy_theme()
-}
-@
-
-
-<<ResidualPlotFunction>>=
-
-cesResidualPlot2 <- function(data){
-  dataToPlot <- 
-    data %>%
-    mutate(nest = 
-             plyr::mapvalues(
-               nest, 
-               from=c("kl", "kle", "lek", "ekl"), 
-               to=c("kl", "(kl)e", "(le)k", "(ek)l")
-               ),
-           Model = interaction(nest, CSP, sep = " ", drop=TRUE),
-           Inputs = flavor)
-
-  ggplot() +
-    geom_point(
-      data=dataToPlot, 
-      mapping=aes(
-        x=Year, 
-        y=Residuals, 
-        fill=Model, 
-        shape=Model, 
-        size=Model
-        )
-      ) +
-    facet_grid(flavor ~ Country) +
-    geom_hline(yintercept = 0, colour="gray50", size=0.1) +
-    scale_x_continuous(breaks=c(1960, 1980, 2000)) +
-    xlab("") +
-    ylab("r") + 
-    xy_theme() +
-    labs(color = "Factors of production") +
-    # This is custom stuff here to match the model_points_style function. 
-    # We can't use model_points_style, because the aesthetics are different here
-    # with only two series (kl w/o CSP and (kl)e w/o CSP) in the graph.
-    scale_size_manual(values = c(3, 3)) +
-    scale_fill_manual(values = c("transparent", "transparent")) +
-    scale_shape_manual(values = c(21, 23)) +
-  theme(legend.title=element_blank())
-}
-@
 
 
 \section{End EcolEcon2015A}
