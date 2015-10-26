@@ -23,7 +23,8 @@ Imports:
     utils,
     splines,
     mosaic,
-    optimx
+    optimx,
+    nlme
 Suggests:
     testthat,
     MASS,

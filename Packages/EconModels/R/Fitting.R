@@ -1,4 +1,4 @@
-
+#' @importFrom nlme gls
 
 standardES <- function( sigma=NA, sigma_1=NA, sigma_2=NA, nest=1:3, standardize=TRUE) {
   if (standardize) {
@@ -385,13 +385,14 @@ yhat.CDEmodel <- function( object, ... ) {
   #lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
   
   # grabbing log(x_0) from from the call
+  #  2 -> formula/model argument
   #  2 -> lhs of ~
   #  3 -> rhs of (last) - ; use ( ) to group for handcrafted hacky kludge
   coef_env <- as.environment(as.list(object$coefficients))
   parent.env(coef_env) <- parent.frame()
   # two ways to skin this cat, but first requires more careful use of parens.
-  # lx0 <- eval(object$call$formula[[2]][[3]], getData(object), coef_env)
-  lx0 <- 0 - eval(object$call$formula[[2]], getData(object), coef_env) + log(object$response)
+  # lx0 <- eval(object$call[[2]][[2]][[3]], getData(object), coef_env)
+  lx0 <- 0 - eval(object$call[[2]][[2]], getData(object), coef_env) + log(object$response)
   exp( fitted(object,...) + lx0[!is.na(lx0)] )
 }
 
@@ -436,8 +437,9 @@ response.CDEmodel <- function(object, ...)
     return( object$response )
 
 #' @export
-response.cesModel <- function(object, ...)
+response.cesModel <- function(object, ...) {
     return( object$response )
+}
 
 #' @export
 response.default <- function(object, ...) {
@@ -445,15 +447,18 @@ response.default <- function(object, ...) {
 }
 
 #' @export
-predict.CDEmodel <- function( object, ... ) {
+predict.CDEmodel <- function( object, newdata, ... ) {
   # model has form log(y) - log(x_0) ~ iYear + I(log x_1 - log x_0) + ... + I(log(x_k) - log(x_0))
-  # lx0 <- eval( parse( text = gsub( ".* - ", "", names(object$model)[1]) ), getData(object))
-  # grabbing log(x_0) from from the call
-  #  2 -> formula
   #  2 -> lhs of ~
-  #  3 -> rhs of -
-  lx0 <- eval(object$call[[2]][[2]][[3]], getData(object))
-  exp( NextMethod() + lx0[!is.na(lx0)] )
+  coef_env <- as.environment(as.list(object$coefficients))
+  parent.env(coef_env) <- parent.frame()
+  if (missing(newdata)) {
+    lx0 <- 0 - eval(object$call$formula[[2]], getData(object), coef_env) + log(object$response)
+    lx0 <- lx0[!is.na(lx0)]
+  } else {
+    lx0 <- eval(object$call$formula[[2]][[3]], newdata, coef_env)
+  }
+  exp( NextMethod() + lx0 )
 }
 
 #' @export
