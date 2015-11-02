@@ -558,9 +558,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
-#' cdModel(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
+#' cdModel(response = "iGDP", x1 = "iK", x2 = "iL", time = "iYear", data=US)
 #' cdModel(iGDP ~ iK + iL + iYear, data=US)
-#' cdModel(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
+#' cdModel(response = "iGDP", x1 = "iK", x2 = "iL", x3 = "iQp", time = "iYear", data=US)
 #' cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
 #' cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 #' 
@@ -875,3 +875,8 @@ linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE
   class(res) <- c("LINEXmodel", class(res))
   return(res)
 }
+
+nautralCoef.gls <- function(object, ...) {
+  EconModels:::makeNatCoef(object, ...)
+}
+  
