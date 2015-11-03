@@ -576,5 +576,17 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
 @
 
 
+<<Other_Models>>=
+# PT, unadjusted kl, quality-adjusted e
+mod_PT_uakl_qae <- cesModel(iGDP ~ iKstkS.L + iL + iUMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+# PT, quality-adjusted kl, unadjusted e
+mod_PT_qakl_uae <- cesModel(iGDP ~ iKservS.L + ihLest + iXpMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+
+# UK, unadjusted kl, quality-adjusted e
+mod_UK_uakl_qae <- cesModel(iGDP ~ iKstkO.WwithRD + iL + iU + iYear, HistoricalData$UK, nest=c(1,2,3))
+# UK, quality-adjusted kl, unadjusted e
+mod_UK_qakl_uae <- cesModel(iGDP ~ iKservO.WwithRD + ihLest + iXp + iYear, HistoricalData$UK, nest=c(1,2,3))
+@
+
 
 \section{End EcolEcon2015A}

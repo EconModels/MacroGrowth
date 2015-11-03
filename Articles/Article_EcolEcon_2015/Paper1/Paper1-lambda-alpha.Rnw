@@ -552,6 +552,24 @@ replicateExpModels(
 
 @
 
+<<Other_Models_Results>>=
+# PT, unadjusted kl, quality-adjusted e
+summary(mod_PT_uakl_qae)
+naturalCoef(mod_PT_uakl_qae)
+
+# PT, quality-adjusted kl, unadjusted e
+summary(mod_PT_qakl_uae)
+naturalCoef(mod_PT_qakl_uae)
+
+# UK, unadjusted kl, quality-adjusted e
+summary(mod_UK_uakl_qae)
+naturalCoef(mod_UK_uakl_qae)
+
+# UK, quality-adjusted kl, unadjusted e
+summary(mod_UK_qakl_uae)
+naturalCoef(mod_UK_qakl_uae)
+@
+
 
 
 %%References
