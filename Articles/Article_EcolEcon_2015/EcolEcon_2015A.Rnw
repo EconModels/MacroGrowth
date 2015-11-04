@@ -576,7 +576,10 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
 @
 
 
-<<Other_Models>>=
+<<Other_Models, eval=FALSE>>=
+# These models were estimated and the results sent to Paul Brockway.
+# At this point, there is no reason to estimate the modesl every time.
+
 # PT, unadjusted kl, quality-adjusted e
 mod_PT_uakl_qae <- cesModel(iGDP ~ iKstkS.L + iL + iUMP + iYear, HistoricalData$PT, nest=c(1,2,3))
 # PT, quality-adjusted kl, unadjusted e
