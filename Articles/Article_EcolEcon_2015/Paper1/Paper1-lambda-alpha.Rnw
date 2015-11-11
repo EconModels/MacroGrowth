@@ -552,7 +552,8 @@ replicateExpModels(
 
 @
 
-<<Other_Models_Results>>=
+
+<<Other_Models_Results, eval=FALSE>>=
   # PT, unadjusted kl, quality-adjusted e
   summary(other_models$PT$uakl_qae)
   naturalCoef(other_models$PT$uakl_qae)
@@ -574,11 +575,11 @@ replicateExpModels(
   sum(resid(other_models$UK$qakl_uae)^2)
 @
 
-This is a table for Paper 1.
 
-<<Other_Models_table>>=
-  # Start with the exponential-only (reference) models
-  OMTable <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
+
+<<OMTable_df>>=
+  # Create a data frame containing exponential-only (reference) models
+  OMTable_exp <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
     list(Country=id[[1]],
          Model = "Ref.",
          Nest = NA,
@@ -589,10 +590,10 @@ This is a table for Paper 1.
          SSE = sum(resid(mod)^2))
   }) %>% bind_rows()
   
-  # Add all CES models
-  OMTable <- leaf_apply(models, class="cesModel", f=function(mod, id){
+  # Create a data frame containing only the on-axis models, i.e., models that have all factors of production
+  # quality-adjusted simultaneously.
+  OMTable_onaxis <- leaf_apply(models, class="cesModel", f=function(mod, id){
   id_components <- strsplit(id, split = "[.]")[[1]]
-  print(id_components)
   list(Country = id_components[[1]],
        Model = "CES",
        Nest = id_components[[5]],
@@ -601,10 +602,11 @@ This is a table for Paper 1.
        lambda = naturalCoef(mod)$lambda,
        lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
        SSE = sum(resid(mod)^2))
-  }) %>% bind_rows() %>% bind_rows(OMTable, .)
+  }) %>% bind_rows()
   
-  # Add the off-axis models
-  OMTable <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
+  # Create a data frame containing only the off-axis models, i.e., models for which factors of production
+  # are quality-adjusted individually. that have all factors of production
+  OMTable_offaxis <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
     adjusted_components <- strsplit(id_components[[2]], "[_]")[[1]]
     list(Country = id_components[[1]],
@@ -617,12 +619,14 @@ This is a table for Paper 1.
          SSE = sum(resid(mod)^2)
          )
     
-  }) %>% bind_rows() %>% bind_rows(OMTable, .)
+  }) %>% bind_rows()
   
-  OMTable <- 
+  OMTable <- bind_rows(OMTable_exp, OMTable_onaxis, OMTable_offaxis) %>%
+    
     # Keep only rows that we want
-    filter(OMTable, is.na(Nest) | Nest == "kl" | Nest == "kle") %>%
-    # Sort rows as desired
+    filter(is.na(Nest) | Nest == "kl" | Nest == "kle") %>%
+
+    # Adjust table as desired for printing    
     mutate(
       Country = relevelFactor(factor(Country), c("PT", "UK")),
       Model = relevelFactor(factor(Model), c("Ref.", "CES")),
@@ -632,11 +636,24 @@ This is a table for Paper 1.
       e = plyr::mapvalues(e, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
       e = relevelFactor(factor(e), c("UA", "QA"))
     ) %>%
-    arrange(Country, Model, Nest, kl, e)
-  
-  
+    
+    # Sort rows as desired
+    arrange(Country, Model, Nest, kl, e) %>%
+    
+    # Rename column titles
+    plyr::rename(c("kl" = "$kl$", 
+                   "e" = "$e$",
+                   "lambda" = "$\\lambda$",
+                   "lambda_ratio" = "$\\lambda / \\lambda_{Ref.}$"))
+
 @
 
+<<OMTable, results="asis">>=
+    # Make the LaTeX table
+    myXTable(OMTable, caption="Solow residual~($\\lambda$) and SSE for $(kl)e$ models.",
+           label=paste0("tab:", opts_current$get("label")), 
+           digits=c(1,1,1,1,1,1, 4, 2, 3))
+@
 
 
 
