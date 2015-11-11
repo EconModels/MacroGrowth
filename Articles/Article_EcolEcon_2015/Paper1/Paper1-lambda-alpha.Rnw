@@ -553,22 +553,79 @@ replicateExpModels(
 @
 
 <<Other_Models_Results>>=
-# PT, unadjusted kl, quality-adjusted e
-summary(mod_PT_uakl_qae)
-naturalCoef(mod_PT_uakl_qae)
-
-# PT, quality-adjusted kl, unadjusted e
-summary(mod_PT_qakl_uae)
-naturalCoef(mod_PT_qakl_uae)
-
-# UK, unadjusted kl, quality-adjusted e
-summary(mod_UK_uakl_qae)
-naturalCoef(mod_UK_uakl_qae)
-
-# UK, quality-adjusted kl, unadjusted e
-summary(mod_UK_qakl_uae)
-naturalCoef(mod_UK_qakl_uae)
+  # PT, unadjusted kl, quality-adjusted e
+  summary(other_models$PT$uakl_qae)
+  naturalCoef(other_models$PT$uakl_qae)
+  sum(resid(other_models$PT$uakl_qae)^2)
+  
+  # PT, quality-adjusted kl, unadjusted e
+  summary(other_models$PT$qakl_uae)
+  naturalCoef(other_models$PT$qakl_uae)
+  sum(resid(other_models$PT$qakl_uae)^2)
+  
+  # UK, unadjusted kl, quality-adjusted e
+  summary(other_models$UK$uakl_qae)
+  naturalCoef(other_models$UK$uakl_qae)
+  sum(resid(other_models$UK$uakl_qae)^2)
+  
+  # UK, quality-adjusted kl, unadjusted e
+  summary(other_models$UK$qakl_uae)
+  naturalCoef(other_models$UK$qakl_uae)
+  sum(resid(other_models$UK$qakl_uae)^2)
 @
+
+This is a table for Paper 1.
+
+<<Other_Models_table>>=
+  # Start with the exponential-only (reference) models
+  OMTable <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
+    list(Model = "Ref.",
+         Country=id[[1]],
+         kl = NA,
+         e = NA,
+         Nest = NA,
+         lambda = coef(modelsExp[[id[[1]]]])[[2]],
+         lambda_ratio = 1,
+         SSE = sum(resid(mod)^2))
+  }) %>% bind_rows()
+  
+  # Add all CES models
+  OMTable <- leaf_apply(models, class="cesModel", f=function(mod, id){
+  id_components <- strsplit(id, split = "[.]")[[1]]
+  list(Model = "CES",
+       Country = id_components[[1]],
+       kl = id_components[[2]],
+       e = id_components[[2]],
+       Nest = id_components[[5]],
+       lambda = naturalCoef(mod)$lambda,
+       lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
+       SSE = sum(resid(mod)^2))
+  }) %>% bind_rows() %>% bind_rows(OMTable, .)
+  
+  # Add the off-axis models
+  OMTable <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
+    id_components <- strsplit(id, split = "[.]")[[1]]
+    print(id_components)
+    adjusted_components <- strsplit(id_components[[2]], "[_]")[[1]]
+    print(adjusted_components)
+    list(Model = "CES",
+         Country = id_components[[1]],
+         kl = ifelse(substr(adjusted_components[[1]], 1, 2) == "ua", "unadjusted", "adjusted"),
+         e = ifelse(substr(adjusted_components[[2]], 1, 2) == "ua", "unadjusted", "adjusted"),
+         Nest = "kle",
+         lambda = naturalCoef(mod)$lambda,
+         lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
+         SSE = sum(resid(mod)^2)
+         )
+    
+  }) %>% bind_rows() %>% bind_rows(OMTable, .)
+  
+  OMTable <- 
+    # Keep only rows that we want
+    filter(OMTable, is.na(Nest) | Nest == "kl" | Nest == "kle")
+  
+@
+
 
 
 
