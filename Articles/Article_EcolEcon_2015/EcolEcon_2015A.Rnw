@@ -578,31 +578,25 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
 
 <<Other_Models, eval=FALSE>>=
 # These models were estimated and the results sent to Paul Brockway.
-# At this point, there is no reason to estimate the modesl every time.
+# At this point, there is no reason to estimate the models every time.
 
-# PT, unadjusted kl, quality-adjusted e
-mod_PT_uakl_qae <- cesModel(iGDP ~ iKstkS.L + iL + iUMP + iYear, HistoricalData$PT, nest=c(1,2,3))
-summary(mod_PT_uakl_qae)
-naturalCoef(mod_PT_uakl_qae)
-sum(resid(mod_PT_uakl_qae)^2)
+fileNameOtherModels <- "EcolEcon2015kleOtherModelsCES.rds"
 
-# PT, quality-adjusted kl, unadjusted e
-mod_PT_qakl_uae <- cesModel(iGDP ~ iKservS.L + ihLest + iXpMP + iYear, HistoricalData$PT, nest=c(1,2,3))
-summary(mod_PT_qakl_uae)
-naturalCoef(mod_PT_qakl_uae)
-sum(resid(mod_PT_qakl_uae)^2)
-
-# UK, unadjusted kl, quality-adjusted e
-mod_UK_uakl_qae <- cesModel(iGDP ~ iKstkO.WwithRD + iL + iU + iYear, HistoricalData$UK, nest=c(1,2,3))
-summary(mod_UK_uakl_qae)
-naturalCoef(mod_UK_uakl_qae)
-sum(resid(mod_UK_uakl_qae)^2)
-
-# UK, quality-adjusted kl, unadjusted e
-mod_UK_qakl_uae <- cesModel(iGDP ~ iKservO.WwithRD + ihLest + iXp + iYear, HistoricalData$UK, nest=c(1,2,3))
-summary(mod_UK_qakl_uae)
-naturalCoef(mod_UK_qakl_uae)
-sum(resid(mod_UK_qakl_uae)^2)
+if (!rerunCESModels){
+  # Load other models from the file on disk
+  other_models <- readRDS(fileNameOtherModels)
+} else {
+  other_models <- list()
+  # PT, unadjusted kl, quality-adjusted e
+  other_models$PT$uakl_qae <- cesModel(iGDP ~ iKstkS.L + iL + iUMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+  # PT, quality-adjusted kl, unadjusted e
+  other_models$PT$qakl_uae <- cesModel(iGDP ~ iKservS.L + ihLest + iXpMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+  # UK, unadjusted kl, quality-adjusted e
+  other_models$UK$uakl_qae <- cesModel(iGDP ~ iKstkO.WwithRD + iL + iU + iYear, HistoricalData$UK, nest=c(1,2,3))
+  # UK, quality-adjusted kl, unadjusted e
+  other_models$UK$qakl_uae <- cesModel(iGDP ~ iKservO.WwithRD + ihLest + iXp + iYear, HistoricalData$UK, nest=c(1,2,3))
+  saveRDS(other_models, fileNameOtherModels)
+}
 
 @
 
