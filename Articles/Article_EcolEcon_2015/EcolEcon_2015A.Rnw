@@ -576,7 +576,7 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
 @
 
 
-<<Other_Models, eval=FALSE>>=
+<<Other_Models>>=
 # These models were estimated and the results sent to Paul Brockway.
 # At this point, there is no reason to estimate the models every time.
 
