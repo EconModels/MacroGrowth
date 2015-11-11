@@ -579,11 +579,11 @@ This is a table for Paper 1.
 <<Other_Models_table>>=
   # Start with the exponential-only (reference) models
   OMTable <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
-    list(Model = "Ref.",
-         Country=id[[1]],
+    list(Country=id[[1]],
+         Model = "Ref.",
+         Nest = NA,
          kl = NA,
          e = NA,
-         Nest = NA,
          lambda = coef(modelsExp[[id[[1]]]])[[2]],
          lambda_ratio = 1,
          SSE = sum(resid(mod)^2))
@@ -592,11 +592,12 @@ This is a table for Paper 1.
   # Add all CES models
   OMTable <- leaf_apply(models, class="cesModel", f=function(mod, id){
   id_components <- strsplit(id, split = "[.]")[[1]]
-  list(Model = "CES",
-       Country = id_components[[1]],
-       kl = id_components[[2]],
-       e = id_components[[2]],
+  print(id_components)
+  list(Country = id_components[[1]],
+       Model = "CES",
        Nest = id_components[[5]],
+       kl = id_components[[2]],
+       e = ifelse(id_components[[3]] == "noE", NA, id_components[[2]]),
        lambda = naturalCoef(mod)$lambda,
        lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
        SSE = sum(resid(mod)^2))
@@ -605,14 +606,12 @@ This is a table for Paper 1.
   # Add the off-axis models
   OMTable <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
-    print(id_components)
     adjusted_components <- strsplit(id_components[[2]], "[_]")[[1]]
-    print(adjusted_components)
-    list(Model = "CES",
-         Country = id_components[[1]],
+    list(Country = id_components[[1]],
+         Model = "CES",
+         Nest = "kle",
          kl = ifelse(substr(adjusted_components[[1]], 1, 2) == "ua", "unadjusted", "adjusted"),
          e = ifelse(substr(adjusted_components[[2]], 1, 2) == "ua", "unadjusted", "adjusted"),
-         Nest = "kle",
          lambda = naturalCoef(mod)$lambda,
          lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
          SSE = sum(resid(mod)^2)
@@ -622,7 +621,19 @@ This is a table for Paper 1.
   
   OMTable <- 
     # Keep only rows that we want
-    filter(OMTable, is.na(Nest) | Nest == "kl" | Nest == "kle")
+    filter(OMTable, is.na(Nest) | Nest == "kl" | Nest == "kle") %>%
+    # Sort rows as desired
+    mutate(
+      Country = relevelFactor(factor(Country), c("PT", "UK")),
+      Model = relevelFactor(factor(Model), c("Ref.", "CES")),
+      Nest = relevelFactor(factor(Nest), c("NA", "kl", "kle")),
+      kl = plyr::mapvalues(kl, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
+      kl = relevelFactor(factor(kl), c("UA", "QA")),
+      e = plyr::mapvalues(e, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
+      e = relevelFactor(factor(e), c("UA", "QA"))
+    ) %>%
+    arrange(Country, Model, Nest, kl, e)
+  
   
 @
 
