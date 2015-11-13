@@ -491,8 +491,7 @@ temp_data_noCSP <-
   bind_rows() %>%
   mutate(CSP = "w/o CSP")
 
-FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP)
-
+FittedAndResid <- bind_rows(temp_data_exp, temp_data_CSP, temp_data_noCSP)
 @
 
 
@@ -500,10 +499,10 @@ FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP
 <<TableData>>=
   TableData <- 
   AllCoeffs %>%
-  plyr::rename(c(model = "Model", energy = "Energy", nest = "Nest")) %>%
+#  rename_(Model = "model", Energy = "energy", Nest = "nest") %>%
   mutate(Nest = 
            plyr::mapvalues(
-             Nest,
+             nest,
              from=c("kl", "kle", "lek", "ekl"),
              to=c("$kl$", "$(kl)e$", "$(le)k$", "$(ek)l$")),
          CSP =  
@@ -513,12 +512,12 @@ FittedAndResid <- plyr::rbind.fill(temp_data_exp, temp_data_CSP, temp_data_noCSP
              to=c("Adhere", "Reject")),
          Energy =
            plyr::mapvalues(
-             Energy, 
+             energy, 
              from=c("Without energy", "With energy"), 
              to=c("Without", "With")),
          Model = 
            plyr::mapvalues(
-             Model, 
+             model, 
              from=c("exp"), 
              to=c("Ref."))
   )
