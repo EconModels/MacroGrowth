@@ -521,7 +521,6 @@ bind_rows(
     xlabels   = relevelFactor(factor(xlabels), c("Ref.", "kl-UA", "kl-QA", "kl-UA, e-UA", "kl-UA, e-QA", "kl-QA, e-UA", "kl-QA, e-QA")),
     Nest = plyr::mapvalues(Nest, from = c("kle"), to = c("(kl)e")),
     Nest = relevelFactor(factor(Nest), c("kl", "(kl)e"))
-    
   ) %>%
 
   ggplot(aes(x = xlabels, weight = lambda)) + 
