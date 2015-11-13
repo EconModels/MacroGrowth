@@ -575,5 +575,29 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
 @
 
 
+<<Other_Models>>=
+# These models were estimated and the results sent to Paul Brockway.
+# At this point, there is no reason to estimate the models every time.
+
+fileNameOtherModels <- "EcolEcon2015kleOtherModelsCES.rds"
+
+if (!rerunCESModels){
+  # Load other models from the file on disk
+  other_models <- readRDS(fileNameOtherModels)
+} else {
+  other_models <- list()
+  # PT, unadjusted kl, quality-adjusted e
+  other_models$PT$uakl_qae <- cesModel(iGDP ~ iKstkS.L + iL + iUMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+  # PT, quality-adjusted kl, unadjusted e
+  other_models$PT$qakl_uae <- cesModel(iGDP ~ iKservS.L + ihLest + iXpMP + iYear, HistoricalData$PT, nest=c(1,2,3))
+  # UK, unadjusted kl, quality-adjusted e
+  other_models$UK$uakl_qae <- cesModel(iGDP ~ iKstkO.WwithRD + iL + iU + iYear, HistoricalData$UK, nest=c(1,2,3))
+  # UK, quality-adjusted kl, unadjusted e
+  other_models$UK$qakl_uae <- cesModel(iGDP ~ iKservO.WwithRD + ihLest + iXp + iYear, HistoricalData$UK, nest=c(1,2,3))
+  saveRDS(other_models, fileNameOtherModels)
+}
+
+@
+
 
 \section{End EcolEcon2015A}
