@@ -524,12 +524,12 @@ bind_rows(
   ) %>%
 
   ggplot(aes(x = xlabels, weight = lambda)) + 
-  facet_grid(Nest ~ Country) +
-  geom_bar(width = 0.5) +
-  xlab("") +
-  ylab(expression(lambda)) +
-  xy_theme() + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    facet_grid(Nest ~ Country) +
+    geom_bar(width = 0.5) +
+    xlab("") +
+    ylab(expression(lambda)) +
+    xy_theme() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
