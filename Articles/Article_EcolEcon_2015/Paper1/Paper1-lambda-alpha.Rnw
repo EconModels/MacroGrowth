@@ -279,8 +279,8 @@ TableData %>%
     
     # Keep only rows that we want
     filter(is.na(Nest) | Nest == "kl" | Nest == "kle") %>%
-
-    # Adjust table as desired for printing    
+    
+    # Adjust table factors and levels
     mutate(
       Country = relevelFactor(factor(Country), c("PT", "UK")),
       Model = relevelFactor(factor(Model), c("Ref.", "CES")),
@@ -289,8 +289,13 @@ TableData %>%
       kl = relevelFactor(factor(kl), c("UA", "QA")),
       e = plyr::mapvalues(e, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
       e = relevelFactor(factor(e), c("UA", "QA"))
-    ) %>%
+    )
     
+@
+
+<<OMTable, results="asis">>=
+  OMTable %>%
+
     # Sort rows as desired
     arrange(Country, Model, Nest, kl, e) %>%
     
@@ -298,18 +303,15 @@ TableData %>%
     plyr::rename(c("kl" = "$kl$", 
                    "e" = "$e$",
                    "lambda" = "$\\lambda$",
-                   "lambda_ratio" = "$\\lambda / \\lambda_{Ref.}$"))
-
-@
-
-<<OMTable, results="asis">>=
-  # Make the LaTeX table
-  myXTable(OMTable, 
-           caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) for $(kl)e$ models that reject the cost share principle. 
+                   "lambda_ratio" = "$\\lambda / \\lambda_{Ref.}$")) %>%
+    
+    # Make the LaTeX table
+    myXTable(caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) for $(kl)e$ models that reject the cost share principle. 
              $\\lambda / \\lambda_{Ref.}$ is the ratio of Solow residual relative to the reference (exponential-only) model.
              ``UA'' and ``QA'' indicate unadjusted and quality-adjusted factors of production, respectively.",
-           label=paste0("tab:", opts_current$get("label")), 
-           digits=c(1,1,1,1,1,1, 4, 2, 3))
+             label=paste0("tab:", opts_current$get("label")), 
+             digits=c(1,1,1,1,1,1, 4, 2, 3))
+  
 @
 
 
@@ -502,6 +504,35 @@ p <- ggplot() +
 model_points_style_quad(p)
 @
 
+
+<<Other_Models_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=4, fig.cap="Solow residual~($\\lambda$) for various models.">>=
+# Duplicate the reference models for each nest (kl and kle)
+bind_rows(
+  OMTable %>% filter(Model != "Ref."),
+  OMTable %>% filter(Model == "Ref.") %>% mutate(Nest = "kl"),
+  OMTable %>% filter(Model == "Ref.") %>% mutate(Nest = "kle")
+) %>%
+  
+  # Add a new column that will become the x-axis labels for the bar graphs.
+  mutate(
+    klquality = paste0("kl-", kl),
+    equality  = paste0("e-", e),
+    xlabels   = ifelse (Model == "Ref.", "Ref.", ifelse(Nest == "kl", klquality, paste(klquality, equality, sep = ", "))),
+    xlabels   = relevelFactor(factor(xlabels), c("Ref.", "kl-UA", "kl-QA", "kl-UA, e-UA", "kl-UA, e-QA", "kl-QA, e-UA", "kl-QA, e-QA")),
+    Nest = plyr::mapvalues(Nest, from = c("kle"), to = c("(kl)e")),
+    Nest = relevelFactor(factor(Nest), c("kl", "(kl)e"))
+    
+  ) %>%
+
+  ggplot(aes(x = xlabels, weight = lambda)) + 
+  facet_grid(Nest ~ Country) +
+  geom_bar(width = 0.5) +
+  xlab("") +
+  ylab(expression(lambda)) +
+  xy_theme() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
 
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
 AllOE %>% 
