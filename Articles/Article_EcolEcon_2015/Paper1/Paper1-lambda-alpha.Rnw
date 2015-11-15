@@ -176,7 +176,6 @@ knitr::opts_chunk$set(include = TRUE)
 @
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Tables}
 \label{sec:tables}
