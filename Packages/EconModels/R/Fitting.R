@@ -789,13 +789,14 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
     eval(substitute(gls(f, correlation = C, data=sdata), list(f=form, C = correlation)))  
   )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
+  logLik <- sapply(models, function(m) m$logLik)
   if ( constrained ) {
     good <- sapply( models, respectsConstraints)
     good[ !good ] <- NA
   } else { 
     good <- TRUE
   }
-  winner <- which.min( sse * good )
+  winner <- which.max( logLik * good )
   res <- models[[winner]]
   names( res$coefficients ) <- CDcoefNames[[winner]]
   res$winner <- winner
