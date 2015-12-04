@@ -325,8 +325,12 @@ TableData %>%
 @
 
 
-<<Cost_Share_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=1.5, fig.cap="Historical cost shares for capital and labor.", eval=FALSE>>=
-ggplot(data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l)) + 
+<<Cost_Share_Plot, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.8, fig.cap="Historical cost shares for capital and labor.">>=
+gather(CostShares, key=cost_share, value=value, cs_k, cs_l) %>%
+  mutate(
+    cost_share = relevelFactor(factor(cost_share), c("cs_l", "cs_k"))
+  ) %>%
+ggplot() + 
   geom_line(mapping = aes(
     x = Year, 
     y = value, 
@@ -336,19 +340,19 @@ ggplot(data = gather(CostShares, key=cost_share, value=value, cs_k, cs_l)) +
     size = cost_share)) +
   facet_grid( ~ Country) +
   ylab("Cost Share") +
-  scale_y_continuous(limits=c(-0.2, 1.1), breaks=c(0, 0.5, 1)) +
+  scale_y_continuous(limits=c(0.0, 1.0), breaks=c(0, 0.5, 1)) +
   geom_hline(aes(yintercept = 0.3), colour="gray50", size=0.1) +
   geom_hline(aes(yintercept = 0.7), colour="gray50", size=0.1) +
   xlab("") +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_color_manual(name = "", 
-                     labels=c("k", "l"),
+                     labels=c("l", "k"),
                      values=c("black", "black")) +
   scale_linetype_manual(name="", 
-                        labels=c("k", "l"),
+                        labels=c("l", "k"),
                         values=c(2,3)) + 
   scale_size_manual(name="", 
-                    labels=c("k", "l"),
+                    labels=c("l", "k"),
                     values = c(0.9, 0.9)) +
   xy_theme()
 @
