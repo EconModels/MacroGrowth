@@ -538,7 +538,10 @@ bind_rows(
 @
 
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
-AllOE %>% 
+# Models without energy should have NA for oe3. Doing so eliminates them from the graph.
+AllOE2 <- AllOE
+AllOE2$oe3[which(AllOE$energy == "Without energy")] <- NA
+AllOE2 %>% 
   mutate(
     flavor = plyr::mapvalues(flavor, from=c("Quality-adjusted", "Unadjusted"), to=c("QA", "UA")),
     xfacet = interaction(Country, flavor, sep = " - "),
