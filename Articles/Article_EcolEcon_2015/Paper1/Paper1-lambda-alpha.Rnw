@@ -584,7 +584,7 @@ AllOE2 %>%
 
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, orig_color = "black") +
+standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.25, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
     scale_y_continuous(breaks=c(0, 0.005, 0.01), limits=c(0, 0.01)) +
     labs(x=expression(theta), y=expression(lambda))
@@ -593,7 +593,7 @@ standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_fo
 
 <<resample_graph_delta_delta_1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\delta$ and $\\delta_1$ values for resample models that reject the cost share theorem, include energy, use quality-adjusted factors of production, and employ the $(kl)e$ nesting.">>=
 standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
-                    facet_formula=~Country, alpha=0.1,
+                    facet_formula=~Country, alpha=0.2,
                     orig_color="black") +
   scale_x_continuous(limits=c(0, 1), breaks=c(0, 0.5, 1)) +
   scale_y_continuous(limits=c(0,1), breaks=c(0, 0.5, 1)) +
