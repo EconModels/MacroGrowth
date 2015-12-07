@@ -444,20 +444,42 @@ replicateExpModels(
   facet_grid(yfacet ~ xfacet) + 
   scale_x_continuous(limits = c(1955, 2013), breaks = c(1960, 1980, 2000)) +
   scale_y_continuous(limits = c(0.5, 7), breaks = c(1, 2, 4, 6)) +
+  
+  # We had this code for a while
+#   scale_color_manual(
+#     name = "",
+#     labels = c("historical", "fitted"),
+#     values=c("gray70", "black")
+#   ) +
+#   scale_size_manual(
+#     name = "",
+#     labels = c("historical", "fitted"),
+#     values = c(1.5, 0.3)) +
+#   scale_linetype_manual( 
+#     name = "",
+#     labels = c("historical", "fitted"),
+#     values=c(1,1) ) + 
+#   labs(x="", y="Indexed GDP (1960 = 1)") +
+
+  # But Paul suggests some small changes:
+
   scale_color_manual(
     name = "",
     labels = c("historical", "fitted"),
-    values=c("gray70", "black")
+    values=c("black", "black")
   ) +
   scale_size_manual(
     name = "",
     labels = c("historical", "fitted"),
-    values = c(1.5, 0.3)) +
+    values = c(0.2, 0.2)) +
   scale_linetype_manual( 
     name = "",
     labels = c("historical", "fitted"),
-    values=c(1,1) ) + 
+    values=c(1,2) ) + 
   labs(x="", y="Indexed GDP (1960 = 1)") +
+
+
+
   xy_theme()
 
 @
