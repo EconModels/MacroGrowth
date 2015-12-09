@@ -16,7 +16,6 @@ library(scales)
 library(tidyr)
 library(nlme)
 
-
 # Tell whether to re-run the analysis to create the models
 # or the resampling on the (kl)e models.
 # This file will use previously-saved models and resampling to generate
@@ -57,6 +56,7 @@ opts_chunk$set(
 )
 @
 
+
 <<myXTable>>=
 myXTable <- function(data, caption, label, digits=2){
   table <- xtable(data, caption=caption, label=label, digits=digits)
@@ -69,6 +69,7 @@ myXTable <- function(data, caption, label, digits=2){
         booktabs=TRUE)
 }
 @
+
 
 <<model_points_style>>=
 model_points_style <- function(p) {
@@ -110,14 +111,15 @@ countries <- names(formulas)
 flavors <- names(formulas$PT)
 @
 
+
 <<Data>>=
 # Create the HistoricalData data frames
 commonVars <- c("Year", "Country", "Source")
 HistoricalData <- list(
-  PT =  IST %>% 
-    filter(Country == "PT"), 
+  PT = IST %>% 
+    filter(Country == "PT", Year <= 2009), # Ensures all fits are done on equal basis.
   UK = Leeds %>% 
-    filter(Country == "UK") 
+    filter(Country == "UK", Year <= 2009)
 )
 
 # Load historical cost shares
