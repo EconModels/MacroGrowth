@@ -499,7 +499,7 @@ p <- ggplot() +
              AllCoeffs %>% filter(model=="exp") %>% select(Country, sse), 
              colour="gray50", size=0.1) +
   facet_grid(flavor ~ Country) +
-  scale_x_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.035)) +
+  scale_x_continuous(breaks=c(0, 0.01, 0.02, 0.03), limits=c(0, 0.036)) +
   xlab(expression(lambda)) +
   scale_y_continuous(limits=c(-0.05, 0.7)) +
   ylab("SSE") + 
