@@ -78,6 +78,9 @@
 %% for the whole article with \linenumbers after \end{frontmatter}.
 \usepackage[right]{lineno}
 
+\newcommand{\sse}{\mbox{SSE}}
+
+
 %% natbib.sty is loaded by default. However, natbib options can be
 %% provided with \biboptions{...} command. Following options are
 %% valid:
@@ -174,6 +177,30 @@ CES function \sep Cobb-Douglas function \sep statistical precision \sep aggregat
 <<include=FALSE>>=
 knitr::opts_chunk$set(include = TRUE)
 @
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Boundary Model Discussion}
+\label{sec:boundary_model_discussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Many other modeling approaches estimate parameters that are close to, 
+but not exactly on, a boundary. 
+One example is the modeling approach for Portugal wherein
+all factors of production are quality-adjusted,
+the $(kl)e$ nesting structure is employed, and the CSP is rejected.
+The best fitting value of $\delta_1$ is rounds to 
+\Sexpr{format(round(naturalCoef(models$PT$adjusted$withE$CES$kle)$delta_1, 3), nsmall = 3)}.
+However, if all decimal places determined by the fitting algorithm are reported,
+the value of $\delta_1$ is shown to be 
+\Sexpr{format(round(naturalCoef(models$PT$adjusted$withE$CES$kle)$delta_1, 20), nsmall = 20)}. 
+The fitting algorithm
+finds a set of parameters that minimizes the objective function for the fitting algorithm, \sse.
+Indeed, the winning, near-boundary model has \sse{} = 
+\Sexpr{format(round(sum(resid(models$PT$adjusted$withE$CES$kle)^2), 3), nsmall = 3)},
+while the model on the boundary where 
+$\delta_1 = 1$ has \sse{} = 
+\Sexpr{format(round(sum(resid(attr(models$PT$adjusted$withE$CES$kle, "model.attempts")[[11]])^2), 3), nsmall = 3)}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
