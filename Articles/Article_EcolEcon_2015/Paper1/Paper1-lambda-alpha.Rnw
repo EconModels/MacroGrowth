@@ -180,7 +180,7 @@ knitr::opts_chunk$set(include = TRUE)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Boundary Model Discussion}
+\section{Boundary model discussion}
 \label{sec:boundary_model_discussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -219,7 +219,7 @@ TableData %>%
   myXTable(caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), 
            and sum of squared errors~($sse$) for all modeling choices.",
            label=paste0("tab:", opts_current$get("label")), 
-           digits=c(1,1,1,1,1,1,1, 2, 4, 3))
+           digits=c(1,1,1,1,1,1,1, 2, 4, 4))
 @
 
 
