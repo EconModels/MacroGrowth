@@ -291,9 +291,11 @@ ggplot(data=historicalData %>%
 
 <<Models>>=
 modelsFileName <- file.path("models", "Brockway2015Models.rds")
+modelsiXpFileName <- file.path("models", "Brockway2015ModelsiXp.rds")
 if (!rerunModels){
   # load from the file on disk
   models <- readRDS(modelsFileName)
+  modelsiXp <- readRDS(modelsiXpFileName)
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
@@ -303,6 +305,14 @@ if (!rerunModels){
   names(models) <- countries
   # Save the models.
   saveRDS(models, file = modelsFileName)
+  
+  # Now models using iXp instead of iU
+  modelsiXp <- lapply(countries, function(coun){
+    return(cesModel(iY ~ iK + iL + iXp + iYear, filter(historicalData, Country == coun, nest = 1:3)))
+  })
+  names(modelsiXp) <- countries
+  # Save the models.
+  saveRDS(modelsiXp, file = modelsiXpFileName)
 }
 @
 
@@ -631,6 +641,43 @@ ggplot(Rebound) +
 If we want to do so, we could apply the same calculation to each resampled model,
 which would give $n$ lines for each country in Figure~\ref{fig:Rebound-graph}.
 This would be similar to Figure~9 in the CES paper.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Primary Exergy} 
+\label{sec:primary_exergy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We can also fit to historical data using quality-adjusted $kl$ and unadjusted $e$
+in the form of primary exergy ($iXp$). 
+Here are the results.
+
+<<iXp, echo=TRUE>>=
+# UK
+modelsiXp$UK
+# US
+modelsiXp$US
+# CN
+modelsiXp$CN
+
+# sse for each model
+
+# UK
+sum(resid(modelsiXp$UK)^2)
+# US
+sum(resid(modelsiXp$US)^2)
+# CN
+sum(resid(modelsiXp$CN)^2)
+
+# Compare to sse for models that use iU
+# UK
+sum(resid(models$UK)^2)
+# US
+sum(resid(models$US)^2)
+# CN
+sum(resid(models$CN)^2)
+
+@
 
 
 
