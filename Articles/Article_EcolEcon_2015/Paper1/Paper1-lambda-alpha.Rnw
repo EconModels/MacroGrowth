@@ -214,7 +214,8 @@ TableData %>%
   select(Country, Model, CSP, flavor, Energy, Nest, scale, lambda, sse) %>%
   plyr::rename(c("flavor" = "Factors of prod.",
                  "scale" = "$\\theta$",
-                 "lambda" = "$\\lambda$")) %>%
+                 "lambda" = "$\\lambda$",
+                 "sse" = "SSE")) %>%
   
   myXTable(caption="Scale parameter~($\\theta$), Solow residual~($\\lambda$), 
            and sum of squared errors~($sse$) for all modeling choices.",
