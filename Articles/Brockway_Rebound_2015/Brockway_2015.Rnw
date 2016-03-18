@@ -243,6 +243,19 @@ Historical data have been provided by Paul Brockway.
 # Set the working directory to the project directory.
 historicalData <- read.csv(file = file.path("data", "BrockwayData.csv"))
 countries <- c("UK", "US", "CN")
+# There are places where we need to use data from 1980 onward for the UK only.
+UK1980Data <- historicalData %>% filter(Country == "UK") %>% subset(Year >= 1980) %>%
+  mutate(
+    # Re-normlaize to 1980.
+    iYear = iYear - iYear[1],
+    iY = iY / iY[1],
+    iK = iK / iK[1],
+    iL = iL / iL[1],
+    iXp = iXp / iXp[1],
+    iU = iU / iU[1],
+    sF = sF / sF[1],
+    sK = sK / sK[1]
+  )
 @
 
 <<Historical_Data_Graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=2.5, fig.cap="Historical data.", warning=FALSE>>=
@@ -292,15 +305,17 @@ ggplot(data=historicalData %>%
 <<Models>>=
 modelsFileName <- file.path("models", "Brockway2015Models.rds")
 modelsiXpFileName <- file.path("models", "Brockway2015ModelsiXp.rds")
+modelsUK1980FileName <- file.path("models", "Brockway2015ModelsUK1980.rds");
 if (!rerunModels){
   # load from the file on disk
   models <- readRDS(modelsFileName)
   modelsiXp <- readRDS(modelsiXpFileName)
+  modelsUK1980 <- readRDS(modelsUK1980FileName) # UK using only data from 1980 - 2010.
 } else {
   # re-run the models and save to disk.
   # In RStudio, be sure to set the working directory to the source file directory.
   models <- lapply(countries, function(coun){
-    return(cesModel(iY ~ iK + iL + iU + iYear, filter(historicalData, Country==coun, nest=1:3)))
+    return(cesModel(iY ~ iK + iL + iU + iYear, filter(historicalData, Country==coun), nest=1:3))
   })
   names(models) <- countries
   # Save the models.
@@ -308,12 +323,27 @@ if (!rerunModels){
   
   # Now models using iXp instead of iU
   modelsiXp <- lapply(countries, function(coun){
-    return(cesModel(iY ~ iK + iL + iXp + iYear, filter(historicalData, Country == coun, nest = 1:3)))
+    return(cesModel(iY ~ iK + iL + iXp + iYear, filter(historicalData, Country == coun), nest = 1:3))
   })
   names(modelsiXp) <- countries
   # Save the models.
   saveRDS(modelsiXp, file = modelsiXpFileName)
+  
+  # Now run the UK model using only 1980--2010 data
+  modelsUK1980 <- list(
+    U = cesModel(iY ~ iK + iL + iU + iYear, UK1980Data),
+    iXp = cesModel(iY ~ iK + iL + iXp + iYear, UK1980Data)
+    )
+  saveRDS(modelsUK1980, file = modelsUK1980FileName)
 }
+
+# Run these models every time. They are fast.
+modelsKL <- lapply(countries, function(coun){
+  return(cesModel(iY ~ iK + iL + iYear, filter(historicalData, Country==coun), nest = 1:2))
+})
+names(modelsKL) <- countries
+
+modelKLUK1980 <- cesModel(iY ~ iK + iL + iYear, UK1980Data, nest = 1:2)
 @
 
 
@@ -322,21 +352,36 @@ if (!rerunModels){
 \label{sec:model_results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-First, look a the UK results.
+First, look a the UK results using all years: 
+\Sexpr{historicalData %>% subset(Country == "UK") %>% select(Year) %>% min()}--%
+\Sexpr{historicalData %>% subset(Country == "UK") %>% select(Year) %>% max()}.
 
 <<resultsUK, echo=TRUE>>=
 summary(models[["UK"]])
-naturalCoef(models[["UK"]])
+naturalCoef(models[["UK"]]) %>% glimpse()
 @
 
 The fitted model for the UK is not near any boundaries
 to the economically-meaningful solution space.
 
+Next, UK results using years 
+\Sexpr{min(UK1980Data$Year)} -- \Sexpr{max(UK1980Data$Year)}.
+
+<<resultsUK1980, echo=TRUE>>=
+summary(modelsUK1980$U)
+naturalCoef(modelsUK1980$U) %>% glimpse()
+@
+
+The above model with limited years is along a boundary ($\sigma_1 = \infty$) 
+and very different from the model using all years.
+However, the important thing for rebound is $\rho$,
+which is similar between the two models.
+
 Next, look at the US results.
 
 <<resultsUS, echo=TRUE>>=
 summary(models[["US"]])
-naturalCoef(models[["US"]])
+naturalCoef(models[["US"]]) %>% glimpse()
 @
 
 These results for the US deserve additional scrutiny.
@@ -360,7 +405,7 @@ bmod7$converged
 # The fitted parameters in bmod7 are as expected,
 # i.e., we get NA for both rho and sigma, 
 # and we have delta = 1.
-naturalCoef(bmod7)
+naturalCoef(bmod7) %>% glimpse()
 # Calculate the sse for bmod7
 sum(resid(bmod7)^2)
 # Compare to sse for fitted model
@@ -458,7 +503,7 @@ Finally, look at the CN results.
 
 <<resultsCN, echo=TRUE>>=
 summary(models[["CN"]])
-naturalCoef(models[["CN"]])
+naturalCoef(models[["CN"]]) %>% glimpse()
 @
 
 Similar to the US results above, we can
@@ -655,6 +700,8 @@ Here are the results.
 <<iXp, echo=TRUE>>=
 # UK
 modelsiXp$UK
+# UK starting from 1980
+modelsUK1980$iXp
 # US
 modelsiXp$US
 # CN
@@ -664,6 +711,8 @@ modelsiXp$CN
 
 # UK
 sum(resid(modelsiXp$UK)^2)
+# UK 1980
+sum(resid(modelsUK1980$iXp)^2)
 # US
 sum(resid(modelsiXp$US)^2)
 # CN
@@ -672,10 +721,43 @@ sum(resid(modelsiXp$CN)^2)
 # Compare to sse for models that use iU
 # UK
 sum(resid(models$UK)^2)
+# UK1980
+sum(resid(modelsUK1980$U)^2)
 # US
 sum(resid(models$US)^2)
 # CN
 sum(resid(models$CN)^2)
+
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$kl$-only models} 
+\label{sec:klmodels}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Here are some models fit with only k and l as factors of production.
+
+<<kl, echo=TRUE>>=
+# UK
+modelsKL$UK
+# UK 1980
+modelKLUK1980
+# US
+modelsKL$US
+# CN
+modelsKL$CN
+
+# sse for each model
+
+# UK
+sum(resid(modelsKL$UK)^2)
+# UK1980
+sum(resid(modelKLUK1980)^2)
+# US
+sum(resid(modelsKL$US)^2)
+# CN
+sum(resid(modelsKL$CN)^2)
 
 @
 
