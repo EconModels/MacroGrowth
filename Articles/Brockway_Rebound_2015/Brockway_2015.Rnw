@@ -581,9 +581,11 @@ myXTable(fittedParamsTable2,
 
 <<Resampling>>=
 resampleFileName <- file.path("models", "Brockway2015Resamples.rds")
+resampleUK1980FileName <- file.path("models", "Brockway2015UK1980Resamples.rds")
 if (!rerunResamples){
   # load resample data from the file on disk
     resampleCoeffs <- readRDS(resampleFileName)
+    resampleCoeffsUK1980 <- readRDS(resampleUK1980FileName)
 } else {
   # Run resampling on models.
   resampleCoeffs <- leaf_apply(l = models, class = c("cesModel", "plm"), f = function(mod, mod_name){
@@ -593,6 +595,10 @@ if (!rerunResamples){
       )
   }) %>% bind_rows
   saveRDS(resampleCoeffs, file = resampleFileName)
+  
+  # UK model for years 1980-2010
+  resampleCoeffsUK1980 <- resampledFits(modelsUK1980$U, method = "wild", n = nResamples)$coeffs
+  saveRDS(resampleCoeffsUK1980, file = resampleUK1980FileName)
 }
 @
 
