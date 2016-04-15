@@ -59,6 +59,7 @@ xy_theme <- function(base_size=12, base_family = "", base_theme=theme_bw, label_
       plot.background = element_blank(),
       strip.text = element_text(colour=label_colour, size=0.8 * base_size),
       strip.background = element_rect(fill = NA, colour = NA),
+      legend.title = element_text(colour = label_colour), 
       legend.background = element_rect(fill=NA, colour=NA),
       legend.key = element_rect(fill=NA, colour=NA),
       legend.text = element_text(colour=label_colour),
