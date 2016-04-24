@@ -184,6 +184,12 @@ knitr::opts_chunk$set(include = TRUE)
 \label{sec:boundary_model_discussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%++++++++++++++++++++++++++++++
+\subsection{Portugal} 
+\label{sec:boundary_portugal}
+%++++++++++++++++++++++++++++++
+
 Many other modeling approaches estimate parameters that are close to, 
 but not exactly on, a boundary. 
 One example is the modeling approach for Portugal wherein
@@ -201,6 +207,32 @@ Indeed, the winning, near-boundary model has \sse{} =
 while the model on the boundary where 
 $\delta_1 = 1$ has \sse{} = 
 \Sexpr{format(round(sum(resid(attr(models$PT$adjusted$withE$CES$kle, "model.attempts")[[11]])^2), 3), nsmall = 3)}.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{United Kingdom} 
+\label{sec:boundary_uk}
+%++++++++++++++++++++++++++++++
+
+Many other modeling approaches estimate parameters that are close to, 
+but not exactly on, a boundary. 
+One example is the modeling approach for the UK wherein
+all factors of production are quality-adjusted,
+the $(kl)e$ nesting structure is employed, and the CSP is rejected.
+The best fitting value of $\delta_1$ rounds to 
+\Sexpr{format(round(naturalCoef(models$UK$adjusted$withE$CES$kle)$delta_1, 3), nsmall = 3)},
+and the best fitting value of $\delta$ rounds to
+\Sexpr{format(round(naturalCoef(models$UK$adjusted$withE$CES$kle)$delta, 3), nsmall = 3)}.
+So, it does not appear that the UK model is near a $\delta_1$ or $\delta$ 
+boundary in this instance.
+Nor is it near a $\rho_1$ or $\rho$ boundary. 
+Again, to three decimal places,
+$\rho_1$ is 
+\Sexpr{format(round(naturalCoef(models$UK$adjusted$withE$CES$kle)$rho_1, 3), nsmall = 3)},
+and 
+$\rho$ is
+\Sexpr{format(round(naturalCoef(models$UK$adjusted$withE$CES$kle)$rho, 3), nsmall = 3)}.
+This model is clear of any boundaries.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
