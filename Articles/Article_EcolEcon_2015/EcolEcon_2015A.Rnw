@@ -568,6 +568,7 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
   scale_color_manual(name = "", values=c("black", "black", "black", "gray70")) +
   scale_linetype_manual(name="", values=c(1,2,3,1)) + 
   scale_size_manual(name="", values = c(1, 0.9, 0.9, 0.6)) +
+  scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
   xlab("") + 
   ylab("Indexed (1960=1)") +
