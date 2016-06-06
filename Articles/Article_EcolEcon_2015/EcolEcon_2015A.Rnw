@@ -27,14 +27,14 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunCESModels=FALSE
-rerunResampling=FALSE
+rerunCESModels <- FALSE
+rerunResampling <- FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
   eval=TRUE,
-  include = FALSE,
+  include=FALSE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  
@@ -157,7 +157,6 @@ for (country in countries){
   expMod$response <- sdata$iGDP 
   modelsExp[[country]] <- expMod
 }
-
 @
 
 
@@ -281,14 +280,14 @@ if (!rerunCESModels){
 model2df <- function(mod, id){
   # Parse the id to find out whether this is quality-adjusted data, etc.
   id_components <- strsplit(id, split = "[.]")[[1]]
-  
+
   data_frame(
     Country = id_components[1], 
     flavor  = ifelse(id_components[2]=="unadjusted", "Unadjusted", "Quality-adjusted"),
     energy  = ifelse(id_components[3]=="noE", "Without energy", "With energy"),
     model   = id_components[4], 
     nest    = id_components[5]) %>%  
-  cbind(naturalCoef(mod)) %>% 
+  cbind(naturalCoef(mod)) %>%
   cbind(data.frame(sse = sum(resid(mod)^2)))
 } 
 
@@ -308,7 +307,7 @@ AllCoeffsCSP <-
 AllCoeffsNoCSP <- 
   leaf_apply(models, class = c("CDEmodel", "cesModel", "LINEXmodel"), f = model2df) %>%
   bind_rows() %>%
-  mutate(CSP="w/o CSP")
+  mutate(CSP = "w/o CSP")
 
 AllCoeffs <- bind_rows(AllCoeffsExp, AllCoeffsCSP, AllCoeffsNoCSP)
 

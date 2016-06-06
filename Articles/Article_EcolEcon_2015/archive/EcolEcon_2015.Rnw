@@ -113,7 +113,7 @@ library(ggplot2)
 library(mosaic)
 library(xtable)
 library(knitr)
-library(texreg)
+# library(texreg)
 library(tidyr)
 library(scales)
 library(tidyr)
@@ -130,13 +130,13 @@ library(tidyr)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunModels=FALSE
-rerunResampling=FALSE
+rerunModels <- FALSE
+rerunResampling <- FALSE
 nResamples <- 100 # Number of resamples
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
-  eval=TRUE,
+  eval <- TRUE,
   # ********************************************************
   # tikz allows LaTeX code in graphical output. 
   # E.g., "$y$" for a variable name in the legend for a graph.  

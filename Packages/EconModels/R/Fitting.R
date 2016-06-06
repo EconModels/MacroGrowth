@@ -208,19 +208,17 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
   }
   # We also prefer the name "scale" for the pre-multiplier coefficient.
   # cesEst gives this as "gamma"
-#   gamma_coef <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
-#   if (is.na(gamma_coef)) gamma_coef <- coefList$gamma
-#   if (is.null(gamma_coef)) gamma_coef <- NA
-  scale <-  tryCatch(with(coefList, exp(logscale)), error=function(e) NA)
+  scale <- ifelse(is.null(coefList$logscale), NA, exp(coefList$logscale))
   if (is.na(scale)) scale <- coefList$gamma
   if (is.null(scale)) scale <- NA
-  lambda <-  tryCatch(with(coefList, lambda), error=function(e) NA)
-  delta_1 <-  tryCatch(with(coefList, delta_1), error=function(e) NA)
-  delta <-  tryCatch(with(coefList, delta), error=function(e) NA)
-  rho_1 <-  tryCatch(with(coefList, rho_1), error=function(e) NA)
-  sigma_1 <-  tryCatch(with(coefList, sigma_1), error=function(e) NA)
-  rho <-  tryCatch(with(coefList, rho), error=function(e) NA)
-  sigma <-  tryCatch(with(coefList, sigma), error=function(e) NA)
+  lambda <- ifelse(is.null(coefList$lambda), NA, coefList$lambda)
+  delta_1 <- ifelse(is.null(coefList$delta_1), NA, coefList$delta_1)
+  delta <- ifelse(is.null(coefList$delta), NA, coefList$delta)
+  rho_1 <- ifelse(is.null(coefList$rho_1), NA, coefList$rho_1)
+  sigma_1 <- ifelse(is.null(coefList$sigma_1), NA, coefList$sigma_1)
+  rho <- ifelse(is.null(coefList$rho), NA, coefList$rho)
+  sigma <- ifelse(is.null(coefList$sigma), NA, coefList$sigma)
+
   # We no longer include sse in naturalCoef, because sse is not a coefficient
   # sse <-  sum(resid(object)^2)
   if (is.null(nest)) { nest <- 1:3 }
