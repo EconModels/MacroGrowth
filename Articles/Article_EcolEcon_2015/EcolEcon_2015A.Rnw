@@ -30,6 +30,7 @@ library(nlme)
 rerunCESModels <- FALSE
 rerunResampling <- FALSE
 nResamples <- 100 # Number of resamples
+graph_text_size <- 8 # Points for labels, etc. on graphs.
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -71,7 +72,7 @@ myXTable <- function(data, caption, label, digits=2){
 @
 
 
-<<model_points_style>>=
+<<graph_styles>>=
 model_points_style <- function(p) {
   p + 
   scale_colour_manual(values = c("gray70", "black")) +
@@ -91,6 +92,19 @@ model_points_style_quad <- function(p) {
   scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
   scale_shape_manual(values = c(21, 21, 23:27)) +
   theme(legend.title=element_blank())
+}
+
+graph_text_size_style <- function(p, text_size = 12) {
+  p +
+    theme(
+      text = element_text(size = text_size),
+      axis.text.x = element_text(size = text_size),
+      axis.text.y = element_text(size = text_size),
+      axis.title.x = element_text(size = text_size),
+      axis.title.y = element_text(size = text_size),
+      strip.text.x = element_text(size = text_size),
+      strip.text.y = element_text(size = text_size)
+    ) 
 }
 @
 
@@ -371,7 +385,7 @@ resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
 if (rerunResampling){
   resamplesCD <- leaf_apply(models, class = "CDEmodel", f = function(model, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
-    print(id_components)
+    # print(id_components)
     resamples <- resampledFits(model, method = "wild", n = nResamples)
     resamples$coeffs <- mutate(
       resamples$coeffs, 
@@ -402,7 +416,7 @@ if (rerunResampling){
 
 
 <<Resampling-CES-adjusted-kle>>=
-print("Top of Resampling-CES-adjusted-kle")
+# print("Top of Resampling-CES-adjusted-kle")
 
 resampleCoeffsCESFilename <- "EcolEcon2015kleResampleCoeffsCES.rds"
 resampleModelsCESFilename <- "EcolEcon2015kleResampleModelsCES.rds"
@@ -571,7 +585,8 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
   xlab("") + 
   ylab("Indexed (1960=1)") +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 

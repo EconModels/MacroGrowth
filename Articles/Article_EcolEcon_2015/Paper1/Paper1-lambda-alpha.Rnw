@@ -414,7 +414,8 @@ ggplot() +
   scale_size_manual(name="", 
                     labels=c("l", "k"),
                     values = c(0.9, 0.9)) +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
@@ -520,8 +521,8 @@ replicateExpModels(
     values=c(1,2) ) + 
   labs(x="", y="Indexed GDP (1960 = 1)") +
 
-  xy_theme()
-
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
@@ -564,7 +565,8 @@ p <- ggplot() +
   scale_y_continuous(limits=c(-0.05, 0.7)) +
   ylab("SSE") + 
   labs(color = "Factors of production") +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 
 # Add our style
 model_points_style_quad(p)
@@ -599,8 +601,8 @@ bind_rows(
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1),
       axis.ticks.x = element_blank()
-    )
-
+    ) %>%
+  graph_text_size_style(graph_text_size)
 @
 
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
@@ -640,26 +642,30 @@ AllOE2 %>%
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c(2,3,1) ) + 
   labs(x="", y="") +
-  xy_theme()
-
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.25, size=1, orig_color = "black") +
+p <- standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.25, size=1, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
     scale_y_continuous(breaks=c(0, 0.005, 0.01), limits=c(0, 0.01)) +
-    labs(x=expression(theta), y=expression(lambda))
+    labs(x=expression(theta), y=expression(lambda)) 
+
+graph_text_size_style(p, graph_text_size)
 @
 
 
 <<resample_graph_delta_delta_1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\delta$ and $\\delta_1$ values for resample models that reject the cost share theorem, include energy, use quality-adjusted factors of production, and employ the $(kl)e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
+p <- standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
                     facet_formula=~Country, alpha=0.2, size = 1,
                     orig_color="black") +
   scale_x_continuous(limits=c(0, 1), breaks=c(0, 0.5, 1)) +
   scale_y_continuous(limits=c(0,1), breaks=c(0, 0.5, 1)) +
   labs(x=expression(delta[1]), y=expression(delta))
+
+graph_text_size_style(p, graph_text_size)
 @
 
 
@@ -700,7 +706,8 @@ ReModels %>%
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c(2,3,1) ) + 
   
-  xy_theme() 
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
@@ -733,7 +740,8 @@ replicateExpModels(
   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
   labs(x="", y="Residuals") +
   geom_hline(aes(yintercept = 0.0), colour="gray50", size=0.1) + 
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 
 @
 
