@@ -711,7 +711,7 @@ ReModels %>%
 @
 
 
-<<rho_1-reample-dist-graph>>=
+<<rho_1-PT-reample-dist-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Resampling distribution density plot of $1 - \\delta_1$ for the Portuguese modeling approach that employs the $(kl)e$ nesting, quality-adjusts the factors of production, and rejects the CSP. The ``x'' indicates location of base model value.">>=
 fancy_scientific <- function(l) {
      # turn in to character string in scientific notation
      l <- format(l, scientific = TRUE)
@@ -731,10 +731,12 @@ Rho_1_PT_data <- resampleCoeffsCES %>%
 
 ggplot(mapping = aes_string(x = "delta_1_plot")) +
   geom_density(data = Rho_1_PT_data %>% filter(method != "orig")) +
-  geom_point(data = Rho_1_PT_data %>% filter(method == "orig"), aes(y = 0), shape = 4, size = 6) +
+  geom_point(data = Rho_1_PT_data %>% filter(method == "orig"), aes(y = 0), shape = 4, size = 3) +
   scale_x_log10(limits = c(1e-20, 1), breaks = c(1e-20, 1e-15, 1e-10, 1e-5, 1), labels=fancy_scientific) +
   xlab(expression("1 - "*delta[1])) +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
+
 @
 
 
