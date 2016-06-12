@@ -29,7 +29,7 @@ library(nlme)
 # ********************************************************
 rerunCESModels <- FALSE
 rerunResampling <- FALSE
-nResamples <- 100 # Number of resamples
+nResamples <- 1000 # Number of resamples
 graph_text_size <- 8 # Points for labels, etc. on graphs.
 # ********************************************************
 opts_chunk$set(
