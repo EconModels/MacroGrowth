@@ -410,7 +410,7 @@ ggplot() +
                      values=c("black", "black")) +
   scale_linetype_manual(name="", 
                         labels=c("l", "k"),
-                        values=c(2,3)) + 
+                        values=c(3,2)) + 
   scale_size_manual(name="", 
                     labels=c("l", "k"),
                     values = c(0.9, 0.9)) +
@@ -508,16 +508,16 @@ replicateExpModels(
 
   scale_color_manual(
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values=c("black", "black")
   ) +
   scale_size_manual(
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values = c(0.2, 0.2)) +
   scale_linetype_manual( 
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values=c(1,2) ) + 
   labs(x="", y="Indexed GDP (1960 = 1)") +
 
