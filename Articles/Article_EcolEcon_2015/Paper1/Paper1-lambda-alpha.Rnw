@@ -690,12 +690,11 @@ ReModels %>%
   scale_alpha_manual(
     name = "",
     values = c(.3, 1),
-    guide = FALSE) + 
+    guide = FALSE) +
   scale_color_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c("black", "black", "gray70"),
-    guide=FALSE) +
+    values=c("black", "black", "gray70")) +
   scale_size_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
@@ -704,7 +703,7 @@ ReModels %>%
   scale_linetype_manual( 
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c(2,3,1) ) + 
+    values=c(2,3,1)) + 
   
   xy_theme() %>%
   graph_text_size_style(graph_text_size)
