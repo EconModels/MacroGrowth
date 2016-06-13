@@ -429,7 +429,9 @@ if (rerunResampling){
   resamplesCESPT <- resampledFits(modPT, method = "wild", n = nResamples)
   resamplesCESUK <- resampledFits(modUK, method = "wild", n = nResamples)
   # Resample coefficients
-  resampleCoeffsCES <- rbind(cbind(resamplesCESPT$coeffs, Country="PT"), cbind(resamplesCESUK$coeffs, Country="UK"))
+  resampleCoeffsCES <- bind_rows(
+    bind_cols(resamplesCESPT$coeffs %>% mutate(Country="PT")), 
+    bind_cols(resamplesCESUK$coeffs %>% mutate(Country="UK")))
   resampleCoeffsCES$energy <- TRUE
   resampleCoeffsCES$nest <- "(kl)e"
   saveRDS(resampleCoeffsCES, file = resampleCoeffsCESFilename)
