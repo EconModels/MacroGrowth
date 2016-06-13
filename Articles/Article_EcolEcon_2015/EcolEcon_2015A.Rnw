@@ -27,8 +27,8 @@ library(nlme)
 # once to re-generate the information needed to 
 # create the paper.
 # ********************************************************
-rerunCESModels <- TRUE
-rerunResampling <- TRUE
+rerunCESModels <- FALSE
+rerunResampling <- FALSE
 nResamples <- 1000 # Number of resamples
 graph_text_size <- 8 # Points for labels, etc. on graphs.
 # ********************************************************
