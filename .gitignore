@@ -30,6 +30,8 @@ Job*-
 *_Models.Rdata
 *_oModels.Rdata
 *_oModels.rds
+# Big file created by resampling
+EcolEcon2015kleResampleModelsCES.rds
 #
 # Files related to running the batch.bash script
 #
