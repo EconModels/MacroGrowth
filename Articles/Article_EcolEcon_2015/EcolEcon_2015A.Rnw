@@ -453,28 +453,12 @@ if (rerunResampling){
 } else {
   resampleCoeffsCES <- readRDS(resampleCoeffsCESFilename)
   # We don't need to load resampelModelsCES, because we use only ReModels later.
+  # But, you can uncomment this line to load an archived file, if desired.
   # resampleModelsCES <- readRDS(resampleModelsCESFilename)
   ReModels <- readRDS(ReModelsFilename)
 }
 @
 
-
-% <<ReModels>>=
-% # ReModels is the data frame that holds time series of all the resample models.
-% # We save this to disk and include it in the repo, because it is much smaller than resampleModelsCES.
-% if (! rerunResampling){
-%   ReModels <- readRDS(ReModelsFilename)
-% } else {
-%   # This code is expensive, so run only if we re-ran the resampling.
-%   ReModels <-
-%     bind_rows(
-%       leaf_apply(resampleModelsCES, 
-%                  function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
-%                  strict.lists = TRUE)
-%     )
-% }
-% @
- 
 
 <<FittedAndResiduals>>=
 temp_data_exp <- 
