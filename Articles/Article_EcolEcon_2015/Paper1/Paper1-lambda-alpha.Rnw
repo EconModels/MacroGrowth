@@ -710,7 +710,7 @@ ReModels %>%
 @
 
 
-<<rho_1-PT-reample-dist-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Bootstrap resampling distribution density plot of $1 - \\delta_1$ for the Portuguese modeling approach that employs the $(kl)e$ nesting, quality-adjusts the factors of production, and rejects the CSP. The ``x'' indicates location of base model value.">>=
+<<rho_1-PT-resample-dist-graph, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.2, fig.cap="Bootstrap resampling distribution density plot of $1 - \\delta_1$ for the Portuguese modeling approach that employs the $(kl)e$ nesting, quality-adjusts the factors of production, and rejects the CSP. The ``x'' indicates location of base model value.">>=
 fancy_scientific <- function(l) {
      # turn in to character string in scientific notation
      l <- format(l, scientific = TRUE)
