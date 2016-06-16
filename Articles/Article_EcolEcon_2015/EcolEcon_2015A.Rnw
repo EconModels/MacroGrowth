@@ -420,6 +420,7 @@ if (rerunResampling){
 
 resampleCoeffsCESFilename <- "EcolEcon2015kleResampleCoeffsCES.rds"
 resampleModelsCESFilename <- "EcolEcon2015kleResampleModelsCES.rds"
+ReModelsFilename <- "ReModels.rds"
 if (rerunResampling){
   # Run some resampling on the PT and UK models that reject the cost-share theorem,
   # include energy, use quality-adjusted variables, and employ the (kl)e nesting.
@@ -428,9 +429,20 @@ if (rerunResampling){
   modUK <- models$UK$adjusted$withE$CES$kle
   resamplesCESPT <- resampledFits(modPT, method = "wild", n = nResamples)
   resamplesCESUK <- resampledFits(modUK, method = "wild", n = nResamples)
-  # Resample models
+  # Resample model objects
   resampleModelsCES <- list(PT=resamplesCESPT$models, UK=resamplesCESUK$models)
+  # Save this object in case we need to interrogate it later.
+  # Note, however, that resampleModelsCES is NOT in the repository,
+  # because it can be a HUGE file when we're doing, say, 1000 resamples.
   saveRDS(resampleModelsCES, file = resampleModelsCESFilename)
+  # Resample time series
+  ReModels <-
+    bind_rows(
+      leaf_apply(resampleModelsCES, 
+                 function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
+                 strict.lists = TRUE)
+    )
+  saveRDS(ReModels, file = ReModelsFilename)
   # Resample coefficients
   resampleCoeffsCES <- bind_rows(
     bind_cols(resamplesCESPT$coeffs %>% mutate(Country="PT")), 
@@ -440,20 +452,29 @@ if (rerunResampling){
   saveRDS(resampleCoeffsCES, file = resampleCoeffsCESFilename)
 } else {
   resampleCoeffsCES <- readRDS(resampleCoeffsCESFilename)
-  resampleModelsCES <- readRDS(resampleModelsCESFilename)
+  # We don't need to load resampelModelsCES, because we use only ReModels later.
+  # resampleModelsCES <- readRDS(resampleModelsCESFilename)
+  ReModels <- readRDS(ReModelsFilename)
 }
 @
 
 
-<<ReModels>>=
-ReModels <-
-  bind_rows(
-  leaf_apply(resampleModelsCES, 
-             function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
-             strict.lists = TRUE)
-)
-@
-
+% <<ReModels>>=
+% # ReModels is the data frame that holds time series of all the resample models.
+% # We save this to disk and include it in the repo, because it is much smaller than resampleModelsCES.
+% if (! rerunResampling){
+%   ReModels <- readRDS(ReModelsFilename)
+% } else {
+%   # This code is expensive, so run only if we re-ran the resampling.
+%   ReModels <-
+%     bind_rows(
+%       leaf_apply(resampleModelsCES, 
+%                  function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
+%                  strict.lists = TRUE)
+%     )
+% }
+% @
+ 
 
 <<FittedAndResiduals>>=
 temp_data_exp <- 
