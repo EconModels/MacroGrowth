@@ -711,28 +711,32 @@ ReModels %>%
 
 
 <<PT-resample-meta, echo = TRUE, include = TRUE>>=
-mod <- models$PT$adjusted$withE$CES$kle
-# mod
-print(mod$coefficients[["delta_1"]], digits = 20)
-1 - mod$coefficients[["delta_1"]]
+PTklemod <- models$PT$adjusted$withE$CES$kle
+# print(summary(PTklemod))
+# The standard error of delta_1
+summary(PTklemod)$coefficients[3, 2]
+print(PTklemod$coefficients[["delta_1"]], digits = 20)
+1 - PTklemod$coefficients[["delta_1"]]
+# Machine precision
+.Machine$double.eps
 
 # Look at SSE of the actual model and the boundary model.
 # First, the actual model:
-sum(resid(mod)^2)
+sum(resid(PTklemod)^2)
 # Now, the boundary model with delta_1 = 1, namely boundary model 11.
-mod11 <- attr(mod, "model.attempts")[[11]]
-# mod11
-sum(resid(mod11)^2)
+PTklemod11 <- attr(PTklemod, "model.attempts")[[11]]
+# print(summary(PTklemod11))
+sum(resid(PTklemod11)^2)
 @
 
 
 <<PT-resample-quantiles, echo = TRUE, include = TRUE>>=
-PTresample <- resampleCoeffsCES %>% filter(Country == "PT", method != "orig")
-any(PTresample$delta_1 >= 1)
-1 - max(PTresample$delta_1)
-range95 <- quantile(PTresample$delta_1, probs=c(0.025, 0.975))
-range95
-1 - range95
+PTkleresample <- resampleCoeffsCES %>% filter(Country == "PT", method != "orig")
+any(PTkleresample$delta_1 >= 1)
+1 - max(PTkleresample$delta_1)
+PTklerange95 <- quantile(PTkleresample$delta_1, probs=c(0.025, 0.975))
+PTklerange95
+1 - PTklerange95
 @
 
 
@@ -758,7 +762,7 @@ ggplot(mapping = aes_string(x = "delta_1_plot")) +
   stat_density(data = Rho_1_PT_data %>% filter(method != "orig"), geom = "line") +
   geom_point(data = Rho_1_PT_data %>% filter(method == "orig"), aes(y = 0), shape = 4, size = 3) +
   geom_hline(aes(yintercept = 0.0), colour="gray50", size=0.1) + 
-  geom_vline(aes(xintercept = 1-range95), colour="gray50", size=0.1) +
+  geom_vline(aes(xintercept = 1-PTklerange95), colour="gray50", size=0.1) +
   scale_x_log10(limits = c(1e-20, 1), breaks = c(1e-20, 1e-15, 1e-10, 1e-5, 1), labels=fancy_scientific) +
   xlab(expression("1 - "*delta[1])) +
   xy_theme() %>%
