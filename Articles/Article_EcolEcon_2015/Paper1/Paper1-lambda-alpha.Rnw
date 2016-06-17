@@ -749,6 +749,8 @@ any(PTkleresample$delta_1 >= 1)
 PTklerange95 <- quantile(PTkleresample$delta_1, probs=c(0.025, 0.975))
 PTklerange95
 1 - PTklerange95
+# See if there are any coefficients that are exactly 0.5, the starting value.
+any(resampleCoeffsCES$delta_1 == 0.5)
 @
 
 
