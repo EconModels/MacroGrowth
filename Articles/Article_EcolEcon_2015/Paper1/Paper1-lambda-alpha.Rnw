@@ -750,7 +750,9 @@ PTklerange95 <- quantile(PTkleresample$delta_1, probs=c(0.025, 0.975))
 PTklerange95
 1 - PTklerange95
 # See if there are any coefficients that are exactly 0.5, the starting value.
-any(resampleCoeffsCES$delta_1 == 0.5)
+any(PTkleresample$delta_1 == 0.5)
+# Calculate standard deviation of the delta_1 resampling distribution.
+sd(PTkleresample$delta_1)
 @
 
 
