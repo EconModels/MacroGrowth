@@ -590,7 +590,7 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
   scale_size_manual(name="", values = c(1, 0.9, 0.9, 0.6)) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
-  xlab("") + 
+  xlab(NULL) + 
   ylab("Indexed (1960=1)") +
   xy_theme() %>%
   graph_text_size_style(graph_text_size)

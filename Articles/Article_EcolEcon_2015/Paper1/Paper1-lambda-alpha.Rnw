@@ -403,7 +403,7 @@ ggplot() +
   scale_y_continuous(limits=c(0.0, 1.0), breaks=c(0, 0.5, 1)) +
   geom_hline(aes(yintercept = 0.3), colour="gray50", size=0.1) +
   geom_hline(aes(yintercept = 0.7), colour="gray50", size=0.1) +
-  xlab("") +
+  xlab(NULL) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_color_manual(name = "", 
                      labels=c("l", "k"),
@@ -595,7 +595,7 @@ bind_rows(
     facet_grid(Nest ~ Country) +
     geom_bar(fill = "white", colour = "black", width = 0.2) +
     geom_hline(yintercept = 0, colour="gray50", size=0.1) +
-    xlab("") +
+    xlab(NULL) +
     ylab(expression(lambda)) +
     xy_theme() + 
     theme(
