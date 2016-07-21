@@ -294,28 +294,30 @@ TableData %>%
 <<OMTable_df>>=
   # Create a data frame containing exponential-only (reference) models
   OMTable_exp <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
-    list(Country=id[[1]],
+    data.frame(Country=id[[1]],
          Model = "Ref.",
          Nest = NA,
          kl = NA,
          e = NA,
          lambda = coef(modelsExp[[id[[1]]]])[[2]],
          lambda_ratio = 1,
-         SSE = sum(resid(mod)^2))
+         SSE = sum(resid(mod)^2), 
+         stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   # Create a data frame containing only the on-axis models, i.e., models that have all factors of production
   # quality-adjusted simultaneously.
   OMTable_onaxis <- leaf_apply(models, class="cesModel", f=function(mod, id){
   id_components <- strsplit(id, split = "[.]")[[1]]
-  list(Country = id_components[[1]],
+  data.frame(Country = id_components[[1]],
        Model = "CES",
        Nest = id_components[[5]],
        kl = id_components[[2]],
        e = ifelse(id_components[[3]] == "noE", NA, id_components[[2]]),
        lambda = naturalCoef(mod)$lambda,
        lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
-       SSE = sum(resid(mod)^2))
+       SSE = sum(resid(mod)^2),
+       stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   # Create a data frame containing only the off-axis models, i.e., models for which factors of production
@@ -323,16 +325,15 @@ TableData %>%
   OMTable_offaxis <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
     adjusted_components <- strsplit(id_components[[2]], "[_]")[[1]]
-    list(Country = id_components[[1]],
+    data.frame(Country = id_components[[1]],
          Model = "CES",
          Nest = "kle",
          kl = ifelse(substr(adjusted_components[[1]], 1, 2) == "ua", "unadjusted", "adjusted"),
          e = ifelse(substr(adjusted_components[[2]], 1, 2) == "ua", "unadjusted", "adjusted"),
          lambda = naturalCoef(mod)$lambda,
          lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
-         SSE = sum(resid(mod)^2)
-         )
-    
+         SSE = sum(resid(mod)^2),
+         stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   OMTable <- bind_rows(OMTable_exp, OMTable_onaxis, OMTable_offaxis) %>%
@@ -350,7 +351,6 @@ TableData %>%
       e = plyr::mapvalues(e, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
       e = relevelFactor(factor(e), c("UA", "QA"))
     )
-    
 @
 
 <<OMTable, results="asis">>=
@@ -366,8 +366,10 @@ TableData %>%
                    "lambda_ratio" = "$\\lambda / \\lambda_{Ref.}$")) %>%
     
     # Make the LaTeX table
-    myXTable(caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) for $(kl)e$ models that reject the cost share principle. 
-             $\\lambda / \\lambda_{Ref.}$ is the ratio of Solow residual relative to the reference (exponential-only) model.
+    myXTable(caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) 
+             for $(kl)e$ models that reject the cost share principle. 
+             $\\lambda / \\lambda_{Ref.}$ is the ratio of Solow residual relative 
+             to the reference (exponential-only) model.
              ``UA'' and ``QA'' indicate unadjusted and quality-adjusted factors of production, respectively.",
              label=paste0("tab:", opts_current$get("label")), 
              digits=c(1,1,1,1,1,1, 4, 2, 3))
