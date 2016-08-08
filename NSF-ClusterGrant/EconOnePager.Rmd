@@ -1,0 +1,69 @@
+---
+title: "Econ Modeling One-pager"
+author: "R Pruim"
+date: "August 1, 2016"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Development of energy policy is often informed by economic considerations
+via aggregate production functions (APFs) as part of a theory-to-policy
+process comprised of six steps:
+
+ 1. selecting a theoretical energy-economy framework,
+ 2. formulating modeling approaches to be considered,
+ 3. econometrically fitting an APF to historical data,
+ 4. comparing and evaluating modeling approaches considered,
+ 5. interpreting the economy, and
+ 6. formulating economic policy.
+
+Choices made in Steps 1--4
+can lead to very different interpretations of the economy in Step 5
+and subequently to the justification for different policies in Step 6.
+In a recently submitted paper (citation can be provided, if needed),
+we investigated these effects
+by analyzing data from two countries (Portugal and the United Kingdom) 
+using the Constant Elasticity of Substitution~(CES) APF (which subsumes
+the familiar Cobb-Douglas models as a special case)
+to evaluate four modeling choices:
+(a) whether or not to simplify models by employing a certain cost-share principle 
+that is often assumed in economic modeling,
+(b) whether or not to include energy as a factor of production along with capital and labor,
+(c) whether or not to make certain quality adjustments to factors of production in an
+attempt to better quantify their impact on the economy, and 
+(d) which CES nesting structure to use for models with three factors of production.
+
+This paper includes a discussion of two revealing examples for which different
+upstream modeling choices lead to very different policies. In the first example,
+the $(kl)e$ nesting structure implies significant investment in energy, while
+other nesting structures suggest otherwise. In the second example, unadjusted
+factors of production suggest balanced investment in labor and energy, while 
+quality-adjusting suggests significant investment in labor over energy. 
+Divergent outcomes provide cautionary tales for policymakers and demand
+greater understanding of upstream modeling choices and 
+their downstream implications.
+
+One challenge in this work is the computational difficulty involved in fitting CES models 
+and quantifying the precision of the estimated parameters that result.  Because of 
+numerical challenges, we fit each model with multiple non-linear optimization algorithms,
+and because of boundary issues, we explicity refit models along boundaries.  Then, because
+parameter precision is challenging to estimate using standard methods, we employ 
+computationally intensive resampling and/or Bayesian models.  Our current exploration
+is a sort of pilot study considering a limited number of countries, a limited number of 
+modeling choices and reducing the number of resamples to an amount that can be readily handled 
+on our current hardware in a few hours.  Further work in this area, especially any simulations
+to explore the quality of the bootstrap resampling or Bayesian estimation, would require days 
+to run currently.
+Futhermore, we already have data from several additional countries that we would like to
+anaylze by similar methods.
+
+**Additional paragraph here** (when Matt returns to radio contact) about future related 
+integrating the paper described above with cointegration work that Tiago has done.  [Tiago is
+a possible letter writer, so this makes a nice connection between the grant proposal and his
+letter, and also demonstrates its usefulness for things being done beyond Calvin.]
