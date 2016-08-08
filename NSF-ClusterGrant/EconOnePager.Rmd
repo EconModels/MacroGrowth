@@ -8,6 +8,7 @@ output:
   html_document: default
   word_document: default
 bibliography: OnePager.bib
+csl: ieee.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -57,9 +58,10 @@ process comprised of six steps:
 Choices made in Steps 1--4
 can lead to very different interpretations of the economy in Step 5
 and subequently to the justification for different policies in Step 6.
-In a recently submitted paper [@Heun:2016] we investigated these effects
+In a recently submitted paper [@Heun:2016], Drs. Heun and Pruim and co-authors 
+investigated these effects
 by analyzing data from two countries (Portugal and the United Kingdom) 
-using the Constant Elasticity of Substitution~(CES) APF (which subsumes
+using the Constant Elasticity of Substitution (CES) APF (which subsumes
 the familiar Cobb-Douglas models as a special case)
 to evaluate four modeling choices:
 (a) whether or not to simplify models by employing a certain cost-share principle 
