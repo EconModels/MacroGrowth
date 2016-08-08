@@ -3,7 +3,8 @@ title: "Econ Modeling One-pager"
 author: "R Pruim"
 date: "August 1, 2016"
 output:
-  pdf_document: default
+  pdf_document: 
+    keep_tex: yes
   html_document: default
   word_document: default
 bibliography: OnePager.bib
@@ -20,7 +21,7 @@ in the literature [@Kummel:1985vz, @Turner:2012],
 in government budget offices [@Congressional-Budget-Office:2001], and
 at the World Bank [@Bussolo:2010].
 Despite more than 60 years of criticism
-[@robinson1953production, shaikh1974laws, felipe2003aggregation], 
+[@robinson1953production, @shaikh1974laws, @felipe2003aggregation], 
 the use of APFs continues and appears to be expanding, 
 with APFs moving from academic study
 [@solow1957technical, @easterly1995soviet] 
