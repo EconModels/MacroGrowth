@@ -58,7 +58,7 @@ process comprised of six steps:
 Choices made in Steps 1--4
 can lead to very different interpretations of the economy in Step 5
 and subequently to the justification for different policies in Step 6.
-In a recently submitted paper [@Heun:2016], Drs. Heun and Pruim and co-authors 
+In a recently submitted paper [@Heun:2016], Drs.\ Heun and Pruim and co-authors 
 investigated these effects
 by analyzing data from two countries (Portugal and the United Kingdom) 
 using the Constant Elasticity of Substitution (CES) APF (which subsumes
@@ -92,7 +92,10 @@ modeling choices and reducing the number of resamples to an amount that can be r
 on our current hardware in a few hours.
 
 Our plans for future work will require significantly-improved computational capabilities.
-Each of our planned activities below will require days to run on existing hardware.
+Each of the planned activities below will require days to run on existing hardware.
+An enhanced cluster computing capability at Calvin College will 
+enable expansion of this research into several new areas
+and enable collaboration with international colleagues.
 
 * We have in hand data from several additional countries that we would like to
 anaylze by similar methods as discussed above.
@@ -108,7 +111,7 @@ At the Second Exergy Economics Workshop (Sussex, England, July 2016),
 we made plans to collaborate. 
 Our CES fitting techniques and resampling methods
 will be applied to their cointegration analysis
-to write a new paper analyzing the Portuguese economy.
+to develop the data for new paper analyzing the Portuguese economy.
 
 
 
