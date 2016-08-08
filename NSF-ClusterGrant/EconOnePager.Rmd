@@ -13,6 +13,35 @@ bibliography: OnePager.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Development of energy and economic policy is often informed 
+by energy-economic modeling via aggregate production functions (APFs) fitted
+to historical data in a theory-to-policy process utilized 
+in the literature [@Kummel:1985vz, @Turner:2012], 
+in government budget offices [@Congressional-Budget-Office:2001], and
+at the World Bank [@Bussolo:2010].
+Despite more than 60 years of criticism
+[@robinson1953production, shaikh1974laws, felipe2003aggregation], 
+the use of APFs continues and appears to be expanding, 
+with APFs moving from academic study
+[@solow1957technical, @easterly1995soviet] 
+to macroeconomic modeling that informs energy and economic policy
+[@szeto2001econometric, @pauw2003functional, @sancho2009calibration].
+Empirical applications of APFs
+are numerous, including analysis of 
+(a) technical change [@jorgenson1967explanation], 
+(b) substitution elasticities [@kemfert2000energy],
+(c) inter-country economic output 
+	and structure [@easterly1995soviet, @toh1996differential], and 
+(d) CO$_2$ emissions policy [@van2008production].
+One reason for the enduring allure of APFs is
+their promise to describe the intricate, complex 
+workings of entire economies by simple, aggregated measures
+of inputs (capital, labor, and sometimes energy) 
+and output (typically, Gross Domestic Product, GDP).
+
+The theory-to-policy process is not merely academic: 
+the policies it generates affect economic development and 
+quality of life for people worldwide.
 Development of energy policy is often informed by economic considerations
 via aggregate production functions (APFs) as part of a theory-to-policy
 process comprised of six steps:
