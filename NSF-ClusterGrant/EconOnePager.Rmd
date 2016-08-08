@@ -3,10 +3,12 @@ title: "Econ Modeling One-pager"
 author: "R Pruim"
 date: "August 1, 2016"
 output:
-  pdf_document: default
+  pdf_document: 
+    keep_tex: yes
   html_document: default
   word_document: default
 bibliography: OnePager.bib
+csl: ieee.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +22,7 @@ in the literature [@Kummel:1985vz, @Turner:2012],
 in government budget offices [@Congressional-Budget-Office:2001], and
 at the World Bank [@Bussolo:2010].
 Despite more than 60 years of criticism
-[@robinson1953production, shaikh1974laws, felipe2003aggregation], 
+[@robinson1953production, @shaikh1974laws, @felipe2003aggregation], 
 the use of APFs continues and appears to be expanding, 
 with APFs moving from academic study
 [@solow1957technical, @easterly1995soviet] 
@@ -56,9 +58,10 @@ process comprised of six steps:
 Choices made in Steps 1--4
 can lead to very different interpretations of the economy in Step 5
 and subequently to the justification for different policies in Step 6.
-In a recently submitted paper [@Heun:2016] we investigated these effects
+In a recently submitted paper [@Heun:2016], Drs. Heun and Pruim and co-authors 
+investigated these effects
 by analyzing data from two countries (Portugal and the United Kingdom) 
-using the Constant Elasticity of Substitution~(CES) APF (which subsumes
+using the Constant Elasticity of Substitution (CES) APF (which subsumes
 the familiar Cobb-Douglas models as a special case)
 to evaluate four modeling choices:
 (a) whether or not to simplify models by employing a certain cost-share principle 
