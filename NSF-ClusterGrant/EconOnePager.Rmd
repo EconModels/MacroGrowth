@@ -97,14 +97,16 @@ anaylze by similar methods as discussed above.
 * We want to explore the quality and performance
 of the bootstrap resampling and/or Bayesian estimation techniques.
 
-* Our collaborators in Portugal have completed a paper that uses the 
-Cobb-Douglas APF in combination with co-integration techniques to understand
-the relationship between energy and the economy in Portugal. 
-At the Second Exergy Economics Workshop (Sussex, England)
+* Our collaborators in Portugal have completed a paper that employs the 
+Cobb-Douglas APF in combination with statistical co-integration techniques to understand
+the relationship between energy and the economy in Portugal [@jsantos2016]. 
+Their next step is to switch from the Cobb-Douglas APF to the CES APF.
+At the Second Exergy Economics Workshop (Sussex, England, July 2016), 
+we made plans to collaborate. 
+Our CES fitting techniques and resampling methods
+will be applied to their cointegration analysis
+to write a new paper analyzing the Portuguese economy.
 
-**Additional paragraph here** (when Matt returns to radio contact) about future related 
-integrating the paper described above with cointegration work that Tiago has done.  [Tiago is
-a possible letter writer, so this makes a nice connection between the grant proposal and his
-letter, and also demonstrates its usefulness for things being done beyond Calvin.]
+
 
 # References
