@@ -29,7 +29,8 @@ library(nlme)
 # ********************************************************
 rerunCESModels <- FALSE
 rerunResampling <- FALSE
-nResamples <- 100 # Number of resamples
+nResamples <- 1000 # Number of resamples
+graph_text_size <- 8 # Points for labels, etc. on graphs.
 # ********************************************************
 opts_chunk$set(
   # ********************************************************
@@ -71,7 +72,7 @@ myXTable <- function(data, caption, label, digits=2){
 @
 
 
-<<model_points_style>>=
+<<graph_styles>>=
 model_points_style <- function(p) {
   p + 
   scale_colour_manual(values = c("gray70", "black")) +
@@ -91,6 +92,19 @@ model_points_style_quad <- function(p) {
   scale_fill_manual(values = c(scales::alpha("gray50", .2), rep("transparent", 6))) +
   scale_shape_manual(values = c(21, 21, 23:27)) +
   theme(legend.title=element_blank())
+}
+
+graph_text_size_style <- function(p, text_size = 12) {
+  p +
+    theme(
+      text = element_text(size = text_size),
+      axis.text.x = element_text(size = text_size),
+      axis.text.y = element_text(size = text_size),
+      axis.title.x = element_text(size = text_size),
+      axis.title.y = element_text(size = text_size),
+      strip.text.x = element_text(size = text_size),
+      strip.text.y = element_text(size = text_size)
+    ) 
 }
 @
 
@@ -371,7 +385,7 @@ resampleModelsCDFilename <- "EcolEcon2015ResampleModelsCD.rds"
 if (rerunResampling){
   resamplesCD <- leaf_apply(models, class = "CDEmodel", f = function(model, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
-    print(id_components)
+    # print(id_components)
     resamples <- resampledFits(model, method = "wild", n = nResamples)
     resamples$coeffs <- mutate(
       resamples$coeffs, 
@@ -402,10 +416,11 @@ if (rerunResampling){
 
 
 <<Resampling-CES-adjusted-kle>>=
-print("Top of Resampling-CES-adjusted-kle")
+# print("Top of Resampling-CES-adjusted-kle")
 
 resampleCoeffsCESFilename <- "EcolEcon2015kleResampleCoeffsCES.rds"
 resampleModelsCESFilename <- "EcolEcon2015kleResampleModelsCES.rds"
+ReModelsFilename <- "ReModels.rds"
 if (rerunResampling){
   # Run some resampling on the PT and UK models that reject the cost-share theorem,
   # include energy, use quality-adjusted variables, and employ the (kl)e nesting.
@@ -414,28 +429,34 @@ if (rerunResampling){
   modUK <- models$UK$adjusted$withE$CES$kle
   resamplesCESPT <- resampledFits(modPT, method = "wild", n = nResamples)
   resamplesCESUK <- resampledFits(modUK, method = "wild", n = nResamples)
+  # Resample model objects
+  resampleModelsCES <- list(PT=resamplesCESPT$models, UK=resamplesCESUK$models)
+  # Save this object in case we need to interrogate it later.
+  # Note, however, that resampleModelsCES is NOT in the repository,
+  # because it can be a HUGE file when we're doing, say, 1000 resamples.
+  saveRDS(resampleModelsCES, file = resampleModelsCESFilename)
+  # Resample time series
+  ReModels <-
+    bind_rows(
+      leaf_apply(resampleModelsCES, 
+                 function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
+                 strict.lists = TRUE)
+    )
+  saveRDS(ReModels, file = ReModelsFilename)
   # Resample coefficients
-  resampleCoeffsCES <- rbind(cbind(resamplesCESPT$coeffs, Country="PT"), cbind(resamplesCESUK$coeffs, Country="UK"))
+  resampleCoeffsCES <- bind_rows(
+    bind_cols(resamplesCESPT$coeffs %>% mutate(Country="PT")), 
+    bind_cols(resamplesCESUK$coeffs %>% mutate(Country="UK")))
   resampleCoeffsCES$energy <- TRUE
   resampleCoeffsCES$nest <- "(kl)e"
   saveRDS(resampleCoeffsCES, file = resampleCoeffsCESFilename)
-  # Resample models
-  resampleModelsCES <- list(PT=resamplesCESPT$models, UK=resamplesCESUK$models)
-  saveRDS(resampleModelsCES, file = resampleModelsCESFilename)
 } else {
   resampleCoeffsCES <- readRDS(resampleCoeffsCESFilename)
-  resampleModelsCES <- readRDS(resampleModelsCESFilename)
+  # We don't need to load resampelModelsCES, because we use only ReModels later.
+  # But, you can uncomment this line to load an archived file, if desired.
+  # resampleModelsCES <- readRDS(resampleModelsCESFilename)
+  ReModels <- readRDS(ReModelsFilename)
 }
-@
-
-
-<<ReModels>>=
-ReModels <-
-  bind_rows(
-  leaf_apply(resampleModelsCES, 
-             function(x,id) {mod2oedf(x, id) %>% mutate(id = id)},
-             strict.lists = TRUE)
-)
 @
 
 
@@ -569,9 +590,10 @@ leaf_apply(formulas, class = "formula", f=function(form, id){
   scale_size_manual(name="", values = c(1, 0.9, 0.9, 0.6)) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_y_continuous(breaks=c(1, 2, 4, 6, 8, 10, 12), limits=c(0.5, 12)) +
-  xlab("") + 
+  xlab(NULL) + 
   ylab("Indexed (1960=1)") +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 

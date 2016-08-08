@@ -294,28 +294,30 @@ TableData %>%
 <<OMTable_df>>=
   # Create a data frame containing exponential-only (reference) models
   OMTable_exp <- leaf_apply(modelsExp, class="lm", f=function(mod, id){
-    list(Country=id[[1]],
+    data.frame(Country=id[[1]],
          Model = "Ref.",
          Nest = NA,
          kl = NA,
          e = NA,
          lambda = coef(modelsExp[[id[[1]]]])[[2]],
          lambda_ratio = 1,
-         SSE = sum(resid(mod)^2))
+         SSE = sum(resid(mod)^2), 
+         stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   # Create a data frame containing only the on-axis models, i.e., models that have all factors of production
   # quality-adjusted simultaneously.
   OMTable_onaxis <- leaf_apply(models, class="cesModel", f=function(mod, id){
   id_components <- strsplit(id, split = "[.]")[[1]]
-  list(Country = id_components[[1]],
+  data.frame(Country = id_components[[1]],
        Model = "CES",
        Nest = id_components[[5]],
        kl = id_components[[2]],
        e = ifelse(id_components[[3]] == "noE", NA, id_components[[2]]),
        lambda = naturalCoef(mod)$lambda,
        lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
-       SSE = sum(resid(mod)^2))
+       SSE = sum(resid(mod)^2),
+       stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   # Create a data frame containing only the off-axis models, i.e., models for which factors of production
@@ -323,16 +325,15 @@ TableData %>%
   OMTable_offaxis <- leaf_apply(other_models, class="cesModel", f=function(mod, id){
     id_components <- strsplit(id, split = "[.]")[[1]]
     adjusted_components <- strsplit(id_components[[2]], "[_]")[[1]]
-    list(Country = id_components[[1]],
+    data.frame(Country = id_components[[1]],
          Model = "CES",
          Nest = "kle",
          kl = ifelse(substr(adjusted_components[[1]], 1, 2) == "ua", "unadjusted", "adjusted"),
          e = ifelse(substr(adjusted_components[[2]], 1, 2) == "ua", "unadjusted", "adjusted"),
          lambda = naturalCoef(mod)$lambda,
          lambda_ratio = naturalCoef(mod)$lambda / coef(modelsExp[[id_components[[1]]]])[[2]],
-         SSE = sum(resid(mod)^2)
-         )
-    
+         SSE = sum(resid(mod)^2),
+         stringsAsFactors = FALSE)
   }) %>% bind_rows()
   
   OMTable <- bind_rows(OMTable_exp, OMTable_onaxis, OMTable_offaxis) %>%
@@ -350,7 +351,6 @@ TableData %>%
       e = plyr::mapvalues(e, from=c("unadjusted", "adjusted"), to=c("UA", "QA")),
       e = relevelFactor(factor(e), c("UA", "QA"))
     )
-    
 @
 
 <<OMTable, results="asis">>=
@@ -366,8 +366,10 @@ TableData %>%
                    "lambda_ratio" = "$\\lambda / \\lambda_{Ref.}$")) %>%
     
     # Make the LaTeX table
-    myXTable(caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) for $(kl)e$ models that reject the cost share principle. 
-             $\\lambda / \\lambda_{Ref.}$ is the ratio of Solow residual relative to the reference (exponential-only) model.
+    myXTable(caption="Solow residual~($\\lambda$) and sum of squared errors~(SSE) 
+             for $(kl)e$ models that reject the cost share principle. 
+             $\\lambda / \\lambda_{Ref.}$ is the ratio of Solow residual relative 
+             to the reference (exponential-only) model.
              ``UA'' and ``QA'' indicate unadjusted and quality-adjusted factors of production, respectively.",
              label=paste0("tab:", opts_current$get("label")), 
              digits=c(1,1,1,1,1,1, 4, 2, 3))
@@ -403,18 +405,19 @@ ggplot() +
   scale_y_continuous(limits=c(0.0, 1.0), breaks=c(0, 0.5, 1)) +
   geom_hline(aes(yintercept = 0.3), colour="gray50", size=0.1) +
   geom_hline(aes(yintercept = 0.7), colour="gray50", size=0.1) +
-  xlab("") +
+  xlab(NULL) +
   scale_x_continuous(breaks=c(1960, 1980, 2000)) +
   scale_color_manual(name = "", 
                      labels=c("l", "k"),
                      values=c("black", "black")) +
   scale_linetype_manual(name="", 
                         labels=c("l", "k"),
-                        values=c(2,3)) + 
+                        values=c(3,2)) + 
   scale_size_manual(name="", 
                     labels=c("l", "k"),
                     values = c(0.9, 0.9)) +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
@@ -507,21 +510,21 @@ replicateExpModels(
 
   scale_color_manual(
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values=c("black", "black")
   ) +
   scale_size_manual(
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values = c(0.2, 0.2)) +
   scale_linetype_manual( 
     name = "",
-    labels = c("historical", "fitted"),
+    labels = c("Historical", "Fitted"),
     values=c(1,2) ) + 
   labs(x="", y="Indexed GDP (1960 = 1)") +
 
-  xy_theme()
-
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
@@ -564,7 +567,8 @@ p <- ggplot() +
   scale_y_continuous(limits=c(-0.05, 0.7)) +
   ylab("SSE") + 
   labs(color = "Factors of production") +
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 
 # Add our style
 model_points_style_quad(p)
@@ -593,14 +597,14 @@ bind_rows(
     facet_grid(Nest ~ Country) +
     geom_bar(fill = "white", colour = "black", width = 0.2) +
     geom_hline(yintercept = 0, colour="gray50", size=0.1) +
-    xlab("") +
+    xlab(NULL) +
     ylab(expression(lambda)) +
     xy_theme() + 
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1),
       axis.ticks.x = element_blank()
-    )
-
+    ) %>%
+  graph_text_size_style(graph_text_size)
 @
 
 <<Graphs_all_models_alphas_time, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=6, fig.cap="Output elasticity ($\\alpha$) for all models.">>=
@@ -640,26 +644,42 @@ AllOE2 %>%
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
     values=c(2,3,1) ) + 
   labs(x="", y="") +
-  xy_theme()
-
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
 
 
 <<resample_graph_lambda_theta, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\lambda$ and $\\theta$ values for resample models that adhere to the cost share theorem, include energy, use quality-adjusted factors of production, and employ the ($kl$)$e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.25, size=1, orig_color = "black") +
+p <- standardScatterPlot(data=resampleCoeffsCES, mapping=aes(scale, lambda), facet_formula=~Country, alpha=0.05, size=1, orig_color = "black") +
     scale_x_continuous(breaks=c(0.95, 1.0, 1.05)) + 
     scale_y_continuous(breaks=c(0, 0.005, 0.01), limits=c(0, 0.01)) +
-    labs(x=expression(theta), y=expression(lambda))
+    labs(x=expression(theta), y=expression(lambda)) 
+
+graph_text_size_style(p, graph_text_size)
 @
 
 
 <<resample_graph_delta_delta_1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\delta$ and $\\delta_1$ values for resample models that reject the cost share theorem, include energy, use quality-adjusted factors of production, and employ the $(kl)e$ nesting.">>=
-standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
-                    facet_formula=~Country, alpha=0.2, size = 1,
+p <- standardScatterPlot(data=resampleCoeffsCES, mapping=aes(delta_1, delta), 
+                    facet_formula=~Country, alpha=0.05, size = 1,
                     orig_color="black") +
   scale_x_continuous(limits=c(0, 1), breaks=c(0, 0.5, 1)) +
-  scale_y_continuous(limits=c(0,1), breaks=c(0, 0.5, 1)) +
+  scale_y_continuous(limits=c(0, 1), breaks=c(0, 0.5, 1)) +
   labs(x=expression(delta[1]), y=expression(delta))
+
+graph_text_size_style(p, graph_text_size)
+@
+
+
+<<resample_graph_sigma_sigma_1, fig.pos="H", fig.align='center', fig.width=6.5, fig.height=3.5, fig.cap="$\\sigma$ and $\\sigma_1$ values for resample models that reject the cost share theorem, include energy, use quality-adjusted factors of production, and employ the $(kl)e$ nesting.">>=
+p <- standardScatterPlot(data=resampleCoeffsCES, mapping=aes(sigma_1, sigma), 
+                    facet_formula=~Country, alpha=0.05, size = 1,
+                    orig_color="black") +
+  scale_x_continuous(limits=c(0, 3)) +
+  scale_y_continuous(limits=c(0, 3)) +
+  labs(x=expression(sigma[1]), y=expression(sigma))
+
+graph_text_size_style(p, graph_text_size)
 @
 
 
@@ -684,24 +704,90 @@ ReModels %>%
   scale_alpha_manual(
     name = "",
     values = c(.3, 1),
-    guide = FALSE) + 
+    guide = FALSE) +
   scale_color_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c("black", "black", "gray70"),
-    guide=FALSE) +
+    values=c("black", "black", "gray70")) +
   scale_size_manual(
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values = c(.3, .9),
+    values = c(0.05, 0.9),
     guide = FALSE) +
   scale_linetype_manual( 
     name = "",
     labels = c(expression(alpha[k]), expression(alpha[l]), expression(alpha[e])),
-    values=c(2,3,1) ) + 
+    values=c(2,3,1)) + 
   
-  xy_theme() 
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 @
+
+
+<<PT-resample-meta, echo = TRUE, include = TRUE>>=
+PTklemod <- models$PT$adjusted$withE$CES$kle
+# print(summary(PTklemod))
+# The standard error of delta_1
+summary(PTklemod)$coefficients[3, 2]
+print(PTklemod$coefficients[["delta_1"]], digits = 20)
+1 - PTklemod$coefficients[["delta_1"]]
+# Machine precision
+.Machine$double.eps
+
+# Look at SSE of the actual model and the boundary model.
+# First, the actual model:
+sum(resid(PTklemod)^2)
+# Now, the boundary model with delta_1 = 1, namely boundary model 11.
+PTklemod11 <- attr(PTklemod, "model.attempts")[[11]]
+# print(summary(PTklemod11))
+sum(resid(PTklemod11)^2)
+@
+
+
+<<PT-resample-quantiles, echo = TRUE, include = TRUE>>=
+PTkleresample <- resampleCoeffsCES %>% filter(Country == "PT", method != "orig")
+any(PTkleresample$delta_1 >= 1)
+1 - max(PTkleresample$delta_1)
+PTklerange95 <- quantile(PTkleresample$delta_1, probs=c(0.025, 0.975))
+PTklerange95
+1 - PTklerange95
+# See if there are any coefficients that are exactly 0.5, the starting value.
+any(PTkleresample$delta_1 == 0.5)
+# Calculate standard deviation of the delta_1 resampling distribution.
+sd(PTkleresample$delta_1)
+@
+
+
+<<rho_1-PT-resample-dist-graph, fig.pos="H", fig.align='center', fig.width=3.5, fig.height=2.5, fig.cap="Bootstrap resampling density distribution of $1 - \\delta_1$ for the Portuguese modeling approach that employs the $(kl)e$ nesting, quality-adjusts the factors of production, and rejects the CSP. The $\\times$ indicates location of base model value. Vertical lines show the range of the middle 95\\% of the distribution.">>=
+fancy_scientific <- function(l) {
+     # turn in to character string in scientific notation
+     l <- format(l, scientific = TRUE)
+     # quote the part before the exponent to keep all the digits
+     l <- gsub("^(.*)e", "'\\1'e", l)
+     # turn the 'e+' into plotmath format
+     l <- gsub("e", "%*%10^", l)
+     # return this as an expression
+     parse(text=l)
+}
+
+Rho_1_PT_data <- resampleCoeffsCES %>% 
+  filter(Country == "PT") %>%
+  mutate(
+    delta_1_plot = 1 - delta_1
+  )  
+
+ggplot(mapping = aes_string(x = "delta_1_plot")) +
+  stat_density(data = Rho_1_PT_data %>% filter(method != "orig"), geom = "line") +
+  geom_point(data = Rho_1_PT_data %>% filter(method == "orig"), aes(y = 0), shape = 4, size = 3) +
+  geom_hline(aes(yintercept = 0.0), colour="gray50", size=0.1) + 
+  geom_vline(aes(xintercept = 1-PTklerange95), colour="gray50", size=0.1) +
+  scale_x_log10(limits = c(1e-20, 1), breaks = c(1e-20, 1e-15, 1e-10, 1e-5, 1), labels=fancy_scientific) +
+  xlab(expression("1 - "*delta[1])) +
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
+
+@
+
 
 
 
@@ -733,7 +819,8 @@ replicateExpModels(
   scale_x_continuous(breaks = c(1960, 1980, 2000)) +
   labs(x="", y="Residuals") +
   geom_hline(aes(yintercept = 0.0), colour="gray50", size=0.1) + 
-  xy_theme()
+  xy_theme() %>%
+  graph_text_size_style(graph_text_size)
 
 @
 

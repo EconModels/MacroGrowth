@@ -24,7 +24,7 @@ This command is fast; it can be run on a local machine.
 * Install the `EconData` package from GitHub to dahl
     + Log in to dahl.
     + Open an R shell by saying `R` at the command prompt.    
-    + Say `require(devtools)`.
+    + Say `library(devtools)`.
     + Say `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconData")`.
     + While you're at it, you might want to install the `EconModels` package, too. Say 
         `install_github("MatthewHeun/Econ-Growth-R-Analysis/Packages/EconModels")`
