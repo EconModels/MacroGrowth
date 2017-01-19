@@ -3,12 +3,12 @@ title: "Econ Modeling One-pager"
 author: "R Pruim"
 date: "August 1, 2016"
 output:
-  pdf_document: 
-    keep_tex: yes
   html_document: default
+  pdf_document:
+    keep_tex: yes
   word_document: default
-bibliography: OnePager.bib
 csl: ieee.csl
+bibliography: OnePager.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -18,22 +18,13 @@ knitr::opts_chunk$set(echo = TRUE)
 Development of energy and economic policy is often informed 
 by energy-economic modeling via aggregate production functions (APFs) fitted
 to historical data in a theory-to-policy process utilized 
-in the literature [@Kummel:1985vz, @Turner:2012], 
+in the literature [@Kummel:1985vz; @Turner:2012], 
 in government budget offices [@Congressional-Budget-Office:2001], and
 at the World Bank [@Bussolo:2010].
-Despite more than 60 years of criticism
-[@robinson1953production, @shaikh1974laws, @felipe2003aggregation], 
-the use of APFs continues and appears to be expanding, 
-with APFs moving from academic study
-[@solow1957technical, @easterly1995soviet] 
-to macroeconomic modeling that informs energy and economic policy
-[@szeto2001econometric, @pauw2003functional, @sancho2009calibration].
-Empirical applications of APFs
-are numerous, including analysis of 
+Applications of APFs are numerous, including analysis of 
 (a) technical change [@jorgenson1967explanation], 
 (b) substitution elasticities [@kemfert2000energy],
-(c) inter-country economic output 
-	and structure [@easterly1995soviet, @toh1996differential], and 
+(c) inter-country economic output and structure [@easterly1995soviet; @toh1996differential], and 
 (d) CO$_2$ emissions policy [@van2008production].
 One reason for the enduring allure of APFs is
 their promise to describe the intricate, complex 
@@ -41,19 +32,15 @@ workings of entire economies by simple, aggregated measures
 of inputs (capital, labor, and sometimes energy) 
 and output (typically, Gross Domestic Product, GDP).
 
-The theory-to-policy process is not merely academic: 
-the policies it generates affect economic development and 
-quality of life for people worldwide.
 Development of energy policy is often informed by economic considerations
 via aggregate production functions (APFs) as part of a theory-to-policy
 process comprised of six steps:
-
- 1. selecting a theoretical energy-economy framework,
- 2. formulating modeling approaches to be considered,
- 3. econometrically fitting an APF to historical data,
- 4. comparing and evaluating modeling approaches considered,
- 5. interpreting the economy, and
- 6. formulating economic policy.
+1. selecting a theoretical energy-economy framework;
+2. formulating modeling approaches to be considered;
+3. econometrically fitting an APF to historical data;
+4. comparing and evaluating modeling approaches considered;
+5. interpreting the economy; and
+6. formulating economic policy.
 
 Choices made in Steps 1--4
 can lead to very different interpretations of the economy in Step 5
@@ -70,49 +57,42 @@ that is often assumed in economic modeling,
 (c) whether or not to make certain quality adjustments to factors of production in an
 attempt to better quantify their impact on the economy, and 
 (d) which CES nesting structure to use for models with three factors of production.
-
-This paper includes a discussion of two revealing examples for which different
-upstream modeling choices lead to very different policies. In the first example,
-the $(kl)e$ nesting structure implies significant investment in energy, while
-other nesting structures suggest otherwise. In the second example, unadjusted
-factors of production suggest balanced investment in labor and energy, while 
-quality-adjusting suggests significant investment in labor over energy. 
-Divergent outcomes provide cautionary tales for policymakers and demand
+[@Heun:2016] includes a discussion of two revealing examples for which different
+upstream modeling choices lead to very different policies. 
+*Divergent outcomes provide cautionary tales for policymakers and demand
 greater understanding of upstream modeling choices and 
-their downstream implications.
+their downstream implications.*
 
 One challenge in this work is the computational difficulty involved in fitting CES models 
 and quantifying the precision of the estimated parameters that result.  Because of 
 numerical challenges, we fit each model with multiple non-linear optimization algorithms,
 and because of boundary issues, we explicity refit models along boundaries.  Then, because
 estimating parameter precision is challenging using standard methods, we employ 
-computationally intensive resampling and/or Bayesian models.  Our current exploration
-is a sort of pilot study considering a limited number of countries, a limited number of 
-modeling choices and reducing the number of resamples to an amount that can be readily handled 
-on our current hardware in a few hours.
+computationally intensive resampling and/or Bayesian models.  *Our current exploration
+forms a pilot study considering a limited number of countries, a limited number of 
+modeling choices and reducing the number of resamples to an amount that can be readily 
+handled on our current hardware in a few hours.*
 
-Our plans for future work will require significantly-improved computational capabilities.
-Each of the planned activities below will require days to run on existing hardware.
-An enhanced cluster computing capability at Calvin College will 
+Plans for future work will be even more computationally intensive than the work
+done to date.
+*An enhanced cluster computing capability at Calvin College will 
 enable expansion of this research into several new areas
-and enable collaboration with international colleagues.
+and enable collaboration with international colleagues.*
 
-* We have in hand data from several additional countries that we would like to
-anaylze by similar methods as discussed above.
+ 1. Drs. Heun and Pruim have in hand data from several additional countries that they 
+ would like to anaylze by similar methods as discussed above.
 
-* We want to explore the quality and performance
-of the bootstrap resampling and/or Bayesian estimation techniques.
-
-* Our collaborators in Portugal have completed a paper that employs the 
-Cobb-Douglas APF in combination with statistical co-integration techniques to understand
-the relationship between energy and the economy in Portugal [@jsantos2016]. 
-Their next step is to switch from the Cobb-Douglas APF to the CES APF.
+ 2. Collaborators in Portugal have completed a paper that employs the 
+Cobb-Douglas APF in combination with statistical co-integration techniques 
+to understand the relationship between energy and the economy in 
+Portugal [@jsantos2016].  
 At the Second Exergy Economics Workshop (Sussex, England, July 2016), 
-we made plans to collaborate. 
-Our CES fitting techniques and resampling methods
-will be applied to their cointegration analysis
-to develop the data for new paper analyzing the Portuguese economy.
+plans were made to collaborate with them to generalize this to the CES APF
+using techniques from [@Heun:2016].
 
+ 3. The use of bootstrapping and Bayesian methods to esimate the precision 
+ of CES parameters is new, and a computationally intensive simulation is planned
+ to investigate the quality and performance of the these methods in this setting.
 
 
 # References
