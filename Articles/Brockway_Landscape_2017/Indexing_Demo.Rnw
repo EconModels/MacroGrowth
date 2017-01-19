@@ -185,8 +185,8 @@ ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) +
 
 The coefficients for Cobb-Douglas models are shown below.
 <<cd-coeffs>>=
-cd_nonindexed
-cd_indexed
+summary(cd_nonindexed)
+summary(cd_indexed)
 @
 
 Note that output elasticity
@@ -202,8 +202,8 @@ accounts for the fact that historical data have been indexed.
 We can convert \texttt{logscale} to $\theta$ as follows:
 
 <<cd-logscale-to-theta>>=
-exp(cd_nonindexed$coefficients[["logscale"]])
-exp(cd_indexed$coefficients[["logscale"]])
+exp(coef(cd_nonindexed)[["logscale"]])
+exp(coef(cd_indexed)[["logscale"]])
 @
 
 Note that $\theta$ for the model fit to indexed data is near 1.0, as expected.
@@ -218,8 +218,8 @@ The following shows parameters for CES models
 fitted to raw and indexed historical data.
 
 <<ces-coeffs>>=
-ces_nonindexed
-ces_indexed
+summary(ces_nonindexed)
+summary(ces_indexed)
 @
 
 Similar to the Cobb-Douglas model,
