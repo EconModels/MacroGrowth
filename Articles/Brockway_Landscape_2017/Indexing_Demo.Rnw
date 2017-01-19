@@ -50,8 +50,16 @@ The CES model with raw historical data is given by
 %
 \begin{equation} \label{eq:CESkl_nonindexed}
   Y = \gamma \: \mathrm{e}^{\lambda t} \left[\delta K^{-\rho}
-      + (1-\delta)L^{-\rho} \right]^{-1/\rho} \; .
+      + (1-\delta)L^{-\rho} \right]^{-1/\rho} \; ,
 \end{equation}
+%
+where $\rho$ is related to the elasticity of substitution~($\sigma$) by 
+%
+\begin{equation} \label{eq:sigma}
+  \sigma = \frac{1}{1 + \rho} \; .
+\end{equation}
+
+
 
 
 %++++++++++++++++++++++++++++++
@@ -59,7 +67,7 @@ The CES model with raw historical data is given by
 \label{sec:indexed}
 %++++++++++++++++++++++++++++++
 
-The Cobb-Douglas model indexed historical data is given by
+The Cobb-Douglas model with indexed historical data is given by
 %
 \begin{equation} \label{eq:CD_model}
   y = \theta \: \mathrm{e}^{\lambda t} \: k^{\alpha_k} \, l^{\alpha_l} \; ,
@@ -85,7 +93,7 @@ The CES model with indexed historical data is given by
 \label{sec:data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-All data are from the Penn World Table.
+All historical data are from the Penn World Table.
 Figure~\ref{fig:GDP-graph} below shows historical data as dots.
 
 <<load-data>>=
@@ -98,9 +106,9 @@ UKdata <- read.csv(file.path("data", "IndexingDemoRawData.csv"))
 \label{sec:fitting}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Next, we fit both the Cobb-Douglas and CES aggregate production functions 
-to both indexed and non-indexed data.
-Figure~\ref{fig:GDP-graph} below shows historical data as lines.
+We fit both the Cobb-Douglas and CES aggregate production functions 
+to both raw and indexed data.
+Figure~\ref{fig:GDP-graph} below shows fitted GDP as lines.
 
 <<fitting, warning=FALSE>>=
 cd_nonindexed <- cdModel(GDP ~ K + L + iYear, data = UKdata)
@@ -150,7 +158,7 @@ quadplotdata <- quadplotdata %>%
   )
 @
 
-We graph each type of fitted model against historical data.
+Figure~\ref{fig:GDP-graph} compares each type of fitted model (lines) with historical data (dots).
 Note that all models provide excellent fits.
 
 <<GDP-graph, fig.align="center", fig.width=6.5, fig.height=5, fig.cap="Fits to historical data. Dots are historical data. Lines are fits.">>=
@@ -175,20 +183,19 @@ ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) +
 \label{sec:cd_coeffs}
 %++++++++++++++++++++++++++++++
 
-Here are the coefficients for the Cobb-Douglas models.
+The coefficients for Cobb-Douglas models are shown below.
 <<cd-coeffs>>=
 cd_nonindexed
 cd_indexed
 @
 
-Note that the fitted parameters 
-output elasticity
+Note that output elasticity
 \verb+alpha_1+ ($\alpha_k$) 
 and 
 Solow residual growth rate
 \verb+lambda+
 are identical,
-regardless of whether the historical data are indexed or not.
+regardless of whether the historical data are indexed or raw.
 
 The pre-multiplier (in this case \texttt{logscale})
 accounts for the fact that historical data have been indexed.
@@ -199,7 +206,7 @@ exp(cd_nonindexed$coefficients[["logscale"]])
 exp(cd_indexed$coefficients[["logscale"]])
 @
 
-Note that $\theta$ for the indexed model is near 1.0, as expected.
+Note that $\theta$ for the model fit to indexed data is near 1.0, as expected.
 
 
 %++++++++++++++++++++++++++++++
@@ -208,25 +215,25 @@ Note that $\theta$ for the indexed model is near 1.0, as expected.
 %++++++++++++++++++++++++++++++
 
 The following shows parameters for CES models
-fitted to non-indexed and indexed historical data.
+fitted to raw and indexed historical data.
 
 <<ces-coeffs>>=
 ces_nonindexed
 ces_indexed
 @
 
+Similar to the Cobb-Douglas model,
+the pre-multiplier term
+(in this case \verb+gamma+)
+is different depending upon whether the historical data were indexed or raw.
 As expected, and similar to the Cobb-Douglas model,
 the growth rate of the Solow residual
 (\verb+gamma+)
-is identical, regardless of whether the historical data are indexed or not.
-Again, similar to the Cobb-Douglas model, 
-the pre-multiplier term
-(in this case \verb+gamma+)
-is different depending upon whether the historical data were indexed or not.
-We note that the value of \verb+gamma+ is close to 1,
+is identical, regardless of whether the historical data are indexed or raw.
+We note that the value of \verb+gamma+ is close to 1.0,
 when fitting to indexed data,
 as expected.
-Furthermore, the elasticity of substitution parameters
+Furthermore, the elasticity of substitution exponents
 (\verb+rho+)
 are identical regardless of whether the historical data are indexed or not.
 
