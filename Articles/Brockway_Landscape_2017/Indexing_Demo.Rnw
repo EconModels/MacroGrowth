@@ -1,0 +1,241 @@
+\documentclass{article}
+
+\begin{document}
+
+\title{Demonstration of Effect of Indexing on\\
+Cobb-Douglas and CES\\
+Aggregate Production Functions}
+\author{Matthew Kuperus Heun}
+\maketitle
+
+<<setup, include=FALSE>>=
+library(EconModels)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+opts_chunk$set(
+  # ********************************************************
+  eval = TRUE,
+  include = TRUE,
+  echo = TRUE
+  # ********************************************************
+)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Models} 
+\label{sec:models}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For demonstration purposes, 
+we focus on models that assume capital and labor factors of production only.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Raw historical data} 
+\label{sec:raw}
+%++++++++++++++++++++++++++++++
+
+The Cobb-Douglas model for using raw historical data is given by 
+%
+\begin{equation} \label{eq:CD_model_nonindexed}
+  Y = \theta \: \mathrm{e}^{\lambda t} \: K^{\alpha_k} \, L^{\alpha_l} \; ,
+\end{equation}
+%
+where $Y$, $K$, and $L$ are the raw (non-indexed) time series.
+Time ($t$) is indexed by difference to the intial year (1960).
+
+The CES model with raw historical data is given by
+%
+\begin{equation} \label{eq:CESkl_nonindexed}
+  Y = \gamma \: \mathrm{e}^{\lambda t} \left[\delta K^{-\rho}
+      + (1-\delta)L^{-\rho} \right]^{-1/\rho} \; .
+\end{equation}
+
+
+%++++++++++++++++++++++++++++++
+\subsection{Indexed factors of production} 
+\label{sec:indexed}
+%++++++++++++++++++++++++++++++
+
+The Cobb-Douglas model indexed historical data is given by
+%
+\begin{equation} \label{eq:CD_model}
+  y = \theta \: \mathrm{e}^{\lambda t} \: k^{\alpha_k} \, l^{\alpha_l} \; ,
+\end{equation}
+%
+where $y$, $k$, and $l$ are indexed by ratio to the initial year (1960). 
+For example,
+%
+\begin{equation} \label{eq:indexing}
+  y = Y/Y_{1960} \; .
+\end{equation}
+
+The CES model with indexed historical data is given by 
+%
+\begin{equation} \label{eq:CESkl}
+  y = \gamma \: \mathrm{e}^{\lambda t} \left[\delta k^{-\rho}
+      + (1-\delta)l^{-\rho} \right]^{-1/\rho} \; .
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data} 
+\label{sec:data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+All data are from the Penn World Table.
+Figure~\ref{fig:GDP-graph} below shows historical data as dots.
+
+<<load-data>>=
+UKdata <- read.csv(file.path("data", "IndexingDemoRawData.csv"))
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fitting} 
+\label{sec:fitting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Next, we fit both the Cobb-Douglas and CES aggregate production functions 
+to both indexed and non-indexed data.
+Figure~\ref{fig:GDP-graph} below shows historical data as lines.
+
+<<fitting, warning=FALSE>>=
+cd_nonindexed <- cdModel(GDP ~ K + L + iYear, data = UKdata)
+cd_indexed <- cdModel(iGDP ~ iK + iL + iYear, data = UKdata)
+ces_nonindexed <- cesModel(GDP ~ K + L + iYear, data = UKdata)
+ces_indexed <- cesModel(iGDP ~ iK + iL + iYear, data = UKdata)
+@
+
+<<quadplot-data-frame, echo = FALSE>>=
+quadplotdata <- UKdata %>% 
+  mutate(
+    yhat_cd_nonindexed = yhat(cd_nonindexed),
+    yhat_cd_indexed = yhat(cd_indexed),
+    yhat_ces_nonindexed = yhat(ces_nonindexed),
+    yhat_ces_indexed = yhat(ces_indexed),
+    Country = NULL,
+    K = NULL,
+    iK = NULL,
+    L = NULL,
+    iL = NULL
+  )
+# Eliminate attributes to avoid warning.
+attr(quadplotdata$yhat_cd_nonindexed, "label") <- NULL
+attr(quadplotdata$yhat_cd_indexed, "label") <- NULL
+# Prepare format for quad plot
+quadplotdata <- quadplotdata %>% 
+  gather(key = variable, value = y_hat, 
+         yhat_cd_nonindexed, yhat_cd_indexed, 
+         yhat_ces_nonindexed, yhat_ces_indexed) %>% 
+  mutate(
+    y_historical = 
+      case_when(
+        .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed") ~ .$GDP,
+        .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed")       ~ .$iGDP
+      ),
+    GDP = NULL, 
+    iGDP = NULL,
+    indexed = case_when(
+        .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed") ~ "raw",
+        .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed")       ~ "indexed"
+    ),
+    indexed = factor(indexed, c("raw", "indexed")),
+    apf = case_when(
+        .$variable %in% c("yhat_cd_nonindexed", "yhat_cd_indexed")     ~ "CD",
+        .$variable %in% c("yhat_ces_nonindexed", "yhat_ces_indexed")   ~ "CES"
+    )
+  )
+@
+
+We graph each type of fitted model against historical data.
+Note that all models provide excellent fits.
+
+<<GDP-graph, fig.align="center", fig.width=6.5, fig.height=5, fig.cap="Fits to historical data. Dots are historical data. Lines are fits.">>=
+ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) + 
+  geom_point(mapping = aes_string(y = "y_historical"), 
+             size = 0.2) + 
+  geom_line(mapping = aes_string(y = "y_hat")) + 
+  facet_grid(indexed ~ apf, scales = "free") + 
+  xlab(NULL) +
+  ylab("GDP [raw: millions 2005$, indexed: 1960 = 1]") +
+  xy_theme()
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coefficients} 
+\label{sec:coefficients}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%++++++++++++++++++++++++++++++
+\subsection{Cobb-Douglas} 
+\label{sec:cd_coeffs}
+%++++++++++++++++++++++++++++++
+
+Here are the coefficients for the Cobb-Douglas models.
+<<cd-coeffs>>=
+cd_nonindexed
+cd_indexed
+@
+
+Note that the fitted parameters 
+output elasticity
+\verb+alpha_1+ ($\alpha_k$) 
+and 
+Solow residual growth rate
+\verb+lambda+
+are identical,
+regardless of whether the historical data are indexed or not.
+
+The pre-multiplier (in this case \texttt{logscale})
+accounts for the fact that historical data have been indexed.
+We can convert \texttt{logscale} to $\theta$ as follows:
+
+<<cd-logscale-to-theta>>=
+exp(cd_nonindexed$coefficients[["logscale"]])
+exp(cd_indexed$coefficients[["logscale"]])
+@
+
+Note that $\theta$ for the indexed model is near 1.0, as expected.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{CES}
+\label{sec:ces_coeffs}
+%++++++++++++++++++++++++++++++
+
+The following shows parameters for CES models
+fitted to non-indexed and indexed historical data.
+
+<<ces-coeffs>>=
+ces_nonindexed
+ces_indexed
+@
+
+As expected, and similar to the Cobb-Douglas model,
+the growth rate of the Solow residual
+(\verb+gamma+)
+is identical, regardless of whether the historical data are indexed or not.
+Again, similar to the Cobb-Douglas model, 
+the pre-multiplier term
+(in this case \verb+gamma+)
+is different depending upon whether the historical data were indexed or not.
+We note that the value of \verb+gamma+ is close to 1,
+when fitting to indexed data,
+as expected.
+Furthermore, the elasticity of substitution parameters
+(\verb+rho+)
+are identical regardless of whether the historical data are indexed or not.
+
+However, the share parameter
+(\verb+delta+)
+varies significantly, depending upon whether 
+the historical data are indexed.
+Any inferences about the economy that depend upon the share parameter (\verb+delta+)
+will be significantly different depending upon whether the 
+historical data are indexed prior to fitting.
+
+\end{document}

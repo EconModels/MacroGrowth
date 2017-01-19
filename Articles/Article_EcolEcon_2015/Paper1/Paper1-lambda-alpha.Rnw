@@ -510,16 +510,16 @@ replicateExpModels(
 
   scale_color_manual(
     name = "",
-    labels = c("Historical", "Fitted"),
+    labels = c("Fitted", "Historical"),
     values=c("black", "black")
   ) +
   scale_size_manual(
     name = "",
-    labels = c("Historical", "Fitted"),
+    labels = c("Fitted", "Historical"),
     values = c(0.2, 0.2)) +
   scale_linetype_manual( 
     name = "",
-    labels = c("Historical", "Fitted"),
+    labels = c("Fitted", "Historical"),
     values=c(1,2) ) + 
   labs(x="", y="Indexed GDP (1960 = 1)") +
 
