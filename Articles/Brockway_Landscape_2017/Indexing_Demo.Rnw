@@ -226,13 +226,13 @@ Similar to the Cobb-Douglas model,
 the pre-multiplier term
 (in this case \verb+gamma+)
 is different depending upon whether the historical data were indexed or raw.
-As expected, and similar to the Cobb-Douglas model,
-the growth rate of the Solow residual
-(\verb+gamma+)
-is identical, regardless of whether the historical data are indexed or raw.
 We note that the value of \verb+gamma+ is close to 1.0,
 when fitting to indexed data,
 as expected.
+Also as expected, and similar to the Cobb-Douglas model,
+the growth rate of the Solow residual
+(\verb+lambda+)
+is identical, regardless of whether the historical data are indexed or raw.
 Furthermore, the elasticity of substitution exponents
 (\verb+rho+)
 are identical regardless of whether the historical data are indexed or not.
@@ -241,8 +241,8 @@ However, the share parameter
 (\verb+delta+)
 varies significantly, depending upon whether 
 the historical data are indexed.
-Any inferences about the economy that depend upon the share parameter (\verb+delta+)
+Any interpretation of the economy that relies upon the share parameter (\verb+delta+)
 will be significantly different depending upon whether the 
-historical data are indexed prior to fitting.
+CES function is fitted to raw or indexed data.
 
 \end{document}
