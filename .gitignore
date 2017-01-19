@@ -100,6 +100,8 @@ Paper0-Resampling.pdf
 EcolEcon_2015A.pdf
 Paper1-lambda-alpha.pdf
 Paper2-sigma.pdf
+Indexing_Demo.pdf
+Indexing_Demo.tex
 *.log
 *.notes # files created by the \authNote command.
 *.tikz
