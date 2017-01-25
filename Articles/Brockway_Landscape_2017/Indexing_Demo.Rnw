@@ -3,8 +3,9 @@
 \begin{document}
 
 \title{Demonstration of Effect of Indexing on\\
-Cobb-Douglas and CES\\
-Aggregate Production Functions}
+Cobb-Douglas (C-D) and 
+Constant Elasticity of Substitution (CES)\\
+Aggregate Production Functions (APFs)}
 \author{Matthew Kuperus Heun}
 \maketitle
 
@@ -31,13 +32,7 @@ opts_chunk$set(
 For demonstration purposes, 
 we focus on models that assume capital and labor factors of production only.
 
-
-%++++++++++++++++++++++++++++++
-\subsection{Raw historical data} 
-\label{sec:raw}
-%++++++++++++++++++++++++++++++
-
-The Cobb-Douglas model for using raw historical data is given by 
+The C-D model for using raw historical data is given by 
 %
 \begin{equation} \label{eq:CD_model_nonindexed}
   Y = \theta \: \mathrm{e}^{\lambda t} \: K^{\alpha_k} \, L^{\alpha_l} \; ,
@@ -46,7 +41,7 @@ The Cobb-Douglas model for using raw historical data is given by
 where $Y$, $K$, and $L$ are the raw (non-indexed) time series.
 Time ($t$) is indexed by difference to the intial year (1960).
 
-The CES model with raw historical data is given by
+The Constant Elasticity of Substitution~(CES) model with raw historical data is given by
 %
 \begin{equation} \label{eq:CESkl_nonindexed}
   Y = \gamma \: \mathrm{e}^{\lambda t} \left[\delta K^{-\rho}
@@ -59,15 +54,7 @@ where $\rho$ is related to the elasticity of substitution~($\sigma$) by
   \sigma = \frac{1}{1 + \rho} \; .
 \end{equation}
 
-
-
-
-%++++++++++++++++++++++++++++++
-\subsection{Indexed factors of production} 
-\label{sec:indexed}
-%++++++++++++++++++++++++++++++
-
-The Cobb-Douglas model with indexed historical data is given by
+The C-D model with indexed historical data is given by
 %
 \begin{equation} \label{eq:CD_model}
   y = \theta \: \mathrm{e}^{\lambda t} \: k^{\alpha_k} \, l^{\alpha_l} \; ,
@@ -87,14 +74,49 @@ The CES model with indexed historical data is given by
       + (1-\delta)l^{-\rho} \right]^{-1/\rho} \; .
 \end{equation}
 
+When a third factor of production (in this case energy)
+is added to the C-D APF with raw historical data,
+we obtain
+%
+\begin{equation} \label{eq:CDe_model_raw}
+  Y = \theta \: \mathrm{e}^{\lambda t} \: K^{\alpha_k} \, L^{\alpha_l} \, E^{\alpha_e} \; ,
+\end{equation}
+%
+where $E$ is total primary energy supply.
+For the CES APF with raw historical data, we obtain
+%
+\begin{equation} \label{eq:CES3_raw}
+  Y = \theta \: \mathrm{e}^{\lambda t} \, \left\{\delta \left[\delta_1 K^{-\rho_1}
+      + (1-\delta_1) L^{-\rho_1} \right]^{\rho/\rho_1}
+      + (1-\delta) E^{-\rho} \right\}^{-1/\rho} \; .
+\end{equation}
+%
+For indexed historical data, we define
+$e \equiv E / E_{1960}$ to obtain
+%
+\begin{equation} \label{eq:CDe_model_indexed}
+  y = \theta \: \mathrm{e}^{\lambda t} \: k^{\alpha_k} \, l^{\alpha_l} \, e^{\alpha_e} \; ,
+\end{equation}
+%
+and
+%
+\begin{equation} \label{eq:CES3_indexed}
+  y = \theta \: \mathrm{e}^{\lambda t} \, \left\{\delta \left[\delta_1 k^{-\rho_1}
+      + (1-\delta_1) l^{-\rho_1} \right]^{\rho/\rho_1}
+      + (1-\delta) e^{-\rho} \right\}^{-1/\rho} \; .
+\end{equation}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Data} 
 \label{sec:data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-All historical data are from the Penn World Table.
-Figure~\ref{fig:GDP-graph} below shows historical data as dots.
+Historical data for $Y$, $K$, and $L$ are from the Penn World Table.
+Historical data for $E$ are from the International Energy Agency
+time series for total primary energy supply.
+Figure~\ref{fig:GDP-graph} below shows historical data for $Y$ and $y$ as dots.
 
 <<load-data>>=
 UKdata <- read.csv(file.path("data", "IndexingDemoRawData.csv"))
@@ -106,8 +128,8 @@ UKdata <- read.csv(file.path("data", "IndexingDemoRawData.csv"))
 \label{sec:fitting}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We fit both the Cobb-Douglas and CES aggregate production functions 
-to both raw and indexed data.
+We fit both the C-D and CES aggregate production functions (APFs)
+both with and without energy to both raw and indexed data.
 Figure~\ref{fig:GDP-graph} below shows fitted GDP as lines.
 
 <<fitting, warning=FALSE>>=
@@ -115,6 +137,10 @@ cd_nonindexed <- cdModel(GDP ~ K + L + iYear, data = UKdata)
 cd_indexed <- cdModel(iGDP ~ iK + iL + iYear, data = UKdata)
 ces_nonindexed <- cesModel(GDP ~ K + L + iYear, data = UKdata)
 ces_indexed <- cesModel(iGDP ~ iK + iL + iYear, data = UKdata)
+cd_nonindexed_e <- cdModel(GDP ~ K + L + E + iYear, data = UKdata)
+cd_indexed_e <- cdModel(iGDP ~ iK + iL + iE + iYear, data = UKdata)
+ces_nonindexed_e <- cesModel(GDP ~ K + L + E + iYear, data = UKdata)
+ces_indexed_e <- cesModel(iGDP ~ iK + iL + iE + iYear, data = UKdata)
 @
 
 <<quadplot-data-frame, echo = FALSE>>=
@@ -124,45 +150,66 @@ quadplotdata <- UKdata %>%
     yhat_cd_indexed = yhat(cd_indexed),
     yhat_ces_nonindexed = yhat(ces_nonindexed),
     yhat_ces_indexed = yhat(ces_indexed),
+    yhat_cd_nonindexed_e = yhat(cd_nonindexed_e),
+    yhat_cd_indexed_e = yhat(cd_indexed_e),
+    yhat_ces_nonindexed_e = yhat(ces_nonindexed_e),
+    yhat_ces_indexed_e = yhat(ces_indexed_e),
     Country = NULL,
-    K = NULL,
-    iK = NULL,
-    L = NULL,
-    iL = NULL
+    K = NULL, iK = NULL, L = NULL, iL = NULL, E = NULL, iE = NULL
   )
 # Eliminate attributes to avoid warning.
 attr(quadplotdata$yhat_cd_nonindexed, "label") <- NULL
 attr(quadplotdata$yhat_cd_indexed, "label") <- NULL
+attr(quadplotdata$yhat_cd_nonindexed_e, "label") <- NULL
+attr(quadplotdata$yhat_cd_indexed_e, "label") <- NULL
 # Prepare format for quad plot
 quadplotdata <- quadplotdata %>% 
   gather(key = variable, value = y_hat, 
          yhat_cd_nonindexed, yhat_cd_indexed, 
-         yhat_ces_nonindexed, yhat_ces_indexed) %>% 
+         yhat_ces_nonindexed, yhat_ces_indexed,
+         yhat_cd_nonindexed_e, yhat_cd_indexed_e,
+         yhat_ces_nonindexed_e, yhat_ces_indexed_e
+  ) %>% 
   mutate(
     y_historical = 
       case_when(
-        .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed") ~ .$GDP,
-        .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed")       ~ .$iGDP
+        .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed",
+                          "yhat_cd_nonindexed_e", "yhat_ces_nonindexed_e") ~ .$GDP,
+        .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed",
+                          "yhat_cd_indexed_e", "yhat_ces_indexed_e")       ~ .$iGDP
       ),
     GDP = NULL, 
     iGDP = NULL,
     indexed = case_when(
-        .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed") ~ "raw",
-        .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed")       ~ "indexed"
+      .$variable %in% c("yhat_cd_nonindexed", "yhat_ces_nonindexed",
+                        "yhat_cd_nonindexed_e", "yhat_ces_nonindexed_e") ~ "raw",
+      .$variable %in% c("yhat_cd_indexed", "yhat_ces_indexed",
+                        "yhat_cd_indexed_e", "yhat_ces_indexed_e")       ~ "indexed"
     ),
     indexed = factor(indexed, c("raw", "indexed")),
     apf = case_when(
-        .$variable %in% c("yhat_cd_nonindexed", "yhat_cd_indexed")     ~ "CD",
-        .$variable %in% c("yhat_ces_nonindexed", "yhat_ces_indexed")   ~ "CES"
-    )
+      .$variable %in% c("yhat_cd_nonindexed", "yhat_cd_indexed",
+                        "yhat_cd_nonindexed_e", "yhat_cd_indexed_e")     ~ "CD",
+      .$variable %in% c("yhat_ces_nonindexed", "yhat_ces_indexed",
+                        "yhat_ces_nonindexed_e", "yhat_ces_indexed_e")   ~ "CES"
+    ),
+    energy = case_when(
+      .$variable %in% c("yhat_cd_nonindexed", "yhat_cd_indexed",
+                        "yhat_ces_nonindexed", "yhat_ces_indexed")       ~ "w/o energy",
+      .$variable %in% c("yhat_cd_nonindexed_e", "yhat_cd_indexed_e",
+                        "yhat_ces_nonindexed_e", "yhat_ces_indexed_e")   ~ "w/ energy"
+    ),
+    energy = factor(energy, c("w/o energy", "w/ energy"))
   )
 @
 
-Figure~\ref{fig:GDP-graph} compares each type of fitted model (lines) with historical data (dots).
+Figures~\ref{fig:GDP-graph} and~\ref{fig:GDP-graph-e} 
+compare each type of fitted model (lines) with historical data (dots).
 Note that all models provide excellent fits.
 
-<<GDP-graph, fig.align="center", fig.width=6.5, fig.height=5, fig.cap="Fits to historical data. Dots are historical data. Lines are fits.">>=
-ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) + 
+<<GDP-graph, fig.align="center", fig.width=6.5, fig.height=5, fig.cap="Fits to historical data for models that exclude energy. Dots are historical data. Lines are fits.">>=
+ggplot(data = quadplotdata %>% filter(energy == "w/o energy"), 
+       mapping = aes_string(x = "Year")) + 
   geom_point(mapping = aes_string(y = "y_historical"), 
              size = 0.2) + 
   geom_line(mapping = aes_string(y = "y_hat")) + 
@@ -172,6 +219,17 @@ ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) +
   xy_theme()
 @
 
+<<GDP-graph-e, fig.align="center", fig.width=6.5, fig.height=5, fig.cap="Fits to historical data for models that include energy. Dots are historical data. Lines are fits.">>=
+ggplot(data = quadplotdata %>% filter(energy == "w/ energy"), 
+       mapping = aes_string(x = "Year")) + 
+  geom_point(mapping = aes_string(y = "y_historical"), 
+             size = 0.2) + 
+  geom_line(mapping = aes_string(y = "y_hat")) + 
+  facet_grid(indexed ~ apf, scales = "free") + 
+  xlab(NULL) +
+  ylab("GDP [raw: millions 2005$, indexed: 1960 = 1]") +
+  xy_theme()
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Coefficients} 
@@ -179,11 +237,16 @@ ggplot(data = quadplotdata, mapping = aes_string(x = "Year")) +
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %++++++++++++++++++++++++++++++
-\subsection{Cobb-Douglas} 
-\label{sec:cd_coeffs}
+\subsection{Without energy} 
+\label{sec:coefficients_without_energy}
 %++++++++++++++++++++++++++++++
 
-The coefficients for Cobb-Douglas models are shown below.
+%------------------------------
+\subsubsection{Cobb-Douglas} 
+\label{sec:cd_coeffs}
+%------------------------------
+
+The coefficients for C-D models are shown below.
 <<cd-coeffs>>=
 summary(cd_nonindexed)
 summary(cd_indexed)
@@ -209,10 +272,10 @@ exp(coef(cd_indexed)[["logscale"]])
 Note that $\theta$ for the model fit to indexed data is near 1.0, as expected.
 
 
-%++++++++++++++++++++++++++++++
-\subsection{CES}
+%------------------------------
+\subsubsection{CES}
 \label{sec:ces_coeffs}
-%++++++++++++++++++++++++++++++
+%------------------------------
 
 The following shows parameters for CES models
 fitted to raw and indexed historical data.
@@ -222,14 +285,14 @@ summary(ces_nonindexed)
 summary(ces_indexed)
 @
 
-Similar to the Cobb-Douglas model,
+Similar to the C-D model,
 the pre-multiplier term
 (in this case \verb+gamma+)
 is different depending upon whether the historical data were indexed or raw.
 We note that the value of \verb+gamma+ is close to 1.0,
 when fitting to indexed data,
 as expected.
-Also as expected, and similar to the Cobb-Douglas model,
+Also as expected, and similar to the C-D model,
 the growth rate of the Solow residual
 (\verb+lambda+)
 is identical, regardless of whether the historical data are indexed or raw.
@@ -244,5 +307,181 @@ the historical data are indexed.
 Any interpretation of the economy that relies upon the share parameter (\verb+delta+)
 will be significantly different depending upon whether the 
 CES function is fitted to raw or indexed data.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{With energy} 
+\label{sec:coefficients_with_energy}
+%++++++++++++++++++++++++++++++
+
+%------------------------------
+\subsubsection{Cobb-Douglas with energy} 
+\label{sec:cd_coeffs_e}
+%------------------------------
+
+The coefficients for C-D models with energy are shown below.
+<<cd-coeffs-e>>=
+summary(cd_nonindexed_e)
+summary(cd_indexed_e)
+@
+
+Again, output elasticities
+\verb+alpha_1+ ($\alpha_k$) 
+\verb+alpha_2+ ($\alpha_l$) 
+and 
+Solow residual growth rate
+\verb+lambda+
+are identical,
+regardless of whether the historical data are indexed or raw.
+
+The \texttt{logscale} pre-multiplier
+is converted to $\theta$ below:
+
+<<cd-logscale-to-theta-e>>=
+exp(coef(cd_nonindexed_e)[["logscale"]])
+exp(coef(cd_indexed_e)[["logscale"]])
+@
+
+Note that $\theta$ for the model fit to indexed data is near 1.0, as expected.
+
+
+%------------------------------
+\subsubsection{CES}
+\label{sec:ces_coeffs_e}
+%------------------------------
+
+The following shows parameters for CES models with energy
+fitted to raw and indexed historical data.
+
+<<ces-coeffs-e>>=
+summary(ces_nonindexed_e)
+summary(ces_indexed_e)
+@
+
+Note that the value of \verb+delta+ is shown as 1.0 for both models.
+However, the value is not exactly 1.0:
+
+<<ces-e-delta>>=
+1 - coef(ces_nonindexed_e)[["delta"]]
+1 - coef(ces_indexed_e)[["delta"]]
+@
+
+These values are close enough to exactly 1 to make 
+energy ($E$ and $e$) the only important factor of production in the fitting process.
+As such, the values of \verb+rho_1+ and \verb+rho+
+make little difference to the computed value of SSE, regardless of the values of the other parameters.
+Thus, the value of \verb+rho+ doesn't move from its initial guess (1).
+These effects are reflected in the non-convergence of the indexed model.
+It is surprising that the non-indexed model reports convergence, because
+the indexed model (which reported non-convergence) has a better fit than 
+the indexed model (which reported convergence).
+All in all, I think 
+this is not a very good example 
+on which to demonstrate the effect of indexing historical data
+with three factors of production.
+
+That said, and similar to the CES model without energy,
+the estimate of pre-multiplier term
+(in this case \verb+gamma+)
+is different depending upon whether the historical data were indexed or raw.
+We note that the value of \verb+gamma+ is close to 1.0,
+when fitting to indexed data,
+as expected.
+The growth rate of the Solow residual
+(\verb+lambda+)
+is slightly different, depending upon whether the historical data are indexed or raw,
+but that difference could be caused by the fact that the parameters are not determined 
+very precisely.
+The elasticity of substitution exponents
+(\verb+rho_1+ and \verb+rho+)
+are similar, but not identical, when we move from raw to indexed historical data.
+Again, this could be a reflection of the fact that these parameters are not determined very precisely.
+
+Similar to the CES model with two factors of production, 
+the share parameter (\verb+delta+)
+varies significantly, depending upon whether 
+the historical data are indexed.
+And again, 
+any interpretation of the economy that relies upon the share parameter (\verb+delta+)
+will be significantly different depending upon whether the 
+CES function is fitted to raw or indexed data.
+
+
+%++++++++++++++++++++++++++++++
+\subsection{With generated data} 
+\label{sec:generated_data}
+%++++++++++++++++++++++++++++++
+
+We can try again with generated data, 
+hoping to avoid the messiness that accompanies 
+raw data that is many orders of magnitude different from 
+indexed data.
+
+<<gen-data>>=
+# First, assume some nested 3-factor CES coefficients
+sigma_1 <- 0.4
+sigma <- 1.2
+coef_indexed_gen <- c(gamma = 1, lambda = 0.021, 
+                      delta_1 = 0.4, delta = 0.6, 
+                      rho_1 = 1/sigma_1 - 1, rho = 1/sigma - 1,
+                      nu = 1)
+# Calculate what output would have been with those coefficients
+y_gen <- cesCalc(xNames = c("iK", "iL", "iE"), data = UKdata, 
+                 coef = coef_indexed_gen, tName = "iYear", 
+                 nested = TRUE)
+# Put this generated data into the data frame 
+# that we'll use for fitting.
+UKwithGenData <- UKdata %>% 
+  mutate(
+    # Add the generated GDP values to our data frame
+    y_gen = y_gen,
+    # But also add some generated historical data.
+    # Perturb by rather small values to make fitting easier.
+    Y_gen = y_gen * 1.01,
+    K_gen = iK * 1.02,
+    L_gen = iL * 1.03,
+    E_gen = iE * 1.04
+  )
+
+# Fit to the generated GDP time series using indexed data. 
+ces_indexed_e_gen <- cesModel(y_gen ~ iK + iL + iE + iYear, 
+                              data = UKwithGenData)
+summary(ces_indexed_e_gen)
+# Compare with our assumed coefficients.  
+# We should get exact same coefficients back, and we do!
+coef_indexed_gen
+coef(ces_indexed_e_gen)
+# Fit to generated raw data.
+ces_raw_e_gen <- cesModel(Y_gen ~ K_gen + L_gen + E_gen + iYear, 
+                          data = UKwithGenData)
+summary(ces_raw_e_gen)
+# Compare.
+coef_indexed_gen
+coef(ces_raw_e_gen)
+@
+
+We find that the values for \verb+lambda+
+are identical when comparing fits to indexed and raw historical data (in this case, generated).
+Values for \verb+gamma+ are different, as expected.
+Values for \verb+delta_1+ and \verb+delta+ are different, as expected.
+The values for \verb+rho_1+ (in the inner next)
+and \verb+rho_1+ are identical
+across models fitted to raw and indexed historical data.
+
+To summarize, 
+when moving from indexed historical data to raw historical data,
+CES parameters have the following behavio(u)r:
+%
+\begin{itemize}
+
+  \item $\gamma$: changes  
+
+  \item $\lambda$: stays same
+  
+  \item $\delta_1$, $\delta$: change
+  
+  \item $\rho_1$, $\rho$: stay same
+
+\end{itemize}
 
 \end{document}
