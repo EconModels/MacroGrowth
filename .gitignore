@@ -4,7 +4,6 @@
 .Rproj.user
 .Rhistory
 .RData
-*.Rproj
 /cache
 #
 # Files created by resampling
