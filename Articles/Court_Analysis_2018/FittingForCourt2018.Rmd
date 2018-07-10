@@ -1,7 +1,7 @@
 ---
 title: "Analysis for Victor Court"
 author: "Matthew Kuperus Heun"
-date: "7/10/2018"
+date: "10 July 2018"
 output: pdf_document
 ---
 
@@ -9,22 +9,133 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Analysis for Victor Court
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Victor has asked me to use my CES fitting functions on his US data
+as a point of comparison.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r, include=FALSE}
+library(dplyr)
+library(EconModels)
+library(ggplot2)
+library(magrittr)
+library(tidyr)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+## Load and sanitize data
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+First, load the data.
+
+```{r}
+USData_raw <- read.csv(file = "CES_USA.csv", sep = ";")
+head(USData_raw, n = 3)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Next, sanitize the data a bit
+by removing non-indexed columns and
+renaming the columns.
+Lower-case variable names indicate indexing to 1 in 1960.
+
+```{r}
+USData <- USData_raw %>% 
+  select(-K.L...US.2010.per.hour., 
+         -Capital...US.2010., 
+         -Labor..millions.of.hours., 
+         -Primary.exergy..TJ.,
+         -GDP....US.2010.) %>% 
+  rename(
+    k = K..1960...1.,
+    l = L..1960...1.,
+    e = E..1960...1.,
+    y = Y..1960...1.
+  ) %>% 
+  mutate(
+    Country = "US"
+  ) %>% 
+  select(Country, Year, y, k, l, e)
+head(USData, n = 3)
+```
+
+Now review the data.
+
+```{r}
+USData %>% 
+  gather(key = variable, value = value, k, l, e, y) %>% 
+  mutate(
+    # Put variables in a reasonable order for the graph legend
+    variable = factor(variable, levels = c("y", "k", "e", "l"))
+  ) %>% 
+  ggplot(mapping = aes(x = Year, y = value, linetype = variable)) +
+  geom_line() +
+  geom_hline(yintercept = 1, colour = "gray50", size = 0.1) +
+  labs(y = NULL, x = NULL, linetype = NULL) +
+  
+  xy_theme()
+```
+
+
+
+## Perform the fit
+
+We'll fit with the $(kl)e$ nesting.
+
+```{r}
+kleModel <- cesModel(y ~ k + l + e, data = USData)
+kleModel
+nckle <- naturalCoef(kleModel)
+nckle
+```
+
+Note that $\delta = 1$, so this is a boundary model.
+We also have $\rho_1 = -1$ (therefore, $\sigma_1 = \infty$). 
+We can query which boundary model we have: 
+```{r}
+kleModel$bname
+```
+So this is boundary model 7 of Table 2 in the ``Cautionary Tales'' paper.
+
+With $\theta = \mathrm{e}^{\mathrm{logscale}} = \mathrm{e}^
+{`r naturalCoef(kleModel)[["logscale"]]`} =
+`r naturalCoef(kleModel)[["scale"]]`$,
+these results mean that boundary model 7
+
+$$y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$$
+is filled with coefficients like this:
+
+$$y = `r exp(coef(kleModel)[["logscale"]])` 
+      \mathrm{e}^{-`r coef(kleModel)[["lambda"]]` (t-1960)} 
+      \left[ `r coef(kleModel)[["delta_1"]]` \, k 
+          + `r 1 - coef(kleModel)[["delta_1"]]` \, l \right] \; .$$
+
+
+## Compare with historical data
+
+We can compare the fitted model against the historical data
+as shown in the following graph.
+
+```{r}
+USData %>% 
+  mutate(
+    `y predicted` = yhat(kleModel) %>% as.numeric() # avoids an attributes warning
+  ) %>% 
+  select(Year, y, `y predicted`) %>% 
+  gather(key = var, value = value, y, `y predicted`) %>% 
+  ggplot(mapping = aes(x = Year, y = value, linetype = var)) +
+  geom_line() + 
+  geom_hline(yintercept = 1, colour = "gray50", size = 0.1) +
+  labs(x = NULL, y = NULL, linetype = NULL) +
+  xy_theme()
+```
+
+
+## Comments
+
+1. The fit is rather good.
+2. It is likely that the fitted model excludes energy ($e$), 
+   because the energy dip in 1980 is too large. 
+   Instead, by picking up the smaller dip in the $l$ data series, the fit is better.
+3. I find it interesting, but don't quite know what to make of it, that
+   the coefficients on $k$ and $l$ are approximately the neoclassical numbers 
+   (0.7 and 0.3, respectively).
+
