@@ -50,4 +50,3 @@ cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
 cd3Model(iGDP ~ iK + iL + iQp + iYear, data=US)
 cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 }
-

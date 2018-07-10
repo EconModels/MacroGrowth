@@ -39,4 +39,3 @@ If showNestParens=FALSE, parentheses are not included in the factor string, e.g.
 If showNestParens=TRUE and a nest argument is provided, 
 parentheses are include in the factor string, e.g., \code{(iX + iK) + (iL)} or \code{(iL) + ()}.
 }
-

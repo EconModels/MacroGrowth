@@ -14,4 +14,3 @@ This is similar to \code{fitted}, but will invert logarithmic
 transformations of the response variable for certain models (e.g., LINEX, and Cobb-Douglas 
 models fit in this package).
 }
-

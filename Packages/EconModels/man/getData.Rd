@@ -15,4 +15,3 @@ data associated with \code{object}.
 \description{
 Extract data associated with an object
 }
-

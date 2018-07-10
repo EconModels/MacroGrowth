@@ -18,4 +18,3 @@ a drop in replacement data set, if desired.}
 \description{
 fortify LINEX models
 }
-

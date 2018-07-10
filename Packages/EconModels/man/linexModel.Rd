@@ -44,4 +44,3 @@ linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
 naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
 
 }
-

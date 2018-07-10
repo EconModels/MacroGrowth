@@ -44,4 +44,3 @@ all resample files at the root level of the zip archive.
 Models need to be generated with \code{save.data=TRUE} so that the original data can
 be extracted from the model objects.
 }
-

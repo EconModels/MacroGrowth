@@ -38,4 +38,3 @@ Nest indicates the left-to-right order of parameters in the CES function.  If th
 less than the number of factors in the \code{formula}, some factors will omited.  If the length of \code{nest} is
 greater than the nubmer of factors in \code{formula}, it is truncated to match.
 }
-

@@ -15,4 +15,3 @@ the fitting history for a model.
 \description{
 An convenience function that returns the fitting history for a model.
 }
-

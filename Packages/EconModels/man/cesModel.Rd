@@ -103,4 +103,3 @@ if (require("EconData") & require("dplyr")) {
            data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 }
 }
-

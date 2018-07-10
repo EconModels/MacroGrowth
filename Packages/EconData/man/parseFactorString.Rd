@@ -41,4 +41,3 @@ NA otherwise.
 \code{nestStr} a nest string without nesting parentheses.
 \code{nestStrParen} a nest string with nesting parentheses, useful for pretty-printing.
 }
-

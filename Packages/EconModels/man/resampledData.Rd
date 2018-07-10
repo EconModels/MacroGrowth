@@ -28,4 +28,3 @@ Create resampled data
 This relies on the fact that each of these models stores the data used to fit
 the model with the response variable in the first column.
 }
-

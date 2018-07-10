@@ -53,4 +53,3 @@ foo
 class(foo)
 }
 }
-

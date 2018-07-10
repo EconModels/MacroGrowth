@@ -3,8 +3,8 @@
 \name{build_formula}
 \alias{build_formula}
 \alias{keep_summands}
-\alias{replace_summand}
 \alias{summands}
+\alias{replace_summand}
 \title{Utilities for working with formulas}
 \usage{
 build_formula(lhs, rhs, env = parent.frame(), op = "+")
@@ -51,4 +51,3 @@ keep_summands(f, -3)
 keep_summands(f, 2:4)
 h <- replace_summand( f, 3, paste(summands(f, 3), lhs(f), sep="/")); h
 }
-

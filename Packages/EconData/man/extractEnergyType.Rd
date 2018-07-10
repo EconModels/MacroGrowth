@@ -19,4 +19,3 @@ a string representing the energyType that was used for the fitting. NA if no ene
 \description{
 Extracts an energyType from a formula or a factorString.
 }
-

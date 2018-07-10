@@ -28,4 +28,3 @@ if (require(EconData) & require(dplyr)) {
   cesBoundaryModels(iGDP ~ iK + iL + iYear, data=Calvin \%>\% filter(Country=="US"), nest=c(1,2))
   }
 }
-

@@ -26,4 +26,3 @@ is present, \code{FALSE} is returned.
 This function relies upon the presence of the \code{naturalCoeffs} attribute to model.
 If \code{naturalCoeffs} is \code{NULL}, \code{FALSE} is returned.
 }
-

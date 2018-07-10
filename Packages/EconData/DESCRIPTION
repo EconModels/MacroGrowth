@@ -28,4 +28,4 @@ Description: package associated with 2014 Economics paper
 License: GPL (>=2)
 LazyLoad: yes
 LazyData: yes
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

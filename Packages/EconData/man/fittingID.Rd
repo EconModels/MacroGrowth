@@ -28,4 +28,3 @@ a string to be used as the id for this resample
 \description{
 Creates an id for this run of resampling
 }
-

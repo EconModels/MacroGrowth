@@ -43,4 +43,3 @@ class of the leaf matches one of the names in \code{class}.
 \code{item_name} is the concatenated name of \code{item} created 
 by applying \code{sep} between node names in the list.
 }
-

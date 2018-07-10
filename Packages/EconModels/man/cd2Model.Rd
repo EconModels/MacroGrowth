@@ -46,4 +46,3 @@ cd2Model(iGDP ~ iK + iL + iYear, data=US)
 cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
 
 }
-

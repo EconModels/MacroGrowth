@@ -41,4 +41,3 @@ a list of length two containing a data frame of coefficients and a list of model
 \description{
 This function returns a list containing models and coefficients from the resample fits.
 }
-

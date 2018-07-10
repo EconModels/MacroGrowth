@@ -16,4 +16,3 @@ a data frame with with variables \code{sse}, \code{constrained}, \code{sse.contr
 Compute SSE from a model object and also check that certain constraints are met
 by the coefficients.
 }
-

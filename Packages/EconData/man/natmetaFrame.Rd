@@ -19,4 +19,3 @@ A convenience function that returns a data frame containing
 \code{naturalCoeffs} and additional metadata for all model attempts 
 stored in the \code{model.attempts} attribute of \code{object}.
 }
-

@@ -3,12 +3,12 @@
 \docType{data}
 \name{StatTriangle}
 \alias{StatTriangle}
-\alias{geom_triline}
-\alias{geom_tripath}
-\alias{geom_tripoint}
 \alias{stat_triangle}
 \alias{tri_grid}
 \alias{tri_labels}
+\alias{geom_tripoint}
+\alias{geom_triline}
+\alias{geom_tripath}
 \title{Triangle Plots}
 \format{An object of class \code{StatTriangle} (inherits from \code{Stat}, \code{ggproto}) of length 3.}
 \usage{
@@ -43,4 +43,3 @@ ggplot()  +
 
 }
 \keyword{datasets}
-

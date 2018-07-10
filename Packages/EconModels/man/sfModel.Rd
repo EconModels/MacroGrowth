@@ -34,4 +34,3 @@ sfModel(iGDP ~ iK + iYear, data=US)
 sfModel(response="iGDP", factor="iK", time="iYear", data=US)
 
 }
-

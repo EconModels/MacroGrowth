@@ -31,4 +31,3 @@ a string representing the file name for these resample coefficients.
 \description{
 Path to resample coefficients for the given parameters
 }
-

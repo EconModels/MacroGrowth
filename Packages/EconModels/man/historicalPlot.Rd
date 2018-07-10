@@ -27,4 +27,3 @@ and various lines specified by \code{line_formula}.
 You may have to use the package \code{reshape2} to "melt" your data to the correct form before passing
 it to this function.
 }
-

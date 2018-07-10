@@ -28,4 +28,3 @@ a string representing the file name for these resample coefficients.
 \description{
 File name for resample coefficients for the given parameters
 }
-

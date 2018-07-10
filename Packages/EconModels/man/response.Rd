@@ -21,4 +21,3 @@ For models of class \code{"LINEXmodel"}
 \code{"CDEmodel"} or \code{"cesEst"}, the logarthmic transformation, if it 
 was used, will be undone, returning the values to their natural scale.
 }
-

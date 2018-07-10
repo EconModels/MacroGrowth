@@ -27,4 +27,3 @@ The ordering process preserves the original order in the event of ties at the de
 This function relies upon the \code{sse} value being stored 
 in an attribute of the model called \code{naturalCoeffs}.
 }
-

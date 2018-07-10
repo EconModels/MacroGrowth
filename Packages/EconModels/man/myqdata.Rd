@@ -24,4 +24,3 @@ A thin wrapper around \code{\link{quantile}}
 \examples{
 myqdata( .5, eruptions, data=faithful)
 }
-
