@@ -83,17 +83,21 @@ We'll fit with the $(kl)e$ nesting.
 ```{r}
 kleModel <- cesModel(y ~ k + l + e, data = USData)
 kleModel
-nckle <- naturalCoef(kleModel)
-nckle
 ```
-
 Note that $\delta = 1$, so this is a boundary model.
 We also have $\rho_1 = -1$ (therefore, $\sigma_1 = \infty$). 
+
 We can query which boundary model we have: 
 ```{r}
 kleModel$bname
 ```
 So this is boundary model 7 of Table 2 in the ``Cautionary Tales'' paper.
+
+We can see the ``natural'' coefficients for the model.
+```{r}
+nckle <- naturalCoef(kleModel)
+nckle
+```
 
 With $\theta = \mathrm{e}^{\mathrm{logscale}} = \mathrm{e}^
 {`r naturalCoef(kleModel)[["logscale"]]`} =
@@ -104,10 +108,9 @@ $$y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$$
 is filled with coefficients like this:
 
 $$y = `r exp(coef(kleModel)[["logscale"]])` 
-      \mathrm{e}^{-`r coef(kleModel)[["lambda"]]` (t-1960)} 
+      \mathrm{e}^{`r coef(kleModel)[["lambda"]]` (t-1960)} 
       \left[ `r coef(kleModel)[["delta_1"]]` \, k 
           + `r 1 - coef(kleModel)[["delta_1"]]` \, l \right] \; .$$
-
 
 ## Compare with historical data
 
@@ -133,7 +136,11 @@ USData %>%
 
 1. The fit is rather good.
 2. It is likely that the fitted model excludes energy ($e$), 
-   because the energy dip in 1980 is too large. 
+   because the energy dip in 1980 puts the energy trajectory at a very different
+   multiple of the $y$ curve. 
+   In contrast, the $l$ curve stays at about the same multiple of $y$
+   throughout the entire time series. 
+   Thus, the $l$ curve . 
    Instead, by picking up the smaller dip in the $l$ data series, the fit is better.
 3. I find it interesting, but don't quite know what to make of it, that
    the coefficients on $k$ and $l$ are approximately the neoclassical numbers 
