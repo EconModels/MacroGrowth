@@ -87,6 +87,9 @@ cesModel <- function(formula, data,
                       constrained=TRUE,
                       fitBoundaries=TRUE,
                       ...){
+  if (!missing(formula) & (!is.null(x1) | !is.null(x2) | !is.null(x3) | !is.null(x4) | !is.null(time))) {
+    stop("You specified a formula and also one of x1, x2, x3, x4, or time.")
+  }
   if ( missing(formula) ) { 
     substitutionList <-  list( response = as_name_or_null(response),
                                x1 = if (is.null(x1)) NULL else as_name_or_null(x1),
