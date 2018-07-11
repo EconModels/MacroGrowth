@@ -1,7 +1,7 @@
 ---
 title: "US CES Analysis for Victor Court"
-author: "Matthew Kuperus Heun"
-date: "10 July 2018"
+author: "Matthew Kuperus Heun, Calvin College"
+date: "11 July 2018"
 output: pdf_document
 ---
 
@@ -22,6 +22,7 @@ library(tidyr)
 Victor Court has asked me to fit US energy and economic data
 using the CES aggregate production function. 
 The energy and economic data have been supplied by Victor.
+I will use the fitting code that was created for the ``Cautionary Tales'' paper.
 
 
 ## Load and sanitize data
@@ -52,9 +53,10 @@ USData <- USData_raw %>%
     y = Y..1960...1.
   ) %>% 
   mutate(
-    Country = "US"
+    Country = "US",
+    time = Year - min(Year)
   ) %>% 
-  select(Country, Year, y, k, l, e) # Re-order the columns
+  select(Country, Year, time, y, k, l, e) # Re-order the columns
 head(USData, n = 3)
 ```
 
@@ -80,81 +82,115 @@ USData %>%
 ## Perform the fit
 
 We'll fit with the $(kl)e$ nesting.
+The warning occurs in one of the many trials and can be ignored.
 
 ```{r}
-kleModel <- cesModel(y ~ k + l + e, data = USData)
+kleModel <- cesModel(y ~ k + l + e + time, data = USData)
 kleModel
 ```
-Note that $\delta = 1$, so this is a boundary model.
-We also have $\rho_1 = -1$ (therefore, $\sigma_1 = \infty$). 
+Note that $\rho_1 = -1$ (therefore, $\sigma_1 = \infty$). 
+Therefore, this is a boundary model.
 
 We can query which boundary model we have obtained: 
 ```{r}
 kleModel$bname
 ```
-So this is boundary model 7 of Table 2 in the ``Cautionary Tales'' paper.
+So this is boundary model 20 of Table 2 in the ``Cautionary Tales'' paper.
 
-We can see the ``natural'' coefficients for the model.
+We can see the "natural" coefficients for the model,
+which shows that the "scale" parameter ($\theta$) is close to 1, as expected.
 ```{r}
-nckle <- naturalCoef(kleModel)
-nckle
+naturalCoef(kleModel)
 ```
 
-With $\theta = \mathrm{e}^{\mathrm{logscale}} = \mathrm{e}^
-{`r nckle[["logscale"]]`} = `r nckle[["scale"]]`$,
-these results mean that boundary model 7
+We can also try other nestings of the CES model, 
+which provide three degenerate cases: $(kl)$, $(le)$, and $(ek)$ nestings.
+In all of these, `delta` is 1 and `sigma` and `rho` are `NA`, 
+because the third factor of production is missing.
 
-$$y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$$
-is filled with coefficients like this:
-
-$$y = `r nckle[["scale"]]` 
-      \mathrm{e}^{`r coef(kleModel)[["lambda"]]` (t-1960)} 
-      \left[ `r coef(kleModel)[["delta_1"]]` \, k 
-          + `r 1 - coef(kleModel)[["delta_1"]]` \, l \right] \; .$$
-          
-At the moment, I'm a bit unclear about the $\theta$ coefficient.
-Inserting values for 1960 ($k = 1$, $l = 1$)
-gives $y = \theta \mathrm{e}^0 [1] = \theta = `r nckle[["scale"]]` \ne 1$,
-but it should be about 1.
-
-I probably have something wrong in my thinking about this.  
-Any ideas?
+```{r}
+klModel <- cesModel(y ~ k + l + time, data = USData)
+naturalCoef(klModel)
+leModel <- cesModel(y ~ l + e + time, data = USData)
+naturalCoef(leModel)
+ekModel <- cesModel(y ~ e + k + time, data = USData)
+naturalCoef(ekModel)
+```
 
 
 ## Compare with historical data
 
-We can compare the fitted model against the historical data
+We can compare the fitted models against the historical data
 as shown in the following graph.
+```yhat``` is a function that extracts the fitted values.
 
 ```{r}
 USData %>% 
   mutate(
-    `y fitted` = yhat(kleModel) %>% as.numeric() # avoids an attributes warning
+    `y fitted kle` = yhat(kleModel) %>% as.numeric(), # avoids an attributes warning
+    `y fitted kl` = yhat(klModel),
+    `y fitted le` = yhat(leModel),
+    `y fitted ek` = yhat(ekModel)
   ) %>% 
-  select(Year, y, `y fitted`) %>% 
-  gather(key = var, value = value, y, `y fitted`) %>% 
-  ggplot(mapping = aes(x = Year, y = value, linetype = var)) +
-  geom_line() + 
+  select(Year, y, `y fitted kle`, `y fitted kl`, `y fitted le`, `y fitted ek`) %>% 
+  gather(key = var, value = value, y, 
+         `y fitted kle`, `y fitted kl`, `y fitted le`, `y fitted ek`) %>% 
+  mutate(
+    var = factor(var, levels = c("y", "y fitted kle", 
+                                 "y fitted kl", "y fitted le", "y fitted ek"))
+  ) %>% 
+  ggplot(mapping = aes(x = Year, y = value, linetype = var, colour = var)) +
+  geom_line() +
   geom_hline(yintercept = 1, colour = "gray50", size = 0.1) +
-  labs(x = NULL, y = NULL, linetype = NULL) +
+  labs(x = NULL, y = NULL, linetype = NULL, colour = NULL) +
   xy_theme()
 ```
 
+We can also plot all of the residuals (which are calculated in log space).
+
+```{r}
+resids <- USData %>% 
+  select(Year) %>% 
+  mutate(
+    r_y = 0,
+    r_kle = residuals(kleModel) %>% as.numeric(),
+    r_kl = residuals(klModel) %>% as.numeric(),
+    r_le = residuals(leModel) %>% as.numeric(),
+    r_ek = residuals(ekModel) %>% as.numeric()
+  ) %>% 
+  gather(key = var, value = value, r_y, r_kle, r_kl, r_le, r_ek) %>% 
+  mutate(
+    var = factor(var, levels = c("r_y", "r_kle", "r_kl", "r_le", "r_ek"))
+  ) 
+resids %>% 
+  ggplot(mapping = aes(x = Year, y = value, linetype = var, colour = var)) +
+  geom_line() + 
+  labs(x = NULL, y = NULL, linetype = NULL, colour = NULL) +
+  
+  xy_theme()
+```
+
+The sum of squared residuals (in log space) can be used to compare the models.
+
+```{r}
+SSE <- resids %>% 
+  mutate(
+    r2 = value^2
+  ) %>% 
+  select(-value) %>% 
+  spread(key = var, value = r2) %>% 
+  summarise(
+    sse_kle = sum(r_kle), 
+    sse_kl = sum(r_kl),
+    sse_le = sum(r_le),
+    sse_ek = sum(r_ek)
+  )
+SSE
+```
 
 ## Comments
 
-1. Visually, the fit is quite good.
-2. It is likely that the fitted model excludes energy ($e$), 
-   because the energy dip in 1980 puts the energy trajectory at a very different
-   multiple of the $y$ curve before and after 1980. 
-   Mixing $e$ into the fit makes the fitted model worse!
-   In contrast, the $l$ curve stays at about the same multiple of $y$
-   throughout the entire time series, yet retains the dip in 1980. 
-   The $l$ curve provides a better approximation to the shape of $y$.
-   So, the fitting algorithm chooses to use $l$ instead of $e$ to fit $y$.
-3. I find it interesting, but don't quite know what to make of it, that
-   the coefficients on $k$ and $l$ are approximately the neoclassical numbers 
-   (0.7 and 0.3, respectively).
-   Maybe it's a result of the fact that the $k$ and $l$ lines are
-   approximately a ratio of 2 apart from each other.
-
+Visually, the fit is quite good for all models. 
+It is difficult to say that one model is vastly superior to any other model.
+According to SSE, the $(kl)e$ model fits best, as would be expected.
+ 
