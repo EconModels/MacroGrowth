@@ -75,7 +75,7 @@ cesModel <- function(formula, data,
                       x2=NULL,
                       x3=NULL,
                       x4=NULL,
-                      time,
+                      time=NULL,
                       nest=1:3,        # change to 1:4 if we support 4-factor models
                       prevModel=NULL,
                       algorithms=c("PORT","L-BFGS-B"), 

@@ -5,11 +5,11 @@
 \title{Fitting CES models}
 \usage{
 cesModel(formula, data, response, x1 = NULL, x2 = NULL, x3 = NULL,
-  x4 = NULL, time, nest = 1:3, prevModel = NULL, algorithms = c("PORT",
-  "L-BFGS-B"), multErr = TRUE, rho = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5,
-  -0.75, -0.9, -0.99), rho1 = c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75,
-  -0.9, -0.99), digits = 6, save.data = TRUE, constrained = TRUE,
-  fitBoundaries = TRUE, ...)
+  x4 = NULL, time = NULL, nest = 1:3, prevModel = NULL,
+  algorithms = c("PORT", "L-BFGS-B"), multErr = TRUE, rho = c(9, 2, 1,
+  0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99), rho1 = c(9, 2, 1, 0.43,
+  0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99), digits = 6, save.data = TRUE,
+  constrained = TRUE, fitBoundaries = TRUE, ...)
 }
 \arguments{
 \item{formula}{a formula of the form \code{response ~ a + b + c + d + time}.
