@@ -1,5 +1,5 @@
 ---
-title: "Analysis for Victor Court"
+title: "US CES Analysis for Victor Court"
 author: "Matthew Kuperus Heun"
 date: "10 July 2018"
 output: pdf_document
@@ -9,11 +9,6 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Analysis for Victor Court
-
-Victor has asked me to use my CES fitting functions on his US data
-as a point of comparison.
-
 ```{r, include=FALSE}
 library(dplyr)
 library(EconModels)
@@ -22,6 +17,12 @@ library(magrittr)
 library(tidyr)
 ```
 
+## Analysis for Victor Court
+
+Victor Court has asked me to fit US energy and economic data
+using the CES aggregate production function. 
+The energy and economic data have been supplied by Victor.
+
 
 ## Load and sanitize data
 
@@ -29,7 +30,7 @@ First, load the data.
 
 ```{r}
 USData_raw <- read.csv(file = "CES_USA.csv", sep = ";")
-head(USData_raw, n = 3)
+head(USData_raw, n = 3) # Show the first 3 rows
 ```
 
 Next, sanitize the data a bit
@@ -53,11 +54,11 @@ USData <- USData_raw %>%
   mutate(
     Country = "US"
   ) %>% 
-  select(Country, Year, y, k, l, e)
+  select(Country, Year, y, k, l, e) # Re-order the columns
 head(USData, n = 3)
 ```
 
-Now review the data.
+Now review the data in graphical form.
 
 ```{r}
 USData %>% 
@@ -87,7 +88,7 @@ kleModel
 Note that $\delta = 1$, so this is a boundary model.
 We also have $\rho_1 = -1$ (therefore, $\sigma_1 = \infty$). 
 
-We can query which boundary model we have: 
+We can query which boundary model we have obtained: 
 ```{r}
 kleModel$bname
 ```
@@ -100,17 +101,25 @@ nckle
 ```
 
 With $\theta = \mathrm{e}^{\mathrm{logscale}} = \mathrm{e}^
-{`r naturalCoef(kleModel)[["logscale"]]`} =
-`r naturalCoef(kleModel)[["scale"]]`$,
+{`r nckle[["logscale"]]`} = `r nckle[["scale"]]`$,
 these results mean that boundary model 7
 
 $$y = \theta A \left[ \delta_1 x_1 + (1 - \delta_1) x_2 \right]$$
 is filled with coefficients like this:
 
-$$y = `r exp(coef(kleModel)[["logscale"]])` 
+$$y = `r nckle[["scale"]]` 
       \mathrm{e}^{`r coef(kleModel)[["lambda"]]` (t-1960)} 
       \left[ `r coef(kleModel)[["delta_1"]]` \, k 
           + `r 1 - coef(kleModel)[["delta_1"]]` \, l \right] \; .$$
+          
+At the moment, I'm a bit unclear about the $\theta$ coefficient.
+Inserting values for 1960 ($k = 1$, $l = 1$)
+gives $y = \theta \mathrm{e}^0 [1] = \theta = `r nckle[["scale"]]` \ne 1$,
+but it should be about 1.
+
+I probably have something wrong in my thinking about this.  
+Any ideas?
+
 
 ## Compare with historical data
 
@@ -120,10 +129,10 @@ as shown in the following graph.
 ```{r}
 USData %>% 
   mutate(
-    `y predicted` = yhat(kleModel) %>% as.numeric() # avoids an attributes warning
+    `y fitted` = yhat(kleModel) %>% as.numeric() # avoids an attributes warning
   ) %>% 
-  select(Year, y, `y predicted`) %>% 
-  gather(key = var, value = value, y, `y predicted`) %>% 
+  select(Year, y, `y fitted`) %>% 
+  gather(key = var, value = value, y, `y fitted`) %>% 
   ggplot(mapping = aes(x = Year, y = value, linetype = var)) +
   geom_line() + 
   geom_hline(yintercept = 1, colour = "gray50", size = 0.1) +
@@ -134,15 +143,18 @@ USData %>%
 
 ## Comments
 
-1. The fit is rather good.
+1. Visually, the fit is quite good.
 2. It is likely that the fitted model excludes energy ($e$), 
    because the energy dip in 1980 puts the energy trajectory at a very different
-   multiple of the $y$ curve. 
+   multiple of the $y$ curve before and after 1980. 
+   Mixing $e$ into the fit makes the fitted model worse!
    In contrast, the $l$ curve stays at about the same multiple of $y$
-   throughout the entire time series. 
-   Thus, the $l$ curve . 
-   Instead, by picking up the smaller dip in the $l$ data series, the fit is better.
+   throughout the entire time series, yet retains the dip in 1980. 
+   The $l$ curve provides a better approximation to the shape of $y$.
+   So, the fitting algorithm chooses to use $l$ instead of $e$ to fit $y$.
 3. I find it interesting, but don't quite know what to make of it, that
    the coefficients on $k$ and $l$ are approximately the neoclassical numbers 
    (0.7 and 0.3, respectively).
+   Maybe it's a result of the fact that the $k$ and $l$ lines are
+   approximately a ratio of 2 apart from each other.
 
