@@ -32,8 +32,10 @@ Suggests:
     magrittr,
     rmarkdown
 VignetteBuilder: knitr
-Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
-Maintainer: Randall Pruim <rpruim@calvin.edu>
+Authors@R: c(
+    person("Randall", "Pruim", email = "rpruim@calvin.edu", role = c("aut","cre")),
+    person("Matthew", "Heun", email = "mkh2@calvin.edu", role = c("aut"))
+    )
 Description: Fit Macro-Economic Growth Models
 License: GPL (>=2)
 LazyLoad: yes
