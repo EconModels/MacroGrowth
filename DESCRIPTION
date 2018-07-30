@@ -1,0 +1,42 @@
+Package: EconModels
+Type: Package
+Title: Economics Models
+Version: 0.1-7
+Date: 2014-06-12
+Depends:
+    micEconCES
+Imports:
+    foreach,
+    doParallel,
+    parallel,
+    lattice,
+    latticeExtra,
+    ggplot2 (>= 1.0.1.9003),
+    scales,
+    car,
+    mosaic,
+    dplyr,
+    xtable,
+    nlmrt,
+    Hmisc,
+    methods,
+    utils,
+    splines,
+    mosaic,
+    optimx,
+    nlme
+Suggests:
+    testthat,
+    MASS,
+    EconData,
+    knitr,
+    magrittr,
+    rmarkdown
+VignetteBuilder: knitr
+Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
+Maintainer: Randall Pruim <rpruim@calvin.edu>
+Description: package associated with a paper
+License: GPL (>=2)
+LazyLoad: yes
+LazyData: yes
+RoxygenNote: 6.0.1
