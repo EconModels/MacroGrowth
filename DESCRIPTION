@@ -1,8 +1,7 @@
-Package: EconModels
+Package: MacroGrowth
 Type: Package
 Title: Economics Models
-Version: 0.1-7
-Date: 2014-06-12
+Version: 0.2.0.9000
 Depends:
     micEconCES
 Imports:
@@ -35,8 +34,10 @@ Suggests:
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>
-Description: package associated with a paper
+Description: Fit Macro-Economic Growth Models
 License: GPL (>=2)
 LazyLoad: yes
 LazyData: yes
-RoxygenNote: 6.0.1
+Encodeing: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1.9000
