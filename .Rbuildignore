@@ -1,2 +1,4 @@
 ^Rbuildignore$
 ^data-raw$
+^.*\.Rproj$
+^\.Rproj\.user$
