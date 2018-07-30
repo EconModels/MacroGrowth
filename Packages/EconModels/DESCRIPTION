@@ -30,7 +30,8 @@ Suggests:
     MASS,
     EconData,
     knitr,
-    magrittr
+    magrittr,
+    rmarkdown
 VignetteBuilder: knitr
 Author: Randall Pruim <rpruim@calvin.edu>, Matthew Huen
 Maintainer: Randall Pruim <rpruim@calvin.edu>
