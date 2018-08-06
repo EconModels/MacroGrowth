@@ -20,8 +20,9 @@ stat_triangle(mapping = NULL, data = NULL, geom = "point",
 tri_grid(colour = color, color = "gray70", grid_lines = 5,
   labels = c("alpha[1]", "alpha[2]", "alpha[3]"), ...)
 
-tri_labels(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = TRUE,
-  colour = color, color = "gray60", size = 4, padding = 0.1, ...)
+tri_labels(labels = c("alpha[1]", "alpha[2]", "alpha[3]"),
+  parse = TRUE, colour = color, color = "gray60", size = 4,
+  padding = 0.1, ...)
 
 geom_tripoint(..., stat = "triangle")
 

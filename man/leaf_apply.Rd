@@ -5,9 +5,9 @@
 \title{Applies a function to leaves of a list.}
 \usage{
 leaf_apply(l, f, class = NULL, name = "", sep = ".",
-  strict.lists = FALSE, is.parent = if (strict.lists) function(x, n, ...) { 
-     class(x)[1] == "list" } else function(x, n, ...) {     is.list(x) &&
-  (is.null(class) || !inherits(x, as.character(class))) })
+  strict.lists = FALSE, is.parent = if (strict.lists) function(x, n,
+  ...) {     class(x)[1] == "list" } else function(x, n, ...) {    
+  is.list(x) && (is.null(class) || !inherits(x, as.character(class))) })
 }
 \arguments{
 \item{l}{the list to be traversed.}
