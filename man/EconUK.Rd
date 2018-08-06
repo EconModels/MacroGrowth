@@ -26,6 +26,12 @@ EconUK
 \description{
 Macroeconomic data for the UK from 1960 through 2010.
 }
+\examples{
+if (require(ggplot2)) {
+  ggplot(data = EconUK) +
+    geom_line(aes(y = iGDP, x = Year))
+}
+}
 \references{
 \url{doi://10.3390/en10020203}
 }
