@@ -22,39 +22,106 @@ The `MacroGrowth` package provides sophisticated tools for fitting macroeconomic
 growth models to data.
 `MacroGrowth` has several desirable features for economic modelers:
 
-* Functions that fit several different macroeconomic growth models, including
-    + Cobb-Douglas (CD), 
-    + Constant Elasticity of Substitution (CES), and 
-    + Linex.
+* Functions that fit several different macroeconomic growth models.
 * Functions in this package fit along 
 boundaries of the economically-meaningful region, 
 thereby ensuring that the best possible fit is found.
 * There are options to perform residual resampling, 
 thereby providing a way to assess the variability of estimated parameters.
 * A consistent formula-based interface to fitting functions.
-* Capabilities to fit several macroeconomic factors of production
 
-The functions in this package were first developed and used in the paper
-
-
+The functions in this package were developed for and used first in the paper
+Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai.
+"From Theory to Econometrics to Energy Policy: 
+Cautionary Tales for Policymaking Using Aggregate Production Functions".
+*Energies*, pp. 1-44, 10 (203), 2017.
+<http://doi.org/10.3390/en10020203>.
 
 ## Data
 
 The starting point for any fitting process is macroeconomic data.
-For this vignette, we'll use data from the paper by Heun 
+For this vignette, we'll use a subset of the UK macroeconomic data 
+from the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+
+```{r}
+library(dplyr)
+library(MacroGrowth)
+head(EconUK)
+```
+
+The `EconUK` data frame contains 
+GDP, capital, labor, and two types of energy data
+(primary exergy and useful exergy). 
+All time series indexed by ratio to an initial year (1960),
+such that all quantities are 1 in 1960.
+
+## Macroeconomic growth models
+
+`MacroGrowth` supports the following macroeconomic growth models:
+
+* Cobb-Douglas (CD): $y = \theta \: \mathrm{e}^{\lambda t} \: 
+                          x_1^{\alpha_1} \, x_2^{\alpha_2} \, x_3^{\alpha_3}$
+* Constant Elasticity of Substitution (CES):
+          $y = \theta \: \mathrm{e}^{\lambda t} \, \left\{\delta \left[\delta_1 x_1^{-\rho_1}
+                + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1}
+                + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}$, and 
+* Linex: $y = \theta \: e \exp{}$.
+
+### Fitting examples
+
+To fit a model to macroeconomic data, use one of the `*Model` functions.
+For example, to fit the Cobb-Douglas model to the UK's capital stock and labor data,
+use the `cdModel` function.
+
+```{r}
+cdfit <- cdModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
+cdfit
+```
+The `formula` argument provides a convenient way to specify which variables in the data frame
+occupy which positions of the model.
+The components of the formula are: 
+
+* the "response" variable (usually indexed GDP), positioned to the left of the `~` character,
+* indexed factors of production, separated by "+" and positioned to the right of the `~` character,
+and  
+* the time variable, indexed to 0 at the top of the data frame,
+separated from the factors of production by a `+` character, and 
+positioned as the rightmost item in the formula. 
+
+In the above example, `iGDP ~ iK + iL + iYear` indicates that
+the model is to be fitted with 
+indexed GDP (iGDP) as the response variable,
+indexed capital stock (iK) and indexed labor (iL) as the factors of production, and
+indexed year (iYear) as the time variable.
+
+The coefficients of the model can be recovered with the `naturalCoef` function.
+
+```{r}
+naturalCoef(cdfit)
+```
+
+Similar function can be used for the other model types.
+
+For the CES production function, use the `cesModel` function.
+
+```{r}
+cesfit <- cesModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
+naturalCoef(cesfit)
+```
 
 
+For the Linex model, 
+there must be three factors of production, and 
+the third factor of production must be the energy variable,
+as indexed useful exergy (`iXp`) in the example below.
 
-
-## Supported macro-economic growth models
+```{r}
+linexfit <- linexModel(formula = iGDP ~ iK + iL + iXp + iYear, data = EconUK)
+naturalCoef(linexfit)
+```
 
 ### Accounting for boundaries
 
-### Cobb-Douglas
-
-### CES
-
-### Linex
 
 ## Resampling
 
