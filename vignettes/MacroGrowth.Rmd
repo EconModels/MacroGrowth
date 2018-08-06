@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Using the MacroGrowth package"
+author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,7 +16,35 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
+
+The `MacroGrowth` package provides sophisticated tools for fitting macroeconomic 
+growth models to data.
+`MacroGrowth` has several desirable features for economic modelers:
+
+* Functions that fit several different macroeconomic growth models, including
+    + Cobb-Douglas (CD), 
+    + Constant Elasticity of Substitution (CES), and 
+    + Linex.
+* Functions in this package fit along 
+boundaries of the economically-meaningful region, 
+thereby ensuring that the best possible fit is found.
+* There are options to perform residual resampling, 
+thereby providing a way to assess the variability of estimated parameters.
+* A consistent formula-based interface to fitting functions.
+* Capabilities to fit several macroeconomic factors of production
+
+The functions in this package were first developed and used in the paper
+
+
+
 ## Data
+
+The starting point for any fitting process is macroeconomic data.
+For this vignette, we'll use data from the paper by Heun 
+
+
+
 
 ## Supported macro-economic growth models
 

@@ -15,7 +15,7 @@
 \item \code{iXu}   Indexed useful exergy (scaled so value is 1 in 1960)
 }}
 \source{
-This is a subset of the data use in
+This is a subset of the data used in
 Heun, M.K.; Santos, J.; Brockway, P.E.; Pruim, R.; Domingos, T.; Sakai, M.
 "From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions".
 \emph{Energies} 2017, 10, 203.
