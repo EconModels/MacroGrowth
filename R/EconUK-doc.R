@@ -20,5 +20,10 @@
 #' *Energies* 2017, 10, 203.
 #' @references
 #' <doi://10.3390/en10020203>
+#' @examples
+#' if (require(ggplot2)) {
+#'   ggplot(data = EconUK) +
+#'     geom_line(aes(y = iGDP, x = Year))
+#' }
 
 "EconUK"
