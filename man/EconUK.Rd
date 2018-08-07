@@ -33,6 +33,6 @@ if (require(ggplot2)) {
 }
 }
 \references{
-\url{doi://10.3390/en10020203}
+\url{http://doi.org/10.3390/en10020203}
 }
 \keyword{datasets}
