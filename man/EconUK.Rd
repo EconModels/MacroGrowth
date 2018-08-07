@@ -18,7 +18,7 @@
 This is a subset of the data used in
 Heun, M.K.; Santos, J.; Brockway, P.E.; Pruim, R.; Domingos, T.; Sakai, M.
 "From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions".
-\emph{Energies} 2017, 10, 203.
+\emph{Energies} 2017, 10(2), 203.
 }
 \usage{
 EconUK
