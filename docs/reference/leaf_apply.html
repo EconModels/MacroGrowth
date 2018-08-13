@@ -83,7 +83,12 @@ class of the leaf matches one of the names in class." />
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/EconModels/MacroGrowth">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -97,7 +102,7 @@ class of the leaf matches one of the names in class." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Applies a function to leaves of a list.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/EconModels/MacroGrowth/blob/master/R/leaf_apply.R'><code>R/leaf_apply.R</code></a></small>
     <div class="hidden name"><code>leaf_apply.Rd</code></div>
     </div>
 
@@ -109,9 +114,9 @@ class of the leaf matches one of the names in <code>class</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>leaf_apply</span>(<span class='no'>l</span>, <span class='no'>f</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"."</span>,
-  <span class='kw'>strict.lists</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>is.parent</span> <span class='kw'>=</span> <span class='kw'>if</span> (<span class='no'>strict.lists</span>) <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>n</span>, <span class='no'>...</span>) {
-     <span class='fu'>class</span>(<span class='no'>x</span>)[<span class='fl'>1</span>] <span class='kw'>==</span> <span class='st'>"list"</span> } <span class='kw'>else</span> <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>n</span>, <span class='no'>...</span>) {     <span class='fu'>is.list</span>(<span class='no'>x</span>) <span class='kw'>&amp;&amp;</span>
-  (<span class='fu'>is.null</span>(<span class='no'>class</span>) <span class='kw'>||</span> !<span class='fu'>inherits</span>(<span class='no'>x</span>, <span class='fu'>as.character</span>(<span class='no'>class</span>))) })</pre>
+  <span class='kw'>strict.lists</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>is.parent</span> <span class='kw'>=</span> <span class='kw'>if</span> (<span class='no'>strict.lists</span>) <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>n</span>,
+  <span class='no'>...</span>) {     <span class='fu'>class</span>(<span class='no'>x</span>)[<span class='fl'>1</span>] <span class='kw'>==</span> <span class='st'>"list"</span> } <span class='kw'>else</span> <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>n</span>, <span class='no'>...</span>) {
+  <span class='fu'>is.list</span>(<span class='no'>x</span>) <span class='kw'>&amp;&amp;</span> (<span class='fu'>is.null</span>(<span class='no'>class</span>) <span class='kw'>||</span> !<span class='fu'>inherits</span>(<span class='no'>x</span>, <span class='fu'>as.character</span>(<span class='no'>class</span>))) })</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

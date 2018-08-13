@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute fitted values on natural scale — yhat • MacroGrowth</title>
+<title>UK Economic Data — EconUK • MacroGrowth</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="Compute fitted values on natural scale — yhat" />
+<meta property="og:title" content="UK Economic Data — EconUK" />
 
-<meta property="og:description" content="This is similar to fitted, but will invert logarithmic
-transformations of the response variable for certain models (e.g., LINEX, and Cobb-Douglas
-models fit in this package)." />
+<meta property="og:description" content="Macroeconomic data for the UK from 1960 through 2010." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,37 +100,61 @@ models fit in this package)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute fitted values on natural scale</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EconModels/MacroGrowth/blob/master/R/Fitting.R'><code>R/Fitting.R</code></a></small>
-    <div class="hidden name"><code>yhat.Rd</code></div>
+    <h1>UK Economic Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EconModels/MacroGrowth/blob/master/R/EconUK-doc.R'><code>R/EconUK-doc.R</code></a></small>
+    <div class="hidden name"><code>EconUK.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This is similar to <code>fitted</code>, but will invert logarithmic
-transformations of the response variable for certain models (e.g., LINEX, and Cobb-Douglas
-models fit in this package).</p>
+    <p>Macroeconomic data for the UK from 1960 through 2010.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>yhat</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='no'>EconUK</span></pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with the following variables</p><ul>
+<li><p><code>Year</code> Year</p></li>
+<li><p><code>iYear</code> Indexed year (starting from 0)</p></li>
+<li><p><code>iGDP</code>  Indexed GDP (scaled so value is 1 in 1960)</p></li>
+<li><p><code>iK</code>    Indexed capital stock (scaled so value is 1 in 1960)</p></li>
+<li><p><code>iL</code>    Indexed labor (scaled so value is 1 in 1960)</p></li>
+<li><p><code>iXp</code>   Indexed primary exergy (scaled so value is 1 in 1960)</p></li>
+<li><p><code>iXu</code>   Indexed useful exergy (scaled so value is 1 in 1960)</p></li>
+</ul>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>An object returned by a fitting function.</p></td>
-    </tr>
-    </table>
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>This is a subset of the data used in
+Heun, M.K.; Santos, J.; Brockway, P.E.; Pruim, R.; Domingos, T.; Sakai, M.
+"From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions".
+<em>Energies</em> 2017, 10(2), 203.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href='http://doi.org/10.3390/en10020203'>http://doi.org/10.3390/en10020203</a></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'>require</span>(<span class='no'>ggplot2</span>)) {
+  <span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/ggplot'>ggplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>EconUK</span>) +
+    <span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/geom_path'>geom_line</a></span>(<span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/aes'>aes</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>iGDP</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>Year</span>))
+}</div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='img'><img src='EconUK-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#format">Format</a></li>
+
+      <li><a href="#source">Source</a></li>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
