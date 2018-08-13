@@ -85,8 +85,8 @@
 <p>The <code>MacroGrowth</code> package provides sophisticated tools for fitting macroeconomic growth models to data. <code>MacroGrowth</code> has several desirable features for economic modelers:</p>
 <ul>
 <li>Functions that fit several different macroeconomic growth models.</li>
-<li>Functions in this package fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
-<li>There are options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
+<li>Functions fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
+<li>Options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
 <li>A consistent formula-based interface to fitting functions.</li>
 </ul>
 <p>The functions in this package were developed for and used first in the paper Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai. “From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions”. <em>Energies</em>, pp. 1-44, 10 (203), 2017. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
@@ -138,8 +138,30 @@
 <li>Cobb-Douglas (CD): <span class="math inline">\(y = \theta \: \mathrm{e}^{\lambda t} \:  x_1^{\alpha_1} \, x_2^{\alpha_2} \, x_3^{\alpha_3}\)</span>
 </li>
 <li>Constant Elasticity of Substitution (CES): <span class="math inline">\(y = \theta \: \mathrm{e}^{\lambda t} \, \left\{\delta \left[\delta_1 x_1^{-\rho_1}  + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1}  + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}\)</span>, and</li>
-<li>Linex: <span class="math inline">\(y = \theta \: e \exp{}\)</span>.</li>
+<li>Linear Exponential (Linex): <span class="math inline">\(y = \theta \: x_3 \exp{\left\{ 2 a_0 \left[ 1 - \frac{x_2 + x_3}{2 x_1} \right] +  a_1 \left[ \frac{x_2}{x_3} - 1 \right] \right\}}\)</span>.</li>
 </ul>
+<p>In the above equations:</p>
+<ul>
+<li>
+<span class="math inline">\(y\)</span> is economic output, usually measured as GDP, given in data.</li>
+<li>
+<span class="math inline">\(\theta\)</span> is a fitted scale parameter.</li>
+<li>
+<span class="math inline">\(\lambda\)</span> is the Solow residual.</li>
+<li>
+<span class="math inline">\(t\)</span> is time.</li>
+<li>
+<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span> are factors of production.</li>
+<li>
+<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are output elasticities for the corresponding factors of production in the Cobb-Douglas growth model.</li>
+<li>
+<span class="math inline">\(\delta\)</span> and <span class="math inline">\(\delta_1\)</span> are fitted share parameters for the CES growth model.</li>
+<li>
+<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution. (See below.)</li>
+<li>
+<span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> are fitted coefficients in the Linex production function.</li>
+</ul>
+<p>Also, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\sigma_1\)</span> are elasticities of substitution for the CES growth model, given by <span class="math inline">\(\sigma = \frac{1}{1 + \rho}\)</span> and <span class="math inline">\(\sigma_1 = \frac{1}{1 + \rho_1}\)</span>. <span class="math inline">\(c_t\)</span> is the ratio of Linex coefficients, given by <span class="math inline">\(c_t = \frac{a_1}{a_0}\)</span>.</p>
 <div id="fitting-examples" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fitting-examples" class="anchor"></a>Fitting examples</h3>
