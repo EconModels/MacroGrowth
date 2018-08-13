@@ -47,6 +47,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -143,21 +146,21 @@
 <p>In the above equations:</p>
 <ul>
 <li>
-<span class="math inline">\(y\)</span> is economic output, usually measured as GDP, given in data.</li>
+<span class="math inline">\(y\)</span> is economic output, usually measured as GDP, given in data;</li>
 <li>
-<span class="math inline">\(\theta\)</span> is a fitted scale parameter.</li>
+<span class="math inline">\(\theta\)</span> is a fitted scale parameter;</li>
 <li>
-<span class="math inline">\(\lambda\)</span> is the Solow residual.</li>
+<span class="math inline">\(\lambda\)</span> is the Solow residual;</li>
 <li>
-<span class="math inline">\(t\)</span> is time.</li>
+<span class="math inline">\(t\)</span> is time;</li>
 <li>
-<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span> are factors of production.</li>
+<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span> are factors of production;</li>
 <li>
-<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are output elasticities for the corresponding factors of production in the Cobb-Douglas growth model.</li>
+<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are output elasticities for the corresponding factors of production in the Cobb-Douglas growth model;</li>
 <li>
-<span class="math inline">\(\delta\)</span> and <span class="math inline">\(\delta_1\)</span> are fitted share parameters for the CES growth model.</li>
+<span class="math inline">\(\delta\)</span> and <span class="math inline">\(\delta_1\)</span> are fitted share parameters for the CES growth model;</li>
 <li>
-<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution. (See below.)</li>
+<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution; and</li>
 <li>
 <span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> are fitted coefficients in the Linex production function.</li>
 </ul>
@@ -191,19 +194,28 @@ cdfit
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)
 <span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span>
 <span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></code></pre></div>
-<p>Similar function can be used for the other model types.</p>
-<p>For the CES production function, use the <code>cesModel</code> function.</p>
+<p>Similar function can be used for the other model types. For the CES production function, use the <code>cesModel</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
 <span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)
 <span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span>
 <span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span>
 <span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span>
 <span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></code></pre></div>
-<p>For the Linex model, there must be three factors of production, and the third factor of production must be the energy variable, as indexed useful exergy (<code>iXp</code>) in the example below.</p>
+<p>For the Linex model, there must be three factors of production. The first factor of production (<span class="math inline">\(x_1\)</span>) must be capital stock. The second factor of production (<span class="math inline">\(x_2\)</span>) must be labor. The third factor of production (<span class="math inline">\(x_3\)</span>) must be an energy variable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
 <span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)
 <span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span>
 <span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></code></pre></div>
+<p>By default the original economic data are saved as an attribute of the model object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(cdfit<span class="op">$</span>data)
+<span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span>
+<span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span>
+<span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span>
+<span class="co">#&gt; 3 1.039522 1.068350 0.9943625     2 1962      UK 1.0238378 1.088765</span>
+<span class="co">#&gt; 4 1.079728 1.102265 1.0002645     3 1963      UK 1.0594068 1.179210</span>
+<span class="co">#&gt; 5 1.140344 1.153710 1.0129718     4 1964      UK 1.0594941 1.222604</span>
+<span class="co">#&gt; 6 1.166864 1.202672 1.0090420     5 1965      UK 1.1118025 1.329057</span></code></pre></div>
+<p>To prevent this behavior, set the <code>save.data</code> argument to <code>FALSE</code>.</p>
 </div>
 <div id="accounting-for-boundaries" class="section level3">
 <h3 class="hasAnchor">

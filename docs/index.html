@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -47,6 +47,9 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -65,11 +68,37 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    Fit Macro-Economic Growth Models
+  <div class="col-md-9 contents">
+    
+
+    
+    
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<div id="macrogrowth" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#macrogrowth" class="anchor"></a>MacroGrowth</h1></div>
+<p>The MacroGrowth package provides sophisticated tools for fitting macroeconomic growth models to data. MacroGrowth has several desirable features for economic modelers:</p>
+<ul>
+<li>Functions that fit several different macroeconomic growth models.</li>
+<li>Functions fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
+<li>Options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
+<li>A consistent formula-based interface to fitting functions.</li>
+</ul>
+<p>The functions in this package were developed for and used first in the paper Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai. “From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions”. <em>Energies</em>, pp. 1-44, 10 (203), 2017. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install MacroGrowth from github with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install devtools if not already installed</span>
+<span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"EconModels/MacroGrowth"</span>)
+<span class="co"># To get vignettes built locally, use</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"EconModels/MacroGrowth"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
+</div>
+</div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
@@ -93,7 +122,8 @@
 </ul>
 </div>
 
-  </div>
+      </div>
+
 </div>
 
 
