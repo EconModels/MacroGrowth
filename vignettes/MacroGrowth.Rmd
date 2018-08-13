@@ -71,18 +71,17 @@ such that all quantities are 1 in 1960.
 
 In the above equations:
 
-* $y$ is economic output, usually measured as GDP, given in data.
-* $\theta$ is a fitted scale parameter.
-* $\lambda$ is the Solow residual.
-* $t$ is time.
-* $x_1$, $x_2$, and $x_3$ are factors of production.
+* $y$ is economic output, usually measured as GDP, given in data;
+* $\theta$ is a fitted scale parameter;
+* $\lambda$ is the Solow residual;
+* $t$ is time;
+* $x_1$, $x_2$, and $x_3$ are factors of production;
 * $\alpha_1$, $\alpha_2$, and $\alpha_3$ are output elasticities 
 for the corresponding factors of production
-in the Cobb-Douglas growth model.
-* $\delta$ and $\delta_1$ are fitted share parameters for the CES growth model.
-* $\rho$ and $\rho_1$ are fitted parameters related the elasticity of substitution. (See below.)
+in the Cobb-Douglas growth model;
+* $\delta$ and $\delta_1$ are fitted share parameters for the CES growth model;
+* $\rho$ and $\rho_1$ are fitted parameters related the elasticity of substitution; and
 * $a_0$ and $a_1$ are fitted coefficients in the Linex production function.
-
 
 Also, 
 $\sigma$ and $\sigma_1$ are elasticities of substitution for the CES growth model,
@@ -91,7 +90,6 @@ $\sigma = \frac{1}{1 + \rho}$ and $\sigma_1 = \frac{1}{1 + \rho_1}$.
 $c_t$ is the ratio of Linex coefficients,
 given by 
 $c_t = \frac{a_1}{a_0}$.
-
 
 
 ### Fitting examples
@@ -127,8 +125,7 @@ The coefficients of the model can be recovered with the `naturalCoef` function.
 naturalCoef(cdfit)
 ```
 
-Similar function can be used for the other model types.
-
+Similar function can be used for the other model types. 
 For the CES production function, use the `cesModel` function.
 
 ```{r}
@@ -138,14 +135,23 @@ naturalCoef(cesfit)
 
 
 For the Linex model, 
-there must be three factors of production, and 
-the third factor of production must be the energy variable,
-as indexed useful exergy (`iXp`) in the example below.
+there must be three factors of production.
+The first factor of production ($x_1$) must be capital stock.
+The second factor of production ($x_2$) must be labor.
+The third factor of production ($x_3$) must be an energy variable.
 
 ```{r}
 linexfit <- linexModel(formula = iGDP ~ iK + iL + iXp + iYear, data = EconUK)
 naturalCoef(linexfit)
 ```
+
+By default the original economic data are saved 
+as an attribute of the model object.
+
+```{r}
+head(cdfit$data)
+```
+To prevent this behavior, set the `save.data` argument to `FALSE`.
 
 ### Accounting for boundaries
 
