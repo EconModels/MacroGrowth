@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vignette Title • MacroGrowth</title>
+<title>Using the MacroGrowth package • MacroGrowth</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Vignette Title">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Using the MacroGrowth package">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -48,7 +48,14 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/EconModels/MacroGrowth">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -60,40 +67,147 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Vignette Title</h1>
-                        <h4 class="author">Vignette Author</h4>
+      <h1>Using the MacroGrowth package</h1>
+                        <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2018-07-30</h4>
+            <h4 class="date">2018-08-13</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/EconModels/MacroGrowth/blob/master/vignettes/MacroGrowth.Rmd"><code>vignettes/MacroGrowth.Rmd</code></a></small>
       <div class="hidden name"><code>MacroGrowth.Rmd</code></div>
 
     </div>
 
     
     
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p>The <code>MacroGrowth</code> package provides sophisticated tools for fitting macroeconomic growth models to data. <code>MacroGrowth</code> has several desirable features for economic modelers:</p>
+<ul>
+<li>Functions that fit several different macroeconomic growth models.</li>
+<li>Functions fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
+<li>Options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
+<li>A consistent formula-based interface to fitting functions.</li>
+</ul>
+<p>The functions in this package were developed for and used first in the paper Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai. “From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions”. <em>Energies</em>, pp. 1-44, 10 (203), 2017. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
+</div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
+<p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'dplyr'</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+<span class="kw">library</span>(MacroGrowth)
+<span class="co">#&gt; Loading required package: micEconCES</span>
+<span class="co">#&gt; Loading required package: minpack.lm</span>
+<span class="co">#&gt; Loading required package: DEoptim</span>
+<span class="co">#&gt; Loading required package: parallel</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; DEoptim package</span>
+<span class="co">#&gt; Differential Evolution algorithm in R</span>
+<span class="co">#&gt; Authors: D. Ardia, K. Mullen, B. Peterson and J. Ulrich</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; If you have questions, suggestions, or comments regarding one of the 'micEcon' packages, please use a forum or 'tracker' at micEcon's R-Forge site:</span>
+<span class="co">#&gt; https://r-forge.r-project.org/projects/micecon/</span>
+<span class="co">#&gt; Warning: replacing previous import 'ggplot2::stat' by 'mosaic::stat' when</span>
+<span class="co">#&gt; loading 'MacroGrowth'</span>
+<span class="co">#&gt; Warning: replacing previous import 'mosaic::rescale' by 'scales::rescale'</span>
+<span class="co">#&gt; when loading 'MacroGrowth'</span>
+<span class="kw">head</span>(EconUK)
+<span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span>
+<span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span>
+<span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span>
+<span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span>
+<span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span>
+<span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span>
+<span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></code></pre></div>
+<p>The <code>EconUK</code> data frame contains GDP, capital, labor, and two types of energy data (primary exergy and useful exergy). All time series indexed by ratio to an initial year (1960), such that all quantities are 1 in 1960.</p>
 </div>
-<div id="supported-macro-economic-growth-models" class="section level2">
+<div id="macroeconomic-growth-models" class="section level2">
 <h2 class="hasAnchor">
-<a href="#supported-macro-economic-growth-models" class="anchor"></a>Supported macro-economic growth models</h2>
+<a href="#macroeconomic-growth-models" class="anchor"></a>Macroeconomic growth models</h2>
+<p><code>MacroGrowth</code> supports the following macroeconomic growth models:</p>
+<ul>
+<li>Cobb-Douglas (CD): <span class="math inline">\(y = \theta \: \mathrm{e}^{\lambda t} \:  x_1^{\alpha_1} \, x_2^{\alpha_2} \, x_3^{\alpha_3}\)</span>
+</li>
+<li>Constant Elasticity of Substitution (CES): <span class="math inline">\(y = \theta \: \mathrm{e}^{\lambda t} \, \left\{\delta \left[\delta_1 x_1^{-\rho_1}  + (1-\delta_1)x_2^{-\rho_1} \right]^{\rho/\rho_1}  + (1-\delta) x_3^{-\rho} \right\}^{-1/\rho}\)</span>, and</li>
+<li>Linear Exponential (Linex): <span class="math inline">\(y = \theta \: x_3 \exp{\left\{ 2 a_0 \left[ 1 - \frac{x_2 + x_3}{2 x_1} \right] +  a_1 \left[ \frac{x_2}{x_3} - 1 \right] \right\}}\)</span>.</li>
+</ul>
+<p>In the above equations:</p>
+<ul>
+<li>
+<span class="math inline">\(y\)</span> is economic output, usually measured as GDP, given in data.</li>
+<li>
+<span class="math inline">\(\theta\)</span> is a fitted scale parameter.</li>
+<li>
+<span class="math inline">\(\lambda\)</span> is the Solow residual.</li>
+<li>
+<span class="math inline">\(t\)</span> is time.</li>
+<li>
+<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span> are factors of production.</li>
+<li>
+<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are output elasticities for the corresponding factors of production in the Cobb-Douglas growth model.</li>
+<li>
+<span class="math inline">\(\delta\)</span> and <span class="math inline">\(\delta_1\)</span> are fitted share parameters for the CES growth model.</li>
+<li>
+<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution. (See below.)</li>
+<li>
+<span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> are fitted coefficients in the Linex production function.</li>
+</ul>
+<p>Also, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\sigma_1\)</span> are elasticities of substitution for the CES growth model, given by <span class="math inline">\(\sigma = \frac{1}{1 + \rho}\)</span> and <span class="math inline">\(\sigma_1 = \frac{1}{1 + \rho_1}\)</span>. <span class="math inline">\(c_t\)</span> is the ratio of Linex coefficients, given by <span class="math inline">\(c_t = \frac{a_1}{a_0}\)</span>.</p>
+<div id="fitting-examples" class="section level3">
+<h3 class="hasAnchor">
+<a href="#fitting-examples" class="anchor"></a>Fitting examples</h3>
+<p>To fit a model to macroeconomic data, use one of the <code>*Model</code> functions. For example, to fit the Cobb-Douglas model to the UK’s capital stock and labor data, use the <code>cdModel</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+cdfit
+<span class="co">#&gt; Generalized least squares fit by REML</span>
+<span class="co">#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear </span>
+<span class="co">#&gt;   Data: sdata </span>
+<span class="co">#&gt;   Log-restricted-likelihood: 110.7822</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt;     logscale      alpha_1       lambda </span>
+<span class="co">#&gt; -0.001552367  0.535182020  0.011122525 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span>
+<span class="co">#&gt; Residual standard error: 0.02126305</span></code></pre></div>
+<p>The <code>formula</code> argument provides a convenient way to specify which variables in the data frame occupy which positions of the model. The components of the formula are:</p>
+<ul>
+<li>the “response” variable (usually indexed GDP), positioned to the left of the <code>~</code> character,</li>
+<li>indexed factors of production, separated by “+” and positioned to the right of the <code>~</code> character, and<br>
+</li>
+<li>the time variable, indexed to 0 at the top of the data frame, separated from the factors of production by a <code>+</code> character, and positioned as the rightmost item in the formula.</li>
+</ul>
+<p>In the above example, <code>iGDP ~ iK + iL + iYear</code> indicates that the model is to be fitted with indexed GDP (iGDP) as the response variable, indexed capital stock (iK) and indexed labor (iL) as the factors of production, and indexed year (iYear) as the time variable.</p>
+<p>The coefficients of the model can be recovered with the <code>naturalCoef</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)
+<span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></code></pre></div>
+<p>Similar function can be used for the other model types.</p>
+<p>For the CES production function, use the <code>cesModel</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)
+<span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span>
+<span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span>
+<span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span>
+<span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></code></pre></div>
+<p>For the Linex model, there must be three factors of production, and the third factor of production must be the energy variable, as indexed useful exergy (<code>iXp</code>) in the example below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)
+<span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span>
+<span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></code></pre></div>
+</div>
 <div id="accounting-for-boundaries" class="section level3">
 <h3 class="hasAnchor">
 <a href="#accounting-for-boundaries" class="anchor"></a>Accounting for boundaries</h3>
-</div>
-<div id="cobb-douglas" class="section level3">
-<h3 class="hasAnchor">
-<a href="#cobb-douglas" class="anchor"></a>Cobb-Douglas</h3>
-</div>
-<div id="ces" class="section level3">
-<h3 class="hasAnchor">
-<a href="#ces" class="anchor"></a>CES</h3>
-</div>
-<div id="linex" class="section level3">
-<h3 class="hasAnchor">
-<a href="#linex" class="anchor"></a>Linex</h3>
 </div>
 </div>
 <div id="resampling" class="section level2">
@@ -119,8 +233,9 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#data">Data</a></li>
-      <li><a href="#supported-macro-economic-growth-models">Supported macro-economic growth models</a></li>
+<li><a href="#introduction">Introduction</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#macroeconomic-growth-models">Macroeconomic growth models</a></li>
       <li><a href="#resampling">Resampling</a></li>
       <li><a href="#plotting-results">Plotting results</a></li>
       <li><a href="#references">References</a></li>

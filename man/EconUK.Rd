@@ -15,10 +15,10 @@
 \item \code{iXu}   Indexed useful exergy (scaled so value is 1 in 1960)
 }}
 \source{
-This is a subset of the data used in
+This is a subset of the data use in
 Heun, M.K.; Santos, J.; Brockway, P.E.; Pruim, R.; Domingos, T.; Sakai, M.
 "From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions".
-\emph{Energies} 2017, 10(2), 203.
+\emph{Energies} 2017, 10, 203.
 }
 \usage{
 EconUK
@@ -33,6 +33,6 @@ if (require(ggplot2)) {
 }
 }
 \references{
-\url{http://doi.org/10.3390/en10020203}
+\url{doi://10.3390/en10020203}
 }
 \keyword{datasets}
