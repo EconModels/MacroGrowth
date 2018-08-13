@@ -49,6 +49,7 @@ test_that("cesModel() fits without energy are correct", {
   delta <- 0.3
   rho <- 0.4
   nu <- 1.0
+  testData <- EconUK
   testData <-
     EconUK %>%
     mutate(fitGDP = cesCalc(xNames = c("iK", "iL"), data = testData,
@@ -164,6 +165,7 @@ test_that("cesModel() fits with energy are correct", {
   nu <- 1.0
 
   # Concoct some data and add it to testData
+  testData <- EconUK
   testData <-
     EconUK %>%
     mutate(
