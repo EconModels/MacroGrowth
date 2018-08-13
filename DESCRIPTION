@@ -8,8 +8,6 @@ Imports:
     foreach,
     doParallel,
     parallel,
-    lattice,
-    latticeExtra,
     ggplot2 (>= 1.0.1.9003),
     scales,
     car,
