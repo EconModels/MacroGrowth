@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{cd2Model}
 \alias{cd2Model}
-\title{Fitting Cobb-Douglas Models}
+\title{Fit Cobb-Douglas Models}
 \usage{
 cd2Model(formula, data, response, x1, x2, time, constrained = TRUE,
   save.data = TRUE, correlation = NULL, ...)
@@ -37,7 +37,7 @@ Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 a CDEmodel object, which is an lm object with some additional attributes.
 }
 \description{
-Fitting Cobb-Douglas Models
+Fit Cobb-Douglas Models
 }
 \examples{
 US <- subset(Calvin, Country=="US")

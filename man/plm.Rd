@@ -2,7 +2,7 @@
 % Please edit documentation in R/plm.R
 \name{plm}
 \alias{plm}
-\title{Parameterized Linear Models}
+\title{Fit parameterized linear models}
 \usage{
 plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
   .ocall = NULL, method = "nlm", ..., debug = FALSE)
@@ -30,24 +30,24 @@ Numerical optimization is used over these parameters with \code{lm} fitting the 
 }
 \examples{
 if( require(EconData) & require(dplyr) ) {
-plm( log(iGDP) - log(iK) ~ iYear, 
+plm( log(iGDP) - log(iK) ~ iYear,
      data=Calvin \%>\% filter(Country=="US"))
-     
-plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, 
-     data=Calvin \%>\% filter(Country=="US"), 
-     params=c(delta=0.4), 
-     optimize=FALSE ) 
 
-plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"), 
-     params=c(delta=0.4), 
-     optimize=TRUE ) 
-     
-plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"), 
+plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear,
+     data=Calvin \%>\% filter(Country=="US"),
+     params=c(delta=0.4),
+     optimize=FALSE )
+
+plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"),
+     params=c(delta=0.4),
+     optimize=TRUE )
+
+plm( log(iGDP) - delta * iK - (1-delta) * iL ~ iYear, data=Calvin \%>\% filter(Country=="US"),
      params=c(delta=0.4), method=c("nlm", "spg"),
-     optimize=TRUE ) 
+     optimize=TRUE )
 
 foo <- plm( log(iGDP / delta*(delta_1*iK + (1-delta_1)*iL) + (1-delta)*iQp) ~ iYear,
-            data=Calvin \%>\% filter(Country=="US"), 
+            data=Calvin \%>\% filter(Country=="US"),
             params=c(delta=0.5, delta_1=0.5))
 foo
 class(foo)

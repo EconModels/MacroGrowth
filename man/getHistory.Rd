@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{getHistory}
 \alias{getHistory}
-\title{Fitting history of a model}
+\title{Extract fitting history of a model}
 \usage{
 getHistory(model)
 }
@@ -13,5 +13,5 @@ getHistory(model)
 the fitting history for a model.
 }
 \description{
-An convenience function that returns the fitting history for a model.
+This convenience function returns the fitting history for a model.
 }

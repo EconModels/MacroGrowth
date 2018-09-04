@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fitting single factor models — sfModel • MacroGrowth</title>
+<title>Fit single factor models — sfModel • MacroGrowth</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Fitting single factor models — sfModel" />
+<meta property="og:title" content="Fit single factor models — sfModel" />
 
-<meta property="og:description" content="Fitting single factor models" />
+<meta property="og:description" content="Fit single factor models" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,14 +103,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fitting single factor models</h1>
+    <h1>Fit single factor models</h1>
     <small class="dont-index">Source: <a href='https://github.com/EconModels/MacroGrowth/blob/master/R/Fitting.R'><code>R/Fitting.R</code></a></small>
     <div class="hidden name"><code>sfModel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Fitting single factor models</p>
+    <p>Fit single factor models</p>
     
     </div>
 
@@ -149,28 +149,7 @@ Defaults to <code>NULL</code>, corresponding to uncorrelated errors.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>US</span> <span class='kw'>&lt;-</span> <span class='fu'>subset</span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>)
-<span class='fu'>sfModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='no'>iGDP</span>, <span class='kw'>factor</span><span class='kw'>=</span><span class='no'>iK</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in log(NULL): non-numeric argument to mathematical function</span></div><div class='input'><span class='fu'>sfModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
-#&gt;   Model: log(iGDP) ~ iK + iYear 
-#&gt;   Data: data 
-#&gt;   Log-restricted-likelihood: 49.12319
-#&gt; 
-#&gt; Coefficients:
-#&gt; (Intercept)          iK       iYear 
-#&gt;  0.03451906 -0.02663869  0.03028059 
-#&gt; 
-#&gt; Degrees of freedom: 32 total; 29 residual
-#&gt; Residual standard error: 0.03858439 </div><div class='input'><span class='fu'>sfModel</span>(<span class='kw'>response</span><span class='kw'>=</span><span class='st'>"iGDP"</span>, <span class='kw'>factor</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
-#&gt;   Model: log(iGDP) ~ iK + iYear 
-#&gt;   Data: data 
-#&gt;   Log-restricted-likelihood: 49.12319
-#&gt; 
-#&gt; Coefficients:
-#&gt; (Intercept)          iK       iYear 
-#&gt;  0.03451906 -0.02663869  0.03028059 
-#&gt; 
-#&gt; Degrees of freedom: 32 total; 29 residual
-#&gt; Residual standard error: 0.03858439 </div><div class='input'>
+    <pre class="examples"><div class='input'><span class='no'>US</span> <span class='kw'>&lt;-</span> <span class='fu'>subset</span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in subset(Calvin, Country == "US"): object 'Calvin' not found</span></div><div class='input'><span class='fu'>sfModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='no'>iGDP</span>, <span class='kw'>factor</span><span class='kw'>=</span><span class='no'>iK</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'><span class='fu'>sfModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'><span class='fu'>sfModel</span>(<span class='kw'>response</span><span class='kw'>=</span><span class='st'>"iGDP"</span>, <span class='kw'>factor</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

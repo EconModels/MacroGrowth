@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{cdModel}
 \alias{cdModel}
-\title{Fitting Cobb-Douglas models}
+\title{Fit Cobb-Douglas models}
 \usage{
 cdModel(formula, data, response, x1, x2, x3, time, constrained = TRUE,
   save.data = TRUE, correlation = NULL, ...)
@@ -35,7 +35,7 @@ the components can be specified individually.}
 a CDEmodel object, which is an lm object with some additioanl attributes.
 }
 \description{
-Fitting Cobb-Douglas models
+Fit Cobb-Douglas models
 }
 \examples{
 US <- subset(Calvin, Country=="US")

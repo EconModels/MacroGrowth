@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{sfModel}
 \alias{sfModel}
-\title{Fitting single factor models}
+\title{Fit single factor models}
 \usage{
 sfModel(formula, data, response, factor, time, constrained = FALSE,
   save.data = TRUE, correlation = NULL)
@@ -25,7 +25,7 @@ Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 an lm object with some additional attributes
 }
 \description{
-Fitting single factor models
+Fit single factor models
 }
 \examples{
 US <- subset(Calvin, Country=="US")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/leaf_apply.R
 \name{leaf_apply}
 \alias{leaf_apply}
-\title{Applies a function to leaves of a list.}
+\title{Apply a function to leaves of a list.}
 \usage{
 leaf_apply(l, f, class = NULL, name = "", sep = ".",
   strict.lists = FALSE, is.parent = if (strict.lists) function(x, n,

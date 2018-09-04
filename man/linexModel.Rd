@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{linexModel}
 \alias{linexModel}
-\title{Fitting LINEX models}
+\title{Fit LINEX models}
 \usage{
 linexModel(formula, data, response, x1, x2, x3, time, save.data = TRUE,
   correlation = NULL)
@@ -35,7 +35,7 @@ it must be specified in the \code{form} argument to the \code{corStruct} constru
 Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 }
 \description{
-Fitting LINEX models
+Fit LINEX models
 }
 \examples{
 US <- subset(Calvin, Country=="US")

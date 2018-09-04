@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{bestModel}
 \alias{bestModel}
-\title{Extracts the best model (least sse) from a list of models}
+\title{Extract the best model (least sse) from a list of models}
 \usage{
 bestModel(models, digits = 6, orderOnly = FALSE, constrained = FALSE)
 }
@@ -19,7 +19,7 @@ an integer vector representing the order of the models if \code{orderOnly} is \c
 A reordered list of models if \code{orderOnly} is \code{FALSE} (the default).
 }
 \description{
-Extracts the best model (least sse) from a list of models
+Extract the best model (least sse) from a list of models
 }
 \note{
 The ordering process preserves the original order in the event of ties at the desired significance level.

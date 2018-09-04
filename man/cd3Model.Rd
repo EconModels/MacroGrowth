@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fitting.R
 \name{cd3Model}
 \alias{cd3Model}
-\title{Fitting Cobb-Douglas models with 3 Factors}
+\title{Fit Cobb-Douglas models with 3 Factors}
 \usage{
 cd3Model(formula, data, response, x1, x2, x3, time, constrained = TRUE,
   save.data = TRUE, correlation = NULL, ...)
@@ -39,7 +39,7 @@ Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 \item{\dots}{additional arguments; currently unused.}
 }
 \description{
-Fitting Cobb-Douglas models with 3 Factors
+Fit Cobb-Douglas models with 3 Factors
 }
 \details{
 More about contranints TBA.
