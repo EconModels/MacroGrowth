@@ -19,7 +19,7 @@ replace_summand(formula, n, term, right = TRUE, op = "+",
 }
 \arguments{
 \item{lhs, rhs}{list or vector of character strings containing summands for left and right hand sides
-of a formula.  \code{NULL}'s are ignored.}
+of a formula.  \code{NULL}s are ignored.}
 
 \item{env}{an environment to attach to the formula}
 

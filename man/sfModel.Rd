@@ -8,17 +8,17 @@ sfModel(formula, data, response, factor, time, constrained = FALSE,
   save.data = TRUE, correlation = NULL)
 }
 \arguments{
-\item{formula}{a formula of the form \code{ y ~ factor + time }}
+\item{formula}{a formula of the form \code{y ~ factor + time}}
 
 \item{data}{a data frame in which \code{formula} is evaluated}
 
 \item{constrained}{a logical indicating whether the model parameters are constrained}
 
-\item{correlation}{an optional \code{\link{corStruct}} object describing the
-within-group correlation structure. See the documentation of \code{\link{corClasses}}
-for a description of the available \code{corStruct} classes.
+\item{correlation}{an optional \code{\link[nlme:corStruct]{nlme::corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link[nlme:corClasses]{nlme::corClasses}}
+for a description of the available \code{\link[nlme:corStruct]{nlme::corStruct}} classes.
 If a grouping variable is to be used,
-it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+it must be specified in the \code{form} argument to the \code{\link[nlme:corStruct]{nlme::corStruct}} constructor.
 Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 }
 \value{

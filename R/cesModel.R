@@ -1,9 +1,9 @@
 
 #' Fitting CES models
-#' 
+#'
 #' This function fits a CES model
-#' @param formula a formula of the form \code{response ~ a + b + c + d + time}.  
-#' \code{c} and \code{d} are optional.
+#' @param formula a formula of the form `response ~ a + b + c + d + time`.
+#' `c` and `d` are optional.
 #' @param data a data frame, in which to evaluate the formula.
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
@@ -21,42 +21,42 @@
 #' For models with 3 factors, the nesting
 #' is (xa + xb) + xc.  For 4 factors, the nesting is (xa + xb) + (xc + xd)
 #' @param prevModel a model used to start a gradient search.
-#' \code{prevModel} will be used as a starting point for a gradient search after both
-#' (a) grid search in \code{rho} and \code{rho1} and 
-#' (b) a gradient search starting from the best grid search 
+#' `prevModel` will be used as a starting point for a gradient search after both
+#' (a) grid search in `rho` and `rho1` and
+#' (b) a gradient search starting from the best grid search
 #' are complete.
-#' #' Use \code{NULL} (the default value) 
+#' #' Use `NULL` (the default value)
 #' if you want to skip the gradient search from a previous model.
 #' @param multErr logical, tells whether errors are to be assessed in a multiplicative manner
 #' @param rho,rho1 creates a grid upon which gradient searches in all other (free) parameters will be made.
-#' (I.e., when \code{rho} and/or \code{rho1} are specified, 
-#' the algorithm performs gradient searches in the \code{scale} parameter, 
-#' \code{lambda}, \code{delta}, and \code{delta1} (if 3 factors of production are given)
-#' with \code{rho} and \code{rho1} fixed.)
-#' Note that the default arguments for both \code{rho} and \code{rho1} 
-#' include the value 0.25. 
-#' 0.25 is also the starting value for both \code{rho} and \code{rho1} 
-#' used by \code{cesEst} for gradient searches
-#' when \code{rho} and \code{rho1} are unspecified.
-#' Thus, if you accept the default arguments, there is no need to do an additional 
-#' \code{cesEst} gradient search with \code{rho} and \code{rho1} unspecified.
-#' (\code{rho = 0.25} corresponds to \code{sigma = 0.8}.)
+#' (I.e., when `rho` and/or `rho1` are specified,
+#' the algorithm performs gradient searches in the `scale` parameter,
+#' `lambda`, `delta`, and `delta1` (if 3 factors of production are given)
+#' with `rho` and `rho1` fixed.)
+#' Note that the default arguments for both `rho` and `rho1`
+#' include the value 0.25.
+#' 0.25 is also the starting value for both `rho` and `rho1`
+#' used by `cesEst` for gradient searches
+#' when `rho` and `rho1` are unspecified.
+#' Thus, if you accept the default arguments, there is no need to do an additional
+#' `cesEst` gradient search with `rho` and `rho1` unspecified.
+#' (`rho = 0.25` corresponds to `sigma = 0.8`.)
 #' After the grid search, a gradient search is performed
-#' in which all parameters are free (including \code{rho} and \code{rho1}),
+#' in which all parameters are free (including `rho` and `rho1`),
 #' starting from the best grid search point.
-#' @param digits the number of sse digits that is to be considered significant 
+#' @param digits the number of sse digits that is to be considered significant
 #' when comparing one fit against another.
 #' @param save.data a logical indicating whether data is to be saved with the model.
-#' Be sure to set \code{TRUE} if resampling is needed later. Default is \code{TRUE}.
+#' Be sure to set `TRUE` if resampling is needed later. Default is `TRUE`.
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
-#' Default is \code{TRUE}.
+#' Default is `TRUE`.
 #' @param fitBoundaries a logical indicating whether fits should be performed along boundaries.
-#' Default is \code{TRUE}.
-#' @note For now the components in \code{f} (or the arguments \code{response}, 
-#' \code{x1}, \code{x2}, \code{x3}, \code{x4}, and \code{time}) must correspond to variables in \code{data} and may
+#' Default is `TRUE`.
+#' @note For now the components in `f` (or the arguments `response`,
+#' `x1`, `x2`, `x3`, `x4`, and `time`) must correspond to variables in `data` and may
 #' not be other kinds of expressions.
 #' @note For now, this function works for only 2 or 3 factors of production.
-#' Setting the value of \code{x4} or using \code{f} of the form \code{y ~ a + b + c + d + time}
+#' Setting the value of `x4` or using `f` of the form `y ~ a + b + c + d + time`
 #' will not work.
 #' @return a cesEst model with additional information attached as attributes.
 #' @examples
@@ -65,7 +65,7 @@
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
 #'   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
-#'   cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", 
+#'   cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear",
 #'            data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 #' }
 #' @export
@@ -78,7 +78,7 @@ cesModel <- function(formula, data,
                       time=NULL,
                       nest=1:3,        # change to 1:4 if we support 4-factor models
                       prevModel=NULL,
-                      algorithms=c("PORT","L-BFGS-B"), 
+                      algorithms=c("PORT","L-BFGS-B"),
                       multErr=TRUE,
                       rho =c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
                       rho1=c(9, 2, 1, 0.43, 0.25, 0.1, -0.1, -0.5, -0.75, -0.9, -0.99),
@@ -90,7 +90,7 @@ cesModel <- function(formula, data,
   if (!missing(formula) & (!is.null(x1) | !is.null(x2) | !is.null(x3) | !is.null(x4) | !is.null(time))) {
     stop("You specified a formula and also one of x1, x2, x3, x4, or time.")
   }
-  if ( missing(formula) ) { 
+  if ( missing(formula) ) {
     substitutionList <-  list( response = as_name_or_null(response),
                                x1 = if (is.null(x1)) NULL else as_name_or_null(x1),
                                x2 = if (is.null(x2)) NULL else as_name_or_null(x2),
@@ -106,8 +106,8 @@ cesModel <- function(formula, data,
       formula <- substitute( response ~ x1 + x2 + x3 + x4 + time, substitutionList )
     }
   }
-  
-  formula <- as.formula(formula)  
+
+  formula <- as.formula(formula)
   fNames <- cesParseFormula(formula, nest)
   # Extract names for convenience.
   cesNames <- fNames$cesNames
@@ -116,7 +116,7 @@ cesModel <- function(formula, data,
   tName <- fNames$tName
   numFactors <- fNames$numFactors
   nest <- head(nest, numFactors)
-  
+
   if ( ! numFactors %in% 2L:3L) {
     stop("cesModel() only handles models with 2 or 3 variables.")
   }
@@ -128,17 +128,17 @@ cesModel <- function(formula, data,
   # This ensures that response is the first column.  This is assumed in downstream code
   # when we save the first column as $response.  This simplifies retrieving it later.
   data <- data[ complete.cases(sdata), c(cesNames, setdiff(names(data), cesNames)) ]
-  
-  boundary.models <- 
+
+  boundary.models <-
     if (constrained && fitBoundaries){
       cesBoundaryModels(formula, data=data, nest=nest)
     } else {
       list()
     }
-  
+
   # Define lower and upper based on whether constrained fitting is desired.
   if (constrained){
-    # Setting lower and upper to NULL invokes the default constraints, 
+    # Setting lower and upper to NULL invokes the default constraints,
     # namely 0 <= gamma <= Inf, 0 <= delta <= 1, and -1 <= rho <= Inf
     lower <- NULL
     upper <- NULL
@@ -147,9 +147,9 @@ cesModel <- function(formula, data,
     lower <- -Inf
     upper <- Inf
   }
-  
+
   cesEst.models <- list()
-  
+
   for (algorithm in algorithms) {
     #
     # Try grid search.
@@ -159,14 +159,14 @@ cesModel <- function(formula, data,
       model <- tryCatch( {
         eval(substitute(
           cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho,
-                 control = CONTROL, multErr = MULTERR, 
+                 control = CONTROL, multErr = MULTERR,
                  lower = LOWER, upper = UPPER, ...), # Always fit unconstrained. Constraints applied later.
-          list( yNAME = yName, xNAMES=xNames, tNAME = tName, 
-                MULTERR = multErr, LOWER = lower, UPPER = upper, 
+          list( yNAME = yName, xNAMES=xNames, tNAME = tName,
+                MULTERR = multErr, LOWER = lower, UPPER = upper,
                 ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
         ))
       },
-      error = function(e) {  
+      error = function(e) {
         warning(paste("cesEst() failed with ", algorithm, "(2):\n ", as.character(e)))
         return(NULL)
       }
@@ -175,22 +175,22 @@ cesModel <- function(formula, data,
       # We want a model with 3 factors. Need a rho1 argument, because we are using a nesting.
       model <- tryCatch( {
         eval(substitute(
-          cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho, rho1=rho1, 
-                 control=CONTROL, multErr=MULTERR, 
+          cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, rho=rho, rho1=rho1,
+                 control=CONTROL, multErr=MULTERR,
                  lower = LOWER, upper = UPPER, ...),
-          list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+          list( yNAME = yName, xNAMES = xNames, tNAME = tName,
                 MULTERR = multErr, LOWER = lower, UPPER = upper,
-                ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )   
+                ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
         ))
       },
-      error = function(e) {  
+      error = function(e) {
         warning(paste("cesEst() failed with ", algorithm, "(3):\n ", as.character(e)))
         return(NULL)
       }
       )
     }
     if (! is.null(model) ) {
-      model$history <- paste(algorithm, "(grid)", sep="", collapse="|")  
+      model$history <- paste(algorithm, "(grid)", sep="", collapse="|")
       cesEst.models[length(cesEst.models)+1] <- list(model)
     }
   }
@@ -199,19 +199,19 @@ cesModel <- function(formula, data,
   #
   bestMod <- bestModel(cesEst.models, digits=digits)
   start <- coef(bestMod)
-  
+
   for (algorithm in algorithms) {
     model <- tryCatch( {
       eval(substitute(
-        cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-               control=CONTROL, start=START, multErr=MULTERR, 
+        cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM,
+               control=CONTROL, start=START, multErr=MULTERR,
                lower = LOWER, upper = UPPER, ...),
-        list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
-              START = start, MULTERR = multErr, LOWER = lower, UPPER = upper, 
-              ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
+        list( yNAME = yName, xNAMES = xNames, tNAME = tName,
+              START = start, MULTERR = multErr, LOWER = lower, UPPER = upper,
+              ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
       ))
     },
-    error = function(e) { 
+    error = function(e) {
       warning(paste("cesEst() failed with", algorithm, "(4):\n ", as.character(e)))
       return(NULL)
     }
@@ -228,31 +228,31 @@ cesModel <- function(formula, data,
     start <- coef(prevModel)
     for (algorithm in algorithms) {
       tryCatch( {
-        model <- 
+        model <-
           eval(substitute(
-            cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM, 
-                   control=CONTROL, start=START, multErr=MULTERR, 
-                   lower = LOWER, upper = UPPER, ...), 
-            list( yNAME = yName, xNAMES = xNames, tNAME = tName, 
+            cesEst(data=data, yName=yNAME, xNames=xNAMES, tName=tNAME, method=ALGORITHM,
+                   control=CONTROL, start=START, multErr=MULTERR,
+                   lower = LOWER, upper = UPPER, ...),
+            list( yNAME = yName, xNAMES = xNames, tNAME = tName,
                   START = start, MULTERR = multErr, LOWER = lower, UPPER = upper,
-                  ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) ) 
+                  ALGORITHM=algorithm, CONTROL=chooseCESControl(algorithm) )
           ))
         # If there's a problem during fitting, we avoid adding model to models.
         model$history <- paste(algorithm, "[", getHistory(prevModel), ".prev]", sep="", collapse="|")
         cesEst.models[length(cesEst.models)+1] <- list(model)
       },
-      error = function(e) {  
+      error = function(e) {
         warning(paste("cesEst() failed with ", algorithm, "(1):\n ", as.character(e)))
         return(NULL)
       }
       )
     }
   }
- 
-  boundary.models <- Map(function(mod, nm) {mod$bname <- nm; mod}, boundary.models, names(boundary.models)) 
+
+  boundary.models <- Map(function(mod, nm) {mod$bname <- nm; mod}, boundary.models, names(boundary.models))
   models <- c(boundary.models, cesEst.models)
   res <- bestModel(models, digits=digits, constrained = constrained)
-  
+
   if ( is.null( res ) ) {
     warning("cesModel() produced a NULL model.")
   } else {
@@ -274,36 +274,36 @@ cesModel <- function(formula, data,
 }
 
 #' Extract information from a CES formula
-#' 
+#'
 #' This function sets up names of parameters for a CES model fit in various formats.
 #' In particular, it handles nesting and returns nest strings.
-#' @param f the CES fitting formula. 
+#' @param f the CES fitting formula.
 #' @param nest the nesting for the factors of production.
-#' @note \code{f} is assumed to be in the form \code{response ~ a + b + c + d + time}
-#' where \code{a}, \code{b}, \code{c}, and \code{d} are factors of production,
-#' \code{response} is the response variable (typically economic output), and
-#' \code{time} is the time variable.
-#' @note \code{nest} is assumed to be integers in the form of \code{c(1,2,3,4)}. 
-#' Nest indicates the left-to-right order of parameters in the CES function.  If the length of \code{nest} is 
-#' less than the number of factors in the \code{formula}, some factors will omited.  If the length of \code{nest} is
-#' greater than the nubmer of factors in \code{formula}, it is truncated to match.
-#' 
-#' @return a list of information extracted from the \code{f} and \code{nest}, including
-#' \code{numFactors} (the number of factors of production), 
-#' \code{xNames} (a list containing the variable names of the factors of production, 
-#' \code{a}, \code{b}, \code{c}, and \code{d}),
-#' \code{tName} (the variable name for time),
-#' \code{yName} (the variable name for response),
-#' \code{nestStr} (a string representing the nest, in the form of \code{k+l+e}),
-#' \code{nestStrParen} (a string representing the nest, in the form of \code{(k + l) + (e)}), and
-#' \code{cesNames} (a list of variable names in the order they appear in \code{f}, 
-#' \code{response}, \code{xNames}, \code{tName}).
+#' @note `f` is assumed to be in the form `response ~ a + b + c + d + time`
+#' where `a`, `b`, `c`, and `d` are factors of production,
+#' `response` is the response variable (typically economic output), and
+#' `time` is the time variable.
+#' @note `nest` is assumed to be integers in the form of `c(1,2,3,4)`.
+#' Nest indicates the left-to-right order of parameters in the CES function.  If the length of `nest` is
+#' less than the number of factors in the `formula`, some factors will omited.  If the length of `nest` is
+#' greater than the nubmer of factors in `formula`, it is truncated to match.
+#'
+#' @return a list of information extracted from the `f` and `nest`, including
+#' `numFactors` (the number of factors of production),
+#' `xNames` (a list containing the variable names of the factors of production,
+#' `a`, `b`, `c`, and `d`),
+#' `tName` (the variable name for time),
+#' `yName` (the variable name for response),
+#' `nestStr` (a string representing the nest, in the form of `k+l+e`),
+#' `nestStrParen` (a string representing the nest, in the form of `(k + l) + (e)`), and
+#' `cesNames` (a list of variable names in the order they appear in `f`,
+#' `response`, `xNames`, `tName`).
 #' @export
 cesParseFormula <- function(f, nest){
- 
-  # Set up *Names 
+
+  # Set up *Names
   fNames <- rownames( attr(terms(f), "factors") )
-  numFactors <- 
+  numFactors <-
     min( length(fNames) - 2,  # not response, not time
          length(nest)         # each factor must appear in the nest.
          )
@@ -326,16 +326,16 @@ cesParseFormula <- function(f, nest){
     nestStr <- paste(paste(head(xNames, 2), collapse="+"), paste(tail(xNames, -2), collapse="+"), sep="+")
   }
   nestStrParen <- paste0(
-    "(", 
-    paste(head(xNames,2), collapse=" + "),  
-    ") + (", 
+    "(",
+    paste(head(xNames,2), collapse=" + "),
+    ") + (",
     paste(tail(xNames, -2), collapse=" + "),
     ")"
   )
-  
+
   cesNames <- c(yName, xNames, tName)
-  
-  out <- list(numFactors = numFactors, 
+
+  out <- list(numFactors = numFactors,
               numFactorsInFormula =  length(fNames) - 2,  # not response, not time
               xNames = xNames,
               tName = tName,
@@ -343,21 +343,21 @@ cesParseFormula <- function(f, nest){
               nestStr = nestStr,
               nestStrParen = nestStrParen,
               cesNames = cesNames)
-  return(out)  
+  return(out)
 }
 
 #' Tells whether a CES model is within constraints
-#' 
-#' This function evaluates a fitted CES model for economic meaningfullness as expressed in constraints on 
-#' \code{delta_1}, \code{sigma_1} and, if present, \code{delta_2}, \code{sigma_2}, \code{delta}, and \code{sigma}.
-#' Specifically, this function checks whether \code{0 <= delta <= 1} and \code{sigma >= 0}
+#'
+#' This function evaluates a fitted CES model for economic meaningfullness as expressed in constraints on
+#' `delta_1`, `sigma_1` and, if present, `delta_2`, `sigma_2`, `delta`, and `sigma`.
+#' Specifically, this function checks whether `0 <= delta <= 1` and `sigma >= 0`
 #' @param model the CES model to be evaluated
-#' @note Missing, \code{NULL}, and \code{NA} parameters are interpreted as meeting constraints.
-#' @note If none of \code{delta_1}, \code{sigma_1}, \code{delta_2}, \code{sigma_2}, \code{delta}, and \code{sigma}
-#' is present, \code{FALSE} is returned.
-#' @note This function relies upon the presence of the \code{naturalCoeffs} attribute to model.
-#' If \code{naturalCoeffs} is \code{NULL}, \code{FALSE} is returned.
-#' @return \code{TRUE} if the fitted model is within the constraints, \code{FALSE} if not.
+#' @note Missing, `NULL`, and `NA` parameters are interpreted as meeting constraints.
+#' @note If none of `delta_1`, `sigma_1`, `delta_2`, `sigma_2`, `delta`, and `sigma`
+#' is present, `FALSE` is returned.
+#' @note This function relies upon the presence of the `naturalCoeffs` attribute to model.
+#' If `naturalCoeffs` is `NULL`, `FALSE` is returned.
+#' @return `TRUE` if the fitted model is within the constraints, `FALSE` if not.
 #' @export
 withinConstraints <- function(model){
   withinConstraints <- TRUE
@@ -371,16 +371,16 @@ withinConstraints <- function(model){
   sigma_1 <- naturalCoeffs$sigma_1
   sigma_2 <- naturalCoeffs$sigma_2
   sigma   <- naturalCoeffs$sigma
-  if ((is.null(delta_1) || is.na(delta_1)) 
+  if ((is.null(delta_1) || is.na(delta_1))
       && (is.null(delta_2) || is.na(delta_2))
-      && (is.null(delta) || is.na(delta)) 
+      && (is.null(delta) || is.na(delta))
       && (is.null(sigma_1) || is.na(sigma_1))
       && (is.null(sigma_2) || is.na(sigma_2))
       && (is.null(sigma) || is.na(sigma))){
     # We have no valid fitted parameters
     return(FALSE)
   }
-  
+
   if (!is.null(delta_1) && !is.na(delta_1) && (delta_1 < 0 || delta_1 > 1)){
     return(FALSE)
   }
@@ -390,7 +390,7 @@ withinConstraints <- function(model){
   if (!is.null(delta) && !is.na(delta) && (delta < 0 || delta > 1)){
     return(FALSE)
   }
-  
+
   if (!is.null(sigma_1) && !is.na(sigma_1) && sigma_1 < 0){
     return(FALSE)
   }
@@ -400,7 +400,7 @@ withinConstraints <- function(model){
   if (!is.null(sigma) && !is.na(sigma) && sigma < 0){
     return(FALSE)
   }
-  
+
   # If we get here, we meet constraints for the economically meaningful region of the model
   return(TRUE)
 }

@@ -4,10 +4,10 @@
 # This file contains code to resample data for economic growth
 # functions. The idea is that we can resample the historical
 # data and then develop statistical confidence intervals
-# from the values of the model coefficients developed from 
+# from the values of the model coefficients developed from
 # thousands of different resamples.
 #
-# We do this multiple times and save a file that contains 
+# We do this multiple times and save a file that contains
 # the results for later investigation
 
 #' @export
@@ -25,7 +25,7 @@ resampledResponse <- function( object, ...) {
 }
 
 #' @export
-resampledResponse.default <- function( object, method=c("residual", "wild", "debug", "parametric"),  
+resampledResponse.default <- function( object, method=c("residual", "wild", "debug", "parametric"),
                                        reindex=FALSE,
                                        multErr, tol=1e-6, ... ) {
   if (missing(multErr)) {
@@ -34,7 +34,7 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
   method <- match.arg(method)
   n <- length(yhat(object))
   sgn <- if (method=="wild") resample( c(-1,1), n ) else 1
-                             
+
   if (multErr) {
     if (method == "paramteric") {
       res <- rlnorm( n, 0, sd(resid(object)) *sqrt((n-1) / (n - length(coef(object)))) )
@@ -55,25 +55,25 @@ resampledResponse.default <- function( object, method=c("residual", "wild", "deb
 }
 
 #' Perform resample fits for a model
-#' 
+#'
 #' This function returns a list containing models and coefficients from the resample fits.
-#' 
-#' @param model a model returned from \code{linexModel}, \code{cdModel}, 
-#' \code{cesModel}, or \code{sfModel}.  \code{model} must
-#' have been fit with \code{save.data = TRUE}.
-#' @param method one of \code{"resample"}, \code{"residual"}, \code{"wild"}, \code{"parametric"}, or \code{"debug"}
+#'
+#' @param model a model returned from [`linexModel()`], [`cdModel()`],
+#' [`cesModel()`], or [`sfModel()`].  `model` must
+#' have been fit with `save.data = TRUE`.
+#' @param method one of `"resample"`, `"residual"`, `"wild"`, `"parametric"`, or `"debug"`
 #' @param n the number of resamples you want to perform
-#' @param save.data a logical indicating whether the data should be saved 
+#' @param save.data a logical indicating whether the data should be saved
 #' with each model.
-#' @param seed a seed for \code{set.seed} to make results reproducible
-#' @param id a character vector of length 1 used as an identifier that will be 
+#' @param seed a seed for [`set.seed()`] to make results reproducible
+#' @param id a character vector of length 1 used as an identifier that will be
 #' added to the output.  This is convenient
 #' for marking data internally if you are doing resampling on many different models.
-#' @param include.original a logical indicating whether the original model and 
+#' @param include.original a logical indicating whether the original model and
 #'   coefficients should be included in the returned value.
 #' @param reindex a boolean that indicates whether to reindex the resampled fits.
 #' @param mc.cores number of cores to use in main loop.
-#' @param ... additional arguments passed to \code{fitfun}
+#' @param ... additional arguments passed to `fitfun`
 #' @return a list of length two containing a data frame of coefficients and a list of models
 #' @export
 resampledFits <- function(model,
@@ -86,7 +86,7 @@ resampledFits <- function(model,
                           reindex = FALSE,
                           mc.cores = parallel::detectCores(),
                           ...) {
-  
+
   fitfun <- switch(class(model)[1],
                    "SFmodel"    = "sfModel",
                    "LINEXmodel" = "linexModel",
@@ -95,21 +95,21 @@ resampledFits <- function(model,
                    "cesModel"   = "cesModel",
                    "plm"        = "cesModel"
   )
-  
+
   formula <- model$formula
-  
+
   method <- match.arg(method)   # allow multiples?
   if (!missing(seed)) set.seed(seed)
   data <- getData(model)
-  
+
   baseFitCoeffs <- naturalCoef(model)  # extractAllMetaData(model)
   # Add a method column.
   baseFitCoeffs$method <- "orig"
   coeffs <- baseFitCoeffs
-  
+
   # Begin accumulating a list of the models. The original model is in the first slot of the list.
   models <- list(orig = model)
-  
+
   # Now do the resample fits.
   if (n > 0L) {
     many_refits <-
@@ -125,22 +125,22 @@ resampledFits <- function(model,
           list(model = newModel, coeffs = resampleCoeffs)
         }
       )
-    coeffs <- do.call(plyr::rbind.fill, 
-                      c(if (include.original) list(orig = coeffs) else list(), 
+    coeffs <- do.call(plyr::rbind.fill,
+                      c(if (include.original) list(orig = coeffs) else list(),
                         lapply(many_refits, function(x) x$coeffs)))
     coeffs <- coeffs %>% group_by(method) %>% mutate(index = 1:n()) %>% ungroup()
     many_models <- lapply(many_refits, function(x) x$model)
     names(many_models) <- paste0(method, ".", 1L:length(many_models))
     models <- c(if (include.original) models else list(), many_models)
   }
-  # At this point, both coeffs (which contains the coefficients) and 
+  # At this point, both coeffs (which contains the coefficients) and
   # models (which contains the models)
   # should be the same size. If not, we need to stop. Something has gone wrong.
   if (nrow(coeffs) != length(models)){
     # There is a problem here. Let's save the coeffs and the models in a list.
     mismatchedCoeffsModelsError <- list(coeffs=coeffs, models=models)
     save(mismatchedCoeffsModelsError, file="mismatchedCoeffsModelsError.Rdata")
-    stop(paste("nrow(coeffs) =", nrow(coeffs), 
+    stop(paste("nrow(coeffs) =", nrow(coeffs),
                "and length(models) =", length(models), "but they should be equal.",
                "coeffs and models have been saved in a file named mismatchedCoeffsModelsError."))
   }
@@ -151,35 +151,35 @@ resampledFits <- function(model,
 }
 
 #' Create resampled data
-#' 
-#' @param model a model returned from \code{linexModel}, \code{cdModel},
-#' \code{cesModel}, or \code{sfModel}.  \code{model} must
-#' have been fit with \code{save.data = TRUE}.
-#' @param method One of 
+#'
+#' @param model a model returned from [`linexModel()`], [`cdModel()`],
+#' [`cesModel()`], or [`sfModel()`].  `model` must
+#' have been fit with `save.data = TRUE`.
+#' @param method One of
 #'      resample:   resample rows from data. Can result in repeated years.
 #'      residual:   resamples the residuals and applies them to the data. All years are present.
 #'      wild:       same as residuals but randomly select sign of resampled residuals.
 #'      parametric: resample residuals from normal distribution
 #' @param  reindex a logical indicating whether response values should be
 #' reindexed before fitting.
-#' 
+#'
 #' @details
 #' This relies on the fact that each of these models stores the data used to fit
 #' the model with the response variable in the first column.
 
 #' @export
-resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"), 
+resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"),
                           reindex=FALSE){
   data <- getData(model)
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")
   }
-  
+
   method <- match.arg(method)
   if(method == "resample") {
     res <- resample(data)
   } else {
-    res <- data    
+    res <- data
     res[ , 1] <- NA
     res[ , 1] <- resampledResponse(model, method=method, reindex=reindex)
   }

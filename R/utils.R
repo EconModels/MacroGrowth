@@ -1,21 +1,21 @@
 #' Quantiles from Data
 #'
-#' A thin wrapper around \code{\link{quantile}}
+#' A thin wrapper around [`stats::quantile()`].
 
 
 
 # Provides access to data melting. See http://cran.r-project.org/web/packages/reshape2/reshape2.pdf
 # tikz allows use of LaTeX formatting and font in graphs. Allows for a consistent look across the paper.
 # See http://r-forge.r-project.org/R/?group_id=440 for instructions on installing tikzDevice.
-# require(tikzDevice) 
+# require(tikzDevice)
 # source("Graphics.R")
 
 
 
 #' @param p a vector of probabilities
-#' @param vals a numeric vector or a name of a variable in \code{data}
+#' @param vals a numeric vector or a name of a variable in `data`
 #' @param data a data frame
-#' @param ... addtional arguments passed to \code{\link{quantile}}
+#' @param ... addtional arguments passed to [`quantile()`]
 #' @return a vector of quantiles
 #' @export
 #' @examples
@@ -27,7 +27,7 @@ myqdata <- function( p, vals, data = parent.frame(), ...)  {
 
 #' @export
 safeMatchArg <- function(arg, choices, several.ok=FALSE) {
-  return( tryCatch( match.arg( arg, choices, several.ok=several.ok), 
+  return( tryCatch( match.arg( arg, choices, several.ok=several.ok),
             error=function(e) { choices[1] } )
   )
 }
@@ -36,7 +36,7 @@ safeMatchArg <- function(arg, choices, several.ok=FALSE) {
 #' @export
 safeDF <- function(object, nrow=1, ncol=0){
   if (is.null(object)){
-    return (data.frame(matrix(nrow=nrow, ncol=ncol)))    
+    return (data.frame(matrix(nrow=nrow, ncol=ncol)))
   }
   emptyDataFrame <- FALSE
   if (inherits(object,"data.frame") ) {

@@ -12,7 +12,7 @@ plm(formula, data = parent.frame(), params = c(), optimize = TRUE,
 
 \item{data}{a data frame}
 
-\item{params}{a named vector of the parameters to be fit by numerical optimation outside of \code{lm}.}
+\item{params}{a named vector of the parameters to be fit by numerical optimation outside of \code{\link[stats:lm()]{stats::lm()()}}.}
 
 \item{optimize}{a logical indicating whether \code{params} should be plugged in or used as the seed
 for the numerical optimization}
@@ -26,7 +26,7 @@ On object of class \code{c("plm", "lm")} which is an enhanced \code{"lm"} object
 }
 \description{
 The optimal model is fit in a case where aside from some parameters, the model is linear.
-Numerical optimization is used over these parameters with \code{lm} fitting the rest.
+Numerical optimization is used over these parameters with \code{\link[stats:lm()]{stats::lm()()}} fitting the rest.
 }
 \examples{
 if( require(EconData) & require(dplyr) ) {

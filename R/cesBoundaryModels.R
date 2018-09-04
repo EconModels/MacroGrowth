@@ -1,15 +1,15 @@
 
 #' Fits CES boundary models
-#' 
-#' The boundary models are given in Table 2 of 
+#'
+#' The boundary models are given in Table 2 of
 #' Heun, et al "An Empirical Investigation of the Role of Energy in Economic Growth"
 #'
-#' @param formula a CES formula in the form \code{y ~ a + b + c + d + time}
+#' @param formula a CES formula in the form `y ~ a + b + c + d + time`
 #' @param data historical time series data
 #' @param nest a permutation of the integers 1 to the number of factors describing how to nest and permute
 #'   the variables in the formula.
 #' @return a list of boundary models.
-#' @examples 
+#' @examples
 #' if (require(EconData) & require(dplyr)) {
 #'   cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(1,2,3))
 #'   cesBoundaryModels(iGDP ~ iK + iL + iQp + iYear, data=Calvin %>% filter(Country=="US"), nest=c(2,3,1))
@@ -19,39 +19,39 @@
 
 cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
   # f <- formula  # to avoid problems while renaming is happening.
- 
-  # use same data for all models, even if some models could make use of more complete data. 
+
+  # use same data for all models, even if some models could make use of more complete data.
   d <- subset(data, select = intersect(all.vars(formula), names(data)))
   sdata <- data[complete.cases(d), unique(c(intersect(all.vars(formula), names(data)), names(data)))]
-  
+
 
   numFactors <- cesParseFormula(formula, nest)$numFactors
   numFactorsInFormula <- cesParseFormula(formula, nest)$numFactorsInFormula
-    
+
   if ( ! numFactors %in% 2:3 ) {
     stop("model must have 2 or 3 factors.")
   }
- 
-  if (numFactorsInFormula >=3) { 
+
+  if (numFactorsInFormula >=3) {
     formulaRosetta <- list(
       y = formula[[2]],
       x1 = formula[[3]][[2]][[2]][[2]],
       x2 = formula[[3]][[2]][[2]][[3]],
       x3 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
-    ) 
-    
+    )
+
     #  pad to nestPlus using 1 + 2 + 3 = 6 to add missing index to end of the line
     #      when there are 2 vals in nest and 3 factors in formula.
     if (length(nest) == 2) {
-      nestPlus <- c(nest, 6 - sum(nest)) 
+      nestPlus <- c(nest, 6 - sum(nest))
     } else {
       nestPlus <- nest
     }
     # permute to reflect nesting
     #    when shuffling names rather than values, the permuation works "backwards"
     #      -- use order() to invert permuation. (Working on #242.)
-    #     
+    #
     names(formulaRosetta)[2:4] <- c("x1", "x2", "x3")[order(nestPlus)]
   } else {
     formulaRosetta <- list(
@@ -59,14 +59,14 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
       x1 = formula[[3]][[2]][[2]],
       x2 = formula[[3]][[2]][[3]],
       time = formula[[3]][[3]]
-    ) 
+    )
     # permute to reflect nesting -- see above for comment about order()
     names(formulaRosetta)[2:3] <- c("x1", "x2")[order(nest)]
   }
-  
-  # old names - new names 
-  formulaTemplates <- 
-    list( 
+
+  # old names - new names
+  formulaTemplates <-
+    list(
       "01:1-1-" = log(y) - log(x1) ~ time,
       "02:0-1-" = log(y) - log(x2) ~ time,
       "03:--0-" = log(y) - log(x3) ~ time,
@@ -89,12 +89,12 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
       "17:-0**" = y ~ pmin(x1, x2) + placeholder + x3 + time
     )
   # Values that don't appear in the model can be set to their fixed values and nlm()
-  # will leave them alone.  
+  # will leave them alone.
   # But nlm() doesn't like Inf even if the parameter isn't used, so when rho or rho_1 is Inf, we
-  # set sigma or sigma_1, respectively, to 0 instead of setting rho or rho_1 to Inf.  
+  # set sigma or sigma_1, respectively, to 0 instead of setting rho or rho_1 to Inf.
   # This will cost some effort down stream to recover the rho values.  See makeNatCoef.
   # There may be a better solution, but this will get us going for the moment.
-  
+
   params <- list(
     "01:1-1-" = c(delta_1 = 1,   delta=1),
     "02:0-1-" = c(delta_1 = 0,   delta=1),
@@ -116,25 +116,25 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
     "18:**-0" = c(delta_1 = 0.5, rho_1 =   0.25,   sigma = 0.0),
     "19:***N" = c(delta =   0.5, delta_1 = 0.5,    rho_1 = 0.25,   rho = -1),
     "20:*N**" = c(delta =   0.5, delta_1 = 0.5,      rho = 0.25, rho_1 = -1)
-  ) 
-  
+  )
 
-  formulas <- 
+
+  formulas <-
     lapply(
-      formulaTemplates, 
+      formulaTemplates,
       function(ft)
         as.formula(do.call(substitute, list( ft, formulaRosetta) ) )
     )
-  
+
   keep <- sapply(formulaTemplates, function(ft)  numFactors >=3 | !("x3" %in% all.vars(ft)))
   plmModel <- sapply(1:length(formulaTemplates), function(x) x <= length(params)) # params for plm() only
-  
+
 
   # fit all the models
-  plmModels <- 
-    Map( 
-      function(formula, param) { 
-        res <- eval(substitute( plm(formula, data = sdata, param = param, method = method), 
+  plmModels <-
+    Map(
+      function(formula, param) {
+        res <- eval(substitute( plm(formula, data = sdata, param = param, method = method),
                                 list(formula=formula, param=param, method=method)))
         # for all of our models, log(gamma) and lambda are first two coefficients
         if (! is.null(res)) {
@@ -143,33 +143,33 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
         }
         res$nest = nest
         res
-      }, 
+      },
       formulas[keep & plmModel & subset], params[keep & plmModel & subset]
     )
- 
-  cesModels <- 
-    Map( 
+
+  cesModels <-
+    Map(
       function(formula, nest) {
-        eval(substitute( 
-          cesModel(formula, data = sdata,  nest = nest, constrained = TRUE, fitBoundaries = FALSE), 
+        eval(substitute(
+          cesModel(formula, data = sdata,  nest = nest, constrained = TRUE, fitBoundaries = FALSE),
           list(formula=formula)
         ))
       },
       formulas[keep & !plmModel & (1:20 < 20) & subset], # remove ugly case (20)
       list(c(1,2), c(1,3), c(2,3))[any(keep & !plmModel & (1:20 < 20) & subset)]  # adjust nest to leave one out
     )
-  
+
   # Now handle the ugly case.  Since cesEst() can only work with variables, we need
   # to compute a variable and add it to the data frame before calling cesModel.
 
   if(keep[20]) {
-    tryCatch( { 
-      formulaPmin <- formulas[[20]] 
+    tryCatch( {
+      formulaPmin <- formulas[[20]]
       pminVar <- deparse(formulaPmin[[3]][[2]][[2]][[2]])
       sdata[[pminVar]] <- eval(formulaPmin[[3]][[2]][[2]][[2]], sdata)
-      cesModels <- 
-        c(cesModels, 
-          list("17:-0**" =  
+      cesModels <-
+        c(cesModels,
+          list("17:-0**" =
             eval(substitute(
               cesModel(f, data=sdata, nest = c(1,3), constrained=TRUE, fitBoundaries=FALSE),
               list(f = formulaPmin)
@@ -179,11 +179,11 @@ cesBoundaryModels <- function(formula, data, nest, method="nlm", subset=TRUE){
     }, error = function(e) warning(e)
     )
   }
- 
+
   o <-  order( names(formulaTemplates[keep]) )
-  return( 
+  return(
     Map(function(model, bd) { model$boundary <- bd; model },
         model = c(plmModels, cesModels)[o],
-        bd = names(c(plmModels, cesModels)[o]) 
+        bd = names(c(plmModels, cesModels)[o])
   ) )
 }

@@ -8,8 +8,8 @@ resampledData(model, method = c("residual", "resample", "wild",
   "parametric", "debug"), reindex = FALSE)
 }
 \arguments{
-\item{model}{a model returned from \code{linexModel}, \code{cdModel},
-\code{cesModel}, or \code{sfModel}.  \code{model} must
+\item{model}{a model returned from \code{\link[=linexModel]{linexModel()}}, \code{\link[=cdModel]{cdModel()}},
+\code{\link[=cesModel]{cesModel()}}, or \code{\link[=sfModel]{sfModel()}}.  \code{model} must
 have been fit with \code{save.data = TRUE}.}
 
 \item{method}{One of

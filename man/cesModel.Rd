@@ -99,7 +99,7 @@ if (require("EconData") & require("dplyr")) {
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(2,3,1))
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="US"), nest = c(3,1,2))
   cesModel(iGDP ~ iK + iL + iQp + iYear, data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
-  cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", 
+  cesModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear",
            data = filter(Calvin, Country=="ZM"), nest = c(3,1,2))
 }
 }

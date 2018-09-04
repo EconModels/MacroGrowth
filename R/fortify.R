@@ -1,12 +1,12 @@
 #' fortify LINEX models
-#' 
+#'
 #' @param model a LINEX model
 #' @param data a data frame.  Typically this is not needed
-#' since the data are extra from \code{model}.  But this allows
+#' since the data are extra from `model`.  But this allows
 #' a drop in replacement data set, if desired.
 #' @param ... additional arguments (not currently used)
 #' @export
-#' 
+#'
 fortify.LINEXmodel <- function(model, data, ...) {
   if(missing(data)) { data <- getData(model) }
   formula <- model$formula
@@ -19,9 +19,9 @@ fortify.LINEXmodel <- function(model, data, ...) {
   e <- data[,4]
   a_0 <- naturalCoef(model)[, "a_0", drop=TRUE]
   c_t <- naturalCoef(model)[, "c_t", drop=TRUE]
-  mutate( data, 
-    # These equations are from Equation 9 in 
-    # B.S. Warr and R.U. Ayres. Useful work and information as drivers of economic growth. 
+  mutate( data,
+    # These equations are from Equation 9 in
+    # B.S. Warr and R.U. Ayres. Useful work and information as drivers of economic growth.
     # Ecological Economics, 73(C):93–102, Jan. 2012.
     alpha = a_0 * (l+e)/k,
     beta = a_0 * (c_t*l/e - l/k), # or beta = a_1*l/e - a_0*l/k

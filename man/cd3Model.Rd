@@ -29,11 +29,11 @@ the components can be specified individually as character strings.}
 
 \item{constrained}{a logical indicated whether the coefficents are constrained. See details}
 
-\item{correlation}{an optional \code{\link{corStruct}} object describing the
-within-group correlation structure. See the documentation of \code{\link{corClasses}}
-for a description of the available \code{corStruct} classes.
+\item{correlation}{an optional \code{\link[nlme:corStruct]{nlme::corStruct}} object describing the
+within-group correlation structure. See the documentation of \code{\link[nlme:corClasses]{nlme::corClasses}}
+for a description of the available \code{\link[nlme:corStruct]{nlme::corStruct}} classes.
 If a grouping variable is to be used,
-it must be specified in the \code{form} argument to the \code{corStruct} constructor.
+it must be specified in the \code{form} argument to the \code{\link[nlme:corStruct]{nlme::corStruct}} constructor.
 Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 
 \item{\dots}{additional arguments; currently unused.}

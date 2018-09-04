@@ -249,7 +249,7 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
 #' Extract fitting history of a model
 #'
 #' This convenience function returns the fitting history for a model.
-#' @param model the model object from which you want to extract the \code{history}.
+#' @param model the model object from which you want to extract the `history`.
 #' @return the fitting history for a model.
 #' @export
 getHistory <- function(model) {
@@ -260,7 +260,7 @@ getHistory <- function(model) {
 #'
 #' Extract data associated with an object
 #' @param object an object from which you want to extract data.
-#' @return data associated with \code{object}.
+#' @return data associated with `object`.
 #' @export
 getData <- function(object, ...) {
   UseMethod("getData")
@@ -306,8 +306,8 @@ getData.lm <- function(object, full = TRUE, ...) {
 #' Compute SSE from a model object and also check that certain constraints are met
 #' by the coefficients.
 #'
-#' @param object a model object that inherits from \code{cesModel}.
-#' @return a data frame with with variables \code{sse}, \code{constrained}, \code{sse.contrained}.
+#' @param object a model object that inherits from `cesModel`.
+#' @return a data frame with with variables `sse`, `constrained`, `sse.contrained`.
 #'
 sse <- function(object) {
   sse <- sum(resid(object)^2)
@@ -331,14 +331,14 @@ sse <- function(object) {
 #' Extract the best model (least sse) from a list of models
 #'
 #' @param models the list of models
-#' @param digits the number of digits of \code{sse} that is considered significant
-#' @param orderOnly if \code{FALSE}, returns a reordered list of models.
-#' If \code{TRUE}, returns an integer vector representing the order of the models.
+#' @param digits the number of digits of `sse` that is considered significant
+#' @param orderOnly if `FALSE`, returns a reordered list of models.
+#' If `TRUE`, returns an integer vector representing the order of the models.
 #' @note The ordering process preserves the original order in the event of ties at the desired significance level.
-#' @note This function relies upon the \code{sse} value being stored
-#' in an attribute of the model called \code{naturalCoeffs}.
-#' @return an integer vector representing the order of the models if \code{orderOnly} is \code{TRUE}.
-#' A reordered list of models if \code{orderOnly} is \code{FALSE} (the default).
+#' @note This function relies upon the `sse` value being stored
+#' in an attribute of the model called `naturalCoeffs`.
+#' @return an integer vector representing the order of the models if `orderOnly` is `TRUE`.
+#' A reordered list of models if `orderOnly` is `FALSE` (the default).
 #' @export
 bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
   if (constrained) {
@@ -354,7 +354,7 @@ bestModel <- function(models, digits=6, orderOnly=FALSE, constrained=FALSE) {
 
 #' Compute fitted values on natural scale
 #'
-#' This is similar to \code{fitted}, but will invert logarithmic
+#' This is similar to `fitted`, but will invert logarithmic
 #' transformations of the response variable for certain models (e.g., LINEX, and Cobb-Douglas
 #' models fit in this package).
 #'
@@ -414,8 +414,8 @@ yhat.SFmodel <- function( object, ... ) {
 #'
 #' This function returns the values of the original response variable
 #' The values are calculated from fits and residuals.
-#' For models of class \code{"LINEXmodel"}
-#' \code{"CDEmodel"} or \code{"cesEst"}, the logarthmic transformation, if it
+#' For models of class `"LINEXmodel"`
+#' `"CDEmodel"` or `"cesEst"`, the logarthmic transformation, if it
 #' was used, will be undone, returning the values to their natural scale.
 #' @param object a model object from one of the model fitting functions.
 #' @param ... additional arguments
@@ -470,15 +470,15 @@ predict.LINEXmodel <- function( object, ... ) {
 
 #' Fit single factor models
 #'
-#' @param formula a formula of the form \code{ y ~ factor + time }
-#' @param data a data frame in which \code{formula} is evaluated
+#' @param formula a formula of the form ` y ~ factor + time `
+#' @param data a data frame in which `formula` is evaluated
 #' @param constrained a logical indicating whether the model parameters are constrained
-#' @param correlation an optional \code{\link{corStruct}} object describing the
-#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
-#'   for a description of the available \code{corStruct} classes.
+#' @param correlation an optional [`nlme::corStruct`] object describing the
+#'   within-group correlation structure. See the documentation of [`nlme::corClasses`]
+#'   for a description of the available [`nlme::corStruct`] classes.
 #'   If a grouping variable is to be used,
-#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor.
-#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
+#'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
+#'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @return an lm object with some additional attributes
 #' @examples
 #' US <- subset(Calvin, Country=="US")
@@ -539,9 +539,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' Fit Cobb-Douglas models
 #'
 #' @param formala a formula of the form
-#' \code{response ~ x1 + x2 + time} or
-#' \code{response ~ x1 + x2 + x3 + time}
-#' @param data a data frame in which \code{formula} is evaluated
+#' `response ~ x1 + x2 + time` or
+#' `response ~ x1 + x2 + x3 + time`
+#' @param data a data frame in which `formula` is evaluated
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param x1 instead of specifying a formula, expressions for
@@ -627,8 +627,8 @@ CDcoefNames <- list(
 
 #' Fit Cobb-Douglas Models
 #'
-#' @param formala a formual of the form \code{response ~ x1 + x2 + time}
-#' @param data a data fram in which \code{formula} is evaluated
+#' @param formala a formual of the form `response ~ x1 + x2 + time`
+#' @param data a data fram in which `formula` is evaluated
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param x1 instead of specifying a formula, expressions for
@@ -638,12 +638,12 @@ CDcoefNames <- list(
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param constrained a logical indicating whether the parameters are constrained
-#' @param correlation an optional \code{\link{corStruct}} object describing the
-#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
-#'   for a description of the available \code{corStruct} classes.
+#' @param correlation an optional [`nlme::corStruct`] object describing the
+#'   within-group correlation structure. See the documentation of [`nlme::corClasses`]
+#'   for a description of the available [`nlme::corStruct`] classes.
 #'   If a grouping variable is to be used,
-#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor.
-#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
+#'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
+#'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
@@ -726,8 +726,8 @@ respectsConstraints <- function( model ) {
 
 #' Fit Cobb-Douglas models with 3 Factors
 #'
-#' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
-#' @param data a data frame in which \code{formala} is evaluated
+#' @param formula a formula of the form `response ~ x1 + x2 + x3 + time`
+#' @param data a data frame in which `formala` is evaluated
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param x1 instead of specifying a formula, expressions for
@@ -739,12 +739,12 @@ respectsConstraints <- function( model ) {
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param constrained a logical indicated whether the coefficents are constrained. See details
-#' @param correlation an optional \code{\link{corStruct}} object describing the
-#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
-#'   for a description of the available \code{corStruct} classes.
+#' @param correlation an optional [`nlme::corStruct`] object describing the
+#'   within-group correlation structure. See the documentation of [`nlme::corClasses`]
+#'   for a description of the available [`nlme::corStruct`] classes.
 #'   If a grouping variable is to be used,
-#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor.
-#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
+#'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
+#'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
 #' @examples
@@ -809,7 +809,7 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 
 #' Fit LINEX models
 #'
-#' @param formula a formula of the form \code{response ~ x1 + x2 + x3 + time}
+#' @param formula a formula of the form `response ~ x1 + x2 + x3 + time`
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
 #' @param x1 instead of specifying a formula, expressions for
@@ -820,13 +820,13 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 #' the components can be specified individually.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually.
-#' @param data a data frame in which \code{formula} is evaluated
-#' @param correlation an optional \code{\link{corStruct}} object describing the
-#'   within-group correlation structure. See the documentation of \code{\link{corClasses}}
-#'   for a description of the available \code{corStruct} classes.
+#' @param data a data frame in which `formula` is evaluated
+#' @param correlation an optional [`nlme::corStruct`] object describing the
+#'   within-group correlation structure. See the documentation of [`nlme::corClasses`]
+#'   for a description of the available [`nlme::corStruct`] classes.
 #'   If a grouping variable is to be used,
-#'   it must be specified in the \code{form} argument to the \code{corStruct} constructor.
-#'   Defaults to \code{NULL}, corresponding to uncorrelated errors.
+#'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
+#'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @examples
 #' US <- subset(Calvin, Country=="US")
 #' linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)

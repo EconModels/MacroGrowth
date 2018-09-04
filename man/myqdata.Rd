@@ -13,13 +13,13 @@ myqdata(p, vals, data = parent.frame(), ...)
 
 \item{data}{a data frame}
 
-\item{...}{addtional arguments passed to \code{\link{quantile}}}
+\item{...}{addtional arguments passed to \code{\link[=quantile]{quantile()}}}
 }
 \value{
 a vector of quantiles
 }
 \description{
-A thin wrapper around \code{\link{quantile}}
+A thin wrapper around \code{\link[stats:quantile]{stats::quantile()}}.
 }
 \examples{
 myqdata( .5, eruptions, data=faithful)

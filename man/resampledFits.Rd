@@ -10,8 +10,8 @@ resampledFits(model, method = c("residual", "resample", "wild",
   mc.cores = parallel::detectCores(), ...)
 }
 \arguments{
-\item{model}{a model returned from \code{linexModel}, \code{cdModel},
-\code{cesModel}, or \code{sfModel}.  \code{model} must
+\item{model}{a model returned from \code{\link[=linexModel]{linexModel()}}, \code{\link[=cdModel]{cdModel()}},
+\code{\link[=cesModel]{cesModel()}}, or \code{\link[=sfModel]{sfModel()}}.  \code{model} must
 have been fit with \code{save.data = TRUE}.}
 
 \item{method}{one of \code{"resample"}, \code{"residual"}, \code{"wild"}, \code{"parametric"}, or \code{"debug"}}
@@ -21,7 +21,7 @@ have been fit with \code{save.data = TRUE}.}
 \item{save.data}{a logical indicating whether the data should be saved
 with each model.}
 
-\item{seed}{a seed for \code{set.seed} to make results reproducible}
+\item{seed}{a seed for \code{\link[=set.seed]{set.seed()}} to make results reproducible}
 
 \item{id}{a character vector of length 1 used as an identifier that will be
 added to the output.  This is convenient
