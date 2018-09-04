@@ -151,7 +151,7 @@ The coefficients of the model can be recovered with the `naturalCoef` function.
 naturalCoef(cdfit)
 ```
 
-Similar function can be used for the other model types. 
+Similar functions can be used for the other model types. 
 For the CES production function, use the `cesModel` function.
 
 ```{r}
