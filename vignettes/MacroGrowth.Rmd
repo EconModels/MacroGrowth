@@ -95,6 +95,12 @@ $c_t = \frac{a_1}{a_0}$.
 ### Fitting examples
 
 To fit a model to macroeconomic data, use one of the `*Model` functions.
+In each case, a model formula of the form `y ~ x1 + x2 + x3 + t` 
+is used to communicate  the roles of the variables involved in the model.
+For models with fewer than 3 factors of production, some of `x1`, `x2`, and `x3` can
+be omitted.  The final term on the right-hand side is always used for time ($t$).
+
+
 For example, to fit the Cobb-Douglas model to the UK's capital stock and labor data,
 use the `cdModel` function.
 
