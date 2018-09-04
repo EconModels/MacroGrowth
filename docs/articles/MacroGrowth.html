@@ -73,7 +73,7 @@
       <h1>Using the MacroGrowth package</h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2018-08-13</h4>
+            <h4 class="date">2018-09-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EconModels/MacroGrowth/blob/master/vignettes/MacroGrowth.Rmd"><code>vignettes/MacroGrowth.Rmd</code></a></small>
       <div class="hidden name"><code>MacroGrowth.Rmd</code></div>
@@ -98,39 +98,39 @@
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
 <p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'dplyr'</span>
-<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     filter, lag</span>
-<span class="co">#&gt; The following objects are masked from 'package:base':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
-<span class="kw">library</span>(MacroGrowth)
-<span class="co">#&gt; Loading required package: micEconCES</span>
-<span class="co">#&gt; Loading required package: minpack.lm</span>
-<span class="co">#&gt; Loading required package: DEoptim</span>
-<span class="co">#&gt; Loading required package: parallel</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; DEoptim package</span>
-<span class="co">#&gt; Differential Evolution algorithm in R</span>
-<span class="co">#&gt; Authors: D. Ardia, K. Mullen, B. Peterson and J. Ulrich</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; If you have questions, suggestions, or comments regarding one of the 'micEcon' packages, please use a forum or 'tracker' at micEcon's R-Forge site:</span>
-<span class="co">#&gt; https://r-forge.r-project.org/projects/micecon/</span>
-<span class="co">#&gt; Warning: replacing previous import 'ggplot2::stat' by 'mosaic::stat' when</span>
-<span class="co">#&gt; loading 'MacroGrowth'</span>
-<span class="co">#&gt; Warning: replacing previous import 'mosaic::rescale' by 'scales::rescale'</span>
-<span class="co">#&gt; when loading 'MacroGrowth'</span>
-<span class="kw">head</span>(EconUK)
-<span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span>
-<span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span>
-<span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span>
-<span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span>
-<span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span>
-<span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span>
-<span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt; Attaching package: 'dplyr'</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; The following objects are masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt;     filter, lag</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; The following objects are masked from 'package:base':</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;     intersect, setdiff, setequal, union</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">library</span>(MacroGrowth)</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; Loading required package: micEconCES</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt; Loading required package: minpack.lm</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt; Loading required package: DEoptim</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt; Loading required package: parallel</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; DEoptim package</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; Differential Evolution algorithm in R</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; Authors: D. Ardia, K. Mullen, B. Peterson and J. Ulrich</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; If you have questions, suggestions, or comments regarding one of the 'micEcon' packages, please use a forum or 'tracker' at micEcon's R-Forge site:</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; https://r-forge.r-project.org/projects/micecon/</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; Warning: replacing previous import 'ggplot2::stat' by 'mosaic::stat' when</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt; loading 'MacroGrowth'</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#&gt; Warning: replacing previous import 'mosaic::rescale' by 'scales::rescale'</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co">#&gt; when loading 'MacroGrowth'</span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="kw">head</span>(EconUK)</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span></a>
+<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span></a>
+<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33"><span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></a></code></pre></div>
 <p>The <code>EconUK</code> data frame contains GDP, capital, labor, and two types of energy data (primary exergy and useful exergy). All time series indexed by ratio to an initial year (1960), such that all quantities are 1 in 1960.</p>
 </div>
 <div id="macroeconomic-growth-models" class="section level2">
@@ -169,19 +169,19 @@
 <h3 class="hasAnchor">
 <a href="#fitting-examples" class="anchor"></a>Fitting examples</h3>
 <p>To fit a model to macroeconomic data, use one of the <code>*Model</code> functions. For example, to fit the Cobb-Douglas model to the UK’s capital stock and labor data, use the <code>cdModel</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
-cdfit
-<span class="co">#&gt; Generalized least squares fit by REML</span>
-<span class="co">#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear </span>
-<span class="co">#&gt;   Data: sdata </span>
-<span class="co">#&gt;   Log-restricted-likelihood: 110.7822</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;     logscale      alpha_1       lambda </span>
-<span class="co">#&gt; -0.001552367  0.535182020  0.011122525 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span>
-<span class="co">#&gt; Residual standard error: 0.02126305</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">cdfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">cdfit</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; Generalized least squares fit by REML</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear </span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt;   Data: sdata </span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt;   Log-restricted-likelihood: 110.7822</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; Coefficients:</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt;     logscale      alpha_1       lambda </span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; -0.001552367  0.535182020  0.011122525 </span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Residual standard error: 0.02126305</span></a></code></pre></div>
 <p>The <code>formula</code> argument provides a convenient way to specify which variables in the data frame occupy which positions of the model. The components of the formula are:</p>
 <ul>
 <li>the “response” variable (usually indexed GDP), positioned to the left of the <code>~</code> character,</li>
@@ -191,30 +191,30 @@ cdfit
 </ul>
 <p>In the above example, <code>iGDP ~ iK + iL + iYear</code> indicates that the model is to be fitted with indexed GDP (iGDP) as the response variable, indexed capital stock (iK) and indexed labor (iL) as the factors of production, and indexed year (iYear) as the time variable.</p>
 <p>The coefficients of the model can be recovered with the <code>naturalCoef</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)
-<span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span>
-<span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></a></code></pre></div>
 <p>Similar function can be used for the other model types. For the CES production function, use the <code>cesModel</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
-<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)
-<span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span>
-<span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span>
-<span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span>
-<span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></a></code></pre></div>
 <p>For the Linex model, there must be three factors of production. The first factor of production (<span class="math inline">\(x_1\)</span>) must be capital stock. The second factor of production (<span class="math inline">\(x_2\)</span>) must be labor. The third factor of production (<span class="math inline">\(x_3\)</span>) must be an energy variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
-<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)
-<span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span>
-<span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></a></code></pre></div>
 <p>By default the original economic data are saved as an attribute of the model object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(cdfit<span class="op">$</span>data)
-<span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span>
-<span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span>
-<span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span>
-<span class="co">#&gt; 3 1.039522 1.068350 0.9943625     2 1962      UK 1.0238378 1.088765</span>
-<span class="co">#&gt; 4 1.079728 1.102265 1.0002645     3 1963      UK 1.0594068 1.179210</span>
-<span class="co">#&gt; 5 1.140344 1.153710 1.0129718     4 1964      UK 1.0594941 1.222604</span>
-<span class="co">#&gt; 6 1.166864 1.202672 1.0090420     5 1965      UK 1.1118025 1.329057</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">head</span>(cdfit<span class="op">$</span>data)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; 3 1.039522 1.068350 0.9943625     2 1962      UK 1.0238378 1.088765</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 4 1.079728 1.102265 1.0002645     3 1963      UK 1.0594068 1.179210</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; 5 1.140344 1.153710 1.0129718     4 1964      UK 1.0594941 1.222604</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 6 1.166864 1.202672 1.0090420     5 1965      UK 1.1118025 1.329057</span></a></code></pre></div>
 <p>To prevent this behavior, set the <code>save.data</code> argument to <code>FALSE</code>.</p>
 </div>
 <div id="accounting-for-boundaries" class="section level3">
