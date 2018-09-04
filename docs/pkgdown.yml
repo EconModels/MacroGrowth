@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 pandoc: 2.0.6
+=======
+pandoc: 2.2.1
+>>>>>>> 913cb6f2461c47402e1cb9f3de8a70e7a074b5db
 pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:

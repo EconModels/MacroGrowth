@@ -45,3 +45,7 @@ devtools::install_github("EconModels/MacroGrowth")
 devtools::install_github("EconModels/MacroGrowth", build_vignettes = TRUE)
 ```
 
+## More Information
+
+Find more information, including vignettes and function documentation at 
+<https://econmodels.github.io/MacroGrowth/>
