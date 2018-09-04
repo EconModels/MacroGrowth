@@ -61,6 +61,7 @@ such that all quantities are 1 in 1960.
 
 `MacroGrowth` supports the following macroeconomic growth models:
 
+* Single-factor model: $y = \theta \: \mathrm{e}^{\lambda t} \: x_1^m$
 * Cobb-Douglas (CD): $y = \theta \: \mathrm{e}^{\lambda t} \: 
                           x_1^{\alpha_1} \, x_2^{\alpha_2} \, x_3^{\alpha_3}$
 * Constant Elasticity of Substitution (CES):
@@ -106,8 +107,21 @@ is used to communicate  the roles of the variables involved in the model.
 For models with fewer than 3 factors of production, some of `x1`, `x2`, and `x3` can
 be omitted.  The final term on the right-hand side is always used for time ($t$).
 
+To fit a single-factor model, use the `sfModel` function.
 
-For example, to fit the Cobb-Douglas model to the UK's capital stock and labor data,
+```{r}
+sffit <- sfModel(formula = iGDP ~ iK + iYear, data = EconUK)
+sffit
+```
+
+The coefficients of the model can be recovered with the `naturalCoef` function.
+
+```{r}
+naturalCoef(sffit)
+```
+
+
+To fit the Cobb-Douglas model to the UK's capital stock and labor data,
 use the `cdModel` function.
 
 ```{r}
@@ -137,7 +151,7 @@ The coefficients of the model can be recovered with the `naturalCoef` function.
 naturalCoef(cdfit)
 ```
 
-Similar function can be used for the other model types. 
+Similar functions can be used for the other model types. 
 For the CES production function, use the `cesModel` function.
 
 ```{r}
@@ -178,14 +192,24 @@ yhat(cdfit)
 A graph comparing fitted and historical values can be created as shown below.
 
 ```{r}
-EconUK %>% 
-  bind_cols(yhat(cdfit)) %>% View
+# EconUK %>% 
+#   bind_cols(yhat(cdfit)) %>% View
 
 ```
 
 
-### Accounting for boundaries
+### Accounting for boundaries and constraints
 
+The fitting functions have the capability to account for boundaries and constraints.
+For example, the simplest fitting function (`sfModel`)
+provides an option to constrain the fit with $m = 1$,
+thereby assuming a Cobb-Douglas-type model where the output elasticity 
+is constrained to the economically-meaningful value.
+
+```{r}
+sfModel(formula = iGDP ~ iK + iYear, data = EconUK) %>% naturalCoef()
+sfModel(formula = iGDP ~ iK + iYear, data = EconUK, constrained = TRUE) %>% naturalCoef()
+```
 
 ## Resampling
 
