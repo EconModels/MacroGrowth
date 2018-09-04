@@ -94,6 +94,10 @@ given by
 $c_t = \frac{a_1}{a_0}$.
 
 
+### Indexing
+
+
+
 ### Fitting examples
 
 To fit a model to macroeconomic data, use one of the `*Model` functions.
@@ -135,7 +139,6 @@ cesfit <- cesModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
 naturalCoef(cesfit)
 ```
 
-
 For the Linex model, 
 there must be three factors of production.
 The first factor of production ($x_1$) must be capital stock.
@@ -154,6 +157,26 @@ as an attribute of the model object.
 head(cdfit$data)
 ```
 To prevent this behavior, set the `save.data` argument to `FALSE`.
+
+
+### Fitted values
+
+The fitted values of the response variable ($y$) can be recovered with the `yhat` function.
+The `yhat` function gives values of the response variable 
+on the natural (not logarithmic) scale.
+
+```{r}
+yhat(cdfit)
+```
+
+A graph comparing fitted and historical values can be created as shown below.
+
+```{r}
+EconUK %>% 
+  bind_cols(yhat(cdfit)) %>% View
+
+```
+
 
 ### Accounting for boundaries
 
