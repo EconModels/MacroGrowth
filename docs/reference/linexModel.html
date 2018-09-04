@@ -166,7 +166,33 @@ Defaults to <code>NULL</code>, corresponding to uncorrelated errors.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>US</span> <span class='kw'>&lt;-</span> <span class='fu'>subset</span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in subset(Calvin, Country == "US"): object 'Calvin' not found</span></div><div class='input'><span class='fu'>linexModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'><span class='fu'>linexModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'><span class='fu'><a href='naturalCoef.html'>naturalCoef</a></span>(<span class='fu'>linexModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>))</div><div class='output co'>#&gt; <span class='error'>Error in terms.formula(model, data = data): object 'US' not found</span></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='no'>US</span> <span class='kw'>&lt;-</span> <span class='fu'>subset</span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>)
+<span class='fu'>linexModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
+#&gt;   Model: log(iGDP) - log(iQp) ~ I(2 * (1 - 1/(iK/(0.5 * (iQp + iL))))) +      I(iL/iQp - 1) 
+#&gt;   Data: data 
+#&gt;   Log-restricted-likelihood: 65.86161
+#&gt; 
+#&gt; Coefficients:
+#&gt;                            (Intercept) I(2 * (1 - 1/(iK/(0.5 * (iQp + iL))))) 
+#&gt;                            -0.00611005                             0.77503477 
+#&gt;                          I(iL/iQp - 1) 
+#&gt;                             0.40872209 
+#&gt; 
+#&gt; Degrees of freedom: 32 total; 29 residual
+#&gt; Residual standard error: 0.02495338 </div><div class='input'><span class='fu'>linexModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
+#&gt;   Model: log(iGDP) - log(iQp) ~ I(2 * (1 - 1/(iK/(0.5 * (iQp + iL))))) +      I(iL/iQp - 1) 
+#&gt;   Data: data 
+#&gt;   Log-restricted-likelihood: 65.86161
+#&gt; 
+#&gt; Coefficients:
+#&gt;                            (Intercept) I(2 * (1 - 1/(iK/(0.5 * (iQp + iL))))) 
+#&gt;                            -0.00611005                             0.77503477 
+#&gt;                          I(iL/iQp - 1) 
+#&gt;                             0.40872209 
+#&gt; 
+#&gt; Degrees of freedom: 32 total; 29 residual
+#&gt; Residual standard error: 0.02495338 </div><div class='input'><span class='fu'><a href='naturalCoef.html'>naturalCoef</a></span>(<span class='fu'>linexModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>US</span>))</div><div class='output co'>#&gt;      logscale     scale       a_0       a_1       c_t
+#&gt; 1 -0.00611005 0.9939086 0.7750348 0.4087221 0.5273597</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

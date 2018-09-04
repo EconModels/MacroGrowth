@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(dplyr)
+library(MacroGrowth)
 ```
 
 ## Introduction
@@ -113,7 +115,7 @@ occupy which positions of the model.
 The components of the formula are: 
 
 * the "response" variable (usually indexed GDP), positioned to the left of the `~` character,
-* indexed factors of production, separated by "+" and positioned to the right of the `~` character,
+* indexed factors of production, separated by `+` and positioned to the right of the `~` character,
 and  
 * the time variable, indexed to 0 at the top of the data frame,
 separated from the factors of production by a `+` character, and 

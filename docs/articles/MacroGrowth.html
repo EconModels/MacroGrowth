@@ -98,6 +98,16 @@
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
 <p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
+<<<<<<< HEAD
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">head</span>(EconUK)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></a></code></pre></div>
+=======
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt; Attaching package: 'dplyr'</span></a>
@@ -131,6 +141,7 @@
 <a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span></a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span></a>
 <a class="sourceLine" id="cb1-33" data-line-number="33"><span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></a></code></pre></div>
+>>>>>>> 913cb6f2461c47402e1cb9f3de8a70e7a074b5db
 <p>The <code>EconUK</code> data frame contains GDP, capital, labor, and two types of energy data (primary exergy and useful exergy). All time series indexed by ratio to an initial year (1960), such that all quantities are 1 in 1960.</p>
 </div>
 <div id="macroeconomic-growth-models" class="section level2">
@@ -185,7 +196,7 @@
 <p>The <code>formula</code> argument provides a convenient way to specify which variables in the data frame occupy which positions of the model. The components of the formula are:</p>
 <ul>
 <li>the “response” variable (usually indexed GDP), positioned to the left of the <code>~</code> character,</li>
-<li>indexed factors of production, separated by “+” and positioned to the right of the <code>~</code> character, and<br>
+<li>indexed factors of production, separated by <code>+</code> and positioned to the right of the <code>~</code> character, and<br>
 </li>
 <li>the time variable, indexed to 0 at the top of the data frame, separated from the factors of production by a <code>+</code> character, and positioned as the rightmost item in the formula.</li>
 </ul>
