@@ -246,16 +246,7 @@ will not work.</p>
   <span class='fu'>cesModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"ZM"</span>), <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>1</span>,<span class='fl'>2</span>))
   <span class='fu'>cesModel</span>(<span class='kw'>response</span><span class='kw'>=</span><span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>,
            <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"ZM"</span>), <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>1</span>,<span class='fl'>2</span>))
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: NaNs produced</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Eigenvalue failure after method nlm</span></div><div class='output co'>#&gt; 
-#&gt; Call:
-#&gt; plm(formula = log(iGDP) - log(delta_1 * iQp + (1 - delta_1) * 
-#&gt;     iK) ~ iYear, data = sdata, params = c(delta_1 = 0.5, delta = 1, 
-#&gt; rho_1 = -1), method = "nlm")
-#&gt; 
-#&gt; Coefficients:
-#&gt;  logscale     lambda    delta_1      delta      rho_1  
-#&gt; -0.005722   0.004803   0.056469   1.000000  -1.000000  
-#&gt; </div></pre>
+}</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

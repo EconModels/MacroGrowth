@@ -33,7 +33,7 @@
 <meta property="og:title" content="Fit parameterized linear models — plm" />
 
 <meta property="og:description" content="The optimal model is fit in a case where aside from some parameters, the model is linear.
-Numerical optimization is used over these parameters with lm fitting the rest." />
+Numerical optimization is used over these parameters with stats::lm()() fitting the rest." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -112,7 +112,7 @@ Numerical optimization is used over these parameters with lm fitting the rest." 
     <div class="ref-description">
     
     <p>The optimal model is fit in a case where aside from some parameters, the model is linear.
-Numerical optimization is used over these parameters with <code>lm</code> fitting the rest.</p>
+Numerical optimization is used over these parameters with <code>stats::lm()()</code> fitting the rest.</p>
     
     </div>
 
@@ -132,7 +132,7 @@ Numerical optimization is used over these parameters with <code>lm</code> fittin
     </tr>
     <tr>
       <th>params</th>
-      <td><p>a named vector of the parameters to be fit by numerical optimation outside of <code>lm</code>.</p></td>
+      <td><p>a named vector of the parameters to be fit by numerical optimation outside of <code>stats::lm()()</code>.</p></td>
     </tr>
     <tr>
       <th>optimize</th>
@@ -177,12 +177,7 @@ for the numerical optimization</p></td>
             <span class='kw'>params</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='kw'>delta</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>delta_1</span><span class='kw'>=</span><span class='fl'>0.5</span>))
 <span class='no'>foo</span>
 <span class='fu'>class</span>(<span class='no'>foo</span>)
-}</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: dplyr</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div></pre>
+}</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
