@@ -2,7 +2,7 @@
 #'
 #' @param model a LINEX model
 #' @param data a data frame.  Typically this is not needed
-#' since the data are extra from `model`.  But this allows
+#' since the data are extracted from `model`.  But this allows
 #' a drop in replacement data set, if desired.
 #' @param ... additional arguments (not currently used)
 #' @keywords internal
