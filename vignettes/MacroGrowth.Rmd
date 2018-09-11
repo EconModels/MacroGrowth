@@ -117,13 +117,15 @@ to economic output
 (on the left side of the economic model).
 
 
-### Fitting examples
+## Fitting examples
 
-To fit a model to macroeconomic data, use one of the `*Model` functions.
-In each case, a model formula of the form `y ~ x1 + x2 + x3 + t` 
-is used to communicate  the roles of the variables involved in the model.
-For models with fewer than 3 factors of production, some of `x1`, `x2`, and `x3` can
-be omitted.  The final term on the right-hand side is always used for time ($t$).
+To fit a model to macroeconomic data, use one of the `*Model` functions
+in the `MacroGrowth` pacakge.
+
+**** Say what type of object each model produces ****
+
+
+### Single-factor model
 
 To fit a single-factor model, use the `sfModel` function.
 
@@ -132,22 +134,9 @@ sffit <- sfModel(formula = iGDP ~ iK + iYear, data = EconUK)
 sffit
 ```
 
-The coefficients of the model can be recovered with the `naturalCoef` function.
-
-```{r}
-naturalCoef(sffit)
-```
-
-
-To fit the Cobb-Douglas model to the UK's capital stock and labor data,
-use the `cdModel` function.
-
-```{r}
-cdfit <- cdModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
-cdfit
-```
-The `formula` argument provides a convenient way to specify which variables in the data frame
-occupy which positions of the model.
+In all `*Model` functions, 
+a formula of the form `y ~ x1 + x2 + x3 + t` 
+communicates the roles of the factors of production to the fitting function.
 The components of the formula are: 
 
 * the "response" variable (usually indexed GDP), positioned to the left of the `~` character,
@@ -155,7 +144,35 @@ The components of the formula are:
 and  
 * the time variable, indexed to 0 at the top of the data frame,
 separated from the factors of production by a `+` character, and 
-positioned as the rightmost item in the formula. 
+always positioned as the rightmost item in the formula. 
+
+For models with fewer than 3 factors of production, 
+some of `x1`, `x2`, and `x3` can be omitted.  
+
+In the above example,
+`formula = iGDP ~ iK + iYear` indicates that
+the model is to be fitted with 
+indexed GDP (iGDP) as the response variable,
+indexed capital stock (iK) as the only factor of production, and
+indexed year (iYear) as the time variable.
+
+The coefficients of the fitted model can be recovered with the `naturalCoef` function.
+
+```{r}
+naturalCoef(sffit)
+```
+
+
+### Cobb-Douglas model
+
+Similar functions can be used for the other model types. 
+To fit the Cobb-Douglas model to the UK's capital stock and labor data,
+use the `cdModel` function.
+
+```{r}
+cdfit <- cdModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
+cdfit
+```
 
 In the above example, `iGDP ~ iK + iL + iYear` indicates that
 the model is to be fitted with 
@@ -169,13 +186,21 @@ The coefficients of the model can be recovered with the `naturalCoef` function.
 naturalCoef(cdfit)
 ```
 
-Similar functions can be used for the other model types. 
-For the CES production function, use the `cesModel` function.
+For the CES production function, use the `cesModel` function 
+with two or three factors of production.
 
 ```{r}
 cesfit <- cesModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
 naturalCoef(cesfit)
 ```
+
+Note that output elasticities ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
+are calculated by the `naturalCoef` function.
+Equations for the output elasticities are given in Appendix B 
+of the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+
+
+### Linex model
 
 For the Linex model, 
 there must be three factors of production.
@@ -188,6 +213,15 @@ linexfit <- linexModel(formula = iGDP ~ iK + iL + iXp + iYear, data = EconUK)
 naturalCoef(linexfit)
 ```
 
+To recover the output elasticities from the Linex model, 
+use the `fortify` function.
+
+```{r}
+######## fortify is not found ? ######
+# fortify(linexfit)
+```
+
+### Metadata
 By default the original economic data are saved 
 as an attribute of the model object.
 
