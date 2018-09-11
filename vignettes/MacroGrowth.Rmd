@@ -227,21 +227,24 @@ naturalCoef(linexfit)
 
 The `linexModel` function produces a `LINEXmodel` object.
 
+In the Linex model, output elasticities are a function of time.
 To recover the output elasticities from the Linex model, 
 use the `fortify` function.
+$\alpha$, $\beta$, and $\gamma$ are output elasticities
+for capital, labor, and energy, respectively.
 
 ```{r}
-######## fortify is not found ? ######
-# fortify(linexfit)
+head(fortify(linexfit))
 ```
 
 ### Metadata
 
 By default the original economic data are saved 
 as an attribute of the model object.
+Data can be recovered with the `getData` function.
 
 ```{r}
-head(cdfit$data)
+head(getData(cdfit))
 ```
 To prevent this behavior, set the `save.data` argument to `FALSE`.
 
