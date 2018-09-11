@@ -268,7 +268,8 @@ EconUK %>%
 
 ## Accounting for boundaries and constraints
 
-The `*Model` fitting functions have the capability to account for boundaries and constraints.
+Most `*Model` fitting functions have the capability to account for boundaries and constraints.
+Constrained fitting behavior is controlled by the `constrained` argument to the `*Model` functions.
 
 
 ### Single-factor model
@@ -356,7 +357,59 @@ Thus, fitted parameter constraints have no meaning for the `linexModel` function
 `constrained` is not an argument to the `linexModel` function.
 
 
-## Resampling
+## Bootstrap resampling
+
+Bootstrapping is a statistical technique for estimating the precision of parameter estimates 
+by exploring the distribution of estimates in many resampled data sets. 
+Each resampled data set is a randomized version of the original sample data 
+to which the desired analysis method can be applied.
+
+The coefficients from the fit to a resampled time series (the "resample coefficients") 
+will be different from the coefficients obtained from the fit to historical data (the "base coefficients") 
+and form a "resample distribution". 
+When these resample coefficients are highly variable, 
+it is an indication that the data do not determine the parameter estimates very precisely. 
+Even when the residuals are small and the model produces fitted values that track the observed data closely, 
+it may still be difficult to estimate some or all of the model parameters precisely. 
+Lack of precision can stem from a number of factors, 
+including a poor model fit, 
+low model sensitivity to one or more parameters, 
+correlation among parameter estimates, 
+variability unexplained by the predictors in the model, etc.
+
+To perform bootstrap resampling in the `EconGrowth` package, 
+a model object must first be obtained by calling one of the `*Model` functions.
+For this example, we'll use the `cdfit` object obtained above.
+The `resampledFits` function performs the resampling.
+
+```{r}
+cdfits_rs <- resampledFits(model = cdfit, method = "wild", n = 5, seed = 123)
+```
+
+The `resampledFits` function returns a list with two named members: `coeffs` and `models`.
+`coeffs` is a data frame with `n + 1` rows. 
+The first row contains fitted coefficients for the original model and has a `method` of `orig`.
+The remaining rows contain fitted coefficients for the resample fits,
+each with a different value for the `index` variable, and 
+each with the `method` specified in the function call.
+
+```{r}
+cdfits_rs$coeffs
+```
+
+`models` is a list containing the model object for each resample fit.
+
+```{r}
+# Original fit
+cdfits_rs$models[[1]] %>% naturalCoef()
+# First resampled model
+cdfits_rs$models[[2]] %>% naturalCoef()
+# Last resampled model
+cdfits_rs$models[[6]] %>% naturalCoef()
+```
+
+
+
 
 ## Plotting results
 

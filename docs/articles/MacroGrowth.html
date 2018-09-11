@@ -73,7 +73,7 @@
       <h1>Using the MacroGrowth package</h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2018-09-04</h4>
+            <h4 class="date">2018-09-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EconModels/MacroGrowth/blob/master/vignettes/MacroGrowth.Rmd"><code>vignettes/MacroGrowth.Rmd</code></a></small>
       <div class="hidden name"><code>MacroGrowth.Rmd</code></div>
@@ -88,27 +88,11 @@
 <p>The <code>MacroGrowth</code> package provides sophisticated tools for fitting macroeconomic growth models to data. <code>MacroGrowth</code> has several desirable features for economic modelers:</p>
 <ul>
 <li>Functions that fit several different macroeconomic growth models.</li>
-<li>Functions fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
+<li>Functions that fit along boundaries of the economically-meaningful region, thereby ensuring that the best possible fit is found.</li>
 <li>Options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
 <li>A consistent formula-based interface to fitting functions.</li>
 </ul>
 <p>The functions in this package were developed for and used first in the paper Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai. “From Theory to Econometrics to Energy Policy: Cautionary Tales for Policymaking Using Aggregate Production Functions”. <em>Energies</em>, pp. 1-44, 10 (203), 2017. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
-</div>
-<div id="data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data</h2>
-<p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(MacroGrowth)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">head</span>(EconUK)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></a></code></pre></div>
-<p>The <code>EconUK</code> data frame contains GDP, capital, labor, and two types of energy data (primary exergy and useful exergy). All time series indexed by ratio to an initial year (1960), such that all quantities are 1 in 1960.</p>
 </div>
 <div id="macroeconomic-growth-models" class="section level2">
 <h2 class="hasAnchor">
@@ -135,132 +119,259 @@
 <li>
 <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span> are factors of production;</li>
 <li>
-<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are output elasticities for the corresponding factors of production in the Cobb-Douglas growth model;</li>
+<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span> are fitted output elasticities for the corresponding factors of production in the Cobb-Douglas growth model;</li>
 <li>
 <span class="math inline">\(\delta\)</span> and <span class="math inline">\(\delta_1\)</span> are fitted share parameters for the CES growth model;</li>
 <li>
-<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution; and</li>
+<span class="math inline">\(\rho\)</span> and <span class="math inline">\(\rho_1\)</span> are fitted parameters related the elasticity of substitution in the CES model; and</li>
 <li>
 <span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> are fitted coefficients in the Linex production function.</li>
 </ul>
-<p>Also, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\sigma_1\)</span> are elasticities of substitution for the CES growth model, given by <span class="math inline">\(\sigma = \frac{1}{1 + \rho}\)</span> and <span class="math inline">\(\sigma_1 = \frac{1}{1 + \rho_1}\)</span>. <span class="math inline">\(c_t\)</span> is the ratio of Linex coefficients, given by <span class="math inline">\(c_t = \frac{a_1}{a_0}\)</span>.</p>
-<div id="indexing" class="section level3">
-<h3 class="hasAnchor">
-<a href="#indexing" class="anchor"></a>Indexing</h3>
+<p>In the CES model, the elasticity of substitution between the (<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>) pair and <span class="math inline">\(x_3\)</span> is given by <span class="math inline">\(\sigma = \frac{1}{1 + \rho}\)</span>. The elasticity of substitution between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> is given by <span class="math inline">\(\sigma_1 = \frac{1}{1 + \rho_1}\)</span>.</p>
+<p>The Linex model is usually presented with <span class="math inline">\(a_0\)</span> (as above) and <span class="math inline">\(c_t\)</span> coefficients. <span class="math inline">\(c_t\)</span> is the ratio of Linex fitted coefficients, given by <span class="math inline">\(c_t = \frac{a_1}{a_0}\)</span>.</p>
 </div>
-<div id="fitting-examples" class="section level3">
+<div id="data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data" class="anchor"></a>Data</h2>
+<p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>. The data frame <code>EconUK</code> is included in the <code>MacroGrowth</code> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(rlang)
+<span class="kw">library</span>(tidyr)
+<span class="kw">library</span>(MacroGrowth)
+<span class="kw">head</span>(EconUK)
+<span class="co">#&gt;   Year iYear Country     iGDP       iK        iL       iXp      iXu</span>
+<span class="co">#&gt; 1 1960     0      UK 1.000000 1.000000 1.0000000 1.0000000 1.000000</span>
+<span class="co">#&gt; 2 1961     1      UK 1.021542 1.040630 0.9952632 0.9964601 1.047619</span>
+<span class="co">#&gt; 3 1962     2      UK 1.039522 1.068350 0.9943625 1.0238378 1.088765</span>
+<span class="co">#&gt; 4 1963     3      UK 1.079728 1.102265 1.0002645 1.0594068 1.179210</span>
+<span class="co">#&gt; 5 1964     4      UK 1.140344 1.153710 1.0129718 1.0594941 1.222604</span>
+<span class="co">#&gt; 6 1965     5      UK 1.166864 1.202672 1.0090420 1.1118025 1.329057</span></code></pre></div>
+<p>The <code>EconUK</code> data frame contains indexed GDP, capital, labor, and two types of energy data (primary exergy and useful exergy). All economic and energy data series are indexed by ratio to an initial year (1960), such that all quantities are 1 in 1960. Time is indexed by difference to the initial year, such that 1960 is year 0. The prefix <code>i</code> indicates an indexed variable. <code>iK</code> is indexed capital stock, <code>iL</code> is indexed labor, <code>iXp</code> is indexed primary exergy, and <code>iXu</code> is indexed useful exergy.</p>
+<p>The functions in <code>MacroGrowth</code> can fit indexed or non-indexed data. When data are indexed as shown in the <code>EconUK</code> data frame, the fitted value of the <span class="math inline">\(\theta\)</span> parameter is expected to be close to 1. When data are <em>not</em> indexed, the <span class="math inline">\(\theta\)</span> parameter will likely be far from 1, because <span class="math inline">\(\theta\)</span> assumes the task of unit conversion from factors of production in various functional forms (on the right side of the economic model) to economic output (on the left side of the economic model).</p>
+</div>
+<div id="fitting-examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#fitting-examples" class="anchor"></a>Fitting examples</h2>
+<p>To fit a model to macroeconomic data, use one of the <code>*Model</code> functions in the <code>MacroGrowth</code> pacakge.</p>
+<div id="single-factor-model" class="section level3">
 <h3 class="hasAnchor">
-<a href="#fitting-examples" class="anchor"></a>Fitting examples</h3>
-<p>To fit a model to macroeconomic data, use one of the <code>*Model</code> functions. In each case, a model formula of the form <code>y ~ x1 + x2 + x3 + t</code> is used to communicate the roles of the variables involved in the model. For models with fewer than 3 factors of production, some of <code>x1</code>, <code>x2</code>, and <code>x3</code> can be omitted. The final term on the right-hand side is always used for time (<span class="math inline">\(t\)</span>).</p>
+<a href="#single-factor-model" class="anchor"></a>Single-factor model</h3>
 <p>To fit a single-factor model, use the <code>sfModel</code> function.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">sffit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">sffit</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; Generalized least squares fit by REML</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt;   Model: log(iGDP) ~ iK + iYear </span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt;   Data: data </span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt;   Log-restricted-likelihood: 90.73298</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; Coefficients:</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; (Intercept)          iK       iYear </span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; -0.07143534  0.10760947  0.01775149 </span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Residual standard error: 0.0318531</span></a></code></pre></div>
-<p>The coefficients of the model can be recovered with the <code>naturalCoef</code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(sffit)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt;      logscale     scale     lambda         m</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; 1 -0.07143534 0.9310565 0.01775149 0.1076095</span></a></code></pre></div>
-<p>To fit the Cobb-Douglas model to the UK’s capital stock and labor data, use the <code>cdModel</code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">cdfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">cdfit</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; Generalized least squares fit by REML</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear </span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;   Data: sdata </span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt;   Log-restricted-likelihood: 110.7822</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; Coefficients:</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt;     logscale      alpha_1       lambda </span></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; -0.001552367  0.535182020  0.011122525 </span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; Residual standard error: 0.02126305</span></a></code></pre></div>
-<p>The <code>formula</code> argument provides a convenient way to specify which variables in the data frame occupy which positions of the model. The components of the formula are:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sffit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+sffit
+<span class="co">#&gt; Generalized least squares fit by REML</span>
+<span class="co">#&gt;   Model: log(iGDP) ~ iK + iYear </span>
+<span class="co">#&gt;   Data: data </span>
+<span class="co">#&gt;   Log-restricted-likelihood: 90.73298</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt; (Intercept)          iK       iYear </span>
+<span class="co">#&gt; -0.07143534  0.10760947  0.01775149 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span>
+<span class="co">#&gt; Residual standard error: 0.0318531</span></code></pre></div>
+<p>The <code>sfModel</code> function produces an <code>SFmodel</code> object.</p>
+<p>In all <code>*Model</code> functions, a formula of the form <code>y ~ x1 + x2 + x3 + t</code> communicates the roles of the factors of production to the fitting function. The components of the formula are:</p>
 <ul>
 <li>the “response” variable (usually indexed GDP), positioned to the left of the <code>~</code> character,</li>
 <li>indexed factors of production, separated by <code>+</code> and positioned to the right of the <code>~</code> character, and<br>
 </li>
-<li>the time variable, indexed to 0 at the top of the data frame, separated from the factors of production by a <code>+</code> character, and positioned as the rightmost item in the formula.</li>
+<li>the time variable, indexed to 0 at the top of the data frame, separated from the factors of production by a <code>+</code> character, and always positioned as the rightmost item in the formula.</li>
 </ul>
+<p>For models with fewer than 3 factors of production, some of <code>x1</code>, <code>x2</code>, and <code>x3</code> can be omitted.</p>
+<p>In the above example, <code>formula = iGDP ~ iK + iYear</code> indicates that the model is to be fitted with indexed GDP (iGDP) as the response variable, indexed capital stock (iK) as the only factor of production, and indexed year (iYear) as the time variable.</p>
+<p>The coefficients of the fitted model can be recovered with the <code>naturalCoef</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(sffit)
+<span class="co">#&gt;      logscale     scale     lambda         m</span>
+<span class="co">#&gt; 1 -0.07143534 0.9310565 0.01775149 0.1076095</span></code></pre></div>
+</div>
+<div id="cobb-douglas-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#cobb-douglas-model" class="anchor"></a>Cobb-Douglas model</h3>
+<p>Similar functions can be used for the other model types. To fit the Cobb-Douglas model to the UK’s capital stock and labor data, use the <code>cdModel</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+cdfit
+<span class="co">#&gt; Generalized least squares fit by REML</span>
+<span class="co">#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear </span>
+<span class="co">#&gt;   Data: sdata </span>
+<span class="co">#&gt;   Log-restricted-likelihood: 110.7822</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt;     logscale      alpha_1       lambda </span>
+<span class="co">#&gt; -0.001552367  0.535182020  0.011122525 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Degrees of freedom: 51 total; 48 residual</span>
+<span class="co">#&gt; Residual standard error: 0.02126305</span></code></pre></div>
+<p>The <code>cdModel</code> function produces a <code>CDEmodel</code> object.</p>
 <p>In the above example, <code>iGDP ~ iK + iL + iYear</code> indicates that the model is to be fitted with indexed GDP (iGDP) as the response variable, indexed capital stock (iK) and indexed labor (iL) as the factors of production, and indexed year (iYear) as the time variable.</p>
 <p>The coefficients of the model can be recovered with the <code>naturalCoef</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></a></code></pre></div>
-<p>Similar functions can be used for the other model types. For the CES production function, use the <code>cesModel</code> function.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cdfit)
+<span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></code></pre></div>
+<p>For the CES production function, use the <code>cesModel</code> function with two or three factors of production.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cesfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(cesfit)
+<span class="co">#&gt;       scale    logscale    lambda delta  delta_1   sigma_1    rho_1 sigma</span>
+<span class="co">#&gt; 1 0.9789678 -0.02125655 0.0185403     1 0.486507 0.4522604 1.211116    NA</span>
+<span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span>
+<span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></code></pre></div>
+<p>The <code>cesModel</code> function produces a <code>cesModel</code> object.</p>
+<p>Note that output elasticities (<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span>) are calculated by the <code>naturalCoef</code> function. Equations for the output elasticities are given in Appendix B of the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>.</p>
+</div>
+<div id="linex-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#linex-model" class="anchor"></a>Linex model</h3>
 <p>For the Linex model, there must be three factors of production. The first factor of production (<span class="math inline">\(x_1\)</span>) must be capital stock. The second factor of production (<span class="math inline">\(x_2\)</span>) must be labor. The third factor of production (<span class="math inline">\(x_3\)</span>) must be an energy variable.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">linexfit &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linexModel.html">linexModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXp <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK)
+<span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(linexfit)
+<span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span>
+<span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></code></pre></div>
+<p>The <code>linexModel</code> function produces a <code>LINEXmodel</code> object.</p>
+<p>To recover the output elasticities from the Linex model, use the <code>fortify</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######## fortify is not found ? ######
+<span class="co"># fortify(linexfit)</span></code></pre></div>
+</div>
+<div id="metadata" class="section level3">
+<h3 class="hasAnchor">
+<a href="#metadata" class="anchor"></a>Metadata</h3>
 <p>By default the original economic data are saved as an attribute of the model object.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">head</span>(cdfit<span class="op">$</span>data)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 3 1.039522 1.068350 0.9943625     2 1962      UK 1.0238378 1.088765</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 4 1.079728 1.102265 1.0002645     3 1963      UK 1.0594068 1.179210</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 5 1.140344 1.153710 1.0129718     4 1964      UK 1.0594941 1.222604</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 6 1.166864 1.202672 1.0090420     5 1965      UK 1.1118025 1.329057</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(cdfit<span class="op">$</span>data)
+<span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span>
+<span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span>
+<span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span>
+<span class="co">#&gt; 3 1.039522 1.068350 0.9943625     2 1962      UK 1.0238378 1.088765</span>
+<span class="co">#&gt; 4 1.079728 1.102265 1.0002645     3 1963      UK 1.0594068 1.179210</span>
+<span class="co">#&gt; 5 1.140344 1.153710 1.0129718     4 1964      UK 1.0594941 1.222604</span>
+<span class="co">#&gt; 6 1.166864 1.202672 1.0090420     5 1965      UK 1.1118025 1.329057</span></code></pre></div>
 <p>To prevent this behavior, set the <code>save.data</code> argument to <code>FALSE</code>.</p>
 </div>
 <div id="fitted-values" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fitted-values" class="anchor"></a>Fitted values</h3>
 <p>The fitted values of the response variable (<span class="math inline">\(y\)</span>) can be recovered with the <code>yhat</code> function. The <code>yhat</code> function gives values of the response variable on the natural (not logarithmic) scale.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../reference/yhat.html">yhat</a></span>(cdfit)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt;         1         2         3         4         5         6         7 </span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; 0.9984488 1.0290928 1.0549029 1.0876802 1.1336588 1.1700072 1.2024519 </span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt;         8         9        10        11        12        13        14 </span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; 1.2290870 1.2655446 1.3059428 1.3297192 1.3499453 1.3809883 1.4389875 </span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;        15        16        17        18        19        20        21 </span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; 1.4648710 1.4844027 1.5122725 1.5465547 1.5846036 1.6192823 1.6409475 </span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;        22        23        24        25        26        27        28 </span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; 1.6302700 1.6420764 1.6667102 1.7149290 1.7662026 1.8046970 1.8613175 </span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;        29        30        31        32        33        34        35 </span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; 1.9488290 2.0268435 2.0790024 2.0868558 2.0991403 2.1339300 2.1981937 </span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;        36        37        38        39        40        41        42 </span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; 2.2630577 2.3272956 2.4069151 2.4857405 2.5651582 2.6416620 2.7230636 </span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;        43        44        45        46        47        48        49 </span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 2.7911568 2.8619729 2.9484881 3.0418918 3.1316387 3.2331410 3.3080798 </span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt;        50        51 </span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; 3.3402799 3.4134805 </span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; attr(,"label")</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt; [1] "Fitted values"</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/yhat.html">yhat</a></span>(cdfit)
+<span class="co">#&gt;         1         2         3         4         5         6         7 </span>
+<span class="co">#&gt; 0.9984488 1.0290928 1.0549029 1.0876802 1.1336588 1.1700072 1.2024519 </span>
+<span class="co">#&gt;         8         9        10        11        12        13        14 </span>
+<span class="co">#&gt; 1.2290870 1.2655446 1.3059428 1.3297192 1.3499453 1.3809883 1.4389875 </span>
+<span class="co">#&gt;        15        16        17        18        19        20        21 </span>
+<span class="co">#&gt; 1.4648710 1.4844027 1.5122725 1.5465547 1.5846036 1.6192823 1.6409475 </span>
+<span class="co">#&gt;        22        23        24        25        26        27        28 </span>
+<span class="co">#&gt; 1.6302700 1.6420764 1.6667102 1.7149290 1.7662026 1.8046970 1.8613175 </span>
+<span class="co">#&gt;        29        30        31        32        33        34        35 </span>
+<span class="co">#&gt; 1.9488290 2.0268435 2.0790024 2.0868558 2.0991403 2.1339300 2.1981937 </span>
+<span class="co">#&gt;        36        37        38        39        40        41        42 </span>
+<span class="co">#&gt; 2.2630577 2.3272956 2.4069151 2.4857405 2.5651582 2.6416620 2.7230636 </span>
+<span class="co">#&gt;        43        44        45        46        47        48        49 </span>
+<span class="co">#&gt; 2.7911568 2.8619729 2.9484881 3.0418918 3.1316387 3.2331410 3.3080798 </span>
+<span class="co">#&gt;        50        51 </span>
+<span class="co">#&gt; 3.3402799 3.4134805 </span>
+<span class="co">#&gt; attr(,"label")</span>
+<span class="co">#&gt; [1] "Fitted values"</span></code></pre></div>
 <p>A graph comparing fitted and historical values can be created as shown below.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># EconUK %&gt;% </span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#   bind_cols(yhat(cdfit)) %&gt;% View</span></a></code></pre></div>
-</div>
-<div id="accounting-for-boundaries-and-constraints" class="section level3">
-<h3 class="hasAnchor">
-<a href="#accounting-for-boundaries-and-constraints" class="anchor"></a>Accounting for boundaries and constraints</h3>
-<p>The fitting functions have the capability to account for boundaries and constraints. For example, the simplest fitting function (<code>sfModel</code>) provides an option to constrain the fit with <span class="math inline">\(m = 1\)</span>, thereby assuming a Cobb-Douglas-type model where the output elasticity is constrained to the economically-meaningful value.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt;      logscale     scale     lambda         m</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; 1 -0.07143534 0.9310565 0.01775149 0.1076095</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK, <span class="dt">constrained =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt;     logscale     scale       lambda m</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; 1 -0.0646098 0.9374332 -0.002108252 1</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EconUK <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(<span class="kw"><a href="../reference/yhat.html">yhat</a></span>(cdfit) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/rlang/topics/set_names">set_names</a></span>(<span class="st">"yhat"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> iGDP), <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> yhat))</code></pre></div>
+<p><img src="MacroGrowth_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="resampling" class="section level2">
+<div id="accounting-for-boundaries-and-constraints" class="section level2">
 <h2 class="hasAnchor">
-<a href="#resampling" class="anchor"></a>Resampling</h2>
+<a href="#accounting-for-boundaries-and-constraints" class="anchor"></a>Accounting for boundaries and constraints</h2>
+<p>Most <code>*Model</code> fitting functions have the capability to account for boundaries and constraints. Constrained fitting behavior is controlled by the <code>constrained</code> argument to the <code>*Model</code> functions.</p>
+<div id="single-factor-model-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#single-factor-model-1" class="anchor"></a>Single-factor model</h3>
+<p>The simplest fitting function (<code>sfModel</code>) provides an option to constrain the fit with <span class="math inline">\(m = 1\)</span>, thereby assuming a Cobb-Douglas-type model where the output elasticity is constrained to the economically-meaningful value. By default, the single-factor model sets <code>constrained = FALSE</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;      logscale     scale     lambda         m</span>
+<span class="co">#&gt; 1 -0.07143534 0.9310565 0.01775149 0.1076095</span>
+<span class="kw"><a href="../reference/sfModel.html">sfModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK, <span class="dt">constrained =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;     logscale     scale       lambda m</span>
+<span class="co">#&gt; 1 -0.0646098 0.9374332 -0.002108252 1</span></code></pre></div>
+</div>
+<div id="cobb-douglas-model-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#cobb-douglas-model-1" class="anchor"></a>Cobb-Douglas model</h3>
+<p>The <code>cdModel</code> function always assumes constant returns to scale and fits with <span class="math inline">\(\displaystyle\sum_i \alpha_i = 1\)</span>. By default, <code>constrained = TRUE</code>, thereby assuring that <span class="math inline">\(0 \le \alpha_i \le 1\)</span>.</p>
+<p>To demonstrate fitting with constraints, we first use the <code>cdModel</code> function to fit the first 10 years (1960–1969) of <code>EconUK</code> and find <span class="math inline">\(\alpha_2 &lt; 0\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXu <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">1970</span>), <span class="dt">constrained =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       lambda     logscale     scale   alpha_1     alpha_2   alpha_3</span>
+<span class="co">#&gt; 1 -0.0145628 -0.005969941 0.9940478 0.6786932 -0.08222236 0.4035292</span></code></pre></div>
+<p>If, on the other hand, we use the default setting for the <code>constrained</code> argument, the best fit is found with <span class="math inline">\(\alpha_2 = 0\)</span> and different values for <code>\alpha_1</code> and <code>\alpha_3</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXu <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">1970</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;        lambda     logscale     scale   alpha_1 alpha_2   alpha_3</span>
+<span class="co">#&gt; 1 -0.01062977 -0.006428444 0.9935922 0.6500337       0 0.3499663</span></code></pre></div>
+</div>
+<div id="ces-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#ces-model" class="anchor"></a>CES model</h3>
+<p>Constraints on the CES model are considerably more complicated than constraints on single-factor or Cobb-Douglas models. When <code>constrained = TRUE</code>, the <code>cesModel</code> function restricts fitted parameters to the following economically-meaningful regions:</p>
+<ul>
+<li><span class="math inline">\(0 \le \delta, \, \delta_1 \le 1\)</span></li>
+<li>
+<span class="math inline">\(-1 \le \rho, \, \rho_1 &lt; \infty\)</span> (and, therefore, <span class="math inline">\(0 \le \sigma, \, \sigma_1 &lt; \infty\)</span>)</li>
+</ul>
+<p>The default value of <code>constrained</code> for the <code>cesModel</code> function is <code>TRUE</code>.</p>
+<p>To demonstrate, we fit the CES model unconstrained with capital (<code>iK</code>) and useful exergy (<code>iXu</code>) as the factors of production for the years 1980–1989 to find that <span class="math inline">\(\rho_1\)</span> is beyond the economically meaningful boundary.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iXu <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(Year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">1980</span> <span class="op">&amp;</span><span class="st"> </span>Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">1990</span>), <span class="dt">constrained =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       scale   logscale     lambda delta      delta_1      sigma_1</span>
+<span class="co">#&gt; 1 0.7380489 -0.3037452 0.01345999     1 2.035971e-10 -0.008234096</span>
+<span class="co">#&gt;       rho_1 sigma rho      alpha_1 alpha_2 alpha_3     sigma_12</span>
+<span class="co">#&gt; 1 -122.4462    NA  NA 2.035971e-10       1       0 -0.008234096</span></code></pre></div>
+<p>If, instead, we use the default value for <code>constrained</code> (<code>TRUE</code>), we obtain fitted parameters that fall within the economically-meaningful region or on the boundary of the economically-meaningful region, even if the quality of the fit is worse.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cesModel.html">cesModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iXu <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(Year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">1980</span> <span class="op">&amp;</span><span class="st"> </span>Year <span class="op">&lt;</span><span class="st"> </span><span class="dv">1990</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       scale   logscale     lambda delta   delta_1 sigma_1 rho_1 sigma rho</span>
+<span class="co">#&gt; 1 0.6767522 -0.3904502 0.01340815     1 0.5165425     Inf    -1   Inf  -1</span>
+<span class="co">#&gt;     alpha_1   alpha_2 alpha_3 sigma_12</span>
+<span class="co">#&gt; 1 0.5165425 0.4834575       0      Inf</span></code></pre></div>
+<p>The process for constrained fitting by the <code>cesModel</code> function is described in detail in the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>. In short, the full CES model and 20 boundary models are compared. The model with the smallest sum of squared errors (SSE) is returned by the <code>cesModel</code> function. Models with larger SSE are stored as a list in the <code>model.attempts</code> attribute of the <code>cesModel</code> object returned by the <code>cesModel</code> function. To retrieve the rejected boundary models, use the <code>attr</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attr</span>(cesfit, <span class="st">"model.attempts"</span>)[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       scale   logscale       lambda delta delta_1 sigma_1 rho_1 sigma rho</span>
+<span class="co">#&gt; 1 0.9374332 -0.0646098 -0.002108252     1       1      NA    NA    NA  NA</span>
+<span class="co">#&gt;   alpha_1 alpha_2 alpha_3 sigma_12</span>
+<span class="co">#&gt; 1       1       0       0       NA</span></code></pre></div>
+</div>
+<div id="linex-model-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#linex-model-1" class="anchor"></a>Linex model</h3>
+<p>The economically-meaningful region for Linex model parameters <span class="math inline">\(a_0\)</span> and <span class="math inline">\(a_1\)</span> is all real numbers. Thus, fitted parameter constraints have no meaning for the <code>linexModel</code> function, and <code>constrained</code> is not an argument to the <code>linexModel</code> function.</p>
+</div>
+</div>
+<div id="bootstrap-resampling" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bootstrap-resampling" class="anchor"></a>Bootstrap resampling</h2>
+<p>Bootstrapping is a statistical technique for estimating the precision of parameter estimates by exploring the distribution of estimates in many resampled data sets. Each resampled data set is a randomized version of the original sample data to which the desired analysis method can be applied.</p>
+<p>The coefficients from the fit to a resampled time series (the “resample coefficients”) will be different from the coefficients obtained from the fit to historical data (the “base coefficients”) and form a “resample distribution”. When these resample coefficients are highly variable, it is an indication that the data do not determine the parameter estimates very precisely. Even when the residuals are small and the model produces fitted values that track the observed data closely, it may still be difficult to estimate some or all of the model parameters precisely. Lack of precision can stem from a number of factors, including a poor model fit, low model sensitivity to one or more parameters, correlation among parameter estimates, variability unexplained by the predictors in the model, etc.</p>
+<p>To perform bootstrap resampling in the <code>EconGrowth</code> package, a model object must first be obtained by calling one of the <code>*Model</code> functions. For this example, we’ll use the <code>cdfit</code> object obtained above. The <code>resampledFits</code> function performs the resampling.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfits_rs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> cdfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
+<p>The <code>resampledFits</code> function returns a list with two named members: <code>coeffs</code> and <code>models</code>. <code>coeffs</code> is a data frame with <code>n + 1</code> rows. The first row contains fitted coefficients for the original model and has a <code>method</code> of <code>orig</code>. The remaining rows contain fitted coefficients for the resample fits, each with a different value for the <code>index</code> variable, and each with the <code>method</code> specified in the function call.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfits_rs<span class="op">$</span>coeffs
+<span class="co">#&gt; # A tibble: 6 x 8</span>
+<span class="co">#&gt;    lambda logscale scale alpha_1 alpha_2 alpha_3 method index</span>
+<span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
+<span class="co">#&gt; 1 0.0111  -0.00155 0.998   0.535   0.465       0 orig       1</span>
+<span class="co">#&gt; 2 0.0125  -0.00249 0.998   0.491   0.509       0 wild       1</span>
+<span class="co">#&gt; 3 0.00969 -0.00407 0.996   0.586   0.414       0 wild       2</span>
+<span class="co">#&gt; 4 0.0120   0.00618 1.01    0.503   0.497       0 wild       3</span>
+<span class="co">#&gt; 5 0.0130   0.00618 1.01    0.475   0.525       0 wild       4</span>
+<span class="co">#&gt; 6 0.00953 -0.0127  0.987   0.595   0.405       0 wild       5</span></code></pre></div>
+<p><code>models</code> is a list containing the model object for each resample fit.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Original fit</span>
+cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       lambda     logscale     scale  alpha_1  alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span>
+<span class="co"># First resampled model</span>
+cdfits_rs<span class="op">$</span>models[[<span class="dv">2</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;       lambda     logscale     scale   alpha_1   alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01250185 -0.002485416 0.9975177 0.4909497 0.5090503       0</span>
+<span class="co"># Last resampled model</span>
+cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
+<span class="co">#&gt;        lambda    logscale     scale   alpha_1   alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.009529688 -0.01273851 0.9873423 0.5945928 0.4054072       0</span></code></pre></div>
 </div>
 <div id="plotting-results" class="section level2">
 <h2 class="hasAnchor">
@@ -282,9 +393,11 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#data">Data</a></li>
       <li><a href="#macroeconomic-growth-models">Macroeconomic growth models</a></li>
-      <li><a href="#resampling">Resampling</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#fitting-examples">Fitting examples</a></li>
+      <li><a href="#accounting-for-boundaries-and-constraints">Accounting for boundaries and constraints</a></li>
+      <li><a href="#bootstrap-resampling">Bootstrap resampling</a></li>
       <li><a href="#plotting-results">Plotting results</a></li>
       <li><a href="#references">References</a></li>
       </ul>
