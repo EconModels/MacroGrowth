@@ -352,7 +352,7 @@ attr(cesfit, "model.attempts")[[1]] %>% naturalCoef()
 ### Linex model
 
 The economically-meaningful region for Linex model parameters $a_0$ and $a_1$ is all real numbers.
-Thus, fitted parameter constraints have no meaning for the `linexModel` function.
+Thus, fitted parameter constraints have no meaning for the `linexModel` function, and 
 `constrained` is not an argument to the `linexModel` function.
 
 
