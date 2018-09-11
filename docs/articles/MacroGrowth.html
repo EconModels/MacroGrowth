@@ -136,6 +136,7 @@
 <p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from the “Cautionary Tales” paper by Heun et al. <a href="http://doi.org/10.3390/en10020203" class="uri">http://doi.org/10.3390/en10020203</a>. The data frame <code>EconUK</code> is included in the <code>MacroGrowth</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(magrittr)
 <span class="kw">library</span>(rlang)
 <span class="kw">library</span>(tidyr)
 <span class="kw">library</span>(MacroGrowth)
@@ -228,15 +229,21 @@ cdfit
 <span class="co">#&gt;      logscale     scale      a_0      a_1      c_t</span>
 <span class="co">#&gt; 1 -0.06059558 0.9412038 1.121517 2.121094 1.891272</span></code></pre></div>
 <p>The <code>linexModel</code> function produces a <code>LINEXmodel</code> object.</p>
-<p>To recover the output elasticities from the Linex model, use the <code>fortify</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######## fortify is not found ? ######
-<span class="co"># fortify(linexfit)</span></code></pre></div>
+<p>In the Linex model, output elasticities are a function of time. To recover the output elasticities from the Linex model, use the <code>fortify</code> function. <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\gamma\)</span> are output elasticities for capital, labor, and energy, respectively.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/fortify">fortify</a></span>(linexfit))
+<span class="co">#&gt;       iGDP       iK        iL       iXp iYear    alpha      beta     gamma</span>
+<span class="co">#&gt; 1 1.000000 1.000000 1.0000000 1.0000000     0 2.243034 0.9995764 -2.242611</span>
+<span class="co">#&gt; 2 1.021542 1.040630 0.9952632 0.9964601     1 2.295505 1.0424762 -2.337981</span>
+<span class="co">#&gt; 3 1.039522 1.068350 0.9943625 1.0238378     2 2.359728 1.0083441 -2.368072</span>
+<span class="co">#&gt; 4 1.079728 1.102265 1.0002645 1.0594068     3 2.423711 0.9710197 -2.394730</span>
+<span class="co">#&gt; 5 1.140344 1.153710 1.0129718 1.0594941     4 2.450361 1.0323764 -2.482737</span>
+<span class="co">#&gt; 6 1.166864 1.202672 1.0090420 1.1118025     5 2.572463 0.9577238 -2.530187</span></code></pre></div>
 </div>
 <div id="metadata" class="section level3">
 <h3 class="hasAnchor">
 <a href="#metadata" class="anchor"></a>Metadata</h3>
-<p>By default the original economic data are saved as an attribute of the model object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(cdfit<span class="op">$</span>data)
+<p>By default the original economic data are saved as an attribute of the model object. Data can be recovered with the <code>getData</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../reference/getData.html">getData</a></span>(cdfit))
 <span class="co">#&gt;       iGDP       iK        iL iYear Year Country       iXp      iXu</span>
 <span class="co">#&gt; 1 1.000000 1.000000 1.0000000     0 1960      UK 1.0000000 1.000000</span>
 <span class="co">#&gt; 2 1.021542 1.040630 0.9952632     1 1961      UK 0.9964601 1.047619</span>
@@ -269,13 +276,6 @@ cdfit
 <span class="co">#&gt; 3.3402799 3.4134805 </span>
 <span class="co">#&gt; attr(,"label")</span>
 <span class="co">#&gt; [1] "Fitted values"</span></code></pre></div>
-<p>A graph comparing fitted and historical values can be created as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EconUK <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(<span class="kw"><a href="../reference/yhat.html">yhat</a></span>(cdfit) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/rlang/topics/set_names">set_names</a></span>(<span class="st">"yhat"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> iGDP), <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> yhat))</code></pre></div>
-<p><img src="MacroGrowth_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="accounting-for-boundaries-and-constraints" class="section level2">
@@ -351,14 +351,14 @@ cdfit
 <p>The <code>resampledFits</code> function returns a list with two named members: <code>coeffs</code> and <code>models</code>. <code>coeffs</code> is a data frame with <code>n + 1</code> rows. The first row contains fitted coefficients for the original model and has a <code>method</code> of <code>orig</code>. The remaining rows contain fitted coefficients for the resample fits, each with a different value for the <code>index</code> variable, and each with the <code>method</code> specified in the function call.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfits_rs<span class="op">$</span>coeffs
 <span class="co">#&gt; # A tibble: 6 x 8</span>
-<span class="co">#&gt;    lambda logscale scale alpha_1 alpha_2 alpha_3 method index</span>
-<span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
-<span class="co">#&gt; 1 0.0111  -0.00155 0.998   0.535   0.465       0 orig       1</span>
-<span class="co">#&gt; 2 0.0125  -0.00249 0.998   0.491   0.509       0 wild       1</span>
-<span class="co">#&gt; 3 0.00969 -0.00407 0.996   0.586   0.414       0 wild       2</span>
-<span class="co">#&gt; 4 0.0120   0.00618 1.01    0.503   0.497       0 wild       3</span>
-<span class="co">#&gt; 5 0.0130   0.00618 1.01    0.475   0.525       0 wild       4</span>
-<span class="co">#&gt; 6 0.00953 -0.0127  0.987   0.595   0.405       0 wild       5</span></code></pre></div>
+<span class="co">#&gt;   lambda  logscale scale alpha_1 alpha_2 alpha_3 method index</span>
+<span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
+<span class="co">#&gt; 1 0.0111 -0.00155  0.998   0.535   0.465       0 orig       1</span>
+<span class="co">#&gt; 2 0.0114 -0.00215  0.998   0.530   0.470       0 wild       1</span>
+<span class="co">#&gt; 3 0.0113 -0.00181  0.998   0.531   0.469       0 wild       2</span>
+<span class="co">#&gt; 4 0.0123  0.00929  1.01    0.495   0.505       0 wild       3</span>
+<span class="co">#&gt; 5 0.0118  0.00537  1.01    0.510   0.490       0 wild       4</span>
+<span class="co">#&gt; 6 0.0115 -0.000565 0.999   0.524   0.476       0 wild       5</span></code></pre></div>
 <p><code>models</code> is a list containing the model object for each resample fit.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Original fit</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
@@ -367,15 +367,54 @@ cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span clas
 <span class="co"># First resampled model</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">2</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
 <span class="co">#&gt;       lambda     logscale     scale   alpha_1   alpha_2 alpha_3</span>
-<span class="co">#&gt; 1 0.01250185 -0.002485416 0.9975177 0.4909497 0.5090503       0</span>
+<span class="co">#&gt; 1 0.01138942 -0.002149619 0.9978527 0.5299116 0.4700884       0</span>
 <span class="co"># Last resampled model</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
-<span class="co">#&gt;        lambda    logscale     scale   alpha_1   alpha_2 alpha_3</span>
-<span class="co">#&gt; 1 0.009529688 -0.01273851 0.9873423 0.5945928 0.4054072       0</span></code></pre></div>
+<span class="co">#&gt;       lambda      logscale     scale   alpha_1   alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01151031 -0.0005649694 0.9994352 0.5237481 0.4762519       0</span></code></pre></div>
+<p>The <code>resampledFits</code> function knows about models fitted with any of the <code>*Model</code> functions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Doesn't work at the moment.</span>
+<span class="co"># resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]</span>
+<span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> cesfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]
+<span class="co">#&gt; # A tibble: 6 x 15</span>
+<span class="co">#&gt;   scale logscale lambda delta delta_1 sigma_1 rho_1 sigma   rho alpha_1</span>
+<span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 0.979  -0.0213 0.0185     1   0.487   0.452  1.21    NA    NA   0.487</span>
+<span class="co">#&gt; 2 0.968  -0.0321 0.0201     1   0.502   0.368  1.72    NA    NA   0.502</span>
+<span class="co">#&gt; 3 0.970  -0.0303 0.0202     1   0.512   0.349  1.86    NA    NA   0.512</span>
+<span class="co">#&gt; 4 0.956  -0.0454 0.0197     1   0.535   0.368  1.72    NA    NA   0.535</span>
+<span class="co">#&gt; 5 0.978  -0.0222 0.0200     1   0.478   0.389  1.57    NA    NA   0.478</span>
+<span class="co">#&gt; 6 0.989  -0.0110 0.0196     1   0.465   0.405  1.47    NA    NA   0.465</span>
+<span class="co">#&gt; # ... with 5 more variables: alpha_2 &lt;dbl&gt;, alpha_3 &lt;dbl&gt;, sigma_12 &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   method &lt;chr&gt;, index &lt;int&gt;</span>
+<span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> linexfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]
+<span class="co">#&gt; # A tibble: 6 x 7</span>
+<span class="co">#&gt;   logscale scale   a_0   a_1   c_t method index</span>
+<span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
+<span class="co">#&gt; 1  -0.0606 0.941  1.12  2.12  1.89 orig       1</span>
+<span class="co">#&gt; 2  -0.0169 0.983  1.17  2.46  2.10 wild       1</span>
+<span class="co">#&gt; 3  -0.0484 0.953  1.17  2.36  2.02 wild       2</span>
+<span class="co">#&gt; 4  -0.0564 0.945  1.11  2.11  1.90 wild       3</span>
+<span class="co">#&gt; 5  -0.0684 0.934  1.14  2.17  1.90 wild       4</span>
+<span class="co">#&gt; 6  -0.0460 0.955  1.14  2.21  1.94 wild       5</span></code></pre></div>
 </div>
 <div id="plotting-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-results" class="anchor"></a>Plotting results</h2>
+<p>Graphs comparing fitted and historical values can be created as shown below for the 2-factor Cobb-Douglas model fitted above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(EconUK, <span class="kw"><a href="../reference/yhat.html">yhat</a></span>(cdfit) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/magrittr/topics/aliases">set_names</a></span>(<span class="st">"yhat"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="co"># Add historical data as data points</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> iGDP), <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="co"># Add the fitted model as a line</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> yhat))</code></pre></div>
+<p><img src="MacroGrowth_files/figure-html/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>For the purposes of displaying resampled results from the three-factor-of-production Cobb-Douglas model with constant returns to scale, fitted output elasticies (<span class="math inline">\(\alpha_i\)</span>) can be shown in a ternary plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This doesn't work. I'm probably using triPlot wrong.</span>
+<span class="co"># cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %&gt;%</span>
+<span class="co">#   resampledFits(method = "wild", n = 20) %&gt;%</span>
+<span class="co">#   extract2("coeffs") %&gt;%</span>
+<span class="co">#   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))</span></code></pre></div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">

@@ -10,7 +10,7 @@
 \item{model}{a LINEX model}
 
 \item{data}{a data frame.  Typically this is not needed
-since the data are extra from \code{model}.  But this allows
+since the data are extracted from \code{model}.  But this allows
 a drop in replacement data set, if desired.}
 
 \item{...}{additional arguments (not currently used)}
