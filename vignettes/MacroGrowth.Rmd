@@ -15,6 +15,9 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(dplyr)
+library(ggplot2)
+library(rlang)
+library(tidyr)
 library(MacroGrowth)
 ```
 
@@ -90,6 +93,9 @@ The data frame `EconUK` is included in the `MacroGrowth` package.
 
 ```{r}
 library(dplyr)
+library(ggplot2)
+library(rlang)
+library(tidyr)
 library(MacroGrowth)
 head(EconUK)
 ```
@@ -97,7 +103,7 @@ head(EconUK)
 The `EconUK` data frame contains indexed
 GDP, capital, labor, and two types of energy data
 (primary exergy and useful exergy). 
-All economic data series are indexed by ratio to an initial year (1960),
+All economic and energy data series are indexed by ratio to an initial year (1960),
 such that all quantities are 1 in 1960.
 Time is indexed by difference to the initial year, such that 1960 is year 0.
 The prefix `i` indicates an indexed variable.
@@ -110,7 +116,7 @@ The functions in `MacroGrowth` can fit indexed or non-indexed data.
 When data are indexed as shown in the `EconUK` data frame, 
 the fitted value of the $\theta$ parameter is expected to be close to 1.
 When data are *not* indexed, the $\theta$ parameter will likely be far from 1,
-because it assumes the task of unit conversion 
+because $\theta$ assumes the task of unit conversion 
 from factors of production in various functional forms
 (on the right side of the economic model)
 to economic output
@@ -122,8 +128,6 @@ to economic output
 To fit a model to macroeconomic data, use one of the `*Model` functions
 in the `MacroGrowth` pacakge.
 
-**** Say what type of object each model produces ****
-
 
 ### Single-factor model
 
@@ -133,6 +137,8 @@ To fit a single-factor model, use the `sfModel` function.
 sffit <- sfModel(formula = iGDP ~ iK + iYear, data = EconUK)
 sffit
 ```
+
+The `sfModel` function produces an `SFmodel` object.
 
 In all `*Model` functions, 
 a formula of the form `y ~ x1 + x2 + x3 + t` 
@@ -174,6 +180,8 @@ cdfit <- cdModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
 cdfit
 ```
 
+The `cdModel` function produces a `CDEmodel` object.
+
 In the above example, `iGDP ~ iK + iL + iYear` indicates that
 the model is to be fitted with 
 indexed GDP (iGDP) as the response variable,
@@ -194,6 +202,8 @@ cesfit <- cesModel(formula = iGDP ~ iK + iL + iYear, data = EconUK)
 naturalCoef(cesfit)
 ```
 
+The `cesModel` function produces a `cesModel` object.
+
 Note that output elasticities ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
 are calculated by the `naturalCoef` function.
 Equations for the output elasticities are given in Appendix B 
@@ -213,6 +223,8 @@ linexfit <- linexModel(formula = iGDP ~ iK + iL + iXp + iYear, data = EconUK)
 naturalCoef(linexfit)
 ```
 
+The `linexModel` function produces a `LINEXmodel` object.
+
 To recover the output elasticities from the Linex model, 
 use the `fortify` function.
 
@@ -222,6 +234,7 @@ use the `fortify` function.
 ```
 
 ### Metadata
+
 By default the original economic data are saved 
 as an attribute of the model object.
 
@@ -243,25 +256,105 @@ yhat(cdfit)
 
 A graph comparing fitted and historical values can be created as shown below.
 
-```{r}
-# EconUK %>% 
-#   bind_cols(yhat(cdfit)) %>% View
+```{r, fig.width = 6, fig.align = "center"}
+EconUK %>%
+  bind_cols(yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = Year, y = iGDP), shape = 1) +
+  geom_line(mapping = aes(x = Year, y = yhat))
 
 ```
 
 
-### Accounting for boundaries and constraints
+## Accounting for boundaries and constraints
 
-The fitting functions have the capability to account for boundaries and constraints.
-For example, the simplest fitting function (`sfModel`)
+The `*Model` fitting functions have the capability to account for boundaries and constraints.
+
+
+### Single-factor model
+
+The simplest fitting function (`sfModel`)
 provides an option to constrain the fit with $m = 1$,
 thereby assuming a Cobb-Douglas-type model where the output elasticity 
 is constrained to the economically-meaningful value.
+By default, the single-factor model sets `constrained = FALSE`.
 
 ```{r}
 sfModel(formula = iGDP ~ iK + iYear, data = EconUK) %>% naturalCoef()
 sfModel(formula = iGDP ~ iK + iYear, data = EconUK, constrained = TRUE) %>% naturalCoef()
 ```
+
+
+### Cobb-Douglas model
+
+The `cdModel` function always assumes constant returns to scale and
+fits with $\displaystyle\sum_i \alpha_i = 1$.
+By default, `constrained = TRUE`, thereby assuring that $0 \le \alpha_i \le 1$.
+
+To demonstrate fitting with constraints, 
+we first use the `cdModel` function to fit the first 10 years (1960--1969) of `EconUK`
+and find $\alpha_2 < 0$.
+
+```{r}
+cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK %>% filter(Year < 1970), constrained = FALSE) %>% naturalCoef()
+```
+
+If, on the other hand, we use the default setting for the `constrained` argument,
+the best fit is found with $\alpha_2 = 0$ and different values for `\alpha_1` and `\alpha_3`.
+
+```{r}
+cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK %>% filter(Year < 1970)) %>% naturalCoef()
+```
+
+
+### CES model
+
+Constraints on the CES model are considerably more complicated than constraints on single-factor or Cobb-Douglas models.
+When `constrained = TRUE`, the `cesModel` function restricts 
+fitted parameters to the following economically-meaningful regions:
+
+* $0 \le \delta, \, \delta_1 \le 1$
+* $-1 \le \rho, \, \rho_1 < \infty$ (and, therefore, $0 \le \sigma, \, \sigma_1 < \infty$)
+
+The default value of `constrained` for the `cesModel` function is `TRUE`.
+
+To demonstrate, we fit the CES model unconstrained 
+with capital (`iK`) and useful exergy (`iXu`) as the factors of production
+for the years 1980--1989
+to find that $\rho_1$ is beyond the economically meaningful boundary.
+
+```{r}
+cesModel(formula = iGDP ~ iK + iXu + iYear, data = EconUK %>% filter(Year >= 1980 & Year < 1990), constrained = FALSE) %>% naturalCoef()
+```
+
+If, instead, we use the default value for `constrained` (`TRUE`), 
+we obtain fitted parameters that fall within the economically-meaningful region
+or on the boundary of the economically-meaningful region,
+even if the quality of the fit is worse.
+
+```{r}
+cesModel(formula = iGDP ~ iK + iXu + iYear, data = EconUK %>% filter(Year >= 1980 & Year < 1990)) %>% naturalCoef()
+```
+
+The process for constrained fitting by the `cesModel` function is described in detail 
+in the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+In short, the full CES model and 20 boundary models are compared. 
+The model with the smallest sum of squared errors (SSE) is returned by the `cesModel` function.
+Models with larger SSE are stored as a list in the `model.attempts` attribute of the `cesModel` object
+returned by the `cesModel` function.
+To retrieve the rejected boundary models, use the `attr` function.
+
+```{r}
+attr(cesfit, "model.attempts")[[1]] %>% naturalCoef()
+```
+
+
+### Linex model
+
+The economically-meaningful region for Linex model parameters $a_0$ and $a_1$ is all real numbers.
+Thus, fitted parameter constraints have no meaning for the `linexModel` function.
+`constrained` is not an argument to the `linexModel` function.
+
 
 ## Resampling
 
