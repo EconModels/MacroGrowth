@@ -25,7 +25,7 @@ growth models to data.
 `MacroGrowth` has several desirable features for economic modelers:
 
 * Functions that fit several different macroeconomic growth models.
-* Functions fit along 
+* Functions that fit along 
 boundaries of the economically-meaningful region, 
 thereby ensuring that the best possible fit is found.
 * Options to perform residual resampling, 
@@ -39,23 +39,6 @@ Cautionary Tales for Policymaking Using Aggregate Production Functions".
 *Energies*, pp. 1-44, 10 (203), 2017.
 <http://doi.org/10.3390/en10020203>.
 
-## Data
-
-The starting point for any fitting process is macroeconomic data.
-For this vignette, we'll use a subset of the UK macroeconomic data 
-from the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
-
-```{r}
-library(dplyr)
-library(MacroGrowth)
-head(EconUK)
-```
-
-The `EconUK` data frame contains 
-GDP, capital, labor, and two types of energy data
-(primary exergy and useful exergy). 
-All time series indexed by ratio to an initial year (1960),
-such that all quantities are 1 in 1960.
 
 ## Macroeconomic growth models
 
@@ -79,24 +62,59 @@ In the above equations:
 * $\lambda$ is the Solow residual;
 * $t$ is time;
 * $x_1$, $x_2$, and $x_3$ are factors of production;
-* $\alpha_1$, $\alpha_2$, and $\alpha_3$ are output elasticities 
-for the corresponding factors of production
-in the Cobb-Douglas growth model;
+* $\alpha_1$, $\alpha_2$, and $\alpha_3$ are fitted output elasticities 
+  for the corresponding factors of production
+  in the Cobb-Douglas growth model;
 * $\delta$ and $\delta_1$ are fitted share parameters for the CES growth model;
-* $\rho$ and $\rho_1$ are fitted parameters related the elasticity of substitution; and
+* $\rho$ and $\rho_1$ are fitted parameters related the elasticity of substitution 
+  in the CES model; and
 * $a_0$ and $a_1$ are fitted coefficients in the Linex production function.
 
-Also, 
-$\sigma$ and $\sigma_1$ are elasticities of substitution for the CES growth model,
-given by
-$\sigma = \frac{1}{1 + \rho}$ and $\sigma_1 = \frac{1}{1 + \rho_1}$.
-$c_t$ is the ratio of Linex coefficients,
+In the CES model, the elasticity of substitution between the ($x_1$, $x_2$) pair and $x_3$
+is given by $\sigma = \frac{1}{1 + \rho}$.
+The elasticity of substitution between $x_1$ and $x_2$ is given by 
+$\sigma_1 = \frac{1}{1 + \rho_1}$.
+
+The Linex model is usually presented with $a_0$ (as above) and $c_t$ coefficients.
+$c_t$ is the ratio of Linex fitted coefficients,
 given by 
 $c_t = \frac{a_1}{a_0}$.
 
 
-### Indexing
+## Data
 
+The starting point for any fitting process is macroeconomic data.
+For this vignette, we'll use a subset of the UK macroeconomic data 
+from the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+The data frame `EconUK` is included in the `MacroGrowth` package.
+
+```{r}
+library(dplyr)
+library(MacroGrowth)
+head(EconUK)
+```
+
+The `EconUK` data frame contains indexed
+GDP, capital, labor, and two types of energy data
+(primary exergy and useful exergy). 
+All economic data series are indexed by ratio to an initial year (1960),
+such that all quantities are 1 in 1960.
+Time is indexed by difference to the initial year, such that 1960 is year 0.
+The prefix `i` indicates an indexed variable.
+`iK` is indexed capital stock,
+`iL` is indexed labor,
+`iXp` is indexed primary exergy, and
+`iXu` is indexed useful exergy.
+
+The functions in `MacroGrowth` can fit indexed or non-indexed data.
+When data are indexed as shown in the `EconUK` data frame, 
+the fitted value of the $\theta$ parameter is expected to be close to 1.
+When data are *not* indexed, the $\theta$ parameter will likely be far from 1,
+because it assumes the task of unit conversion 
+from factors of production in various functional forms
+(on the right side of the economic model)
+to economic output
+(on the left side of the economic model).
 
 
 ### Fitting examples
