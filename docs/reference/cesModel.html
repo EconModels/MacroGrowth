@@ -32,7 +32,9 @@
 
 <meta property="og:title" content="Fitting CES models — cesModel" />
 
-<meta property="og:description" content="This function fits a CES model" />
+<meta property="og:description" content="This function fits a CES model with 2 or 3 factors of production.
+In principle, the CES model can handle up to 4 factors of production,
+but this is not supported by cesModel() at this time." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -110,7 +112,9 @@
 
     <div class="ref-description">
     
-    <p>This function fits a CES model</p>
+    <p>This function fits a CES model with 2 or 3 factors of production.
+In principle, the CES model can handle up to 4 factors of production,
+but this is not supported by <code>cesModel()</code> at this time.</p>
     
     </div>
 
@@ -127,7 +131,7 @@
     <tr>
       <th>formula</th>
       <td><p>a formula of the form <code>response ~ a + b + c + d + time</code>.
-<code>c</code> and <code>d</code> are optional.</p></td>
+<code>c</code> and <code>d</code> are optional.  The use of <code>d</code> had not yet been implemented.</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -156,7 +160,9 @@ the components can be specified individually as character strings.</p></td>
     <tr>
       <th>x4</th>
       <td><p>instead of specifying a formula, expressions for
-the components can be specified individually as character strings.</p></td>
+the components can be specified individually as character strings.
+Currently only 2 or 3 factors of production are supported.  This is a
+placeholder for potential expansion of the package.</p></td>
     </tr>
     <tr>
       <th>time</th>
@@ -246,7 +252,12 @@ will not work.</p>
   <span class='fu'>cesModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"ZM"</span>), <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>1</span>,<span class='fl'>2</span>))
   <span class='fu'>cesModel</span>(<span class='kw'>response</span><span class='kw'>=</span><span class='st'>"iGDP"</span>, <span class='kw'>x1</span><span class='kw'>=</span><span class='st'>"iK"</span>, <span class='kw'>x2</span><span class='kw'>=</span><span class='st'>"iL"</span>, <span class='kw'>x3</span><span class='kw'>=</span><span class='st'>"iQp"</span>, <span class='kw'>time</span><span class='kw'>=</span><span class='st'>"iYear"</span>,
            <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Calvin</span>, <span class='no'>Country</span><span class='kw'>==</span><span class='st'>"ZM"</span>), <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3</span>,<span class='fl'>1</span>,<span class='fl'>2</span>))
-}</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div></pre>
+}</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: dplyr</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

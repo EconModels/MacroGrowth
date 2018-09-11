@@ -13,7 +13,7 @@ cesModel(formula, data, response, x1 = NULL, x2 = NULL, x3 = NULL,
 }
 \arguments{
 \item{formula}{a formula of the form \code{response ~ a + b + c + d + time}.
-\code{c} and \code{d} are optional.}
+\code{c} and \code{d} are optional.  The use of \code{d} had not yet been implemented.}
 
 \item{data}{a data frame, in which to evaluate the formula.}
 
@@ -30,7 +30,9 @@ the components can be specified individually as character strings.}
 the components can be specified individually as character strings.}
 
 \item{x4}{instead of specifying a formula, expressions for
-the components can be specified individually as character strings.}
+the components can be specified individually as character strings.
+Currently only 2 or 3 factors of production are supported.  This is a
+placeholder for potential expansion of the package.}
 
 \item{time}{instead of specifying a formula, expressions for
 the components can be specified individually as character strings.}
@@ -82,7 +84,9 @@ Default is \code{TRUE}.}
 a cesEst model with additional information attached as attributes.
 }
 \description{
-This function fits a CES model
+This function fits a CES model with 2 or 3 factors of production.
+In principle, the CES model can handle up to 4 factors of production,
+but this is not supported by \code{cesModel()} at this time.
 }
 \note{
 For now the components in \code{f} (or the arguments \code{response},
