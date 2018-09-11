@@ -1,9 +1,12 @@
 
 #' Fitting CES models
 #'
-#' This function fits a CES model
+#' This function fits a CES model with 2 or 3 factors of production.
+#' In principle, the CES model can handle up to 4 factors of production,
+#' but this is not supported by `cesModel()` at this time.
+#'
 #' @param formula a formula of the form `response ~ a + b + c + d + time`.
-#' `c` and `d` are optional.
+#' `c` and `d` are optional.  The use of `d` had not yet been implemented.
 #' @param data a data frame, in which to evaluate the formula.
 #' @param response instead of specifying a formula, expressions for
 #' the components can be specified individually.
@@ -14,7 +17,9 @@
 #' @param x3 instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param x4 instead of specifying a formula, expressions for
-#' the components can be specified individually as character strings.
+#'   the components can be specified individually as character strings.
+#'   Currently only 2 or 3 factors of production are supported.  This is a
+#'   placeholder for potential expansion of the package.
 #' @param time instead of specifying a formula, expressions for
 #' the components can be specified individually as character strings.
 #' @param nest a permutation (a,b,c,d) of the integers 1 through 4.

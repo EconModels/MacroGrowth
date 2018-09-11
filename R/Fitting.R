@@ -645,7 +645,9 @@ CDcoefNames <- list(
 #'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
 #'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
+#' @keywords internal
 #' @examples
+#'
 #' US <- subset(Calvin, Country=="US")
 #' cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
 #' cd2Model(iGDP ~ iK + iL + iYear, data=US)

@@ -5,6 +5,7 @@
 #' since the data are extra from `model`.  But this allows
 #' a drop in replacement data set, if desired.
 #' @param ... additional arguments (not currently used)
+#' @keywords internal
 #' @export
 #'
 fortify.LINEXmodel <- function(model, data, ...) {
