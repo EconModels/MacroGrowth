@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 )
 library(dplyr)
 library(ggplot2)
+library(magrittr)
 library(rlang)
 library(tidyr)
 library(MacroGrowth)
@@ -94,6 +95,7 @@ The data frame `EconUK` is included in the `MacroGrowth` package.
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(magrittr)
 library(rlang)
 library(tidyr)
 library(MacroGrowth)
@@ -254,17 +256,6 @@ on the natural (not logarithmic) scale.
 yhat(cdfit)
 ```
 
-A graph comparing fitted and historical values can be created as shown below.
-
-```{r, fig.width = 6, fig.align = "center"}
-EconUK %>%
-  bind_cols(yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>% 
-  ggplot() + 
-  geom_point(mapping = aes(x = Year, y = iGDP), shape = 1) +
-  geom_line(mapping = aes(x = Year, y = yhat))
-
-```
-
 
 ## Accounting for boundaries and constraints
 
@@ -408,10 +399,44 @@ cdfits_rs$models[[2]] %>% naturalCoef()
 cdfits_rs$models[[6]] %>% naturalCoef()
 ```
 
+The `resampledFits` function knows about models fitted with any of the `*Model` functions.
 
+```{r}
+# Doesn't work at the moment.
+# resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
+resampledFits(model = cesfit, method = "wild", n = 5)[["coeffs"]]
+resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
+```
 
 
 ## Plotting results
+
+Graphs comparing fitted and historical values can be created as shown below for the 2-factor 
+Cobb-Douglas model fitted above.
+
+```{r, fig.width = 6, fig.align = "center"}
+bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>% 
+  ggplot() + 
+  # Add historical data as data points
+  geom_point(mapping = aes(x = Year, y = iGDP), shape = 1) +
+  # Add the fitted model as a line
+  geom_line(mapping = aes(x = Year, y = yhat))
+```
+
+
+For the purposes of displaying resampled results from the 
+three-factor-of-production Cobb-Douglas model with constant returns to scale,
+fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
+
+```{r}
+# This doesn't work. I'm probably using triPlot wrong.
+# cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
+#   resampledFits(method = "wild", n = 20) %>%
+#   extract2("coeffs") %>%
+#   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
+
+```
+
 
 ## References
 
