@@ -3,8 +3,8 @@
 
 # MacroGrowth
 
-The MacroGrowth package provides sophisticated tools for fitting
-macroeconomic growth models to data. MacroGrowth has several desirable
+The `MacroGrowth` package provides sophisticated tools for fitting
+macroeconomic growth models to data. `MacroGrowth` has several desirable
 features for economic modelers:
 
   - Functions that fit several different macroeconomic growth models.
@@ -14,22 +14,18 @@ features for economic modelers:
     assess the variability of estimated parameters.
   - A consistent formula-based interface to fitting functions.
 
-The functions in this package were developed for and used first in the
-paper Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and
-M. Sakai. “From Theory to Econometrics to Energy Policy: Cautionary
-Tales for Policymaking Using Aggregate Production Functions”.
-*Energies*, pp. 1-44, 10 (203), 2017.
-<http://doi.org/10.3390/en10020203>.
+The functions in this package were developed for and used first in Heun
+et al. (2017).
 
 ## Installation
 
-You can install MacroGrowth from github with:
+You can install `MacroGrowth` from github with:
 
 ``` r
 # install devtools if not already installed
 # install.packages("devtools")
 devtools::install_github("EconModels/MacroGrowth")
-# To get vignettes built locally, use
+# To build vignettes locally, use
 devtools::install_github("EconModels/MacroGrowth", build_vignettes = TRUE)
 ```
 
@@ -37,3 +33,19 @@ devtools::install_github("EconModels/MacroGrowth", build_vignettes = TRUE)
 
 Find more information, including vignettes and function documentation at
 <https://econmodels.github.io/MacroGrowth/>
+
+## References
+
+<div id="refs" class="references">
+
+<div id="ref-Heun:2017">
+
+Heun, Matthew K., João Santos, Paul E. Brockway, Randall J. Pruim, Tiago
+Domingos, and Marco Sakai. 2017. “From Theory to Econometrics to Energy
+Policy: Cautionary Tales for Policymaking Using Aggregate Production
+Functions.” *Energies* 10 (203):1–44.
+<https://doi.org/10.3390/en10020203>.
+
+</div>
+
+</div>
