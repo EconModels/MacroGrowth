@@ -271,6 +271,28 @@ yhat(cdfit)
 ```
 
 
+### Residuals
+
+Residuals for any model can be recovered by the `resid` function.
+**** What is the "std" attribute doing here? Should we get rid of it? ****
+
+```{r}
+resid(cdfit)
+```
+
+The `resid` function gives residuals in log space
+(where the model was fitted).
+
+
+### Sum of squared errors (SSE)
+
+The sum of squared errors (SSE) for any model can be calculated by the following code.
+
+```{r}
+sum(resid(cdfit)^2)
+```
+
+
 ## Accounting for boundaries and constraints
 
 Most `*Model` fitting functions have the capability to account for boundaries and constraints.
@@ -425,8 +447,11 @@ resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
 
 ## Plotting results
 
-Graphs comparing fitted and historical values can be created as shown below for the 2-factor 
-Cobb-Douglas model fitted above.
+Graphs comparing fitted and historical values 
+are often helpful for visualizing 
+model performance. 
+The following code provides an example 
+using the Cobb-Douglas model fitted above.
 
 ```{r, fig.width = 6, fig.align = "center"}
 bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>% 
@@ -436,7 +461,6 @@ bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>%
   # Add the fitted model as a line
   geom_line(mapping = aes(x = Year, y = yhat))
 ```
-
 
 For the purposes of displaying resampled results from the 
 three-factor-of-production Cobb-Douglas model with constant returns to scale,
@@ -450,6 +474,15 @@ fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 #   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
 
 ```
+
+
+## Conclusion
+
+The `MacroGrowth` package provides functions that 
+streamline both 
+fitting processes (with `*Model` functions) and
+bootstrap resampling (with the `resampledFits` function)
+for several macroeconomic growth models. 
 
 
 ## References
