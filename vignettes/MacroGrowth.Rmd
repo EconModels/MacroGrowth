@@ -2,6 +2,7 @@
 title: "Using the MacroGrowth package"
 author: "Matthew Kuperus Heun"
 date: "`r Sys.Date()`"
+bibliography: References.bib
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -36,12 +37,8 @@ thereby ensuring that the best possible fit is found.
 thereby providing a way to assess the variability of estimated parameters.
 * A consistent formula-based interface to fitting functions.
 
-The functions in this package were developed for and used first in the paper
-Heun, M.K., J. Santos, P.E. Brockway, R. Pruim, T. Domingos, and M. Sakai.
-"From Theory to Econometrics to Energy Policy: 
-Cautionary Tales for Policymaking Using Aggregate Production Functions".
-*Energies*, pp. 1-44, 10 (203), 2017.
-<http://doi.org/10.3390/en10020203>.
+The functions in this package were developed for and used first in 
+Heun et al. [-@Heun:2017].
 
 
 ## Macroeconomic growth models
@@ -89,7 +86,7 @@ $c_t = \frac{a_1}{a_0}$.
 
 The starting point for any fitting process is macroeconomic data.
 For this vignette, we'll use a subset of the UK macroeconomic data 
-from the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+from Heun et al. [-@Heun:2017].
 The data frame `EconUK` is included in the `MacroGrowth` package.
 
 ```{r}
@@ -196,6 +193,9 @@ The coefficients of the model can be recovered with the `naturalCoef` function.
 naturalCoef(cdfit)
 ```
 
+
+### CES model
+
 For the CES production function, use the `cesModel` function 
 with two or three factors of production.
 
@@ -209,7 +209,14 @@ The `cesModel` function produces a `cesModel` object.
 Note that output elasticities ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
 are calculated by the `naturalCoef` function.
 Equations for the output elasticities are given in Appendix B 
-of the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+of Heun et al. [-@Heun:2017].
+
+Also note that the `cesModel` function repeatedly calls 
+the excellent `cesEst` function from the `micEconCES` pacakge.
+For more details on the `cesEst` function,
+see Henningsen and Henningsen [-@Henningsen:2011td].
+For more details on the fitting algorithm employed by `cesModel`,
+see Heun et al. [-@Heun:2017].
 
 
 ### Linex model
@@ -237,6 +244,9 @@ for capital, labor, and energy, respectively.
 head(fortify(linexfit))
 ```
 
+Linex model output elasticities are given by Equation 9 in Warr and Ayres [-@Warr:2012cg].
+
+
 ### Metadata
 
 By default the original economic data are saved 
@@ -246,6 +256,7 @@ Data can be recovered with the `getData` function.
 ```{r}
 head(getData(cdfit))
 ```
+
 To prevent this behavior, set the `save.data` argument to `FALSE`.
 
 
@@ -332,7 +343,7 @@ cesModel(formula = iGDP ~ iK + iXu + iYear, data = EconUK %>% filter(Year >= 198
 ```
 
 The process for constrained fitting by the `cesModel` function is described in detail 
-in the "Cautionary Tales" paper by Heun et al. <http://doi.org/10.3390/en10020203>.
+in Heun et al. [-@Heun:2017].
 In short, the full CES model and 20 boundary models are compared. 
 The model with the smallest sum of squared errors (SSE) is returned by the `cesModel` function.
 Models with larger SSE are stored as a list in the `model.attempts` attribute of the `cesModel` object
@@ -442,9 +453,3 @@ fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 
 
 ## References
-
-* cesEst/Henningsen and Henningsen
-* Cautionary tales paper
-
-
-
