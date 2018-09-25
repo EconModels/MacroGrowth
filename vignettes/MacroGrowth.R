@@ -98,8 +98,7 @@ cdfits_rs$models[[2]] %>% naturalCoef()
 cdfits_rs$models[[6]] %>% naturalCoef()
 
 ## ------------------------------------------------------------------------
-# Doesn't work at the moment.
-# resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
+resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = cesfit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
 
@@ -111,9 +110,14 @@ bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>%
   # Add the fitted model as a line
   geom_line(mapping = aes(x = Year, y = yhat))
 
-## ------------------------------------------------------------------------
-cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
-   resampledFits(method = "wild", n = 20) %>%
-   extract2("coeffs") %>%
-   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
+## ---- fig.width = 3, fig.align = "center"--------------------------------
+triData <- cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
+  resampledFits(method = "wild", n = 20) %>%
+  extract2("coeffs")
+
+triPlot(data = triData %>% filter(method == "wild"),
+        mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3)) +
+  geom_point(data = triData %>% filter(method == "orig"),
+             mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3),
+             color = "red", alpha = 1, size = 4, shape = 10, stat = "triangle")
 

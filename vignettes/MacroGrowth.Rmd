@@ -447,13 +447,9 @@ The `resampledFits` function knows about models fitted with any of the `*Model` 
 
 ```{r}
 resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
-```
-
-```{r}
 resampledFits(model = cesfit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
 ```
-
 
 ## Plotting results
 
