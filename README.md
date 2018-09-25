@@ -3,7 +3,7 @@
 
 # MacroGrowth
 
-The `MacroGrowth` package provides sophisticated tools for fitting
+The `R` package `MacroGrowth` provides sophisticated tools for fitting
 macroeconomic growth models to data. `MacroGrowth` has several desirable
 features for economic modelers:
 

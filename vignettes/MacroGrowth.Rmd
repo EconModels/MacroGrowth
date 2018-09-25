@@ -477,11 +477,15 @@ three-factor-of-production Cobb-Douglas model,
 fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 
 ```{r, fig.width = 3, fig.align = "center"}
-cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
+triData <- cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
   resampledFits(method = "wild", n = 20) %>%
-  extract2("coeffs") %>% 
-  filter(method == "wild") %>% 
-  triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
+  extract2("coeffs")
+
+triPlot(data = triData %>% filter(method == "wild"),
+        mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3)) +
+  geom_point(data = triData %>% filter(method == "orig"),
+             mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3),
+             color = "red", alpha = 1, size = 4, shape = 10, stat = "triangle")
 ```
 
 
