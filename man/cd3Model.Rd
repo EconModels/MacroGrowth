@@ -45,8 +45,9 @@ Fit Cobb-Douglas models with 3 Factors
 More about contranints TBA.
 }
 \examples{
-US <- subset(Calvin, Country=="US")
-cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
-cd3Model(iGDP ~ iK + iL + iQp + iYear, data=US)
-cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+data(EconUK)
+cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data = EconUK)
+cd3Model(iGDP ~ iK + iL + iQp + iYear, data = EconUK)
+cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data = EconUK)
 }
+\keyword{internal}

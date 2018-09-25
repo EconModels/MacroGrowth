@@ -28,9 +28,8 @@ an lm object with some additional attributes
 Fit single factor models
 }
 \examples{
-US <- subset(Calvin, Country=="US")
-sfModel(response = iGDP, factor=iK, time = iYear, data=US)
-sfModel(iGDP ~ iK + iYear, data=US)
-sfModel(response="iGDP", factor="iK", time="iYear", data=US)
+data(EconUK)
+sfModel(iGDP ~ iK + iYear, data = EconUK)
+sfModel(response = "iGDP", factor = "iK", time = "iYear", data = EconUK)
 
 }

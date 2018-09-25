@@ -38,11 +38,8 @@ a CDEmodel object, which is an lm object with some additioanl attributes.
 Fit Cobb-Douglas models
 }
 \examples{
-US <- subset(Calvin, Country=="US")
-cdModel(response = "iGDP", x1 = "iK", x2 = "iL", time = "iYear", data=US)
-cdModel(iGDP ~ iK + iL + iYear, data=US)
-cdModel(response = "iGDP", x1 = "iK", x2 = "iL", x3 = "iQp", time = "iYear", data=US)
-cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
-cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+data(EconUK)
+cdModel(response = "iGDP", x1 = "iK", x2 = "iL", time = "iYear", data = EconUK)
+cdModel(iGDP ~ iK + iL + iYear, data = EconUK)
 
 }

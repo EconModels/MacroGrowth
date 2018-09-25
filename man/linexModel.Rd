@@ -38,9 +38,9 @@ Defaults to \code{NULL}, corresponding to uncorrelated errors.}
 Fit LINEX models
 }
 \examples{
-US <- subset(Calvin, Country=="US")
-linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
-linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
-naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
+data(EconUK)
+linexModel(iGDP ~ iK + iL + iXp + iYear, data = EconUK)
+linexModel(response = "iGDP", x1="iK", x2="iL", x3="iXp", time="iYear", data = EconUK)
+naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iXp", time="iYear", data = EconUK))
 
 }
