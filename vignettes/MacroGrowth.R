@@ -110,13 +110,14 @@ bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>%
   # Add the fitted model as a line
   geom_line(mapping = aes(x = Year, y = yhat))
 
-## ---- fig.width = 3, fig.height = 3, fig.retina = 2, fig.align = "center"----
+## ---- fig.width = 4, fig.height = 3, fig.retina = 2, fig.align = "center"----
 triData <- cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
-  resampledFits(method = "wild", n = 20) %>%
+  resampledFits(method = "wild", n = 100, seed = 123) %>%
   extract2("coeffs")
 
-triPlot(data = triData %>% filter(method == "wild"),
-        mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3)) +
+triData %>% filter(method == "wild") %>% 
+  triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3), 
+          alpha = 0.3) +
   geom_point(data = triData %>% filter(method == "orig"),
              mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3),
              color = "red", alpha = 1, size = 3, stat = "triangle")
