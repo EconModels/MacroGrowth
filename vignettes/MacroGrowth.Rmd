@@ -474,7 +474,7 @@ fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 
 ```{r, fig.width = 3, fig.height = 3, fig.retina = 2, fig.align = "center"}
 triData <- cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
-  resampledFits(method = "wild", n = 20) %>%
+  resampledFits(method = "wild", n = 20, seed = 123) %>%
   extract2("coeffs")
 
 triPlot(data = triData %>% filter(method == "wild"),
