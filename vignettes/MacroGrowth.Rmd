@@ -38,7 +38,7 @@ thereby providing a way to assess the variability of estimated parameters.
 * A consistent formula-based interface to fitting functions.
 
 The functions in this package were developed for and used first in 
-Heun et al. [-@Heun:2017].
+[Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 
 
 ## Macroeconomic growth models
@@ -86,7 +86,7 @@ $c_t = \frac{a_1}{a_0}$.
 
 The starting point for any fitting process is macroeconomic data.
 For this vignette, we'll use a subset of the UK macroeconomic data 
-from Heun et al. [-@Heun:2017].
+from [Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 The data frame `EconUK` is included in the `MacroGrowth` package.
 
 ```{r}
@@ -209,14 +209,14 @@ The `cesModel` function produces a `cesModel` object.
 Note that output elasticities ($\alpha_1$, $\alpha_2$, and $\alpha_3$) 
 are calculated by the `naturalCoef` function.
 Equations for the output elasticities are given in Appendix B 
-of Heun et al. [-@Heun:2017].
+of [Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 
 Also note that the `cesModel` function repeatedly calls 
 the excellent `cesEst` function from the `micEconCES` pacakge.
 For more details on the `cesEst` function,
-see Henningsen and Henningsen [-@Henningsen:2011td].
+see [Henningsen and Henningsen [-@Henningsen:2011td]](http://okonomi.foi.dk/workingpapers/WPpdf/WP2011/WP_2011_9_econometric_estimation_CES.pdf).
 For more details on the fitting algorithm employed by `cesModel`,
-see Heun et al. [-@Heun:2017].
+see [Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 
 
 ### Linex model
@@ -244,7 +244,8 @@ for capital, labor, and energy, respectively.
 head(fortify(linexfit))
 ```
 
-Linex model output elasticities are given by Equation 9 in Warr and Ayres [-@Warr:2012cg].
+Linex model output elasticities are given by Equation 9 in 
+[Warr and Ayres [-@Warr:2012cg]](https://doi.org/10.1016/j.ecolecon.2011.09.006).
 
 
 ### Metadata
@@ -372,7 +373,7 @@ cesModel(formula = iGDP ~ iK + iXu + iYear,
 ```
 
 The process for constrained fitting by the `cesModel` function is described in detail 
-in Heun et al. [-@Heun:2017].
+in [Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 In short, the full CES model and 20 boundary models are compared. 
 The model with the smallest sum of squared errors (SSE) is returned by the `cesModel` function.
 Models with larger SSE are stored as a list in the `model.attempts` attribute of the `cesModel` object

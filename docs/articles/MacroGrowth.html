@@ -92,7 +92,7 @@
 <li>Options to perform residual resampling, thereby providing a way to assess the variability of estimated parameters.</li>
 <li>A consistent formula-based interface to fitting functions.</li>
 </ul>
-<p>The functions in this package were developed for and used first in Heun et al. <span class="citation">(2017)</span>.</p>
+<p>The functions in this package were developed for and used first in <a href="https://doi.org/10.3390/en10020203">Heun et al. <span class="citation">(2017)</span></a>.</p>
 </div>
 <div id="macroeconomic-growth-models" class="section level2">
 <h2 class="hasAnchor">
@@ -133,7 +133,7 @@
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from Heun et al. <span class="citation">(2017)</span>. The data frame <code>EconUK</code> is included in the <code>MacroGrowth</code> package.</p>
+<p>The starting point for any fitting process is macroeconomic data. For this vignette, we’ll use a subset of the UK macroeconomic data from <a href="https://doi.org/10.3390/en10020203">Heun et al. <span class="citation">(2017)</span></a>. The data frame <code>EconUK</code> is included in the <code>MacroGrowth</code> package.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(ggplot2)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(magrittr)</a>
@@ -222,8 +222,8 @@
 <a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt;   rho  alpha_1  alpha_2 alpha_3  sigma_12</span></a>
 <a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 1  NA 0.486507 0.513493       0 0.4522604</span></a></code></pre></div>
 <p>The <code>cesModel</code> function produces a <code>cesModel</code> object.</p>
-<p>Note that output elasticities (<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span>) are calculated by the <code>naturalCoef</code> function. Equations for the output elasticities are given in Appendix B of Heun et al. <span class="citation">(2017)</span>.</p>
-<p>Also note that the <code>cesModel</code> function repeatedly calls the excellent <code>cesEst</code> function from the <code>micEconCES</code> pacakge. For more details on the <code>cesEst</code> function, see Henningsen and Henningsen <span class="citation">(2011)</span>. For more details on the fitting algorithm employed by <code>cesModel</code>, see Heun et al. <span class="citation">(2017)</span>.</p>
+<p>Note that output elasticities (<span class="math inline">\(\alpha_1\)</span>, <span class="math inline">\(\alpha_2\)</span>, and <span class="math inline">\(\alpha_3\)</span>) are calculated by the <code>naturalCoef</code> function. Equations for the output elasticities are given in Appendix B of <a href="https://doi.org/10.3390/en10020203">Heun et al. <span class="citation">(2017)</span></a>.</p>
+<p>Also note that the <code>cesModel</code> function repeatedly calls the excellent <code>cesEst</code> function from the <code>micEconCES</code> pacakge. For more details on the <code>cesEst</code> function, see <a href="http://okonomi.foi.dk/workingpapers/WPpdf/WP2011/WP_2011_9_econometric_estimation_CES.pdf">Henningsen and Henningsen <span class="citation">(2011)</span></a>. For more details on the fitting algorithm employed by <code>cesModel</code>, see <a href="https://doi.org/10.3390/en10020203">Heun et al. <span class="citation">(2017)</span></a>.</p>
 </div>
 <div id="linex-model" class="section level3">
 <h3 class="hasAnchor">
@@ -243,7 +243,7 @@
 <a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 4 1.079728 1.102265 1.0002645 1.0594068     3 2.423711 0.9710197 -2.394730</span></a>
 <a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 5 1.140344 1.153710 1.0129718 1.0594941     4 2.450361 1.0323764 -2.482737</span></a>
 <a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 6 1.166864 1.202672 1.0090420 1.1118025     5 2.572463 0.9577238 -2.530187</span></a></code></pre></div>
-<p>Linex model output elasticities are given by Equation 9 in Warr and Ayres <span class="citation">(2012)</span>.</p>
+<p>Linex model output elasticities are given by Equation 9 in <a href="https://doi.org/10.1016/j.ecolecon.2011.09.006">Warr and Ayres <span class="citation">(2012)</span></a>.</p>
 </div>
 <div id="metadata" class="section level3">
 <h3 class="hasAnchor">
@@ -377,7 +377,7 @@
 <a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt; 1 0.6767522 -0.3904502 0.01340815     1 0.5165425     Inf    -1   Inf  -1</span></a>
 <a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">#&gt;     alpha_1   alpha_2 alpha_3 sigma_12</span></a>
 <a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; 1 0.5165425 0.4834575       0      Inf</span></a></code></pre></div>
-<p>The process for constrained fitting by the <code>cesModel</code> function is described in detail in Heun et al. <span class="citation">(2017)</span>. In short, the full CES model and 20 boundary models are compared. The model with the smallest sum of squared errors (SSE) is returned by the <code>cesModel</code> function. Models with larger SSE are stored as a list in the <code>model.attempts</code> attribute of the <code>cesModel</code> object returned by the <code>cesModel</code> function. To retrieve the rejected boundary models, use the <code>attr</code> function.</p>
+<p>The process for constrained fitting by the <code>cesModel</code> function is described in detail in <a href="https://doi.org/10.3390/en10020203">Heun et al. <span class="citation">(2017)</span></a>. In short, the full CES model and 20 boundary models are compared. The model with the smallest sum of squared errors (SSE) is returned by the <code>cesModel</code> function. Models with larger SSE are stored as a list in the <code>model.attempts</code> attribute of the <code>cesModel</code> object returned by the <code>cesModel</code> function. To retrieve the rejected boundary models, use the <code>attr</code> function.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">attr</span>(cesfit, <span class="st">"model.attempts"</span>)[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
 <a class="sourceLine" id="cb18-2" data-line-number="2"><span class="co">#&gt;       scale   logscale       lambda delta delta_1 sigma_1 rho_1 sigma rho</span></a>
 <a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">#&gt; 1 0.9374332 -0.0646098 -0.002108252     1       1      NA    NA    NA  NA</span></a>
@@ -400,14 +400,14 @@
 <p>The <code>resampledFits</code> function returns a list with two named members: <code>coeffs</code> and <code>models</code>. <code>coeffs</code> is a data frame with <code>n + 1</code> rows. The first row contains fitted coefficients for the original model and has a <code>method</code> of <code>orig</code>. The remaining rows contain fitted coefficients for the resample fits, each with a different value for the <code>index</code> variable, and each with the <code>method</code> specified in the function call.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">cdfits_rs<span class="op">$</span>coeffs</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 8</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">#&gt;   lambda  logscale scale alpha_1 alpha_2 alpha_3 method index</span></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; 1 0.0111 -0.00155  0.998   0.535   0.465       0 orig       1</span></a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; 2 0.0104  0.000253 1.00    0.553   0.447       0 wild       1</span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt; 3 0.0108  0.00773  1.01    0.530   0.470       0 wild       2</span></a>
-<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt; 4 0.0103 -0.00950  0.991   0.570   0.430       0 wild       3</span></a>
-<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; 5 0.0118 -0.00666  0.993   0.515   0.485       0 wild       4</span></a>
-<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; 6 0.0106 -0.0111   0.989   0.557   0.443       0 wild       5</span></a></code></pre></div>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">#&gt;   lambda   logscale scale alpha_1 alpha_2 alpha_3 method index</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; 1 0.0111 -0.00155   0.998   0.535   0.465       0 orig       1</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; 2 0.0117  0.00426   1.00    0.514   0.486       0 wild       1</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt; 3 0.0113 -0.00757   0.992   0.532   0.468       0 wild       2</span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt; 4 0.0123 -0.0000424 1.000   0.499   0.501       0 wild       3</span></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; 5 0.0112 -0.00968   0.990   0.538   0.462       0 wild       4</span></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; 6 0.0129  0.00179   1.00    0.476   0.524       0 wild       5</span></a></code></pre></div>
 <p><code>models</code> is a list containing the model object for each resample fit.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># Original fit</span></a>
 <a class="sourceLine" id="cb21-2" data-line-number="2">cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
@@ -415,12 +415,12 @@
 <a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></a>
 <a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co"># First resampled model</span></a>
 <a class="sourceLine" id="cb21-6" data-line-number="6">cdfits_rs<span class="op">$</span>models[[<span class="dv">2</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt;       lambda     logscale    scale   alpha_1   alpha_2 alpha_3</span></a>
-<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; 1 0.01041007 0.0002528983 1.000253 0.5533135 0.4466865       0</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt;      lambda   logscale    scale   alpha_1   alpha_2 alpha_3</span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; 1 0.0117228 0.00425892 1.004268 0.5141946 0.4858054       0</span></a>
 <a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co"># Last resampled model</span></a>
 <a class="sourceLine" id="cb21-10" data-line-number="10">cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;       lambda    logscale     scale   alpha_1   alpha_2 alpha_3</span></a>
-<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; 1 0.01055266 -0.01109574 0.9889656 0.5566248 0.4433752       0</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;       lambda    logscale   scale   alpha_1   alpha_2 alpha_3</span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; 1 0.01290444 0.001788618 1.00179 0.4755456 0.5244544       0</span></a></code></pre></div>
 <p>The <code>resampledFits</code> function knows about models fitted with any of the <code>*Model</code> functions.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># Doesn't work at the moment.</span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="co"># resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]</span></a>
@@ -428,12 +428,12 @@
 <a class="sourceLine" id="cb22-4" data-line-number="4"><span class="co">#&gt; # A tibble: 6 x 15</span></a>
 <a class="sourceLine" id="cb22-5" data-line-number="5"><span class="co">#&gt;   scale logscale lambda delta delta_1 sigma_1 rho_1 sigma   rho alpha_1</span></a>
 <a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt; 1 0.979 -0.0213  0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span></a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt; 2 0.963 -0.0375  0.0216     1   0.495   0.320 2.13     NA    NA   0.495</span></a>
-<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 3 0.977 -0.0233  0.0172     1   0.521   0.474 1.11     NA    NA   0.521</span></a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 4 0.995 -0.00550 0.0160     1   0.507   0.553 0.810    NA    NA   0.507</span></a>
-<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt; 5 0.972 -0.0279  0.0172     1   0.536   0.453 1.21     NA    NA   0.536</span></a>
-<a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt; 6 0.979 -0.0208  0.0170     1   0.534   0.472 1.12     NA    NA   0.534</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt; 1 0.979  -0.0213 0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt; 2 0.976  -0.0242 0.0215     1   0.486   0.323 2.10     NA    NA   0.486</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 3 0.969  -0.0316 0.0191     1   0.507   0.411 1.43     NA    NA   0.507</span></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 4 0.958  -0.0426 0.0208     1   0.565   0.296 2.38     NA    NA   0.565</span></a>
+<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt; 5 0.966  -0.0350 0.0215     1   0.521   0.299 2.34     NA    NA   0.521</span></a>
+<a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt; 6 0.975  -0.0248 0.0163     1   0.522   0.540 0.853    NA    NA   0.522</span></a>
 <a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt; # ... with 5 more variables: alpha_2 &lt;dbl&gt;, alpha_3 &lt;dbl&gt;, sigma_12 &lt;dbl&gt;,</span></a>
 <a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt; #   method &lt;chr&gt;, index &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb22-15" data-line-number="15"><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> linexfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]</a>
@@ -441,11 +441,11 @@
 <a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt;   logscale scale   a_0   a_1   c_t method index</span></a>
 <a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb22-19" data-line-number="19"><span class="co">#&gt; 1  -0.0606 0.941  1.12  2.12  1.89 orig       1</span></a>
-<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; 2  -0.0539 0.948  1.08  2.03  1.87 wild       1</span></a>
-<a class="sourceLine" id="cb22-21" data-line-number="21"><span class="co">#&gt; 3  -0.0713 0.931  1.14  2.13  1.88 wild       2</span></a>
-<a class="sourceLine" id="cb22-22" data-line-number="22"><span class="co">#&gt; 4  -0.0506 0.951  1.09  2.05  1.89 wild       3</span></a>
-<a class="sourceLine" id="cb22-23" data-line-number="23"><span class="co">#&gt; 5  -0.0465 0.955  1.13  2.22  1.97 wild       4</span></a>
-<a class="sourceLine" id="cb22-24" data-line-number="24"><span class="co">#&gt; 6  -0.0753 0.927  1.20  2.34  1.96 wild       5</span></a></code></pre></div>
+<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; 2  -0.0819 0.921  1.11  2.02  1.82 wild       1</span></a>
+<a class="sourceLine" id="cb22-21" data-line-number="21"><span class="co">#&gt; 3  -0.0877 0.916  1.18  2.22  1.88 wild       2</span></a>
+<a class="sourceLine" id="cb22-22" data-line-number="22"><span class="co">#&gt; 4  -0.0847 0.919  1.14  2.06  1.81 wild       3</span></a>
+<a class="sourceLine" id="cb22-23" data-line-number="23"><span class="co">#&gt; 5  -0.0683 0.934  1.15  2.24  1.94 wild       4</span></a>
+<a class="sourceLine" id="cb22-24" data-line-number="24"><span class="co">#&gt; 6  -0.0686 0.934  1.19  2.31  1.95 wild       5</span></a></code></pre></div>
 </div>
 <div id="plotting-results" class="section level2">
 <h2 class="hasAnchor">
