@@ -246,6 +246,49 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
  bind_cols( res, standardES(sigma = res$sigma, sigma_1 = res$sigma_1, nest=nest))
 }
 
+# this is identical to residuals.gls() expect that the std and label
+# attributes are not added to the residuals object.
+
+#' @export
+residuals.CDEmodel <-
+  function (object, type = c("response", "pearson", "normalized"),
+            ...)
+  {
+    type <- match.arg(type)
+    val <- object$residuals
+    if (type != "response") {
+      val <- val/attr(val, "std")
+      lab <- "Standardized residuals"
+      if (type == "normalized") {
+        if (!is.null(cSt <- object$modelStruct$corStruct)) {
+          val <- recalc(cSt, list(Xy = as.matrix(val)))$Xy[,
+                                                           1]
+          lab <- "Normalized residuals"
+        }
+      }
+    }
+    else {
+      lab <- "Residuals"
+      if (!is.null(aux <- attr(object, "units")$y))
+        lab <- paste(lab, aux)
+    }
+    attr(val, "label") <- lab
+    if (!is.null(object$na.action)) {
+      res <- naresid(object$na.action, val)
+      # remove std and label attributes
+      attr(res, "std") <- NULL # naresid(object$na.action, attr(val, "std"))
+      attr(res, "label") <- NULL # attr(val, "label")
+      res
+    }
+    else {
+      # remove std and label attributes
+      attr(val, "std") <- NULL
+      attr(val, "label") <- NULL
+      val
+    }
+  }
+
+
 #' Extract fitting history of a model
 #'
 #' This convenience function returns the fitting history for a model.
@@ -512,13 +555,13 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
   )
 
   if (constrained){
-    res <- eval( substitute(gls(f, data=data, correlation = C),
+    res <- eval( substitute(nlme::gls(f, data=data, correlation = C),
                             list(C = correlation, f=formulas[[2]])) )
     res$winner <- 2
     logscale <- coef(res)[1]
     lambda <- coef(res)[2]
   } else {
-    res <- eval( substitute(gls(f, data=data, correlation = C),
+    res <- eval( substitute(nlme::gls(f, data=data, correlation = C),
                             list(C = correlation, f=formulas[[1]])) )
     res$winner <- 1
     logscale <- coef(res)[1]
@@ -681,7 +724,7 @@ cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE,
                                           )
                       )
   )
-  res <- eval(substitute(gls( f, correlation = C, data=sdata ),
+  res <- eval(substitute(nlme::gls( f, correlation = C, data=sdata ),
                          list(C = correlation, f=formulas[[2]])))
   winner <- 2
   names(res$coefficients) <- CDcoefNames[[2]]
@@ -696,7 +739,7 @@ cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE,
       winner <- 5
     }
     if (winner > 2) {
-      res <- eval(substitute(gls( f, data=sdata, correlation = C ),
+      res <- eval(substitute(nlme::gls( f, data=sdata, correlation = C ),
                              list(C = correlation, f=formulas[[winner]])))
       names(res$coefficients) <- CDcoefNames[[winner]]
     }
@@ -786,7 +829,7 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
   ) ) )
 
   models <- lapply( formulas, function(form)
-    eval(substitute(gls(f, correlation = C, data=sdata), list(f=form, C = correlation)))
+    eval(substitute(nlme::gls(f, correlation = C, data=sdata), list(f=form, C = correlation)))
   )
   sse <- sapply( models, function(m) sum( resid(m)^2 ) )
   logLik <- sapply(models, function(m) m$logLik)
@@ -864,7 +907,7 @@ linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE
   )
   ) ) )
 
-  res <- eval( substitute(gls(f, data=data, correlation = C),
+  res <- eval( substitute(nlme::gls(f, data=data, correlation = C),
                           list(C = correlation, f=formulas[[1]])) )
 
   sdata <- subset(data, select = all.vars(formula))
