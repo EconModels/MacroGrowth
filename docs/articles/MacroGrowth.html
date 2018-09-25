@@ -400,14 +400,14 @@
 <p>The <code>resampledFits</code> function returns a list with two named members: <code>coeffs</code> and <code>models</code>. <code>coeffs</code> is a data frame with <code>n + 1</code> rows. The first row contains fitted coefficients for the original model and has a <code>method</code> of <code>orig</code>. The remaining rows contain fitted coefficients for the resample fits, each with a different value for the <code>index</code> variable, and each with the <code>method</code> specified in the function call.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">cdfits_rs<span class="op">$</span>coeffs</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 8</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">#&gt;   lambda  logscale scale alpha_1 alpha_2 alpha_3 method index</span></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; 1 0.0111 -0.00155  0.998   0.535   0.465       0 orig       1</span></a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; 2 0.0120  0.00502  1.01    0.504   0.496       0 wild       1</span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt; 3 0.0106  0.000450 1.00    0.549   0.451       0 wild       2</span></a>
-<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt; 4 0.0127  0.00213  1.00    0.479   0.521       0 wild       3</span></a>
-<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; 5 0.0123  0.00592  1.01    0.489   0.511       0 wild       4</span></a>
-<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; 6 0.0116  0.00126  1.00    0.517   0.483       0 wild       5</span></a></code></pre></div>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">#&gt;   lambda logscale scale alpha_1 alpha_2 alpha_3 method index</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; 1 0.0111 -0.00155 0.998   0.535   0.465       0 orig       1</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; 2 0.0108  0.00680 1.01    0.539   0.461       0 wild       1</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt; 3 0.0109 -0.00945 0.991   0.555   0.445       0 wild       2</span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt; 4 0.0110  0.00632 1.01    0.529   0.471       0 wild       3</span></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; 5 0.0135  0.00806 1.01    0.458   0.542       0 wild       4</span></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; 6 0.0102 -0.00961 0.990   0.572   0.428       0 wild       5</span></a></code></pre></div>
 <p><code>models</code> is a list containing the model object for each resample fit.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># Original fit</span></a>
 <a class="sourceLine" id="cb21-2" data-line-number="2">cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
@@ -415,33 +415,33 @@
 <a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span></a>
 <a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co"># First resampled model</span></a>
 <a class="sourceLine" id="cb21-6" data-line-number="6">cdfits_rs<span class="op">$</span>models[[<span class="dv">2</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt;      lambda    logscale    scale   alpha_1   alpha_2 alpha_3</span></a>
-<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; 1 0.0119712 0.005021539 1.005034 0.5038065 0.4961935       0</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt;       lambda    logscale   scale   alpha_1   alpha_2 alpha_3</span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; 1 0.01081972 0.006796765 1.00682 0.5389179 0.4610821       0</span></a>
 <a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co"># Last resampled model</span></a>
 <a class="sourceLine" id="cb21-10" data-line-number="10">cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()</a>
-<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;       lambda    logscale   scale   alpha_1   alpha_2 alpha_3</span></a>
-<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; 1 0.01164406 0.001258888 1.00126 0.5165759 0.4834241       0</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;       lambda     logscale     scale   alpha_1   alpha_2 alpha_3</span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; 1 0.01020596 -0.009613847 0.9904322 0.5719787 0.4280213       0</span></a></code></pre></div>
 <p>The <code>resampledFits</code> function knows about models fitted with any of the <code>*Model</code> functions.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> sffit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]</a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 6</span></a>
 <a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">#&gt;   logscale scale lambda     m method index</span></a>
 <a class="sourceLine" id="cb22-4" data-line-number="4"><span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb22-5" data-line-number="5"><span class="co">#&gt; 1  -0.0714 0.931 0.0178 0.108 orig       1</span></a>
-<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#&gt; 2  -0.156  0.856 0.0356 0.220 wild       1</span></a>
-<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt; 3  -0.119  0.888 0.0360 0.202 wild       2</span></a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt; 4  -0.153  0.858 0.0353 0.220 wild       3</span></a>
-<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 5  -0.148  0.862 0.0353 0.220 wild       4</span></a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 6  -0.0881 0.916 0.0388 0.156 wild       5</span></a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#&gt; 2  -0.134  0.875 0.0346 0.223 wild       1</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt; 3  -0.134  0.874 0.0363 0.202 wild       2</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt; 4  -0.106  0.899 0.0376 0.178 wild       3</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 5  -0.136  0.873 0.0361 0.204 wild       4</span></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 6  -0.122  0.885 0.0371 0.189 wild       5</span></a>
 <a class="sourceLine" id="cb22-11" data-line-number="11"><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> cesfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]</a>
 <a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt; # A tibble: 6 x 15</span></a>
 <a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt;   scale logscale lambda delta delta_1 sigma_1 rho_1 sigma   rho alpha_1</span></a>
 <a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt; 1 0.979 -0.0213  0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span></a>
-<a class="sourceLine" id="cb22-16" data-line-number="16"><span class="co">#&gt; 2 0.998 -0.00161 0.0152     1   0.484   0.661 0.513    NA    NA   0.484</span></a>
-<a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; 3 0.977 -0.0232  0.0210     1   0.486   0.335 1.98     NA    NA   0.486</span></a>
-<a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt; 4 0.968 -0.0322  0.0202     1   0.510   0.361 1.77     NA    NA   0.510</span></a>
-<a class="sourceLine" id="cb22-19" data-line-number="19"><span class="co">#&gt; 5 0.980 -0.0199  0.0141     1   0.538   0.650 0.539    NA    NA   0.538</span></a>
-<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; 6 0.972 -0.0288  0.0185     1   0.500   0.444 1.25     NA    NA   0.500</span></a>
+<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt; 1 0.979  -0.0213 0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span></a>
+<a class="sourceLine" id="cb22-16" data-line-number="16"><span class="co">#&gt; 2 0.958  -0.0427 0.0219     1   0.564   0.259 2.86     NA    NA   0.564</span></a>
+<a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; 3 0.979  -0.0216 0.0178     1   0.496   0.497 1.01     NA    NA   0.496</span></a>
+<a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt; 4 0.976  -0.0240 0.0179     1   0.504   0.458 1.18     NA    NA   0.504</span></a>
+<a class="sourceLine" id="cb22-19" data-line-number="19"><span class="co">#&gt; 5 0.979  -0.0213 0.0197     1   0.474   0.408 1.45     NA    NA   0.474</span></a>
+<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; 6 0.988  -0.0120 0.0172     1   0.465   0.554 0.804    NA    NA   0.465</span></a>
 <a class="sourceLine" id="cb22-21" data-line-number="21"><span class="co">#&gt; # ... with 5 more variables: alpha_2 &lt;dbl&gt;, alpha_3 &lt;dbl&gt;, sigma_12 &lt;dbl&gt;,</span></a>
 <a class="sourceLine" id="cb22-22" data-line-number="22"><span class="co">#&gt; #   method &lt;chr&gt;, index &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb22-23" data-line-number="23"><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> linexfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]</a>
@@ -449,11 +449,11 @@
 <a class="sourceLine" id="cb22-25" data-line-number="25"><span class="co">#&gt;   logscale scale   a_0   a_1   c_t method index</span></a>
 <a class="sourceLine" id="cb22-26" data-line-number="26"><span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb22-27" data-line-number="27"><span class="co">#&gt; 1  -0.0606 0.941  1.12  2.12  1.89 orig       1</span></a>
-<a class="sourceLine" id="cb22-28" data-line-number="28"><span class="co">#&gt; 2  -0.0672 0.935  1.16  2.18  1.89 wild       1</span></a>
-<a class="sourceLine" id="cb22-29" data-line-number="29"><span class="co">#&gt; 3  -0.0634 0.939  1.13  2.17  1.91 wild       2</span></a>
-<a class="sourceLine" id="cb22-30" data-line-number="30"><span class="co">#&gt; 4  -0.0506 0.951  1.12  2.14  1.91 wild       3</span></a>
-<a class="sourceLine" id="cb22-31" data-line-number="31"><span class="co">#&gt; 5  -0.0247 0.976  1.12  2.22  1.99 wild       4</span></a>
-<a class="sourceLine" id="cb22-32" data-line-number="32"><span class="co">#&gt; 6  -0.0442 0.957  1.11  2.11  1.90 wild       5</span></a></code></pre></div>
+<a class="sourceLine" id="cb22-28" data-line-number="28"><span class="co">#&gt; 2  -0.0787 0.924  1.08  1.92  1.78 wild       1</span></a>
+<a class="sourceLine" id="cb22-29" data-line-number="29"><span class="co">#&gt; 3  -0.0865 0.917  1.06  1.85  1.73 wild       2</span></a>
+<a class="sourceLine" id="cb22-30" data-line-number="30"><span class="co">#&gt; 4  -0.0470 0.954  1.13  2.17  1.91 wild       3</span></a>
+<a class="sourceLine" id="cb22-31" data-line-number="31"><span class="co">#&gt; 5  -0.0591 0.943  1.13  2.11  1.87 wild       4</span></a>
+<a class="sourceLine" id="cb22-32" data-line-number="32"><span class="co">#&gt; 6  -0.0695 0.933  1.08  1.94  1.79 wild       5</span></a></code></pre></div>
 </div>
 <div id="plotting-results" class="section level2">
 <h2 class="hasAnchor">
@@ -465,13 +465,13 @@
 <a class="sourceLine" id="cb23-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> iGDP), <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb23-5" data-line-number="5"><span class="st">  </span><span class="co"># Add the fitted model as a line</span></a>
 <a class="sourceLine" id="cb23-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> Year, <span class="dt">y =</span> yhat))</a></code></pre></div>
-<p><img src="MacroGrowth_files/figure-html/unnamed-chunk-23-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="MacroGrowth_files/figure-html/plotting1-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For the purposes of displaying resampled results from the three-factor-of-production Cobb-Douglas model with constant returns to scale, fitted output elasticies (<span class="math inline">\(\alpha_i\)</span>) can be shown in a ternary plot.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="../reference/cdModel.html">cdModel</a></span>(<span class="dt">formula =</span> iGDP <span class="op">~</span><span class="st"> </span>iK <span class="op">+</span><span class="st"> </span>iL <span class="op">+</span><span class="st"> </span>iXu <span class="op">+</span><span class="st"> </span>iYear, <span class="dt">data =</span> EconUK) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">   </span><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">20</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">   </span><span class="kw"><a href="http://www.rdocumentation.org/packages/magrittr/topics/aliases">extract2</a></span>(<span class="st">"coeffs"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb24-4" data-line-number="4"><span class="st">   </span><span class="kw">triPlot</span>(<span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> alpha_<span class="dv">1</span>, <span class="dt">y =</span> alpha_<span class="dv">2</span>, <span class="dt">z =</span> alpha_<span class="dv">3</span>))</a></code></pre></div>
-<p><img src="MacroGrowth_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
+<p><img src="MacroGrowth_files/figure-html/plotting-tri-1.png" width="700"></p>
 </div>
 <div id="conclusion" class="section level2">
 <h2 class="hasAnchor">
