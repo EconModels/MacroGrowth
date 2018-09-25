@@ -102,7 +102,7 @@ resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = cesfit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
 
-## ---- fig.width = 6, fig.align = "center"--------------------------------
+## ---- plotting1, fig.width = 6, fig.align = "center"---------------------
 bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>% 
   ggplot() + 
   # Add historical data as points
