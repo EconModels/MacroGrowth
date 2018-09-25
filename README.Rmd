@@ -28,7 +28,7 @@ thereby providing a way to assess the variability of estimated parameters.
 * A consistent formula-based interface to fitting functions.
 
 The functions in this package were developed for and used first in 
-Heun et al. [-@Heun:2017].
+[Heun et al. [-@Heun:2017]](https://doi.org/10.3390/en10020203).
 
 
 ## Installation
