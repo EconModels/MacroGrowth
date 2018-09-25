@@ -445,8 +445,10 @@ cdfits_rs$models[[6]] %>% naturalCoef()
 The `resampledFits` function knows about models fitted with any of the `*Model` functions.
 
 ```{r}
-# Doesn't work at the moment.
-# resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
+resampledFits(model = sffit, method = "wild", n = 5)[["coeffs"]]
+```
+
+```{r}
 resampledFits(model = cesfit, method = "wild", n = 5)[["coeffs"]]
 resampledFits(model = linexfit, method = "wild", n = 5)[["coeffs"]]
 ```
