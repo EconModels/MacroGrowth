@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit Cobb-Douglas models — cdModel • MacroGrowth</title>
+<title>Extract CDEmodel Residuals — residuals.CDEmodel • MacroGrowth</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Fit Cobb-Douglas models — cdModel" />
+<meta property="og:title" content="Extract CDEmodel Residuals — residuals.CDEmodel" />
 
-<meta property="og:description" content="Fit Cobb-Douglas models" />
+<meta property="og:description" content="The residuals of the linear model are extracted.
+This method is identical to residuals.gls() expect that the
+&quot;std&quot; and &quot;label&quot; attributes are not retained in the residuals object." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,103 +105,55 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit Cobb-Douglas models</h1>
+    <h1>Extract CDEmodel Residuals</h1>
     <small class="dont-index">Source: <a href='https://github.com/EconModels/MacroGrowth/blob/master/R/Fitting.R'><code>R/Fitting.R</code></a></small>
-    <div class="hidden name"><code>cdModel.Rd</code></div>
+    <div class="hidden name"><code>residuals.CDEmodel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Fit Cobb-Douglas models</p>
+    <p>The residuals of the linear model are extracted.
+This method is identical to <code>residuals.gls()</code> expect that the
+"std" and "label" attributes are not retained in the residuals object.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>cdModel</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='no'>response</span>, <span class='no'>x1</span>, <span class='no'>x2</span>, <span class='no'>x3</span>, <span class='no'>time</span>, <span class='kw'>constrained</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>save.data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>correlation</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for CDEmodel</span>
+<span class='fu'>residuals</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"response"</span>, <span class='st'>"pearson"</span>,
+  <span class='st'>"normalized"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>a data frame in which <code>formula</code> is evaluated</p></td>
+      <th>object</th>
+      <td><p>a CDEmodel object</p></td>
     </tr>
     <tr>
-      <th>response</th>
-      <td><p>instead of specifying a formula, expressions for
-the components can be specified individually.</p></td>
+      <th>type</th>
+      <td><p>an optional character string specifying the type of residuals to
+be used. If "response", the "raw" residuals (observed - fitted) are used;
+else, if "pearson", the standardized residuals (raw residuals divided by
+the corresponding standard errors) are used; else, if "normalized", the
+normalized residuals (standardized residuals pre-multiplied by the inverse
+square-root factor of the estimated error correlation matrix) are used.
+Partial matching of arguments is used, so only the first character needs to
+be provided. Defaults to "response".</p></td>
     </tr>
     <tr>
-      <th>x1</th>
-      <td><p>instead of specifying a formula, expressions for
-the components can be specified individually.</p></td>
-    </tr>
-    <tr>
-      <th>x2</th>
-      <td><p>instead of specifying a formula, expressions for
-the components can be specified individually.</p></td>
-    </tr>
-    <tr>
-      <th>x3</th>
-      <td><p>instead of specifying a formula, expressions for
-the components can be specified individually.</p></td>
-    </tr>
-    <tr>
-      <th>time</th>
-      <td><p>instead of specifying a formula, expressions for
-the components can be specified individually.</p></td>
-    </tr>
-    <tr>
-      <th>constrained</th>
-      <td><p>a logical indicating whether the parameters should be constrained in the fitting process.</p></td>
-    </tr>
-    <tr>
-      <th>formala</th>
-      <td><p>a formula of the form
-<code>response ~ x1 + x2 + time</code> or
-<code>response ~ x1 + x2 + x3 + time</code></p></td>
+      <th>...</th>
+      <td><p>some methods for this generic function require additional
+arguments. None are used in this method.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a CDEmodel object, which is an lm object with some additioanl attributes.</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>EconUK</span>)
-<span class='fu'>cdModel</span>(<span class='kw'>response</span> <span class='kw'>=</span> <span class='st'>"iGDP"</span>, <span class='kw'>x1</span> <span class='kw'>=</span> <span class='st'>"iK"</span>, <span class='kw'>x2</span> <span class='kw'>=</span> <span class='st'>"iL"</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"iYear"</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>EconUK</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
-#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear 
-#&gt;   Data: sdata 
-#&gt;   Log-restricted-likelihood: 110.7822
-#&gt; 
-#&gt; Coefficients:
-#&gt;     logscale      alpha_1       lambda 
-#&gt; -0.001552367  0.535182020  0.011122525 
-#&gt; 
-#&gt; Degrees of freedom: 51 total; 48 residual
-#&gt; Residual standard error: 0.02126305 </div><div class='input'><span class='fu'>cdModel</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iYear</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>EconUK</span>)</div><div class='output co'>#&gt; Generalized least squares fit by REML
-#&gt;   Model: log(iGDP) - log(iL) ~ I(log(iK) - log(iL)) + iYear 
-#&gt;   Data: sdata 
-#&gt;   Log-restricted-likelihood: 110.7822
-#&gt; 
-#&gt; Coefficients:
-#&gt;     logscale      alpha_1       lambda 
-#&gt; -0.001552367  0.535182020  0.011122525 
-#&gt; 
-#&gt; Degrees of freedom: 51 total; 48 residual
-#&gt; Residual standard error: 0.02126305 </div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>
