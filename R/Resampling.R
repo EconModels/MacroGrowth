@@ -168,8 +168,9 @@ resampledFits <- function(model,
 #' the model with the response variable in the first column.
 
 #' @export
-resampledData <- function(model, method=c("residual", "resample", "wild", "parametric", "debug"),
-                          reindex=FALSE){
+resampledData <-
+  function(model, method = c("residual", "resample", "wild", "parametric", "debug"),
+           reindex = FALSE){
   data <- getData(model)
   if (is.null(data)) {
     stop ("'model' must be fit with 'save.data = TRUE'")
