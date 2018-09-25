@@ -471,10 +471,10 @@ bind_cols(EconUK, yhat(cdfit) %>% as.data.frame() %>% set_names("yhat")) %>%
 ```
 
 For the purposes of displaying resampled results from the 
-three-factor-of-production Cobb-Douglas model with constant returns to scale,
+three-factor-of-production Cobb-Douglas model,
 fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 
-```{r}
+```{r, fig.width = 3, fig.align = "center"}
 cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
    resampledFits(method = "wild", n = 20) %>%
    extract2("coeffs") %>%
