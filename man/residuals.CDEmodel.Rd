@@ -24,8 +24,6 @@ arguments. None are used in this method.}
 }
 \description{
 The residuals of the linear model are extracted.
-}
-\note{
-This method is identical to \code{residuals.gls()} expect that the
+This method is identical to \code{residuals.gls()} except that the
 "std" and "label" attributes are not retained in the residuals object.
 }

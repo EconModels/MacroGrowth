@@ -249,6 +249,8 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
 #' Extract CDEmodel Residuals
 #'
 #' The residuals of the linear model are extracted.
+#' This method is identical to `residuals.gls()` except that the
+#' "std" and "label" attributes are not retained in the residuals object.
 #'
 #' @param object a CDEmodel object
 #' @param type an optional character string specifying the type of residuals to
@@ -261,14 +263,8 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
 #'   be provided. Defaults to "response".
 #' @param ... some methods for this generic function require additional
 #'   arguments. None are used in this method.
-#' @note This method is identical to `residuals.gls()` expect that the
-#'   "std" and "label" attributes are not retained in the residuals object.
-
-
-
-#'
-#'
 #' @export
+
 residuals.CDEmodel <-
   function (object, type = c("response", "pearson", "normalized"),
             ...)

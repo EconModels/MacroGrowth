@@ -34,11 +34,11 @@ geom_tripath(..., stat = "triangle")
 Triangle Plots
 }
 \examples{
-ddd <- data_frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) \%>\% mutate(z = 1 - x - y) 
-ggplot()  + 
-  tri_theme() + 
-  tri_grid(colour="red") +  
-  tri_labels(size=10, padding=.05) + 
+ddd <- data_frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) \%>\% mutate(z = 1 - x - y)
+ggplot()  +
+  tri_theme() +
+  tri_grid(colour="red") +
+  tri_labels(size=10, padding=.05) +
   geom_path(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=2, alpha=.3) +
   geom_point(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=3, alpha=.6, colour="navy")
 

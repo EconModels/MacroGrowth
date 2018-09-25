@@ -475,12 +475,10 @@ three-factor-of-production Cobb-Douglas model with constant returns to scale,
 fitted output elasticies ($\alpha_i$) can be shown in a ternary plot.
 
 ```{r}
-# This doesn't work. I'm probably using triPlot wrong.
-# cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
-#   resampledFits(method = "wild", n = 20) %>%
-#   extract2("coeffs") %>%
-#   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
-
+cdModel(formula = iGDP ~ iK + iL + iXu + iYear, data = EconUK) %>%
+   resampledFits(method = "wild", n = 20) %>%
+   extract2("coeffs") %>%
+   triPlot(mapping = aes(x = alpha_1, y = alpha_2, z = alpha_3))
 ```
 
 
