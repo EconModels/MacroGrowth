@@ -246,9 +246,28 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
  bind_cols( res, standardES(sigma = res$sigma, sigma_1 = res$sigma_1, nest=nest))
 }
 
-# this is identical to residuals.gls() expect that the std and label
-# attributes are not added to the residuals object.
+#' Extract CDEmodel Residuals
+#'
+#' The residuals of the linear model are extracted.
+#'
+#' @param object a CDEmodel object
+#' @param type an optional character string specifying the type of residuals to
+#'   be used. If "response", the "raw" residuals (observed - fitted) are used;
+#'   else, if "pearson", the standardized residuals (raw residuals divided by
+#'   the corresponding standard errors) are used; else, if "normalized", the
+#'   normalized residuals (standardized residuals pre-multiplied by the inverse
+#'   square-root factor of the estimated error correlation matrix) are used.
+#'   Partial matching of arguments is used, so only the first character needs to
+#'   be provided. Defaults to "response".
+#' @param ... some methods for this generic function require additional
+#'   arguments. None are used in this method.
+#' @note This method is identical to `residuals.gls()` expect that the
+#'   "std" and "label" attributes are not retained in the residuals object.
 
+
+
+#'
+#'
 #' @export
 residuals.CDEmodel <-
   function (object, type = c("response", "pearson", "normalized"),
