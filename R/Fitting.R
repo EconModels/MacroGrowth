@@ -539,10 +539,9 @@ predict.LINEXmodel <- function( object, ... ) {
 #'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @return an lm object with some additional attributes
 #' @examples
-#' US <- subset(Calvin, Country=="US")
-#' sfModel(response = iGDP, factor=iK, time = iYear, data=US)
-#' sfModel(iGDP ~ iK + iYear, data=US)
-#' sfModel(response="iGDP", factor="iK", time="iYear", data=US)
+#' data(EconUK)
+#' sfModel(iGDP ~ iK + iYear, data = EconUK)
+#' sfModel(response = "iGDP", factor = "iK", time = "iYear", data = EconUK)
 #'
 #' @export
 sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
@@ -613,12 +612,9 @@ sfModel <- function(formula, data, response, factor, time, constrained=FALSE,
 #' @param constrained a logical indicating whether the parameters should be constrained in the fitting process.
 #' @return a CDEmodel object, which is an lm object with some additioanl attributes.
 #' @examples
-#' US <- subset(Calvin, Country=="US")
-#' cdModel(response = "iGDP", x1 = "iK", x2 = "iL", time = "iYear", data=US)
-#' cdModel(iGDP ~ iK + iL + iYear, data=US)
-#' cdModel(response = "iGDP", x1 = "iK", x2 = "iL", x3 = "iQp", time = "iYear", data=US)
-#' cdModel(iGDP ~ iK + iL + iQp + iYear, data=US)
-#' cdModel(response="iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+#' data(EconUK)
+#' cdModel(response = "iGDP", x1 = "iK", x2 = "iL", time = "iYear", data = EconUK)
+#' cdModel(iGDP ~ iK + iL + iYear, data = EconUK)
 #'
 #' @export
 cdModel <- function(formula, data, response, x1, x2, x3, time,
@@ -705,11 +701,10 @@ CDcoefNames <- list(
 #' @return a CDEmodel object, which is an lm object with some additional attributes.
 #' @keywords internal
 #' @examples
-#'
-#' US <- subset(Calvin, Country=="US")
-#' cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
-#' cd2Model(iGDP ~ iK + iL + iYear, data=US)
-#' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
+#' data(EconUK)
+#' cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data = EconUK)
+#' cd2Model(iGDP ~ iK + iL + iYear, data = EconUK)
+#' cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data = EconUK)
 #'
 cd2Model <- function(formula, data, response, x1, x2, time, constrained=TRUE,
                        save.data=TRUE, correlation = NULL, ...) {
@@ -807,11 +802,12 @@ respectsConstraints <- function( model ) {
 #'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @param \dots additional arguments; currently unused.
 #' @details More about contranints TBA.
+#' @keywords internal
 #' @examples
-#' US <- subset(Calvin, Country=="US")
-#' cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data=US)
-#' cd3Model(iGDP ~ iK + iL + iQp + iYear, data=US)
-#' cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
+#' data(EconUK)
+#' cd3Model(response = iGDP, x1 = iK, x2 = iL, x3 = iQp, time = iYear, data = EconUK)
+#' cd3Model(iGDP ~ iK + iL + iQp + iYear, data = EconUK)
+#' cd3Model(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data = EconUK)
 
 
 # y ~ x1 + x2 + x3 + time
@@ -888,13 +884,13 @@ cd3Model <- function( formula, data, response, x1, x2, x3, time,
 #'   it must be specified in the `form` argument to the [`nlme::corStruct`] constructor.
 #'   Defaults to `NULL`, corresponding to uncorrelated errors.
 #' @examples
-#' US <- subset(Calvin, Country=="US")
-#' linexModel(iGDP ~ iK + iL + iQp + iYear, data=US)
-#' linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US)
-#' naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iQp", time="iYear", data=US))
+#' data(EconUK)
+#' linexModel(iGDP ~ iK + iL + iXp + iYear, data = EconUK)
+#' linexModel(response = "iGDP", x1="iK", x2="iL", x3="iXp", time="iYear", data = EconUK)
+#' naturalCoef(linexModel(response = "iGDP", x1="iK", x2="iL", x3="iXp", time="iYear", data = EconUK))
 #'
 #' @export
-#'
+
 linexModel <- function(formula, data, response, x1, x2, x3, time, save.data=TRUE,
                        correlation = NULL) {
   if ( missing(formula) ) {

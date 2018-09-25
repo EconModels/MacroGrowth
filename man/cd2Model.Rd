@@ -40,11 +40,10 @@ a CDEmodel object, which is an lm object with some additional attributes.
 Fit Cobb-Douglas Models
 }
 \examples{
-
-US <- subset(Calvin, Country=="US")
-cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data=US)
-cd2Model(iGDP ~ iK + iL + iYear, data=US)
-cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data=US)
+data(EconUK)
+cd2Model(response = iGDP, x1 = iK, x2 = iL, time = iYear, data = EconUK)
+cd2Model(iGDP ~ iK + iL + iYear, data = EconUK)
+cd2Model(response = "iGDP", x1="iK", x2="iL", time="iYear", data = EconUK)
 
 }
 \keyword{internal}
