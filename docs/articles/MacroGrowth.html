@@ -73,7 +73,7 @@
       <h1>Using the MacroGrowth package</h1>
                         <h4 class="author">Matthew Kuperus Heun</h4>
             
-            <h4 class="date">2018-09-25</h4>
+            <h4 class="date">2018-10-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EconModels/MacroGrowth/blob/master/vignettes/MacroGrowth.Rmd"><code>vignettes/MacroGrowth.Rmd</code></a></small>
       <div class="hidden name"><code>MacroGrowth.Rmd</code></div>
@@ -184,6 +184,9 @@ sffit
 <p>In the above example, <code>formula = iGDP ~ iK + iYear</code> indicates that the model is to be fitted with indexed GDP (iGDP) as the response variable, indexed capital stock (iK) as the only factor of production, and indexed time (iYear) as the time variable.</p>
 <p>The coefficients of the fitted model can be recovered with the <code>naturalCoef</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>(sffit)
+<span class="co">#&gt; Warning: `list_len()` is soft-deprecated as of rlang 0.2.0.</span>
+<span class="co">#&gt; Please use `new_list()` instead</span>
+<span class="co">#&gt; This warning is displayed once per session.</span>
 <span class="co">#&gt;      logscale     scale     lambda         m</span>
 <span class="co">#&gt; 1 -0.07143534 0.9310565 0.01775149 0.1076095</span></code></pre></div>
 </div>
@@ -236,6 +239,8 @@ cdfit
 <p>The <code>linexModel</code> function produces a <code>LINEXmodel</code> object.</p>
 <p>In the Linex model, output elasticities are a function of time. To recover the output elasticities from the Linex model, use the <code>fortify</code> function. <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\gamma\)</span> are output elasticities for capital, labor, and energy, respectively.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/fortify">fortify</a></span>(linexfit))
+<span class="co">#&gt; Warning: The `printer` argument is soft-deprecated as of rlang 0.3.0.</span>
+<span class="co">#&gt; This warning is displayed once per session.</span>
 <span class="co">#&gt;       iGDP       iK        iL       iXp iYear    alpha      beta     gamma</span>
 <span class="co">#&gt; 1 1.000000 1.000000 1.0000000 1.0000000     0 2.243034 0.9995764 -2.242611</span>
 <span class="co">#&gt; 2 1.021542 1.040630 0.9952632 0.9964601     1 2.295505 1.0424762 -2.337981</span>
@@ -400,14 +405,14 @@ cdfit
 <p>The <code>resampledFits</code> function returns a list with two named members: <code>coeffs</code> and <code>models</code>. <code>coeffs</code> is a data frame with <code>n + 1</code> rows. The first row contains fitted coefficients for the original model and has a <code>method</code> of <code>orig</code>. The remaining rows contain fitted coefficients for the resample fits, each with a different value for the <code>index</code> variable, and each with the <code>method</code> specified in the function call.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cdfits_rs<span class="op">$</span>coeffs
 <span class="co">#&gt; # A tibble: 6 x 8</span>
-<span class="co">#&gt;   lambda  logscale scale alpha_1 alpha_2 alpha_3 method index</span>
-<span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
-<span class="co">#&gt; 1 0.0111 -0.00155  0.998   0.535   0.465       0 orig       1</span>
-<span class="co">#&gt; 2 0.0129  0.000822 1.00    0.476   0.524       0 wild       1</span>
-<span class="co">#&gt; 3 0.0125 -0.000595 0.999   0.492   0.508       0 wild       2</span>
-<span class="co">#&gt; 4 0.0114 -0.00236  0.998   0.526   0.474       0 wild       3</span>
-<span class="co">#&gt; 5 0.0115 -0.00376  0.996   0.526   0.474       0 wild       4</span>
-<span class="co">#&gt; 6 0.0122 -0.00272  0.997   0.499   0.501       0 wild       5</span></code></pre></div>
+<span class="co">#&gt;    lambda  logscale scale alpha_1 alpha_2 alpha_3 method index</span>
+<span class="co">#&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
+<span class="co">#&gt; 1 0.0111  -0.00155  0.998   0.535   0.465       0 orig       1</span>
+<span class="co">#&gt; 2 0.0104  -0.0129   0.987   0.570   0.430       0 wild       1</span>
+<span class="co">#&gt; 3 0.00919 -0.0118   0.988   0.603   0.397       0 wild       2</span>
+<span class="co">#&gt; 4 0.0114  -0.00437  0.996   0.530   0.470       0 wild       3</span>
+<span class="co">#&gt; 5 0.00994 -0.00499  0.995   0.572   0.428       0 wild       4</span>
+<span class="co">#&gt; 6 0.0107   0.000126 1.00    0.553   0.447       0 wild       5</span></code></pre></div>
 <p><code>models</code> is a list containing the model object for each resample fit.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Original fit</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
@@ -415,33 +420,33 @@ cdfits_rs<span class="op">$</span>models[[<span class="dv">1</span>]] <span clas
 <span class="co">#&gt; 1 0.01112252 -0.001552367 0.9984488 0.535182 0.464818       0</span>
 <span class="co"># First resampled model</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">2</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
-<span class="co">#&gt;       lambda     logscale    scale   alpha_1   alpha_2 alpha_3</span>
-<span class="co">#&gt; 1 0.01285478 0.0008221037 1.000822 0.4756302 0.5243698       0</span>
+<span class="co">#&gt;       lambda    logscale     scale   alpha_1   alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01036908 -0.01291072 0.9871723 0.5700973 0.4299027       0</span>
 <span class="co"># Last resampled model</span>
 cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/naturalCoef.html">naturalCoef</a></span>()
-<span class="co">#&gt;       lambda     logscale     scale   alpha_1   alpha_2 alpha_3</span>
-<span class="co">#&gt; 1 0.01220327 -0.002722931 0.9972808 0.4991123 0.5008877       0</span></code></pre></div>
+<span class="co">#&gt;       lambda     logscale    scale   alpha_1   alpha_2 alpha_3</span>
+<span class="co">#&gt; 1 0.01067296 0.0001260888 1.000126 0.5532554 0.4467446       0</span></code></pre></div>
 <p>The <code>resampledFits</code> function knows about models fitted with any of the <code>*Model</code> functions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> sffit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]
 <span class="co">#&gt; # A tibble: 6 x 6</span>
 <span class="co">#&gt;   logscale scale lambda     m method index</span>
 <span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
 <span class="co">#&gt; 1  -0.0714 0.931 0.0178 0.108 orig       1</span>
-<span class="co">#&gt; 2  -0.132  0.876 0.0353 0.212 wild       1</span>
-<span class="co">#&gt; 3  -0.129  0.879 0.0352 0.214 wild       2</span>
-<span class="co">#&gt; 4  -0.0806 0.923 0.0386 0.152 wild       3</span>
-<span class="co">#&gt; 5  -0.0838 0.920 0.0405 0.133 wild       4</span>
-<span class="co">#&gt; 6  -0.0832 0.920 0.0391 0.149 wild       5</span>
+<span class="co">#&gt; 2  -0.189  0.828 0.0322 0.273 wild       1</span>
+<span class="co">#&gt; 3  -0.150  0.861 0.0361 0.208 wild       2</span>
+<span class="co">#&gt; 4  -0.0941 0.910 0.0381 0.162 wild       3</span>
+<span class="co">#&gt; 5  -0.191  0.826 0.0338 0.255 wild       4</span>
+<span class="co">#&gt; 6  -0.191  0.826 0.0316 0.281 wild       5</span>
 <span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> cesfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]
 <span class="co">#&gt; # A tibble: 6 x 15</span>
 <span class="co">#&gt;   scale logscale lambda delta delta_1 sigma_1 rho_1 sigma   rho alpha_1</span>
 <span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 0.979 -0.0213  0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span>
-<span class="co">#&gt; 2 0.973 -0.0269  0.0200     1   0.518   0.351 1.85     NA    NA   0.518</span>
-<span class="co">#&gt; 3 0.990 -0.0103  0.0131     1   0.521   0.814 0.229    NA    NA   0.521</span>
-<span class="co">#&gt; 4 0.986 -0.0143  0.0171     1   0.501   0.495 1.02     NA    NA   0.501</span>
-<span class="co">#&gt; 5 0.995 -0.00519 0.0169     1   0.461   0.585 0.710    NA    NA   0.461</span>
-<span class="co">#&gt; 6 0.961 -0.0393  0.0217     1   0.549   0.274 2.64     NA    NA   0.549</span>
+<span class="co">#&gt; 1 0.979  -0.0213 0.0185     1   0.487   0.452 1.21     NA    NA   0.487</span>
+<span class="co">#&gt; 2 0.983  -0.0173 0.0153     1   0.525   0.589 0.697    NA    NA   0.525</span>
+<span class="co">#&gt; 3 0.978  -0.0227 0.0150     1   0.540   0.583 0.717    NA    NA   0.540</span>
+<span class="co">#&gt; 4 0.969  -0.0310 0.0170     1   0.523   0.5   1        NA    NA   0.523</span>
+<span class="co">#&gt; 5 0.985  -0.0153 0.0184     1   0.476   0.461 1.17     NA    NA   0.476</span>
+<span class="co">#&gt; 6 0.978  -0.0220 0.0204     1   0.488   0.361 1.77     NA    NA   0.488</span>
 <span class="co">#&gt; # ... with 5 more variables: alpha_2 &lt;dbl&gt;, alpha_3 &lt;dbl&gt;, sigma_12 &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   method &lt;chr&gt;, index &lt;int&gt;</span>
 <span class="kw"><a href="../reference/resampledFits.html">resampledFits</a></span>(<span class="dt">model =</span> linexfit, <span class="dt">method =</span> <span class="st">"wild"</span>, <span class="dt">n =</span> <span class="dv">5</span>)[[<span class="st">"coeffs"</span>]]
@@ -449,11 +454,11 @@ cdfits_rs<span class="op">$</span>models[[<span class="dv">6</span>]] <span clas
 <span class="co">#&gt;   logscale scale   a_0   a_1   c_t method index</span>
 <span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;</span>
 <span class="co">#&gt; 1  -0.0606 0.941  1.12  2.12  1.89 orig       1</span>
-<span class="co">#&gt; 2  -0.0313 0.969  1.09  2.06  1.89 wild       1</span>
-<span class="co">#&gt; 3  -0.0929 0.911  1.07  1.79  1.68 wild       2</span>
-<span class="co">#&gt; 4  -0.0447 0.956  1.16  2.29  1.98 wild       3</span>
-<span class="co">#&gt; 5  -0.0575 0.944  1.19  2.36  1.99 wild       4</span>
-<span class="co">#&gt; 6  -0.0744 0.928  1.13  2.10  1.85 wild       5</span></code></pre></div>
+<span class="co">#&gt; 2  -0.0480 0.953  1.13  2.22  1.97 wild       1</span>
+<span class="co">#&gt; 3  -0.0480 0.953  1.13  2.21  1.96 wild       2</span>
+<span class="co">#&gt; 4  -0.0593 0.942  1.13  2.14  1.89 wild       3</span>
+<span class="co">#&gt; 5  -0.0611 0.941  1.13  2.12  1.88 wild       4</span>
+<span class="co">#&gt; 6  -0.0410 0.960  1.09  2.09  1.92 wild       5</span></code></pre></div>
 </div>
 <div id="plotting-results" class="section level2">
 <h2 class="hasAnchor">
