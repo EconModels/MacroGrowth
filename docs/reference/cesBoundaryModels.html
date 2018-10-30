@@ -146,12 +146,60 @@ the variables in the formula.</p></td>
   <span class='fu'>cesBoundaryModels</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>Calvin</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>), <span class='kw'>nest</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>))
   <span class='fu'>cesBoundaryModels</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iQp</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>Calvin</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>), <span class='kw'>nest</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>1</span>))
   <span class='fu'>cesBoundaryModels</span>(<span class='no'>iGDP</span> ~ <span class='no'>iK</span> + <span class='no'>iL</span> + <span class='no'>iYear</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>Calvin</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>Country</span><span class='kw'>==</span><span class='st'>"US"</span>), <span class='kw'>nest</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
-  }</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘EconData’</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: dplyr</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+  }</div><div class='output co'>#&gt; <span class='message'>Loading required package: EconData</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: dplyr</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:MacroGrowth’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    count, do, tally</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div></pre>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NaNs produced</span></div><div class='output co'>#&gt; $`01:1-1-`
+#&gt; 
+#&gt; Call:
+#&gt; plm(formula = log(iGDP) - log(iK) ~ iYear, data = sdata, params = c(delta_1 = 1, 
+#&gt; delta = 1), method = "nlm")
+#&gt; 
+#&gt; Coefficients:
+#&gt; logscale    lambda   delta_1     delta  
+#&gt; 0.009248  0.003537  1.000000  1.000000  
+#&gt; 
+#&gt; 
+#&gt; $`02:0-1-`
+#&gt; 
+#&gt; Call:
+#&gt; plm(formula = log(iGDP) - log(iL) ~ iYear, data = sdata, params = c(delta_1 = 0, 
+#&gt; delta = 1), method = "nlm")
+#&gt; 
+#&gt; Coefficients:
+#&gt; logscale    lambda   delta_1     delta  
+#&gt; -0.02344   0.01793   0.00000   1.00000  
+#&gt; 
+#&gt; 
+#&gt; $`04:-01-`
+#&gt; 
+#&gt; Call:
+#&gt; plm(formula = log(iGDP) - log(pmin(iK, iL)) ~ iYear, data = sdata, 
+#&gt;     params = c(sigma_1 = 0, delta = 1), method = "nlm")
+#&gt; 
+#&gt; Coefficients:
+#&gt; logscale    lambda   sigma_1     delta  
+#&gt; -0.02344   0.01793   0.00000   1.00000  
+#&gt; 
+#&gt; 
+#&gt; $`07:*N1-`
+#&gt; 
+#&gt; Call:
+#&gt; plm(formula = log(iGDP) - log(delta_1 * iK + (1 - delta_1) * 
+#&gt;     iL) ~ iYear, data = sdata, params = c(delta_1 = 0.5, delta = 1, 
+#&gt; rho_1 = -1), method = "nlm")
+#&gt; 
+#&gt; Coefficients:
+#&gt; logscale    lambda   delta_1     delta     rho_1  
+#&gt; -0.01612   0.01548   0.14223   1.00000  -1.00000  
+#&gt; 
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
