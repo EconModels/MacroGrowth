@@ -41,7 +41,7 @@ stat_triangle <-
 #' @rdname triplot
 #' @export
 #' @examples
-#' ddd <- data_frame( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) %>% mutate(z = 1 - x - y)
+#' ddd <- dplyr::tibble( x=c(1, 0, .5, .25, 0), y = c(0, .2, .2, .25, .8)) %>% mutate(z = 1 - x - y)
 #' ggplot()  +
 #'   tri_theme() +
 #'   tri_grid(colour="red") +
@@ -58,7 +58,7 @@ tri_grid <- function(colour = color, color = "gray70", grid_lines = 5,
   one <- rep(1, n)
   ids <- 1:n
 
-  lines_data <- data_frame(
+  lines_data <- dplyr::tibble(
     x = c(   h,    h, zero,  1-h, zero,  1-h ),
     y = c(zero,  1-h,    h,    h,  1-h, zero ),
     z = c( 1-h, zero,  1-h, zero,    h,    h ),
@@ -75,7 +75,7 @@ tri_grid <- function(colour = color, color = "gray70", grid_lines = 5,
 tri_labels <-
   function(labels = c("alpha[1]", "alpha[2]", "alpha[3]"), parse = TRUE,
            colour = color, color = "gray60", size = 4, padding = 0.1, ...) {
-  text_data <- data_frame(
+  text_data <- dplyr::tibble(
     x = c(1 + padding, -.5 *padding, -.5 * padding),
     y = c(-.5 *padding, 1 + padding, -.5 * padding),
     z = c(-.5 *padding, -.5 * padding, 1 + padding),

@@ -115,7 +115,7 @@ naturalCoef.default <- function(object, ...) {
 #' @export
 naturalCoef.SFmodel <- function(object, ...) {
   as.data.frame(
-    dplyr::data_frame(
+    dplyr::tibble(
       logscale=coef(object)[1],
       scale=exp(logscale),
       lambda = if (object$winner == 2) coef(object)[2] else coef(object)[3],
@@ -134,7 +134,7 @@ naturalCoef.CDEmodel <- function(object, ...) {
   cf[leftCoef] <- 1 - sum(cf)
 
   as.data.frame(
-    dplyr::data_frame(
+    dplyr::tibble(
       lambda = coef(object)["lambda"],
       logscale = coef(object)["logscale"],
       scale = exp(logscale),
@@ -149,7 +149,7 @@ naturalCoef.CDEmodel <- function(object, ...) {
 #' @export
 naturalCoef.LINEXmodel <- function( object, ...) {
   as.data.frame(
-    dplyr::data_frame(
+    dplyr::tibble(
       logscale = coef(object)[1],
       scale = exp(logscale),
       a_0 = coef(object)[2],
@@ -227,7 +227,7 @@ makeNatCoef <- function(object, nest=object$nest, ...) {
 
   res <-
     as.data.frame(
-      dplyr::data_frame(
+      dplyr::tibble(
         scale = scale,
         logscale = log(scale),
         lambda = lambda,
@@ -377,7 +377,7 @@ sse <- function(object) {
     (is.na(coefs$rho) || coefs$rho >= -1) &&
     (is.na(coefs$rho_1) || coefs$rho_1 >= -1)
   as.data.frame(
-    dplyr::data_frame(
+    dplyr::tibble(
       sse = sse,
       constrained = constrained,
       sse.constrained =
