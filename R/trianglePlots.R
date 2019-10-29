@@ -48,6 +48,12 @@ stat_triangle <-
 #'   tri_labels(size=10, padding=.05) +
 #'   geom_path(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=2, alpha=.3) +
 #'   geom_point(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=3, alpha=.6, colour="navy")
+#' ggplot()  +
+#'   tri_theme() +
+#'   tri_grid(colour="red", labels = c("x", "y", "z")) +
+#'   tri_labels(size=10, padding=.05) +
+#'   geom_path(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=2, alpha=.3) +
+#'   geom_point(data=ddd, aes(x=x, y=y, z=z), stat="triangle", size=3, alpha=.6, colour="navy")
 #'
 tri_grid <- function(colour = color, color = "gray70", grid_lines = 5,
                      labels = c("alpha[1]", "alpha[2]", "alpha[3]"),
