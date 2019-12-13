@@ -1,0 +1,15 @@
+citHeader("To cite package ‘MacroGrowth’ in publications use:")
+
+citEntry(entry = "Manual",
+  title        = "MacroGrowth: Macroeconomic growth modeling",
+  author       = personList(as.person("Randall J. Pruim"), as.person("Matthew Kuperus Heun")),
+  year         = "2019",
+  note         = "R package version 0.2.0.9000",
+  url          = "https://EconModels.github.io/MacroGrowth",
+
+  textVersion  =
+  paste("Randall J. Pruim and Matthew Kuperus Heun (2019).",
+        "MacroGrowth: Macroeconomic growth modeling.",
+        "R package version 0.2.0.9000.",
+        "https://EconModels.github.io/MacroGrowth")
+)
